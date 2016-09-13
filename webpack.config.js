@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const merge = require('webpack-merge');
 
 const PATHS = {
@@ -21,7 +22,10 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Webpack demo',
       template: 'app/index.html'
-    })
+    }),
+    new CopyWebpackPlugin([{
+      from: 'static/favicon.ico'
+    }])
   ],
   module: {
     loaders: [
