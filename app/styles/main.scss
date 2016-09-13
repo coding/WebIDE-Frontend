@@ -1,0 +1,78 @@
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/variables';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/mixins';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/normalize';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding';
+
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/buttons';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/forms';
+@import "~octicons/index.scss";
+
+@import "./variables.scss";
+@import "./zindex.scss";
+@import "./mixins.scss";
+@import "./components/index.scss";
+@import "./themes/light/index.scss";
+
+// 非大面积文字排版网站通常不需要列表项，如果需要可单独设置
+ul, ol {
+  list-style-type: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+}
+
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.hidden {display: none;}
+
+html, body, #root {
+  width: 100vw;
+  height: 100vh;
+}
+
+::-webkit-scrollbar {
+    // width: 8px;
+    // height: 8px;
+    // -webkit-border-radius: 8px;
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+// ::-webkit-scrollbar-thumb {
+//   background-color: rgba(91, 91, 91, 0.50);
+// }
+
+// ::-webkit-scrollbar-thumb:hover {
+//   background-color: rgba(170, 170, 170, 0.80);
+// }
+
+.ide-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.utilities-container {
+  isolation: isolate;
+  z-index: z(utilities-container);
+}

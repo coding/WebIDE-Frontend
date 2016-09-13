@@ -1,0 +1,131 @@
+.menu {
+  position: absolute;
+  z-index: z(menu);
+  background-color: white;
+  box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
+  border-radius: 4px;
+  border: 1px solid transparent;
+  padding: 4px 0;
+  > li > hr {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}
+
+.menu {
+  &.top-down.to-right {
+    .menu-item > .menu {
+      top: 0;
+      left: 100%;
+      right: initial;
+      bottom: initial;
+      margin-top: -4px;
+    }
+  }
+  &.top-down.to-left {
+    .menu-item > .menu {
+      top: 0;
+      right: 100%;
+      left: initial;
+      bottom: initial;
+      margin-top: -4px;
+    }
+  }
+  &.bottom-up.to-right {
+    .menu-item > .menu {
+      bottom: 0;
+      left: 100%;
+      right: initial;
+      top: initial;
+      margin-bottom: -4px;
+    }
+  }
+  &.bottom-up.to-left {
+    .menu-item > .menu {
+      bottom: 0;
+      right: 100%;
+      left: initial;
+      top: initial;
+      margin-bottom: -4px;
+    }
+  }
+}
+
+.menu-item {
+  position: relative;
+}
+
+.menu-item-container {
+  display: flex;
+  min-width: 140px;
+  padding: 4px 20px;
+  &.active {
+    background-color: $menu-background-color-active;
+    color: #fff;
+  }
+  &.disabled, &.active.disabled {
+    background-color: transparent;
+    color: $text-muted;
+  }
+
+  > div {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .menu-item-shortcut {
+    margin-left: auto;
+    margin-right: -6px;
+  }
+}
+
+
+// ContextMenu
+.context-menu {
+  position: fixed;
+  z-index: z(context-menu);
+}
+
+
+// MenuBar
+.menu-bar {
+  display: flex;
+  background-color: #fafafa;
+  border-bottom: 1px solid transparent;
+}
+
+.menu-bar-item {
+  position: relative;
+  > .menu {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+
+.menu-bar-item-container {
+  padding: 4px 12px;
+  position: relative;
+  height: 100%;
+  z-index: z(menu-bar-item-container);
+  &.active {
+    background-color: $menu-background-color-active;
+    color: #fff;
+  }
+}
+
+.menu-bar-item.coding-logo {
+  align-self: stretch;
+  width: 36px;
+
+  .menu-bar-item-container {
+    &:after {
+      @include codingMonkeyBackground;
+      @include absolute(0);
+      content: ' ';
+    }
+    &.active:after {
+      fill: #fff;
+    }
+  }
+}
+

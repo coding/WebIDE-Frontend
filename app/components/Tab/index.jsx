@@ -1,0 +1,123 @@
+import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
+import { createStore } from 'redux';
+import { connect } from 'react-redux';
+import cx from 'classnames';
+import * as TabActions from './actions';
+import AceEditor from '../AceEditor';
+
+const TabView = ({TabState, groupId, ...otherProps}) => {
+  let tabGroup = TabState.getGroupById(groupId);
+  return (
+    <div className='tab-component'>
+      <TabBar tabs={tabGroup.tabs} groupId={groupId} {...otherProps}/>
+      <TabContent tabs={tabGroup.tabs} groupId={groupId} {...otherProps}/>
+    </div>
+  );
+};
+
+
+const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
+  return (
+    <div className='tab-bar'>
+      <ul className='tab-container'>
+        { tabs.map( tab =>
+          <Tab tab={tab} key={tab.id} {...otherProps} />
+        ) }
+      </ul>
+      <div className='tab-add-btn' onClick={ e => addTab(groupId) } >＋</div>
+      <div className='tab-show-list'>
+        <i className='fa fa-sort-desc'></i>
+      </div>
+    </div>
+  );
+};
+
+
+const Tab = ({tab, removeTab, activateTab}) => {
+  const possibleStatus = {
+    'modified': "*",
+    'warning': "!",
+    'offline': "*",
+    'sync': "[-]",
+    'loading': <i className='fa fa-spinner fa-spin'></i>
+  };
+
+  return (
+    <li className={cx('tab', {
+        active: tab.isActive,
+      })}
+      onClick={ e => activateTab(tab.id) } >
+        <div className='title'>{tab.title}</div>
+        <div className='close' onClick={ e => {e.stopPropagation();removeTab(tab.id)} }>×</div>
+    </li>
+  );
+};
+
+
+const TabContent = ({tabs, defaultContentClass}) => {
+  return (
+    <div className='tab-content'>
+      <ul className='tab-content-container'>{
+        tabs.map( tab => {
+          return <TabContentItem key={tab.id} tab={tab} defaultContentClass={defaultContentClass} />
+        })
+      }</ul>
+    </div>
+  );
+};
+
+
+const TabContentItem = ({tab, defaultContentClass}) => {
+  return (
+    <div className={cx('tab-content-item', {'active': tab.isActive})}>
+      {React.createElement(defaultContentClass, {
+        tab: tab
+      })}
+    </div>
+  );
+}
+
+
+class TabViewContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      groupId: _.uniqueId('tab_group_'),
+      type: props.defaultContentType
+    }
+    this.props.dispatch( TabActions.createGroup(this.state.groupId, props.defaultContentType) );
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch( TabActions.removeGroup(this.state.groupId) );
+  }
+
+  componentDidMount() {
+    if (this.props.defaultContentType == 'terminal') setTimeout(()=>this.props.addTab(this.state.groupId), 1);
+  }
+
+  render() {
+    return (
+      <TabView {...this.props} groupId={this.state.groupId}/>
+    );
+  }
+}
+
+TabViewContainer = connect(
+  state => {
+    return {
+      TabState: state.TabState
+    };
+  },
+  dispatch => {
+    return {
+      addTab: (groupId) => dispatch(TabActions.createTabInGroup(groupId)),
+      removeTab: (tabId) => dispatch(TabActions.removeTab(tabId)),
+      activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),
+      dispatch: dispatch
+    };
+  }
+)(TabViewContainer);
+
+export default TabViewContainer;

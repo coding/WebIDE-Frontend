@@ -1,0 +1,57 @@
+.main-pane-view {
+  flex-grow: 1;
+  z-index: z(main-pane-view);
+}
+
+.panes {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.pane {
+  flex-basis: 0;
+  flex-grow: 1;
+  overflow: scroll;
+  position: relative;
+  border-width: 1px;
+  border-style: solid;
+  &:last-child {
+    border: 0;
+    > .pane-resize-bar {
+      display: none;
+    }
+  }
+  &.row {
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+  }
+  &.column {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+  }
+}
+
+.pane-content {
+  height: 100%;
+  width: 100%;
+}
+
+.pane-resize-bar {
+  z-index: 1000;
+  &.col-resize {
+    cursor: col-resize;
+    @include absolute(right 0 top 0 bottom 0);
+    height: 100%;
+    width: 4px;
+  }
+  &.row-resize {
+    cursor: row-resize;
+    @include absolute(bottom 0 left 0 right 0);
+    width: 100%;
+    height: 4px;
+  }
+}

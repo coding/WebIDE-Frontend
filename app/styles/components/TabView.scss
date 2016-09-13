@@ -1,0 +1,89 @@
+$tab-height: 30px;
+
+.tab-component {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+
+.tab-content {
+  flex: 1 0 auto;
+  position: relative;
+}
+.tab-content-container {
+  @include absolute(0);
+  &:before {
+    content: '';
+    @include absolute(0);
+    @include codingMonkeyBackground;
+    filter: grayscale(100%) brightness(500%) brightness(50%);
+    -webkit-filter: grayscale(100%) brightness(500%) brightness(90%);
+    background-size: 400px;
+  }
+}
+.tab-content-item {
+  width: 100%;
+  height: 100%;
+}
+
+.tab-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+
+  > .tab-container {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {display: none;}
+    > li { margin-right: 2px;}
+  }
+
+  > .tab-show-list {
+    width: $tab-height - 4px;
+    text-align: center;
+    flex-shrink: 0;
+    // https://www.w3.org/TR/css-flexbox-1/#auto-margins
+    margin-left: auto;
+  }
+
+  .tab-add-btn {
+    // text-align: center;
+    margin-left: 8px;
+    flex-shrink: 0;
+    line-height: 1;
+    font-weight: bold;
+    cursor: pointer;
+  }
+}
+
+.tab {
+  min-width: 92px;
+  max-width: 200px;
+  padding-left: 4px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  .status{
+    padding: 3px;
+  }
+  .title {
+    padding: 0 4px;
+  }
+  .close {
+    padding: 0 4px;
+    margin-left: auto;
+  }
+}
+
+.tab-content-item {
+  display: none;
+  &.active {
+    display: block;
+  }
+}

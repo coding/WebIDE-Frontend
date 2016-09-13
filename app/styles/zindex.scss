@@ -1,0 +1,30 @@
+// Mind the "Stacking Contexts" problem: https://philipwalton.com/articles/what-no-one-told-you-about-z-index/
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index
+// https://developer.mozilla.org/en-US/docs/Web/CSS/isolation
+
+@function z($element) {
+  $z-index: null;
+  $sub-list-index: null;
+  @for $i from 1 through length($z-index-list) {
+    $sub-list: nth($z-index-list, $i);
+    @if index($sub-list, $element) {
+      $z-index: index($sub-list, $element);
+      $sub-list-index: $i;
+    }
+  }
+
+  @if $z-index {
+    @return $sub-list-index*100+$z-index;
+  } @else {
+    @error 'Missing element "#{$element}" in $z-index-list';
+  }
+}
+
+$z-index-list: (
+  (main-pane-view, modal-container),
+  (filetree-node-bg, filetree-node-label),
+  (modal-backdrop, modal),
+  (context-menu, menu, menu-bar-item-container),
+  (utilities-container),
+  (workspace-list),
+);

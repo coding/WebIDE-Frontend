@@ -1,0 +1,44 @@
+.modal-container {
+  @include fixed(0);
+  display: flex;
+  justify-content: center;
+  z-index: z(modal-container);
+  &.top {
+    align-items: flex-start;
+    .modal {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  &.center {
+    align-items: center;
+    .modal {
+      margin-top: -5em;
+    }
+  }
+
+  // the backdrop
+  &::after {
+    content: "";
+    background-color: transparent;
+    @include fixed(0);
+    z-index: z(modal-backdrop);
+  }
+
+  &.show-backdrop {
+    &::after {
+      background-color: rgba(0,0,0,.3);
+    }
+  }
+}
+
+.modal {
+  min-width: 600px;
+  min-height: 20px;
+  padding: 0.75em;
+  z-index: z(modal);
+  border-radius: 4px;
+  background-color: #FFF;
+  box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
+}

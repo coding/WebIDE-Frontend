@@ -1,0 +1,23 @@
+.git-status-file {
+  display: flex;
+  align-items: center;
+
+  .file-add-checkbox {
+    padding-bottom: 2px;
+    margin-right: 8px;
+  }
+
+  .file-status-indicator {
+    margin-right: 6px;
+    &.modified {color: hsl(47,100%,50%)}
+    &.untracked {color: hsl(80,60%,40%)}
+    &.missing {color: hsl(10,80%,45%)}
+  }
+}
+
+.git-commit-message-container {
+  > textarea {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}

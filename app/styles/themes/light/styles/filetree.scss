@@ -1,0 +1,6 @@
+.filetree-node.focus {
+  color: $text-color-highlight;
+  > .filetree-node-bg {
+    background-color: darken($panel-background-color, 5%);
+  }
+}

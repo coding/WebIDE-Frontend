@@ -1,0 +1,9 @@
+.menu {
+  color: gray(15%);
+  background-color: $menu-background-color;
+  border-color: darken($base-border-color, 15%);
+  opacity: 0.95;
+  > li > hr {
+    border-color: gray(80%);
+  }
+}

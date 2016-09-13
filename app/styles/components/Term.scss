@@ -1,0 +1,243 @@
+.ide-terminal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  font-family: 'Source Code Pro', sans-serif;
+
+  .terminal-body {
+    cursor: text;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+
+    * {
+      -webkit-user-select:text;
+      -moz-user-select:text;
+      -ms-user-select:text;
+      -o-user-select:text;
+      user-select:text;
+    }
+
+    .terminal-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .terminal-container div {
+      margin: 0px;
+      padding: 0px;
+    }
+    .terminal-container .terminal {
+      width: 100%;
+      height: 100%;
+      font-size: 13px;
+      line-height: 15px;
+      white-space: pre;
+      outline: none;
+    }
+    .terminal-container .terminal-row {
+      white-space: pre;
+      height: 15px;
+      //            overflow: hidden;
+    }
+    .terminal-container .terminal-input {
+      /*position: absolute;
+    top: 0;
+    left: -1000%;
+    background: rgba(255,255,255,0.75);
+    color: black;
+    border: 0;
+    outline: 0;
+    width: 100%;*/
+      position: absolute;
+      z-index: 0;
+      //            width: 0.5em;
+      height: 1em;
+      opacity: 0;
+      background: transparent;
+      -moz-appearance: none;
+      appearance: none;
+      //            border: none;
+      outline: none;
+      overflow: hidden;
+      font: inherit;
+      //            padding: 0 1px;
+      margin: 0 -1px;
+      text-indent: -1em;
+      -ms-user-select: text;
+      -moz-user-select: text;
+      -webkit-user-select: text;
+      user-select: text;
+      //            background: #131313;
+      color: #9c9c9c;
+      border: 2px solid #2b2b2b;
+      padding: 5px 2px;
+      resize: none;
+      left: -1000%;
+      //width: 8.4px;
+
+    }
+    .terminal-container .terminal-screen-keys {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .terminal-container .terminal-screen-keys button {
+      background: -webkit-linear-gradient(top, #eeeef0, #d3d3d9);
+      border: 1px solid #58575e;
+      box-shadow: 0 2px 2px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.25), inset 0 1px 0 #fff;
+      border: 1px solid #000;
+      border-radius: 2px;
+      padding: 8px;
+      font-size: 14px;
+      text-shadow: 0 1px 0 #fff;
+    }
+    .terminal-container .terminal-screen-keys button:focus, .terminal-container .terminal-screen-keys button.active {
+      outline: 0px;
+      background: -webkit-linear-gradient(top, #ccccd0, #a3a3a9);
+    }
+    .terminal-container .terminal-size-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: rgba(255,255,255,0.75);
+      color: black;
+      padding: 0 3px;
+    }
+  }
+
+  .term-toolbar{
+    height: 30px;
+    .toolbar-commands {
+      list-style: none;
+      margin: 0px;
+      padding: 6px;
+      float: right;
+
+    }
+    .toolbar-command {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+      margin: 0px 4px;
+      cursor: pointer;
+    }
+    .termEnv {
+      display: inline-block;
+      height: 18px;
+      padding: 6px 6px 0 3px;
+      line-height: 20px;
+      margin: 0px;
+      cursor: pointer;
+      float: right;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .termLabel {
+      display: inline-block;
+      height: 18px;
+      padding: 6px 0px 0 6px;
+      line-height: 20px;
+      margin: 0px 0px;
+      float: right;
+      opacity: 0.6;
+    }
+  }
+  .term-container {
+    position: absolute;
+    //      top: 30px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+.terminal-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-family: Menlo,Monaco,"DejaVu Sans Mono",Consolas,"Andale Mono",monospace;
+
+  div {
+    margin: 0px;
+    padding: 0px;
+    user-select: initial;
+    -webkit-user-select: initial;
+  }
+  .terminal {
+    width: 100%;
+    height: 100%;
+    font-size: 13px;
+    line-height: 15px;
+
+    i.terminal_cjk {
+      display: inline-block;
+      font-style: normal;
+      text-align: center;
+    }
+  }
+  .terminal-input {
+    position: absolute;
+    top: 0;
+    left: -1000%;
+    background: rgba(255,255,255,0.75);
+    color: black;
+    border: 0;
+    outline: 0;
+    width: 100%;
+  }
+  .terminal-screen-keys {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .terminal-screen-keys button {
+    background: -webkit-linear-gradient(top, #eeeef0, #d3d3d9);
+    border: 1px solid #58575e;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.25), inset 0 1px 0 #fff;
+    border: 1px solid #000;
+    border-radius: 2px;
+    padding: 8px;
+    font-size: 14px;
+    text-shadow: 0 1px 0 #fff;
+  }
+  .terminal-screen-keys button:focus, .terminal-container .terminal-screen-keys button.active {
+    outline: 0px;
+    background: -webkit-linear-gradient(top, #ccccd0, #a3a3a9);
+  }
+  .terminal-size-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255,255,255,0.75);
+    color: black;
+    padding: 0 3px;
+  }
+
+  .term_scrollbar {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    width: 13px;
+    z-index: 6;
+  }
+
+  .term_scrollbar-v {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    top: 0;
+    cursor: default;
+  }
+
+  .term_scrollbar-inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 13px;
+  }
+}

@@ -1,0 +1,24 @@
+$bar-height: 30px;
+
+.status-bar {
+  border-top: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  min-height: $bar-height;
+}
+
+.status-widget-container {
+  &.right {
+    margin-left: auto;
+  }
+}
+
+.status-bar-menu-item {
+  padding: 0 8px;
+  cursor: pointer;
+  > .menu {
+    right: 6px;
+    bottom: $bar-height;
+    min-width: 200px;
+  }
+}

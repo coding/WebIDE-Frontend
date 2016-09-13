@@ -1,0 +1,58 @@
+$filetree-indent: 14px;
+
+.filetree-container {
+  @include noSelect();
+  padding-left: 20px;
+  height: 100%;
+  overflow: scroll;
+
+  & > .filetree-node-container {
+    float: left;
+    min-width: 100%;
+  }
+}
+
+.filetree-node {
+  display: flex;
+  align-items: center;
+  cursor: default;
+  position: relative;
+  padding: 4px 0;
+
+  > span {
+    display: inline-block;
+    flex: 0 0 auto;
+  }
+  > .filetree-node-bg {
+    @include absolute(0);
+    left: -1000px;
+  }
+  &.focus > .filetree-node-bg {
+    z-index: z(filetree-node-bg);
+  }
+  .filetree-node-arrow,
+  .filetree-node-icon,
+  .filetree-node-label {
+    z-index: z(filetree-node-label);
+  }
+}
+
+.filetree-node-children {
+  padding-left: $filetree-indent;
+  &.isFolded {display: none}
+}
+
+.filetree-node-arrow {
+  width: $filetree-indent;
+  cursor: pointer;
+}
+
+.filetree-node-icon {
+  width: $filetree-indent;
+}
+
+.filetree-node-label {
+  padding-left: 5px;
+  padding-right: 10px;
+}
+
