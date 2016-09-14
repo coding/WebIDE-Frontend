@@ -5,12 +5,11 @@
 var _keycodes = require('./keycodes');
 
 var Keymapper;
+var _keysRegistered = {};
 var _keymaps = { global: {} };
-var _wait = 300;
 var _commandHandlers = {};
-var _lastTimeoutId;
 var _combinator = '+';
-var _context = 'global';
+var _scope = 'global';
 var _commandBuffer = {
   keys: [],
   command: null,
@@ -22,24 +21,14 @@ var _commandBuffer = {
     this.command = command;
   }
 };
-var _modifiersList = ['cmd', 'ctrl', 'shift', 'alt'];
-var _modifiers = {
-  cmd: false,
-  ctrl: false,
-  shift: false,
-  alt: false,
-  reset: function () {
-    this.cmd = this.ctrl = this.shift = this.alt = false;
-  },
-  toString: modifiersToString
-};
 
+var MODIFIERS_LIST = ['cmd', 'ctrl', 'shift', 'alt'];
 function modifiersToString(e) {
-  var _this = e || this;
-  var modifiers = _modifiersList.reduce(function (ret, modifier) {
-    var modKey = e ? modifier + 'Key' : modifier;
-    if (modKey === 'cmdKey') modKey = 'metaKey';
-    if (_this[modKey]) ret.push(modifier);
+  // returned comb always in the order spec by MODIFIERS_LIST
+  var modifiers = MODIFIERS_LIST.reduce(function (ret, modifier) {
+    var modKey = modifier + 'Key';
+    if (modKey === 'cmdKey') modKey = 'metaKey'; // internally we call it `cmd` but e use `metaKey`
+    if (e[modKey]) ret.push(modifier);
     return ret;
   }, []);
   return modifiers.join(_combinator);
@@ -47,8 +36,6 @@ function modifiersToString(e) {
 
 function keyEventToKeyCombination(e) {
   var modString = modifiersToString(e);
-  if (!modString) modString = _modifiers.toString();
-  _modifiers.reset();
   if (modString) {
     return [modString, _keycodes.keyCodeToKey[e.keyCode]].join(_combinator);
   } else {
@@ -56,57 +43,63 @@ function keyEventToKeyCombination(e) {
   }
 }
 
+var _wait = 300;
+var _lastTimeoutId;
 function handleKeyEvent(e) {
-  clearTimeout(_lastTimeoutId);
+  var isComboPending = Boolean(_lastTimeoutId);
 
-  switch (e.key) {
-    case 'Meta' || 'OS':
-      _modifiers.cmd = true;
-      break;
-    case 'Control':
-      _modifiers.ctrl = true;
-      break;
-    case 'Shift':
-      _modifiers.shift = true;
-      break;
-    case 'Alt':
-      _modifiers.alt = true;
-      break;
-    default:
-      _commandBuffer.keys.push(keyEventToKeyCombination(e));
-      _commandBuffer.setCommand({
-        keyboardEvent: e,
-        context: _context || 'global'
-      });
+  // only modifier pressed, ignore
+  if (['Meta', 'OS', 'Control', 'Shift', 'Alt'].indexOf(e.key) > -1) return;
+  // any key pressed without modifier, ignore
+  if (modifiersToString(e) == '' && !isComboPending ) return;
+
+  var keyCombination = keyEventToKeyCombination(e);
+  var keyCombinationState = _keysRegistered[keyCombination];
+
+  if ( keyCombinationState === undefined && !isComboPending ) return;
+
+  _commandBuffer.keys.push(keyCombination);
+  _commandBuffer.setCommand({
+    keyboardEvent: e,
+    scope: _scope || 'global'
+  });
+
+  clearTimeout(_lastTimeoutId);
+  _lastTimeoutId = undefined;
+
+  if ( keyCombinationState == 1 ) {
+    if ( consumeCommandBuffer() )  {e.preventDefault(); e.stopPropagation()};
+    return;
   }
 
-  if ( consumeCommandBuffer() )  {e.preventDefault();e.stopPropagation()};
-  // _lastTimeoutId = setTimeout(function () {
-  //   if ( consumeCommandBuffer() )  {e.preventDefault(); e.stopPropagation()};
-  // }, _wait);
+  if ( keyCombinationState > 1 || isComboPending) {
+    e.preventDefault(); e.stopPropagation();
+    _lastTimeoutId = setTimeout(consumeCommandBuffer, _wait);
+  }
 }
 
+
 function consumeCommandBuffer() {
-  var stopPropagation = false;
+  _lastTimeoutId = undefined;
+  var shouldStopPropagation = false;
   if (_commandBuffer.keys.length) {
     _commandBuffer.command.keys = _commandBuffer.keys.join(',');
     _commandBuffer.command = normalizeCommand(_commandBuffer.command);
-    stopPropagation = handleCommand(_commandBuffer.command);
+    shouldStopPropagation = handleCommand(_commandBuffer.command);
   }
-  _modifiers.reset();
   _commandBuffer.reset();
-  return stopPropagation;
+  return shouldStopPropagation;
 }
 
 function normalizeCommand(command) {
   var keys = command.keys;
-  var context = command.context;
+  var scope = command.scope;
 
   if (!keys) return command;
 
-  if (!_keymaps[context]) context = 'global';
-  command.$$context = context;
-  command.type = _keymaps[context][keys];
+  if (!_keymaps[scope]) scope = 'global';
+  command.$$scope = scope;
+  command.type = _keymaps[scope][keys];
   if (typeof command.type === 'function') {
     command.$$handler = command.type;
     command.type = null;
@@ -121,12 +114,13 @@ function handleCommand(command) {
 }
 
 function normalizeKeys(keys) {
+  // validate keys spec, if valid, also unify order of modifiers as in MODIFIERS_LIST
   keys = keys.toLowerCase().replace(/\s/g, '');
   var keyCombos = keys.split(',');
   return keyCombos.map(function (keyCombo) {
     var pseudoKeyEvent = {};
     keyCombo.split(_combinator).forEach(function (key) {
-      if (_modifiersList.indexOf(key) > -1) {
+      if (MODIFIERS_LIST.indexOf(key) > -1) {
         if (key == 'cmd') key = 'meta';
         pseudoKeyEvent[key + 'Key'] = true;
       } else {
@@ -140,6 +134,20 @@ function normalizeKeys(keys) {
   }).join(',');
 }
 
+function registerKeys(keys) {
+  var keysArr = keys.split(',');
+  _keysRegistered[keysArr[0]] = keysArr.length;
+}
+
+function unregisterKeys(keys) {
+  var keysArr = keys.split(',');
+  delete _keysRegistered[keysArr[0]];
+}
+
+function registerKeymaps(keys, descriptor) {
+  if (!_keymaps[descriptor.scope]) _keymaps[descriptor.scope] = {};
+  _keymaps[descriptor.scope][keys] = descriptor.command;
+}
 
 Keymapper = function () {
 
@@ -173,20 +181,20 @@ Keymapper = function () {
 
     var proto = Keymapper.prototype;
 
-    proto.setContext = Keymapper.setContext;
+    proto.setScope = Keymapper.setScope;
 
     proto.map = function map(keys, descriptor) {
       if (typeof descriptor === 'string') {
         var commandType = descriptor;
-        descriptor = { command: commandType, context: 'global' };
+        descriptor = { command: commandType, scope: 'global' };
       } else if (typeof descriptor === 'function') {
         var handler = descriptor;
-        descriptor = { command: handler, context: 'global' };
+        descriptor = { command: handler, scope: 'global' };
       }
-      if (!descriptor.command || !descriptor.context) return;
+      if (!descriptor.command || !descriptor.scope) return;
       keys = normalizeKeys(keys);
-      if (!_keymaps[descriptor.context]) _keymaps[descriptor.context] = {};
-      _keymaps[descriptor.context][keys] = descriptor.command;
+      registerKeys(keys);
+      registerKeymaps(keys, descriptor);
     }
 
     proto.loadKeymaps = function loadKeymaps(keymaps) {
@@ -201,9 +209,9 @@ Keymapper = function () {
         if (typeof keymaps[keys] == 'string' || typeof keymaps[keys] == 'function') {
           this.map(keys, keymaps[keys]);
         } else if (typeof keymaps[keys] == 'object') {
-          var context = keys;
-          for (var _keys in keymaps[context]) {
-            this.map(_keys, { command: keymaps[context][_keys], context: context });
+          var scope = keys;
+          for (var _keys in keymaps[scope]) {
+            this.map(_keys, { command: keymaps[scope][_keys], scope: scope });
           }
         } else {
           throw Error('Keymapper: Invalid keymaps description.');
@@ -223,20 +231,19 @@ Keymapper = function () {
   }
 
 
-  // static propperties;
-
-  Keymapper.setContext = function setContext(context) {
-    _context = context;
+  // static properties;
+  Keymapper.setScope = function setScope(scope) {
+    _scope = scope;
   };
 
-  Keymapper.dispatchCommand = function dispatchCommand(command, context, data) {
+  Keymapper.dispatchCommand = function dispatchCommand(command, scope, data) {
     var _command;
     if (typeof command === 'object') {
       _command = normalizeCommand(command);
     } else if (typeof command === 'string') {
-      _command = normalizeCommand({type:command,context:context,data:data});
+      _command = normalizeCommand({type:command,scope:scope,data:data});
     } else { return }
-    
+
     handleCommand(_command);
   };
 
