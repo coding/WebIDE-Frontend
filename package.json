@@ -13,7 +13,7 @@
     "webide"
   ],
   "author": "hackape",
-  "license": "ISC",
+  "license": "BSD-3-Clause",
   "devDependencies": {
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.4",
