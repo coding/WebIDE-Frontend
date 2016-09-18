@@ -10,7 +10,7 @@ const PATHS = {
 };
 
 const CommonConfig = {
-  entry: PATHS.app,
+  entry: ['babel-polyfill', PATHS.app],
   output: {
     path: PATHS.build,
     filename: '[name].js'
@@ -43,10 +43,10 @@ switch (process.env.NODE_ENV) {
   case 'production':
     config = merge(
       CommonConfig,
-      uglify(),
       stylesheet()
     );
     break;
+
   default:
     config = merge(
       CommonConfig,
