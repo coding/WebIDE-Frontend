@@ -1,4 +1,4 @@
-$tab-height: 30px;
+$tab-height = 30px;
 
 .tab-component {
   position: relative;
@@ -15,11 +15,11 @@ $tab-height: 30px;
   position: relative;
 }
 .tab-content-container {
-  @include absolute(0);
+  absolute(0);
   &:before {
     content: '';
-    @include absolute(0);
-    @include codingMonkeyBackground;
+    absolute(0);
+    codingMonkeyBackground();
     filter: grayscale(100%) brightness(500%) brightness(50%);
     -webkit-filter: grayscale(100%) brightness(500%) brightness(90%);
     background-size: 400px;

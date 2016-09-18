@@ -1,5 +1,5 @@
 .modal-container {
-  @include fixed(0);
+  fixed(0);
   display: flex;
   justify-content: center;
   z-index: z(modal-container);
@@ -22,7 +22,7 @@
   &::after {
     content: "";
     background-color: transparent;
-    @include fixed(0);
+    fixed(0);
     z-index: z(modal-backdrop);
   }
 

@@ -1,0 +1,74 @@
+-pos(type, args)
+  // always set a position
+  position: unquote(type)
+  // if length of args == 0, here's the end, otherwise continues
+  if length(args) != 0
+    // Iterate through args to check if they are unit only
+    $unitOnly = true
+    for i in (0..(length(args) - 1))
+      unless args[i] is a 'unit'
+        $unitOnly = false
+    // Now we decide which way we go
+    // if unit only, we apply the css shorthand synopsis as in "padding: 10px 5px", accept up to 4 params
+    if $unitOnly
+      if length(args) == 1
+        top: args[0]
+        right: args[0]
+        bottom: args[0]
+        left: args[0]
+      else if length(args) == 2
+        top: args[0]
+        bottom: args[0]
+        right: args[1]
+        left: args[1]
+      else if length(args) == 3
+        top: args[0]
+        right: args[1]
+        left: args[1]
+        bottom: args[2]
+      else if length(args) == 4
+        top: args[0]
+        right: args[1]
+        bottom: args[2]
+        left: args[3]
+    // if not unit only, we allow specify which side we want to apply,
+    // followed by the unit as its value, order doesn't matter
+    // example:
+    // absolute: top 0 bottom 10px right 5px left 10%
+    // if the unit that follows is omitted, "0" is used as default
+    else
+      for i in (0..(length(args) - 1))
+        unless args[i] is a 'unit'
+          {args[i]}: args[i + 1] is a 'unit' ? args[i + 1] : 0
+
+
+fixed() {
+  -pos('fixed', arguments);
+}
+
+absolute() {
+  -pos('absolute', arguments);
+}
+
+relative() {
+  -pos('relative', arguments);
+}
+
+noSelect() {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+codingMonkeyBackground() {
+  background-image: url("https://dn-coding-net-production-static.qbox.me/static/cb75498a0ffd36e2c694da62f1bdb86c.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+gray($amount) {
+  lighten(#000000, $amount);
+}

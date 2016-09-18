@@ -1,3 +1,5 @@
+const bootstrap = require('bootstrap-styl');
+
 module.exports = function(paths) {
   return {
     module: {
@@ -22,10 +24,13 @@ module.exports = function(paths) {
           loaders: ["file"],
           // loader: "url?limit=10000&mimetype=image/svg+xml"
         }, {
-          test: /\.s?css$/,
-          loaders: ["style", "css?sourceMap", "sass?sourceMap"]
+          test: /\.styl$/,
+          loaders: ["style", "css", "stylus"]
         }
       ]
+    },
+    stylus: {
+      use: [bootstrap()]
     }
   };
 }

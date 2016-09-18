@@ -1,7 +1,7 @@
-$filetree-indent: 14px;
+$filetree-indent = 14px;
 
 .filetree-container {
-  @include noSelect();
+  noSelect();
   padding-left: 20px;
   height: 100%;
   overflow: scroll;
@@ -24,7 +24,7 @@ $filetree-indent: 14px;
     flex: 0 0 auto;
   }
   > .filetree-node-bg {
-    @include absolute(0);
+    absolute(0);
     left: -1000px;
   }
   &.focus > .filetree-node-bg {

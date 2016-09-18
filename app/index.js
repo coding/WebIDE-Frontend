@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import qs from 'querystring'
 
 import Root from './containers/Root.jsx';
-import './styles/main.scss';
+import './styles/main.styl';
 import {setupWorkspace} from './api'
 import config from './config';
 
