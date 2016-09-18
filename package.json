@@ -14,7 +14,7 @@
   "engines" : { "node" : ">=6.0.0", "npm": ">=3.0.0" },
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port=8060 --progress --colors",
-    "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
+    "build": "cross-env NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -46,7 +46,8 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.14.1"
+    "webpack-merge": "^0.14.1",
+    "cross-env": "^2.0.1"
   },
   "dependencies": {
     "bootstrap-styl": "^5.0.7",
