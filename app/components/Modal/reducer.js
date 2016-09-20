@@ -1,6 +1,7 @@
 import {
   MODAL_SHOW,
-  MODAL_DISMISS
+  MODAL_DISMISS,
+  MODAL_UPDATE
 } from './actions';
 
 const _state = {
@@ -9,26 +10,34 @@ const _state = {
   position: 'top',
 };
 
-export default function FileTreeReducer (state=_state, action) {
+export default function ModalReducer (state=_state, action) {
   switch (action.type) {
 
     case MODAL_SHOW:
       var newState = {
         isActive: true,
-        content: action.content,
-        modalType: action.modalType
-      };
-      return Object.assign({}, state, newState);
+        modalType: action.payload.modalType,
+        meta: action.meta,
+        content: action.payload.content
+      }
+      return { ...state, ...newState }
 
     case MODAL_DISMISS:
       var newState = {
         isActive: false,
         content: null,
         modalType: null
-      };
-      return Object.assign({}, state, newState);
+      }
+      return { ...state, ...newState }
+
+    case MODAL_UPDATE:
+      return {
+        ...state,
+        meta: action.meta,
+        content: Object.assign({}, state.content, action.payload.content)
+      }
 
     default:
-      return state;
+      return state
   }
 }

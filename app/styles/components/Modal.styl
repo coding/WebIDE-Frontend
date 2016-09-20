@@ -19,15 +19,14 @@
   }
 
   // the backdrop
-  &::after {
-    content: "";
+  .backdrop {
     background-color: transparent;
     fixed(0);
     z-index: z(modal-backdrop);
   }
 
   &.show-backdrop {
-    &::after {
+    .backdrop {
       background-color: rgba(0,0,0,.3);
     }
   }
@@ -41,4 +40,9 @@
   border-radius: 4px;
   background-color: #FFF;
   box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
+}
+
+.modal-content {
+  .message { margin-bottom: 0.4em; }
+  input { width: 100%; }
 }
