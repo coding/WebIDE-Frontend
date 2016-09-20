@@ -18,11 +18,15 @@ const defaultFetchOptions = {
 
 
 function interceptResponse(response) {
-  var contentType = response.headers.get('Content-Type');
+  var contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/json')) {
-    return response.json()
+    return response.json().then( json => {
+      if (!response.ok) throw json.msg
+      return json
+    })
   } else {
-    return response.ok
+    if (!response.ok) throw response.statusText
+    return true
   }
 }
 

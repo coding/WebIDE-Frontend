@@ -11,7 +11,10 @@
   "bugs": {
     "url": "https://github.com/Coding/WebIDE-Frontend/issues"
   },
-  "engines" : { "node" : ">=6.0.0", "npm": ">=3.0.0" },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port=8060 --progress --colors",
     "build": "cross-env NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",

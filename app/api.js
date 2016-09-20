@@ -32,13 +32,13 @@ export function readFile(path) {
   });
 }
 
-export function createFile(path) {
+export function createFile(path, content, base64) {
   return request({
-    method: 'PUT',
+    method: 'POST',
     url: `/workspaces/${config.spaceKey}/files`,
     form: {
       path: path,
-      content: content,
+      content: content || '',
       base64: base64 || false,
       override: true,
       createParent: true,

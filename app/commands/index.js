@@ -9,3 +9,5 @@ key.loadKeymaps(keymaps);
 key.loadCommandHandlers(menuCommands);
 
 export const dispatchCommand = Keymapper.dispatchCommand;
+export const setScope = Keymapper.setScope;
+export const setContext = Keymapper.setContext;

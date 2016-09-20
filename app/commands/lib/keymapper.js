@@ -10,6 +10,7 @@ var _keymaps = { global: {} };
 var _commandHandlers = {};
 var _combinator = '+';
 var _scope = 'global';
+var _context = null;
 var _commandBuffer = {
   keys: [],
   command: null,
@@ -110,6 +111,7 @@ function normalizeCommand(command) {
 function handleCommand(command) {
   var handler = command.type ? _commandHandlers[command.type] : command.$$handler;
   if (!handler) return false;
+  command.context = _context;  // bind context to command before run, there's no way to change it at this point.
   return !handler(command); // handler can explicitly return true to continue propagation.
 }
 
@@ -234,6 +236,10 @@ Keymapper = function () {
   // static properties;
   Keymapper.setScope = function setScope(scope) {
     _scope = scope;
+  };
+
+  Keymapper.setContext = function setContext(context) {
+    _context = context;
   };
 
   Keymapper.dispatchCommand = function dispatchCommand(command, scope, data) {
