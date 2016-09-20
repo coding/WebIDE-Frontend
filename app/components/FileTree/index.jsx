@@ -5,15 +5,17 @@ import { connect } from 'react-redux';
 import cx from 'classnames';
 import ContextMenu from '../ContextMenu';
 import * as FileTreeActions from './actions';
+import FileTreeContextMenuItems from './contextMenuItems';
 
 
 class FileTree extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       isContextMenuActive: false,
-      contextMenuPos: {x:0, y:0}
-    };
+      contextMenuPos: {x:0, y:0},
+      contextNode: null
+    }
   }
 
   componentDidMount() {
@@ -27,21 +29,23 @@ class FileTree extends Component {
       <div className='filetree-container'>
         <FileTreeNode node={FileTreeState.rootNode}
           onContextMenu={this.onContextMenu} {...actionProps} />
-        <ContextMenu items={[]}
+        <ContextMenu items={FileTreeContextMenuItems}
           isActive={isContextMenuActive}
           pos={contextMenuPos}
+          context={this.state.contextNode}
           deactivate={this.setState.bind(this, {isContextMenuActive: false}, null)} />
       </div>
     );
   }
 
-  onContextMenu = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+  onContextMenu = (e, node) => {
+    e.stopPropagation()
+    e.preventDefault()
     this.setState({
       isContextMenuActive: true,
-      contextMenuPos: {x:e.clientX, y:e.clientY}
-    });
+      contextMenuPos: {x:e.clientX, y:e.clientY},
+      contextNode: node
+    })
   }
 }
 
@@ -64,7 +68,7 @@ class FileTreeNode extends Component {
     const {openNode, selectNode, onContextMenu} = actionProps;
     return (
       <div className='filetree-node-container'
-        onContextMenu={e => {selectNode(node);onContextMenu(e)} }>
+        onContextMenu={e => {selectNode(node);onContextMenu(e, node)} }>
         <div
           className={cx('filetree-node', {'focus':node.isFocused})}
           onDoubleClick={e => openNode(node)}

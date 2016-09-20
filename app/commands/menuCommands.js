@@ -14,7 +14,32 @@ const [Modal, Git, Tab] = [
 
 export default {
   // 'app:settings':
-  // 'file:new_file'
+  'file:new_file': c => {
+    var node = c.context
+    if (node.isDir) {
+      var path = node.path
+    } else {
+      var path = node.parent.path
+    }
+    if (path !== '/') path += '/'
+    var defaultValue = path + 'untitled'
+
+    const createFile = (pathValue) => {
+      console.log('called');
+      api.createFile(pathValue)
+        .then(Modal.dismissModal)
+        // if error, try again.
+        .catch(errMsg =>
+          Modal.updateModal({statusMessage:errMsg}).then(createFile)
+        )
+    }
+
+    Modal.showModal('Prompt', {
+      message: 'Enter the path for the new file.',
+      defaultValue: defaultValue,
+      selectionRange: [path.length, defaultValue.length]
+    }).then(createFile)
+  },
 
   'file:save': (c) => {
     var activeTab = getState().TabState.activeGroup.activeTab;
@@ -26,7 +51,7 @@ export default {
     api.gitStatus().then( ({files, clean}) => {
       Git.updateStatus({files, isClean: clean})
     }).then( () =>
-      Modal.showModal({modalType: 'GitCommit', content: 'HelloYo'})
+      Modal.showModal('GitCommit', 'HelloYo')
     )
   },
 
