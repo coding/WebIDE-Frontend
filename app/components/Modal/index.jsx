@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import cx from 'classnames';
 import { connect } from 'react-redux';
+import {
+  Prompt,
+  CommandPalette,
+  GitCommitView
+} from './modals'
 
-import GitCommitView from '../Git';
-import { Prompt, CommandPalette } from './modals'
-
-var ModalContainer, GitCommitModal;
-
-
-ModalContainer = (props) => {
+var ModalContainer = (props) => {
   const {isActive, showBackdrop, position, dispatch} = props
   return isActive ? (
     <div className={cx('modal-container', position,
@@ -38,7 +37,7 @@ class Modal extends Component {
     var modalContent = function () {
       switch (modalType) {
         case 'GitCommit':
-          return <GitCommitModal />
+          return <GitCommitView />
 
         case 'Prompt':
           return <Prompt {...this.props} />

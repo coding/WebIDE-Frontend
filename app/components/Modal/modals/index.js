@@ -1,2 +1,3 @@
 export Prompt from './Prompt'
-export CommandPalette from './CommandPalette'
+export {GitCommitView} from '../../Git';
+export {CommandPalette} from '../../../commands';

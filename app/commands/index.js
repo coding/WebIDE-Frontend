@@ -11,3 +11,5 @@ key.loadCommandHandlers(menuCommands);
 export const dispatchCommand = Keymapper.dispatchCommand;
 export const setScope = Keymapper.setScope;
 export const setContext = Keymapper.setContext;
+
+export {CommandPalette} from './CommandPalette'
