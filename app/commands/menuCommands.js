@@ -14,6 +14,10 @@ const [Modal, Git, Tab] = [
 
 export default {
   // 'app:settings':
+  'global:command_palette': c => {
+    Modal.showModal('CommandPalette')
+  },
+
   'file:new_file': c => {
     var node = c.context
     if (node.isDir) {
@@ -25,7 +29,6 @@ export default {
     var defaultValue = path + 'untitled'
 
     const createFile = (pathValue) => {
-      console.log('called');
       api.createFile(pathValue)
         .then(Modal.dismissModal)
         // if error, try again.

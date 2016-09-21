@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { connect } from 'react-redux';
 
 import GitCommitView from '../Git';
-import { Prompt } from './modals'
+import { Prompt, CommandPalette } from './modals'
 
 var ModalContainer, GitCommitModal;
 
@@ -42,6 +42,9 @@ class Modal extends Component {
 
         case 'Prompt':
           return <Prompt {...this.props} />
+
+        case 'CommandPalette':
+          return <CommandPalette {...this.props} />
 
         default:
           return content

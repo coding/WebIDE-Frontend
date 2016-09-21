@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port=8060 --progress --colors",
-    "build": "cross-env NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
+    "build": "./node_modules/cross-env/bin/cross-env.js NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
