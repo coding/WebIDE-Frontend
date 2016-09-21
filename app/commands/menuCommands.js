@@ -20,6 +20,7 @@ export default {
 
   'file:new_file': c => {
     var node = c.context
+    if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
     if (node.isDir) {
       var path = node.path
     } else {

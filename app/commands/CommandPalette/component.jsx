@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import getPaletteItems from './getPaletteItems'
 import cx from 'classnames'
 
+import {dispatchCommand} from '../lib/keymapper'
+
 class CommandPalette extends Component {
   constructor(props) {
     super(props)
@@ -15,14 +17,15 @@ class CommandPalette extends Component {
     return (
       <div className='modal-content'>
         <input type='text'
-          ref={r=>this.input=r}
+          autoFocus={true}
           onChange={ e=>this.setState({items: getPaletteItems(e.target.value)}) }
-          onKeyDown={this.onKeyDown}
+          onKeyDown={this._onKeyDown}
         />
         <ul className='command-palette-items'>
           {this.state.items.map( (item, itemIdx) =>
             <li className={cx({selected: itemIdx == this.state.selectedItemIndex})}
-              key={itemIdx}>{ this.renderItem(item, itemIdx) }</li>
+              onClick={e=>this._dispatchCommand(itemIdx)}
+              key={itemIdx} >{ this.renderItem(item, itemIdx) }</li>
           )}
         </ul>
       </div>
@@ -39,15 +42,27 @@ class CommandPalette extends Component {
     return itemElements
   }
 
-  onKeyDown = e => {
+  _dispatchCommand (itemIdx) {
+    var idx = itemIdx? itemIdx : this.state.selectedItemIndex
+    dispatchCommand(this.state.items[idx]['command'])
+  }
+
+  _onKeyDown = e => {
     var idx = this.state.selectedItemIndex
     var len = this.state.items.length
-    if (e.keyCode == 40 /* down */) {
-      if (++idx == len) idx = len - 1
-      this.setState({selectedItemIndex:idx})
-    } else if (e.keyCode == 38 /* up */) {
-      if (--idx < 0) idx = 0
-      this.setState({selectedItemIndex:idx})
+
+    switch (e.keyCode) {
+      case 13: /* enter */
+        this._dispatchCommand()
+        break
+      case 40: /* down */
+        if (++idx == len) idx = len - 1
+        this.setState({selectedItemIndex:idx})
+        break
+      case 38: /* up */
+        if (--idx < 0) idx = 0
+        this.setState({selectedItemIndex:idx})
+        break
     }
   }
 }
