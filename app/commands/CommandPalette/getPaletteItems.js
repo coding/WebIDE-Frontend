@@ -1,7 +1,4 @@
-export const commandPaletteItems = [
-  {name: 'File: New File', command: 'file:new_file'},
-  {name: 'Bookmarks: Select Next', command: 'file:new_file'}
-]
+import commandPaletteItems from './items'
 
 var queryCache = {}
 const getFromCache = (query) => {
@@ -15,7 +12,7 @@ const getFromCache = (query) => {
   return ['no_match', undefined]
 }
 
-export const getPaletteItems = (query) => {
+export default function getPaletteItems (query) {
   if (!query) return commandPaletteItems
   query = query.toLowerCase().replace(/\ /g, '')
 

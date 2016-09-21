@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getPaletteItems } from '../../../commands/commandPalette'
+import { getPaletteItems } from './commandPalette'
 import cx from 'classnames'
 
 class CommandPalette extends Component {
