@@ -17,6 +17,7 @@ class CommandPalette extends Component {
     return (
       <div className='modal-content'>
         <input type='text'
+          className='command-palette-input'
           autoFocus={true}
           onChange={ e=>this.setState({items: getPaletteItems(e.target.value)}) }
           onKeyDown={this._onKeyDown}

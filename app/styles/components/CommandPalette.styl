@@ -1,3 +1,7 @@
+.command-palette-input {
+  margin-tb: 10px;
+}
+
 .command-palette-items {
   i, em {font-style: normal;}
   em {
@@ -5,7 +9,11 @@
     color: $menu-background-color-active;
   }
 
-  li.selected {
-    background-color: gray(96%);
+  li {
+    padding: 10px 10px;
+    margin-lr: -10px;
+    &.selected {
+      background-color: gray(94%);
+    }
   }
 }
