@@ -1,5 +1,5 @@
 export default {
   projectName: '',
-  baseURL: 'http://localhost:8080',
+  baseURL: '' || window.location.origin,
   spaceKey: null
 }
