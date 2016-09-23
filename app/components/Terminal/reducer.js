@@ -1,3 +1,4 @@
+/* @flow weak */
 /*
 var AppDispatcher, EventEmitter, GridActions, StatusBarActions, Store, TabActions, TermConstants, _, _state, clearStatusBar, dnd, focusTabDeb, getActiveSection, getAnotherInSection, getNthTab, getSectionTabsByTab, getTabsBySection, nextTab, prevTab, removeSection, showCopyInfo, terms;
 

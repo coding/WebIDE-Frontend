@@ -1,3 +1,4 @@
+/* @flow weak */
 const createAction = (action) => {
   var resolve, reject
   var promise = new Promise((rs, rj)=>{resolve = rs; reject = rj})

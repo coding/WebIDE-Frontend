@@ -1,3 +1,4 @@
+/* @flow weak */
 import {
   WORKSPACE_FETCH_PUBLIC_KEY,
   WORKSPACE_FETCH_LIST,

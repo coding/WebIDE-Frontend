@@ -1,3 +1,4 @@
+/* @flow weak */
 export default function setSelectionRange(input, start, end) {
   if( input.setSelectionRange ) {
     input.focus();

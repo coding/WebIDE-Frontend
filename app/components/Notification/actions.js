@@ -1,3 +1,4 @@
+/* @flow weak */
 export const NOTIFICATION_ADD = 'NOTIFICATION_ADD';
 export function addNotification(_notification) {
   return dispatch => {

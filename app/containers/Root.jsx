@@ -1,3 +1,4 @@
+/* @flow weak */
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { connect } from 'react-redux';

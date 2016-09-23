@@ -1,3 +1,4 @@
+/* @flow weak */
 import * as api from '../api';
 import store from '../store';
 import * as ModalActions from '../components/Modal/actions';

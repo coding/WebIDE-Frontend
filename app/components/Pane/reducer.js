@@ -1,3 +1,4 @@
+/* @flow weak */
 import _ from 'lodash';
 import { PANE_INITIALIZE, PANE_UNSET_COVER, PANE_RESIZE } from './actions';
 

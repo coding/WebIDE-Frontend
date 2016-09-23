@@ -1,3 +1,4 @@
+/* @flow weak */
 import * as api from '../../api';
 import config from '../../config';
 

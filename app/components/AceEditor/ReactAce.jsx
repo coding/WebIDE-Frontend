@@ -1,3 +1,4 @@
+/* @flow weak */
 // Base on [react-ace](https://github.com/securingsincity/react-ace)
 // The MIT License (MIT)
 // Copyright (c) 2014 James Hrisho

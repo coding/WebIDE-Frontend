@@ -1,3 +1,4 @@
+/* @flow weak */
 import {
   MODAL_SHOW,
   MODAL_DISMISS,

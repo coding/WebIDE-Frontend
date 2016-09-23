@@ -1,3 +1,4 @@
+/* @flow weak */
 import { urlJoin, querystring as qs } from './url-helpers'
 import config from '../config'
 

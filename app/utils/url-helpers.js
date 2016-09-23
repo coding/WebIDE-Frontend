@@ -1,3 +1,4 @@
+/* @flow weak */
 import qs from 'querystring';
 import _ from 'lodash';
 

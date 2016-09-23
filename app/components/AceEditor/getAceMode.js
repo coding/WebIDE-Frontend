@@ -1,3 +1,4 @@
+/* @flow weak */
 import ace from 'brace';
 import 'brace/ext/modelist';
 var aceModes = ace.acequire('ace/ext/modelist');

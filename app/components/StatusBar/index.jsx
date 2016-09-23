@@ -1,3 +1,4 @@
+/* @flow weak */
 import React, { Component } from 'react';
 import cx from 'classnames';
 import {GitBranchWidget} from '../Git';

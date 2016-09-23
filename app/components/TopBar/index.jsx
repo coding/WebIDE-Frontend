@@ -1,3 +1,4 @@
+/* @flow weak */
 import React, { Component } from 'react';
 import Menu from '../Menu';
 import MenuBar from '../MenuBar';

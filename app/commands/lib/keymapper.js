@@ -1,3 +1,4 @@
+/* @flow weak */
 // http://stackoverflow.com/questions/7295508/javascript-capture-browser-shortcuts-ctrlt-n-w
 
 'use strict';

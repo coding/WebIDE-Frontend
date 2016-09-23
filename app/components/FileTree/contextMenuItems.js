@@ -1,3 +1,4 @@
+/* @flow weak */
 var dividItem = { name: '-' };
 var items = [
   {

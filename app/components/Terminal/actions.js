@@ -1,3 +1,4 @@
+/* @flow weak */
 export const TERM_CLOSE = 'TERM_CLOSE';
 export function close(tabId) {
   return {

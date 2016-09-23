@@ -1,3 +1,4 @@
+/* @flow weak */
 export const TAB_DISSOLVE_GROUP = 'TAB_DISSOLVE_GROUP'
 
 export const TAB_CREATE = 'TAB_CREATE'

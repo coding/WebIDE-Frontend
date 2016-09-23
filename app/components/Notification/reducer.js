@@ -1,3 +1,4 @@
+/* @flow weak */
 import _ from 'lodash';
 import {
   NOTIFICATION_ADD,

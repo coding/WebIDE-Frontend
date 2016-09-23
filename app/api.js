@@ -1,3 +1,4 @@
+/* @flow weak */
 import request from './utils/request';
 import messageClient from './utils/message-client';
 import messageSubscription from './utils/message-subscription';

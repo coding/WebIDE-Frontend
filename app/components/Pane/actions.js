@@ -1,3 +1,4 @@
+/* @flow weak */
 export const PANE_INITIALIZE = 'PANE_INITIALIZE'
 export const PANE_UNSET_COVER = 'PANE_UNSET_COVER'
 export const PANE_CONFIRM_RESIZE = 'PANE_CONFIRM_RESIZE'

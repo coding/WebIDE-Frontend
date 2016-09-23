@@ -1,3 +1,4 @@
+/* @flow weak */
 import Keymapper from './lib/keymapper';
 import keymaps from './keymaps';
 import menuCommands from './menuCommands';

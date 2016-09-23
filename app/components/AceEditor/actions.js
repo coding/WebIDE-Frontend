@@ -1,3 +1,4 @@
+/* @flow weak */
 export const EDITOR_REGISTER = 'EDITOR_REGISTER'
 export function registerEditor(id, editor, editorDOM) {
   return {

@@ -1,3 +1,4 @@
+/* @flow weak */
 import React, { Component, PropTypes } from 'react';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';

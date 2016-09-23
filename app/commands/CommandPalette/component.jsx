@@ -1,3 +1,4 @@
+/* @flow weak */
 import React, { Component } from 'react'
 import getPaletteItems from './getPaletteItems'
 import cx from 'classnames'

@@ -1,3 +1,4 @@
+/* @flow weak */
 // Unavailable shortcuts: shift / ctrl + (q|n|w|t|↹)
 export default {
   'cmd+s': 'file:save',

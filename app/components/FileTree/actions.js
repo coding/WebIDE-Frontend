@@ -1,3 +1,4 @@
+/* @flow weak */
 import {readFile, fetchPath} from '../../api'
 import * as TabActions from '../Tab/actions'
 

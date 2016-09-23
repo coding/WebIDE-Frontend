@@ -1,3 +1,4 @@
+/* @flow weak */
 import {Stomp} from 'stompjs/lib/stomp.js';
 import SockJS from 'sockjs-client';
 import config from '../config';

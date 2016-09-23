@@ -1,3 +1,4 @@
+/* @flow weak */
 // Hence the naming: http://askubuntu.com/questions/111144/are-terminal-and-shell-the-same
 import React, { Component, PropTypes } from 'react';
 import Terminal from 'sh.js';

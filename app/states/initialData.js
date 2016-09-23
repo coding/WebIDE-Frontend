@@ -1,3 +1,4 @@
+/* @flow weak */
 var commands = {
   alertNotComplete: function() {}, // {console.log('alertNotComplete');},
   openTerminal: function() {}, // {console.log('openTerminal');},
@@ -39,28 +40,29 @@ var menubar = [
       {
         name: 'Settings',
         icon: 'octicon octicon-gear',
-        command: commands.openSettings
+        command: 'app:settings'
       }
     ]
   }, {
     name: 'File',
     items: [
-      dividItem, {
+      {
         name: 'New File',
         icon: 'fa fa-file-o',
-        command: commands.newFile
+        command: 'file:new_file'
       }, {
         name: 'Save',
         icon: 'fa fa-floppy-o',
-        command: commands.save
+        shortcut: '⌘S',
+        command: 'file:save'
       }, {
         name: 'Delete',
         icon: 'fa fa-trash-o',
-        command: commands.remove
+        command: 'file:delete'
       }, dividItem, {
         name: 'Unsaved Files List',
         icon: 'fa fa-files-o',
-        command: commands.unsavedList
+        command: 'file:unsaved_files_list'
       }
     ]
   }, {
@@ -69,7 +71,7 @@ var menubar = [
       {
         name: 'Close Current Tab',
         icon: 'fa fa-times-circle-o',
-        command: commands.closeTab
+        command: 'view:close_tab'
       }, {
         name: 'Panels',
         icon: 'fa fa-toggle-on',
@@ -77,13 +79,12 @@ var menubar = [
           {
             name: 'Status Bar',
             icon: ['fa fa-check j-check', 'fa fa-spinner'],
-            command: commands.toggleStatusBar,
-            getIcons: commands.getStatusBarIcons
+            command: 'view:toggle_statusbar'
           }, {
             name: 'Files Tree Panel',
             icon: ['fa fa-check j-check', 'fa fa-folder-o'],
-            command: commands.toggleFileTree,
-            getIcons: commands.getFileTreeIcons
+            command: 'view:toggle_filetree'
+
           }
         ]
       }
@@ -95,65 +96,65 @@ var menubar = [
       {
         name: 'Commit',
         icon: 'octicon octicon-git-commit',
-        command: commands.commit
+        command: 'git:commit'
       }, {
         name: 'Commit And Push...',
         icon: 'octicon octicon-git-commit',
-        command: commands.commitAndPush
+        command: 'git:commit_and_push'
       }, dividItem, {
         name: 'Pull',
         icon: 'octicon octicon-repo-pull',
-        command: commands.pull
+        command: 'git:pull'
       }, {
         name: 'Push',
         icon: 'octicon octicon-repo-push',
-        command: commands.push
+        command: 'git:push'
       }, dividItem, {
         name: 'Branches...',
         icon: 'octicon octicon-git-branch',
-        command: commands.openBranchMenu
+        command: 'git:branch'
       }, {
         name: 'Tag...',
         icon: 'octicon',
-        command: commands.openTag
+        command: 'git:tag'
       }, {
         name: 'Merge Changes...',
         icon: 'octicon octicon-git-merge',
-        command: commands.openGitMerge
+        command: 'git:merge'
       }, dividItem, {
         name: 'Resolve Conflicts...',
         icon: 'octicon',
-        command: commands.openGitConflicts
+        command: 'git:resolve_conflicts'
       }, dividItem, {
         name: 'Stash Changes...',
         icon: 'octicon ',
-        command: commands.openStash
+        command: 'git:stash'
       }, {
         name: 'Unstash Changes...',
         icon: 'octicon ',
-        command: commands.openUnstash
+        command: 'git:unstash'
       }, {
         name: 'Reset HEAD...',
         icon: 'octicon ',
-        command: commands.openReset
+        command: 'git:reset_head'
       }, dividItem, {
         name: 'Rebase...',
         icon: 'octicon ',
-        command: commands.openRebase
+        command: 'git:rebase:start'
       }, {
         name: 'Abort Rebasing',
         icon: 'octicon ',
-        command: commands.operateRebase.bind(null, 'ABORT'),
+        command: 'git:rebase:abort',
         checkDisable: commands.checkRebaseState
       }, {
         name: 'Continue Rebasing',
         icon: 'octicon ',
-        command: commands.operateRebase.bind(null, 'CONTINUE'),
+        command: 'git:rebase:continue',
         checkDisable: commands.checkRebaseState
       }, {
         name: 'Skip Commit in Rebasing',
         icon: 'octicon ',
-        command: commands.operateRebase.bind(null, 'SKIP'),
+        command: 'git:rebase:skip_commit',
         checkDisable: commands.checkRebaseState
       }
     ]
@@ -167,25 +168,21 @@ var menubar = [
           {
             name: 'New Terminal',
             icon: 'octicon octicon-terminal',
-            command: commands.openTerminal
+            command: 'tools:terminal:new_terminal'
           }, {
             name: 'Clear Buffer',
             icon: 'fa fa-eraser',
-            command: commands.clearBuffer
+            command: 'tools:terminal:clear_buffer'
           }, {
             name: 'Clear Scrollback Buffer',
             icon: 'fa',
-            command: commands.clearScrollbackBuffer
+            command: 'tools:terminal:clear_scrollback_buffer'
           }, {
             name: 'Reset',
             icon: 'fa',
-            command: commands.resetTerm
+            command: 'tools:terminal:reset'
           }
         ]
-      }, {
-        name: 'Generate Access Url',
-        icon: 'octicon octicon-globe',
-        command: commands.toggleAccessUrl
       }
     ]
   }, {
