@@ -12,6 +12,7 @@ class Term {
     this.cols = cols;
     this.rows = rows;
     this.cwd = WORKSPACE_PATH;
+    this.spaceKey = config.spaceKey;
   }
 }
 
@@ -113,7 +114,6 @@ class TerminalClient {
       cols: term.cols,
       rows: term.rows
     });
-    termJSON.spaceKey = config.spaceKey
     socket.emit('term.open', termJSON);
   }
 
