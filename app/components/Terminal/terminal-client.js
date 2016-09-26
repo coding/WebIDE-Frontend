@@ -113,6 +113,7 @@ class TerminalClient {
       cols: term.cols,
       rows: term.rows
     });
+    termJSON.spaceKey = config.spaceKey
     socket.emit('term.open', termJSON);
   }
 
