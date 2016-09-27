@@ -22,7 +22,7 @@ function interceptResponse(response) {
   var contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/json')) {
     return response.json().then( json => {
-      if (!response.ok) throw json.msg
+      if (!response.ok) throw {error:true, ...json}
       return json
     })
   } else {

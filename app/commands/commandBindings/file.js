@@ -1,5 +1,6 @@
 /* @flow weak */
 import store from '../../store'
+import { path as pathUtil } from '../../utils'
 const { getState, dispatch: $d } = store
 
 import * as api from '../../api'
@@ -7,24 +8,34 @@ import * as Modal from '../../components/Modal/actions'
 import * as Git from '../../components/Git/actions'
 import * as Tab from '../../components/Tab/actions'
 
+const nodeToNearestDirPath = (node) => {
+  if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
+  if (node.isDir) {
+    var path = node.path
+  } else {
+    var path = node.parent.path
+  }
+  return path == '/'? '/' : path + '/'
+}
+
+const nodeToParentDirPath = (node) => {
+  var pathSplitted = node.path.split('/')
+  if (pathSplitted.pop() == '') { pathSplitted.pop() }
+  return pathSplitted.join('/')+'/'
+}
+
 export default {
   'file:new_file': c => {
     var node = c.context
-    if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
-    if (node.isDir) {
-      var path = node.path
-    } else {
-      var path = node.parent.path
-    }
-    if (path !== '/') path += '/'
-    var defaultValue = path + 'untitled'
+    var path = nodeToNearestDirPath(node)
+    var defaultValue = pathUtil.join(path, 'untitled')
 
     const createFile = (pathValue) => {
       api.createFile(pathValue)
         .then( _=>$d( Modal.dismissModal() ))
         // if error, try again.
-        .catch( errMsg=>
-          $d( Modal.updateModal({statusMessage:errMsg}) ).then(createFile)
+        .catch( err =>
+          $d( Modal.updateModal({statusMessage:err.msg}) ).then(createFile)
         )
     }
 

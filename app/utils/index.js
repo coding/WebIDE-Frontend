@@ -1,0 +1,1 @@
+export path from './path'
