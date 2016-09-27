@@ -11,7 +11,7 @@ import WindowPaneView from './WindowPaneView';
 import FileTree from '../components/FileTree';
 import Utilities from './Utilities';
 
-import {setupWorkspace} from '../api'
+import api from '../api'
 import config from '../config'
 
 var editorPaneConfig = {
@@ -66,7 +66,7 @@ class IDE extends Component {
   }
 
   componentDidMount() {
-    setupWorkspace().then(_config => {
+    api.setupWorkspace().then(_config => {
       Object.assign(config, _config);
     });
   }

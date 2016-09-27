@@ -4,7 +4,6 @@ import { Provider } from 'react-redux'
 import { connect } from 'react-redux';
 
 import store from '../store'
-import commands from '../commands'
 import IDE from './IDE.jsx'
 import WorkspaceList from '../components/Workspace';
 

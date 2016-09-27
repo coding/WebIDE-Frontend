@@ -1,5 +1,5 @@
 /* @flow weak */
-import * as api from '../../api';
+import api from '../../api';
 import { notify } from '../Notification/actions';
 import { dismissModal } from '../Modal/actions';
 

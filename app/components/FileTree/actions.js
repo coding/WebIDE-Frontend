@@ -1,5 +1,6 @@
 /* @flow weak */
-import {readFile, fetchPath} from '../../api'
+import _ from 'lodash'
+import api from '../../api'
 import * as TabActions from '../Tab/actions'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
@@ -15,11 +16,11 @@ export function selectNode(node, multiSelect=false) {
 export function openNode(node, shoudlBeFolded=null, deep=false) {
   return (dispatch, getState) => {
     if (node.isDir) {
-      fetchPath(node.path)
+      api.fetchPath(node.path)
         .then( data => dispatch(loadNodeData(data)) )
         .then( ()=> dispatch(toggleNodeFold(node, shoudlBeFolded, deep)) );
     } else {
-      readFile(node.path)
+      api.readFile(node.path)
         .then( data => {
           // get the last active group of type 'editor'
           var lastActiveEditorTabGroup, lastActiveOrder, TabState;
@@ -68,6 +69,6 @@ export function loadNodeData(data) {
 
 export function initializeFileTree() {
   return (dispatch, getState) => {
-    fetchPath('/').then( data => dispatch(loadNodeData(data)) )
+    api.fetchPath('/').then( data => dispatch(loadNodeData(data)) )
   }
 }

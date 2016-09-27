@@ -1,5 +1,5 @@
 /* @flow weak */
-import * as api from '../../api';
+import api from '../../api';
 import config from '../../config';
 
 export const WORKSPACE_FETCH_PUBLIC_KEY = 'WORKSPACE_FETCH_PUBLIC_KEY';

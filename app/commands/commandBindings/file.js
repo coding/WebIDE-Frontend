@@ -3,7 +3,7 @@ import store from '../../store'
 import { path as pathUtil } from '../../utils'
 const { getState, dispatch: $d } = store
 
-import * as api from '../../api'
+import api from '../../api'
 import * as Modal from '../../components/Modal/actions'
 import * as Git from '../../components/Git/actions'
 import * as Tab from '../../components/Tab/actions'
