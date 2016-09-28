@@ -1,5 +1,5 @@
 /* @flow weak */
-import request from '../utils/request'
+import { request } from '../utils'
 import config from '../config'
 
 export function fetchPath(path, other, group) {

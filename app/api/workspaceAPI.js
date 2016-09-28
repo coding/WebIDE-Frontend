@@ -1,6 +1,6 @@
 /* @flow weak */
 import config from '../config'
-import request from '../utils/request'
+import { request } from '../utils'
 import Client from './websocketClient'
 
 var connectedResolve

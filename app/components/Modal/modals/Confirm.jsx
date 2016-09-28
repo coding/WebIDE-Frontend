@@ -1,7 +1,7 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import setSelectionRange from '../../../utils/setSelectionRange'
+import { setSelectionRange } from '../../../utils'
 
 class Confirm extends Component {
   constructor (props) {
