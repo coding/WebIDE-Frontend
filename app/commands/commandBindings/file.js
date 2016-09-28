@@ -1,7 +1,6 @@
 /* @flow weak */
 import { bindActionCreators } from 'redux'
-import store from '../../store'
-const { getState, dispatch } = store
+import store, { getState, dispatch } from '../../store'
 import { path as pathUtil } from '../../utils'
 import api from '../../api'
 import * as _Modal from '../../components/Modal/actions'

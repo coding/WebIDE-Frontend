@@ -1,5 +1,5 @@
 /* @flow weak */
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
 import PaneReducerGenerator from './components/Pane/reducer'
@@ -25,4 +25,10 @@ const reducers = combineReducers({
   WorkspaceState: WorkspaceReducer
 })
 
-export default createStore(reducers, applyMiddleware(thunkMiddleware))
+const store = createStore(reducers, compose(
+  applyMiddleware(thunkMiddleware),
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+))
+export default store
+export const getState = store.getState
+export const dispatch = store.dispatch

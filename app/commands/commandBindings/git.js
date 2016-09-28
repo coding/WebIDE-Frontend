@@ -1,7 +1,5 @@
 /* @flow weak */
-import store from '../../store'
-const { getState, dispatch: $d } = store
-
+import store, { dispatch as $d } from '../../store'
 import api from '../../api'
 import * as Git from '../../components/Git/actions'
 import * as Modal from '../../components/Modal/actions'
