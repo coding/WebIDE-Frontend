@@ -14,15 +14,14 @@ const defaultFetchOptions = {
   method: 'GET',
   mode: 'cors',
   credentials: 'include',
-  redirect: 'manual',
+  redirect: 'manual'
 }
 
-
-function interceptResponse(response) {
+function interceptResponse (response) {
   var contentType = response.headers.get('Content-Type')
   if (contentType && contentType.includes('application/json')) {
-    return response.json().then( json => {
-      if (!response.ok) throw {error:true, ...json}
+    return response.json().then(json => {
+      if (!response.ok) throw {error: true, ...json}
       return json
     })
   } else {
@@ -31,9 +30,9 @@ function interceptResponse(response) {
   }
 }
 
-function request(_options) {
-  var options = Object.assign({}, defaultRequestOptions, _options);
-  var queryString, fetchOptions;
+function request (_options) {
+  var options = Object.assign({}, defaultRequestOptions, _options)
+  var queryString, fetchOptions
 
   if (options.json) {
     options.headers['Content-Type'] = 'application/json'
@@ -46,8 +45,8 @@ function request(_options) {
   }
 
   if (options.body) {
-    options.body = (function(){
-      switch(options.headers['Content-Type']) {
+    options.body = (function () {
+      switch (options.headers['Content-Type']) {
         case 'application/json':
           return JSON.parse(options.body)
         case 'application/x-www-form-urlencoded':
@@ -61,15 +60,14 @@ function request(_options) {
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},
-    body: options.body,
+    body: options.body
   })
 
-  var url = urlJoin(options.baseURL, options.url) + (options.qs?'?':'') + qs.stringify(options.qs)
+  var url = urlJoin(options.baseURL, options.url) + (options.qs ? '?' : '') + qs.stringify(options.qs)
   return fetch(url, fetchOptions).then(interceptResponse)
 }
 
-
-function parseMethodArgs(url, data, METHOD) {
+function parseMethodArgs (url, data, METHOD) {
   var options = {}
   options.method = METHOD
   if (typeof url === 'object') {
@@ -112,6 +110,5 @@ request.patch = function (url, data) {
 request.delete = function (url, data) {
   return request(parseMethodArgs(url, data, 'DELETE'))
 }
-
 
 export default request

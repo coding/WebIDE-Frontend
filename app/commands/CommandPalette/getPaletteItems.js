@@ -4,11 +4,11 @@ import commandPaletteItems from './items'
 var queryCache = {}
 const getFromCache = (query) => {
   if (Object.keys(queryCache).length > 10000) queryCache = {}
-  if ( queryCache.hasOwnProperty(query) ) {
+  if (queryCache.hasOwnProperty(query)) {
     return ['exact_match', queryCache[query]]
   }
-  if ( queryCache.hasOwnProperty(query.slice(0,-1)) ) {
-    return ['last_match', queryCache[query.slice(0,-1)]]
+  if (queryCache.hasOwnProperty(query.slice(0, -1))) {
+    return ['last_match', queryCache[query.slice(0, -1)]]
   }
   return ['no_match', undefined]
 }
@@ -27,14 +27,14 @@ export default function getPaletteItems (query) {
       itemsToFilter = commandPaletteItems
   }
 
-  var filteredItems = itemsToFilter.reduce( (filteredItems, item) => {
+  var filteredItems = itemsToFilter.reduce((filteredItems, item) => {
     let itemNameChars = item.name.toLowerCase().split('')
     let queryChars = query.split('')
 
     var missed = false
-    let charIndexes = queryChars.reduce( (charIndexes, char) => {
+    let charIndexes = queryChars.reduce((charIndexes, char) => {
       let begin = (charIndexes.length)
-      ? charIndexes[charIndexes.length-1] + 1
+      ? charIndexes[charIndexes.length - 1] + 1
       : begin = 0
 
       let indexOfChar = itemNameChars.slice(begin).indexOf(char)
@@ -48,7 +48,7 @@ export default function getPaletteItems (query) {
       return charIndexes
     }, [])
 
-    if (!missed) filteredItems.push({...item, em:charIndexes})
+    if (!missed) filteredItems.push({...item, em: charIndexes})
     return filteredItems
   }, [])
 

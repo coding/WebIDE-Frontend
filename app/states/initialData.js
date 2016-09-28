@@ -1,38 +1,38 @@
 /* @flow weak */
 var commands = {
-  alertNotComplete: function() {}, // {console.log('alertNotComplete');},
-  openTerminal: function() {}, // {console.log('openTerminal');},
-  toggleAccessUrl: function() {}, // {console.log('toggleAccessUrl');},
-  openSettings: function() {}, // {console.log('openSettings');},
-  openBranchMenu: function() {}, // {console.log('openBranchMenu');},
-  openGitMerge: function() {}, // {console.log('openGitMerge');},
-  openGitConflicts: function() {}, // {console.log('openGitConflicts');},
-  openStash: function() {}, // {console.log('openStash');},
-  openUnstash: function() {}, // {console.log('openUnstash');},
-  openRebase: function() {}, // {console.log('openRebase');},
-  save: function() {}, // {console.log('save');},
-  remove: function() {}, // {console.log('remove');},
-  closeTab: function() {}, // {console.log('closeTab');},
-  toggleStatusBar: function() {}, // {console.log('toggleStatusBar');},
-  toggleFileTree: function() {}, // {console.log('toggleFileTree');},
-  pull: function() {}, // {console.log('pull');},
-  push: function() {}, // {console.log('push');},
-  commit: function() {}, // {console.log('commit');},
-  commitAndPush: function() {}, // {console.log('commitAndPush');},
-  getFileTreeIcons: function() {}, // {console.log('getFileTreeIcons');},
-  getStatusBarIcons: function() {}, // {console.log('getStatusBarIcons');},
-  getRebaseState: function() {}, // {console.log('getRebaseState');},
-  checkRebaseState: function() {}, // {console.log('checkRebaseState');},
-  operateRebase: function() {}, // {console.log('operateRebase');},
-  openTag: function() {}, // {console.log('openTag');},
-  openReset: function() {}, // {console.log('openReset');},
-  clearBuffer: function() {}, // {console.log('clearBuffer');},
-  clearScrollbackBuffer: function() {}, // {console.log('clearScrollbackBuffer');},
-  resetTerm: function() {}, // {console.log('resetTerm');},
-  unsavedList: function() {}, // {console.log('unsavedList');},
-  newFile: function() {}, // {console.log('newFile');}
-};
-var dividItem = { name: '-' };
+  alertNotComplete: function () {}, // {console.log('alertNotComplete');},
+  openTerminal: function () {}, // {console.log('openTerminal');},
+  toggleAccessUrl: function () {}, // {console.log('toggleAccessUrl');},
+  openSettings: function () {}, // {console.log('openSettings');},
+  openBranchMenu: function () {}, // {console.log('openBranchMenu');},
+  openGitMerge: function () {}, // {console.log('openGitMerge');},
+  openGitConflicts: function () {}, // {console.log('openGitConflicts');},
+  openStash: function () {}, // {console.log('openStash');},
+  openUnstash: function () {}, // {console.log('openUnstash');},
+  openRebase: function () {}, // {console.log('openRebase');},
+  save: function () {}, // {console.log('save');},
+  remove: function () {}, // {console.log('remove');},
+  closeTab: function () {}, // {console.log('closeTab');},
+  toggleStatusBar: function () {}, // {console.log('toggleStatusBar');},
+  toggleFileTree: function () {}, // {console.log('toggleFileTree');},
+  pull: function () {}, // {console.log('pull');},
+  push: function () {}, // {console.log('push');},
+  commit: function () {}, // {console.log('commit');},
+  commitAndPush: function () {}, // {console.log('commitAndPush');},
+  getFileTreeIcons: function () {}, // {console.log('getFileTreeIcons');},
+  getStatusBarIcons: function () {}, // {console.log('getStatusBarIcons');},
+  getRebaseState: function () {}, // {console.log('getRebaseState');},
+  checkRebaseState: function () {}, // {console.log('checkRebaseState');},
+  operateRebase: function () {}, // {console.log('operateRebase');},
+  openTag: function () {}, // {console.log('openTag');},
+  openReset: function () {}, // {console.log('openReset');},
+  clearBuffer: function () {}, // {console.log('clearBuffer');},
+  clearScrollbackBuffer: function () {}, // {console.log('clearScrollbackBuffer');},
+  resetTerm: function () {}, // {console.log('resetTerm');},
+  unsavedList: function () {}, // {console.log('unsavedList');},
+  newFile: function () {} // {console.log('newFile');}
+}
+var dividItem = { name: '-' }
 var menubar = [
   {
     name: '였',
@@ -199,6 +199,6 @@ var menubar = [
       }
     ]
   }
-];
+]
 
-export const getMenuItems = () => menubar;
+export const getMenuItems = () => menubar

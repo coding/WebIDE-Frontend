@@ -2,15 +2,15 @@
 import { request } from '../utils'
 import config from '../config'
 
-export function fetchPath(path, other, group) {
+export function fetchPath (path, other, group) {
   return request.get(`/workspaces/${config.spaceKey}/files`, {
     path: path,
     other: true,
     group: true
-  });
+  })
 }
 
-export function writeFile(path, content, base64) {
+export function writeFile (path, content, base64) {
   return request({
     method: 'PUT',
     url: `/workspaces/${config.spaceKey}/files`,
@@ -24,14 +24,14 @@ export function writeFile(path, content, base64) {
   })
 }
 
-export function readFile(path) {
+export function readFile (path) {
   return request.get(`/workspaces/${config.spaceKey}/file/read`, {
     path: path,
     base64: false
-  });
+  })
 }
 
-export function createFile(path, content, base64) {
+export function createFile (path, content, base64) {
   return request({
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/files`,
@@ -45,7 +45,7 @@ export function createFile(path, content, base64) {
   })
 }
 
-export function moveFile(from, to, force=false) {
+export function moveFile (from, to, force = false) {
   return request({
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/move`,
@@ -57,7 +57,7 @@ export function moveFile(from, to, force=false) {
   })
 }
 
-export function deleteFile(path) {
+export function deleteFile (path) {
   return request({
     method: 'DELETE',
     url: `/workspaces/${config.spaceKey}/files`,

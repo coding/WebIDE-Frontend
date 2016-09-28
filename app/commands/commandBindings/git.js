@@ -8,15 +8,15 @@ import * as Modal from '../../components/Modal/actions'
 
 export default {
   'git:commit': c => {
-    api.gitStatus().then( ({files, clean}) => {
-      $d( Git.updateStatus({files, isClean: clean}) )
-    }).then( () =>
-      $d( Modal.showModal('GitCommit', 'HelloYo') )
+    api.gitStatus().then(({files, clean}) => {
+      $d(Git.updateStatus({files, isClean: clean}))
+    }).then(() =>
+      $d(Modal.showModal('GitCommit', 'HelloYo'))
     )
   },
 
-  'git:pull': c => $d( Git.pull() ),
-  'git:push': c => $d( Git.push() ),
+  'git:pull': c => $d(Git.pull()),
+  'git:push': c => $d(Git.push())
 
   // 'git:commit_and_push':
   // 'git:branch':

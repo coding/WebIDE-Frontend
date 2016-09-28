@@ -1,6 +1,6 @@
 /* @flow weak */
-import _ from 'lodash';
-import { PANE_INITIALIZE, PANE_UNSET_COVER, PANE_RESIZE } from './actions';
+import _ from 'lodash'
+import { PANE_INITIALIZE, PANE_UNSET_COVER, PANE_RESIZE } from './actions'
 
 // jailbreakLonelyView 是为了避免无限级嵌套的 views.length === 1 出现
 // i.e. {views: [{ views: [ {views: [ content ]} ]}]}
@@ -11,106 +11,105 @@ import { PANE_INITIALIZE, PANE_UNSET_COVER, PANE_RESIZE } from './actions';
 const jailbreakLonelyView = (view, originalWrapper) => {
   if (view.views.length === 0 || view.views.length > 1) {
     if (originalWrapper) {
-      let _views = view;
-      view = originalWrapper;
-      view.views = _views.views;
+      let _views = view
+      view = originalWrapper
+      view.views = _views.views
     }
-    return view;
+    return view
   } else {
-    let lonelyItem = view.views[0];
-    if ( !Array.isArray(lonelyItem.views) ) { // is plain content
+    let lonelyItem = view.views[0]
+    if (!Array.isArray(lonelyItem.views)) { // is plain content
       if (originalWrapper) {
-        let _views = view;
-        view = originalWrapper;
-        view.views = _views.views;
+        let _views = view
+        view = originalWrapper
+        view.views = _views.views
       }
-      return view;
+      return view
     }
-    return jailbreakLonelyView(lonelyItem, view);
+    return jailbreakLonelyView(lonelyItem, view)
   }
 }
 
 const normalizeState = (view, parentView, rootView) => {
-  var isRootView = (!parentView) ? true : false;
-  var retView = {};
-  if (isRootView) rootView = retView;
+  var isRootView = (!parentView) ? true : false
+  var retView = {}
+  if (isRootView) rootView = retView
 
-  view = jailbreakLonelyView(view);
+  view = jailbreakLonelyView(view)
 
   if (!Array.isArray(view.views)) {
-    retView.views = [view];
+    retView.views = [view]
   } else {
-    retView.views = view.views.map( _view => {
-      if (!Array.isArray(_view.views)) return _view;
-      return normalizeState(_view, retView, rootView);
-    });
+    retView.views = view.views.map(_view => {
+      if (!Array.isArray(_view.views)) return _view
+      return normalizeState(_view, retView, rootView)
+    })
   }
 
-  retView.id = view.id || _.uniqueId('pane_view_');
-  retView.parent = (isRootView) ? null : parentView;
-  retView.flexDirection = view.flexDirection || 'row';
-  retView.size = view.size || 100;
-  retView.display = (view.display === 'none') ? 'none' : 'block';
+  retView.id = view.id || _.uniqueId('pane_view_')
+  retView.parent = (isRootView) ? null : parentView
+  retView.flexDirection = view.flexDirection || 'row'
+  retView.size = view.size || 100
+  retView.display = (view.display === 'none') ? 'none' : 'block'
 
-  if (!rootView.directories) rootView.directories = {};
-  rootView.directories[retView.id] = retView;
+  if (!rootView.directories) rootView.directories = {}
+  rootView.directories[retView.id] = retView
 
-  return retView;
+  return retView
 }
 
-const findViewById = (state, id) => state.directories[id];
+const findViewById = (state, id) => state.directories[id]
 
-const debounced = _.debounce( function (func) { func() }, 50);
+const debounced = _.debounce(function (func) { func() }, 50)
 
 export default function (scope) {
-
-  return function PaneReducer(state={}, action) {
-    if (action.scope !== scope) return state;
+  return function PaneReducer (state = {}, action) {
+    if (action.scope !== scope) return state
 
     switch (action.type) {
       case PANE_INITIALIZE:
-        return normalizeState(action.config);
+        return normalizeState(action.config)
 
       case PANE_RESIZE:
-        let section_A = state.directories[action.sectionId];
-        let parent = section_A.parent;
-        let section_B = parent.views[parent.views.indexOf(section_A)+1];
-        let section_A_Dom = document.getElementById(section_A.id);
-        let section_B_Dom = document.getElementById(section_B.id);
-        var r, rA, rB;
+        let section_A = state.directories[action.sectionId]
+        let parent = section_A.parent
+        let section_B = parent.views[parent.views.indexOf(section_A) + 1]
+        let section_A_Dom = document.getElementById(section_A.id)
+        let section_B_Dom = document.getElementById(section_B.id)
+        var r, rA, rB
         if (parent.flexDirection === 'column') {
-          r = action.dY;
-          rA = section_A_Dom.offsetHeight;
-          rB = section_B_Dom.offsetHeight;
+          r = action.dY
+          rA = section_A_Dom.offsetHeight
+          rB = section_B_Dom.offsetHeight
         } else {
-          r = action.dX;
-          rA = section_A_Dom.offsetWidth;
-          rB = section_B_Dom.offsetWidth;
+          r = action.dX
+          rA = section_A_Dom.offsetWidth
+          rB = section_B_Dom.offsetWidth
         }
-        section_A.size = section_A.size * (rA - r) / rA;
-        section_B.size = section_B.size * (rB + r) / rB;
+        section_A.size = section_A.size * (rA - r) / rA
+        section_B.size = section_B.size * (rB + r) / rB
 
-        section_A_Dom.style.flexGrow = section_A.size;
-        section_B_Dom.style.flexGrow = section_B.size;
+        section_A_Dom.style.flexGrow = section_A.size
+        section_B_Dom.style.flexGrow = section_B.size
 
         // @coupled: trigger resize of children ace editor
-        debounced( function(){
+        debounced(function () {
           section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
             editorDOM => editorDOM.$ace_editor.resize()
           )
           section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
             editorDOM => editorDOM.$ace_editor.resize()
           )
-        } );
+        })
 
-        return state;
+        return state
 
       case 'PANE_CONFIRM_RESIZE':
-        return normalizeState(state);
+        return normalizeState(state)
 
       default:
         return state
     }
-  };
+  }
 }
 

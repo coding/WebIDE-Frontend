@@ -25,14 +25,13 @@ class Confirm extends Component {
         : null }
 
         <div className='footer'>
-          <button className='btn btn-primary' onClick={e=>meta.resolve(true)}>{content.okText||'OK'}</button>
-          <button className='btn btn-default' onClick={e=>meta.resolve(false)}>Cancel</button>
+          <button className='btn btn-primary' onClick={e => meta.resolve(true)}>{content.okText || 'OK'}</button>
+          <button className='btn btn-default' onClick={e => meta.resolve(false)}>Cancel</button>
         </div>
       </div>
     )
   }
 }
-
 
 Confirm = connect(
   state => state.ModalState

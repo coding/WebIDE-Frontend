@@ -1,5 +1,5 @@
 /* @flow weak */
-var dividItem = { name: '-' };
+var dividItem = { name: '-' }
 var items = [
   {
     name: 'New File',
@@ -14,6 +14,6 @@ var items = [
     icon: '',
     command: 'file:rename'
   }
-];
+]
 
-export default items;
+export default items

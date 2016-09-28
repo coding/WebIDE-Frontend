@@ -1,20 +1,19 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
 import store from '../store'
 import IDE from './IDE.jsx'
-import WorkspaceList from '../components/Workspace';
-
+import WorkspaceList from '../components/Workspace'
 
 class Root extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
-    const {selectingWorkspace} = this.props;
+  render () {
+    const {selectingWorkspace} = this.props
     if (window.isSpaceKeySet) return <IDE />
     if (selectingWorkspace) return <WorkspaceList />
     return <IDE />
@@ -23,8 +22,8 @@ class Root extends Component {
 
 Root = connect(
   state => state.WorkspaceState
-)(Root);
+)(Root)
 
 export default (props) => {
-  return <Provider store={store}><Root id='root-container'/></Provider>
+  return <Provider store={store}><Root id='root-container' /></Provider>
 }

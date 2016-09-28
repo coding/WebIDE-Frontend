@@ -1,6 +1,6 @@
-const webpack = require('webpack');
+const webpack = require('webpack')
 
-module.exports = function(options) {
+module.exports = function (options) {
   return {
     devServer: {
       historyApiFallback: true,
@@ -15,5 +15,5 @@ module.exports = function(options) {
         multiStep: true
       })
     ]
-  };
+  }
 }

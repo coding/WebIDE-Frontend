@@ -1,5 +1,5 @@
 /* @flow weak */
-var dividItem = { name: '-' };
+var dividItem = { name: '-' }
 var menuBarItems = [
   {
     name: '',
@@ -61,6 +61,6 @@ var menuBarItems = [
       }
     ]
   }
-];
+]
 
-export default menuBarItems;
+export default menuBarItems

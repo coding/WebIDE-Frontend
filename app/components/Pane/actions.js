@@ -7,12 +7,12 @@ export const PANE_SET_COVER = 'PANE_SET_COVER'
 export function setCover (scope) {
   return {
     type: PANE_SET_COVER,
-    scope: scope,
+    scope: scope
   }
 }
 
 export const PANE_RESIZE = 'PANE_RESIZE'
-export function resize(scope, sectionId, dX, dY) {
+export function resize (scope, sectionId, dX, dY) {
   return {
     type: PANE_RESIZE,
     sectionId: sectionId,

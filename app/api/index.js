@@ -5,5 +5,5 @@ import * as workspaceAPI from './workspaceAPI'
 export default {
   ...fileAPI,
   ...gitAPI,
-  ...workspaceAPI,
+  ...workspaceAPI
 }

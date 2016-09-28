@@ -1,7 +1,7 @@
 /* @flow weak */
-import React, { Component } from 'react';
-import ModalContainer from '../components/Modal';
-import Notification from '../components/Notification';
+import React, { Component } from 'react'
+import ModalContainer from '../components/Modal'
+import Notification from '../components/Notification'
 
 const Utilities = () => {
   return (
@@ -9,7 +9,7 @@ const Utilities = () => {
       <ModalContainer />
       <Notification />
     </div>
-  );
+  )
 }
 
-export default Utilities;
+export default Utilities

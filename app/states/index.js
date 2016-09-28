@@ -1,8 +1,8 @@
 /* @flow weak */
-import { createStore } from 'redux';
-import reducers from '../reducers';
+import { createStore } from 'redux'
+import reducers from '../reducers'
 
 var store = createStore(reducers)
-console.log(store);
+console.log(store)
 
-export default store;
+export default store

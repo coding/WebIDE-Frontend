@@ -3,15 +3,15 @@ import {
   MODAL_SHOW,
   MODAL_DISMISS,
   MODAL_UPDATE
-} from './actions';
+} from './actions'
 
 const _state = {
   isActive: false,
   showBackdrop: false,
-  position: 'top',
-};
+  position: 'top'
+}
 
-export default function ModalReducer (state=_state, action) {
+export default function ModalReducer (state = _state, action) {
   switch (action.type) {
 
     case MODAL_SHOW:
