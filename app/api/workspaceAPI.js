@@ -1,15 +1,16 @@
 /* @flow weak */
 import config from '../config'
 import request from '../utils/request'
-import messageClient from '../utils/message-client'
-import messageSubscription from '../utils/message-subscription'
+import Client from './websocketClient'
 
+var connectedResolve
+export const websocketConnectedPromise = new Promise((rs, rj) => connectedResolve = rs)
 export function setupWorkspace() {
   return request.post(`/workspaces/${config.spaceKey}/setup`).then( ({spaceKey, projectName, projectIconUrl}) => {
     // 1.
     var websocketPromise = new Promise(function(resolve, reject) {
-      messageClient.connect(function() {
-        config.wsClient = this
+      Client.connect(function() {
+        connectedResolve(this)
         resolve(true)
       })
     })

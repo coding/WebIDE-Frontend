@@ -7,19 +7,22 @@ import cx from 'classnames';
 import ContextMenu from '../ContextMenu';
 import * as FileTreeActions from './actions';
 import FileTreeContextMenuItems from './contextMenuItems';
+import subscribeToFileChange from './subscribeToFileChange'
 
 
 class FileTree extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      isContextMenuActive: false,
-      contextMenuPos: {x:0, y:0},
-      contextNode: null
-    }
+  }
+
+  state = {
+    isContextMenuActive: false,
+    contextMenuPos: {x:0, y:0},
+    contextNode: null
   }
 
   componentDidMount() {
+    subscribeToFileChange()
     this.props.initializeFileTree();
   }
 
@@ -34,7 +37,7 @@ class FileTree extends Component {
           isActive={isContextMenuActive}
           pos={contextMenuPos}
           context={this.state.contextNode}
-          deactivate={this.setState.bind(this, {isContextMenuActive: false}, null)} />
+          deactivate={this.setState.bind(this, {isContextMenuActive: false})} />
       </div>
     );
   }
