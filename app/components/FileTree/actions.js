@@ -7,17 +7,21 @@ export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
 export function selectNode (node, multiSelect = false) {
   return {
     type: FILETREE_SELECT_NODE,
-    node: node,
-    multiSelect: multiSelect
+    node,
+    multiSelect
   }
 }
 
 export function openNode (node, shoudlBeFolded = null, deep = false) {
   return (dispatch, getState) => {
     if (node.isDir) {
-      api.fetchPath(node.path)
-        .then(data => dispatch(loadNodeData(data)))
-        .then(() => dispatch(toggleNodeFold(node, shoudlBeFolded, deep)))
+      if (node.shouldBeUpdated) {
+        api.fetchPath(node.path)
+          .then(data => dispatch(loadNodeData(data, node)))
+          .then(() => dispatch(toggleNodeFold(node, shoudlBeFolded, deep)))
+      } else {
+        dispatch(toggleNodeFold(node, shoudlBeFolded, deep))
+      }
     } else {
       api.readFile(node.path)
         .then(data => {
@@ -51,17 +55,26 @@ export const FILETREE_FOLD_NODE = 'FILETREE_FOLD_NODE'
 export function toggleNodeFold (node, shoudlBeFolded = null, deep = false) {
   return {
     type: FILETREE_FOLD_NODE,
-    node: node,
-    shoudlBeFolded: shoudlBeFolded,
-    deep: deep
+    node,
+    shoudlBeFolded,
+    deep
+  }
+}
+
+export const FILETREE_REMOVE_NODE = 'FILETREE_REMOVE_NODE'
+export function removeNode (node) {
+  return {
+    type: FILETREE_REMOVE_NODE,
+    node
   }
 }
 
 export const FILETREE_LOAD_DATA = 'FILETREE_LOAD_DATA'
-export function loadNodeData (data) {
+export function loadNodeData (data, node) {
   return {
     type: FILETREE_LOAD_DATA,
-    data: data
+    data,
+    node
   }
 }
 

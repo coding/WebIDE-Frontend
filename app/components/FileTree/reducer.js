@@ -5,13 +5,14 @@ import config from '../../config'
 import {
   FILETREE_LOAD_DATA,
   FILETREE_FOLD_NODE,
-  FILETREE_SELECT_NODE
+  FILETREE_SELECT_NODE,
+  FILETREE_REMOVE_NODE
 } from './actions'
 
 class Node {
   constructor (nodeInfo) {
     const {
-      name, path, isDir, isRoot,
+      name, path, isDir, isRoot, shouldBeUpdated,
       directoriesCount, filesCount,
       gitStatus, lastModified, lastAccessed,
       contentType
@@ -20,6 +21,7 @@ class Node {
     this.name = name
     this.path = path
     this.isDir = isDir
+    this.shouldBeUpdated = true || shouldBeUpdated
     this.gitStatus = gitStatus
     this.lastModified = new Date(lastModified)
     this.lastAccessed = new Date(lastAccessed)
@@ -42,6 +44,13 @@ class Node {
     }
   }
 
+  get depth () {
+    var slashMatches = this.path.match(/\/(?=.)/g)
+    return slashMatches ? slashMatches.length : 0
+  }
+
+  set depth (v) { /* no-op */ }
+
   findChildNodeByPathComponents (pathComponents) {
     var pathComponent = pathComponents[0]
     var childNode = _.filter(this.children, {name: pathComponent})[0]
@@ -49,31 +58,61 @@ class Node {
     if (nextPathComponents.length === 0) { return childNode }
     return childNode.findChildNodeByPathComponents(nextPathComponents)
   }
-}
 
-const recursivelyBuildNodeByPathComponents = (parentNode, pathComponents, nodeInfo) => {
-  const pathComp = pathComponents[0]
-  pathComponents = pathComponents.slice(1)
-
-  var childNode = _.filter(parentNode.children, {name: pathComp})[0]
-  if (!childNode) {
-    const parentPath = (parentNode.isRoot) ? '' : parentNode.path
-    childNode = new Node(nodeInfo)
-    childNode.parent = parentNode
-    parentNode.children.push(childNode)
+  // apply to not only direct children but all descendants
+  forEachDescendant (handler) {
+    if (!this.isDir) return
+    this.children.forEach(childNode => {
+      handler(childNode)
+      childNode.forEachDescendant(handler)
+    })
   }
-  if (pathComponents.length !== 0) {
-    recursivelyBuildNodeByPathComponents(childNode, pathComponents, nodeInfo)
+
+  applyChangeToNode (nodeInfo, changeType) {
+    const pathComponents = nodeInfo.path.split('/') // => ['', 'depth_1', 'depth_2']
+    const childNodeName = pathComponents[this.depth + 1]
+    var childNode = _.find(this.children, {name: childNodeName})
+
+    if (this.depth + 1 === pathComponents.length - 1) {
+      // reach target node!
+      switch (changeType) {
+        case 'create':
+          if (childNode) break
+          childNode = new Node(nodeInfo)
+          childNode.parent = this
+          this.children.push(childNode)
+          break
+        case 'delete':
+          if (!childNode) break
+          _.remove(this.children, childNode)
+          break
+      }
+    } else {
+      // internal node case,
+      // if doesn't exist, init a placeholder node and continue traverse deeper.
+      if (!childNode) {
+        childNode = new Node({
+          isDir: true,
+          name: childNodeName,
+          path: pathComponents.slice(0, this.depth + 2).join('/')
+        })
+        childNode.parent = this
+        this.children.push(childNode) // @todo: update children-related counts in parentNode
+      }
+
+      childNode.applyChangeToNode(nodeInfo, changeType)
+    }
   }
 }
 
-const buildFileTree = (rootNode, nodeInfos) => {
-  nodeInfos.forEach(nodeInfo => {
-    const pathComponents = nodeInfo.path.split('/').slice(1)
-    recursivelyBuildNodeByPathComponents(rootNode, pathComponents, nodeInfo)
-  })
-  return rootNode
-}
+// =========================
+
+var RootNode = new Node({
+  name: config.projectName || '',
+  path: '/',
+  isDir: true,
+  isRoot: true
+})
 
 const findNodeByPath = (path) => {
   if (path === '/') return Node.rootNode
@@ -81,21 +120,8 @@ const findNodeByPath = (path) => {
   return Node.rootNode.findChildNodeByPathComponents(pathComponents)
 }
 
-const forEachDescendantNode = (node, handler) => {
-  if (!node.isDir) return
-  node.children.forEach(childNode => {
-    handler(childNode)
-    forEachDescendantNode(childNode, handler)
-  })
-}
-
 var _state = {}
-_state.rootNode = new Node({
-  name: '',
-  path: '/',
-  isDir: true,
-  isRoot: true
-})
+_state.rootNode = RootNode
 
 const normalizeState = (_state) => {
   var state = {
@@ -110,14 +136,18 @@ export default function FileTreeReducer (state = _state, action) {
   switch (action.type) {
 
     case FILETREE_LOAD_DATA:
-      state.rootNode = buildFileTree(state.rootNode, action.data)
+      var {node, data} = action
+      if (!node) node = RootNode
+      node.shouldBeUpdated = false
+      data.forEach(nodeInfo => node.applyChangeToNode(nodeInfo, 'create'))
+      state.rootNode = RootNode
       return normalizeState(state)
 
     case FILETREE_SELECT_NODE:
       var {node, multiSelect} = action
       if (!multiSelect) {
-        Node.rootNode.isFocused = false
-        forEachDescendantNode(Node.rootNode, childNode => {
+        RootNode.isFocused = false
+        RootNode.forEachDescendant(childNode => {
           childNode.isFocused = false
         })
       }
@@ -126,7 +156,8 @@ export default function FileTreeReducer (state = _state, action) {
 
     case FILETREE_FOLD_NODE:
       var {node, shoudBeFolded, deep} = action
-      if (!node.isDir) { return state }
+      if (!node.isDir) return state
+
       if (typeof shoudBeFolded === 'boolean') {
         var isFolded = shoudBeFolded
       } else {
@@ -134,13 +165,19 @@ export default function FileTreeReducer (state = _state, action) {
       }
       node.isFolded = isFolded
       if (deep) {
-        forEachDescendantNode(node, (childNode) => {
+        node.forEachDescendant(childNode => {
           if (childNode.isDir) childNode.isFolded = isFolded
         })
       }
       return normalizeState(state)
 
-    default:
+    case FILETREE_REMOVE_NODE:
+      var {node} = action
+      RootNode.applyChangeToNode(node, 'delete')
+      state.rootNode = RootNode
       return normalizeState(state)
+
+    default:
+      return state
   }
 }
