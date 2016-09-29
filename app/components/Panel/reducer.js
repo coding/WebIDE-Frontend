@@ -1,10 +1,10 @@
 /* @flow weak */
 import _ from 'lodash'
 import {
-  PANE_INITIALIZE,
-  PANE_UNSET_COVER,
-  PANE_RESIZE,
-  PANE_CONFIRM_RESIZE
+  PANEL_INITIALIZE,
+  PANEL_UNSET_COVER,
+  PANEL_RESIZE,
+  PANEL_CONFIRM_RESIZE
 } from './actions'
 
 // jailbreakLonelyView 是为了避免无限级嵌套的 views.length === 1 出现
@@ -68,12 +68,12 @@ const findViewById = (state, id) => state.directories[id]
 const debounced = _.debounce(function (func) { func() }, 50)
 
 
-export default function PaneReducer (state = {}, action) {
+export default function PanelReducer (state = {}, action) {
   switch (action.type) {
-    case PANE_INITIALIZE:
+    case PANEL_INITIALIZE:
       return normalizeState(action.config)
 
-    case PANE_RESIZE:
+    case PANEL_RESIZE:
       let section_A = state.directories[action.sectionId]
       let parent = section_A.parent
       let section_B = parent.views[parent.views.indexOf(section_A) + 1]
@@ -107,7 +107,7 @@ export default function PaneReducer (state = {}, action) {
 
       return state
 
-    case PANE_CONFIRM_RESIZE:
+    case PANEL_CONFIRM_RESIZE:
       return normalizeState(state)
 
     default:
