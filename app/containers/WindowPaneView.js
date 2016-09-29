@@ -1,7 +1,7 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PaneView from '../components/Pane'
+import PaneView from '../components/Panel'
 import store from '../store.js'
 
 const WindowPaneViewContainer = connect(state => {
@@ -10,7 +10,7 @@ const WindowPaneViewContainer = connect(state => {
 
 const WindowPaneView = ({config, ...otherProps}) => {
   store.dispatch({
-    type: 'PANE_INITIALIZE',
+    type: 'PANEL_INITIALIZE',
     scope: 'window',
     config: config
   })

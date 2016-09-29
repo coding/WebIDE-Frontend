@@ -47,7 +47,7 @@ var windowPaneConfig = {
           display: 'none'
         }
       ],
-      size: 90
+      size: 80
     },
     {
       flexDirection: 'row',
