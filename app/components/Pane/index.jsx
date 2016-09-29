@@ -45,8 +45,8 @@ ResizeBar = connect(null, (dispatch, ownProps) => {
 
       const handleResize = (e) => {
         var [dX, dY] = [oX - e.pageX, oY - e.pageY]
+        ;[oX, oY] = [e.pageX, e.pageY]
         dispatch(PaneActions.resize(sectionId, dX, dY))
-        [oX, oY] = [e.pageX, e.pageY]
         ownProps.resizingListeners.forEach(listener => listener())
       }
 
@@ -64,15 +64,17 @@ ResizeBar = connect(null, (dispatch, ownProps) => {
 
 
 class PaneView extends Component {
-  static propTypes = {
-    id: PropTypes.string,
-    flexDirection: PropTypes.string,
-    views: PropTypes.array,
-    size: PropTypes.number
+  static get propTypes () {
+    return {
+      id: PropTypes.string,
+      flexDirection: PropTypes.string,
+      views: PropTypes.array,
+      size: PropTypes.number
+    }
   }
 
-  static childContextTypes = {
-    onResizing: PropTypes.func
+  static get childContextTypes ()  {
+    return { onResizing: PropTypes.func }
   }
 
 
