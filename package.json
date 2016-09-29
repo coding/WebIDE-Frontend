@@ -18,7 +18,7 @@
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port=8060 --progress --colors",
     "build": "./node_modules/cross-env/bin/cross-env.js NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/standard/bin/cmd.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "keywords": [
@@ -45,6 +45,7 @@
     "css-loader": "^0.23.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
+    "standard": "*",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^2.3.1",
