@@ -2,11 +2,9 @@
 import React, { Component } from 'react'
 import TopBar from '../components/TopBar'
 import StatusBar from '../components/StatusBar'
-import PaneView from '../components/Pane'
+import { PaneContainer } from '../components/Pane'
 import TabViewContainer from '../components/Tab'
-import AceEditor from '../components/AceEditor'
 import Terminal from '../components/Terminal'
-import EditorPaneView from './EditorPaneView'
 import WindowPaneView from './WindowPaneView'
 import FileTree from '../components/FileTree'
 import Utilities from './Utilities'
@@ -14,47 +12,33 @@ import Utilities from './Utilities'
 import api from '../api'
 import config from '../config'
 
-var editorPaneConfig = {
-  flexDirection: 'row',
-  views: [{
-    views: [<TabViewContainer defaultContentClass={AceEditor} defaultContentType='editor' />],
-    size: 30
-  }]
-}
-
-var editorPaneView = <EditorPaneView className='editor-pane-view' config={editorPaneConfig} />
 
 var windowPaneConfig = {
-  flexDirection: 'column',
+  flexDirection: 'row',
   views: [
     {
-      flexDirection: 'row',
-      views: [
-        {
-          flexDirection: 'column',
-          size: 20,
-          views: [<FileTree />]
-        },
-        {
+      flexDirection: 'column',
+      size: 20,
+      views: [<FileTree />]
+    }, {
+      flexDirection: 'column',
+      size: 80,
+      views: [{
           flexDirection: 'row',
-          size: 80,
-          views: [editorPaneView]
-        },
-        {
+          size: 75,
+          views: [<PaneContainer />]
+        }, {
           flexDirection: 'row',
-          size: 20,
-          views: ['Right Panel'],
-          display: 'none'
+          views: [<TabViewContainer defaultContentClass={Terminal} defaultContentType='terminal' />],
+          size: 25
         }
-      ],
-      size: 80
-    },
-    {
+      ]
+    }, {
       flexDirection: 'row',
-      views: [<TabViewContainer defaultContentClass={Terminal} defaultContentType='terminal' />],
-      size: 20
+      size: 20,
+      views: ['Right Panel'],
+      display: 'none'
     }
-
   ]
 }
 
