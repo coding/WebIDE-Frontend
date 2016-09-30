@@ -1,7 +1,7 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import _PaneAxis from './pane'
+import PaneAxis from './pane'
 import TabViewContainer from '../Tab'
 import AceEditor from '../AceEditor'
 
@@ -16,16 +16,16 @@ var editorPaneConfig = {
   }]
 }
 
-var PaneAxis = connect(state => {
+var PrimaryPaneAxis = connect(state => {
   return state.EditorPaneState
-})(_PaneAxis)
+})(PaneAxis)
 
 var PaneContainer = (props) => {
   store.dispatch({
     type: 'PANE_INITIALIZE',
     config: editorPaneConfig
   })
-  return <PaneAxis {...props}/>
+  return <PrimaryPaneAxis {...props}/>
 }
 
 export default PaneContainer

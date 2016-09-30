@@ -1,12 +1,12 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PaneView from '../components/Panel'
+import PanelView from '../components/Panel'
 import store from '../store.js'
 
 const WindowPaneViewContainer = connect(state => {
   return state.WindowPaneState
-})(PaneView)
+})(PanelView)
 
 const WindowPaneView = ({config, ...otherProps}) => {
   store.dispatch({

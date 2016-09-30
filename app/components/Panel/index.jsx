@@ -7,7 +7,7 @@ import * as PanelActions from './actions'
 
 const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
   if (views.length > 1) {
-    var content = <PanelView views={views} flexDirection={flexDirection} />
+    var content = <PanelAxis views={views} flexDirection={flexDirection} />
   } else {
     var content = views[0]
   }
@@ -18,8 +18,8 @@ const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingLis
   }
 
   return (
-    <div id={id} style={style} className={cx('pane', parentFlexDirection)}>
-      <div className='pane-content'>{ content }</div>
+    <div id={id} style={style} className={cx('panel-container', parentFlexDirection)}>
+      <div className='panel'>{ content }</div>
       <ResizeBar parentFlexDirection={parentFlexDirection}
         sectionId={id} resizingListeners={resizingListeners} />
     </div>
@@ -29,7 +29,7 @@ const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingLis
 let ResizeBar = ({parentFlexDirection, sectionId, startResize}) => {
   var barClass = (parentFlexDirection == 'row') ? 'col-resize' : 'row-resize'
   return (
-    <div className={cx('pane-resize-bar', barClass)}
+    <div className={cx('resize-bar', barClass)}
       onMouseDown={e => startResize(sectionId, e)}></div>
   )
 }
@@ -63,7 +63,7 @@ ResizeBar = connect(null, (dispatch, ownProps) => {
 })(ResizeBar)
 
 
-class PanelView extends Component {
+class PanelAxis extends Component {
   static get propTypes () {
     return {
       id: PropTypes.string,
@@ -110,10 +110,10 @@ class PanelView extends Component {
     })
 
     return (
-      <div className={cx('panes', className)}
+      <div className={cx('panel-axis', className)}
         style={{flexDirection: flexDirection, ...style}}>{ Subviews }</div>
     )
   }
 }
 
-export default PanelView
+export default PanelAxis

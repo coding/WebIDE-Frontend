@@ -57,7 +57,7 @@ class IDE extends Component {
     return (
       <div className='ide-container'>
         <TopBar />
-        <WindowPaneView className='main-pane-view' config={windowPaneConfig} />
+        <WindowPaneView className='primary-panel-axis' config={windowPaneConfig} />
         <StatusBar />
         <Utilities />
       </div>

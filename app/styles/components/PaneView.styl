@@ -1,16 +1,16 @@
-.main-pane-view {
+.primary-panel-axis {
   flex-grow: 1;
   z-index: z(main-pane-view);
 }
 
-.panes {
+.panel-axis, .pane-axis {
   height: 100%;
   width: 100%;
   display: flex;
   align-items: stretch;
 }
 
-.pane {
+.panel-container, .pane-container {
   flex-basis: 0;
   flex-grow: 1;
   overflow: scroll;
@@ -19,7 +19,7 @@
   border-style: solid;
   &:last-child {
     border: 0;
-    > .pane-resize-bar {
+    > .resize-bar {
       display: none;
     }
   }
@@ -35,12 +35,12 @@
   }
 }
 
-.pane-content {
+.panel, .pane {
   height: 100%;
   width: 100%;
 }
 
-.pane-resize-bar {
+.resize-bar {
   z-index: 1000;
   &.col-resize {
     cursor: col-resize;
