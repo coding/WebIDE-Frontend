@@ -1,3 +1,3 @@
 /* @flow weak */
-export PaneView from './pane'
-export PaneContainer from './PaneContainer'
+import PanesContainer from './PanesContainer'
+export default PanesContainer

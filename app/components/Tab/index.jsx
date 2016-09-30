@@ -20,7 +20,7 @@ const TabView = ({TabState, groupId, ...otherProps}) => {
 const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   return (
     <div className='tab-bar'>
-      <ul className='tab-container'>
+      <ul className='tabs'>
         { tabs.map(tab =>
           <Tab tab={tab} key={tab.id} {...otherProps} />
         ) }

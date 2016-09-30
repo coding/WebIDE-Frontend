@@ -15,7 +15,7 @@ import WorkspaceReducer from './components/Workspace/reducer'
 
 const reducers = combineReducers({
   WindowPaneState: PanelReducer,
-  EditorPaneState: PaneReducer,
+  Panes: PaneReducer,
   TabState: TabReducer,
   EditorState: EditorReducer,
   FileTreeState: FileTreeReducer,
@@ -30,6 +30,9 @@ const store = createStore(reducers, compose(
   applyMiddleware(thunkMiddleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ))
+// const store = createStore(reducers, compose(
+//   applyMiddleware(thunkMiddleware)
+// ))
 export default store
 export const getState = store.getState
 export const dispatch = store.dispatch

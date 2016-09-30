@@ -6,12 +6,6 @@ import cx from 'classnames'
 import * as PanelActions from './actions'
 
 const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
-  if (views.length > 1) {
-    var content = <PanelAxis views={views} flexDirection={flexDirection} />
-  } else {
-    var content = views[0]
-  }
-
   var style = {
     flexGrow: size,
     display: _props.display
@@ -19,7 +13,10 @@ const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingLis
 
   return (
     <div id={id} style={style} className={cx('panel-container', parentFlexDirection)}>
-      <div className='panel'>{ content }</div>
+      { views.length > 1
+        ? <PanelAxis views={views} flexDirection={flexDirection} />
+        : <div className='panel'>{ views[0] }</div>
+      }
       <ResizeBar parentFlexDirection={parentFlexDirection}
         sectionId={id} resizingListeners={resizingListeners} />
     </div>
