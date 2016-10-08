@@ -45,15 +45,15 @@ function keyEventToKeyCombination (e) {
   }
 }
 
-var _wait = 300
+var _wait = 500
 var _lastTimeoutId
 function handleKeyEvent (e) {
   var isComboPending = Boolean(_lastTimeoutId)
 
+  if (window.logKeyEvent) console.log(e) // debug
+
   // only modifier pressed, ignore
   if (['Meta', 'OS', 'Control', 'Shift', 'Alt'].indexOf(e.key) > -1) return
-  // any key pressed without modifier, ignore
-  if (modifiersToString(e) == '' && !isComboPending) return
 
   var keyCombination = keyEventToKeyCombination(e)
   var keyCombinationState = _keysRegistered[keyCombination]
@@ -109,6 +109,7 @@ function normalizeCommand (command) {
 }
 
 function handleCommand (command) {
+  if (window.logKeyEvent) console.log(command) // debug
   var handler = command.type ? _commandHandlers[command.type] : command.$$handler
   if (!handler) return false
   command.context = _context  // bind context to command before run, there's no way to change it at this point.

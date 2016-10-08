@@ -23,3 +23,12 @@ export const PANE_CONFIRM_RESIZE = 'PANE_CONFIRM_RESIZE'
 export function confirmResize () {
   return {type: PANE_CONFIRM_RESIZE}
 }
+
+export const PANE_SPLIT = 'PANE_SPLIT'
+export function split () {
+  return {
+    type: PANE_SPLIT,
+    flexDirection: 'row',
+    childrenCount: 2
+  }
+}
