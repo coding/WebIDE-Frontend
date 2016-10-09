@@ -4,22 +4,30 @@ import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
 import cx from 'classnames'
 import * as PaneActions from './actions'
+import TabViewContainer from '../Tab'
+import AceEditor from '../AceEditor'
 
-const Pane = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
+const Pane = (props) => {
+  const {id, views, size, flexDirection, parentFlexDirection, resizingListeners} = props
+  var content
   if (views.length > 1) {
-    var content = <PaneAxis views={views} flexDirection={flexDirection} />
+    content = <PaneAxis views={views} flexDirection={flexDirection} />
+  } else if (typeof views[0] === 'string') {
+    var tabGroupId = views[0]
+    console.log(tabGroupId)
+    content = (
+      <div className='pane'>
+        <TabViewContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
+      </div>
+    )
   } else {
-    var content = views[0]
+    content = null
   }
 
-  var style = {
-    flexGrow: size,
-    display: _props.display
-  }
-
+  var style = {flexGrow: size, display: props.display}
   return (
     <div id={id} style={style} className={cx('pane-container', parentFlexDirection)}>
-      <div className='pane'>{ content }</div>
+      { content }
       <ResizeBar parentFlexDirection={parentFlexDirection}
         sectionId={id} resizingListeners={resizingListeners} />
     </div>

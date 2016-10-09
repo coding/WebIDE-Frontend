@@ -29,6 +29,6 @@ export function split () {
   return {
     type: PANE_SPLIT,
     flexDirection: 'row',
-    childrenCount: 2
+    splitCount: 2
   }
 }
