@@ -69,6 +69,17 @@ class TabGroup {
     this.tabs.forEach(tab => tab.isActive = false)
   }
 
+  mergeTabs (tabsToBeMerged) {
+    for (let i = 0; i < tabsToBeMerged.length; i++) {
+      this.tabs.push(tabsToBeMerged[i])
+    }
+    if (this.activeTab) {
+      this.activateTab(this.activeTab)
+    } else {
+      this.activateTab(this.tabs[0])
+    }
+  }
+
 }
 
 const tabGroups = []
@@ -77,8 +88,7 @@ const normalizeState = (prevState) => {
   tabGroups.forEach(tabGroup => {
     tabGroup.tabs.forEach(tab => tab.group = tabGroup)
   })
-  console.log(tabGroups)
-  return {tabGroups, getGroupById, getActiveGroup, activatePrevGroup}
+  return {tabGroups, getGroupById, getActiveGroup, activateGroup, activatePrevGroup, normalizeState}
 }
 
 function getGroupById (id) {
@@ -95,7 +105,6 @@ function getTabById (id) {
 function getActiveGroup () {
   var len = tabGroups.length
   var ret = (len > 0) ? tabGroups[len - 1] : {}
-  console.log(ret);
   return ret
 }
 
@@ -108,7 +117,7 @@ function activateGroup (group) {
   if (typeof group === 'string') group = getGroupById(id)
   deactivateAllGroups()
   group.isActive = true
-  // lift the active group to top of stack.
+  // lift the active group to top of stack, or say end of the list
   tabGroups.sort(_group => {
     if (_group === group) return 1
     return -1

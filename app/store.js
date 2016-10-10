@@ -30,13 +30,14 @@ const combinedReducers = combineReducers({
 const crossReducers = composeReducers(PaneCrossReducer)
 const finalReducer = composeReducers(crossReducers, combinedReducers)
 
-const store = createStore(finalReducer, compose(
-  applyMiddleware(thunkMiddleware),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
-))
 // const store = createStore(finalReducer, compose(
-//   applyMiddleware(thunkMiddleware)
+//   applyMiddleware(thunkMiddleware),
+//   window.devToolsExtension ? window.devToolsExtension() : f => f
 // ))
+const store = createStore(finalReducer, compose(
+  applyMiddleware(thunkMiddleware)
+))
+window.s = store.getState
 export default store
 export const getState = store.getState
 export const dispatch = store.dispatch

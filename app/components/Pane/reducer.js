@@ -74,8 +74,11 @@ class Pane {
   splitPane (splitCount=this.views.length+1, flexDirection=this.flexDirection) {
     this.flexDirection = flexDirection
     if (splitCount <= 0) splitCount = 1
-    if (splitCount === this.views.length) return
+    if (splitCount === this.views.length) return []
+
+    let tabGroupIdsToBeMerged = []
     if (splitCount > this.views.length) {
+      // add pane split
       if (this.views.length === 1) {
         let currentTabGroupId = this.views.pop()
         this.views.push(new Pane({views:[currentTabGroupId]}))
@@ -84,21 +87,44 @@ class Pane {
         while (splitCount > this.views.length) {
           this.views.push(new Pane({views:['']}))
         }
-        let baseSize = this.views[0]['size']
-        this.views.forEach( view => view.size = baseSize )
       }
     } else {
-      while (splitCount < this.views.length) this.views.pop()
-      if (this.views.length === 1) {
-        let lonelyItem = this.views.pop()
-        if (lonelyItem.views && typeof lonelyItem.views[0] === 'string') {
-          this.views = lonelyItem.views
-        }
-      } else {
-        let baseSize = this.views[0]['size']
-        this.views.forEach( view => view.size = baseSize )
+      // merge pane split
+      while (splitCount < this.views.length) {
+        let viewToBeMerged = this.views.pop()
+        tabGroupIdsToBeMerged = tabGroupIdsToBeMerged.concat(viewToBeMerged.getTabGroupIds())
       }
     }
+
+    // removeSingleChildedInternalNode, and even the size
+    if (this.views.length === 1) {
+      let lonelyItem = this.views[0]
+      if (lonelyItem.views && typeof lonelyItem.views[0] === 'string') {
+        this.views = lonelyItem.views
+      }
+    } else {
+      let baseSize = this.views[0]['size']
+      this.views.forEach( view => view.size = baseSize )
+    }
+
+    // handle tab groups merging
+    let tabGroupIdToMergeInto = this.views[this.views.length - 1]
+    if (typeof tabGroupIdToMergeInto !== 'string') {
+      tabGroupIdToMergeInto = tabGroupIdToMergeInto.getTabGroupIds()[0]
+    }
+
+    // then we're going to merge tab group from right to left
+    return [tabGroupIdToMergeInto].concat(tabGroupIdsToBeMerged)
+  }
+
+  getTabGroupIds () {
+    return this.views.reduceRight((acc, view) => {
+      if (typeof view === 'string') {
+        return acc.concat(view)
+      } else {
+        return acc.concat(view.getTabGroupIds())
+      }
+    }, [])
   }
 }
 
@@ -154,15 +180,7 @@ export default function PaneReducer (state = _state, action) {
     case PANE_CONFIRM_RESIZE:
       return state
 
-    case PANE_SPLIT:
-      if (action.splitCount === state.root.views.length &&
-        action.flexDirection === state.root.flexDirection) {
-        return state
-      }
 
-      let pane = new Pane(state.root)
-      pane.splitPane(action.splitCount, action.flexDirection)
-      return {root: new Pane(pane)}
 
     default:
       return state
@@ -172,8 +190,29 @@ export default function PaneReducer (state = _state, action) {
 export function PaneCrossReducer (allStates, action) {
   switch (action.type) {
     case PANE_SPLIT:
+      const {Panes, TabState} = allStates
+      var pane = Panes.root
+      if (action.splitCount === pane.views.length &&
+        action.flexDirection === pane.flexDirection) {
+        return allStates
+      }
 
-      return allStates
+      pane = new Pane(pane)
+      var tabGroupIds = pane.splitPane(action.splitCount, action.flexDirection)
+      if (tabGroupIds.length > 1) {
+        const tabGroupIdToMergeInto = tabGroupIds[0]
+        const tabGroupIdsToBeMerged = tabGroupIds.slice(1)
+        var mergedTabs = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
+          var tabGroup = TabState.getGroupById(tabGroupId)
+          tabGroup.deactivateAllTabsInGroup()
+          return [...tabGroup.tabs, ...acc]
+        }, [])
+        var mergerTabGroup = TabState.getGroupById(tabGroupIdToMergeInto)
+        mergerTabGroup.mergeTabs(mergedTabs)
+      }
+      return { ...allStates,
+        Panes: {root: new Pane(pane)},
+        TabState: TabState.normalizeState(TabState) }
 
     default:
       return allStates
