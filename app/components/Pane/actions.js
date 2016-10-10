@@ -25,10 +25,10 @@ export function confirmResize () {
 }
 
 export const PANE_SPLIT = 'PANE_SPLIT'
-export function split (splitCount) {
+export function split (splitCount, flexDirection='row') {
   return {
     type: PANE_SPLIT,
-    flexDirection: 'row',
+    flexDirection: flexDirection,
     splitCount: splitCount
   }
 }
