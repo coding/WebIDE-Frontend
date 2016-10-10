@@ -102,8 +102,9 @@ class PaneAxis extends Component {
   }
 
   render () {
-    var { views, flexDirection, className, style } = this.props
-    if (views.length === 1 && !Array.isArray(views[0].views) ) views = [this.props]
+    let props = this.props.hasOwnProperty('root') ? this.props.root : this.props
+    var { views, flexDirection, className, style } = props
+    if (views.length === 1 && !Array.isArray(views[0].views) ) views = [props]
     var Subviews = views.map( _props => {
       return <Pane
         key={_props.id}

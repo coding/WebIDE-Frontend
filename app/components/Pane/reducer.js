@@ -94,6 +94,9 @@ class Pane {
         if (lonelyItem.views && typeof lonelyItem.views[0] === 'string') {
           this.views = lonelyItem.views
         }
+      } else {
+        let baseSize = this.views[0]['size']
+        this.views.forEach( view => view.size = baseSize )
       }
     }
   }
@@ -104,12 +107,14 @@ Pane.indexes = {}
 const getViewById = (id) => Pane.indexes[id]
 const debounced = _.debounce(function (func) { func() }, 50)
 
-const _state = new Pane({
-  id: 'pane_view_1',
-  flexDirection: 'row',
-  size: 100,
-  views: ['']
-})
+const _state = {
+  root: new Pane({
+    id: 'pane_view_1',
+    flexDirection: 'row',
+    size: 100,
+    views: ['']
+  })
+}
 export default function PaneReducer (state = _state, action) {
   switch (action.type) {
     case PANE_RESIZE:
@@ -150,14 +155,14 @@ export default function PaneReducer (state = _state, action) {
       return state
 
     case PANE_SPLIT:
-      if (action.splitCount === state.views.length &&
-        action.flexDirection === state.flexDirection) {
+      if (action.splitCount === state.root.views.length &&
+        action.flexDirection === state.root.flexDirection) {
         return state
       }
 
-      let pane = new Pane(state)
+      let pane = new Pane(state.root)
       pane.splitPane(action.splitCount, action.flexDirection)
-      return new Pane(pane)
+      return {root: new Pane(pane)}
 
     default:
       return state
