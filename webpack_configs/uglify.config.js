@@ -1,6 +1,6 @@
-const webpack = require('webpack');
+const webpack = require('webpack')
 
-module.exports = function(options) {
+module.exports = function (options) {
   return {
     plugins: [
       new webpack.optimize.UglifyJsPlugin({
@@ -12,7 +12,7 @@ module.exports = function(options) {
         },
         mangle: {
           except: ['$'],
-          screw_ie8 : true
+          screw_ie8: true
         }
       })
     ]

@@ -1,18 +1,18 @@
 /* @flow weak */
-export const NOTIFICATION_ADD = 'NOTIFICATION_ADD';
-export function addNotification(_notification) {
+export const NOTIFICATION_ADD = 'NOTIFICATION_ADD'
+export function addNotification (_notification) {
   return dispatch => {
-    var notification, defaultNotification;
+    var notification, defaultNotification
 
     defaultNotification = {
       message: '',
       action: 'Dismiss',
       key: Date.now(),
       dismissAfter: 6000,
-      onClick: () => dispatch({type:NOTIFICATION_REMOVE, notification})
-    };
+      onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
+    }
 
-    notification = {...defaultNotification, ..._notification};
+    notification = {...defaultNotification, ..._notification}
 
     dispatch({
       type: NOTIFICATION_ADD,
@@ -21,10 +21,10 @@ export function addNotification(_notification) {
   }
 }
 
-export const notify = addNotification;
+export const notify = addNotification
 
-export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE';
-export function removeNotification(notification) {
+export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
+export function removeNotification (notification) {
   return {
     type: NOTIFICATION_REMOVE,
     notification

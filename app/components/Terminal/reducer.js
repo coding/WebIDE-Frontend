@@ -339,13 +339,11 @@ var _state = {
   },
   online: false,
   reconnect: false
-};
+}
 
-
-export default function TerminalReducer(state=_state, action) {
+export default function TerminalReducer (state = _state, action) {
   switch (action.type) {
     default:
-      return state;
+      return state
   }
-
 }

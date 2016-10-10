@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { connect } from 'react-redux';
 import {
   Prompt,
+  Confirm,
   CommandPalette,
   GitCommitView
 } from './modals'
@@ -42,6 +43,9 @@ class Modal extends Component {
 
         case 'Prompt':
           return <Prompt {...this.props} />
+
+        case 'Confirm':
+          return <Confirm {...this.props} />
 
         case 'CommandPalette':
           return <CommandPalette {...this.props} />

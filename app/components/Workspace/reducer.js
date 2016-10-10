@@ -3,8 +3,8 @@ import {
   WORKSPACE_FETCH_PUBLIC_KEY,
   WORKSPACE_FETCH_LIST,
   WORKSPACE_OPEN,
-  WORKSPACE_CREATING,
-} from './actions';
+  WORKSPACE_CREATING
+} from './actions'
 
 const defaultState = {
   selectingWorkspace: true,
@@ -12,16 +12,16 @@ const defaultState = {
   currentWorkspace: null,
   publicKey: null,
   fingerprint: null,
-  isCreating: false,
+  isCreating: false
 }
 
-export default function (state=defaultState, action) {
+export default function (state = defaultState, action) {
   switch (action.type) {
     case WORKSPACE_FETCH_PUBLIC_KEY:
-      return {...state, publicKey: action.publicKey, fingerprint: action.fingerprint};
+      return {...state, publicKey: action.publicKey, fingerprint: action.fingerprint}
 
     case WORKSPACE_FETCH_LIST:
-      return {...state, workspaces: action.workspaces};
+      return {...state, workspaces: action.workspaces}
 
     case WORKSPACE_OPEN:
       return {...state,
@@ -33,6 +33,6 @@ export default function (state=defaultState, action) {
       return {...state, isCreating: action.isCreating}
 
     default:
-      return state;
+      return state
   }
 }

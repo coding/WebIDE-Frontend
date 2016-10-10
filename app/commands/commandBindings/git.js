@@ -1,22 +1,20 @@
 /* @flow weak */
-import store from '../../store'
-const { getState, dispatch: $d } = store
-
-import * as api from '../../api'
+import store, { dispatch as $d } from '../../store'
+import api from '../../api'
 import * as Git from '../../components/Git/actions'
 import * as Modal from '../../components/Modal/actions'
 
 export default {
   'git:commit': c => {
-    api.gitStatus().then( ({files, clean}) => {
-      $d( Git.updateStatus({files, isClean: clean}) )
-    }).then( () =>
-      $d( Modal.showModal('GitCommit', 'HelloYo') )
+    api.gitStatus().then(({files, clean}) => {
+      $d(Git.updateStatus({files, isClean: clean}))
+    }).then(() =>
+      $d(Modal.showModal('GitCommit', 'HelloYo'))
     )
   },
 
-  'git:pull': c => $d( Git.pull() ),
-  'git:push': c => $d( Git.push() ),
+  'git:pull': c => $d(Git.pull()),
+  'git:push': c => $d(Git.push())
 
   // 'git:commit_and_push':
   // 'git:branch':
