@@ -1,12 +1,12 @@
 /* @flow weak */
-import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import cx from 'classnames';
-import ContextMenu from '../ContextMenu';
-import * as FileTreeActions from './actions';
-import FileTreeContextMenuItems from './contextMenuItems';
+import _ from 'lodash'
+import React, { Component, PropTypes } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import cx from 'classnames'
+import ContextMenu from '../ContextMenu'
+import * as FileTreeActions from './actions'
+import FileTreeContextMenuItems from './contextMenuItems'
 import subscribeToFileChange from './subscribeToFileChange'
 
 
@@ -23,12 +23,12 @@ class FileTree extends Component {
 
   componentDidMount() {
     subscribeToFileChange()
-    this.props.initializeFileTree();
+    this.props.initializeFileTree()
   }
 
   render() {
-    const {FileTreeState, ...actionProps} = this.props;
-    const {isContextMenuActive, contextMenuPos} = this.state;
+    const {FileTreeState, ...actionProps} = this.props
+    const {isContextMenuActive, contextMenuPos} = this.state
     return (
       <div className='filetree-container'>
         <FileTreeNode node={FileTreeState.rootNode}
@@ -39,7 +39,7 @@ class FileTree extends Component {
           context={this.state.contextNode}
           deactivate={this.setState.bind(this, {isContextMenuActive: false})} />
       </div>
-    );
+    )
   }
 
   onContextMenu = (e, node) => {
@@ -57,22 +57,22 @@ FileTree = connect(
   state => {
     return {FileTreeState: state.FileTreeState}
   }, dispatch => {
-    return bindActionCreators(FileTreeActions, dispatch);
+    return bindActionCreators(FileTreeActions, dispatch)
   }
-)(FileTree);
+)(FileTree)
 
 
 class FileTreeNode extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   render() {
-    const {node, ...actionProps} = this.props;
-    const {openNode, selectNode, onContextMenu} = actionProps;
+    const {node, ...actionProps} = this.props
+    const {openNode, selectNode, onContextMenu} = actionProps
     return (
       <div className='filetree-node-container'
-        onContextMenu={e => {selectNode(node);onContextMenu(e, node)} }>
+        onContextMenu={e => {selectNode(node); onContextMenu(e, node)} }>
         <div
           className={cx('filetree-node', {'focus':node.isFocused})}
           onDoubleClick={e => openNode(node)}
@@ -109,8 +109,8 @@ class FileTreeNode extends Component {
           : null }
 
       </div>
-    );
+    )
   }
 }
 
-export default FileTree;
+export default FileTree
