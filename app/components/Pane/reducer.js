@@ -163,3 +163,14 @@ export default function PaneReducer (state = _state, action) {
       return state
   }
 }
+
+export function PaneCrossReducer (allStates, action) {
+  switch (action.type) {
+    case PANE_SPLIT:
+
+      return allStates
+
+    default:
+      return allStates
+  }
+}

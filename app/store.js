@@ -1,9 +1,10 @@
 /* @flow weak */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { composeReducers } from './utils'
 import thunkMiddleware from 'redux-thunk'
 
 import PanelReducer from './components/Panel/reducer'
-import PaneReducer from './components/Pane/reducer'
+import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 import TabReducer from './components/Tab/reducer'
 import EditorReducer from './components/AceEditor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
@@ -13,7 +14,7 @@ import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
 import WorkspaceReducer from './components/Workspace/reducer'
 
-const reducers = combineReducers({
+const combinedReducers = combineReducers({
   WindowPaneState: PanelReducer,
   Panes: PaneReducer,
   TabState: TabReducer,
@@ -26,11 +27,14 @@ const reducers = combineReducers({
   WorkspaceState: WorkspaceReducer
 })
 
-const store = createStore(reducers, compose(
+const crossReducers = composeReducers(PaneCrossReducer)
+const finalReducer = composeReducers(crossReducers, combinedReducers)
+
+const store = createStore(finalReducer, compose(
   applyMiddleware(thunkMiddleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ))
-// const store = createStore(reducers, compose(
+// const store = createStore(finalReducer, compose(
 //   applyMiddleware(thunkMiddleware)
 // ))
 export default store
