@@ -25,6 +25,8 @@ class Tab {
 
 class TabGroup {
   constructor (id, type) {
+    let tabGroup = getGroupById(id)
+    if (tabGroup) return tabGroup
     this.id = id || _.uniqueId('tab_group_')
     this.tabs = []
     this.type = type
@@ -49,7 +51,7 @@ class TabGroup {
     tab.isActive = true
     this.activeTab = tab
     if (tab.editor) tab.editor.focus()
-    tab.group.state.activateGroup(tab.group)
+    activateGroup(tab.group)
   }
 
   activateNextTab () {
@@ -69,104 +71,104 @@ class TabGroup {
 
 }
 
-class TabState {
-  constructor (prevState) {
-    Object.assign(this, prevState)
-    // always reconnect tab -> group link
-    this.tabGroups.forEach(tabGroup => {
-      tabGroup.state = this
-      tabGroup.tabs.forEach(tab => tab.group = tabGroup)
-    })
-  }
+const tabGroups = []
+const indexes = {}
+const normalizeState = (prevState) => {
+  tabGroups.forEach(tabGroup => {
+    tabGroup.tabs.forEach(tab => tab.group = tabGroup)
+  })
+  console.log(tabGroups)
+  return {tabGroups, getGroupById, getActiveGroup, activatePrevGroup}
+}
 
-  getGroupById (id) {
-    return _.find(this.tabGroups, {id: id})
-  }
+function getGroupById (id) {
+  return _.find(tabGroups, {id: id})
+}
 
-  getTabById (id) {
-    var allTabs = this.tabGroups.reduce((accumulator, tabGroup) => {
-      return accumulator.concat(tabGroup.tabs)
-    }, [])
-    return _.find(allTabs, {id: id})
-  }
+function getTabById (id) {
+  var allTabs = tabGroups.reduce((accumulator, tabGroup) => {
+    return accumulator.concat(tabGroup.tabs)
+  }, [])
+  return _.find(allTabs, {id: id})
+}
 
-  addGroup (group) {
-    this.tabGroups.push(group)
-    this.activateGroup(group)
-  }
+function getActiveGroup () {
+  var len = tabGroups.length
+  var ret = (len > 0) ? tabGroups[len - 1] : {}
+  console.log(ret);
+  return ret
+}
 
-  get activeGroup () {
-    var len = this.tabGroups.length
-    return (len > 0) ? this.tabGroups[len - 1] : null
-  }
+function addGroup (group) {
+  tabGroups.push(group)
+  activateGroup(group)
+}
 
-  activateGroup (group) {
-    if (typeof group === 'string') group = this.getGroupById(id)
-    this.deactivateAllGroups()
-    group.isActive = true
-    // lift the active group to top of stack.
-    this.tabGroups.sort(_group => {
-      if (_group === group) return 1
-      return -1
-    })
-    return group
-  }
+function activateGroup (group) {
+  if (typeof group === 'string') group = getGroupById(id)
+  deactivateAllGroups()
+  group.isActive = true
+  // lift the active group to top of stack.
+  tabGroups.sort(_group => {
+    if (_group === group) return 1
+    return -1
+  })
+  return group
+}
 
-  deactivateAllGroups () {
-    this.tabGroups.forEach(tabGroup => tabGroup.isActive = false)
-  }
+function deactivateAllGroups () {
+  tabGroups.forEach(tabGroup => tabGroup.isActive = false)
+}
 
-  activatePrevGroup (last = -1) {
-    if (last >= 0) return null
-    var len = this.tabGroups.length
-    if (len > 1) {
-      var prevActiveGroup = this.tabGroups[len - 1 + last]
-      this.activateGroup(prevActiveGroup)
-      return prevActiveGroup
-    } else {
-      return null
-    }
+function activatePrevGroup (last = -1) {
+  if (last >= 0) return null
+  var len = tabGroups.length
+  if (len > 1) {
+    var prevActiveGroup = tabGroups[len - 1 + last]
+    activateGroup(prevActiveGroup)
+    return prevActiveGroup
+  } else {
+    return null
   }
 }
 
-let _state = new TabState({tabGroups: []})
-
+let _state = normalizeState({tabGroups: []})
 export default function TabReducer (state = _state, action) {
   switch (action.type) {
 
     case TAB_CREATE:
-      var tabGroup = state.getGroupById(action.groupId)
-      if (!tabGroup) tabGroup = state.activeGroup
+      var tabGroup = getGroupById(action.groupId)
+      if (!tabGroup) tabGroup = getActiveGroup()
       var newTab = new Tab(action.tab, tabGroup)
       tabGroup.tabs.push(newTab)
       tabGroup.activateTab(newTab)
-      return new TabState(state)
+      return normalizeState(state)
 
     case TAB_REMOVE:
-      var tab = state.getTabById(action.tabId)
+      var tab = getTabById(action.tabId)
       if (tab.isActive) {
         tab.group.activateNextTab()
       }
       tab.group.removeTab(tab)
-      return new TabState(state)
+      return normalizeState(state)
 
     case TAB_ACTIVATE:
-      var tab = state.getTabById(action.tabId)
+      var tab = getTabById(action.tabId)
       if (tab.isActive) return state
       tab.group.activateTab(action.tabId)
-      return new TabState(state)
+      return normalizeState(state)
 
     case TAB_DISSOLVE_GROUP:
       return state
 
     case TAB_CREATE_GROUP:
-      state.deactivateAllGroups()
-      state.addGroup(new TabGroup(action.groupId, action.defaultContentType))
-      return new TabState(state)
+      deactivateAllGroups()
+      addGroup(new TabGroup(action.groupId, action.defaultContentType))
+      return normalizeState(state)
 
     case TAB_REMOVE_GROUP:
-      _.remove(state.tabGroups, {id: action.groupId})
-      return new TabState(state)
+      _.remove(tabGroups, {id: action.groupId})
+      return normalizeState(state)
 
     default:
       return state

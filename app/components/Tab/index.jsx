@@ -85,11 +85,12 @@ class TabViewContainer extends Component {
   }
 
   componentWillMount () {
-    this.props.dispatch(TabActions.createGroup(this.state.groupId, this.props.defaultContentType))
+    let tabGroup = this.props.TabState.getGroupById(this.props.tabGroupId)
+    if (!tabGroup) this.props.dispatch(TabActions.createGroup(this.state.groupId, this.props.defaultContentType))
   }
 
   componentWillUnmount () {
-    this.props.dispatch(TabActions.removeGroup(this.state.groupId))
+    // this.props.dispatch(TabActions.removeGroup(this.state.groupId))
   }
 
   componentDidMount () {

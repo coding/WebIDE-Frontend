@@ -30,7 +30,7 @@ export function openNode (node, shoudlBeFolded = null, deep = false) {
 
           lastActiveOrder = 0
           TabState = getState().TabState
-          lastActiveEditorTabGroup = TabState.activeGroup
+          lastActiveEditorTabGroup = TabState.getActiveGroup()
 
           while (lastActiveEditorTabGroup.type === 'terminal') {
             lastActiveEditorTabGroup = TabState.activatePrevGroup(--lastActiveOrder)
