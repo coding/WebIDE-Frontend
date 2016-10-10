@@ -30,7 +30,7 @@ class FileTree extends Component {
     const {FileTreeState, ...actionProps} = this.props
     const {isContextMenuActive, contextMenuPos} = this.state
     return (
-      <div className='filetree-container'>
+      <div className='filetree-container' tabIndex={1} >
         <FileTreeNode node={FileTreeState.rootNode}
           onContextMenu={this.onContextMenu} {...actionProps} />
         <ContextMenu items={FileTreeContextMenuItems}
