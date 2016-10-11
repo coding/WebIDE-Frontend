@@ -4,11 +4,19 @@ import api from '../../api'
 import * as TabActions from '../Tab/actions'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
+export const FILETREE_SELECT_NODE_KEY = 'FILETREE_SELECT_NODE_KEY'
 export function selectNode (node, multiSelect = false) {
-  return {
-    type: FILETREE_SELECT_NODE,
-    node,
-    multiSelect
+  if (typeof node === 'number') {
+    return {
+      type: FILETREE_SELECT_NODE_KEY,
+      offset: node
+    }
+  } else {
+    return {
+      type: FILETREE_SELECT_NODE,
+      node,
+      multiSelect
+    }
   }
 }
 

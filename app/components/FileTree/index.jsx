@@ -30,7 +30,7 @@ class FileTree extends Component {
     const {FileTreeState, ...actionProps} = this.props
     const {isContextMenuActive, contextMenuPos} = this.state
     return (
-      <div className='filetree-container' tabIndex={1} >
+      <div className='filetree-container' tabIndex={1} onKeyDown={this.onKeyDown}>
         <FileTreeNode node={FileTreeState.rootNode}
           onContextMenu={this.onContextMenu} {...actionProps} />
         <ContextMenu items={FileTreeContextMenuItems}
@@ -50,6 +50,19 @@ class FileTree extends Component {
       contextMenuPos: {x:e.clientX, y:e.clientY},
       contextNode: node
     })
+  }
+
+  onKeyDown = (e) => {
+    // this.props
+    e.preventDefault()
+    switch (e.key) {
+      case 'ArrowDown':
+        this.props.selectNode(1)
+        break
+      case 'ArrowUp':
+        this.props.selectNode(-1)
+        break
+    }
   }
 }
 
