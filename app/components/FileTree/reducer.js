@@ -65,10 +65,12 @@ class Node {
   }
 
   getSiblings () {
+    if (this.isRoot) return [this]
     return this.parent.children
   }
 
   prev (jump) {
+    if (this.isRoot) return this
     var siblings = this.getSiblings()
     var curIndex = siblings.indexOf(this)
     var prevNode = siblings[curIndex - 1]
@@ -87,17 +89,20 @@ class Node {
   }
 
   next (jump) {
+    if (jump && this.isDir && !this.isFolded) {
+      if (this.firstChild()) return this.firstChild()
+    } else if (this.isRoot) {
+      return this
+    }
+
     var siblings = this.getSiblings()
     var curIndex = siblings.indexOf(this)
     var nextNode = siblings[curIndex + 1]
 
-    if (jump && this.isDir && !this.isFolded) {
-      if (this.firstChild()) return this.firstChild()
-    }
-
     if (nextNode) {
       return nextNode
     } else {
+      if (this.parent.isRoot) return this
       return this.parent.next()
     }
   }
@@ -212,15 +217,12 @@ export default function FileTreeReducer (state = _state, action) {
       return normalizeState(state)
 
     case FILETREE_SELECT_NODE_KEY:
-      var curNode = focusedNodes[0]
-      var siblings = curNode.parent.children
-      var curIndex = siblings.indexOf(curNode)
       var node
 
       if (action.offset === 1) {
-        node = curNode.next(true)
+        node = focusedNodes[0].next(true)
       } else if (action.offset === -1 ) {
-        node = curNode.prev(true)
+        node = focusedNodes[0].prev(true)
       }
 
       if (!multiSelect) {
