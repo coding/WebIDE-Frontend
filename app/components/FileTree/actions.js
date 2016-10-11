@@ -4,23 +4,31 @@ import api from '../../api'
 import * as TabActions from '../Tab/actions'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
+export const FILETREE_SELECT_NODE_KEY = 'FILETREE_SELECT_NODE_KEY'
 export function selectNode (node, multiSelect = false) {
-  return {
-    type: FILETREE_SELECT_NODE,
-    node,
-    multiSelect
+  if (typeof node === 'number') {
+    return {
+      type: FILETREE_SELECT_NODE_KEY,
+      offset: node
+    }
+  } else {
+    return {
+      type: FILETREE_SELECT_NODE,
+      node,
+      multiSelect
+    }
   }
 }
 
-export function openNode (node, shoudlBeFolded = null, deep = false) {
+export function openNode (node, shouldBeFolded = null, deep = false) {
   return (dispatch, getState) => {
     if (node.isDir) {
       if (node.shouldBeUpdated) {
         api.fetchPath(node.path)
           .then(data => dispatch(loadNodeData(data, node)))
-          .then(() => dispatch(toggleNodeFold(node, shoudlBeFolded, deep)))
+          .then(() => dispatch(toggleNodeFold(node, shouldBeFolded, deep)))
       } else {
-        dispatch(toggleNodeFold(node, shoudlBeFolded, deep))
+        dispatch(toggleNodeFold(node, shouldBeFolded, deep))
       }
     } else {
       api.readFile(node.path)
@@ -52,11 +60,11 @@ export function openNode (node, shoudlBeFolded = null, deep = false) {
 }
 
 export const FILETREE_FOLD_NODE = 'FILETREE_FOLD_NODE'
-export function toggleNodeFold (node, shoudlBeFolded = null, deep = false) {
+export function toggleNodeFold (node, shouldBeFolded = null, deep = false) {
   return {
     type: FILETREE_FOLD_NODE,
     node,
-    shoudlBeFolded,
+    shouldBeFolded,
     deep
   }
 }

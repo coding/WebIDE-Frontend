@@ -1,12 +1,12 @@
 /* @flow weak */
-import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import cx from 'classnames';
-import ContextMenu from '../ContextMenu';
-import * as FileTreeActions from './actions';
-import FileTreeContextMenuItems from './contextMenuItems';
+import _ from 'lodash'
+import React, { Component, PropTypes } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import cx from 'classnames'
+import ContextMenu from '../ContextMenu'
+import * as FileTreeActions from './actions'
+import FileTreeContextMenuItems from './contextMenuItems'
 import subscribeToFileChange from './subscribeToFileChange'
 
 
@@ -23,14 +23,14 @@ class FileTree extends Component {
 
   componentDidMount() {
     subscribeToFileChange()
-    this.props.initializeFileTree();
+    this.props.initializeFileTree()
   }
 
   render() {
-    const {FileTreeState, ...actionProps} = this.props;
-    const {isContextMenuActive, contextMenuPos} = this.state;
+    const {FileTreeState, ...actionProps} = this.props
+    const {isContextMenuActive, contextMenuPos} = this.state
     return (
-      <div className='filetree-container'>
+      <div className='filetree-container' tabIndex={1} onKeyDown={this.onKeyDown}>
         <FileTreeNode node={FileTreeState.rootNode}
           onContextMenu={this.onContextMenu} {...actionProps} />
         <ContextMenu items={FileTreeContextMenuItems}
@@ -39,7 +39,7 @@ class FileTree extends Component {
           context={this.state.contextNode}
           deactivate={this.setState.bind(this, {isContextMenuActive: false})} />
       </div>
-    );
+    )
   }
 
   onContextMenu = (e, node) => {
@@ -51,30 +51,62 @@ class FileTree extends Component {
       contextNode: node
     })
   }
+
+  onKeyDown = (e) => {
+    var curNode = this.props.FileTreeState.focusedNodes[0]
+    if (e.keyCode === 13 || 37 <= e.keyCode && e.keyCode <= 40) e.preventDefault()
+    switch (e.key) {
+      case 'ArrowDown':
+        this.props.selectNode(1)
+        break
+      case 'ArrowUp':
+        this.props.selectNode(-1)
+        break
+      case 'ArrowRight':
+        if (!curNode.isDir) break
+        if (curNode.isFolded) {
+          this.props.openNode(curNode, false)
+        } else {
+          this.props.selectNode(1)
+        }
+        break
+      case 'ArrowLeft':
+        if (!curNode.isDir || curNode.isFolded) {
+          this.props.selectNode(curNode.parent)
+          break
+        }
+        if (curNode.isDir) this.props.openNode(curNode, true)
+        break
+      case 'Enter':
+        this.props.openNode(curNode)
+        break
+      default:
+    }
+  }
 }
 
 FileTree = connect(
   state => {
     return {FileTreeState: state.FileTreeState}
   }, dispatch => {
-    return bindActionCreators(FileTreeActions, dispatch);
+    return bindActionCreators(FileTreeActions, dispatch)
   }
-)(FileTree);
+)(FileTree)
 
 
 class FileTreeNode extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   render() {
-    const {node, ...actionProps} = this.props;
-    const {openNode, selectNode, onContextMenu} = actionProps;
+    const {node, ...actionProps} = this.props
+    const {openNode, selectNode, onContextMenu} = actionProps
     return (
       <div className='filetree-node-container'
-        onContextMenu={e => {selectNode(node);onContextMenu(e, node)} }>
-        <div
-          className={cx('filetree-node', {'focus':node.isFocused})}
+        onContextMenu={e => {selectNode(node); onContextMenu(e, node)} }>
+        <div className={cx('filetree-node', {'focus':node.isFocused})}
+          ref={r => this.nodeDOM = r}
           onDoubleClick={e => openNode(node)}
           onClick={e => selectNode(node)} >
           <span className='filetree-node-arrow'
@@ -109,8 +141,14 @@ class FileTreeNode extends Component {
           : null }
 
       </div>
-    );
+    )
+  }
+
+  componentDidUpdate () {
+    if (this.props.node.isFocused) {
+      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
+    }
   }
 }
 
-export default FileTree;
+export default FileTree

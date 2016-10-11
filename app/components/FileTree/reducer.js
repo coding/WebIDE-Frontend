@@ -6,9 +6,12 @@ import {
   FILETREE_LOAD_DATA,
   FILETREE_FOLD_NODE,
   FILETREE_SELECT_NODE,
+  FILETREE_SELECT_NODE_KEY,
   FILETREE_REMOVE_NODE
 } from './actions'
 
+
+let focusedNodes = []
 class Node {
   constructor (nodeInfo) {
     const {
@@ -51,12 +54,81 @@ class Node {
 
   set depth (v) { /* no-op */ }
 
-  findChildNodeByPathComponents (pathComponents) {
+  focus () {
+    this.isFocused = true
+    if (focusedNodes.indexOf(this) === -1) focusedNodes.push(this)
+  }
+
+  unfocus () {
+    this.isFocused = false
+    _.remove(focusedNodes, this)
+  }
+
+  getSiblings () {
+    if (this.isRoot) return [this]
+    return this.parent.children
+  }
+
+  prev (jump) {
+    if (this.isRoot) return this
+    var siblings = this.getSiblings()
+    var curIndex = siblings.indexOf(this)
+    var prevNode = siblings[curIndex - 1]
+
+    if (prevNode) {
+      if (!jump) return prevNode
+      if (!prevNode.isDir || prevNode.isFolded) return prevNode
+      if (prevNode.lastChild()) {
+        return prevNode.lastVisibleDescendant()
+      } else {
+        return prevNode
+      }
+    } else {
+      return this.parent
+    }
+  }
+
+  next (jump) {
+    if (jump && this.isDir && !this.isFolded) {
+      if (this.firstChild()) return this.firstChild()
+    } else if (this.isRoot) {
+      return this
+    }
+
+    var siblings = this.getSiblings()
+    var curIndex = siblings.indexOf(this)
+    var nextNode = siblings[curIndex + 1]
+
+    if (nextNode) {
+      return nextNode
+    } else {
+      if (this.parent.isRoot) return this
+      return this.parent.next()
+    }
+  }
+
+  firstChild () {
+    return this.children[0]
+  }
+
+  lastChild () {
+    return this.children[this.children.length - 1]
+  }
+
+  lastVisibleDescendant () {
+    var lastChild = this.children[this.children.length - 1]
+    if (!lastChild) return this
+    if (!lastChild.isDir) return lastChild
+    if (lastChild.isFolded) return lastChild
+    return lastChild.lastVisibleDescendant()
+  }
+
+  _findChildNodeByPathComponents (pathComponents) {
     var pathComponent = pathComponents[0]
     var childNode = _.filter(this.children, {name: pathComponent})[0]
     var nextPathComponents = pathComponents.slice(1)
     if (nextPathComponents.length === 0) { return childNode }
-    return childNode.findChildNodeByPathComponents(nextPathComponents)
+    return childNode._findChildNodeByPathComponents(nextPathComponents)
   }
 
   // apply to not only direct children but all descendants
@@ -117,7 +189,7 @@ var RootNode = new Node({
 const findNodeByPath = (path) => {
   if (path === '/') return Node.rootNode
   const pathComponents = path.split('/').slice(1)
-  return Node.rootNode.findChildNodeByPathComponents(pathComponents)
+  return Node.rootNode._findChildNodeByPathComponents(pathComponents)
 }
 
 var _state = {}
@@ -125,7 +197,8 @@ _state.rootNode = RootNode
 
 const normalizeState = (_state) => {
   var state = {
-    findNodeByPath: findNodeByPath
+    findNodeByPath,
+    focusedNodes
   }
   state.rootNode = _state.rootNode
   state.rootNode.name = config.projectName
@@ -143,23 +216,40 @@ export default function FileTreeReducer (state = _state, action) {
       state.rootNode = RootNode
       return normalizeState(state)
 
+    case FILETREE_SELECT_NODE_KEY:
+      var node
+
+      if (action.offset === 1) {
+        node = focusedNodes[0].next(true)
+      } else if (action.offset === -1 ) {
+        node = focusedNodes[0].prev(true)
+      }
+
+      if (!multiSelect) {
+        RootNode.unfocus()
+        RootNode.forEachDescendant(childNode => childNode.unfocus())
+      }
+      node.focus()
+
+      return normalizeState(state)
+
     case FILETREE_SELECT_NODE:
       var {node, multiSelect} = action
+
       if (!multiSelect) {
-        RootNode.isFocused = false
-        RootNode.forEachDescendant(childNode => {
-          childNode.isFocused = false
-        })
+        RootNode.unfocus()
+        RootNode.forEachDescendant(childNode => childNode.unfocus())
       }
-      node.isFocused = true
+      node.focus()
+
       return normalizeState(state)
 
     case FILETREE_FOLD_NODE:
-      var {node, shoudBeFolded, deep} = action
+      var {node, shouldBeFolded, deep} = action
       if (!node.isDir) return state
 
-      if (typeof shoudBeFolded === 'boolean') {
-        var isFolded = shoudBeFolded
+      if (typeof shouldBeFolded === 'boolean') {
+        var isFolded = shouldBeFolded
       } else {
         var isFolded = !node.isFolded
       }
