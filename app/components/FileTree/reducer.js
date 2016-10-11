@@ -243,11 +243,11 @@ export default function FileTreeReducer (state = _state, action) {
       return normalizeState(state)
 
     case FILETREE_FOLD_NODE:
-      var {node, shoudBeFolded, deep} = action
+      var {node, shouldBeFolded, deep} = action
       if (!node.isDir) return state
 
-      if (typeof shoudBeFolded === 'boolean') {
-        var isFolded = shoudBeFolded
+      if (typeof shouldBeFolded === 'boolean') {
+        var isFolded = shouldBeFolded
       } else {
         var isFolded = !node.isFolded
       }
