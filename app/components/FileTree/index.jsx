@@ -104,6 +104,7 @@ class FileTreeNode extends Component {
     const {openNode, selectNode, onContextMenu} = actionProps
     return (
       <div className='filetree-node-container'
+        ref={r => this.nodeDOM = r}
         onContextMenu={e => {selectNode(node); onContextMenu(e, node)} }>
         <div className={cx('filetree-node', {'focus':node.isFocused})}
           onDoubleClick={e => openNode(node)}
@@ -141,6 +142,12 @@ class FileTreeNode extends Component {
 
       </div>
     )
+  }
+
+  componentDidUpdate () {
+    if (this.props.node.isFocused) {
+      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
+    }
   }
 }
 
