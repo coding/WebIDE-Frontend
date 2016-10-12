@@ -49,3 +49,11 @@ export function removeGroup (groupId) {
     groupId: groupId
   }
 }
+
+export const TAB_MODIFY = 'TAB_MODIFY'
+export function modifyTab(tabConfig) {
+  return {
+    type: TAB_MODIFY,
+    payload: tabConfig
+  }
+}

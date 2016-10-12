@@ -69,10 +69,10 @@ class Term extends Component {
 }
 
 
-connect(state => {
-
-}, dispatch => {
-
+Term = connect(null, dispatch => {
+  return {
+    handleTabTitle: (id, title) => dispatch({type: 'TAB_MODIFY', payload:{title, id}})
+  }
 })(Term)
 
 export default Term;

@@ -6,7 +6,8 @@ import {
   TAB_ACTIVATE,
   TAB_CREATE_GROUP,
   TAB_REMOVE_GROUP,
-  TAB_DISSOLVE_GROUP
+  TAB_DISSOLVE_GROUP,
+  TAB_MODIFY
 } from './actions'
 
 class Tab {
@@ -20,6 +21,10 @@ class Tab {
     this.path = path
     this.content = '' || content
     this.group = tabGroup
+  }
+
+  update (tab) {
+    _.extend(this, tab)
   }
 }
 
@@ -177,6 +182,12 @@ export default function TabReducer (state = _state, action) {
 
     case TAB_REMOVE_GROUP:
       _.remove(tabGroups, {id: action.groupId})
+      return normalizeState(state)
+
+    case TAB_MODIFY:
+      var tabConfig = action.payload
+      var tab = getTabById(tabConfig.id)
+      tab.update(tabConfig)
       return normalizeState(state)
 
     default:
