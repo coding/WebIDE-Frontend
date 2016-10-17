@@ -7,7 +7,7 @@ import {
   TAB_CREATE_GROUP,
   TAB_REMOVE_GROUP,
   TAB_DISSOLVE_GROUP,
-  TAB_MODIFY,
+  TAB_UPDATE,
   TAB_UPDATE_FLAGS
 } from './actions'
 
@@ -189,7 +189,7 @@ export default function TabReducer (state = _state, action) {
       _.remove(tabGroups, {id: action.groupId})
       return normalizeState(state)
 
-    case TAB_MODIFY:
+    case TAB_UPDATE:
       var tabConfig = action.payload
       var tab = getTabById(tabConfig.id)
       tab.update(tabConfig)

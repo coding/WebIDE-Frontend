@@ -50,10 +50,10 @@ export function removeGroup (groupId) {
   }
 }
 
-export const TAB_MODIFY = 'TAB_MODIFY'
-export function modifyTab(tabConfig) {
+export const TAB_UPDATE = 'TAB_UPDATE'
+export function updateTab(tabConfig) {
   return {
-    type: TAB_MODIFY,
+    type: TAB_UPDATE,
     payload: tabConfig
   }
 }
