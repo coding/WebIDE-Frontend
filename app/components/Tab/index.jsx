@@ -44,11 +44,16 @@ const Tab = ({tab, removeTab, activateTab}) => {
 
   return (
     <li className={cx('tab', {
-      active: tab.isActive
+      active: tab.isActive,
+      modified: tab.flags.modified
     })}
-      onClick={e => activateTab(tab.id)} >
-        <div className='title'>{tab.title}</div>
-        <div className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</div>
+      onClick={e => activateTab(tab.id)}
+    >
+      <div className='title'>{tab.title}</div>
+      <div className='control'>
+        <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>
+        <i className='dot'></i>
+      </div>
     </li>
   )
 }
