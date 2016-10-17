@@ -7,14 +7,15 @@ import {
   TAB_CREATE_GROUP,
   TAB_REMOVE_GROUP,
   TAB_DISSOLVE_GROUP,
-  TAB_MODIFY
+  TAB_MODIFY,
+  TAB_UPDATE_FLAGS
 } from './actions'
 
 class Tab {
   constructor (tab = {}, tabGroup) {
-    const {id, isActive, status, icon, title, path, content} = tab
+    const {id, isActive, flags, icon, title, path, content} = tab
     this.id = id || _.uniqueId('tab_')
-    this.status = status || 'modified'
+    this.flags = flags || {}
     this.icon = icon || 'fa fa-folder-o'
     this.title = title || 'untitled'
     this.isActive = isActive || true
@@ -25,6 +26,10 @@ class Tab {
 
   update (tab) {
     _.extend(this, tab)
+  }
+
+  updateFlags (flags) {
+    _.extend(this.flags, flags)
   }
 }
 
@@ -188,6 +193,11 @@ export default function TabReducer (state = _state, action) {
       var tabConfig = action.payload
       var tab = getTabById(tabConfig.id)
       tab.update(tabConfig)
+      return normalizeState(state)
+
+    case TAB_UPDATE_FLAGS:
+      var tab = getTabById(action.payload.tabId)
+      tab.updateFlags(action.payload.flags)
       return normalizeState(state)
 
     default:
