@@ -4,9 +4,11 @@ import store, { getState, dispatch } from '../../store'
 import { path as pathUtil } from '../../utils'
 import api from '../../api'
 import * as _Modal from '../../components/Modal/actions'
+import * as _Tab from '../../components/Tab/actions'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)
+const Tab = bindActionCreators(_Tab, dispatch)
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
@@ -49,9 +51,10 @@ export default {
 
 
   'file:save': (c) => {
-    var activeTab = getState().TabState.activeGroup.activeTab;
+    var activeTab = getState().TabState.getActiveGroup().activeTab;
     var content = activeTab.editor.getValue();
-    api.writeFile(activeTab.path, content);
+    api.writeFile(activeTab.path, content)
+      .then( () => Tab.updateTabFlags(activeTab.id, 'modified', false))
   },
 
 
