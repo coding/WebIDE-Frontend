@@ -5,6 +5,7 @@ import { createStore } from 'redux'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import * as TabActions from './actions'
+import { dragStart } from '../DragAndDrop/actions'
 import AceEditor from '../AceEditor'
 
 const TabView = ({getGroupById, groupId, ...otherProps}) => {
@@ -33,7 +34,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   )
 }
 
-const Tab = ({tab, removeTab, activateTab}) => {
+const Tab = ({tab, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -48,6 +49,8 @@ const Tab = ({tab, removeTab, activateTab}) => {
       modified: tab.flags.modified
     })}
       onClick={e => activateTab(tab.id)}
+      draggable='true'
+      onDragStart={e => dispatch(dragStart({sourceType: 'TAB', sourceId: tab.id}))}
     >
       <div className='title'>{tab.title}</div>
       <div className='control'>
