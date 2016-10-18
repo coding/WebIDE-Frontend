@@ -7,3 +7,17 @@
 .status-bar {
   border-color: $base-border-color;
 }
+
+.breadcrumbs {
+  background-color: $menu-background-color;
+  border-color: $base-border-color;
+  .crumb {
+    background-color: $menu-background-color;
+    &:before {
+      border-left-color: $base-border-color;
+    }
+    &:after {
+      border-left-color: $menu-background-color;
+    }
+  }
+}
