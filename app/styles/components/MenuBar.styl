@@ -1,0 +1,41 @@
+// MenuBar
+.menu-bar {
+  display: flex;
+  background-color: #fafafa;
+  border-bottom: 1px solid transparent;
+}
+
+.menu-bar-item {
+  position: relative;
+  > .menu {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+
+.menu-bar-item-container {
+  padding: 4px 12px;
+  position: relative;
+  height: 100%;
+  z-index: z(menu-bar-item-container);
+  &.active {
+    background-color: $menu-background-color-active;
+    color: #fff;
+  }
+}
+
+.menu-bar-item.coding-logo {
+  align-self: stretch;
+  width: 36px;
+
+  .menu-bar-item-container {
+    &:after {
+      codingMonkeyBackground;
+      absolute(0);
+      content: ' ';
+    }
+    &.active:after {
+      fill: #fff;
+    }
+  }
+}
