@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import terms from './terminal-client';
+import * as TabActions from '../Tab/actions';
 
 class Term extends Component {
   static contextTypes = {
@@ -71,7 +72,7 @@ class Term extends Component {
 
 Term = connect(null, dispatch => {
   return {
-    handleTabTitle: (id, title) => dispatch({type: 'TAB_MODIFY', payload:{title, id}})
+    handleTabTitle: (id, title) => dispatch(TabActions.updateTab({title, id}))
   }
 })(Term)
 
