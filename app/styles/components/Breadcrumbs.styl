@@ -1,0 +1,42 @@
+$breadcrumbs-height = 24px;
+
+.breadcrumbs {
+  display: flex;
+  height: $breadcrumbs-height + 1px;
+  border-bottom: 1px solid transparent;
+}
+
+.crumb-node-name {
+  line-height: $breadcrumbs-height;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: $breadcrumbs-height*0.25 + 10px;
+  position: relative;
+
+  &:before, &:after {
+    display: block;
+    content: '';
+    border-style: solid;
+    border-color: transparent;
+    border-right: none;
+  }
+  &:before {
+    absolute(right 0 top -1px)
+    border-top-width: $breadcrumbs-height*0.5 + 1px;
+    border-bottom-width: $breadcrumbs-height*0.5 + 1px;
+    border-left-width: $breadcrumbs-height*0.25 + 1px;
+  }
+  &:after {
+    absolute(right 1px top 0px)
+    border-top-width: $breadcrumbs-height*0.5
+    border-bottom-width: $breadcrumbs-height*0.5
+    border-left-width: $breadcrumbs-height*0.25;
+  }
+  &:last-child {
+    &:before, &:after {display: none}
+  }
+}

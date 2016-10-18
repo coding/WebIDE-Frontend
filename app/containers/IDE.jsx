@@ -14,7 +14,7 @@ class IDE extends Component {
     super(props)
   }
 
-  componentDidMount () {
+  componentWillMount () {
     api.setupWorkspace().then(_config => {
       Object.assign(config, _config)
     })
