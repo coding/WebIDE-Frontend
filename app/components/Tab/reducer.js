@@ -98,7 +98,7 @@ const normalizeState = (prevState) => {
   tabGroups.forEach(tabGroup => {
     tabGroup.tabs.forEach(tab => tab.group = tabGroup)
   })
-  return {tabGroups, getGroupById, getActiveGroup, activateGroup, activatePrevGroup, normalizeState}
+  return {_timestamp: Date.now(), tabGroups, getGroupById, getActiveGroup, activateGroup, activatePrevGroup, normalizeState}
 }
 
 function getGroupById (id) {

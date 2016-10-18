@@ -9,7 +9,7 @@ var PrimaryPaneAxis = connect(state => {
 })(PaneAxis)
 
 var PanesContainer = (props) => {
-  return <PrimaryPaneAxis {...props}/>
+  return <PrimaryPaneAxis id='primary-pane-axis' {...props} />
 }
 
 export default PanesContainer

@@ -21,11 +21,7 @@ var ModalContainer = (props) => {
     </div>
   ) : null
 }
-
-ModalContainer = connect(
-  state => state.ModalState
-, null
-)(ModalContainer);
+ModalContainer = connect(state => state.ModalState, null)(ModalContainer)
 
 
 class Modal extends Component {
