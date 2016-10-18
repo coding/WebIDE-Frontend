@@ -49,3 +49,30 @@ export function removeGroup (groupId) {
     groupId: groupId
   }
 }
+
+export const TAB_UPDATE = 'TAB_UPDATE'
+export function updateTab(tabConfig) {
+  return {
+    type: TAB_UPDATE,
+    payload: tabConfig
+  }
+}
+
+export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
+export function updateTabFlags (tabId, flag, value=true) {
+  if (!arguments.length) return
+  var payload = { tabId }
+
+  if (typeof flag === 'string') {
+    payload.flags = {[flag]: arguments[2]}
+  } else if (typeof flag === 'object') {
+    payload.flags = flag
+  } else {
+    return
+  }
+
+  return {
+    type: TAB_UPDATE_FLAGS,
+    payload
+  }
+}

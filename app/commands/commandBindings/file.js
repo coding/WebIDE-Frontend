@@ -4,9 +4,11 @@ import store, { getState, dispatch } from '../../store'
 import { path as pathUtil } from '../../utils'
 import api from '../../api'
 import * as _Modal from '../../components/Modal/actions'
+import * as _Tab from '../../components/Tab/actions'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)
+const Tab = bindActionCreators(_Tab, dispatch)
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
@@ -25,20 +27,26 @@ const nodeToParentDirPath = (node) => {
   return pathSplitted.join('/')+'/'
 }
 
+function createFileWithContent (content) {
+  return function createFileAtPath (path) {
+    return api.createFile(path, content)
+      .then(() => {if (content) api.writeFile(path, content)})
+      .then(Modal.dismissModal)
+      .then(() => path)
+      // if error, try again.
+      .catch(err=>
+        Modal.updateModal({statusMessage:err.msg}).then(createFileAtPath)
+      )
+  }
+}
+
 export default {
   'file:new_file': (c) => {
     var node = c.context
     var path = nodeToNearestDirPath(node)
     var defaultValue = pathUtil.join(path, 'untitled')
 
-    const createFile = (pathValue) => {
-      api.createFile(pathValue)
-        .then( () => Modal.dismissModal() )
-        // if error, try again.
-        .catch(err=>
-          Modal.updateModal({statusMessage:err.msg}).then(createFile)
-        )
-    }
+    const createFile = createFileWithContent(null)
 
     Modal.showModal('Prompt', {
       message: 'Enter the path for the new file.',
@@ -49,9 +57,29 @@ export default {
 
 
   'file:save': (c) => {
-    var activeTab = getState().TabState.activeGroup.activeTab;
+    var activeTab = getState().TabState.getActiveGroup().activeTab;
     var content = activeTab.editor.getValue();
-    api.writeFile(activeTab.path, content);
+
+    if (!activeTab.path) {
+      const createFile = createFileWithContent(content)
+      Modal.showModal('Prompt', {
+        message: 'Enter the path for the new file.',
+        defaultValue: '/untitled',
+        selectionRange: [1, '/untitled'.length]
+      })
+        .then(createFile)
+        .then(path => Tab.updateTab({
+          id: activeTab.id,
+          path: path,
+          title: path.replace(/^.*\/([^\/]+$)/, '$1')
+        }))
+        .then(() => Tab.updateTabFlags(activeTab.id, 'modified', false))
+
+    } else {
+      api.writeFile(activeTab.path, content)
+        .then(() => Tab.updateTabFlags(activeTab.id, 'modified', false))
+    }
+
   },
 
 

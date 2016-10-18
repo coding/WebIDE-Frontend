@@ -1,4 +1,5 @@
 $tab-height = 30px;
+$tab-control-width = 16px;
 
 .tab-component {
   position: relative;
@@ -31,6 +32,7 @@ $tab-height = 30px;
 }
 
 .tab-bar {
+  noSelect();
   flex: 0 0 auto;
   display: flex;
   align-items: center;
@@ -69,17 +71,65 @@ $tab-height = 30px;
   flex-grow: 1;
   display: flex;
   align-items: center;
-  .status{
-    padding: 3px;
-  }
+  cursor: default;
+
   .title {
+    text-overflow: ellipsis;
     padding: 0 4px;
   }
-  .close {
-    padding: 0 4px;
+
+  .control {
+    min-width: $tab-control-width;
+    width: $tab-control-width;
+    height: $tab-control-width;
+    cursor: pointer;
     margin-left: auto;
+    position: relative;
   }
 }
+
+
+.tab {
+  // case default:
+  i {
+    absolute(0);
+    line-height: $tab-control-width;
+    text-align: center;
+    font-style: normal;
+  }
+
+  .dot {
+    height: $tab-control-width*0.5;
+    width: $tab-control-width*0.5;
+    margin-top: $tab-control-width*0.25;
+    margin-left: $tab-control-width*0.25;
+    border-radius: 100%;
+    background-color: #5b91d7;
+    display: none;
+  }
+
+  .close {
+    margin-top: -1px;
+    display: none;
+  }
+
+  // case hover-on-tab / tab-is-active:
+  &.active, &:hover {
+    .close {display: block;}
+  }
+
+  // case modified flag:
+  &.modified {
+    .dot {display: block;}
+  }
+
+  // case hover-on-tab-control
+  .control:hover {
+    .dot {display: none;}
+  }
+
+}
+
 
 .tab-content-item {
   display: none;

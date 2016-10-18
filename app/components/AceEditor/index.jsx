@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import ReactAce from './ReactAce';
 import * as EditorActions from './actions';
+import * as TabActions from '../Tab/actions';
 import getMode from './getAceMode';
 
 import 'brace/mode/java';
@@ -43,13 +44,13 @@ class AceEditor extends Component {
     width: '100%',
   };
 
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {};
     this.state.name = this.props.name || _.uniqueId('ide_editor_');
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const {theme, mode, tab, dispatch} = this.props;
     var editor = this.editor = ace.edit(this.state.name);
     editor.setTheme(`ace/theme/${theme}`);
@@ -64,10 +65,11 @@ class AceEditor extends Component {
     }
     editor.focus();
     tab.editor = editor;
+    editor.session.on('change', this.onChange)
     setTimeout( () => editor.resize(), 0);
   }
 
-  render() {
+  render () {
     const { width, height } = this.props;
     const name = this.state.name;
     const divStyle = { width, height };
@@ -78,6 +80,13 @@ class AceEditor extends Component {
         data-ace-resize='true'
       ></div>
     );
+  }
+
+  onChange = (e) => {
+    const {tab, dispatch} = this.props;
+    if (!tab.flags.modified) {
+      dispatch(TabActions.updateTabFlags(tab.id, 'modified', true))
+    }
   }
 }
 
