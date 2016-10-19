@@ -3,40 +3,49 @@ import _ from 'lodash'
 import {
   DND_DRAG_START,
   DND_DRAG_OVER,
+  DND_UPDATE_DRAG_OVER_META,
   DND_DRAG_END
 } from './actions'
 
 function getDroppables () {
-  var droppables = {}
-  _.forEach(document.querySelectorAll('[data-droppable]'), (elem) => {
-    droppables[elem.id] = {
-      id: elem.id,
-      element: elem,
-      rect: elem.getBoundingClientRect()
+  var droppables = _.map(document.querySelectorAll('[data-droppable]'), (DOMNode) => {
+    return {
+      id: DOMNode.id,
+      DOMNode: DOMNode,
+      type: DOMNode.getAttribute('data-droppable'),
+      rect: DOMNode.getBoundingClientRect()
     }
   })
   return droppables
 }
 
-export default function DragAndDropReducer (state={}, action) {
+export default function DragAndDropReducer (state={isDragging: false}, action) {
   switch (action.type) {
     case DND_DRAG_START:
       var {sourceType, sourceId} = action.payload
       return {
-        sourceType,
-        sourceId,
         isDragging: true,
+        source: {
+          type: sourceType,
+          id: sourceId
+        },
         droppables: getDroppables()
       }
 
     case DND_DRAG_OVER:
       return {
         ...state,
-        paneLayoutOverlay: action.payload.paneLayoutOverlay
+        target: action.payload
+      }
+
+    case DND_UPDATE_DRAG_OVER_META:
+      return {
+        ...state,
+        meta: action.payload
       }
 
     case DND_DRAG_END:
-      return {...state, ...action.payload, isDragging: false}
+      return {isDragging: false}
 
     default:
       return state

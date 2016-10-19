@@ -36,7 +36,7 @@ class Pane extends Component {
       <div id={id}
         style={style}
         className={cx('pane-container', parentFlexDirection)}
-        data-droppable='true'
+        data-droppable='PANE'
         ref={r => this.paneDOM = r}
       > { content }
         <ResizeBar sectionId={id}

@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { dragOver } from './actions'
+import { dragOverTarget, updateDragOverMeta, dragEnd } from './actions'
 
 @connect(state => state.DragAndDrop)
 class DragAndDrop extends Component {
@@ -12,11 +12,11 @@ class DragAndDrop extends Component {
   }
 
   render () {
-    const {paneLayoutOverlay, isDragging} = this.props
+    const {isDragging, meta, target} = this.props
     if (!isDragging) return null
 
-    if (paneLayoutOverlay) {
-      const {top, left, width, height} = paneLayoutOverlay
+    if (meta && meta.paneLayoutOverlay) {
+      const {top, left, width, height} = meta.paneLayoutOverlay
       var overlayStyle = {
         position: 'fixed',
         top: top,
@@ -27,28 +27,38 @@ class DragAndDrop extends Component {
       }
     }
 
-    return paneLayoutOverlay
+    return meta && meta.paneLayoutOverlay
       ? <div className='pane-layout-overlay' style={overlayStyle}></div>
       : null
   }
 
   componentDidMount () {
     window.ondragover = this.onDragOver
+    window.ondrop = this.onDrop
+    window.ondragend = this.onDragEnd
   }
 
   onDragOver = (e) => {
-    const {sourceType, sourceId, droppables, dispatch} = this.props
+    e.preventDefault()
+    const {source, droppables, dispatch, meta} = this.props
+    const prevTarget = this.props.target
 
     const [oX, oY] = [e.pageX, e.pageY]
-    const targetDroppable = _.find(droppables, droppable => {
+    const target = _.find(droppables, droppable => {
       const {top, left, right, bottom} = droppable.rect
       return (left <= oX && oX <= right && top <= oY && oY <= bottom)
     })
-    if (!targetDroppable) return
 
-    switch (sourceType) {
+    if (!target) return
+    if (!prevTarget || target.id !== prevTarget.id) {
+      dispatch(dragOverTarget({id: target.id, type: target.type}))
+    }
+
+    switch (source.type) {
       case 'TAB':
-        const {top, left, right, bottom, height, width} = targetDroppable.rect
+        if (target.type !== 'PANE') break
+
+        const {top, left, right, bottom, height, width} = target.rect
         const leftRule = left + width/3
         const rightRule = right - width/3
         const topRule = top + height/3
@@ -68,10 +78,9 @@ class DragAndDrop extends Component {
         }
 
         // nothing changed, stop here
-        // if (this.overlayPos === overlayPos) return
-        // this.overlayPos = overlayPos
+        if (meta && meta.paneSplitDirection === overlayPos) return
 
-        const heightTabBar = targetDroppable.element.querySelector('.tab-bar').offsetHeight
+        const heightTabBar = target.DOMNode.querySelector('.tab-bar').offsetHeight
         let overlay
         switch (overlayPos) {
           case 'left':
@@ -115,18 +124,20 @@ class DragAndDrop extends Component {
             }
         }
 
-        dispatch(dragOver({
+        dispatch(updateDragOverMeta({
+          paneSplitDirection: overlayPos,
           paneLayoutOverlay: overlay
         }))
         break
 
       default:
-        break
     }
-    // dispatch(PaneActions.dragOverPane({
-    //   ...paneLayoutOverlay,
-    //   direction: overlayPos
-    // }))
+  }
+
+  onDrop = (e) => {
+  }
+
+  onDragEnd = (e) => {
   }
 }
 
