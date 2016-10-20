@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { dragOverTarget, updateDragOverMeta, dragEnd } from './actions'
+import * as PaneActions from '../Pane/actions'
 
 @connect(state => state.DragAndDrop)
 class DragAndDrop extends Component {
@@ -68,6 +69,18 @@ class DragAndDrop extends Component {
   }
 
   onDrop = (e) => {
+    e.preventDefault()
+    const {source, target, meta, dispatch} = this.props
+    if (!source || !target) return
+    switch (`${source.type}_to_${target.type}`) {
+      case 'TAB_to_PANE':
+        if (meta.paneSplitDirection === 'center') {
+
+        } else {
+          dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
+        }
+    }
+    dispatch(dragEnd())
   }
 
   onDragEnd = (e) => {
