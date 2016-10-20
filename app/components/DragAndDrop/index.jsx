@@ -44,10 +44,15 @@ class DragAndDrop extends Component {
     const prevTarget = this.props.target
 
     const [oX, oY] = [e.pageX, e.pageY]
-    const target = _.find(droppables, droppable => {
+    const target = droppables.reduce((result, droppable) => {
       const {top, left, right, bottom} = droppable.rect
-      return (left <= oX && oX <= right && top <= oY && oY <= bottom)
-    })
+      if (left <= oX && oX <= right && top <= oY && oY <= bottom) {
+        if (!result) return droppable
+        return result.DOMNode.contains(droppable.DOMNode) ? droppable : result
+      } else {
+        return result
+      }
+    }, null)
 
     if (!target) return
     if (!prevTarget || target.id !== prevTarget.id) {
@@ -66,6 +71,9 @@ class DragAndDrop extends Component {
   }
 
   onDragEnd = (e) => {
+    e.preventDefault()
+    const {dispatch} = this.props
+    dispatch(dragEnd())
   }
 
   dragTabOverPane (e, target) {
