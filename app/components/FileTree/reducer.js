@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { handleActions } from 'redux-actions'
 import config from '../../config'
 
 import {
@@ -205,69 +206,69 @@ const normalizeState = (_state) => {
   return state
 }
 
-export default function FileTreeReducer (state = _state, action) {
-  switch (action.type) {
+export default handleActions({
+  [FILETREE_LOAD_DATA]: (state, action) => {
+    let {node, data} = action.payload
+    if (!node) node = RootNode
+    node.shouldBeUpdated = false
+    data.forEach(nodeInfo => node.applyChangeToNode(nodeInfo, 'create'))
+    state.rootNode = RootNode
+    return normalizeState(state)
+  },
 
-    case FILETREE_LOAD_DATA:
-      var {node, data} = action
-      if (!node) node = RootNode
-      node.shouldBeUpdated = false
-      data.forEach(nodeInfo => node.applyChangeToNode(nodeInfo, 'create'))
-      state.rootNode = RootNode
-      return normalizeState(state)
+  [FILETREE_SELECT_NODE_KEY]: (state, action) => {
+    let node
+    let {offset, multiSelect} = action.payload
+    if (offset === 1) {
+      node = focusedNodes[0].next(true)
+    } else if (offset === -1 ) {
+      node = focusedNodes[0].prev(true)
+    }
 
-    case FILETREE_SELECT_NODE_KEY:
-      var node
+    if (!multiSelect) {
+      RootNode.unfocus()
+      RootNode.forEachDescendant(childNode => childNode.unfocus())
+    }
+    node.focus()
 
-      if (action.offset === 1) {
-        node = focusedNodes[0].next(true)
-      } else if (action.offset === -1 ) {
-        node = focusedNodes[0].prev(true)
-      }
+    return normalizeState(state)
+  },
 
-      if (!multiSelect) {
-        RootNode.unfocus()
-        RootNode.forEachDescendant(childNode => childNode.unfocus())
-      }
-      node.focus()
+  [FILETREE_SELECT_NODE]: (state, action) => {
+    let {node, multiSelect} = action.payload
 
-      return normalizeState(state)
+    if (!multiSelect) {
+      RootNode.unfocus()
+      RootNode.forEachDescendant(childNode => childNode.unfocus())
+    }
+    node.focus()
 
-    case FILETREE_SELECT_NODE:
-      var {node, multiSelect} = action
+    return normalizeState(state)
+  },
 
-      if (!multiSelect) {
-        RootNode.unfocus()
-        RootNode.forEachDescendant(childNode => childNode.unfocus())
-      }
-      node.focus()
+  [FILETREE_FOLD_NODE]: (state, action) => {
+    let {node, shouldBeFolded, deep} = action.payload
+    if (!node.isDir) return state
 
-      return normalizeState(state)
+    if (typeof shouldBeFolded === 'boolean') {
+      var isFolded = shouldBeFolded
+    } else {
+      var isFolded = !node.isFolded
+    }
+    node.isFolded = isFolded
+    if (deep) {
+      node.forEachDescendant(childNode => {
+        if (childNode.isDir) childNode.isFolded = isFolded
+      })
+    }
+    return normalizeState(state)
+  },
 
-    case FILETREE_FOLD_NODE:
-      var {node, shouldBeFolded, deep} = action
-      if (!node.isDir) return state
-
-      if (typeof shouldBeFolded === 'boolean') {
-        var isFolded = shouldBeFolded
-      } else {
-        var isFolded = !node.isFolded
-      }
-      node.isFolded = isFolded
-      if (deep) {
-        node.forEachDescendant(childNode => {
-          if (childNode.isDir) childNode.isFolded = isFolded
-        })
-      }
-      return normalizeState(state)
-
-    case FILETREE_REMOVE_NODE:
-      var {node} = action
-      RootNode.applyChangeToNode(node, 'delete')
-      state.rootNode = RootNode
-      return normalizeState(state)
-
-    default:
-      return state
+  [FILETREE_REMOVE_NODE]: (state, action) => {
+    let node = action.payload
+    RootNode.applyChangeToNode(node, 'delete')
+    state.rootNode = RootNode
+    return normalizeState(state)
   }
-}
+
+}, _state)

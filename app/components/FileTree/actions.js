@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { createAction } from 'redux-actions'
 import api from '../../api'
 import * as TabActions from '../Tab/actions'
 
@@ -9,13 +10,12 @@ export function selectNode (node, multiSelect = false) {
   if (typeof node === 'number') {
     return {
       type: FILETREE_SELECT_NODE_KEY,
-      offset: node
+      payload: {offset: node}
     }
   } else {
     return {
       type: FILETREE_SELECT_NODE,
-      node,
-      multiSelect
+      payload: {node, multiSelect}
     }
   }
 }
@@ -60,31 +60,15 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
 }
 
 export const FILETREE_FOLD_NODE = 'FILETREE_FOLD_NODE'
-export function toggleNodeFold (node, shouldBeFolded = null, deep = false) {
-  return {
-    type: FILETREE_FOLD_NODE,
-    node,
-    shouldBeFolded,
-    deep
-  }
-}
+export const toggleNodeFold = createAction(FILETREE_FOLD_NODE,
+  (node, shouldBeFolded = null, deep = false) => ({node, shouldBeFolded, deep})
+)
 
 export const FILETREE_REMOVE_NODE = 'FILETREE_REMOVE_NODE'
-export function removeNode (node) {
-  return {
-    type: FILETREE_REMOVE_NODE,
-    node
-  }
-}
+export const removeNode = createAction(FILETREE_REMOVE_NODE, node => node)
 
 export const FILETREE_LOAD_DATA = 'FILETREE_LOAD_DATA'
-export function loadNodeData (data, node) {
-  return {
-    type: FILETREE_LOAD_DATA,
-    data,
-    node
-  }
-}
+export const loadNodeData = createAction(FILETREE_LOAD_DATA, (data, node) => ({data, node}))
 
 export function initializeFileTree () {
   return (dispatch, getState) => {
