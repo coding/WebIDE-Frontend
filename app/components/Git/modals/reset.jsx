@@ -90,7 +90,6 @@ class GitResetView extends Component {
   }
 
   handleChangeOption (e) {
-    console.log('handleChangeOption')
     this.setState({resetType: e.target.value})
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
@@ -103,7 +102,6 @@ class GitResetView extends Component {
   }
 
   handleConfirm (e) {
-    console.log('handleConfirm')
     this.props.resetHead({
       ref: this.state.commit,
       resetType: this.state.resetType,

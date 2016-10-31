@@ -142,7 +142,7 @@ export function updateUnstashIsPop (isPop) {
   }
 }
 
-export const GIT_UPDATE_UNSTASH_IS_REINSTATE= 'GIT_UPDATE_UNSTASH_IS_REINSTATE'
+export const GIT_UPDATE_UNSTASH_IS_REINSTATE = 'GIT_UPDATE_UNSTASH_IS_REINSTATE'
 export function updateUnstashIsReinstate (isReinstate) {
   return {
     type: GIT_UPDATE_UNSTASH_IS_REINSTATE,
@@ -150,7 +150,7 @@ export function updateUnstashIsReinstate (isReinstate) {
   }
 }
 
-export const GIT_UPDATE_UNSTASH_BRANCH_NAME= 'GIT_UPDATE_UNSTASH_BRANCH_NAME'
+export const GIT_UPDATE_UNSTASH_BRANCH_NAME = 'GIT_UPDATE_UNSTASH_BRANCH_NAME'
 export function updateUnstashBranchName (newBranchName) {
   return {
     type: GIT_UPDATE_UNSTASH_BRANCH_NAME,
