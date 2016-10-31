@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { handleActions } from 'redux-actions'
 import {
   TAB_CREATE,
   TAB_REMOVE,
@@ -152,55 +153,82 @@ function activatePrevGroup (last = -1) {
 }
 
 let _state = normalizeState({tabGroups: []})
-export default function TabReducer (state = _state, action) {
-  switch (action.type) {
+export default handleActions({
+  [TAB_CREATE]: (state, action) => {
+    const {groupId, tab} = action.payload
+    var tabGroup = getGroupById(groupId)
+    if (!tabGroup) tabGroup = getActiveGroup()
+    var newTab = new Tab(tab, tabGroup)
+    tabGroup.tabs.push(newTab)
+    tabGroup.activateTab(newTab)
+    return normalizeState(state)
+  },
 
-    case TAB_CREATE:
-      var tabGroup = getGroupById(action.groupId)
-      if (!tabGroup) tabGroup = getActiveGroup()
-      var newTab = new Tab(action.tab, tabGroup)
-      tabGroup.tabs.push(newTab)
-      tabGroup.activateTab(newTab)
-      return normalizeState(state)
+  [TAB_REMOVE]: (state, action) => {
+    var tab = getTabById(action.payload)
+    if (tab.isActive) {
+      tab.group.activateNextTab()
+    }
+    tab.group.removeTab(tab)
+    return normalizeState(state)
+  },
 
-    case TAB_REMOVE:
-      var tab = getTabById(action.tabId)
-      if (tab.isActive) {
-        tab.group.activateNextTab()
-      }
-      tab.group.removeTab(tab)
-      return normalizeState(state)
+  [TAB_ACTIVATE]: (state, action) => {
+    const tab = getTabById(action.payload)
+    if (tab.isActive) return state
+    tab.group.activateTab(action.payload)
+    return normalizeState(state)
+  },
 
-    case TAB_ACTIVATE:
-      var tab = getTabById(action.tabId)
-      if (tab.isActive) return state
-      tab.group.activateTab(action.tabId)
-      return normalizeState(state)
+  [TAB_CREATE_GROUP]: (state, action) => {
+    const {groupId, defaultContentType} = action.payload
+    deactivateAllGroups()
+    addGroup(new TabGroup(groupId, defaultContentType))
+    return normalizeState(state)
+  },
 
-    case TAB_DISSOLVE_GROUP:
-      return state
+  [TAB_REMOVE_GROUP]: (state, action) => {
+    _.remove(tabGroups, {id: action.payload})
+    return normalizeState(state)
+  },
 
-    case TAB_CREATE_GROUP:
-      deactivateAllGroups()
-      addGroup(new TabGroup(action.groupId, action.defaultContentType))
-      return normalizeState(state)
+  [TAB_UPDATE]: (state, action) => {
+    const tabConfig = action.payload
+    const tab = getTabById(tabConfig.id)
+    tab.update(tabConfig)
+    return normalizeState(state)
+  },
 
-    case TAB_REMOVE_GROUP:
-      _.remove(tabGroups, {id: action.groupId})
-      return normalizeState(state)
-
-    case TAB_UPDATE:
-      var tabConfig = action.payload
-      var tab = getTabById(tabConfig.id)
-      tab.update(tabConfig)
-      return normalizeState(state)
-
-    case TAB_UPDATE_FLAGS:
-      var tab = getTabById(action.payload.tabId)
-      tab.updateFlags(action.payload.flags)
-      return normalizeState(state)
-
-    default:
-      return state
+  [TAB_UPDATE_FLAGS]: (state, action) => {
+    const {tabId, flags} = action.payload
+    var tab = getTabById(tabId)
+    tab.updateFlags(flags)
+    return normalizeState(state)
   }
-}
+}, _state)
+
+/**
+ * The state shape:
+ *
+ *  TabState: {
+      tabGroups: {
+        [tab_group_id <String>]: {
+          id:         <String>
+          type:       <String>
+          isActive:   <Boolean>
+          tabs: {
+            [tab_id <String>]: {
+              id:       <String>
+              flags:    <Object>
+              icon:     <String>
+              title:    <String>
+              isActive: <Boolean>
+              path:     <String>
+              content:  <String>
+              groupId:  <String>
+            }
+          }
+        }
+      }
+    }
+ */
