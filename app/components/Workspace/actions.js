@@ -35,12 +35,19 @@ export function toggleCreatingWorkspace (isCreating) {
   return {type: WORKSPACE_CREATING, isCreating}
 }
 
+export const WORKSPACE_CREATING_ERROR = 'WORKSPACE_CREATING_ERROR'
+export function toggleCreatingWorkspaceErr (msg) {
+  return {type: WORKSPACE_CREATING_ERROR, msg}
+}
+
 export function createWorkspace (url) {
   return dispatch => {
     dispatch(toggleCreatingWorkspace(true))
     api.createWorkspace(url).then(ws => {
       dispatch(fetchWorkspaceList())
       dispatch(toggleCreatingWorkspace(false))
+    }).catch(e => {
+      dispatch(toggleCreatingWorkspaceErr(e.msg))
     })
   }
 }

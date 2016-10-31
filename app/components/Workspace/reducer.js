@@ -3,7 +3,8 @@ import {
   WORKSPACE_FETCH_PUBLIC_KEY,
   WORKSPACE_FETCH_LIST,
   WORKSPACE_OPEN,
-  WORKSPACE_CREATING
+  WORKSPACE_CREATING,
+  WORKSPACE_CREATING_ERROR
 } from './actions'
 
 const defaultState = {
@@ -12,7 +13,8 @@ const defaultState = {
   currentWorkspace: null,
   publicKey: null,
   fingerprint: null,
-  isCreating: false
+  isCreating: false,
+  errMsg: null
 }
 
 export default function (state = defaultState, action) {
@@ -31,6 +33,9 @@ export default function (state = defaultState, action) {
 
     case WORKSPACE_CREATING:
       return {...state, isCreating: action.isCreating}
+
+    case WORKSPACE_CREATING_ERROR:
+      return {...state, isCreating: false, errMsg: action.msg}
 
     default:
       return state
