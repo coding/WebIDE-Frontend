@@ -38,7 +38,7 @@ var GitCommitView = ({workingDir, stagingArea, ...actionProps}) => {
           onChange={e => updateCommitMessage(e.target.value)} />
       </div>
       <hr />
-      <div className='git-commit-ops'>
+      <div className='modal-ops'>
         <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
         <button className='btn btn-primary' onClick={e => commit(stagingArea)}>Commit</button>
       </div>
@@ -57,6 +57,10 @@ class _GitBranchWidget extends Component {
     this.state = {
       isActive: false
     }
+  }
+
+  componentWillMount () {
+    this.props.getCurrentBranch()
   }
 
   render () {

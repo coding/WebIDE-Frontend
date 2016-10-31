@@ -21,3 +21,48 @@
     max-width: 100%;
   }
 }
+
+.git-unstash-container {
+  .btn-list {
+    .btn-default {
+      width: 100%;
+      margin-bottom: 6px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  .stash-list {
+    min-height: 114px;
+    max-height: 200px;
+    overflow: auto;
+    border: 1px solid gray(85%);
+    ul {
+      margin: 0;
+      padding: 0;
+      li {
+        padding: 2px 10px;
+        cursor: pointer;
+      }
+      li:nth-child(odd) {
+        background: $gray-lighter;
+      }
+      li.isSelected {
+        background: $component-active-bg;
+        color: $component-active-color;
+      }
+    }
+  }
+  
+  .checkbox {
+    float: left;
+    padding-top: 0;
+    label {
+      padding-right: 20px;
+    }
+    input[type="checkbox"] {
+      margin: 4px 0 0 -20px;
+    }
+  }
+}
+

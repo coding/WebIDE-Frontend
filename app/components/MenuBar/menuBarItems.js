@@ -43,6 +43,21 @@ var menuBarItems = [
         name: 'Push',
         icon: 'octicon octicon-repo-push',
         command: 'git:push'
+      }, dividItem,
+      {
+        name: 'Stash Changes...',
+        icon: 'fa',
+        command: 'git:stash'
+      },
+      {
+        name: 'Unstash Changes...',
+        icon: 'fa',
+        command: 'git:unstash'
+      },
+      {
+        name: 'Reset HEAD...',
+        icon: 'fa',
+        command: 'git:reset_head'
       }
     ]
   }, {

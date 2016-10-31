@@ -23,6 +23,31 @@ export function addNotification (_notification) {
 
 export const notify = addNotification
 
+export function addErrorNotification (_notification) {
+  return dispatch => {
+    var notification, defaultNotification
+
+    defaultNotification = {
+      message: '',
+      action: 'Dismiss',
+      key: Date.now(),
+      dismissAfter: 6000,
+      barStyle: {backgroundColor:'red'},
+      actionStyle: {color:'white'},
+      onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
+    }
+
+    notification = {...defaultNotification, ..._notification}
+
+    dispatch({
+      type: NOTIFICATION_ADD,
+      notification
+    })
+  }
+}
+
+export const error = addErrorNotification
+
 export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
 export function removeNotification (notification) {
   return {

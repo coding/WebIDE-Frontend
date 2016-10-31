@@ -6,7 +6,10 @@ import {
   Prompt,
   Confirm,
   CommandPalette,
-  GitCommitView
+  GitCommitView,
+  GitStashView,
+  GitUnstashView,
+  GitResetView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -40,6 +43,15 @@ class Modal extends Component {
       switch (modalType) {
         case 'GitCommit':
           return <GitCommitView />
+
+        case 'GitStash':
+          return <GitStashView />
+
+        case 'GitUnstash':
+          return <GitUnstashView />
+
+        case 'GitResetHead':
+          return <GitResetView />
 
         case 'Prompt':
           return <Prompt {...this.props} />
