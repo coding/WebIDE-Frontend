@@ -1,6 +1,7 @@
 /* @flow weak */
 import _ from 'lodash'
-import React from 'react'
+import { handleActions } from 'redux-actions'
+
 import {
   PANE_INITIALIZE,
   PANE_UNSET_COVER,
@@ -197,93 +198,84 @@ const _state = {
     views: ['']
   })
 }
-export default function PaneReducer (state = _state, action) {
-  switch (action.type) {
-    case PANE_RESIZE:
-      let section_A = getPaneById(action.sectionId)
-      let parent = getPaneById(section_A.parentId)
-      let section_B = parent.views[parent.views.indexOf(section_A) + 1]
-      let section_A_Dom = document.getElementById(section_A.id)
-      let section_B_Dom = document.getElementById(section_B.id)
-      var r, rA, rB
-      if (parent.flexDirection === 'column') {
-        r = action.dY
-        rA = section_A_Dom.offsetHeight
-        rB = section_B_Dom.offsetHeight
-      } else {
-        r = action.dX
-        rA = section_A_Dom.offsetWidth
-        rB = section_B_Dom.offsetWidth
-      }
-      section_A.size = section_A.size * (rA - r) / rA
-      section_B.size = section_B.size * (rB + r) / rB
+export default handleActions({
+  [PANE_RESIZE]: (state, action) => {
+    const {sectionId, dX, dY} = action.payload
+    let section_A = getPaneById(sectionId)
+    let parent = getPaneById(section_A.parentId)
+    let section_B = parent.views[parent.views.indexOf(section_A) + 1]
+    let section_A_Dom = document.getElementById(section_A.id)
+    let section_B_Dom = document.getElementById(section_B.id)
+    var r, rA, rB
+    if (parent.flexDirection === 'column') {
+      r = dY
+      rA = section_A_Dom.offsetHeight
+      rB = section_B_Dom.offsetHeight
+    } else {
+      r = dX
+      rA = section_A_Dom.offsetWidth
+      rB = section_B_Dom.offsetWidth
+    }
+    section_A.size = section_A.size * (rA - r) / rA
+    section_B.size = section_B.size * (rB + r) / rB
 
-      section_A_Dom.style.flexGrow = section_A.size
-      section_B_Dom.style.flexGrow = section_B.size
+    section_A_Dom.style.flexGrow = section_A.size
+    section_B_Dom.style.flexGrow = section_B.size
 
-      // @coupled: trigger resize of children ace editor
-      debounced(function () {
-        section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
-          editorDOM => editorDOM.$ace_editor.resize()
-        )
-        section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
-          editorDOM => editorDOM.$ace_editor.resize()
-        )
-      })
-
-      return state
-
-    case PANE_CONFIRM_RESIZE:
-      return state
-
-    default:
-      return state
+    // @coupled: trigger resize of children ace editor
+    debounced(function () {
+      section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+      section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+    })
+    return state
   }
-}
-
-export function PaneCrossReducer (allStates, action) {
-  switch (action.type) {
-    case PANE_SPLIT_WITH_KEY:
-      var {Panes, TabState} = allStates
-      var {pane, splitCount, flexDirection} = action.payload
-      if (!pane) pane = Panes.root
-
-      if (splitCount === pane.views.length &&
-        flexDirection === pane.flexDirection) {
-        return allStates
-      }
-
-      pane = new Pane(pane)
-      var tabGroupIds = pane.splitPane(splitCount, flexDirection)
-      if (tabGroupIds.length > 1) {
-        var tabGroupIdToMergeInto = tabGroupIds[0]
-        var tabGroupIdsToBeMerged = tabGroupIds.slice(1)
-        var mergedTabs = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
-          var tabGroup = TabState.getGroupById(tabGroupId)
-          tabGroup.deactivateAllTabsInGroup()
-          return [...tabGroup.tabs, ...acc]
-        }, [])
-        var mergerTabGroup = TabState.getGroupById(tabGroupIdToMergeInto)
-        mergerTabGroup.mergeTabs(mergedTabs)
-      }
-      return { ...allStates,
-        Panes: {root: new Pane(pane)},
-        TabState: TabState.normalizeState(TabState) }
+}, _state)
 
 
-    case PANE_SPLIT:
-      var {Panes, TabState} = allStates
-      var {paneId, splitDirection} = action.payload
-      var pane = getPaneById(paneId)
-      console.log(paneId+': '+splitDirection);
-      pane.splitToDirection(splitDirection)
+export const PaneCrossReducer = handleActions({
+  [PANE_SPLIT_WITH_KEY]: (allStates, action) => {
+    var {Panes, TabState} = allStates
+    var {pane, splitCount, flexDirection} = action.payload
+    if (!pane) pane = Panes.root
 
-      return { ...allStates,
-        Panes: {root: Pane.root, timestamp: Date.now()}
-      }
-
-
-    default:
+    if (splitCount === pane.views.length &&
+      flexDirection === pane.flexDirection) {
       return allStates
+    }
+
+    pane = new Pane(pane)
+    var tabGroupIds = pane.splitPane(splitCount, flexDirection)
+    if (tabGroupIds.length > 1) {
+      var tabGroupIdToMergeInto = tabGroupIds[0]
+      var tabGroupIdsToBeMerged = tabGroupIds.slice(1)
+      var mergedTabs = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
+        var tabGroup = TabState.getGroupById(tabGroupId)
+        tabGroup.deactivateAllTabsInGroup()
+        return [...tabGroup.tabs, ...acc]
+      }, [])
+      var mergerTabGroup = TabState.getGroupById(tabGroupIdToMergeInto)
+      mergerTabGroup.mergeTabs(mergedTabs)
+    }
+    return { ...allStates,
+      Panes: {root: new Pane(pane)},
+      TabState: TabState.normalizeState(TabState)
+    }
+  },
+
+  [PANE_SPLIT]: (allStates, action) => {
+    var {Panes, TabState} = allStates
+    var {paneId, splitDirection} = action.payload
+    var pane = getPaneById(paneId)
+    console.log(paneId+': '+splitDirection);
+    pane.splitToDirection(splitDirection)
+
+    return { ...allStates,
+      Panes: {root: Pane.root, timestamp: Date.now()}
+    }
   }
-}
+})
+
