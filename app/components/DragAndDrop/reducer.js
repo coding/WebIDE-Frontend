@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { handleActions } from 'redux-actions'
 import {
   DND_DRAG_START,
   DND_DRAG_OVER,
@@ -19,35 +20,50 @@ function getDroppables () {
   return droppables
 }
 
-export default function DragAndDropReducer (state={isDragging: false}, action) {
-  switch (action.type) {
-    case DND_DRAG_START:
-      var {sourceType, sourceId} = action.payload
-      return {
-        isDragging: true,
-        source: {
-          type: sourceType,
-          id: sourceId
-        },
-        droppables: getDroppables()
-      }
+export default handleActions({
+  [DND_DRAG_START]: (state, action) => {
+    const {sourceType, sourceId} = action.payload
+    return {
+      isDragging: true,
+      source: {
+        type: sourceType,
+        id: sourceId
+      },
+      droppables: getDroppables()
+    }
+  },
 
-    case DND_DRAG_OVER:
-      return {
-        ...state,
-        target: action.payload
-      }
+  [DND_DRAG_OVER]: (state, action) => {
+    return {
+      ...state,
+      target: action.payload
+    }
+  },
 
-    case DND_UPDATE_DRAG_OVER_META:
-      return {
-        ...state,
-        meta: action.payload
-      }
+  [DND_UPDATE_DRAG_OVER_META]: (state, action) => {
+    return {
+      ...state,
+      meta: action.payload
+    }
+  },
 
-    case DND_DRAG_END:
-      return {isDragging: false}
+  [DND_DRAG_END]: (state, action) => {
+    return {isDragging: false}
+  }
+}, {isDragging: false})
 
-    default:
-      return state
+
+/*
+@StateShape:
+{
+  isDragging: <Boolean>
+  source: {
+    id:
+    type:
+  }
+  target: {
+    id:
+    type:
   }
 }
+*/
