@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import store from '../store.js'
 import PanelAxis from '../components/Panel'
+import * as PanelActions from '../components/Panel/actions'
 import PanesContainer from '../components/Pane'
 import TabViewContainer from '../components/Tab'
 import Terminal from '../components/Terminal'
@@ -43,11 +44,7 @@ const PrimaryPanelAxis = connect(state => {
 })(PanelAxis)
 
 const WindowPanels = (props) => {
-  store.dispatch({
-    type: 'PANEL_INITIALIZE',
-    scope: 'window',
-    config: PanelConfig
-  })
+  store.dispatch(PanelActions.initializePanels(PanelConfig))
 
   return (<PrimaryPanelAxis scope='window' className='primary-panel-axis' />)
 }
