@@ -16,11 +16,11 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 
 const combinedReducers = combineReducers({
-  WindowPaneState: PanelReducer,
-  Panes: PaneReducer,
+  FileTreeState: FileTreeReducer,
+  PanelState: PanelReducer,
+  PaneState: PaneReducer,
   TabState: TabReducer,
   EditorState: EditorReducer,
-  FileTreeState: FileTreeReducer,
   ModalState: ModalReducer,
   TerminalState: TerminalReducer,
   GitState: GitReducer,

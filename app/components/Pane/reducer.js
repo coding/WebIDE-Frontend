@@ -238,9 +238,9 @@ export default handleActions({
 
 export const PaneCrossReducer = handleActions({
   [PANE_SPLIT_WITH_KEY]: (allStates, action) => {
-    var {Panes, TabState} = allStates
+    var {PaneState, TabState} = allStates
     var {pane, splitCount, flexDirection} = action.payload
-    if (!pane) pane = Panes.root
+    if (!pane) pane = PaneState.root
 
     if (splitCount === pane.views.length &&
       flexDirection === pane.flexDirection) {
@@ -261,20 +261,20 @@ export const PaneCrossReducer = handleActions({
       mergerTabGroup.mergeTabs(mergedTabs)
     }
     return { ...allStates,
-      Panes: {root: new Pane(pane)},
+      PaneState: {root: new Pane(pane)},
       TabState: TabState.normalizeState(TabState)
     }
   },
 
   [PANE_SPLIT]: (allStates, action) => {
-    var {Panes, TabState} = allStates
+    var {PaneState, TabState} = allStates
     var {paneId, splitDirection} = action.payload
     var pane = getPaneById(paneId)
     console.log(paneId+': '+splitDirection);
     pane.splitToDirection(splitDirection)
 
     return { ...allStates,
-      Panes: {root: Pane.root, timestamp: Date.now()}
+      PaneState: {root: Pane.root, timestamp: Date.now()}
     }
   }
 })

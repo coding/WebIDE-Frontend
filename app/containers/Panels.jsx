@@ -40,13 +40,13 @@ var PanelConfig = {
 }
 
 const PrimaryPanelAxis = connect(state => {
-  return state.WindowPaneState
+  return state.PanelState
 })(PanelAxis)
 
-const WindowPanels = (props) => {
+const Panels = (props) => {
   store.dispatch(PanelActions.initializePanels(PanelConfig))
 
   return (<PrimaryPanelAxis scope='window' className='primary-panel-axis' />)
 }
 
-export default WindowPanels
+export default Panels
