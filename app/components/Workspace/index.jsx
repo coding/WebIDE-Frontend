@@ -16,7 +16,7 @@ class WorkspaceList extends Component {
   }
 
   render () {
-    const {workspaces, publicKey, fingerprint, isCreating, ...actionProps} = this.props
+    const {workspaces, publicKey, fingerprint, isCreating, errMsg, ...actionProps} = this.props
     const {openWorkspace, createWorkspace, deleteWorkspace} = actionProps
     return (
       <div className='workspace-list'>
@@ -38,6 +38,7 @@ class WorkspaceList extends Component {
                 onClick={e => createWorkspace(this.gitUrlInput.value)}>Create</button> }
           </div>
           { isCreating ? <p className='creating-workspace-indicator'>Creating</p> : null }
+          { errMsg ? <p className='creating-workspace-indicator-error'>Error: {errMsg}</p> : null }
         </div>
         <div className='workspace-list-container'>
           { workspaces.map(ws =>
