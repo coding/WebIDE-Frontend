@@ -35,12 +35,19 @@ export function toggleCreatingWorkspace (isCreating) {
   return {type: WORKSPACE_CREATING, payload: isCreating}
 }
 
+export const WORKSPACE_CREATING_ERROR = 'WORKSPACE_CREATING_ERROR'
+export function toggleCreatingWorkspaceErr (msg) {
+  return {type: WORKSPACE_CREATING_ERROR, payload: msg}
+}
+
 export function createWorkspace (url) {
   return dispatch => {
     dispatch(toggleCreatingWorkspace(true))
     api.createWorkspace(url).then(ws => {
       dispatch(fetchWorkspaceList())
       dispatch(toggleCreatingWorkspace(false))
+    }).catch(e => {
+      dispatch(toggleCreatingWorkspaceErr(e.msg))
     })
   }
 }
@@ -49,6 +56,8 @@ export function deleteWorkspace (spaceKey) {
   return dispatch => {
     api.deleteWorkspace(spaceKey).then(res =>
       dispatch(fetchWorkspaceList())
-    )
+    ).catch(e => {
+      dispatch(toggleCreatingWorkspaceErr(e.msg))
+    })
   }
 }

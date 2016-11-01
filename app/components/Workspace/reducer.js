@@ -4,7 +4,8 @@ import {
   WORKSPACE_FETCH_PUBLIC_KEY,
   WORKSPACE_FETCH_LIST,
   WORKSPACE_OPEN,
-  WORKSPACE_CREATING
+  WORKSPACE_CREATING,
+  WORKSPACE_CREATING_ERROR
 } from './actions'
 
 const defaultState = {
@@ -13,7 +14,8 @@ const defaultState = {
   currentWorkspace: null,
   publicKey: null,
   fingerprint: null,
-  isCreating: false
+  isCreating: false,
+  errMsg: null
 }
 
 export default handleActions({
@@ -32,5 +34,9 @@ export default handleActions({
 
   [WORKSPACE_CREATING]: (state, action) => {
     return {...state, isCreating: action.payload}
+  },
+
+  [WORKSPACE_CREATING_ERROR]: (state, action) => {
+    return {...state, isCreating: false, errMsg: action.payload}
   }
 }, defaultState)
