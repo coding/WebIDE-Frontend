@@ -1,6 +1,6 @@
 /* @flow weak */
 import api from '../../api'
-import { notify, error } from '../Notification/actions'
+import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, dismissModal } from '../Modal/actions'
 
 export const GIT_STATUS = 'GIT_STATUS'
@@ -118,8 +118,8 @@ export function createStash (message) {
     }))
     dispatch(dismissModal())
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: res.msg,
     }))
     dispatch(dismissModal())
@@ -179,8 +179,8 @@ export function dropStash (stashRef, all) {
     }))
     getStashList()(dispatch)
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: 'Drop stash error.',
     }))
   })
@@ -193,8 +193,8 @@ export function applyStash ({stashRef, pop, applyIndex}) {
     }))
     dispatch(dismissModal())
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: 'Apply stash error.',
     }))
   })
@@ -207,8 +207,8 @@ export function checkoutStash ({stashRef, branch}) {
     }))
     dispatch(dismissModal())
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: 'Checkout stash error.',
     }))
   })
@@ -218,8 +218,8 @@ export function getCurrentBranch () {
   return dispatch => api.gitCurrentBranch().then(({ name }) => {
     dispatch(updateCurrentBranch({name}))
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: 'Get current branch error.',
     }))
   })
@@ -232,8 +232,8 @@ export function resetHead ({ref, resetType}) {
     }))
     dispatch(dismissModal())
   }).catch(res => {
-    dispatch(error({
-      className: 'error',
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
       message: 'Reset error.',
     }))
   })

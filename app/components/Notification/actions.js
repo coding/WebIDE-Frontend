@@ -12,29 +12,12 @@ export function addNotification (_notification) {
       onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
     }
 
-    notification = {...defaultNotification, ..._notification}
-
-    dispatch({
-      type: NOTIFICATION_ADD,
-      notification
-    })
-  }
-}
-
-export const notify = addNotification
-
-export function addErrorNotification (_notification) {
-  return dispatch => {
-    var notification, defaultNotification
-
-    defaultNotification = {
-      message: '',
-      action: 'Dismiss',
-      key: Date.now(),
-      dismissAfter: 6000,
-      barStyle: {backgroundColor:'red'},
-      actionStyle: {color:'white'},
-      onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
+    let { notifyType } = _notification
+    if (notifyType === NOTIFY_TYPE.ERROR) {
+      defaultNotification = {...defaultNotification, ...{ 
+        barStyle: { backgroundColor:'red' },
+        actionStyle: { color:'white' }
+      }}
     }
 
     notification = {...defaultNotification, ..._notification}
@@ -46,7 +29,12 @@ export function addErrorNotification (_notification) {
   }
 }
 
-export const error = addErrorNotification
+export const notify = addNotification
+
+export const NOTIFY_TYPE = {
+  ERROR: 'error',
+  INFO: 'info',
+}
 
 export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
 export function removeNotification (notification) {
