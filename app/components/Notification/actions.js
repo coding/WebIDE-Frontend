@@ -12,6 +12,14 @@ export function addNotification (_notification) {
       onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
     }
 
+    let { notifyType } = _notification
+    if (notifyType === NOTIFY_TYPE.ERROR) {
+      defaultNotification = {...defaultNotification, ...{ 
+        barStyle: { backgroundColor:'red' },
+        actionStyle: { color:'white' }
+      }}
+    }
+
     notification = {...defaultNotification, ..._notification}
 
     dispatch({
@@ -22,6 +30,11 @@ export function addNotification (_notification) {
 }
 
 export const notify = addNotification
+
+export const NOTIFY_TYPE = {
+  ERROR: 'error',
+  INFO: 'info',
+}
 
 export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
 export function removeNotification (notification) {
