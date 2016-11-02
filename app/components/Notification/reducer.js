@@ -11,11 +11,11 @@ export default function NotificationReducer (state = {notifications: []}, action
 
   switch (action.type) {
     case NOTIFICATION_ADD:
-      state.notifications.push(action.notification)
+      state.notifications.push(action.payload)
       return state
 
     case NOTIFICATION_REMOVE:
-      _.remove(state.notifications, action.notification)
+      _.remove(state.notifications, action.payload)
       return state
 
     default:

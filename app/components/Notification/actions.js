@@ -1,6 +1,6 @@
 /* @flow weak */
 export const NOTIFICATION_ADD = 'NOTIFICATION_ADD'
-export function addNotification (_notification) {
+export function addNotification (payload) {
   return dispatch => {
     var notification, defaultNotification
 
@@ -12,7 +12,7 @@ export function addNotification (_notification) {
       onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
     }
 
-    let { notifyType } = _notification
+    let { notifyType } = payload
     if (notifyType === NOTIFY_TYPE.ERROR) {
       defaultNotification = {...defaultNotification, ...{ 
         barStyle: { backgroundColor:'red' },
@@ -20,11 +20,11 @@ export function addNotification (_notification) {
       }}
     }
 
-    notification = {...defaultNotification, ..._notification}
+    payload = {...defaultNotification, ...payload}
 
     dispatch({
       type: NOTIFICATION_ADD,
-      notification
+      payload
     })
   }
 }
@@ -37,9 +37,9 @@ export const NOTIFY_TYPE = {
 }
 
 export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
-export function removeNotification (notification) {
+export function removeNotification (payload) {
   return {
     type: NOTIFICATION_REMOVE,
-    notification
+    payload
   }
 }
