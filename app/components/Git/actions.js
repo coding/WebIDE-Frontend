@@ -4,19 +4,18 @@ import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, dismissModal } from '../Modal/actions'
 
 export const GIT_STATUS = 'GIT_STATUS'
-export function updateStatus ({files, isClean}) {
+export function updateStatus (payload) {
   return {
     type: GIT_STATUS,
-    files,
-    isClean
+    payload
   }
 }
 
 export const GIT_UPDATE_COMMIT_MESSAGE = 'GIT_UPDATE_COMMIT_MESSAGE'
-export function updateCommitMessage (commitMessage) {
+export function updateCommitMessage (payload) {
   return {
     type: GIT_UPDATE_COMMIT_MESSAGE,
-    commitMessage
+    payload
   }
 }
 
@@ -28,18 +27,18 @@ export function commit ({files, commitMessage: message}) {
 }
 
 export const GIT_STAGE_FILE = 'GIT_STAGE_FILE'
-export function stageFile (file) {
+export function stageFile (payload) {
   return {
     type: GIT_STAGE_FILE,
-    fileName: file.name
+    payload
   }
 }
 
 export const GIT_UNSTAGE_FILE = 'GIT_UNSTAGE_FILE'
-export function unstageFile (file) {
+export function unstageFile (payload) {
   return {
     type: GIT_UNSTAGE_FILE,
-    fileName: file.name
+    payload
   }
 }
 
@@ -57,7 +56,7 @@ export function getBranches () {
     api.gitBranch().then(data => {
       dispatch({
         type: GIT_BRANCH,
-        branches: data
+        payload: { branches: data }
       })
     })
   }
@@ -99,15 +98,15 @@ export const GIT_CURRENT_BRANCH = 'GIT_CURRENT_BRANCH'
 export function updateCurrentBranch ({ name }) {
   return {
     type: GIT_CURRENT_BRANCH,
-    branch: name,
+    payload: {branch: name},
   }
 }
 
 export const GIT_UPDATE_STASH_MESSAGE = 'GIT_UPDATE_STASH_MESSAGE'
-export function updateStashMessage (stashMessage) {
+export function updateStashMessage (payload) {
   return {
     type: GIT_UPDATE_STASH_MESSAGE,
-    stashMessage,
+    payload,
   }
 }
 
@@ -127,34 +126,34 @@ export function createStash (message) {
 }
 
 export const GIT_UPDATE_STASH_LIST = 'GIT_UPDATE_STASH_LIST'
-export function updateStashList (stashList) {
+export function updateStashList (payload) {
   return {
     type: GIT_UPDATE_STASH_LIST,
-    stashList: stashList
+    payload
   }
 }
 
 export const GIT_UPDATE_UNSTASH_IS_POP = 'GIT_UPDATE_UNSTASH_IS_POP'
-export function updateUnstashIsPop (isPop) {
+export function updateUnstashIsPop (payload) {
   return {
     type: GIT_UPDATE_UNSTASH_IS_POP,
-    isPop
+    payload
   }
 }
 
 export const GIT_UPDATE_UNSTASH_IS_REINSTATE = 'GIT_UPDATE_UNSTASH_IS_REINSTATE'
-export function updateUnstashIsReinstate (isReinstate) {
+export function updateUnstashIsReinstate (payload) {
   return {
     type: GIT_UPDATE_UNSTASH_IS_REINSTATE,
-    isReinstate
+    payload
   }
 }
 
 export const GIT_UPDATE_UNSTASH_BRANCH_NAME = 'GIT_UPDATE_UNSTASH_BRANCH_NAME'
-export function updateUnstashBranchName (newBranchName) {
+export function updateUnstashBranchName (payload) {
   return {
     type: GIT_UPDATE_UNSTASH_BRANCH_NAME,
-    newBranchName
+    payload
   }
 }
 
@@ -165,10 +164,10 @@ export function getStashList () {
 }
 
 export const GIT_SELECT_STASH = 'GIT_SELECT_STASH'
-export function selectStash (selectedStash) {
+export function selectStash (payload) {
   return {
     type: GIT_SELECT_STASH,
-    selectedStash: selectedStash
+    payload
   }
 }
 

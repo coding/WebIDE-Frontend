@@ -46,27 +46,23 @@ export default function GitReducer (state = _state, action) {
   switch (action.type) {
 
     case GIT_STATUS:
-      var workingDirDelta = {
-        isClean: action.isClean,
-        files: action.files
-      }
-      state.workingDir = Object.assign({}, state.workingDir, workingDirDelta)
+      state.workingDir = Object.assign({}, state.workingDir, action.payload)
       return state
 
     case GIT_UPDATE_COMMIT_MESSAGE:
-      state.stagingArea.commitMessage = action.commitMessage
+      state.stagingArea.commitMessage = action.payload
       return state
 
     case GIT_STAGE_FILE:
-      state.stagingArea.files = _.union(state.stagingArea.files, [action.fileName])
+      state.stagingArea.files = _.union(state.stagingArea.files, [action.payload.name])
       return state
 
     case GIT_UNSTAGE_FILE:
-      state.stagingArea.files = _.without(state.stagingArea.files, action.fileName)
+      state.stagingArea.files = _.without(state.stagingArea.files, action.payload.name)
       return state
 
     case GIT_BRANCH:
-      state.branches = action.branches
+      state.branches = action.payload.branches
       return state
 
     case GIT_CHECKOUT:
@@ -74,15 +70,15 @@ export default function GitReducer (state = _state, action) {
       return state
 
     case GIT_CURRENT_BRANCH:
-      state.branches.current = action.branch
+      state.branches.current = action.payload.branch
       return state
     
     case GIT_UPDATE_STASH_MESSAGE:
-      state.stash.stashMessage = action.stashMessage
+      state.stash.stashMessage = action.payload
       return state
 
     case GIT_UPDATE_UNSTASH_IS_POP:
-      state.unstash.isPop = action.isPop
+      state.unstash.isPop = action.payload
       return state
 
     case GIT_UPDATE_UNSTASH_IS_POP:
@@ -90,24 +86,24 @@ export default function GitReducer (state = _state, action) {
       return state
 
     case GIT_UPDATE_UNSTASH_IS_REINSTATE:
-      state.unstash.isReinstate = action.isReinstate
+      state.unstash.isReinstate = action.payload
       return state
 
     case GIT_UPDATE_UNSTASH_BRANCH_NAME:
-      state.unstash.newBranchName = action.newBranchName
+      state.unstash.newBranchName = action.payload
       return state
 
     case GIT_UPDATE_STASH_LIST:
-      state.unstash.stashList = action.stashList
-      if (action.stashList.length == 0) {
+      state.unstash.stashList = action.payload
+      if (state.unstash.stashList.length == 0) {
         state.unstash.selectedStash = null
       } else if(!state.unstash.selectedStash) {
-        state.unstash.selectedStash = action.stashList[0]
+        state.unstash.selectedStash = state.unstash.stashList[0]
       }
       return state
 
     case GIT_SELECT_STASH:
-      state.unstash.selectedStash = action.selectedStash
+      state.unstash.selectedStash = action.payload
       return state
       
     default:
