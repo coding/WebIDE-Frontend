@@ -31,11 +31,11 @@ export function updateTab(tabConfig) {
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
 export const updateTabFlags = (tabId, flag, value=true) => {
-  if (!arguments.length) return
+  if (!tabId) return
   var payload = { tabId }
 
   if (typeof flag === 'string') {
-    payload.flags = {[flag]: arguments[2]}
+    payload.flags = {[flag]: value}
   } else if (typeof flag === 'object') {
     payload.flags = flag
   } else {
