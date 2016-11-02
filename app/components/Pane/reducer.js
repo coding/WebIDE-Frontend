@@ -6,7 +6,8 @@ import {
   PANE_UNSET_COVER,
   PANE_RESIZE,
   PANE_CONFIRM_RESIZE,
-  PANE_SPLIT
+  PANE_SPLIT,
+  PANE_SPLIT_WITH_KEY
 } from './actions'
 
 // removeSingleChildedInternalNode 是为了避免无限级嵌套的 views.length === 1 出现
@@ -71,6 +72,61 @@ class Pane {
     Pane.indexes[this.id] = this
   }
 
+  addSibling (siblingPane, toTheLeft) {
+    let parent = getPaneById(this.parentId)
+    let atIndex = parent.views.indexOf(this) + 1
+    if (toTheLeft === -1) atIndex -= 1
+    parent.views.splice(atIndex, 0, siblingPane)
+  }
+
+  addChild (childPane, atIndex) {
+    if (typeof atIndex !== 'number')  atIndex = this.views.length
+    this.views.splice(atIndex, 0, childPane)
+  }
+  /**
+   * Mutate a pane instance's "views" property to reflect a splitted pane view
+   * @param {string} splitDirection
+   * @param {string} splitCount
+   */
+  splitToDirection (splitDirection) {
+    let flexDirection
+    switch (splitDirection) {
+      case 'right':
+      case 'left':
+        flexDirection = 'row'
+        break
+      case 'top':
+      case 'bottom':
+        flexDirection = 'column'
+        break
+      default:
+        throw 'Pane.splitToDirection method requires param "splitDirection"'
+    }
+    this.flexDirection = flexDirection
+
+    let parent = getPaneById(this.parentId)
+    // If flexDirection is same as parent's,
+    // then we can simply push the newly splitted view into parent's "views" array
+    if (parent && parent.flexDirection === flexDirection) {
+      let newPane = new Pane({views: ['']}, parent)
+      if (splitDirection === 'right' || splitDirection === 'bottom') {
+        this.addSibling(newPane)
+      } else {
+        this.addSibling(newPane, -1)
+      }
+    } else {
+      let curTabGroupId = this.views.pop()
+      this.views.push(new Pane({views:[curTabGroupId]}, this))
+
+      let childPane = new Pane({views: ['']}, this)
+      if (splitDirection === 'right' || splitDirection === 'bottom') {
+        this.addChild(childPane, 1)
+      } else {
+        this.addChild(childPane, 0)
+      }
+    }
+  }
+
   splitPane (splitCount=this.views.length+1, flexDirection=this.flexDirection) {
     this.flexDirection = flexDirection
     if (splitCount <= 0) splitCount = 1
@@ -130,7 +186,7 @@ class Pane {
 
 
 Pane.indexes = {}
-const getViewById = (id) => Pane.indexes[id]
+const getPaneById = (id) => Pane.indexes[id]
 const debounced = _.debounce(function (func) { func() }, 50)
 
 const _state = {
@@ -144,8 +200,8 @@ const _state = {
 export default function PaneReducer (state = _state, action) {
   switch (action.type) {
     case PANE_RESIZE:
-      let section_A = getViewById(action.sectionId)
-      let parent = getViewById(section_A.parentId)
+      let section_A = getPaneById(action.sectionId)
+      let parent = getPaneById(section_A.parentId)
       let section_B = parent.views[parent.views.indexOf(section_A) + 1]
       let section_A_Dom = document.getElementById(section_A.id)
       let section_B_Dom = document.getElementById(section_B.id)
@@ -180,8 +236,6 @@ export default function PaneReducer (state = _state, action) {
     case PANE_CONFIRM_RESIZE:
       return state
 
-
-
     default:
       return state
   }
@@ -189,19 +243,21 @@ export default function PaneReducer (state = _state, action) {
 
 export function PaneCrossReducer (allStates, action) {
   switch (action.type) {
-    case PANE_SPLIT:
-      const {Panes, TabState} = allStates
-      var pane = Panes.root
-      if (action.splitCount === pane.views.length &&
-        action.flexDirection === pane.flexDirection) {
+    case PANE_SPLIT_WITH_KEY:
+      var {Panes, TabState} = allStates
+      var {pane, splitCount, flexDirection} = action.payload
+      if (!pane) pane = Panes.root
+
+      if (splitCount === pane.views.length &&
+        flexDirection === pane.flexDirection) {
         return allStates
       }
 
       pane = new Pane(pane)
-      var tabGroupIds = pane.splitPane(action.splitCount, action.flexDirection)
+      var tabGroupIds = pane.splitPane(splitCount, flexDirection)
       if (tabGroupIds.length > 1) {
-        const tabGroupIdToMergeInto = tabGroupIds[0]
-        const tabGroupIdsToBeMerged = tabGroupIds.slice(1)
+        var tabGroupIdToMergeInto = tabGroupIds[0]
+        var tabGroupIdsToBeMerged = tabGroupIds.slice(1)
         var mergedTabs = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
           var tabGroup = TabState.getGroupById(tabGroupId)
           tabGroup.deactivateAllTabsInGroup()
@@ -213,6 +269,19 @@ export function PaneCrossReducer (allStates, action) {
       return { ...allStates,
         Panes: {root: new Pane(pane)},
         TabState: TabState.normalizeState(TabState) }
+
+
+    case PANE_SPLIT:
+      var {Panes, TabState} = allStates
+      var {paneId, splitDirection} = action.payload
+      var pane = getPaneById(paneId)
+      console.log(paneId+': '+splitDirection);
+      pane.splitToDirection(splitDirection)
+
+      return { ...allStates,
+        Panes: {root: Pane.root, timestamp: Date.now()}
+      }
+
 
     default:
       return allStates

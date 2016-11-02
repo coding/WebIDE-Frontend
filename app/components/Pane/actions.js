@@ -24,11 +24,18 @@ export function confirmResize () {
   return {type: PANE_CONFIRM_RESIZE}
 }
 
-export const PANE_SPLIT = 'PANE_SPLIT'
+export const PANE_SPLIT_WITH_KEY = 'PANE_SPLIT_WITH_KEY'
 export function split (splitCount, flexDirection='row') {
   return {
+    type: PANE_SPLIT_WITH_KEY,
+    payload: {flexDirection, splitCount}
+  }
+}
+
+export const PANE_SPLIT = 'PANE_SPLIT'
+export function splitTo (paneId, splitDirection) {
+  return {
     type: PANE_SPLIT,
-    flexDirection: flexDirection,
-    splitCount: splitCount
+    payload: {paneId, splitDirection}
   }
 }

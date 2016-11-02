@@ -7,68 +7,80 @@ import * as PaneActions from './actions'
 import TabViewContainer from '../Tab'
 import AceEditor from '../AceEditor'
 
-const Pane = (props) => {
-  const {id, views, size, flexDirection, parentFlexDirection, resizingListeners} = props
-  var content
-  if (views.length > 1) {
-    content = <PaneAxis views={views} flexDirection={flexDirection} />
-  } else if (typeof views[0] === 'string') {
-    var tabGroupId = views[0]
-    console.log(tabGroupId)
-    content = (
-      <div className='pane'>
-        <TabViewContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
-      </div>
-    )
-  } else {
-    content = null
+
+@connect(state => state.Panes)
+class Pane extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {}
   }
 
-  var style = {flexGrow: size, display: props.display}
-  return (
-    <div id={id} style={style} className={cx('pane-container', parentFlexDirection)}>
-      { content }
-      <ResizeBar parentFlexDirection={parentFlexDirection}
-        sectionId={id} resizingListeners={resizingListeners} />
-    </div>
-  )
+  render () {
+    const {id, views, size, flexDirection, parentFlexDirection, resizingListeners, dropArea} = this.props
+    var content
+    if (views.length > 1) {
+      content = <PaneAxis views={views} flexDirection={flexDirection} />
+    } else if (typeof views[0] === 'string') {
+      var tabGroupId = views[0]
+      content = (
+        <div className='pane'>
+          <TabViewContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
+        </div>
+      )
+    } else {
+      content = null
+    }
+
+    var style = {flexGrow: size, display: this.props.display}
+    return (
+      <div id={id}
+        style={style}
+        className={cx('pane-container', parentFlexDirection)}
+        data-droppable='PANE'
+        ref={r => this.paneDOM = r}
+      > { content }
+        <ResizeBar sectionId={id}
+          parentFlexDirection={parentFlexDirection}
+          resizingListeners={resizingListeners}
+          startResize={this.startResize} />
+      </div>
+    )
+  }
+
+  startResize = (sectionId, e) => {
+    if (e.button !== 0) return // do nothing unless left button pressed
+    e.preventDefault()
+
+    // dispatch(PaneActions.setCover(true))
+    var [oX, oY] = [e.pageX, e.pageY]
+
+    const handleResize = (e) => {
+      var [dX, dY] = [oX - e.pageX, oY - e.pageY]
+      ;[oX, oY] = [e.pageX, e.pageY]
+      this.props.dispatch(PaneActions.resize(sectionId, dX, dY))
+      this.props.resizingListeners.forEach(listener => listener())
+    }
+
+    const stopResize = () => {
+      window.document.removeEventListener('mousemove', handleResize)
+      window.document.removeEventListener('mouseup', stopResize)
+      this.props.dispatch(PaneActions.confirmResize())
+    }
+
+    window.document.addEventListener('mousemove', handleResize)
+    window.document.addEventListener('mouseup', stopResize)
+  }
+
 }
 
-let ResizeBar = ({parentFlexDirection, sectionId, startResize}) => {
+
+const ResizeBar = ({parentFlexDirection, sectionId, startResize}) => {
   var barClass = (parentFlexDirection == 'row') ? 'col-resize' : 'row-resize'
   return (
     <div className={cx('resize-bar', barClass)}
       onMouseDown={e => startResize(sectionId, e)}></div>
   )
 }
-
-ResizeBar = connect(null, (dispatch, ownProps) => {
-  return {
-    startResize: (sectionId, e) => {
-      if (e.button !== 0) return // do nothing unless left button pressed
-      e.preventDefault()
-
-      // dispatch(PaneActions.setCover(true))
-      var [oX, oY] = [e.pageX, e.pageY]
-
-      const handleResize = (e) => {
-        var [dX, dY] = [oX - e.pageX, oY - e.pageY]
-        ;[oX, oY] = [e.pageX, e.pageY]
-        dispatch(PaneActions.resize(sectionId, dX, dY))
-        ownProps.resizingListeners.forEach(listener => listener())
-      }
-
-      const stopResize = () => {
-        window.document.removeEventListener('mousemove', handleResize)
-        window.document.removeEventListener('mouseup', stopResize)
-        dispatch(PaneActions.confirmResize())
-      }
-
-      window.document.addEventListener('mousemove', handleResize)
-      window.document.addEventListener('mouseup', stopResize)
-    }
-  }
-})(ResizeBar)
 
 
 class PaneAxis extends Component {
@@ -103,7 +115,7 @@ class PaneAxis extends Component {
 
   render () {
     let props = this.props.hasOwnProperty('root') ? this.props.root : this.props
-    var { views, flexDirection, className, style } = props
+    let { views, flexDirection } = props
     if (views.length === 1 && !Array.isArray(views[0].views) ) views = [props]
     var Subviews = views.map( _props => {
       return <Pane
@@ -119,8 +131,9 @@ class PaneAxis extends Component {
     })
 
     return (
-      <div className={cx('pane-axis', className)}
-        style={{flexDirection: flexDirection, ...style}}>{ Subviews }</div>
+      <div id={this.props.id}
+        className={cx('pane-axis', this.props.className)}
+        style={{flexDirection: flexDirection, ...this.props.style}}>{ Subviews }</div>
     )
   }
 }

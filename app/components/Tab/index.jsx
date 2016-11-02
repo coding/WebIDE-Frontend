@@ -5,10 +5,11 @@ import { createStore } from 'redux'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import * as TabActions from './actions'
+import { dragStart } from '../DragAndDrop/actions'
 import AceEditor from '../AceEditor'
 
-const TabView = ({TabState, groupId, ...otherProps}) => {
-  let tabGroup = TabState.getGroupById(groupId)
+const TabView = ({getGroupById, groupId, ...otherProps}) => {
+  let tabGroup = getGroupById(groupId)
   return (
     <div className='tab-component'>
       <TabBar tabs={tabGroup.tabs} groupId={groupId} {...otherProps} />
@@ -33,7 +34,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   )
 }
 
-const Tab = ({tab, removeTab, activateTab}) => {
+const Tab = ({tab, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -48,6 +49,8 @@ const Tab = ({tab, removeTab, activateTab}) => {
       modified: tab.flags.modified
     })}
       onClick={e => activateTab(tab.id)}
+      draggable='true'
+      onDragStart={e => dispatch(dragStart({sourceType: 'TAB', sourceId: tab.id}))}
     >
       <div className='title'>{tab.title}</div>
       <div className='control'>
@@ -90,7 +93,7 @@ class TabViewContainer extends Component {
   }
 
   componentWillMount () {
-    let tabGroup = this.props.TabState.getGroupById(this.props.tabGroupId)
+    let tabGroup = this.props.getGroupById(this.props.tabGroupId)
     if (!tabGroup) this.props.dispatch(TabActions.createGroup(this.state.groupId, this.props.defaultContentType))
   }
 
@@ -110,11 +113,7 @@ class TabViewContainer extends Component {
 }
 
 TabViewContainer = connect(
-  state => {
-    return {
-      TabState: state.TabState
-    }
-  },
+  state => state.TabState,
   dispatch => {
     return {
       addTab: (groupId) => dispatch(TabActions.createTabInGroup(groupId)),
