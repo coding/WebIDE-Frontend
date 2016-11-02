@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { handleActions } from 'redux-actions'
 import {
   PANEL_INITIALIZE,
   PANEL_UNSET_COVER,
@@ -36,7 +37,7 @@ const jailbreakLonelyView = (view, originalWrapper) => {
 }
 
 const normalizeState = (view, parentView, rootView) => {
-  var isRootView = (!parentView) ? true : false
+  var isRootView = !parentView
   var retView = {}
   if (isRootView) rootView = retView
 
@@ -64,53 +65,51 @@ const normalizeState = (view, parentView, rootView) => {
 }
 
 const findViewById = (state, id) => state.directories[id]
-
 const debounced = _.debounce(function (func) { func() }, 50)
 
+export default handleActions({
+  [PANEL_INITIALIZE]: (state, action) => {
+    return normalizeState(action.payload)
+  },
 
-export default function PanelReducer (state = {}, action) {
-  switch (action.type) {
-    case PANEL_INITIALIZE:
-      return normalizeState(action.config)
+  [PANEL_RESIZE]: (state, action) => {
+    const {sectionId, dX, dY} = action.payload
+    let section_A = state.directories[sectionId]
+    let parent = section_A.parent
+    let section_B = parent.views[parent.views.indexOf(section_A) + 1]
+    let section_A_Dom = document.getElementById(section_A.id)
+    let section_B_Dom = document.getElementById(section_B.id)
+    var r, rA, rB
+    if (parent.flexDirection === 'column') {
+      r = dY
+      rA = section_A_Dom.offsetHeight
+      rB = section_B_Dom.offsetHeight
+    } else {
+      r = dX
+      rA = section_A_Dom.offsetWidth
+      rB = section_B_Dom.offsetWidth
+    }
+    section_A.size = section_A.size * (rA - r) / rA
+    section_B.size = section_B.size * (rB + r) / rB
 
-    case PANEL_RESIZE:
-      let section_A = state.directories[action.sectionId]
-      let parent = section_A.parent
-      let section_B = parent.views[parent.views.indexOf(section_A) + 1]
-      let section_A_Dom = document.getElementById(section_A.id)
-      let section_B_Dom = document.getElementById(section_B.id)
-      var r, rA, rB
-      if (parent.flexDirection === 'column') {
-        r = action.dY
-        rA = section_A_Dom.offsetHeight
-        rB = section_B_Dom.offsetHeight
-      } else {
-        r = action.dX
-        rA = section_A_Dom.offsetWidth
-        rB = section_B_Dom.offsetWidth
-      }
-      section_A.size = section_A.size * (rA - r) / rA
-      section_B.size = section_B.size * (rB + r) / rB
+    section_A_Dom.style.flexGrow = section_A.size
+    section_B_Dom.style.flexGrow = section_B.size
 
-      section_A_Dom.style.flexGrow = section_A.size
-      section_B_Dom.style.flexGrow = section_B.size
+    // @coupled: trigger resize of children ace editor
+    debounced(function () {
+      section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+      section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+    })
 
-      // @coupled: trigger resize of children ace editor
-      debounced(function () {
-        section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
-          editorDOM => editorDOM.$ace_editor.resize()
-        )
-        section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
-          editorDOM => editorDOM.$ace_editor.resize()
-        )
-      })
+    return state
+  },
 
-      return state
-
-    case PANEL_CONFIRM_RESIZE:
-      return normalizeState(state)
-
-    default:
-      return state
+  [PANEL_CONFIRM_RESIZE]: (state, action) => {
+    return normalizeState(state)
   }
-}
+
+}, {})

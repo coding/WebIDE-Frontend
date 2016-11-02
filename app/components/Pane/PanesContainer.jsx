@@ -5,7 +5,7 @@ import PaneAxis from './PaneAxis'
 import store from '../../store.js'
 
 var PrimaryPaneAxis = connect(state => {
-  return state.Panes
+  return state.PaneState
 })(PaneAxis)
 
 var PanesContainer = (props) => {

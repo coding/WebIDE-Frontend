@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { handleActions } from 'redux-actions'
 import { EDITOR_REGISTER } from './actions'
 
 let _state = {
@@ -54,15 +55,11 @@ class EditorState {
 
 }
 
-export default function EditorReducer (state = _state, action) {
-  switch (action.type) {
-
-    case EDITOR_REGISTER:
-      var editorState = new EditorState(action.id, action.editor, action.editorDOM)
-      state.editors.push(editorState)
-      return state
-
-    default:
-      return state
+export default handleActions({
+  [EDITOR_REGISTER]: (state, action) => {
+    const {id, editor, editorDOM} = action.payload
+    const editorState = new EditorState(id, editor, editorDOM)
+    state.editors.push(editorState)
+    return state
   }
-}
+}, _state)

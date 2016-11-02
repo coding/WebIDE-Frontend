@@ -1,4 +1,5 @@
 /* @flow weak */
+import { handleActions } from 'redux-actions'
 import {
   WORKSPACE_FETCH_PUBLIC_KEY,
   WORKSPACE_FETCH_LIST,
@@ -17,27 +18,25 @@ const defaultState = {
   errMsg: null
 }
 
-export default function (state = defaultState, action) {
-  switch (action.type) {
-    case WORKSPACE_FETCH_PUBLIC_KEY:
-      return {...state, publicKey: action.publicKey, fingerprint: action.fingerprint}
+export default handleActions({
+  [WORKSPACE_FETCH_PUBLIC_KEY]: (state, action) => {
+    const {publicKey, fingerprint} = action.payload
+    return {...state, publicKey, fingerprint}
+  },
 
-    case WORKSPACE_FETCH_LIST:
-      return {...state, workspaces: action.workspaces}
+  [WORKSPACE_FETCH_LIST]: (state, action) => {
+    return {...state, workspaces: action.payload}
+  },
 
-    case WORKSPACE_OPEN:
-      return {...state,
-        selectingWorkspace: false,
-        currentWorkspace: action.currentWorkspace
-      }
+  [WORKSPACE_OPEN]: (state, action) => {
+    return {...state, selectingWorkspace: false, currentWorkspace: action.payload}
+  },
 
-    case WORKSPACE_CREATING:
-      return {...state, isCreating: action.isCreating}
+  [WORKSPACE_CREATING]: (state, action) => {
+    return {...state, isCreating: action.payload}
+  },
 
-    case WORKSPACE_CREATING_ERROR:
-      return {...state, isCreating: false, errMsg: action.msg}
-
-    default:
-      return state
+  [WORKSPACE_CREATING_ERROR]: (state, action) => {
+    return {...state, isCreating: false, errMsg: action.payload}
   }
-}
+}, defaultState)

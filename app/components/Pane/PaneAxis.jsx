@@ -8,7 +8,7 @@ import TabViewContainer from '../Tab'
 import AceEditor from '../AceEditor'
 
 
-@connect(state => state.Panes)
+@connect(state => state.PaneState)
 class Pane extends Component {
   constructor (props) {
     super(props)

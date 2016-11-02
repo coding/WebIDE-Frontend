@@ -5,8 +5,8 @@ import config from '../../config'
 export const WORKSPACE_FETCH_PUBLIC_KEY = 'WORKSPACE_FETCH_PUBLIC_KEY'
 export function fetchPublicKey () {
   return dispatch => {
-    api.getPublicKey().then(({publicKey, fingerprint}) =>
-      dispatch({type: WORKSPACE_FETCH_PUBLIC_KEY, publicKey, fingerprint})
+    api.getPublicKey().then((result) =>
+      dispatch({type: WORKSPACE_FETCH_PUBLIC_KEY, payload: result})
     )
   }
 }
@@ -15,7 +15,7 @@ export const WORKSPACE_FETCH_LIST = 'WORKSPACE_FETCH_LIST'
 export function fetchWorkspaceList () {
   return dispatch => {
     api.getWorkspaces().then(workspaces =>
-      dispatch({type: WORKSPACE_FETCH_LIST, workspaces})
+      dispatch({type: WORKSPACE_FETCH_LIST, payload: workspaces})
     )
   }
 }
@@ -26,18 +26,18 @@ export function openWorkspace (workspace) {
   config.projectName = workspace.projectName
   return {
     type: WORKSPACE_OPEN,
-    currentWorkspace: workspace
+    payload: workspace
   }
 }
 
 export const WORKSPACE_CREATING = 'WORKSPACE_CREATING'
 export function toggleCreatingWorkspace (isCreating) {
-  return {type: WORKSPACE_CREATING, isCreating}
+  return {type: WORKSPACE_CREATING, payload: isCreating}
 }
 
 export const WORKSPACE_CREATING_ERROR = 'WORKSPACE_CREATING_ERROR'
 export function toggleCreatingWorkspaceErr (msg) {
-  return {type: WORKSPACE_CREATING_ERROR, msg}
+  return {type: WORKSPACE_CREATING_ERROR, payload: msg}
 }
 
 export function createWorkspace (url) {
@@ -56,6 +56,8 @@ export function deleteWorkspace (spaceKey) {
   return dispatch => {
     api.deleteWorkspace(spaceKey).then(res =>
       dispatch(fetchWorkspaceList())
-    )
+    ).catch(e => {
+      dispatch(toggleCreatingWorkspaceErr(e.msg))
+    })
   }
 }
