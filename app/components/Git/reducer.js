@@ -1,6 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
-
+import { handleActions } from 'redux-actions'
 import {
   GIT_STATUS,
   GIT_BRANCH,
@@ -41,72 +41,75 @@ const _state = {
   },
 }
 
-export default function GitReducer (state = _state, action) {
-  state = _.cloneDeep(state)
-  switch (action.type) {
-
-    case GIT_STATUS:
-      state.workingDir = Object.assign({}, state.workingDir, action.payload)
-      return state
-
-    case GIT_UPDATE_COMMIT_MESSAGE:
-      state.stagingArea.commitMessage = action.payload
-      return state
-
-    case GIT_STAGE_FILE:
-      state.stagingArea.files = _.union(state.stagingArea.files, [action.payload.name])
-      return state
-
-    case GIT_UNSTAGE_FILE:
-      state.stagingArea.files = _.without(state.stagingArea.files, action.payload.name)
-      return state
-
-    case GIT_BRANCH:
-      state.branches = action.payload.branches
-      return state
-
-    case GIT_CHECKOUT:
-      state.branches.current = action.branch
-      return state
-
-    case GIT_CURRENT_BRANCH:
-      state.branches.current = action.payload.branch
-      return state
-    
-    case GIT_UPDATE_STASH_MESSAGE:
-      state.stash.stashMessage = action.payload
-      return state
-
-    case GIT_UPDATE_UNSTASH_IS_POP:
-      state.unstash.isPop = action.payload
-      return state
-
-    case GIT_UPDATE_UNSTASH_IS_POP:
-      state.unstash.isPop = action.isPop
-      return state
-
-    case GIT_UPDATE_UNSTASH_IS_REINSTATE:
-      state.unstash.isReinstate = action.payload
-      return state
-
-    case GIT_UPDATE_UNSTASH_BRANCH_NAME:
-      state.unstash.newBranchName = action.payload
-      return state
-
-    case GIT_UPDATE_STASH_LIST:
-      state.unstash.stashList = action.payload
-      if (state.unstash.stashList.length == 0) {
-        state.unstash.selectedStash = null
-      } else if(!state.unstash.selectedStash) {
-        state.unstash.selectedStash = state.unstash.stashList[0]
-      }
-      return state
-
-    case GIT_SELECT_STASH:
-      state.unstash.selectedStash = action.payload
-      return state
-      
-    default:
-      return state
-  }
-}
+export default handleActions({
+  [GIT_STATUS]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.workingDir = Object.assign({}, state.workingDir, action.payload)
+    return state
+  },
+  [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.stagingArea.commitMessage = action.payload
+    return state
+  },
+  [GIT_STAGE_FILE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.stagingArea.files = _.union(state.stagingArea.files, [action.payload.name])
+    return state
+  },
+  [GIT_UNSTAGE_FILE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.stagingArea.files = _.without(state.stagingArea.files, action.payload.name)
+    return state
+  },
+  [GIT_BRANCH]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.branches = action.payload.branches
+    return state
+  },
+  [GIT_CHECKOUT]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.branches.current = action.payload.branch
+    return state
+  },
+  [GIT_CURRENT_BRANCH]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.branches.current = action.payload.name
+    return state
+  },
+  [GIT_UPDATE_STASH_MESSAGE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.stash.stashMessage = action.payload
+    return state
+  },
+  [GIT_UPDATE_UNSTASH_IS_POP]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.unstash.isPop = action.payload
+    return state
+  },
+  [GIT_UPDATE_UNSTASH_IS_REINSTATE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.unstash.isReinstate = action.payload
+    return state
+  },
+  [GIT_UPDATE_UNSTASH_BRANCH_NAME]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.unstash.newBranchName = action.payload
+    return state
+  },
+  [GIT_UPDATE_STASH_LIST]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.unstash.stashList = action.payload
+    if (state.unstash.stashList.length == 0) {
+      state.unstash.selectedStash = null
+    } else if(!state.unstash.selectedStash) {
+      state.unstash.selectedStash = state.unstash.stashList[0]
+    }
+    return state
+  },
+  [GIT_SELECT_STASH]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.unstash.selectedStash = action.payload
+    return state
+  },
+}, _state)

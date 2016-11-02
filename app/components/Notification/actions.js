@@ -1,4 +1,6 @@
 /* @flow weak */
+import { createAction } from 'redux-actions'
+
 export const NOTIFICATION_ADD = 'NOTIFICATION_ADD'
 export function addNotification (payload) {
   return dispatch => {
@@ -22,10 +24,7 @@ export function addNotification (payload) {
 
     payload = {...defaultNotification, ...payload}
 
-    dispatch({
-      type: NOTIFICATION_ADD,
-      payload
-    })
+    dispatch(createAction(NOTIFICATION_ADD)(payload))
   }
 }
 
@@ -37,9 +36,4 @@ export const NOTIFY_TYPE = {
 }
 
 export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
-export function removeNotification (payload) {
-  return {
-    type: NOTIFICATION_REMOVE,
-    payload
-  }
-}
+export const removeNotification = createAction(NOTIFICATION_REMOVE)

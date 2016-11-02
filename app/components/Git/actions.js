@@ -2,22 +2,13 @@
 import api from '../../api'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, dismissModal } from '../Modal/actions'
+import { createAction } from 'redux-actions'
 
 export const GIT_STATUS = 'GIT_STATUS'
-export function updateStatus (payload) {
-  return {
-    type: GIT_STATUS,
-    payload
-  }
-}
+export const updateStatus = createAction(GIT_STATUS)
 
 export const GIT_UPDATE_COMMIT_MESSAGE = 'GIT_UPDATE_COMMIT_MESSAGE'
-export function updateCommitMessage (payload) {
-  return {
-    type: GIT_UPDATE_COMMIT_MESSAGE,
-    payload
-  }
-}
+export const updateCommitMessage = createAction(GIT_UPDATE_COMMIT_MESSAGE)
 
 export function commit ({files, commitMessage: message}) {
   return dispatch => api.gitCommit({files, message}).then(filetreeDelta => {
@@ -27,20 +18,10 @@ export function commit ({files, commitMessage: message}) {
 }
 
 export const GIT_STAGE_FILE = 'GIT_STAGE_FILE'
-export function stageFile (payload) {
-  return {
-    type: GIT_STAGE_FILE,
-    payload
-  }
-}
+export const stageFile = createAction(GIT_STAGE_FILE)
 
 export const GIT_UNSTAGE_FILE = 'GIT_UNSTAGE_FILE'
-export function unstageFile (payload) {
-  return {
-    type: GIT_UNSTAGE_FILE,
-    payload
-  }
-}
+export const unstageFile = createAction(GIT_UNSTAGE_FILE)
 
 export function updateStagingArea (action, file) {
   if (action == 'stage') {
@@ -54,10 +35,7 @@ export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
   return (dispatch) => {
     api.gitBranch().then(data => {
-      dispatch({
-        type: GIT_BRANCH,
-        payload: { branches: data }
-      })
+      dispatch(createAction(GIT_BRANCH)({ branches: data }))
     })
   }
 }
@@ -66,7 +44,7 @@ export const GIT_CHECKOUT = 'GIT_CHECKOUT'
 export function checkoutBranch (branch, remoteBranch) {
   return dispatch => {
     api.gitCheckout(branch, remoteBranch).then(data => {
-      dispatch({type: GIT_CHECKOUT, branch})
+      dispatch(createAction(GIT_CHECKOUT)({ branch }))
       dispatch(notify({message: `Check out ${branch}`}))
     })
   }
@@ -95,20 +73,10 @@ export function push () {
 }
 
 export const GIT_CURRENT_BRANCH = 'GIT_CURRENT_BRANCH'
-export function updateCurrentBranch ({ name }) {
-  return {
-    type: GIT_CURRENT_BRANCH,
-    payload: {branch: name},
-  }
-}
+export const updateCurrentBranch = createAction(GIT_CURRENT_BRANCH)
 
 export const GIT_UPDATE_STASH_MESSAGE = 'GIT_UPDATE_STASH_MESSAGE'
-export function updateStashMessage (payload) {
-  return {
-    type: GIT_UPDATE_STASH_MESSAGE,
-    payload,
-  }
-}
+export const updateStashMessage = createAction(GIT_UPDATE_STASH_MESSAGE)
 
 export function createStash (message) {
   return dispatch => api.gitCreateStash(message).then(res => {
@@ -126,36 +94,16 @@ export function createStash (message) {
 }
 
 export const GIT_UPDATE_STASH_LIST = 'GIT_UPDATE_STASH_LIST'
-export function updateStashList (payload) {
-  return {
-    type: GIT_UPDATE_STASH_LIST,
-    payload
-  }
-}
+export const updateStashList = createAction(GIT_UPDATE_STASH_LIST)
 
 export const GIT_UPDATE_UNSTASH_IS_POP = 'GIT_UPDATE_UNSTASH_IS_POP'
-export function updateUnstashIsPop (payload) {
-  return {
-    type: GIT_UPDATE_UNSTASH_IS_POP,
-    payload
-  }
-}
+export const updateUnstashIsPop = createAction(GIT_UPDATE_UNSTASH_IS_POP)
 
 export const GIT_UPDATE_UNSTASH_IS_REINSTATE = 'GIT_UPDATE_UNSTASH_IS_REINSTATE'
-export function updateUnstashIsReinstate (payload) {
-  return {
-    type: GIT_UPDATE_UNSTASH_IS_REINSTATE,
-    payload
-  }
-}
+export const updateUnstashIsReinstate = createAction(GIT_UPDATE_UNSTASH_IS_REINSTATE)
 
 export const GIT_UPDATE_UNSTASH_BRANCH_NAME = 'GIT_UPDATE_UNSTASH_BRANCH_NAME'
-export function updateUnstashBranchName (payload) {
-  return {
-    type: GIT_UPDATE_UNSTASH_BRANCH_NAME,
-    payload
-  }
-}
+export const updateUnstashBranchName = createAction(GIT_UPDATE_UNSTASH_BRANCH_NAME)
 
 export function getStashList () {
   return (dispatch) => api.gitStashList().then(({ stashes }) => {
@@ -164,12 +112,7 @@ export function getStashList () {
 }
 
 export const GIT_SELECT_STASH = 'GIT_SELECT_STASH'
-export function selectStash (payload) {
-  return {
-    type: GIT_SELECT_STASH,
-    payload
-  }
-}
+export const selectStash = createAction(GIT_SELECT_STASH)
 
 export function dropStash (stashRef, all) {
   return dispatch => api.gitDropStash(stashRef, all).then(res => {
