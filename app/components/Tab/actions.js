@@ -47,3 +47,8 @@ export const updateTabFlags = (tabId, flag, value=true) => {
     payload
   }
 }
+
+export const TAB_MOVE_TO_GROUP = 'TAB_MOVE_TO_GROUP'
+export const moveTabToGroup = createAction(TAB_MOVE_TO_GROUP,
+  (tabId, groupId) => ({tabId, groupId})
+)
