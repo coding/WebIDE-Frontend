@@ -4,7 +4,7 @@ import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
 import cx from 'classnames'
 import * as PaneActions from './actions'
-import TabViewContainer from '../Tab'
+import TabContainer from '../Tab'
 import AceEditor from '../AceEditor'
 
 
@@ -24,7 +24,7 @@ class Pane extends Component {
       var tabGroupId = views[0]
       content = (
         <div className='pane'>
-          <TabViewContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
+          <TabContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
         </div>
       )
     } else {

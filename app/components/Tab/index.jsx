@@ -8,10 +8,10 @@ import * as TabActions from './actions'
 import { dragStart } from '../DragAndDrop/actions'
 import AceEditor from '../AceEditor'
 
-const TabView = ({getGroupById, groupId, ...otherProps}) => {
+const Tab = ({getGroupById, groupId, ...otherProps}) => {
   let tabGroup = getGroupById(groupId)
   return (
-    <div className='tab-component'>
+    <div className='tab-container'>
       <TabBar tabs={tabGroup.tabs} groupId={groupId} {...otherProps} />
       <TabContent tabs={tabGroup.tabs} groupId={groupId} {...otherProps} />
     </div>
@@ -83,7 +83,7 @@ const TabContentItem = ({tab, defaultContentClass}) => {
   )
 }
 
-class TabViewContainer extends Component {
+class TabContainer extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -107,12 +107,12 @@ class TabViewContainer extends Component {
 
   render () {
     return (
-      <TabView {...this.props} groupId={this.state.groupId} />
+      <Tab {...this.props} groupId={this.state.groupId} />
     )
   }
 }
 
-TabViewContainer = connect(
+TabContainer = connect(
   state => state.TabState,
   dispatch => {
     return {
@@ -122,6 +122,6 @@ TabViewContainer = connect(
       dispatch: dispatch
     }
   }
-)(TabViewContainer)
+)(TabContainer)
 
-export default TabViewContainer
+export default TabContainer
