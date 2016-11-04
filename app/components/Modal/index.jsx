@@ -16,16 +16,15 @@ var ModalContainer = (props) => {
   const {dispatch} = props;
   const hasModal = props.stack.length > 0;
   return hasModal ? <div className={cx('modals-container')}>
-    {props.stack.map((prop) => {
-      console.log(prop);
-      const {_id, isActive, showBackdrop, position} = prop;
+    {props.stack.map((config) => {
+      const {_id, isActive, showBackdrop, position} = config;
         return isActive ? (
         <div key={_id} className={cx('modal-container', position,
           {'show-backdrop': showBackdrop}
         )}>
-          <Modal {...prop}/>
+          <Modal {...config}/>
           <div className='backdrop'
-            onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
+               onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
         </div>
       ) : null
     })}

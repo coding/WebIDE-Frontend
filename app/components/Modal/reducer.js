@@ -48,11 +48,10 @@ function modal(state = _state, action) {
     }
 }
 
-export default function ModalReducer(state = {stack: []}, action) {
+export default function ModalsReducer(state = {stack: []}, action) {
     switch (action.type) {
 
         case MODAL_SHOW:
-            console.log("modal action: ", action);
             return Object.assign({}, state, {
                 stack: [
                     ...state.stack,
