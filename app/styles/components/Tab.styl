@@ -37,13 +37,12 @@ $tab-control-width = 16px;
   display: flex;
   align-items: center;
 
-  > ul.tabs {
+  > ul {
     display: flex;
     height: 100%;
     align-items: flex-end;
     overflow-x: scroll;
     &::-webkit-scrollbar {display: none;}
-    > li { margin-right: 2px;}
   }
 
   > .tab-show-list {
@@ -72,6 +71,7 @@ $tab-control-width = 16px;
   display: flex;
   align-items: center;
   cursor: default;
+  border-left: 2px solid transparent;
 
   .title {
     text-overflow: ellipsis;
@@ -104,13 +104,17 @@ $tab-control-width = 16px;
     margin-top: $tab-control-width*0.25;
     margin-left: $tab-control-width*0.25;
     border-radius: 100%;
-    background-color: #5b91d7;
+    background-color: $blue-highlight-color;
     display: none;
   }
 
   .close {
     margin-top: -1px;
     display: none;
+  }
+
+  &.active {
+    border-left-color: $blue-highlight-color
   }
 
   // case hover-on-tab / tab-is-active:
