@@ -11,11 +11,13 @@ const createAction = (action) => {
   return Object.assign(baseAction, action)
 }
 
+let modal_id = 0;
+
 export const MODAL_SHOW = 'MODAL_SHOW'
 export function showModal (modalType, content) {
   return createAction({
     type: MODAL_SHOW,
-    payload: {modalType, content}
+    payload: {_id: modal_id++, modalType, content}
   })
 }
 

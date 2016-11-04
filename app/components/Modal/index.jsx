@@ -13,16 +13,23 @@ import {
 } from './modals'
 
 var ModalContainer = (props) => {
-  const {isActive, showBackdrop, position, dispatch} = props
-  return isActive ? (
-    <div className={cx('modal-container', position,
-      {'show-backdrop': showBackdrop}
-    )}>
-      <Modal {...props}/>
-      <div className='backdrop'
-        onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
-    </div>
-  ) : null
+  const {dispatch} = props;
+  const hasModal = props.stack.length > 0;
+  return hasModal ? <div className={cx('modals-container')}>
+    {props.stack.map((prop) => {
+      console.log(prop);
+      const {_id, isActive, showBackdrop, position} = prop;
+        return isActive ? (
+        <div key={_id} className={cx('modal-container', position,
+          {'show-backdrop': showBackdrop}
+        )}>
+          <Modal {...prop}/>
+          <div className='backdrop'
+            onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
+        </div>
+      ) : null
+    })}
+  </div> :null;
 }
 ModalContainer = connect(state => state.ModalState, null)(ModalContainer)
 
