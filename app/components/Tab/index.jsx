@@ -23,7 +23,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
     <div className='tab-bar'>
       <ul className='tabs'>
         { tabs.map(tab =>
-          <Tab tab={tab} key={tab.id} {...otherProps} />
+          <TabLabel tab={tab} key={tab.id} {...otherProps} />
         ) }
       </ul>
       <div className='tab-add-btn' onClick={e => addTab(groupId)} >＋</div>
@@ -34,7 +34,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   )
 }
 
-const Tab = ({tab, removeTab, dispatch, activateTab}) => {
+const TabLabel = ({tab, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -44,7 +44,7 @@ const Tab = ({tab, removeTab, dispatch, activateTab}) => {
   }
 
   return (
-    <li className={cx('tab', {
+    <li className={cx('tab-label', {
       active: tab.isActive,
       modified: tab.flags.modified
     })}
