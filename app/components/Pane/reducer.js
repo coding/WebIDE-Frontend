@@ -90,7 +90,8 @@ class Pane {
    * @param {string} splitCount
    */
   splitToDirection (splitDirection) {
-    let flexDirection
+    let flexDirection, newPane
+    if (splitDirection === 'center') return this
     switch (splitDirection) {
       case 'right':
       case 'left':
@@ -109,23 +110,27 @@ class Pane {
     // If flexDirection is same as parent's,
     // then we can simply push the newly splitted view into parent's "views" array
     if (parent && parent.flexDirection === flexDirection) {
-      let newPane = new Pane({views: ['']}, parent)
+      newPane = new Pane({views: ['']}, parent)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
         this.addSibling(newPane)
       } else {
         this.addSibling(newPane, -1)
       }
+    // If flexDirection is NOT the same as parent's,
+    // that means we should spawn a child pane
     } else {
       let curTabGroupId = this.views.pop()
       this.views.push(new Pane({views:[curTabGroupId]}, this))
 
-      let childPane = new Pane({views: ['']}, this)
+      newPane = new Pane({views: ['']}, this)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        this.addChild(childPane, 1)
+        this.addChild(newPane, 1)
       } else {
-        this.addChild(childPane, 0)
+        this.addChild(newPane, 0)
       }
     }
+
+    return newPane
   }
 
   splitPane (splitCount=this.views.length+1, flexDirection=this.flexDirection) {
@@ -270,11 +275,11 @@ export const PaneCrossReducer = handleActions({
     var {PaneState, TabState} = allStates
     var {paneId, splitDirection} = action.payload
     var pane = getPaneById(paneId)
-    console.log(paneId+': '+splitDirection);
-    pane.splitToDirection(splitDirection)
+    var newPane = pane.splitToDirection(splitDirection)
+    action.meta.resolve(newPane)
 
     return { ...allStates,
-      PaneState: {root: Pane.root, timestamp: Date.now()}
+      PaneState: {root: new Pane(Pane.root)}
     }
   }
 })

@@ -1,5 +1,6 @@
 /* @flow weak */
 import { createAction } from 'redux-actions'
+import { promiseActionMixin } from '../../utils'
 
 export const PANE_INITIALIZE = 'PANE_INITIALIZE'
 export const PANE_UNSET_COVER = 'PANE_UNSET_COVER'
@@ -21,6 +22,6 @@ export const split = createAction(PANE_SPLIT_WITH_KEY,
 )
 
 export const PANE_SPLIT = 'PANE_SPLIT'
-export const splitTo = createAction(PANE_SPLIT,
-  (paneId, splitDirection) => ({paneId, splitDirection})
+export const splitTo = promiseActionMixin(
+  createAction(PANE_SPLIT, (paneId, splitDirection) => ({paneId, splitDirection}))
 )

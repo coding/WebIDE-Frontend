@@ -56,7 +56,9 @@ class AceEditor extends Component {
     editor.setTheme(`ace/theme/${theme}`);
     editor.$blockScrolling = Infinity;
     // dispatch(EditorActions.registerEditor(this.state.name, editor, this.editorDOM));
-    if (tab.content) {
+    if (tab.editor) {
+      editor.setSession(tab.editor.getSession())
+    } else if (tab.content) {
       const {body, path} = tab.content;
       if (body) editor.setValue(body, -1);
       require([`brace/mode/${getMode(path)}`], () =>
@@ -66,7 +68,11 @@ class AceEditor extends Component {
     editor.focus();
     tab.editor = editor;
     editor.session.on('change', this.onChange)
-    setTimeout( () => editor.resize(), 0);
+    setTimeout( () => editor.resize(), 0)
+
+    editor.on('focus', () => {
+      this.props.dispatch(TabActions.activateTab(tab.id))
+    })
   }
 
   render () {

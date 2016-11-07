@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import { dragOverTarget, updateDragOverMeta, dragEnd } from './actions'
 import * as PaneActions from '../Pane/actions'
+import * as TabActions from '../Tab/actions'
 
 @connect(state => state.DragAndDrop)
 class DragAndDrop extends Component {
@@ -74,11 +75,11 @@ class DragAndDrop extends Component {
     if (!source || !target) return
     switch (`${source.type}_to_${target.type}`) {
       case 'TAB_to_PANE':
-        if (meta.paneSplitDirection === 'center') {
-
-        } else {
-          dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
-        }
+        dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
+          .then(newPane => {
+            let tabGroupId = newPane.views[0]
+            dispatch(TabActions.moveTabToGroup(source.id, tabGroupId))
+          })
     }
     dispatch(dragEnd())
   }

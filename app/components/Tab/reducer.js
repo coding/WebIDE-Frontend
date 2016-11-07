@@ -9,7 +9,8 @@ import {
   TAB_REMOVE_GROUP,
   TAB_DISSOLVE_GROUP,
   TAB_UPDATE,
-  TAB_UPDATE_FLAGS
+  TAB_UPDATE_FLAGS,
+  TAB_MOVE_TO_GROUP
 } from './actions'
 
 class Tab {
@@ -203,6 +204,21 @@ export default handleActions({
     const {tabId, flags} = action.payload
     var tab = getTabById(tabId)
     tab.updateFlags(flags)
+    return normalizeState(state)
+  },
+
+  [TAB_MOVE_TO_GROUP]: (state, action) => {
+    const {tabId, groupId} = action.payload
+    let tab = getTabById(tabId)
+    if (tab.group.id === groupId) return state
+
+    let tabGroup = getGroupById(groupId)
+    if (tab.isActive) {
+      tab.group.activateNextTab()
+    }
+    tab.group.removeTab(tab)
+    tabGroup.tabs.push(tab)
+    tabGroup.activateTab(tab)
     return normalizeState(state)
   }
 }, _state)
