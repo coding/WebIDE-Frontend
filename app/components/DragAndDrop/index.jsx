@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { dragOverTarget, updateDragOverMeta, dragEnd } from './actions'
+import { updateDragOverTarget, updateDragOverMeta, dragEnd } from './actions'
 import * as PaneActions from '../Pane/actions'
 import * as TabActions from '../Tab/actions'
 
@@ -58,12 +58,16 @@ class DragAndDrop extends Component {
 
     if (!target) return
     if (!prevTarget || target.id !== prevTarget.id) {
-      dispatch(dragOverTarget({id: target.id, type: target.type}))
+      dispatch(updateDragOverTarget({id: target.id, type: target.type}))
     }
 
-    switch (source.type) {
-      case 'TAB':
+    switch (`${source.type}_on_${target.type}`) {
+      case 'TAB_on_PANE':
         return this.dragTabOverPane(e, target)
+
+      case 'TAB_on_TABBAR':
+      case 'TAB_on_TABLABEL':
+        return this.dragTabOverTabBar(e, target)
 
       default:
     }
@@ -73,13 +77,17 @@ class DragAndDrop extends Component {
     e.preventDefault()
     const {source, target, meta, dispatch} = this.props
     if (!source || !target) return
-    switch (`${source.type}_to_${target.type}`) {
-      case 'TAB_to_PANE':
+    switch (`${source.type}_on_${target.type}`) {
+      case 'TAB_on_PANE':
         dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
           .then(newPane => {
             let tabGroupId = newPane.views[0]
             dispatch(TabActions.moveTabToGroup(source.id, tabGroupId))
           })
+      case 'TAB_on_TABBAR':
+      case 'TAB_on_TABLABEL':
+
+
     }
     dispatch(dragEnd())
   }
@@ -88,6 +96,17 @@ class DragAndDrop extends Component {
     e.preventDefault()
     const {dispatch} = this.props
     dispatch(dragEnd())
+  }
+
+  dragTabOverTabBar (e, target) {
+    const {dispatch} = this.props
+    if (target.type !== 'TABLABEL' && target.type !== 'TABBAR') return
+    if (target.type === 'TABLABEL') {
+      dispatch(updateDragOverMeta({tabLabelTargetId: target.id}))
+    } else {
+      dispatch(updateDragOverMeta({tabLabelId: target.id}))
+    }
+
   }
 
   dragTabOverPane (e, target) {

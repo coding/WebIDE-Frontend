@@ -70,8 +70,26 @@ $tab-control-width = 16px;
   flex-grow: 1;
   display: flex;
   align-items: center;
+  position: relative;
   cursor: default;
   border-left: 2px solid transparent;
+
+  .tab-label-insert-pos {
+    absolute(top 0px left -2px bottom 0);
+    width: 2px;
+    background-color: $blue-highlight-color;
+    &:before {
+      content: '';
+      display: block;
+      border-style: solid;
+      border-color: transparent;
+      border-width: 6px;
+      border-bottom: none;
+      border-top-color: $blue-highlight-color;
+      absolute(top 4px left -5px)
+      margin-top: -4px;
+    }
+  }
 
   .title {
     text-overflow: ellipsis;

@@ -20,8 +20,8 @@ const Tab = ({getGroupById, groupId, ...otherProps}) => {
 
 const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   return (
-    <div className='tab-bar'>
-      <ul className='tabs'>
+    <div className='tab-bar' id={`tab_bar_${groupId}`} data-droppable='TABBAR'>
+      <ul className='tab-labels'>
         { tabs.map(tab =>
           <TabLabel tab={tab} key={tab.id} {...otherProps} />
         ) }
@@ -34,7 +34,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
   )
 }
 
-const TabLabel = ({tab, removeTab, dispatch, activateTab}) => {
+let TabLabel = ({tab, isDraggedOver, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -48,10 +48,13 @@ const TabLabel = ({tab, removeTab, dispatch, activateTab}) => {
       active: tab.isActive,
       modified: tab.flags.modified
     })}
+      id={`tab_label_${tab.id}`}
+      data-droppable='TABLABEL'
       onClick={e => activateTab(tab.id)}
       draggable='true'
       onDragStart={e => dispatch(dragStart({sourceType: 'TAB', sourceId: tab.id}))}
     >
+      {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>
@@ -60,6 +63,14 @@ const TabLabel = ({tab, removeTab, dispatch, activateTab}) => {
     </li>
   )
 }
+
+TabLabel = connect((state, ownProps) => ({
+  isDraggedOver: state.DragAndDrop.meta
+    ? state.DragAndDrop.meta.tabLabelTargetId === `tab_label_${ownProps.tab.id}`
+    : false
+})
+)(TabLabel)
+
 
 const TabContent = ({tabs, defaultContentClass}) => {
   return (

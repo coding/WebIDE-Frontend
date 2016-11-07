@@ -62,7 +62,7 @@ class TabGroup {
     this.deactivateAllTabsInGroup()
     tab.isActive = true
     this.activeTab = tab
-    if (tab.editor) tab.editor.focus()
+    if (tab.editor && !tab.editor.isFocused()) tab.editor.focus()
     activateGroup(tab.group)
   }
 
