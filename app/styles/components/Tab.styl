@@ -63,6 +63,24 @@ $tab-control-width = 16px;
   }
 }
 
+.tab-label-insert-pos {
+  width: 2px;
+  background-color: $blue-highlight-color;
+  height: 100%;
+  position: relative;
+  &:before {
+    content: '';
+    display: block;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 6px;
+    border-bottom: none;
+    border-top-color: $blue-highlight-color;
+    absolute(top 4px left -5px)
+    margin-top: -4px;
+  }
+}
+
 .tab-label {
   min-width: 92px;
   max-width: 200px;
@@ -76,19 +94,6 @@ $tab-control-width = 16px;
 
   .tab-label-insert-pos {
     absolute(top 0px left -2px bottom 0);
-    width: 2px;
-    background-color: $blue-highlight-color;
-    &:before {
-      content: '';
-      display: block;
-      border-style: solid;
-      border-color: transparent;
-      border-width: 6px;
-      border-bottom: none;
-      border-top-color: $blue-highlight-color;
-      absolute(top 4px left -5px)
-      margin-top: -4px;
-    }
   }
 
   .title {

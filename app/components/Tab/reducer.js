@@ -10,7 +10,8 @@ import {
   TAB_DISSOLVE_GROUP,
   TAB_UPDATE,
   TAB_UPDATE_FLAGS,
-  TAB_MOVE_TO_GROUP
+  TAB_MOVE_TO_GROUP,
+  TAB_INSERT_AT
 } from './actions'
 
 class Tab {
@@ -210,7 +211,6 @@ export default handleActions({
   [TAB_MOVE_TO_GROUP]: (state, action) => {
     const {tabId, groupId} = action.payload
     let tab = getTabById(tabId)
-    if (tab.group.id === groupId) return state
 
     let tabGroup = getGroupById(groupId)
     if (tab.isActive) {
@@ -219,6 +219,17 @@ export default handleActions({
     tab.group.removeTab(tab)
     tabGroup.tabs.push(tab)
     tabGroup.activateTab(tab)
+    return normalizeState(state)
+  },
+
+  [TAB_INSERT_AT]: (state, action) => {
+    const {tabId, beforeTabId} = action.payload
+    let sourceTab = getTabById(tabId)
+    let targetTab = getTabById(beforeTabId)
+    if (sourceTab.isActive) sourceTab.group.activateNextTab()
+    sourceTab.group.removeTab(sourceTab)
+    targetTab.group.tabs.splice(targetTab.group.tabs.indexOf(targetTab), 0, sourceTab)
+    targetTab.group.activateTab(sourceTab)
     return normalizeState(state)
   }
 }, _state)

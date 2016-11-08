@@ -84,9 +84,17 @@ class DragAndDrop extends Component {
             let tabGroupId = newPane.views[0]
             dispatch(TabActions.moveTabToGroup(source.id, tabGroupId))
           })
-      case 'TAB_on_TABBAR':
-      case 'TAB_on_TABLABEL':
+        break
 
+      case 'TAB_on_TABBAR':
+        dispatch(TabActions.moveTabToGroup(source.id, target.id.replace('tab_bar_', '')))
+        break
+
+      case 'TAB_on_TABLABEL':
+        dispatch(TabActions.insertTabAt(source.id, target.id.replace('tab_label_', '')))
+        break
+
+      default:
 
     }
     dispatch(dragEnd())
@@ -104,9 +112,8 @@ class DragAndDrop extends Component {
     if (target.type === 'TABLABEL') {
       dispatch(updateDragOverMeta({tabLabelTargetId: target.id}))
     } else {
-      dispatch(updateDragOverMeta({tabLabelId: target.id}))
+      dispatch(updateDragOverMeta({tabBarTargetId: target.id}))
     }
-
   }
 
   dragTabOverPane (e, target) {

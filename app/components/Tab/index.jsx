@@ -18,7 +18,7 @@ const Tab = ({getGroupById, groupId, ...otherProps}) => {
   )
 }
 
-const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
+let TabBar = ({tabs, groupId, addTab, isDraggedOver, ...otherProps}) => {
   return (
     <div className='tab-bar' id={`tab_bar_${groupId}`} data-droppable='TABBAR'>
       <ul className='tab-labels'>
@@ -26,6 +26,7 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
           <TabLabel tab={tab} key={tab.id} {...otherProps} />
         ) }
       </ul>
+      {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
       <div className='tab-add-btn' onClick={e => addTab(groupId)} >＋</div>
       <div className='tab-show-list'>
         <i className='fa fa-sort-desc' />
@@ -33,6 +34,12 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
     </div>
   )
 }
+TabBar = connect((state, ownProps) => ({
+  isDraggedOver: state.DragAndDrop.meta
+    ? state.DragAndDrop.meta.tabBarTargetId === `tab_bar_${ownProps.groupId}`
+    : false
+})
+)(TabBar)
 
 let TabLabel = ({tab, isDraggedOver, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
