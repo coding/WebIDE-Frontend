@@ -6,8 +6,12 @@ export function gitStatus () {
   return request.get(`/git/${config.spaceKey}`)
 }
 
-export function gitBranch () {
+export function gitGetBranches () {
   return request.get(`/git/${config.spaceKey}/branches`)
+}
+
+export function gitNewBranch (branchName) {
+  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
 }
 
 export function gitCheckout (branch, remoteBranch) {

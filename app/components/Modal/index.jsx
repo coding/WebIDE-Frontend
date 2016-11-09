@@ -12,6 +12,7 @@ import {
   GitResetView,
   GitTagView,
   GitMergeView,
+  GitNewBranchView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -59,6 +60,9 @@ class Modal extends Component {
 
         case 'GitMerge':
           return <GitMergeView />
+
+        case 'GitNewBranch':
+          return <GitNewBranchView />
 
         case 'GitResetHead':
           return <GitResetView />

@@ -17,7 +17,13 @@ export default {
   'git:push': c => $d(Git.push()),
 
   // 'git:commit_and_push':
-  // 'git:branch':
+  'git:new_branch': c => {
+    $d(Git.getBranches()).then(() =>
+      $d(Git.getCurrentBranch()).then(() =>
+        $d(Modal.showModal('GitNewBranch'))
+      )
+    )
+  },
   'git:tag': c => {
     $d(Git.getCurrentBranch()).then(() =>
       $d(Modal.showModal('GitTag'))
