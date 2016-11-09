@@ -58,3 +58,7 @@ export function gitCheckoutStash ({stashRef, branch}){
 export function gitResetHead ({ref, resetType}) {
   return request.post(`/git/${config.spaceKey}/reset`, {ref, resetType})
 }
+
+export function gitAddTag ({tagName, ref, message, force}) {
+  return request.post(`/git/${config.spaceKey}/tags`, {tagName, ref, message, force})
+}

@@ -18,7 +18,11 @@ export default {
 
   // 'git:commit_and_push':
   // 'git:branch':
-  // 'git:tag':
+  'git:tag': c => {
+    $d(Git.getCurrentBranch()).then(() =>
+      $d(Modal.showModal('GitTag'))
+    )
+  },
   // 'git:merge':
   // 'git:resolve_conflicts':
   'git:stash': c => {
