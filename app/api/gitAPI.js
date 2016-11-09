@@ -62,3 +62,7 @@ export function gitResetHead ({ref, resetType}) {
 export function gitAddTag ({tagName, ref, message, force}) {
   return request.post(`/git/${config.spaceKey}/tags`, {tagName, ref, message, force})
 }
+
+export function gitMerge (branch) {
+  return request.post(`/git/${config.spaceKey}/merge`, {name: branch})
+}

@@ -23,7 +23,13 @@ export default {
       $d(Modal.showModal('GitTag'))
     )
   },
-  // 'git:merge':
+  'git:merge': c => {
+    $d(Git.getBranches()).then(() =>
+      $d(Git.getCurrentBranch()).then(() =>
+        $d(Modal.showModal('GitMerge'))
+      )
+    )
+  },
   // 'git:resolve_conflicts':
   'git:stash': c => {
     $d(Git.getCurrentBranch()).then(() =>

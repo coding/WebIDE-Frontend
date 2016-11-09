@@ -7,3 +7,4 @@ export GitStashView from '../../Git/modals/stash';
 export GitUnstashView from '../../Git/modals/unstash';
 export GitResetView from '../../Git/modals/reset';
 export GitTagView from '../../Git/modals/tag';
+export GitMergeView from '../../Git/modals/merge';
