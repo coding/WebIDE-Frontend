@@ -8,24 +8,25 @@ import * as TabActions from './actions'
 import { dragStart } from '../DragAndDrop/actions'
 import AceEditor from '../AceEditor'
 
-const TabView = ({getGroupById, groupId, ...otherProps}) => {
+const Tab = ({getGroupById, groupId, ...otherProps}) => {
   let tabGroup = getGroupById(groupId)
   return (
-    <div className='tab-component'>
+    <div className='tab-container'>
       <TabBar tabs={tabGroup.tabs} groupId={groupId} {...otherProps} />
       <TabContent tabs={tabGroup.tabs} groupId={groupId} {...otherProps} />
     </div>
   )
 }
 
-const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
+let TabBar = ({tabs, groupId, addTab, isDraggedOver, ...otherProps}) => {
   return (
-    <div className='tab-bar'>
-      <ul className='tabs'>
+    <div className='tab-bar' id={`tab_bar_${groupId}`} data-droppable='TABBAR'>
+      <ul className='tab-labels'>
         { tabs.map(tab =>
-          <Tab tab={tab} key={tab.id} {...otherProps} />
+          <TabLabel tab={tab} key={tab.id} {...otherProps} />
         ) }
       </ul>
+      {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
       <div className='tab-add-btn' onClick={e => addTab(groupId)} >＋</div>
       <div className='tab-show-list'>
         <i className='fa fa-sort-desc' />
@@ -33,8 +34,14 @@ const TabBar = ({tabs, groupId, addTab, ...otherProps}) => {
     </div>
   )
 }
+TabBar = connect((state, ownProps) => ({
+  isDraggedOver: state.DragAndDrop.meta
+    ? state.DragAndDrop.meta.tabBarTargetId === `tab_bar_${ownProps.groupId}`
+    : false
+})
+)(TabBar)
 
-const Tab = ({tab, removeTab, dispatch, activateTab}) => {
+let TabLabel = ({tab, isDraggedOver, removeTab, dispatch, activateTab}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -44,14 +51,17 @@ const Tab = ({tab, removeTab, dispatch, activateTab}) => {
   }
 
   return (
-    <li className={cx('tab', {
+    <li className={cx('tab-label', {
       active: tab.isActive,
       modified: tab.flags.modified
     })}
+      id={`tab_label_${tab.id}`}
+      data-droppable='TABLABEL'
       onClick={e => activateTab(tab.id)}
       draggable='true'
       onDragStart={e => dispatch(dragStart({sourceType: 'TAB', sourceId: tab.id}))}
     >
+      {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>
@@ -60,6 +70,14 @@ const Tab = ({tab, removeTab, dispatch, activateTab}) => {
     </li>
   )
 }
+
+TabLabel = connect((state, ownProps) => ({
+  isDraggedOver: state.DragAndDrop.meta
+    ? state.DragAndDrop.meta.tabLabelTargetId === `tab_label_${ownProps.tab.id}`
+    : false
+})
+)(TabLabel)
+
 
 const TabContent = ({tabs, defaultContentClass}) => {
   return (
@@ -83,7 +101,7 @@ const TabContentItem = ({tab, defaultContentClass}) => {
   )
 }
 
-class TabViewContainer extends Component {
+class TabContainer extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -107,12 +125,12 @@ class TabViewContainer extends Component {
 
   render () {
     return (
-      <TabView {...this.props} groupId={this.state.groupId} />
+      <Tab {...this.props} groupId={this.state.groupId} />
     )
   }
 }
 
-TabViewContainer = connect(
+TabContainer = connect(
   state => state.TabState,
   dispatch => {
     return {
@@ -122,6 +140,6 @@ TabViewContainer = connect(
       dispatch: dispatch
     }
   }
-)(TabViewContainer)
+)(TabContainer)
 
-export default TabViewContainer
+export default TabContainer
