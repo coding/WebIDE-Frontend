@@ -58,6 +58,11 @@ var menuBarItems = [
         name: 'Reset HEAD...',
         icon: 'fa',
         command: 'git:reset_head'
+      }, dividItem,
+      {
+        name: 'Tag...',
+        icon: 'fa',
+        command: 'git:tag'
       }
     ]
   }, {

@@ -25,8 +25,7 @@ class GitResetView extends Component {
     this.handleConfirm = this.handleConfirm.bind(this)
   }
   render () {
-    const { branches } = this.props
-    const { current: currentBranch} = branches
+    const { branches: {current: currentBranch} } = this.props
     return (
       <div>
         <div className='git-reset-container'>

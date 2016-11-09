@@ -180,3 +180,15 @@ export function resetHead ({ref, resetType}) {
     }))
   })
 }
+
+export function addTag ({tagName, ref, message, force}) {
+  return dispatch => api.gitAddTag({tagName, ref, message, force}).then(res => {
+    dispatch(notify({message: 'Add tag success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Add tag error: ${res.msg}`,
+    }))
+  })
+}
