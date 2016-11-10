@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { dispatchCommand } from '../../../commands'
 import * as GitActions from '../actions'
+import * as ModalActions from '../../Modal/actions'
 
 @connect(state => state.GitState)
 class GitNewBranchView extends Component {
@@ -12,7 +13,7 @@ class GitNewBranchView extends Component {
   }
 
   render () {
-    const { branches: {current: currentBranch}, dispatch } = this.props
+    const { branches: {current: currentBranch}, dispatch, content } = this.props
     const allBranches = [...this.props.branches.local, ...this.props.branches.remote]
     return (
       <div>
@@ -31,6 +32,9 @@ class GitNewBranchView extends Component {
                   className="form-control"
                   value={this.state.newBranch}
                   onChange={e => this.setState({newBranch: e.target.value})} />
+                { content && content.statusMessage ?
+                  <div className='message'>{content.statusMessage}</div>
+                : null }
               </label>
             </div>
           </form>
@@ -50,7 +54,7 @@ class GitNewBranchView extends Component {
   confirmCreateNewBranch = () => {
     const {branches: {local: localBranches}, dispatch} = this.props
     if (localBranches.includes(this.state.newBranch)) {
-      // update info
+      dispatch(ModalActions.updateModal({statusMessage: 'Branch ref already exists. Pick another name.'}))
     } else {
       dispatch(GitActions.newBranch(this.state.newBranch))
     }
