@@ -34,7 +34,7 @@ export function updateStagingArea (action, file) {
 export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
   return (dispatch) => {
-    api.gitBranch().then(data => {
+    return api.gitGetBranches().then(data => {
       dispatch(createAction(GIT_BRANCH)({ branches: data }))
     })
   }
@@ -189,6 +189,30 @@ export function addTag ({tagName, ref, message, force}) {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Add tag error: ${res.msg}`,
+    }))
+  })
+}
+
+export function mergeBranch (branch) {
+  return dispatch => api.gitMerge(branch).then(res => {
+    dispatch(notify({message: 'Merge success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Merge error: ${res.msg}`,
+    }))
+  })
+}
+
+export function newBranch (branch) {
+  return dispatch => api.gitNewBranch(branch).then(res => {
+    dispatch(notify({message: 'Create new branch success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Create new branch error: ${res.msg}`,
     }))
   })
 }

@@ -110,6 +110,8 @@ class _GitBranchWidget extends Component {
       }
     })
     return [
+      {name: 'New Branch', command: () => dispatchCommand('git:new_branch')},
+      {name: '-', isDisabled: true},
       {name: 'Local Branches', isDisabled: true},
       ...localBranchItems,
       {name: '-', isDisabled: true},

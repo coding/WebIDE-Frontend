@@ -6,8 +6,12 @@ export function gitStatus () {
   return request.get(`/git/${config.spaceKey}`)
 }
 
-export function gitBranch () {
+export function gitGetBranches () {
   return request.get(`/git/${config.spaceKey}/branches`)
+}
+
+export function gitNewBranch (branchName) {
+  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
 }
 
 export function gitCheckout (branch, remoteBranch) {
@@ -61,4 +65,8 @@ export function gitResetHead ({ref, resetType}) {
 
 export function gitAddTag ({tagName, ref, message, force}) {
   return request.post(`/git/${config.spaceKey}/tags`, {tagName, ref, message, force})
+}
+
+export function gitMerge (branch) {
+  return request.post(`/git/${config.spaceKey}/merge`, {name: branch})
 }
