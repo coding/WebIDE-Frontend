@@ -19,18 +19,17 @@ var ModalContainer = (props) => {
   const {dispatch} = props;
   const hasModal = props.stack.length > 0;
   return hasModal ? <div className={cx('modals-container')}>
-    {props.stack.map((config) => {
-      const {_id, isActive, showBackdrop, position} = config;
-        return isActive ? (
-        <div key={_id} className={cx('modal-container', position,
-          {'show-backdrop': showBackdrop}
-        )}>
-          <Modal {...config}/>
-          <div className='backdrop'
+    { props.stack.map(modalConfig => {
+      const {id, isActive, showBackdrop, position} = modalConfig;
+        return isActive
+        ? <div key={id} className={cx('modal-container', position,
+            {'show-backdrop': showBackdrop})} >
+            <Modal {...modalConfig} />
+            <div className='backdrop'
                onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
-        </div>
-      ) : null
-    })}
+          </div>
+        : null
+    }) }
   </div> :null;
 }
 ModalContainer = connect(state => state.ModalState, null)(ModalContainer)
@@ -47,25 +46,25 @@ class Modal extends Component {
     var modalContent = function () {
       switch (modalType) {
         case 'GitCommit':
-          return <GitCommitView />
+          return <GitCommitView {...this.props} />
 
         case 'GitStash':
-          return <GitStashView />
+          return <GitStashView {...this.props} />
 
         case 'GitUnstash':
-          return <GitUnstashView />
+          return <GitUnstashView {...this.props} />
 
         case 'GitTag':
-          return <GitTagView />
+          return <GitTagView {...this.props} />
 
         case 'GitMerge':
-          return <GitMergeView />
+          return <GitMergeView {...this.props} />
 
         case 'GitNewBranch':
-          return <GitNewBranchView />
+          return <GitNewBranchView {...this.props} />
 
         case 'GitResetHead':
-          return <GitResetView />
+          return <GitResetView {...this.props} />
 
         case 'Prompt':
           return <Prompt {...this.props} />

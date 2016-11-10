@@ -1,12 +1,11 @@
 /* @flow weak */
 import { createAction } from 'redux-actions'
 import { promiseActionMixin } from '../../utils'
-
-let modal_id = 0;
+import _ from 'lodash'
 
 export const MODAL_SHOW = 'MODAL_SHOW'
 export const showModal = promiseActionMixin(
-  createAction(MODAL_SHOW, (modalType, content) => ({_id: modal_id++, modalType, content}))
+  createAction(MODAL_SHOW, (modalType, content) => ({id: _.uniqueId(), modalType, content}))
 )
 
 export const MODAL_DISMISS = 'MODAL_DISMISS'
