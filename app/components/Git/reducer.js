@@ -6,6 +6,7 @@ import {
   GIT_STATUS,
   GIT_STATUS_FOLD_NODE,
   GIT_STATUS_SELECT_NODE,
+  GIT_STATUS_STAGE_NODE,
   GIT_BRANCH,
   GIT_CHECKOUT,
   GIT_STAGE_FILE,
@@ -50,9 +51,13 @@ const FileTreeNode = Record({
   path: '',
   isFolded: false,
   isFocused: false,
+  isStaged: false,
+  stagedChildrenCount: 0,
   isDir: false,
   isRoot: false,
-  children: null
+  children: null,
+  leafNodes: null,
+  parent: null
 })
 
 const treeifyFiles = (files) => {
@@ -62,7 +67,8 @@ const treeifyFiles = (files) => {
     isRoot: true,
     isDir: true,
     isFocused: false,
-    children: []
+    children: [],
+    leafNodes: []
   })
   let _nodes = Map()
   _nodes = _nodes.set(rootNode.path, rootNode)
@@ -81,20 +87,30 @@ const treeifyFiles = (files) => {
         if (!node) node = new FileTreeNode({
           name: pathComp,
           isDir: false,
-          path: currentPath
+          path: currentPath,
+          parent: parentNode.path
         })
       } else {
         if (!node) node = new FileTreeNode({
           name: pathComp,
           isDir: true,
           path: currentPath,
-          children: []
+          children: [],
+          leafNodes: [],
+          parent: parentNode.path
         })
       }
+
+      if (parentNode.isDir && !parentNode.leafNodes.includes('/'+file.name)) {
+        parentNode.leafNodes.push('/'+file.name)
+      }
+
       if (!parentNode.children.includes(node.path)) {
         parentNode.children.push(node.path)
       }
+
       _nodes = _nodes.set(node.path, node)
+
       return node
     }, rootNode)
 
@@ -115,15 +131,11 @@ export default handleActions({
     state.isWorkingDirectoryClean = action.payload.isClean
     return state
   },
+
   [GIT_STATUS_FOLD_NODE]: (state, action) => {
-    let {node, shouldBeFolded, deep} = action.payload
+    let {node, isFolded, deep} = action.payload
     if (!node.isDir) return state
 
-    if (typeof shouldBeFolded === 'boolean') {
-      var isFolded = shouldBeFolded
-    } else {
-      var isFolded = !node.isFolded
-    }
     state.statusFiles = state.statusFiles.set(node.path, node.set('isFolded', isFolded))
     if (deep) {
       node.children.forEach(childNodePath => {
@@ -135,6 +147,7 @@ export default handleActions({
     }
     return {...state}
   },
+
   [GIT_STATUS_SELECT_NODE]: (state, action) => {
     let node = action.payload
     state.statusFiles = state.statusFiles.map((_node) => {
@@ -148,6 +161,30 @@ export default handleActions({
     })
     return {...state}
   },
+
+  [GIT_STATUS_STAGE_NODE]: (state, action) => {
+    let node = action.payload
+    // state.statusFiles = state.statusFiles.set(node.path, node.set('isStaged', !node.isStaged))
+    if (!node.isDir) {
+      state.statusFiles = state.statusFiles.withMutations(statusFiles => {
+        // if (node.isStaged) { // then unstage it
+        statusFiles.set(node.path, node.set('isStaged', node.isStaged ? false : true))
+        let _node = statusFiles.get(node.parent)
+        while (_node) {
+          statusFiles.set(_node.path,
+            _node.update('stagedChildrenCount', n => node.isStaged ? n-1 : n+1)
+          )
+          _node = statusFiles.get(_node.parent)
+        }
+        return statusFiles
+      })
+    } else {
+
+    }
+    return {...state}
+  },
+
+
 
   [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
     state = _.cloneDeep(state)
