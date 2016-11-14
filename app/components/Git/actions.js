@@ -216,3 +216,11 @@ export function newBranch (branch) {
     }))
   })
 }
+
+export const GIT_STATUS_FOLD_NODE = 'GIT_STATUS_FOLD_NODE'
+export const toggleNodeFold = createAction(GIT_STATUS_FOLD_NODE,
+  (node, shouldBeFolded = null, deep = false) => ({node, shouldBeFolded, deep})
+)
+
+export const GIT_STATUS_SELECT_NODE = 'GIT_STATUS_SELECT_NODE'
+export const selectNode = createAction(GIT_STATUS_SELECT_NODE, node => node)
