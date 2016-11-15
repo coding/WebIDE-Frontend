@@ -52,7 +52,7 @@ const FileTreeNode = Record({
   isFolded: false,
   isFocused: false,
   isStaged: false,
-  stagedChildrenCount: 0,
+  depth: 0,
   isDir: false,
   isRoot: false,
   children: null,
@@ -77,27 +77,29 @@ const treeifyFiles = (files) => {
     let pathComps = file.name.split('/')
 
     pathComps.reduce((parentNode, pathComp, idx) => {
-      var currentPath = parentNode.path
+      let currentPath = parentNode.path
         + (parentNode.path.endsWith('/')? '' : '/')
         + pathComp
 
-      var node = _nodes.get(currentPath)
+      let node = _nodes.get(currentPath)
 
+      let commonNodeProps = {
+        name: pathComp,
+        path: currentPath,
+        parent: parentNode.path,
+        depth: parentNode.depth + 1
+      }
       if (idx === pathComps.length - 1) {
         if (!node) node = new FileTreeNode({
-          name: pathComp,
-          isDir: false,
-          path: currentPath,
-          parent: parentNode.path
+          ...commonNodeProps,
+          isDir: false
         })
       } else {
         if (!node) node = new FileTreeNode({
-          name: pathComp,
+          ...commonNodeProps,
           isDir: true,
-          path: currentPath,
           children: [],
           leafNodes: [],
-          parent: parentNode.path
         })
       }
 
@@ -165,17 +167,9 @@ export default handleActions({
   [GIT_STATUS_STAGE_NODE]: (state, action) => {
     let node = action.payload
     if (!node.isDir) {
-      state.statusFiles = state.statusFiles.withMutations(statusFiles => {
-        statusFiles.set(node.path, node.set('isStaged', node.isStaged ? false : true))
-        let _node = statusFiles.get(node.parent)
-        while (_node) {
-          statusFiles.set(_node.path,
-            _node.update('stagedChildrenCount', n => node.isStaged ? n-1 : n+1)
-          )
-          _node = statusFiles.get(_node.parent)
-        }
-        return statusFiles
-      })
+      state.statusFiles = state.statusFiles.set(node.path,
+        node.set('isStaged', node.isStaged ? false : true)
+      )
     } else {
       let stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
         state.statusFiles.get(leafNodePath).get('isStaged')
