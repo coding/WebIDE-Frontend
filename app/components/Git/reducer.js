@@ -164,10 +164,8 @@ export default handleActions({
 
   [GIT_STATUS_STAGE_NODE]: (state, action) => {
     let node = action.payload
-    // state.statusFiles = state.statusFiles.set(node.path, node.set('isStaged', !node.isStaged))
     if (!node.isDir) {
       state.statusFiles = state.statusFiles.withMutations(statusFiles => {
-        // if (node.isStaged) { // then unstage it
         statusFiles.set(node.path, node.set('isStaged', node.isStaged ? false : true))
         let _node = statusFiles.get(node.parent)
         while (_node) {
@@ -179,11 +177,21 @@ export default handleActions({
         return statusFiles
       })
     } else {
+      let stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
+        state.statusFiles.get(leafNodePath).get('isStaged')
+      )
+      let allLeafNodesStaged = (stagedLeafNodes.length === node.leafNodes.length)
 
+      state.statusFiles = state.statusFiles.withMutations(statusFiles => {
+        node.leafNodes.forEach(leafNodePath => {
+          let leafNode = statusFiles.get(leafNodePath)
+          statusFiles.set(leafNodePath, leafNode.set('isStaged', allLeafNodesStaged ? false : true))
+        })
+        return statusFiles
+      })
     }
     return {...state}
   },
-
 
 
   [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
