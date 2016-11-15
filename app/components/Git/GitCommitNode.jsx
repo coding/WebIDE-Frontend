@@ -15,7 +15,7 @@ class GitFileTree extends Component {
 
   render () {
     return (
-      <div className='filetree-container' tabIndex={1} >
+      <div className='git-filetree-container' tabIndex={1} >
         <GitFileTreeNode path='/' />
       </div>
     )
@@ -33,39 +33,55 @@ class _GitFileTreeNode extends Component {
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
     const childrenStagingStatus = this.getChildrenStagingStatus()
+    const FILETREE_INDENT = 14
 
     return (
       <div className='filetree-node-container'>
-        <div className={cx('filetree-node', {'focus':node.isFocused})}
-          ref={r => this.nodeDOM = r}
-          onClick={e => selectNode(node)} >
-          <span className='filetree-node-arrow'
-            onClick={e => toggleStaging(node)} >
-            <i className={cx('fa', {
-              'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
-              'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
-              'fa-minus-square': childrenStagingStatus === 'SOME',
-            })}></i>
-          </span>
-          <span className='filetree-node-arrow'
-            onClick={e => toggleNodeFold(node, null, e.altKey)} >
-            <i className={cx({
-              'fa fa-angle-right': node.isFolded,
-              'fa fa-angle-down': !node.isFolded,
-              'hidden': !node.isDir || node.childrenCount === 0
-            })}></i>
-          </span>
-          <span className='filetree-node-icon'>
-            <i className={cx({
-              'fa fa-folder-o': node.isDir,
-              'fa fa-file-o': !node.isDir
-            })}></i>
-          </span>
-          <span className='filetree-node-label'>
-            {node.name || 'Project'}
-          </span>
-          <div className='filetree-node-bg'></div>
-        </div>
+        { node.isRoot ?
+          (<div className='filetree-node' ref={r => this.nodeDOM = r} >
+            <span className='filetree-node-checkbox'
+              onClick={e => toggleStaging(node)} >
+              <i className={cx('fa', {
+                'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
+                'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
+                'fa-minus-square': childrenStagingStatus === 'SOME',
+              })}></i>
+            </span>
+            <span className='filetree-node-label'>File Status</span>
+          </div>)
+
+        : (<div className={cx('filetree-node', {'focus':node.isFocused})}
+            ref={r => this.nodeDOM = r}
+            onClick={e => selectNode(node)} >
+            <span className='filetree-node-checkbox'
+              onClick={e => toggleStaging(node)} >
+              <i className={cx('fa', {
+                'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
+                'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
+                'fa-minus-square': childrenStagingStatus === 'SOME',
+              })}></i>
+            </span>
+            <span className='filetree-node-arrow'
+              onClick={e => toggleNodeFold(node, null, e.altKey)}
+              style={{'marginLeft': `${(node.depth-1)*FILETREE_INDENT}px`}} >
+              <i className={cx({
+                'fa fa-angle-right': node.isFolded,
+                'fa fa-angle-down': !node.isFolded,
+                'hidden': !node.isDir || node.childrenCount === 0
+              })}></i>
+            </span>
+            <span className='filetree-node-icon'>
+              <i className={cx({
+                'fa fa-folder-o': node.isDir,
+                'fa fa-file-o': !node.isDir
+              })}></i>
+            </span>
+            <span className='filetree-node-label'>
+              {node.name || 'Project'}
+            </span>
+            <div className='filetree-node-bg'></div>
+          </div>)
+        }
 
         { node.isDir ?
           <div className={cx('filetree-node-children', {isFolded: node.isFolded})}>
@@ -73,7 +89,7 @@ class _GitFileTreeNode extends Component {
               <GitFileTreeNode key={childNodePath} path={childNodePath} />
             )}
           </div>
-          : null }
+        : null }
 
       </div>
     )
