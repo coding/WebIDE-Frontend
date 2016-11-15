@@ -33,6 +33,7 @@ class _GitFileTreeNode extends Component {
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
     const childrenStagingStatus = this.getChildrenStagingStatus()
+
     const FILETREE_INDENT = 14
 
     return (
@@ -40,6 +41,7 @@ class _GitFileTreeNode extends Component {
         { node.isRoot ?
           (<div className='filetree-node' ref={r => this.nodeDOM = r} >
             <span className='filetree-node-checkbox'
+              style={{marginRight: 0}}
               onClick={e => toggleStaging(node)} >
               <i className={cx('fa', {
                 'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
@@ -47,7 +49,8 @@ class _GitFileTreeNode extends Component {
                 'fa-minus-square': childrenStagingStatus === 'SOME',
               })}></i>
             </span>
-            <span className='filetree-node-label'>File Status</span>
+            <span className='filetree-node-label'>File Status
+              ( {this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed )</span>
           </div>)
 
         : (<div className={cx('filetree-node', {'focus':node.isFocused})}
@@ -71,9 +74,11 @@ class _GitFileTreeNode extends Component {
               })}></i>
             </span>
             <span className='filetree-node-icon'>
-              <i className={cx({
-                'fa fa-folder-o': node.isDir,
-                'fa fa-file-o': !node.isDir
+              <i className={cx('fa file-status-indicator', node.status.toLowerCase(), {
+                'fa-folder-o': node.isDir,
+                'fa-pencil-square': node.status == 'MODIFIED',
+                'fa-plus-square': node.status == 'UNTRACKED',
+                'fa-minus-square': node.status == 'MISSING'
               })}></i>
             </span>
             <span className='filetree-node-label'>
@@ -90,18 +95,29 @@ class _GitFileTreeNode extends Component {
             )}
           </div>
         : null }
-
       </div>
+    )
+  }
+
+
+  componentDidUpdate () {
+    if (this.props.node.isFocused) {
+      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
+    }
+  }
+
+  getStagedLeafNodes () {
+    const {node, statusFiles} = this.props
+    if (!node.isDir) return []
+    return node.leafNodes.filter(leafNodePath =>
+      statusFiles.get(leafNodePath).get('isStaged')
     )
   }
 
   getChildrenStagingStatus () {
     const {node, statusFiles} = this.props
     if (!node.isDir) return false
-    let stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
-      statusFiles.get(leafNodePath).get('isStaged')
-    )
-
+    let stagedLeafNodes = this.getStagedLeafNodes()
     if (stagedLeafNodes.length == 0) {
       return 'NONE'
     } else if (stagedLeafNodes.length === node.leafNodes.length) {
@@ -111,11 +127,7 @@ class _GitFileTreeNode extends Component {
     }
   }
 
-  componentDidUpdate () {
-    if (this.props.node.isFocused) {
-      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
-    }
-  }
+
 }
 const GitFileTreeNode = connect(
   (state, ownProps) => ({

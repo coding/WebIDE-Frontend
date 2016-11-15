@@ -49,6 +49,7 @@ const _state = {
 const FileTreeNode = Record({
   name: '',
   path: '',
+  status: '',
   isFolded: false,
   isFocused: false,
   isStaged: false,
@@ -92,7 +93,8 @@ const treeifyFiles = (files) => {
       if (idx === pathComps.length - 1) {
         if (!node) node = new FileTreeNode({
           ...commonNodeProps,
-          isDir: false
+          isDir: false,
+          status: file.status
         })
       } else {
         if (!node) node = new FileTreeNode({

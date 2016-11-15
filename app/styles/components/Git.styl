@@ -53,7 +53,7 @@
       }
     }
   }
-  
+
   .checkbox {
     float: left;
     padding-top: 0;
@@ -66,3 +66,10 @@
   }
 }
 
+.git-filetree-container {
+  .file-status-indicator {
+    &.modified {color: hsl(47,100%,50%)}
+    &.untracked {color: hsl(80,60%,40%)}
+    &.missing {color: hsl(10,80%,45%)}
+  }
+}
