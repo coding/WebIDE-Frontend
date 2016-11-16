@@ -11,12 +11,16 @@ import * as GitActions from './actions'
 class GitFileTree extends Component {
   constructor (props) {
     super(props)
+    this.state = {
+      displayOnly: false
+    }
   }
 
   render () {
     return (
       <div className='git-filetree-container' tabIndex={1} >
-        <GitFileTreeNode path='/' />
+        <GitFileTreeNode path='/'
+          displayOnly={this.state.displayOnly} />
       </div>
     )
   }
@@ -29,7 +33,11 @@ class _GitFileTreeNode extends Component {
   }
 
   render () {
-    const {node, statusFiles, ...actionProps} = this.props
+    const {
+      node,
+      statusFiles,
+      displayOnly,
+      ...actionProps} = this.props
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
     const childrenStagingStatus = this.getChildrenStagingStatus()
@@ -40,30 +48,37 @@ class _GitFileTreeNode extends Component {
       <div className='filetree-node-container'>
         { node.isRoot ?
           (<div className='filetree-node' ref={r => this.nodeDOM = r} >
-            <span className='filetree-node-checkbox'
-              style={{marginRight: 0}}
-              onClick={e => toggleStaging(node)} >
-              <i className={cx('fa', {
-                'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
-                'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
-                'fa-minus-square': childrenStagingStatus === 'SOME',
-              })}></i>
-            </span>
+            { displayOnly ? null
+            : <span className='filetree-node-checkbox'
+                style={{marginRight: 0}}
+                onClick={e => toggleStaging(node)} >
+                <i className={cx('fa', {
+                  'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
+                  'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
+                  'fa-minus-square': childrenStagingStatus === 'SOME',
+                })}></i>
+              </span>
+            }
             <span className='filetree-node-label'>File Status
-              ( {this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed )</span>
+              { displayOnly ? <span> ({node.leafNodes.length} changed) </span>
+              : <span> ({this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed) </span>
+              }
+            </span>
           </div>)
 
         : (<div className={cx('filetree-node', {'focus':node.isFocused})}
             ref={r => this.nodeDOM = r}
             onClick={e => selectNode(node)} >
-            <span className='filetree-node-checkbox'
-              onClick={e => toggleStaging(node)} >
-              <i className={cx('fa', {
-                'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
-                'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
-                'fa-minus-square': childrenStagingStatus === 'SOME',
-              })}></i>
-            </span>
+            { displayOnly ? null
+            : <span className='filetree-node-checkbox'
+                onClick={e => toggleStaging(node)} >
+                <i className={cx('fa', {
+                  'fa-check-square': (!node.isDir && node.isStaged) || childrenStagingStatus === 'ALL',
+                  'fa-square-o': (!node.isDir && !node.isStaged) || childrenStagingStatus === 'NONE',
+                  'fa-minus-square': childrenStagingStatus === 'SOME',
+                })}></i>
+              </span>
+            }
             <span className='filetree-node-arrow'
               onClick={e => toggleNodeFold(node, null, e.altKey)}
               style={{'marginLeft': `${(node.depth-1)*FILETREE_INDENT}px`}} >
@@ -91,7 +106,10 @@ class _GitFileTreeNode extends Component {
         { node.isDir ?
           <div className={cx('filetree-node-children', {isFolded: node.isFolded})}>
             {node.children.map(childNodePath =>
-              <GitFileTreeNode key={childNodePath} path={childNodePath} />
+              <GitFileTreeNode
+                key={childNodePath}
+                path={childNodePath}
+                displayOnly={displayOnly} />
             )}
           </div>
         : null }
