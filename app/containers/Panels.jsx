@@ -6,7 +6,7 @@ import store from '../store.js'
 import PanelAxis from '../components/Panel'
 import * as PanelActions from '../components/Panel/actions'
 import PanesContainer from '../components/Pane'
-import TabViewContainer from '../components/Tab'
+import TabContainer from '../components/Tab'
 import Terminal from '../components/Terminal'
 import FileTree from '../components/FileTree'
 
@@ -26,7 +26,7 @@ var PanelConfig = {
           views: [<PanesContainer />]
         }, {
           flexDirection: 'row',
-          views: [<TabViewContainer defaultContentClass={Terminal} defaultContentType='terminal' />],
+          views: [<TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />],
           size: 25
         }
       ]

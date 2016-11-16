@@ -22,12 +22,7 @@ export const TAB_REMOVE_GROUP = 'TAB_REMOVE_GROUP'
 export const removeGroup = createAction(TAB_REMOVE_GROUP, groupId => groupId)
 
 export const TAB_UPDATE = 'TAB_UPDATE'
-export function updateTab(tabConfig) {
-  return {
-    type: TAB_UPDATE,
-    payload: tabConfig
-  }
-}
+export const updateTab = createAction(TAB_UPDATE, tabConfig => tabConfig)
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
 export const updateTabFlags = (tabId, flag, value=true) => {
@@ -51,4 +46,9 @@ export const updateTabFlags = (tabId, flag, value=true) => {
 export const TAB_MOVE_TO_GROUP = 'TAB_MOVE_TO_GROUP'
 export const moveTabToGroup = createAction(TAB_MOVE_TO_GROUP,
   (tabId, groupId) => ({tabId, groupId})
+)
+
+export const TAB_INSERT_AT = 'TAB_INSERT_AT'
+export const insertTabAt = createAction(TAB_INSERT_AT,
+  (tabId, beforeTabId) => ({tabId, beforeTabId})
 )
