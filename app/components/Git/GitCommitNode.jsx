@@ -12,6 +12,7 @@ class GitFileTree extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      showTreeView: true,
       displayOnly: false
     }
   }
@@ -20,6 +21,7 @@ class GitFileTree extends Component {
     return (
       <div className='git-filetree-container' tabIndex={1} >
         <GitFileTreeNode path='/'
+          showTreeView={this.state.showTreeView}
           displayOnly={this.state.displayOnly} />
       </div>
     )
@@ -37,6 +39,7 @@ class _GitFileTreeNode extends Component {
       node,
       statusFiles,
       displayOnly,
+      showTreeView,
       ...actionProps} = this.props
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
@@ -66,6 +69,7 @@ class _GitFileTreeNode extends Component {
             </span>
           </div>)
 
+        : !showTreeView && node.isDir ? null // flatView
         : (<div className={cx('filetree-node', {'focus':node.isFocused})}
             ref={r => this.nodeDOM = r}
             onClick={e => selectNode(node)} >
@@ -81,7 +85,9 @@ class _GitFileTreeNode extends Component {
             }
             <span className='filetree-node-arrow'
               onClick={e => toggleNodeFold(node, null, e.altKey)}
-              style={{'marginLeft': `${(node.depth-1)*FILETREE_INDENT}px`}} >
+              style={{
+                'marginLeft': !showTreeView ? '0' : `${(node.depth - 1)*FILETREE_INDENT}px`
+              }} >
               <i className={cx({
                 'fa fa-angle-right': node.isFolded,
                 'fa fa-angle-down': !node.isFolded,
@@ -97,7 +103,7 @@ class _GitFileTreeNode extends Component {
               })}></i>
             </span>
             <span className='filetree-node-label'>
-              {node.name || 'Project'}
+              { showTreeView ? node.name : node.path }
             </span>
             <div className='filetree-node-bg'></div>
           </div>)
@@ -109,6 +115,7 @@ class _GitFileTreeNode extends Component {
               <GitFileTreeNode
                 key={childNodePath}
                 path={childNodePath}
+                showTreeView={showTreeView}
                 displayOnly={displayOnly} />
             )}
           </div>
