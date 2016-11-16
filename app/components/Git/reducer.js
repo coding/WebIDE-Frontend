@@ -105,17 +105,18 @@ const treeifyFiles = (files) => {
         })
       }
 
+      // record of direct children
+      if (!parentNode.children.includes(node.path)) {
+        parentNode.children.push(node.path)
+      }
+      // also keep a record of leaf nodes at each internal dir nodes
       if (parentNode.isDir && !parentNode.leafNodes.includes('/'+file.name)) {
         parentNode.leafNodes.push('/'+file.name)
       }
 
-      if (!parentNode.children.includes(node.path)) {
-        parentNode.children.push(node.path)
-      }
-
       _nodes = _nodes.set(node.path, node)
-
       return node
+
     }, rootNode)
 
     return rootNode

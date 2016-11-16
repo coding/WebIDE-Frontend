@@ -13,6 +13,7 @@ class GitFileTree extends Component {
     super(props)
     this.state = {
       showTreeView: true,
+      showShrinkPathView: true,
       displayOnly: false
     }
   }
@@ -22,6 +23,7 @@ class GitFileTree extends Component {
       <div className='git-filetree-container' tabIndex={1} >
         <GitFileTreeNode path='/'
           showTreeView={this.state.showTreeView}
+          showShrinkPathView={this.state.showShrinkPathView}
           displayOnly={this.state.displayOnly} />
       </div>
     )
@@ -40,12 +42,14 @@ class _GitFileTreeNode extends Component {
       statusFiles,
       displayOnly,
       showTreeView,
+      showShrinkPathView,
+      visualParentPath,    // for usage in shrinkPathView
       ...actionProps} = this.props
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
     const childrenStagingStatus = this.getChildrenStagingStatus()
-
     const FILETREE_INDENT = 14
+    let indentCompensation = this.getIndentCompensation()
 
     return (
       <div className='filetree-node-container'>
@@ -70,6 +74,9 @@ class _GitFileTreeNode extends Component {
           </div>)
 
         : !showTreeView && node.isDir ? null // flatView
+
+        : showShrinkPathView && this.shouldHideAtShrinkPath() ? null
+
         : (<div className={cx('filetree-node', {'focus':node.isFocused})}
             ref={r => this.nodeDOM = r}
             onClick={e => selectNode(node)} >
@@ -86,7 +93,7 @@ class _GitFileTreeNode extends Component {
             <span className='filetree-node-arrow'
               onClick={e => toggleNodeFold(node, null, e.altKey)}
               style={{
-                'marginLeft': !showTreeView ? '0' : `${(node.depth - 1)*FILETREE_INDENT}px`
+                'marginLeft': !showTreeView ? '0' : `${(node.depth - 1 - indentCompensation)*FILETREE_INDENT}px`
               }} >
               <i className={cx({
                 'fa fa-angle-right': node.isFolded,
@@ -103,10 +110,15 @@ class _GitFileTreeNode extends Component {
               })}></i>
             </span>
             <span className='filetree-node-label'>
-              { showTreeView ? node.name : node.path }
+              { showTreeView ?
+                (node.isDir && showShrinkPathView ?
+                  node.path.replace(visualParentPath, '').replace(/^\//, '')
+                : node.name)
+              : node.path}
             </span>
             <div className='filetree-node-bg'></div>
           </div>)
+
         }
 
         { node.isDir ?
@@ -116,6 +128,9 @@ class _GitFileTreeNode extends Component {
                 key={childNodePath}
                 path={childNodePath}
                 showTreeView={showTreeView}
+                showShrinkPathView={showShrinkPathView}
+                visualParentPath={showShrinkPathView && this.shouldHideAtShrinkPath() ? visualParentPath : node.path}
+                indentCompensation={indentCompensation}
                 displayOnly={displayOnly} />
             )}
           </div>
@@ -152,6 +167,31 @@ class _GitFileTreeNode extends Component {
     }
   }
 
+  shouldHideAtShrinkPath () {
+    const {node, statusFiles} = this.props
+    if (!node.isDir) return false
+    if (node.children.length !== 1) return false
+
+    let childNode = statusFiles.get(node.children[0])
+    if (!childNode.isDir) return false
+    return true
+  }
+
+  getIndentCompensation () {
+    let {node, visualParentPath, indentCompensation, showShrinkPathView} = this.props
+    // if not showShrinkPathView, indentCompensation is uneccssary, set to 0
+    if (!showShrinkPathView) return 0
+
+    // else, let's do some math:
+    if (!indentCompensation) indentCompensation = 0
+    let indentOffset
+    if (node.isRoot) {
+      indentOffset = 1
+    } else {
+      indentOffset = (node.path.split('/').length - visualParentPath.split('/').length) || 1
+    }
+    return indentCompensation + indentOffset - 1
+  }
 
 }
 const GitFileTreeNode = connect(
