@@ -10,6 +10,10 @@ export function gitBranch () {
   return request.get(`/git/${config.spaceKey}/branches`)
 }
 
+export function gitTags () {
+  return request.get(`/git/${config.spaceKey}/tags`)
+}
+
 export function gitCheckout (branch, remoteBranch) {
   return request.post(`/git/${config.spaceKey}/checkout`, {
     name: branch, startPoint: remoteBranch
@@ -57,4 +61,16 @@ export function gitCheckoutStash ({stashRef, branch}){
 
 export function gitResetHead ({ref, resetType}) {
   return request.post(`/git/${config.spaceKey}/reset`, {ref, resetType})
+}
+
+export function gitConflicts ({path}) {
+  return request.get(`/git/${config.spaceKey}/conflicts`, {path, base64:false})
+}
+
+export function gitResolveConflict ({path, content}) {
+  return request.post(`/git/${config.spaceKey}/conflicts`, {path, content})
+}
+
+export function gitRebase ({branch, upstream, interactive, preserve}) {
+  return request.post(`/git/${config.spaceKey}/rebase`, {branch, upstream, interactive, preserve})
 }

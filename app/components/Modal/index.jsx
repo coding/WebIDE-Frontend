@@ -10,6 +10,9 @@ import {
   GitStashView,
   GitUnstashView,
   GitResetView,
+  GitRebaseStart,
+  GitResolveConflictsView,
+  GitMergeView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -46,6 +49,9 @@ class Modal extends Component {
         case 'GitCommit':
           return <GitCommitView />
 
+        case 'GitResolveConflicts':
+          return <GitResolveConflictsView />
+
         case 'GitStash':
           return <GitStashView />
 
@@ -54,6 +60,12 @@ class Modal extends Component {
 
         case 'GitResetHead':
           return <GitResetView />
+        
+        case 'GitRebaseStart':
+          return <GitRebaseStart />
+
+        case 'GitMerge':
+          return <GitMergeView {...this.props}  />
 
         case 'Prompt':
           return <Prompt {...this.props} />

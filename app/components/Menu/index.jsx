@@ -63,12 +63,17 @@ const handleMenuItemCommand = (item) => {
 
 const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu}) => {
   if (item.name == '-') return <li><hr /></li>;
+  const disabled = item.checkDisable ? item.checkDisable() : item.isDisabled;
   return (
     <li className='menu-item'>
       <div
-        className={cx('menu-item-container', {active: isActive, disabled: item.isDisabled})}
+        className={cx('menu-item-container', {active: isActive, disabled: disabled})}
         onMouseEnter={e => toggleActive(index)}
-        onClick={e => handleMenuItemCommand(item)&&deactivateTopLevelMenu() } >
+        onClick={e => {
+          if(disabled)
+            return;
+          handleMenuItemCommand(item)&&deactivateTopLevelMenu()
+        }} >
         <div className='menu-item-name'>{item.displayName || item.name}</div>
         { item.shortcut?
           <div className='menu-item-shortcut'>{item.shortcut}</div>

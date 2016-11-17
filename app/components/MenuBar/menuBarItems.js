@@ -20,7 +20,7 @@ var menuBarItems = [
         icon: 'fa fa-file-o',
         shortcut: '⎇N',
         command: 'file:new_file',
-        isDisabled: true
+        // isDisabled: true
       }, {
         name: 'Save',
         icon: 'fa fa-floppy-o',
@@ -45,6 +45,11 @@ var menuBarItems = [
         command: 'git:push'
       }, dividItem,
       {
+        name: 'Resolve Conflicts...',
+        icon: 'fa',
+        command: 'git:resolve_conflicts'
+      }, dividItem,
+      {
         name: 'Stash Changes...',
         icon: 'fa',
         command: 'git:stash'
@@ -58,6 +63,35 @@ var menuBarItems = [
         name: 'Reset HEAD...',
         icon: 'fa',
         command: 'git:reset_head'
+      }, dividItem,
+      {
+        name: 'Rebase...',
+        icon: 'fa',
+        command: 'git:rebase:start'
+      },
+      {
+        name: 'About Rebasing',
+        icon: 'fa',
+        command: 'git:unstash',
+        checkDisable: () => {
+          return true;
+        }
+      },
+      {
+        name: 'Continue Rebasing',
+        icon: 'fa',
+        command: 'git:reset_head',
+        checkDisable: () => {
+          return true;
+        }
+      },
+      {
+        name: 'Skip Commit',
+        icon: 'fa',
+        command: 'git:reset_head',
+        checkDisable: () => {
+          return true;
+        }
       }
     ]
   }, {

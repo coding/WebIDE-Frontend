@@ -29,6 +29,7 @@ const _state = {
   branches: {
     current: 'master'
   },
+  tags: [],
   stash: {
     stashMessage: '',
   },

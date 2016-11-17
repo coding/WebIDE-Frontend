@@ -20,7 +20,16 @@ export default {
   // 'git:branch':
   // 'git:tag':
   // 'git:merge':
-  // 'git:resolve_conflicts':
+  'git:resolve_conflicts': c => {
+    api.gitStatus().then(({files, clean}) => {
+      $d(Git.updateStatus({files, isClean: clean}))
+    }).then(() =>
+      $d(Modal.showModal('GitResolveConflicts'))
+    )
+  },
+  // 'git:merge': c => {
+  //   $d(Modal.showModal('GitMergeView', file))
+  // },
   'git:stash': c => {
     $d(Git.getCurrentBranch()).then(() =>
       $d(Modal.showModal('GitStash'))
@@ -39,7 +48,14 @@ export default {
       $d(Modal.showModal('GitResetHead'))
     )
   },
-  // 'git:rebase:start':
+  'git:rebase:start': c => {
+    $d(Git.getBranches()).then(() => {
+      $d(Git.getTags())
+        .then(() =>
+          $d(Modal.showModal('GitRebaseStart'))
+        )
+    })
+  }
   // 'git:rebase:abort':
   // 'git:rebase:continue':
   // 'git:rebase:skip_commit':

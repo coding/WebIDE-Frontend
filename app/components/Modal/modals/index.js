@@ -6,3 +6,6 @@ export {CommandPalette} from '../../../commands';
 export GitStashView from '../../Git/modals/stash';
 export GitUnstashView from '../../Git/modals/unstash';
 export GitResetView from '../../Git/modals/reset';
+export GitRebaseStart from '../../Git/modals/rebaseStart';
+export GitResolveConflictsView from '../../Git/modals/resolveConflicts';
+export GitMergeView from '../../Git/modals/merge';
