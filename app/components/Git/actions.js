@@ -33,7 +33,7 @@ export function updateStagingArea (action, file) {
 
 export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
-  return (dispatch) => api.gitBranch().then(data => {
+  return (dispatch) => api.gitGetBranches().then(data => {
     dispatch(createAction(GIT_BRANCH)({ branches: data }))
   })
 }
@@ -186,10 +186,60 @@ export function resetHead ({ref, resetType}) {
   })
 }
 
+export function addTag ({tagName, ref, message, force}) {
+  return dispatch => api.gitAddTag({tagName, ref, message, force}).then(res => {
+    dispatch(notify({message: 'Add tag success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Add tag error: ${res.msg}`,
+    }))
+  })
+}
+
+export function mergeBranch (branch) {
+  return dispatch => api.gitMerge(branch).then(res => {
+    dispatch(notify({message: 'Merge success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Merge error: ${res.msg}`,
+    }))
+  })
+}
+
+export function newBranch (branch) {
+  return dispatch => api.gitNewBranch(branch).then(res => {
+    dispatch(notify({message: 'Create new branch success.'}))
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: `Create new branch error: ${res.msg}`,
+    }))
+  })
+}
+
+export const GIT_STATUS_FOLD_NODE = 'GIT_STATUS_FOLD_NODE'
+export const toggleNodeFold = createAction(GIT_STATUS_FOLD_NODE,
+  (node, shouldBeFolded = null, deep = false) => {
+    let isFolded = (typeof shouldBeFolded === 'boolean') ? shouldBeFolded : !node.isFolded
+    return {node, isFolded, deep}
+  }
+)
+
+export const GIT_STATUS_SELECT_NODE = 'GIT_STATUS_SELECT_NODE'
+export const selectNode = createAction(GIT_STATUS_SELECT_NODE, node => node)
+
+export const GIT_STATUS_STAGE_NODE = 'GIT_STATUS_STAGE_NODE'
+export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
+
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
-export function merge (file) {
-  return dispatch => dispatch(showModal('GitMerge', {file}  ))
+export function mergeFile (file) {
+  return dispatch => dispatch(showModal('GitMergeFile', {file}  ))
 }
 
 export function getConflicts ({path}) {
@@ -250,4 +300,4 @@ function resolveRebase (data) {
     // AppActions.openRebasing(rebaseTodoLines)
   }
 }
-    
+

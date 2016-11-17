@@ -15,11 +15,6 @@ export default {
 
   'git:pull': c => $d(Git.pull()),
   'git:push': c => $d(Git.push()),
-
-  // 'git:commit_and_push':
-  // 'git:branch':
-  // 'git:tag':
-  // 'git:merge':
   'git:resolve_conflicts': c => {
     api.gitStatus().then(({files, clean}) => {
       $d(Git.updateStatus({files, isClean: clean}))
@@ -27,9 +22,27 @@ export default {
       $d(Modal.showModal('GitResolveConflicts'))
     )
   },
-  // 'git:merge': c => {
-  //   $d(Modal.showModal('GitMergeView', file))
-  // },
+
+  // 'git:commit_and_push':
+  'git:new_branch': c => {
+    $d(Git.getBranches()).then(() =>
+      $d(Git.getCurrentBranch()).then(() =>
+        $d(Modal.showModal('GitNewBranch'))
+      )
+    )
+  },
+  'git:tag': c => {
+    $d(Git.getCurrentBranch()).then(() =>
+      $d(Modal.showModal('GitTag'))
+    )
+  },
+  'git:merge': c => {
+    $d(Git.getBranches()).then(() =>
+      $d(Git.getCurrentBranch()).then(() =>
+        $d(Modal.showModal('GitMerge'))
+      )
+    )
+  },
   'git:stash': c => {
     $d(Git.getCurrentBranch()).then(() =>
       $d(Modal.showModal('GitStash'))

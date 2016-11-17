@@ -7,7 +7,7 @@ export const dragStart = createAction(DND_DRAG_START,
 )
 
 export const DND_DRAG_OVER = 'DND_DRAG_OVER'
-export const dragOverTarget = createAction(DND_DRAG_OVER, target => target)
+export const updateDragOverTarget = createAction(DND_DRAG_OVER, target => target)
 
 export const DND_UPDATE_DRAG_OVER_META = 'DND_UPDATE_DRAG_OVER_META'
 export const updateDragOverMeta = createAction(DND_UPDATE_DRAG_OVER_META, meta => meta)

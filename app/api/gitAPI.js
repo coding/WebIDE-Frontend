@@ -6,12 +6,16 @@ export function gitStatus () {
   return request.get(`/git/${config.spaceKey}`)
 }
 
-export function gitBranch () {
+export function gitGetBranches () {
   return request.get(`/git/${config.spaceKey}/branches`)
 }
 
 export function gitTags () {
   return request.get(`/git/${config.spaceKey}/tags`)
+}
+
+export function gitNewBranch (branchName) {
+  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
 }
 
 export function gitCheckout (branch, remoteBranch) {
@@ -73,4 +77,12 @@ export function gitResolveConflict ({path, content}) {
 
 export function gitRebase ({branch, upstream, interactive, preserve}) {
   return request.post(`/git/${config.spaceKey}/rebase`, {branch, upstream, interactive, preserve})
+}
+
+export function gitAddTag ({tagName, ref, message, force}) {
+  return request.post(`/git/${config.spaceKey}/tags`, {tagName, ref, message, force})
+}
+
+export function gitMerge (branch) {
+  return request.post(`/git/${config.spaceKey}/merge`, {name: branch})
 }

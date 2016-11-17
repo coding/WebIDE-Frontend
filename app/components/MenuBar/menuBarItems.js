@@ -65,6 +65,16 @@ var menuBarItems = [
         command: 'git:reset_head'
       }, dividItem,
       {
+        name: 'Merge Branch...',
+        icon: 'fa',
+        command: 'git:merge'
+      },
+      {
+        name: 'Tag...',
+        icon: 'fa',
+        command: 'git:tag'
+	  }, dividItem,
+      {
         name: 'Rebase...',
         icon: 'fa',
         command: 'git:rebase:start'

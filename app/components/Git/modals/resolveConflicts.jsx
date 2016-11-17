@@ -58,7 +58,7 @@ class GitResolveConflictsView extends Component {
   handleFileClick (file) {
     console.log('handleFileClick')
     console.log(file)
-    this.props.merge(file)
+    this.props.mergeFile(file)
   }
 }
 

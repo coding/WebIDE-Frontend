@@ -1,8 +1,12 @@
 /* @flow weak */
 import _ from 'lodash'
+import { Map, Record } from 'immutable'
 import { handleActions } from 'redux-actions'
 import {
   GIT_STATUS,
+  GIT_STATUS_FOLD_NODE,
+  GIT_STATUS_SELECT_NODE,
+  GIT_STATUS_STAGE_NODE,
   GIT_BRANCH,
   GIT_CHECKOUT,
   GIT_STAGE_FILE,
@@ -22,6 +26,7 @@ const _state = {
     isClean: true,
     files: []
   },
+  statusFiles: Map(),
   stagingArea: {
     files: [],
     commitMessage: ''
@@ -42,12 +47,151 @@ const _state = {
   },
 }
 
+const FileTreeNode = Record({
+  name: '',
+  path: '',
+  status: '',
+  isFolded: false,
+  isFocused: false,
+  isStaged: false,
+  depth: 0,
+  isDir: false,
+  isRoot: false,
+  children: null,
+  leafNodes: null,
+  parent: null
+})
+
+const treeifyFiles = (files) => {
+  let rootNode = new FileTreeNode({
+    name: '/',
+    path: '/',
+    isRoot: true,
+    isDir: true,
+    isFocused: false,
+    children: [],
+    leafNodes: []
+  })
+  let _nodes = Map()
+  _nodes = _nodes.set(rootNode.path, rootNode)
+
+  rootNode = files.reduce((rootNode, file) => {
+    let pathComps = file.name.split('/')
+
+    pathComps.reduce((parentNode, pathComp, idx) => {
+      let currentPath = parentNode.path
+        + (parentNode.path.endsWith('/')? '' : '/')
+        + pathComp
+
+      let node = _nodes.get(currentPath)
+
+      let commonNodeProps = {
+        name: pathComp,
+        path: currentPath,
+        parent: parentNode.path,
+        depth: parentNode.depth + 1
+      }
+      if (idx === pathComps.length - 1) {
+        if (!node) node = new FileTreeNode({
+          ...commonNodeProps,
+          isDir: false,
+          status: file.status
+        })
+      } else {
+        if (!node) node = new FileTreeNode({
+          ...commonNodeProps,
+          isDir: true,
+          children: [],
+          leafNodes: [],
+        })
+      }
+
+      // record of direct children
+      if (!parentNode.children.includes(node.path)) {
+        parentNode.children.push(node.path)
+      }
+      // also keep a record of leaf nodes at each internal dir nodes
+      if (parentNode.isDir && !parentNode.leafNodes.includes('/'+file.name)) {
+        parentNode.leafNodes.push('/'+file.name)
+      }
+
+      _nodes = _nodes.set(node.path, node)
+      return node
+
+    }, rootNode)
+
+    return rootNode
+  }, rootNode)
+
+  return _nodes
+}
+
 export default handleActions({
   [GIT_STATUS]: (state, action) => {
     state = _.cloneDeep(state)
+    // git commit original:
     state.workingDir = Object.assign({}, state.workingDir, action.payload)
+    // git commit new implementation:
+    state.files = action.payload.files
+    state.statusFiles = treeifyFiles(action.payload.files)
+    state.isWorkingDirectoryClean = action.payload.isClean
     return state
   },
+
+  [GIT_STATUS_FOLD_NODE]: (state, action) => {
+    let {node, isFolded, deep} = action.payload
+    if (!node.isDir) return state
+
+    state.statusFiles = state.statusFiles.set(node.path, node.set('isFolded', isFolded))
+    if (deep) {
+      node.children.forEach(childNodePath => {
+        let childNode = state.statusFiles.get(childNodePath)
+        if (childNode.isDir) {
+          state.statusFiles = state.statusFiles.set(childNodePath, childNode.set('isFolded', isFolded))
+        }
+      })
+    }
+    return {...state}
+  },
+
+  [GIT_STATUS_SELECT_NODE]: (state, action) => {
+    let node = action.payload
+    state.statusFiles = state.statusFiles.map((_node) => {
+      if (_node.path === node.path) {
+        return _node.set('isFocused', true)
+      } else if (_node.isFocused) {
+        return _node.set('isFocused', false)
+      } else {
+        return _node
+      }
+    })
+    return {...state}
+  },
+
+  [GIT_STATUS_STAGE_NODE]: (state, action) => {
+    let node = action.payload
+    if (!node.isDir) {
+      state.statusFiles = state.statusFiles.set(node.path,
+        node.set('isStaged', node.isStaged ? false : true)
+      )
+    } else {
+      let stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
+        state.statusFiles.get(leafNodePath).get('isStaged')
+      )
+      let allLeafNodesStaged = (stagedLeafNodes.length === node.leafNodes.length)
+
+      state.statusFiles = state.statusFiles.withMutations(statusFiles => {
+        node.leafNodes.forEach(leafNodePath => {
+          let leafNode = statusFiles.get(leafNodePath)
+          statusFiles.set(leafNodePath, leafNode.set('isStaged', allLeafNodesStaged ? false : true))
+        })
+        return statusFiles
+      })
+    }
+    return {...state}
+  },
+
+
   [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
     state = _.cloneDeep(state)
     state.stagingArea.commitMessage = action.payload
