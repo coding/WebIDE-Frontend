@@ -54,7 +54,7 @@ class Prompt extends Component {
 
 
 Prompt = connect(
-  state => state.ModalState
+  state => state.ModalState.stack[0]
 , null
 )(Prompt)
 
