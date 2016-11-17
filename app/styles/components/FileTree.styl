@@ -1,6 +1,6 @@
 $filetree-indent = 14px;
 
-.filetree-container {
+.filetree-container, .git-filetree-container {
   noSelect();
   padding-left: 20px;
   height: 100%;
@@ -30,16 +30,12 @@ $filetree-indent = 14px;
   &.focus > .filetree-node-bg {
     z-index: z(filetree-node-bg);
   }
+  .filetree-node-checkbox,
   .filetree-node-arrow,
   .filetree-node-icon,
   .filetree-node-label {
     z-index: z(filetree-node-label);
   }
-}
-
-.filetree-node-children {
-  padding-left: $filetree-indent;
-  &.isFolded {display: none}
 }
 
 .filetree-node-arrow {
@@ -56,3 +52,36 @@ $filetree-indent = 14px;
   padding-right: 10px;
 }
 
+
+.filetree-container .filetree-node-children {
+  padding-left: $filetree-indent;
+  &.isFolded {display: none}
+}
+
+// git commit view specific styles
+.git-filetree-container {
+  padding-left: 0;
+
+  .filetree-node {
+    border-bottom: 1px solid gray(90);
+    padding-left: 10px;
+    > .filetree-node-bg {
+      absolute(0);
+    }
+  }
+  .filetree-node-children {
+    &.isFolded {display: none}
+  }
+
+  .filetree-node-checkbox {
+    margin-right: 8px;
+    cursor: pointer;
+    i.fa {
+      width: 12px;
+      color: $highlight-color;
+      &.fa-square-o {
+        color: gray(80)
+      }
+    }
+  }
+}
