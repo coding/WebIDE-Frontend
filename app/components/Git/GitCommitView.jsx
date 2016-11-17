@@ -9,12 +9,12 @@ import _ from 'lodash'
 import * as GitActions from './actions'
 import GitFileTree from './GitFileTree'
 
-var GitCommitView = ({workingDir, stagingArea, ...actionProps}) => {
-  const {isClean, files} = workingDir
-  const {updateCommitMessage, updateStagingArea, commit} = actionProps
-  if (isClean) return <h1 className=''>Your working directory is clean. Nothing to commit.</h1>
-  return (
-    <div>
+var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
+  const {updateCommitMessage, commit} = actionProps
+
+  return isWorkingDirClean ?
+    <h1 className=''>Your working directory is clean. Nothing to commit.</h1>
+  : (<div>
       <GitFileTree />
       <hr />
       <div className='git-commit-message-container'>
@@ -24,7 +24,7 @@ var GitCommitView = ({workingDir, stagingArea, ...actionProps}) => {
       <hr />
       <div className='modal-ops'>
         <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-        <button className='btn btn-primary' onClick={e => commit(stagingArea)}>Commit</button>
+        <button className='btn btn-primary' onClick={e => commit()}>Commit</button>
       </div>
     </div>
   )

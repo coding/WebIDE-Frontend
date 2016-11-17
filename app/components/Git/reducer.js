@@ -9,8 +9,6 @@ import {
   GIT_STATUS_STAGE_NODE,
   GIT_BRANCH,
   GIT_CHECKOUT,
-  GIT_STAGE_FILE,
-  GIT_UNSTAGE_FILE,
   GIT_UPDATE_COMMIT_MESSAGE,
   GIT_CURRENT_BRANCH,
   GIT_UPDATE_STASH_MESSAGE,
@@ -22,15 +20,9 @@ import {
 } from './actions'
 
 const _state = {
-  workingDir: {
-    isClean: true,
-    files: []
-  },
+  isWorkingDirClean: true,
   statusFiles: Map(),
-  stagingArea: {
-    files: [],
-    commitMessage: ''
-  },
+  commitMessage: '',
   branches: {
     current: 'master'
   },
@@ -127,14 +119,9 @@ const treeifyFiles = (files) => {
 
 export default handleActions({
   [GIT_STATUS]: (state, action) => {
-    state = _.cloneDeep(state)
-    // git commit original:
-    state.workingDir = Object.assign({}, state.workingDir, action.payload)
-    // git commit new implementation:
-    state.files = action.payload.files
-    state.statusFiles = treeifyFiles(action.payload.files)
-    state.isWorkingDirectoryClean = action.payload.isClean
-    return state
+    let statusFiles = treeifyFiles(action.payload.files)
+    let isWorkingDirClean = action.payload.isClean
+    return {...state, statusFiles, isWorkingDirClean}
   },
 
   [GIT_STATUS_FOLD_NODE]: (state, action) => {
@@ -155,7 +142,7 @@ export default handleActions({
 
   [GIT_STATUS_SELECT_NODE]: (state, action) => {
     let node = action.payload
-    state.statusFiles = state.statusFiles.map((_node) => {
+    let statusFiles = state.statusFiles.map((_node) => {
       if (_node.path === node.path) {
         return _node.set('isFocused', true)
       } else if (_node.isFocused) {
@@ -164,13 +151,14 @@ export default handleActions({
         return _node
       }
     })
-    return {...state}
+    return {...state, statusFiles}
   },
 
   [GIT_STATUS_STAGE_NODE]: (state, action) => {
     let node = action.payload
+    let statusFiles = state.statusFiles
     if (!node.isDir) {
-      state.statusFiles = state.statusFiles.set(node.path,
+      statusFiles = state.statusFiles.set(node.path,
         node.set('isStaged', node.isStaged ? false : true)
       )
     } else {
@@ -179,7 +167,7 @@ export default handleActions({
       )
       let allLeafNodesStaged = (stagedLeafNodes.length === node.leafNodes.length)
 
-      state.statusFiles = state.statusFiles.withMutations(statusFiles => {
+      statusFiles = state.statusFiles.withMutations(statusFiles => {
         node.leafNodes.forEach(leafNodePath => {
           let leafNode = statusFiles.get(leafNodePath)
           statusFiles.set(leafNodePath, leafNode.set('isStaged', allLeafNodesStaged ? false : true))
@@ -187,25 +175,14 @@ export default handleActions({
         return statusFiles
       })
     }
-    return {...state}
+    return {...state, statusFiles}
   },
 
 
   [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
-    state = _.cloneDeep(state)
-    state.stagingArea.commitMessage = action.payload
-    return state
+    return {...state, commitMessage: action.payload}
   },
-  [GIT_STAGE_FILE]: (state, action) => {
-    state = _.cloneDeep(state)
-    state.stagingArea.files = _.union(state.stagingArea.files, [action.payload.name])
-    return state
-  },
-  [GIT_UNSTAGE_FILE]: (state, action) => {
-    state = _.cloneDeep(state)
-    state.stagingArea.files = _.without(state.stagingArea.files, action.payload.name)
-    return state
-  },
+
   [GIT_BRANCH]: (state, action) => {
     state = _.cloneDeep(state)
     state.branches = action.payload.branches

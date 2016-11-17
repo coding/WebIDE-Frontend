@@ -22,6 +22,7 @@ class GitFileTree extends Component {
     return (
       <div className='git-filetree-container' tabIndex={1} >
         <GitFileTreeNode path='/'
+          visualParentPath='/'
           showTreeView={this.state.showTreeView}
           showShrinkPathView={this.state.showShrinkPathView}
           displayOnly={this.state.displayOnly} />
