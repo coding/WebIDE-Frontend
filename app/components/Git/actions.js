@@ -34,6 +34,8 @@ export function updateStagingArea (action, file) {
 export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
   return (dispatch) => api.gitGetBranches().then(data => {
+    data.local = data.local.filter(item => item != 'HEAD')
+    data.remote = data.remote.filter(item => item != 'HEAD')
     dispatch(createAction(GIT_BRANCH)({ branches: data }))
   })
 }
@@ -254,7 +256,6 @@ export function resolveConflict ({path, content}) {
     dispatch(dismissModal())
     dispatch(updateModal({isInvalid: true}))
   }).catch(res => {
-    console.error(res)
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Resolve conflict error.',
