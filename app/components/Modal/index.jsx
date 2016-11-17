@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   Prompt,
   Confirm,
+  SettingsView,
   CommandPalette,
   GitCommitView,
   GitStashView,
@@ -74,6 +75,9 @@ class Modal extends Component {
 
         case 'CommandPalette':
           return <CommandPalette {...this.props} />
+
+        case 'Settings':
+          return <SettingsView {...this.props} />
 
         default:
           return content
