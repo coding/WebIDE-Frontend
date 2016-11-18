@@ -1,0 +1,57 @@
+.settings-container {
+  margin: -10px;  /* to counter-part the modal padding*/
+  display: flex;
+  width: 70vw;
+  height: 80vh;
+
+  > div {
+    flex-grow: 1
+  }
+}
+
+.settings-header {
+  border-right: 1px solid #ccc;
+  width: 25%;
+
+  .nav-header {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+  }
+
+  ul.tabs {margin-top: -1px}
+  li.nav-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    position: relative;
+    opacity: 0.5;
+    &:before {
+      absolute(left 0 top 0 bottom 0)
+      content: '';
+      background-color: $highlight-color;
+      height: 100%;
+      width: 4px;
+      opacity: 0;
+    }
+
+    &:hover {
+      opacity: 1;
+      &:before {opacity: 0.3}
+    }
+
+    &.active {
+      cursor: initial;
+      opacity: 1;
+      &:before {opacity: 1}
+    }
+  }
+}
+
+.settings-content {
+  width: 75%;
+  .settings-content-container {
+    padding: 0 24px;
+  }
+}
+
