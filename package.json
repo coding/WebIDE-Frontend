@@ -62,6 +62,7 @@
     "font-awesome": "^4.6.3",
     "immutable": "^3.8.1",
     "lodash": "^4.14.2",
+    "markdown": "^0.5.0",
     "octicons": "^4.3.0",
     "querystring": "^0.2.0",
     "react": "^15.3.0",
