@@ -5,7 +5,7 @@ import { markdown } from 'markdown';
 
 const PreviewEditor = (content) => {
   const makeHTMLComponent = (html) => React.DOM.div({ dangerouslySetInnerHTML: {__html: html} });
-  return makeHTMLComponent(markdown.toHTML(content));
+  return <div style={{ marginLeft: '10px' }}>{makeHTMLComponent(markdown.toHTML(content))}</div>;
 }
 
 const editors = {
@@ -26,14 +26,16 @@ const getEditorByName = ({ type = 'default', tab, body }) => {
       <div name="editor" style={{
         flexGrow: 1,
         flexShrink: 0,
+        maxWidth: '50%'
        }}>
         {React.createElement(editors.AceEditor, { tab })}    
       </div>
       <div name="preview" style={{
         flexGrow: 1,
         flexShrink: 0,
+        maxWidth: '50%',
+        backgroundColor: 'white',
       }}>
-        preview
         {editors.PreviewEditor(body)}
       </div>
     </div>
