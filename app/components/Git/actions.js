@@ -10,18 +10,20 @@ export const updateStatus = createAction(GIT_STATUS)
 export const GIT_UPDATE_COMMIT_MESSAGE = 'GIT_UPDATE_COMMIT_MESSAGE'
 export const updateCommitMessage = createAction(GIT_UPDATE_COMMIT_MESSAGE)
 
-export function commit ({files, commitMessage: message}) {
-  return dispatch => api.gitCommit({files, message}).then(filetreeDelta => {
-    dispatch(notify({message: 'Git commit success.'}))
-    dispatch(dismissModal())
-  })
+export function commit () {
+  return (dispatch, getState) => {
+    let GitState = getState().GitState
+    let stagedFiles = GitState.statusFiles.filter(file => file.isStaged)
+    let stagedFilesPathList = stagedFiles.toArray().map(stagedFile => stagedFile.path.replace(/^\//, ''))
+    return api.gitCommit({
+      files: stagedFilesPathList,
+      message: GitState.commitMessage
+    }).then(filetreeDelta => {
+      dispatch(notify({message: 'Git commit success.'}))
+      dispatch(dismissModal())
+    })
+  }
 }
-
-export const GIT_STAGE_FILE = 'GIT_STAGE_FILE'
-export const stageFile = createAction(GIT_STAGE_FILE)
-
-export const GIT_UNSTAGE_FILE = 'GIT_UNSTAGE_FILE'
-export const unstageFile = createAction(GIT_UNSTAGE_FILE)
 
 export function updateStagingArea (action, file) {
   if (action == 'stage') {
