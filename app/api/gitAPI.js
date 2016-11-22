@@ -86,3 +86,15 @@ export function gitAddTag ({tagName, ref, message, force}) {
 export function gitMerge (branch) {
   return request.post(`/git/${config.spaceKey}/merge`, {name: branch})
 }
+
+export function gitRebaseState () {
+  return request.get(`/git/${config.spaceKey}?state`)
+}
+
+export function gitRebaseOperate ({operation, message}) {
+  return request.post(`/git/${config.spaceKey}/rebase/operate`, {operation, message})
+}
+
+export function gitRebaseUpdate (lines) {
+  return request.postJSON(`/git/${config.spaceKey}/rebase/update`, lines)
+}

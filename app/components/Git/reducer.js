@@ -19,6 +19,7 @@ import {
   GIT_UPDATE_UNSTASH_IS_POP,
   GIT_UPDATE_UNSTASH_IS_REINSTATE,
   GIT_UPDATE_UNSTASH_BRANCH_NAME,
+  GIT_REBASE_STATE,
 } from './actions'
 
 const _state = {
@@ -45,6 +46,9 @@ const _state = {
     isReinstate: false,
     newBranchName: '',
   },
+  rebase: {
+    state: ''
+  }
 }
 
 const FileTreeNode = Record({
@@ -255,6 +259,11 @@ export default handleActions({
   [GIT_SELECT_STASH]: (state, action) => {
     state = _.cloneDeep(state)
     state.unstash.selectedStash = action.payload
+    return state
+  },
+  [GIT_REBASE_STATE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.rebase.state = action.payload
     return state
   },
 }, _state)

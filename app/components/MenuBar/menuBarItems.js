@@ -1,4 +1,7 @@
 /* @flow weak */
+import store from '../../store.js'
+import * as GitActions from '../Git/actions'
+
 var dividItem = { name: '-' }
 var menuBarItems = [
   {
@@ -30,6 +33,7 @@ var menuBarItems = [
     ]
   }, {
     name: 'Git',
+    onOpen: handleGitOnOpen,
     items: [
       {
         name: 'Commit',
@@ -80,28 +84,22 @@ var menuBarItems = [
         command: 'git:rebase:start'
       },
       {
-        name: 'About Rebasing',
+        name: 'Abort Rebasing',
         icon: 'fa',
-        command: 'git:unstash',
-        checkDisable: () => {
-          return true;
-        }
+        command: 'git:rebase:abort',
+        checkDisable: checkGitRebasing
       },
       {
         name: 'Continue Rebasing',
         icon: 'fa',
-        command: 'git:reset_head',
-        checkDisable: () => {
-          return true;
-        }
+        command: 'git:rebase:continue',
+        checkDisable: checkGitRebasing
       },
       {
         name: 'Skip Commit',
         icon: 'fa',
-        command: 'git:reset_head',
-        checkDisable: () => {
-          return true;
-        }
+        command: 'git:rebase:skip_commit',
+        checkDisable: checkGitRebasing
       }
     ]
   }, {
@@ -121,5 +119,15 @@ var menuBarItems = [
     ]
   }
 ]
+
+const isRebasing = ['REBASING', 'REBASING_REBASING',
+  'REBASING_MERGE', 'REBASING_INTERACTIVE']
+function checkGitRebasing (state) {
+  return isRebasing.indexOf(state.GitState.rebase.state) == -1
+}
+
+function handleGitOnOpen () {
+  store.dispatch(GitActions.getRebaseState())
+}
 
 export default menuBarItems

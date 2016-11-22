@@ -6,6 +6,12 @@ $diff-border = #a2d7f2;
 $diff-copy-color = #000000;
 $diff-copy-shadow = #ffffff;
 
+$input-border = #ccc;
+$modal-settings-panel-bg = #f8f8f8;
+$scroll-bg = rgba(255, 255, 255, 0.50);
+$tab-highlight-bg = #5E9EF3;
+$tab-highlight-bg-darker = #8ab0f3;
+
 .git-merge {
   width: 90vw;
 //   .modal-dialog {
@@ -14,6 +20,12 @@ $diff-copy-shadow = #ffffff;
 //   .modal-body {
 //     padding: 0;
 //   }
+  hr {
+    margin: 0
+  }
+  .modal-ops {
+    padding-top: 20px
+  }
 
   .diffModal {
     height: 500px;
@@ -189,5 +201,70 @@ $diff-copy-shadow = #ffffff;
   }
   .acediff-copy-left div:hover {
     color: #c98100;
+  }
+}
+.git-rebase-start-container {
+  width: 760px;
+}
+.btn-list {
+  .btn-default {
+    width: 100%;
+    margin-bottom: 6px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+.commits-list {
+  .public_fixedDataTable_main {
+    border-color: $input-border;
+  }
+  .public_fixedDataTableCell_main {
+    border-color: $input-border;
+  }
+  .public_fixedDataTableRow_main {
+    background: $modal-settings-panel-bg;
+  }
+  .public_fixedDataTableCell_main {
+    background: none;
+  }
+  .public_fixedDataTable_header, .public_fixedDataTable_header .public_fixedDataTableCell_main {
+    background-image: none;
+    background: $modal-settings-panel-bg;
+  }
+  .public_fixedDataTableRow_even {
+    background: none;
+  }
+  .public_fixedDataTable_header, .public_fixedDataTable_hasBottomBorder {
+    border-color: $input-border;
+  }
+  .public_Scrollbar_face:after {
+    background-color: rgba(91, 91, 91, 0.50);
+    border-radius: 0;
+  }
+  .public_Scrollbar_main.public_Scrollbar_mainActive, .public_Scrollbar_main:hover {
+    background-color: $scroll-bg;
+  }
+  .public_Scrollbar_mainOpaque, .public_Scrollbar_mainOpaque.public_Scrollbar_mainActive, .public_Scrollbar_mainOpaque:hover {
+    background-color: $scroll-bg;
+  }
+  .selected .public_fixedDataTableCell_cellContent {
+    background-color: $tab-highlight-bg;
+    color: $component-active-color;
+  }
+  .ScrollbarLayout_mainVertical {
+    width: 8px;
+  }
+  .ScrollbarLayout_faceVertical:after {
+    left: 0;
+    right: 0;
+  }
+}
+
+.git-rebase-input-container {
+  textarea {
+    min-width: 100%;
+    max-width: 100%;
+    border-color: $input-border;
   }
 }

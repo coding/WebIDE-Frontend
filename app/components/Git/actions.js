@@ -271,34 +271,90 @@ export function rebase ({branch, upstream, interactive, preserve}) {
       }))
       dispatch(dismissModal())
     } else {
-      // dispatch(notify({
-      //   notifyType: NOTIFY_TYPE.ERROR,
-      //   message: res.status,
-      // }))
-      resolveRebase(res)
       dispatch(dismissModal())
+      resolveRebase(res, dispatch)
     }
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Rebase error.',
+      message: 'Rebase error: ' + res.msg,
     }))
   })
 }
 
-function resolveRebase (data) {
+function resolveRebase (data, dispatch) {
   if (data.status === 'STOPPED') {
-    // AppActions.openGitConflicts()
-    console.log('openGitConflicts')
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Rebase STOPPED',
+    }))
+    api.gitStatus().then(({files, clean}) => {
+      dispatch(updateStatus({files, isClean: clean}))
+    }).then(() =>
+      dispatch(showModal('GitResolveConflicts'))
+    )
   } else if (data.status === 'INTERACTIVE_EDIT') {
     // AppActions.openRebaseInput(data.message)
+    dispatch(showModal('GitRebaseInput'))
   } else if (data.status === 'ABORTED') {
     dispatch(notify({
       message: 'Rebase aborted.',
     }))
   } else if (data.status === 'INTERACTIVE_PREPARED') {
-    // rebaseTodoLines = data.rebaseTodoLines
-    // AppActions.openRebasing(rebaseTodoLines)
+    let rebaseTodoLines = data.rebaseTodoLines
+    dispatch(showModal('GitRebasePrepare', rebaseTodoLines))
   }
 }
 
+// export const GIT_STATUS = 'GIT_STATUS'
+export function gitGetStatus () {
+  return (dispatch) => {
+    dispatch(updateModal({isInvalid: false}))
+    api.gitStatus().then(({files, clean}) => {
+      dispatch(updateStatus({files, isClean: clean}))
+    }
+  )}
+}
+
+export const GIT_REBASE_STATE = 'GIT_REBASE_STATE'
+export function getRebaseState () {
+  return (dispatch) => api.gitRebaseState().then(data => {
+    dispatch(createAction(GIT_REBASE_STATE)(data))
+  })
+}
+
+export function gitRebaseOperate ({operation, message}) {
+  return dispatch => api.gitRebaseOperate({operation, message}).then(res => {
+    if (res.success) {
+      dispatch(notify({
+        message: 'Operate success.',
+      }))
+    } else {
+      resolveRebase(res, dispatch)
+    }
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Operate error: ' + res.msg,
+    }))
+  })
+}
+
+export function gitRebaseUpdate (lines) {
+  return dispatch => api.gitRebaseUpdate(lines).then(res => {
+    if (res.success) {
+      dispatch(notify({
+        message: 'Rebase success.',
+      }))
+      dispatch(dismissModal())
+    } else {
+      dispatch(dismissModal())
+      resolveRebase(res, dispatch)
+    }
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Rebase error: ' + res.msg,
+    }))
+  })
+}

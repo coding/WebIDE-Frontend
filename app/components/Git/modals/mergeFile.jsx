@@ -37,13 +37,8 @@ class GitMergeView extends Component {
     })
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log(nextProps.content)
-  }
-
   render () {
     const {theme, content} = this.props;
-    console.log(this.props.content)
     let loadDiv = ''
     if (this.state.isLoading) {
       loadDiv = (
@@ -142,9 +137,7 @@ class GitMergeView extends Component {
   }
 
   handleConfirm () {
-    console.log('handleConfirm')
     let content = this.aceMerge.editors.middle.ace.getValue()
-    console.log(content)
     this.props.resolveConflict({
       path: this.props.content.file.name,
       content

@@ -16,6 +16,8 @@ import {
   GitRebaseStart,
   GitResolveConflictsView,
   GitMergeFileView,
+  GitRebasePrepare,
+  GitRebaseInput,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -52,7 +54,7 @@ class Modal extends Component {
           return <GitCommitView {...this.props} />
 
         case 'GitResolveConflicts':
-          return <GitResolveConflictsView />
+          return <GitResolveConflictsView {...this.props} />
 
         case 'GitStash':
           return <GitStashView {...this.props} />
@@ -74,6 +76,12 @@ class Modal extends Component {
 
         case 'GitRebaseStart':
           return <GitRebaseStart {...this.props} />
+
+        case 'GitRebasePrepare':
+          return <GitRebasePrepare {...this.props} />
+
+        case 'GitRebaseInput':
+          return <GitRebaseInput {...this.props} />
 
         case 'GitMergeFile':
           return <GitMergeFileView {...this.props} />

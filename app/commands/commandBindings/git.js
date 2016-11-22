@@ -68,8 +68,14 @@ export default {
           $d(Modal.showModal('GitRebaseStart'))
         )
     })
+  },
+  'git:rebase:abort': c => {
+    $d(Git.gitRebaseOperate({operation: 'ABORT'}))
+  },
+  'git:rebase:continue': c => {
+    $d(Git.gitRebaseOperate({operation: 'CONTINUE'}))
+  },
+  'git:rebase:skip_commit': c => {
+    $d(Git.gitRebaseOperate({operation: 'SKIP'}))
   }
-  // 'git:rebase:abort':
-  // 'git:rebase:continue':
-  // 'git:rebase:skip_commit':
 }

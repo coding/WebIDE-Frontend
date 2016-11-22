@@ -12,9 +12,13 @@ class GitResolveConflictsView extends Component {
   constructor (props) {
     super(props)
     this.state = {
-
     }
-    // this.handleFileClick = this.handleFileClick.bind(this)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.content.isInvalid) {
+      this.props.gitGetStatus()
+    }
   }
 
   render () {
@@ -56,8 +60,6 @@ class GitResolveConflictsView extends Component {
   }
 
   handleFileClick (file) {
-    console.log('handleFileClick')
-    console.log(file)
     this.props.mergeFile(file)
   }
 }
