@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import cx from 'classnames'
 import _ from 'lodash'
 
-import * as SettingsActions from './actions'
+import * as SettingActions from './actions'
 
 let FormGroupFactory = ({domain, settingItem, dispatch}) => {
   let formComponent
@@ -22,7 +22,7 @@ let FormGroupFactory = ({domain, settingItem, dispatch}) => {
     })()
 
     return dispatch(
-      SettingsActions.updateSettingItem(domain, settingItem.name, value)
+      SettingActions.updateSettingItem(domain, settingItem.name, value)
     )
   }
 
@@ -106,7 +106,7 @@ const SettingsContent = ({content}) => {
 }
 
 let SettingsView = (props) => {
-  const {activeTabId, tabIds, tabs, activateSettingsTab} = props
+  const {activeTabId, tabIds, tabs, activateSettingTab} = props
 
   return (
     <div className='settings-container'>
@@ -116,7 +116,7 @@ let SettingsView = (props) => {
           {tabIds.map(tabId =>
             <li key={tabId}
               className={cx('tab-bar-item', {'active': tabId === activeTabId})}
-              onClick={e => activateSettingsTab(tabId)} >{tabId}</li>
+              onClick={e => activateSettingTab(tabId)} >{tabId}</li>
           )}
         </ul>
       </div>
@@ -130,7 +130,7 @@ let SettingsView = (props) => {
 }
 SettingsView = connect(
   state => (state.SettingState),
-  dispatch => bindActionCreators(SettingsActions, dispatch)
+  dispatch => bindActionCreators(SettingActions, dispatch)
 )(SettingsView)
 
 export default SettingsView
