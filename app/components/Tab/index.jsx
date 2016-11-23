@@ -1,12 +1,11 @@
 /* @flow weak */
-import _ from 'lodash'
-import React, { Component, PropTypes } from 'react'
-import { createStore } from 'redux'
-import { connect } from 'react-redux'
-import cx from 'classnames'
-import * as TabActions from './actions'
-import { dragStart } from '../DragAndDrop/actions'
-import AceEditor from '../AceEditor'
+import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
+import { createStore } from 'redux';
+import { connect } from 'react-redux';
+import cx from 'classnames';
+import * as TabActions from './actions';
+import { dragStart } from '../DragAndDrop/actions';
 
 const Tab = ({getGroupById, groupId, ...otherProps}) => {
   let tabGroup = getGroupById(groupId)
@@ -80,26 +79,29 @@ TabLabel = connect((state, ownProps) => ({
 
 
 const TabContent = ({tabs, defaultContentClass}) => {
+  let tabContentItems = tabs.map(tab => {
+    return <TabContentItem key={tab.id} tab={tab} defaultContentClass={defaultContentClass} />;
+  })
   return (
     <div className='tab-content'>
       <ul className='tab-content-container'>{
-        tabs.map(tab => {
-          return <TabContentItem key={tab.id} tab={tab} defaultContentClass={defaultContentClass} />
-        })
+        tabContentItems.length
+        ? tabContentItems
+        : <div className='tab-content-placeholder-monkey'></div>
       }</ul>
     </div>
-  )
+  );
 }
 
-const TabContentItem = ({tab, defaultContentClass}) => {
+const TabContentItem = ({ tab, defaultContentClass }) => {
+  console.log('default', defaultContentClass, tab);
   return (
     <div className={cx('tab-content-item', {'active': tab.isActive})}>
-      {React.createElement(defaultContentClass, {
-        tab: tab
-      })}
+      {React.createElement(defaultContentClass, { tab })}
     </div>
-  )
-}
+  );
+};
+
 
 class TabContainer extends Component {
   constructor (props) {

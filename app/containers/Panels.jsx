@@ -46,7 +46,7 @@ const PrimaryPanelAxis = connect(state => {
 const Panels = (props) => {
   store.dispatch(PanelActions.initializePanels(PanelConfig))
 
-  return (<PrimaryPanelAxis scope='window' className='primary-panel-axis' />)
+  return (<PrimaryPanelAxis scope='window' className='primary-panel-axis' />);
 }
 
 export default Panels
