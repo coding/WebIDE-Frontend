@@ -14,3 +14,4 @@ export GitResolveConflictsView from '../../Git/modals/resolveConflicts';
 export GitMergeFileView from '../../Git/modals/mergeFile';
 export GitRebasePrepare from '../../Git/modals/rebasePrepare';
 export GitRebaseInput from '../../Git/modals/rebaseInput';
+export GitCommitDiffView from '../../Git/modals/commitDiff';

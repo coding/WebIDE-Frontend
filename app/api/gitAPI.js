@@ -102,3 +102,7 @@ export function gitRebaseOperate ({operation, message}) {
 export function gitRebaseUpdate (lines) {
   return request.postJSON(`/git/${config.spaceKey}/rebase/update`, lines)
 }
+
+export function gitCommitDiff ({ref}) {
+  return request.get(`/git/${config.spaceKey}/diff`, {ref})
+}

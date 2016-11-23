@@ -67,12 +67,12 @@ class GitRebasePrepare extends Component {
                 {this.renderCommitsList()}
               </div>
               <div className="col-sm-2 btn-list">
-                {/*<button className="btn btn-default"
+                <button className="btn btn-default"
                   type="button"
                   onClick={this.handleView}
                 >
                   View
-                </button>*/}
+                </button>
                 <button className="btn btn-default"
                   type="button"
                   onClick={this.handleUp}
@@ -251,10 +251,13 @@ class GitRebasePrepare extends Component {
   }
 
   handleView () {
-    let commit = this.state.rebaseTodoLines[this.state.selectedRow][1]
+    let commit = this.state.rebaseTodoLines[this.state.selectedRow].commit
     let oldRef = commit + '^'
-    console.log('handleView')
-    console.log(oldRef)
+    this.props.gitCommitDiff({
+      title: 'View Changes',
+      ref: commit,
+      oldRef
+    })
     // GitActions.diff commit, @getIntlMessage('git.modal.viewChanges'), oldRef
   }
 

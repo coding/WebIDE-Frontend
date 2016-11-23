@@ -377,3 +377,26 @@ export function gitRebaseUpdate (lines) {
     }))
   })
 }
+
+export const GIT_COMMIT_DIFF = 'GIT_COMMIT_DIFF'
+export const updateCommitDiff = createAction(GIT_COMMIT_DIFF)
+export function gitCommitDiff ({ref, title, oldRef}) {
+  return dispatch => api.gitCommitDiff({ref}).then(res => {
+    let files = res.map(item => {
+      let file = {
+        status: item.changeType,
+        name: item.newPath,
+        oldPath: item.newPath
+      }
+      return file
+    })
+    dispatch(updateCommitDiff({files: files, ref, title, oldRef}))
+    dispatch(showModal('GitCommitDiff'))
+  }).catch(res => {
+    console.error(res)
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Get commit diff error: ' + res.msg,
+    }))
+  })
+}

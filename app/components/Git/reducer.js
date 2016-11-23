@@ -18,6 +18,7 @@ import {
   GIT_UPDATE_UNSTASH_IS_REINSTATE,
   GIT_UPDATE_UNSTASH_BRANCH_NAME,
   GIT_REBASE_STATE,
+  GIT_COMMIT_DIFF,
 } from './actions'
 
 const _state = {
@@ -40,6 +41,13 @@ const _state = {
   },
   rebase: {
     state: ''
+  },
+  commitDiff: {
+    title: '',
+    ref: null,
+    oldRef: null,
+    filesMap: Map(),
+    files: []
   }
 }
 
@@ -241,6 +249,15 @@ export default handleActions({
   [GIT_REBASE_STATE]: (state, action) => {
     state = _.cloneDeep(state)
     state.rebase.state = action.payload
+    return state
+  },
+  [GIT_COMMIT_DIFF]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.commitDiff.title = action.payload.title
+    state.commitDiff.ref = action.payload.ref
+    state.commitDiff.oldRef = action.payload.oldRef
+    state.commitDiff.files = action.payload.files
+    state.commitDiff.filesMap = treeifyFiles(action.payload.files)
     return state
   },
 }, _state)
