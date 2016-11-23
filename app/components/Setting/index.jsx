@@ -132,7 +132,15 @@ let SettingsView = (props) => {
           </div>
         </div>
       </div>
-      <div className="modal-ops">
+      <div className="modal-ops" style={{
+        position: 'relative',
+        backgroundColor: 'white',
+        paddingTop: '6px',
+        paddingRight: '5px',
+        borderTop: '1px solid #eee',
+        marginLeft: '-10px',
+        marginRight: '-10px'
+      }}>
         <button
           className="btn btn-default"
           onClick={() => { cancelSettingItem(); }
