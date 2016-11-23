@@ -3,7 +3,9 @@ import { handleActions } from 'redux-actions'
 import { OrderedMap } from 'immutable'
 import {
   SETTING_ACTIVATE_TAB,
-  SETTING_UPDATE_FIELD
+  SETTING_UPDATE_FIELD,
+  CONFIRM_UPDATE_FIELD,
+  CANCEL_UPDATE_FIELD
 } from './actions'
 
 import ace from 'brace'
@@ -12,11 +14,11 @@ const aceThemes = ace.acequire('ace/ext/themelist')
   .themes.map((t, i) => ({value: t.theme, name: t.caption}))
 
 
-let SettingState = {
+const SettingState = {
   activeTabId: 'EDITOR',
   tabIds: ['GENERAL', 'EDITOR'],
   tabs: {
-    'GENERAL': {
+    GENERAL: {
       id: 'GENERAL',
       items: [{
         name: 'Language',
@@ -26,9 +28,12 @@ let SettingState = {
         name: 'Theme',
         value: 'Light',
         options: ['Light', 'Dark']
+      }, {
+        name: 'Hide Files',
+        value: '/.git,/.coding-ide'
       }]
     },
-    'EDITOR': {
+    EDITOR: {
       id: 'EDITOR',
       items: [{
         name: 'Keyboard Mode',
@@ -79,31 +84,38 @@ let SettingState = {
 
 export default handleActions({
   [SETTING_ACTIVATE_TAB]: (state, action) => {
-    return {
+    return ({
       ...state,
-      activeTabId: action.payload
-    }
+      views: { ...state.views, activeTabId: action.payload }
+    })
   },
 
   [SETTING_UPDATE_FIELD]: (state, action) => {
-    const {domain, fieldName, value} = action.payload
-
+    const { domain, fieldName, value } = action.payload
     return {
       ...state,
-      tabs: {
-        ...state.tabs,
-        [domain]: {
-          ...state.tabs[domain],
-          items: state.tabs[domain].items.map(settingItem => {
-            if (settingItem.name === fieldName) {
-              return {...settingItem, value}
-            } else {
+      views: { ...state.views,
+        tabs: {
+          ...state.views.tabs,
+          [domain]: {
+            ...state.views.tabs[domain],
+            items: state.views.tabs[domain].items.map(settingItem => {
+              if (settingItem.name === fieldName) {
+                return { ...settingItem, value }
+              }
               return settingItem
-            }
-          })
+            })
+          }
         }
       }
     }
-
-  }
-}, SettingState)
+  },
+  [CONFIRM_UPDATE_FIELD]: (state) => ({
+    ...state,
+    data: { ...state.data, ...state.views }
+  }),
+  [CANCEL_UPDATE_FIELD]: (state) => ({
+    ...state,
+    views: { ...state.views, ...state.data }
+  }),
+}, { views: SettingState, data: SettingState })
