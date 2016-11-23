@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   Prompt,
   Confirm,
+  SettingsView,
   CommandPalette,
   GitCommitView,
   GitStashView,
@@ -25,18 +26,21 @@ var ModalContainer = (props) => {
   const {dispatch} = props;
   const hasModal = props.stack.length > 0;
   return hasModal ? <div className={cx('modals-container')}>
-    {props.stack.map(modalConfig => {
+    { props.stack.map(modalConfig => {
       const {id, isActive, showBackdrop, position} = modalConfig;
-      return isActive
-        ? <div key={id} className={cx('modal-container', position,
-          { 'show-backdrop': showBackdrop })} >
-          <Modal {...modalConfig} />
-          <div className='backdrop'
-            onClick={e => dispatch({ type: 'MODAL_DISMISS' })}></div>
-        </div>
+        return isActive
+        ? <div key={id} className={cx(
+            position,
+            'modal-container',
+            {'show-backdrop': showBackdrop}
+          )} >
+            <Modal {...modalConfig} />
+            <div className='backdrop'
+              onClick={e=>dispatch({type:'MODAL_DISMISS'})} />
+          </div>
         : null
-    })}
-  </div> : null;
+    }) }
+  </div> :null;
 }
 ModalContainer = connect(state => state.ModalState, null)(ModalContainer)
 
@@ -47,10 +51,10 @@ class Modal extends Component {
   }
 
   render() {
-    const {modalType, content} = this.props
+    const {type, content} = this.props
 
     var modalContent = function () {
-      switch (modalType) {
+      switch (type) {
         case 'GitCommit':
           return <GitCommitView {...this.props} />
 
@@ -98,6 +102,9 @@ class Modal extends Component {
 
         case 'CommandPalette':
           return <CommandPalette {...this.props} />
+
+        case 'Settings':
+          return <SettingsView {...this.props} />
 
         default:
           return content

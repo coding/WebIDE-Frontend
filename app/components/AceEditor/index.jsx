@@ -96,6 +96,6 @@ class AceEditor extends Component {
   }
 }
 
-AceEditor = connect(null, null)(AceEditor);
+AceEditor = connect(state => ({setting: state.SettingState.tabs.EDITOR }), null)(AceEditor);
 
 export default AceEditor;

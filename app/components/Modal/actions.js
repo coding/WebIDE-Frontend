@@ -5,7 +5,16 @@ import _ from 'lodash'
 
 export const MODAL_SHOW = 'MODAL_SHOW'
 export const showModal = promiseActionMixin(
-  createAction(MODAL_SHOW, (modalType, content) => ({id: _.uniqueId(), modalType, content}))
+  createAction(MODAL_SHOW, (modalConfig, content) => {
+    switch (typeof modalConfig) {
+      case 'object':
+        return {...modalConfig, id: _.uniqueId()}
+      case 'string':
+        return {type: modalConfig, id: _.uniqueId(), content}
+      default:
+        return {type: ''}
+    }
+  })
 )
 
 export const MODAL_DISMISS = 'MODAL_DISMISS'
