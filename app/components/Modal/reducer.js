@@ -14,14 +14,12 @@ const baseModal = {
 }
 
 const ModalReducer = handleActions({
-  [MODAL_SHOW]: (state, {payload: {id, modalType, content}, meta}) => {
+  [MODAL_SHOW]: (state, {payload: modalConfig, meta}) => {
     let newModal = {
       ...baseModal,
       isActive: true,
-      id,
-      modalType,
-      meta,
-      content
+      ...modalConfig,
+      meta
     }
     return {
       ...state,

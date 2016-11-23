@@ -14,6 +14,7 @@ import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
 import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
+import SettingReducer from './components/Setting/reducer'
 
 const combinedReducers = combineReducers({
   FileTreeState: FileTreeReducer,
@@ -26,7 +27,8 @@ const combinedReducers = combineReducers({
   GitState: GitReducer,
   NotificationState: NotificationReducer,
   WorkspaceState: WorkspaceReducer,
-  DragAndDrop: DragAndDropReducer
+  DragAndDrop: DragAndDropReducer,
+  SettingState: SettingReducer
 })
 
 const crossReducers = composeReducers(PaneCrossReducer)

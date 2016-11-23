@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   Prompt,
   Confirm,
+  SettingsView,
   CommandPalette,
   GitCommitView,
   GitStashView,
@@ -22,11 +23,14 @@ var ModalContainer = (props) => {
     { props.stack.map(modalConfig => {
       const {id, isActive, showBackdrop, position} = modalConfig;
         return isActive
-        ? <div key={id} className={cx('modal-container', position,
-            {'show-backdrop': showBackdrop})} >
+        ? <div key={id} className={cx(
+            position,
+            'modal-container',
+            {'show-backdrop': showBackdrop}
+          )} >
             <Modal {...modalConfig} />
             <div className='backdrop'
-               onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
+              onClick={e=>dispatch({type:'MODAL_DISMISS'})} />
           </div>
         : null
     }) }
@@ -41,10 +45,10 @@ class Modal extends Component {
   }
 
   render() {
-    const {modalType, content} = this.props
+    const {type, content} = this.props
 
     var modalContent = function () {
-      switch (modalType) {
+      switch (type) {
         case 'GitCommit':
           return <GitCommitView {...this.props} />
 
@@ -74,6 +78,9 @@ class Modal extends Component {
 
         case 'CommandPalette':
           return <CommandPalette {...this.props} />
+
+        case 'Settings':
+          return <SettingsView {...this.props} />
 
         default:
           return content

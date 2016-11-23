@@ -9,3 +9,4 @@ export GitResetView from '../../Git/modals/reset';
 export GitTagView from '../../Git/modals/tag';
 export GitMergeView from '../../Git/modals/merge';
 export GitNewBranchView from '../../Git/modals/newBranch';
+export SettingsView from '../../Setting';

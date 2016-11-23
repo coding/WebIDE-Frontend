@@ -10,6 +10,10 @@ export default {
     $d(Modal.showModal('CommandPalette'))
   },
 
+  'global:show_settings': c => {
+    $d(Modal.showModal({type: 'Settings', position: 'center'}))
+  },
+
   'modal:dismiss': (c) => {
     $d(Modal.dismissModal())
   }
