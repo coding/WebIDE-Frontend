@@ -66,6 +66,8 @@
     "bootstrap-styl": "^5.0.7",
     "brace": "^0.8.0",
     "classnames": "^2.2.5",
+    "diff_match_patch": "^0.1.1",
+    "fixed-data-table": "^0.6.3",
     "font-awesome": "^4.6.3",
     "immutable": "^3.8.1",
     "lodash": "^4.14.2",

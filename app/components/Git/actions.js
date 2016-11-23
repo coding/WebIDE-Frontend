@@ -1,7 +1,8 @@
 /* @flow weak */
+import _ from 'lodash'
 import api from '../../api'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
-import { showModal, dismissModal } from '../Modal/actions'
+import { showModal, dismissModal, updateModal } from '../Modal/actions'
 import { createAction } from 'redux-actions'
 
 export const GIT_STATUS = 'GIT_STATUS'
@@ -35,11 +36,11 @@ export function updateStagingArea (action, file) {
 
 export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
-  return (dispatch) => {
-    return api.gitGetBranches().then(data => {
-      dispatch(createAction(GIT_BRANCH)({ branches: data }))
-    })
-  }
+  return (dispatch) => api.gitGetBranches().then(data => {
+    data.local = data.local.filter(item => item != 'HEAD')
+    data.remote = data.remote.filter(item => item != 'HEAD')
+    dispatch(createAction(GIT_BRANCH)({ branches: data }))
+  })
 }
 
 export const GIT_CHECKOUT = 'GIT_CHECKOUT'
@@ -50,6 +51,13 @@ export function checkoutBranch (branch, remoteBranch) {
       dispatch(notify({message: `Check out ${branch}`}))
     })
   }
+}
+
+export const GIT_TAGS = 'GIT_TAGS'
+export function getTags () {
+  return (dispatch) => api.gitTags().then(data => {
+    dispatch(createAction(GIT_TAGS)({ tabs: data }))
+  })
 }
 
 export function pull () {
@@ -232,3 +240,163 @@ export const selectNode = createAction(GIT_STATUS_SELECT_NODE, node => node)
 
 export const GIT_STATUS_STAGE_NODE = 'GIT_STATUS_STAGE_NODE'
 export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
+
+export const GIT_MERGE = 'GIT_MERGE'
+export const gitMerge = createAction(GIT_MERGE)
+export function mergeFile (path) {
+  return dispatch => dispatch(showModal('GitMergeFile', {path}  ))
+}
+
+export function getConflicts ({path}) {
+  return dispatch => api.gitConflicts({path})
+}
+
+export function resolveConflict ({path, content}) {
+  return dispatch => api.gitResolveConflict({path, content}).then(res => {
+    dispatch(notify({
+      message: 'Resolve conflict success.',
+    }))
+    dispatch(dismissModal())
+    dispatch(updateModal({isInvalid: true}))
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Resolve conflict error.',
+    }))
+  })
+}
+
+export function cancelConflict ({path}) {
+  return dispatch => api.gitCancelConflict({path}).then(res => {
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Cancel conflict error: ' + res.msg,
+    }))
+  })
+}
+
+export function rebase ({branch, upstream, interactive, preserve}) {
+  return dispatch => api.gitRebase({branch, upstream, interactive, preserve}).then(res => {
+    if (res.success) {
+      dispatch(notify({
+        message: 'Rebase success.',
+      }))
+      dispatch(dismissModal())
+    } else {
+      dispatch(dismissModal())
+      resolveRebase(res, dispatch)
+    }
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Rebase error: ' + res.msg,
+    }))
+  })
+}
+
+function resolveRebase (data, dispatch) {
+  if (data.status === 'STOPPED') {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Rebase STOPPED',
+    }))
+    api.gitStatus().then(({files, clean}) => {
+      dispatch(updateStatus({files, isClean: clean}))
+    }).then(() =>
+      dispatch(showModal('GitResolveConflicts'))
+    )
+  } else if (data.status === 'INTERACTIVE_EDIT') {
+    // AppActions.openRebaseInput(data.message)
+    dispatch(showModal('GitRebaseInput'))
+  } else if (data.status === 'ABORTED') {
+    dispatch(notify({
+      message: 'Rebase aborted.',
+    }))
+  } else if (data.status === 'INTERACTIVE_PREPARED') {
+    let rebaseTodoLines = data.rebaseTodoLines
+    dispatch(showModal('GitRebasePrepare', rebaseTodoLines))
+  }
+}
+
+// export const GIT_STATUS = 'GIT_STATUS'
+export function gitGetStatus (status) {
+  return (dispatch) => {
+    dispatch(updateModal({isInvalid: false}))
+    api.gitStatus().then(({files, clean}) => {
+      if (status) {
+        files =  _.filter(files, (file) => {
+          return file.status == status
+        })
+      }
+      dispatch(updateStatus({files, isClean: clean}))
+    }
+  )}
+}
+
+export const GIT_REBASE_STATE = 'GIT_REBASE_STATE'
+export function getRebaseState () {
+  return (dispatch) => api.gitRebaseState().then(data => {
+    dispatch(createAction(GIT_REBASE_STATE)(data))
+  })
+}
+
+export function gitRebaseOperate ({operation, message}) {
+  return dispatch => api.gitRebaseOperate({operation, message}).then(res => {
+    if (res.success) {
+      dispatch(notify({
+        message: 'Operate success.',
+      }))
+    } else {
+      resolveRebase(res, dispatch)
+    }
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Operate error: ' + res.msg,
+    }))
+  })
+}
+
+export function gitRebaseUpdate (lines) {
+  return dispatch => api.gitRebaseUpdate(lines).then(res => {
+    if (res.success) {
+      dispatch(notify({
+        message: 'Rebase success.',
+      }))
+      dispatch(dismissModal())
+    } else {
+      dispatch(dismissModal())
+      resolveRebase(res, dispatch)
+    }
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Rebase error: ' + res.msg,
+    }))
+  })
+}
+
+export const GIT_COMMIT_DIFF = 'GIT_COMMIT_DIFF'
+export const updateCommitDiff = createAction(GIT_COMMIT_DIFF)
+export function gitCommitDiff ({ref, title, oldRef}) {
+  return dispatch => api.gitCommitDiff({ref}).then(res => {
+    let files = res.map(item => {
+      let file = {
+        status: item.changeType,
+        name: item.newPath,
+        oldPath: item.newPath
+      }
+      return file
+    })
+    dispatch(updateCommitDiff({files: files, ref, title, oldRef}))
+    dispatch(showModal('GitCommitDiff'))
+  }).catch(res => {
+    console.error(res)
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Get commit diff error: ' + res.msg,
+    }))
+  })
+}

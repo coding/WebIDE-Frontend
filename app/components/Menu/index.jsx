@@ -36,7 +36,8 @@ class Menu extends Component {
             isActive={this.state.activeItemIndex == i}
             toggleActive={this.activateItemAtIndex}
             deactivateTopLevelMenu={deactivate||deactivateTopLevelMenu}
-            key={`menu-item-${item.name}-${i}`} /> )}
+            key={`menu-item-${item.name}-${i}`}
+            state={this.props.state} /> )}
       </ul>
     );
   }
@@ -61,14 +62,19 @@ const handleMenuItemCommand = (item) => {
   }
 }
 
-const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu}) => {
+const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, state}) => {
   if (item.name == '-') return <li><hr /></li>;
+  const disabled = item.checkDisable ? item.checkDisable(state) : item.isDisabled;
   return (
     <li className='menu-item'>
       <div
-        className={cx('menu-item-container', {active: isActive, disabled: item.isDisabled})}
+        className={cx('menu-item-container', {active: isActive, disabled: disabled})}
         onMouseEnter={e => toggleActive(index)}
-        onClick={e => handleMenuItemCommand(item)&&deactivateTopLevelMenu() } >
+        onClick={e => {
+          if(disabled)
+            return;
+          handleMenuItemCommand(item)&&deactivateTopLevelMenu()
+        }} >
         <div className='menu-item-name'>{item.displayName || item.name}</div>
         { item.shortcut?
           <div className='menu-item-shortcut'>{item.shortcut}</div>

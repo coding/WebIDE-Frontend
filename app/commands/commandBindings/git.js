@@ -15,6 +15,16 @@ export default {
 
   'git:pull': c => $d(Git.pull()),
   'git:push': c => $d(Git.push()),
+  'git:resolve_conflicts': c => {
+    api.gitStatus().then(({files, clean}) => {
+      files =  _.filter(files, (file) => {
+        return file.status == 'CONFLICTION'
+      })
+      $d(Git.updateStatus({files, isClean: clean}))
+    }).then(() =>
+      $d(Modal.showModal('GitResolveConflicts'))
+    )
+  },
 
   // 'git:commit_and_push':
   'git:new_branch': c => {
@@ -36,7 +46,6 @@ export default {
       )
     )
   },
-  // 'git:resolve_conflicts':
   'git:stash': c => {
     $d(Git.getCurrentBranch()).then(() =>
       $d(Modal.showModal('GitStash'))
@@ -55,8 +64,21 @@ export default {
       $d(Modal.showModal('GitResetHead'))
     )
   },
-  // 'git:rebase:start':
-  // 'git:rebase:abort':
-  // 'git:rebase:continue':
-  // 'git:rebase:skip_commit':
+  'git:rebase:start': c => {
+    $d(Git.getBranches()).then(() => {
+      $d(Git.getTags())
+        .then(() =>
+          $d(Modal.showModal('GitRebaseStart'))
+        )
+    })
+  },
+  'git:rebase:abort': c => {
+    $d(Git.gitRebaseOperate({operation: 'ABORT'}))
+  },
+  'git:rebase:continue': c => {
+    $d(Git.gitRebaseOperate({operation: 'CONTINUE'}))
+  },
+  'git:rebase:skip_commit': c => {
+    $d(Git.gitRebaseOperate({operation: 'SKIP'}))
+  }
 }

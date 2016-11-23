@@ -1,4 +1,7 @@
 /* @flow weak */
+import store from '../../store.js'
+import * as GitActions from '../Git/actions'
+
 var dividItem = { name: '-' }
 var menuBarItems = [
   {
@@ -20,7 +23,7 @@ var menuBarItems = [
         icon: 'fa fa-file-o',
         shortcut: '⎇N',
         command: 'file:new_file',
-        isDisabled: true
+        // isDisabled: true
       }, {
         name: 'Save',
         icon: 'fa fa-floppy-o',
@@ -30,6 +33,7 @@ var menuBarItems = [
     ]
   }, {
     name: 'Git',
+    onOpen: handleGitOnOpen,
     items: [
       {
         name: 'Commit',
@@ -43,6 +47,11 @@ var menuBarItems = [
         name: 'Push',
         icon: 'octicon octicon-repo-push',
         command: 'git:push'
+      }, dividItem,
+      {
+        name: 'Resolve Conflicts...',
+        icon: 'fa',
+        command: 'git:resolve_conflicts'
       }, dividItem,
       {
         name: 'Stash Changes...',
@@ -68,6 +77,29 @@ var menuBarItems = [
         name: 'Tag...',
         icon: 'fa',
         command: 'git:tag'
+	  }, dividItem,
+      {
+        name: 'Rebase...',
+        icon: 'fa',
+        command: 'git:rebase:start'
+      },
+      {
+        name: 'Abort Rebasing',
+        icon: 'fa',
+        command: 'git:rebase:abort',
+        checkDisable: checkGitRebasing
+      },
+      {
+        name: 'Continue Rebasing',
+        icon: 'fa',
+        command: 'git:rebase:continue',
+        checkDisable: checkGitRebasing
+      },
+      {
+        name: 'Skip Commit',
+        icon: 'fa',
+        command: 'git:rebase:skip_commit',
+        checkDisable: checkGitRebasing
       }
     ]
   }, {
@@ -87,5 +119,15 @@ var menuBarItems = [
     ]
   }
 ]
+
+const isRebasing = ['REBASING', 'REBASING_REBASING',
+  'REBASING_MERGE', 'REBASING_INTERACTIVE']
+function checkGitRebasing (state) {
+  return isRebasing.indexOf(state.GitState.rebase.state) == -1
+}
+
+function handleGitOnOpen () {
+  store.dispatch(GitActions.getRebaseState())
+}
 
 export default menuBarItems

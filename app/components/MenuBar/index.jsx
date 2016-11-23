@@ -1,9 +1,11 @@
 /* @flow weak */
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import Menu from '../Menu';
 import menuBarItems from './menuBarItems';
+import * as GitActions from '../Git/actions'
 
 class MenuBar extends Component {
   static defaultProps = {
@@ -28,6 +30,7 @@ class MenuBar extends Component {
             toggleActive={this.activateItemAtIndex}
             key={`menu-bar-${menuBarItem.name}`}
             index={i}
+            state={this.props}
           />) }
       </ul>
     );
@@ -52,18 +55,29 @@ const MenuBarItem = (props) => {
       <div className={cx('menu-bar-item-container',
           {active: isActive}
         )}
-        onClick={ e => {e.stopPropagation();toggleActive(index, true);} }
+        onClick={ e => {
+          e.stopPropagation();
+          toggleActive(index, true);
+          if (menuBarItem.onOpen) {
+            if (!isActive) {
+              menuBarItem.onOpen()
+            }
+          }
+        }}
         onMouseEnter={ e => {if (shouldHoverToggleActive) toggleActive(index)} }
       >
         {menuBarItem.name}
       </div>
       { isActive?
         <Menu items={menuBarItem.items} className={cx('top-down to-right', {active: isActive})}
-          deactivate={toggleActive.bind(null,-1)}/>
+          deactivate={toggleActive.bind(null,-1)} state={props.state}/>
         : null}
     </li>
   );
 }
 
 
-export default MenuBar;
+export default  MenuBar = connect(
+  state => state,
+  dispatch => bindActionCreators(GitActions, dispatch)
+)( MenuBar)
