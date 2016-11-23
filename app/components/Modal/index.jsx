@@ -14,6 +14,12 @@ import {
   GitTagView,
   GitMergeView,
   GitNewBranchView,
+  GitRebaseStart,
+  GitResolveConflictsView,
+  GitMergeFileView,
+  GitRebasePrepare,
+  GitRebaseInput,
+  GitCommitDiffView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -52,6 +58,12 @@ class Modal extends Component {
         case 'GitCommit':
           return <GitCommitView {...this.props} />
 
+        case 'GitResolveConflicts':
+          return <GitResolveConflictsView {...this.props} />
+
+        case 'GitCommitDiff':
+          return <GitCommitDiffView {...this.props} />
+
         case 'GitStash':
           return <GitStashView {...this.props} />
 
@@ -69,6 +81,18 @@ class Modal extends Component {
 
         case 'GitResetHead':
           return <GitResetView {...this.props} />
+
+        case 'GitRebaseStart':
+          return <GitRebaseStart {...this.props} />
+
+        case 'GitRebasePrepare':
+          return <GitRebasePrepare {...this.props} />
+
+        case 'GitRebaseInput':
+          return <GitRebaseInput {...this.props} />
+
+        case 'GitMergeFile':
+          return <GitMergeFileView {...this.props} />
 
         case 'Prompt':
           return <Prompt {...this.props} />
@@ -92,15 +116,15 @@ class Modal extends Component {
 
   dismiss = e => {
     if (e.keyCode === 27) {
-      this.props.dispatch({type: 'MODAL_DISMISS'})
+      this.props.dispatch({ type: 'MODAL_DISMISS' })
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('keydown', this.dismiss)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     // this.props.meta.reject()  // always reject any pending promise when unmount.
     window.removeEventListener('keydown', this.dismiss)
   }
