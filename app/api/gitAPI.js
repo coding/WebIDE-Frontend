@@ -72,7 +72,11 @@ export function gitConflicts ({path}) {
 }
 
 export function gitResolveConflict ({path, content}) {
-  return request.post(`/git/${config.spaceKey}/conflicts`, {path, content})
+  return request.post(`/git/${config.spaceKey}/conflicts`, {path, content, base64:false})
+}
+
+export function gitCancelConflict ({path}) {
+  return request.delete(`/git/${config.spaceKey}/conflicts`, {path})
 }
 
 export function gitRebase ({branch, upstream, interactive, preserve}) {

@@ -17,6 +17,9 @@ export default {
   'git:push': c => $d(Git.push()),
   'git:resolve_conflicts': c => {
     api.gitStatus().then(({files, clean}) => {
+      files =  _.filter(files, (file) => {
+        return file.status == 'CONFLICTION'
+      })
       $d(Git.updateStatus({files, isClean: clean}))
     }).then(() =>
       $d(Modal.showModal('GitResolveConflicts'))

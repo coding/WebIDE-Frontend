@@ -25,13 +25,13 @@ class GitMergeView extends Component {
       isLoading: true
     }
     this.handleConfirm = this.handleConfirm.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentWillMount () {
-    this.props.getConflicts({path: this.props.content.file.name}).then(res => {
+    this.props.getConflicts({path: this.props.content.path}).then(res => {
       this.setState({
         isLoading: false,
-        // mode: `ace/mode/${getMode(this.props.content.file.name)}`
       })
       this.initMerge(res)
     })
@@ -95,7 +95,7 @@ class GitMergeView extends Component {
           </div>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={this.handleCancel}>Cancel</button>
             <button className='btn btn-primary' onClick={this.handleConfirm}>Confirm</button>
           </div>
         </div>
@@ -105,10 +105,10 @@ class GitMergeView extends Component {
 
   initMerge (data) {
     var that = this
-    require([`brace/mode/${getMode(that.props.content.file.name)}`], () => {
+    require([`brace/mode/${getMode(that.props.content.path)}`], () => {
       that.aceMerge = new AceMerge({
         // mode: this.state.mode,
-        mode: `ace/mode/${getMode(that.props.content.file.name)}`,
+        mode: `ace/mode/${getMode(that.props.content.path)}`,
         left: {
           id: "editor1",
           content: data.local,
@@ -139,8 +139,14 @@ class GitMergeView extends Component {
   handleConfirm () {
     let content = this.aceMerge.editors.middle.ace.getValue()
     this.props.resolveConflict({
-      path: this.props.content.file.name,
+      path: this.props.content.path,
       content
+    })
+  }
+
+  handleCancel () {
+    this.props.cancelConflict({
+      path: this.props.content.path
     })
   }
 }

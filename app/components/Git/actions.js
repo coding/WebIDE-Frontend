@@ -1,4 +1,5 @@
 /* @flow weak */
+import _ from 'lodash'
 import api from '../../api'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, dismissModal, updateModal } from '../Modal/actions'
@@ -242,8 +243,8 @@ export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
 
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
-export function mergeFile (file) {
-  return dispatch => dispatch(showModal('GitMergeFile', {file}  ))
+export function mergeFile (path) {
+  return dispatch => dispatch(showModal('GitMergeFile', {path}  ))
 }
 
 export function getConflicts ({path}) {
@@ -261,6 +262,17 @@ export function resolveConflict ({path, content}) {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Resolve conflict error.',
+    }))
+  })
+}
+
+export function cancelConflict ({path}) {
+  return dispatch => api.gitCancelConflict({path}).then(res => {
+    dispatch(dismissModal())
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: 'Cancel conflict error: ' + res.msg,
     }))
   })
 }
@@ -309,10 +321,15 @@ function resolveRebase (data, dispatch) {
 }
 
 // export const GIT_STATUS = 'GIT_STATUS'
-export function gitGetStatus () {
+export function gitGetStatus (status) {
   return (dispatch) => {
     dispatch(updateModal({isInvalid: false}))
     api.gitStatus().then(({files, clean}) => {
+      if (status) {
+        files =  _.filter(files, (file) => {
+          return file.status == status
+        })
+      }
       dispatch(updateStatus({files, isClean: clean}))
     }
   )}

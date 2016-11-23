@@ -7,6 +7,7 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import * as GitActions from '../actions'
+import GitFileTree from '../GitFileTree'
 
 class GitResolveConflictsView extends Component {
   constructor (props) {
@@ -16,41 +17,26 @@ class GitResolveConflictsView extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.content.isInvalid) {
-      this.props.gitGetStatus()
+    if (nextProps.content && nextProps.content.isInvalid) {
+      this.props.gitGetStatus('CONFLICTION')
     }
   }
 
   render () {
-    const conflictsFiles = _.filter(this.props.workingDir.files, (file) => {
-      return file.status === 'CONFLICTION'
-    })
     return (
       <div>
         <div className='git-resolve-conflicts'>
           <h1>
           Conflicts List
           </h1>
-          <hr />
-          {
-            conflictsFiles.map((file) =>
-              <label
-                className='git-status-file'
-                key={file.name}
-                onClick={this.handleFileClick.bind(this, file)}
-              >
-                <div className={cx('file-status-indicator', file.status.toLowerCase())}>
-                <i className={cx('fa', {
-                  'fa-pencil-square': file.status == 'MODIFIED',
-                  'fa-plus-square': file.status == 'UNTRACKED',
-                  'fa-minus-square': file.status == 'MISSING',
-                  'fa-question-circle-o': file.status == 'CONFLICTION',
-                })} /></div>
-                <div className='file-path'>{file.name}</div>
-              </label>
-            )
-          }
-          <hr />
+          <GitFileTree
+            statusFiles={this.props.statusFiles}
+            displayOnly={true}
+            hideTitle={true}
+            handleClick={(path) => {
+              this.handleFileClick(path)
+          }} />
+          
           <div className='modal-ops'>
             <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
           </div>
@@ -59,8 +45,8 @@ class GitResolveConflictsView extends Component {
     )
   }
 
-  handleFileClick (file) {
-    this.props.mergeFile(file)
+  handleFileClick (path) {
+    this.props.mergeFile(_.trimStart(path, '/'))
   }
 }
 

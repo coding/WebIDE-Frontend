@@ -9,9 +9,6 @@
 
   .file-status-indicator {
     margin-right: 6px;
-    &.modified {color: hsl(47,100%,50%)}
-    &.untracked {color: hsl(80,60%,40%)}
-    &.missing {color: hsl(10,80%,45%)}
   }
 }
 
@@ -66,12 +63,11 @@
   }
 }
 
-.git-filetree-container {
-  .file-status-indicator {
-    &.modified {color: hsl(47,100%,50%)}
-    &.untracked {color: hsl(80,60%,40%)}
-    &.missing {color: hsl(10,80%,45%)}
-  }
+.file-status-indicator {
+  &.modified, &.changed {color: hsl(47,100%,50%)}
+  &.untracked {color: hsl(80,60%,40%)}
+  &.missing {color: hsl(10,80%,45%)}
+  &.confliction {color: hsl(10,80%,45%)}
 }
 
 .git-rebase-start-container {
