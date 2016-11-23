@@ -22,7 +22,7 @@ export default handleActions({
     return ({
       ...state,
       leftGrow: state.leftGrow * (leftDom.offsetWidth - dX) / leftDom.offsetWidth,
-      rightDom: state.rightDom * (rightDom.offsetWidth + dX) / rightDom.offsetWidth,
+      rightGrow: state.rightGrow * (rightDom.offsetWidth + dX) / rightDom.offsetWidth,
     });
   },
   [MARKDOWN_EDITOR_TOGGLE_PREVIEW]: (state, action) => {
