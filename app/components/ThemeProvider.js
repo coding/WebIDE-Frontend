@@ -1,7 +1,13 @@
-import React, { Component, PropTypes } from 'react'
+import { Component, PropTypes } from 'react'
 import { createI18n } from '../utils'
+import { connect } from 'react-redux'
 
-export default class ThemeProvider extends Component {
+const codeTranslate = {
+  English: 'en_US',
+  Chinese: 'zh_CN'
+}
+
+class ThemeProvider extends Component {
   static propTypes = {
     children: PropTypes.node,
     // theme: PropTypes.object,
@@ -13,10 +19,8 @@ export default class ThemeProvider extends Component {
   };
 
   getChildContext () {
-    const i18n = createI18n(this.props.language)
-    console.log(i18n`titleBar_01:=File${123}`)
+    const i18n = createI18n(codeTranslate[this.props.language || 'en_US'])
     return {
-      // theme: this.props.theme,
       i18n
     }
   }
@@ -28,3 +32,11 @@ export default class ThemeProvider extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const languageSettings = state.SettingState.data.tabs.GENERAL.items;
+  const languageSetting = languageSettings.find(e => e.name === 'Language');
+  return ({ language: languageSetting.value })
+}
+export default connect(mapStateToProps, null)(ThemeProvider)
+
