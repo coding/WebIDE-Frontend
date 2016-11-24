@@ -51,18 +51,18 @@ store.subscribe(() => {
   const newState = store.getState()
   const newStateWithoutCircular = JSON.stringify(newState.SettingState)
   const createTimeEvent = () => {
-    window.timer = setInterval(() => {
+    window.timer = setTimeout(() => {
       console.log('update state to remote')
-      clearInterval(window.timer)
+      clearTimeout(window.timer)
     }, updateStoreToRemoteInterval)
   }
 
   window.actionTimeStamp = new Date()
   // update local state
   if ((stateFromStorage !== newStateWithoutCircular) || !stateFromStorage) {
-    console.log('modify localstorage state')
+    console.log('update state to localstorage')
     localStorage.setItem('snapshot', newStateWithoutCircular)
-    if (window.timer) clearInterval(window.timer)
+    if (window.timer) clearTimeout(window.timer)
     createTimeEvent()
   }
 })
