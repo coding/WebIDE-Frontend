@@ -18,6 +18,8 @@ let FormGroupFactory = ({ domain, settingItem, dispatch }) => {
           return Number(e.target.value)
         case 'text':
           return e.target.value
+        case 'select-one':
+          return e.target.value
       }
     })()
 
