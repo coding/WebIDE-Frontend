@@ -1,20 +1,22 @@
 /* @flow weak */
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { Provider, connect } from 'react-redux'
 
-import store from '../store'
-import IDE from './IDE.jsx'
-import WorkspaceList from '../components/Workspace'
-import ThemeProvider from '../components/ThemeProvider'
-
+import store from '../../store'
+import IDE from '../IDE.jsx'
+import WorkspaceList from '../../components/Workspace'
+import ThemeProvider from '../../components/ThemeProvider'
+import { initState } from './actions'
 
 class Root extends Component {
-  constructor (props) {
-    super(props)
+  static proptypes = {
+    dispatch: PropTypes.func
   }
-
+  componentWillMount () {
+    this.props.dispatch(initState())
+  }
   render () {
-    const {selectingWorkspace} = this.props
+    const { selectingWorkspace } = this.props
     if (window.isSpaceKeySet) return <IDE />
     if (selectingWorkspace) return <WorkspaceList />
     return <IDE />
