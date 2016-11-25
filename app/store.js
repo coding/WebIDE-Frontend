@@ -57,7 +57,6 @@ store.subscribe(() => {
     }, updateStoreToRemoteInterval)
   }
 
-  window.actionTimeStamp = new Date()
   // update local state
   if ((stateFromStorage !== newStateWithoutCircular) || !stateFromStorage) {
     console.log('update state to localstorage')
