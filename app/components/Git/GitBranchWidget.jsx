@@ -28,9 +28,15 @@ export default class GitBranchWidget extends Component {
       <div className='status-bar-menu-item' onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}>
         <span>On branch: {currentBranch}</span>
         { this.state.isActive ?
-          <Menu className={cx('bottom-up to-left', {active: this.state.isActive})}
-            items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
-            deactivate={this.toggleActive.bind(this, false)} />
+          <div style={{ display: 'flex', position: 'absolute', bottom: '30px', minWidth: '200px', right: '1px', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', zIndex: 502, backgroundColor: '#e1e1e1', height: '30px', justifyContent: 'center', alignItems: 'center' }}>
+              <h2 style={{ lineHeight: '1.5', fontSize: '1em' }}>Git Branches</h2>
+            </div>
+            <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}
+              style={{ position: 'relative' }}
+              items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
+              deactivate={this.toggleActive.bind(this, false)} />
+          </div>
         : null }
       </div>
     )
@@ -69,7 +75,7 @@ export default class GitBranchWidget extends Component {
       }
     })
     return [
-      {name: 'New Branch', command: () => dispatchCommand('git:new_branch')},
+      {name: '+  New Branch', command: () => dispatchCommand('git:new_branch')},
       {name: '-', isDisabled: true},
       {name: 'Local Branches', isDisabled: true},
       ...localBranchItems,
