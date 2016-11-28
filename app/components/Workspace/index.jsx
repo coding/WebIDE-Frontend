@@ -15,8 +15,8 @@ class WorkspaceList extends Component {
     this.props.fetchPublicKey()
   }
 
-  componentWillMount () {
-    this.changePercent()
+  componentWillUpdate = (nextProps, nextState) => {
+    if (!this.props.isCreating && nextProps.isCreating) this.changePercent()
   }
 
   changePercent () {
