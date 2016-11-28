@@ -61,6 +61,7 @@ let TabLabel = ({tab, isDraggedOver, removeTab, dispatch, activateTab}) => {
       onDragStart={e => dispatch(dragStart({sourceType: 'TAB', sourceId: tab.id}))}
     >
       {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
+      <div className={tab.icon}></div>
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>

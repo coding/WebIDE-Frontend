@@ -13,7 +13,13 @@ import {
   TAB_MOVE_TO_GROUP,
   TAB_INSERT_AT
 } from './actions'
+import { createConfigBySuffix } from '../../utils'
 
+const getIconConfigBySuffix = createConfigBySuffix({
+  md: { icon: '234' },
+  js: { icon: '' },
+  default: { icon: '' }
+})
 class Tab {
   constructor (tab = {}, tabGroup) {
     const {id, isActive, flags, icon, title, path, content} = tab
@@ -160,6 +166,9 @@ export default handleActions({
     const {groupId, tab} = action.payload
     var tabGroup = getGroupById(groupId)
     if (!tabGroup) tabGroup = getActiveGroup()
+    if (tab) {
+      tab.icon = getIconConfigBySuffix(tab.title, 'icon').icon
+    }
     var newTab = new Tab(tab, tabGroup)
     tabGroup.tabs.push(newTab)
     tabGroup.activateTab(newTab)
