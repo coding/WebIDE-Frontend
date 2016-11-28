@@ -21,6 +21,8 @@ const getMappedDic = () => {
 // use case
 
 const translate = (origin = '', language) => {
+  console.log('language12', language)
+  // language = 'zh_CN'
   const dic = getMappedDic()
   const key = origin.split(separator)[0]
   if (!origin || !dic[key]) {
@@ -29,5 +31,10 @@ const translate = (origin = '', language) => {
   return dic[key][language] || ''
 }
 
-export default (language) => (template = [], ...values) =>
-  template.reduce((p, v, i) => `${p}${p ? values[i - 1] : ''}${translate(v, language)}`, '')
+export default (language) => {
+  console.log('test', language)
+  return (template = [], ...values) =>{
+  console.log('lande', language)
+  return template.reduce((p, v, i) => `${p}${p ? values[i - 1] : ''}${translate(v, language)}`, '')
+}
+}

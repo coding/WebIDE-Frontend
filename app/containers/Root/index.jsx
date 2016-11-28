@@ -8,12 +8,34 @@ import WorkspaceList from '../../components/Workspace'
 import ThemeProvider from '../../components/ThemeProvider'
 import { initState } from './actions'
 
+
+const codeTranslate = (language) => {
+  const dic = {
+    English: 'en_US',
+    Chinese: 'zh_CN'
+  }
+  if (Array.isArray(language)) {
+    console.log('here', language)
+    const a = language.find(lan => {
+      if (lan.includes('-')) lan = lan.replace(/-/g, '_')
+      console.log('hrere', Object.keys(dic).map(e => dic[e]).includes(lan), lan)
+      return Object.keys(dic).map(e => dic[e]).includes(lan)
+    })
+    console.log('12312313', a.replace(/-/g, '_'))
+    return a.replace(/-/g, '_')
+  }
+  if (dic[language]) return dic[language]
+  if (Object.keys(dic).map(e => dic[e]).includes(language)) return language
+  return ''
+}
+
 const getDefaultLanguage = () => [
+  'languages',
   'language',
   'browserLanguage',
   'systemLanguage',
   'userLanguage']
-.reduce((p, v) => p || window.navigator[v], '')
+.reduce((p, v) => p || codeTranslate(window.navigator[v]), '')
 
 class Root extends Component {
   static proptypes = {
@@ -34,12 +56,10 @@ Root = connect(
   state => state.WorkspaceState
 )(Root)
 
-const defaultLanguage = getDefaultLanguage() || 'en_US'
-
 export default () => {
   return (
     <Provider store={store}>
-      <ThemeProvider language={defaultLanguage}>
+      <ThemeProvider>
         <Root id='root-container' />
       </ThemeProvider>
     </Provider>

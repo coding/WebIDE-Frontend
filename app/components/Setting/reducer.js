@@ -13,6 +13,30 @@ import 'brace/ext/themelist'
 const aceThemes = ace.acequire('ace/ext/themelist')
   .themes.map((t, i) => ({value: t.theme, name: t.caption}))
 
+const codeToDisplay = {
+  en_US: 'English',
+  zh_CN: 'Chinese'
+}
+
+const codeTranslate = (language = '') => {
+  if (Array.isArray(language)) {
+    const specLanguage = language.find(lan => {
+      lan = lan.replace(/-/g, '_')
+      return Object.keys(codeToDisplay).includes(lan)
+    })
+    return specLanguage.replace(/-/g, '_')
+  }
+  const specLanguage = language.replace(/-/g, '_')
+  return Object.keys(codeToDisplay).includes(specLanguage) ? specLanguage : ''
+}
+
+const getDefaultLanguage = () => [
+  'languages',
+  'language',
+  'browserLanguage',
+  'systemLanguage',
+  'userLanguage']
+.reduce((p, v) => p || codeTranslate(window.navigator[v]), '')
 
 const SettingState = {
   activeTabId: 'EDITOR',
@@ -22,7 +46,7 @@ const SettingState = {
       id: 'GENERAL',
       items: [{
         name: 'Language',
-        value: 'English',
+        value: codeToDisplay[getDefaultLanguage()],
         options: ['English', 'Chinese']
       }, {
         name: 'Theme',
