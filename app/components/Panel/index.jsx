@@ -41,8 +41,8 @@ ResizeBar = connect(null, (dispatch, ownProps) => {
       var [oX, oY] = [e.pageX, e.pageY]
 
       const handleResize = (e) => {
-        var [dX, dY] = [oX - e.pageX, oY - e.pageY]
-        ;[oX, oY] = [e.pageX, e.pageY]
+        var [dX, dY] = [oX - e.pageX, oY - e.pageY];
+        [oX, oY] = [e.pageX, e.pageY];
         dispatch(PanelActions.resize(sectionId, dX, dY))
         ownProps.resizingListeners.forEach(listener => listener())
       }

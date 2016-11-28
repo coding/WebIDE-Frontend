@@ -33,7 +33,6 @@ function interceptResponse (response) {
 function request (_options) {
   var options = Object.assign({}, defaultRequestOptions, _options)
   var queryString, fetchOptions
-
   if (options.json) {
     options.headers['Content-Type'] = 'application/json'
     options.body = options.json
@@ -48,7 +47,7 @@ function request (_options) {
     options.body = (function () {
       switch (options.headers['Content-Type']) {
         case 'application/json':
-          return JSON.parse(options.body)
+          return JSON.stringify(options.body)
         case 'application/x-www-form-urlencoded':
           return qs.stringify(options.body)
         default:
@@ -56,7 +55,6 @@ function request (_options) {
       }
     })()
   }
-
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},
@@ -84,6 +82,10 @@ function parseMethodArgs (url, data, METHOD) {
       case 'PATCH':
         options.form = data
         break
+      case 'POST_JSON':
+        options.json = data
+        options.method = 'POST'
+        break
       default:
         options.data = data
     }
@@ -97,6 +99,10 @@ request.get = function (url, data) {
 
 request.post = function (url, data) {
   return request(parseMethodArgs(url, data, 'POST'))
+}
+
+request.postJSON = function (url, data) {
+  return request(parseMethodArgs(url, data, 'POST_JSON'))
 }
 
 request.put = function (url, data) {

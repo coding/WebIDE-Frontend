@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
   Prompt,
   Confirm,
+  SettingsView,
   CommandPalette,
   GitCommitView,
   GitStashView,
@@ -13,6 +14,12 @@ import {
   GitTagView,
   GitMergeView,
   GitNewBranchView,
+  GitRebaseStart,
+  GitResolveConflictsView,
+  GitMergeFileView,
+  GitRebasePrepare,
+  GitRebaseInput,
+  GitCommitDiffView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -22,11 +29,14 @@ var ModalContainer = (props) => {
     { props.stack.map(modalConfig => {
       const {id, isActive, showBackdrop, position} = modalConfig;
         return isActive
-        ? <div key={id} className={cx('modal-container', position,
-            {'show-backdrop': showBackdrop})} >
+        ? <div key={id} className={cx(
+            position,
+            'modal-container',
+            {'show-backdrop': showBackdrop}
+          )} >
             <Modal {...modalConfig} />
             <div className='backdrop'
-               onClick={e=>dispatch({type:'MODAL_DISMISS'})}></div>
+              onClick={e=>dispatch({type:'MODAL_DISMISS'})} />
           </div>
         : null
     }) }
@@ -41,12 +51,18 @@ class Modal extends Component {
   }
 
   render() {
-    const {modalType, content} = this.props
+    const {type, content} = this.props
 
     var modalContent = function () {
-      switch (modalType) {
+      switch (type) {
         case 'GitCommit':
           return <GitCommitView {...this.props} />
+
+        case 'GitResolveConflicts':
+          return <GitResolveConflictsView {...this.props} />
+
+        case 'GitCommitDiff':
+          return <GitCommitDiffView {...this.props} />
 
         case 'GitStash':
           return <GitStashView {...this.props} />
@@ -66,6 +82,18 @@ class Modal extends Component {
         case 'GitResetHead':
           return <GitResetView {...this.props} />
 
+        case 'GitRebaseStart':
+          return <GitRebaseStart {...this.props} />
+
+        case 'GitRebasePrepare':
+          return <GitRebasePrepare {...this.props} />
+
+        case 'GitRebaseInput':
+          return <GitRebaseInput {...this.props} />
+
+        case 'GitMergeFile':
+          return <GitMergeFileView {...this.props} />
+
         case 'Prompt':
           return <Prompt {...this.props} />
 
@@ -74,6 +102,9 @@ class Modal extends Component {
 
         case 'CommandPalette':
           return <CommandPalette {...this.props} />
+
+        case 'Settings':
+          return <SettingsView {...this.props} />
 
         default:
           return content
@@ -85,15 +116,15 @@ class Modal extends Component {
 
   dismiss = e => {
     if (e.keyCode === 27) {
-      this.props.dispatch({type: 'MODAL_DISMISS'})
+      this.props.dispatch({ type: 'MODAL_DISMISS' })
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('keydown', this.dismiss)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     // this.props.meta.reject()  // always reject any pending promise when unmount.
     window.removeEventListener('keydown', this.dismiss)
   }

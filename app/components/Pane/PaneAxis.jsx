@@ -1,11 +1,11 @@
 /* @flow weak */
-import React, { Component, PropTypes } from 'react'
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
-import cx from 'classnames'
-import * as PaneActions from './actions'
-import TabContainer from '../Tab'
-import AceEditor from '../AceEditor'
+import React, { Component, PropTypes } from 'react';
+import { createStore } from 'redux';
+import { connect } from 'react-redux';
+import cx from 'classnames';
+import * as PaneActions from './actions';
+import TabContainer from '../Tab';
+import EditorWrapper from '../EditorWrapper';
 
 
 @connect(state => state.PaneState)
@@ -16,15 +16,26 @@ class Pane extends Component {
   }
 
   render () {
-    const {id, views, size, flexDirection, parentFlexDirection, resizingListeners, dropArea} = this.props
+    const { 
+      id,
+      views,
+      size,
+      flexDirection,
+      parentFlexDirection,
+      resizingListeners,
+      dropArea
+    } = this.props;
     var content
     if (views.length > 1) {
       content = <PaneAxis views={views} flexDirection={flexDirection} />
     } else if (typeof views[0] === 'string') {
-      var tabGroupId = views[0]
+      var tabGroupId = views[0];
       content = (
         <div className='pane'>
-          <TabContainer defaultContentClass={AceEditor} defaultContentType='editor' tabGroupId={tabGroupId}/>
+          <TabContainer 
+            defaultContentClass={EditorWrapper}
+            defaultContentType='editor'
+            tabGroupId={tabGroupId}/>
         </div>
       )
     } else {
@@ -57,6 +68,8 @@ class Pane extends Component {
     const handleResize = (e) => {
       var [dX, dY] = [oX - e.pageX, oY - e.pageY]
       ;[oX, oY] = [e.pageX, e.pageY]
+    
+      console.log('offset', dX, oX);            
       this.props.dispatch(PaneActions.resize(sectionId, dX, dY))
       this.props.resizingListeners.forEach(listener => listener())
     }

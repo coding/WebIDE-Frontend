@@ -2,3 +2,4 @@ node_modules
 build
 **/*.md
 .idea/
+app/config.js

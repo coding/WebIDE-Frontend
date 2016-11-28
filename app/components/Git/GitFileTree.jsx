@@ -14,7 +14,8 @@ class GitFileTree extends Component {
     this.state = {
       showTreeView: true,
       showShrinkPathView: true,
-      displayOnly: false
+      displayOnly: this.props.displayOnly || false,
+      hideTitle: this.props.hideTitle || false,
     }
   }
 
@@ -23,9 +24,12 @@ class GitFileTree extends Component {
       <div className='git-filetree-container' tabIndex={1} >
         <GitFileTreeNode path='/'
           visualParentPath='/'
+          statusFiles={this.props.statusFiles}
           showTreeView={this.state.showTreeView}
           showShrinkPathView={this.state.showShrinkPathView}
-          displayOnly={this.state.displayOnly} />
+          displayOnly={this.state.displayOnly}
+          handleClick={this.props.handleClick}
+          hideTitle={this.state.hideTitle} />
       </div>
     )
   }
@@ -45,6 +49,8 @@ class _GitFileTreeNode extends Component {
       showTreeView,
       showShrinkPathView,
       visualParentPath,    // for usage in shrinkPathView
+      handleClick,
+      hideTitle,
       ...actionProps} = this.props
     const {toggleNodeFold, selectNode, toggleStaging} = actionProps
 
@@ -67,12 +73,15 @@ class _GitFileTreeNode extends Component {
                 })}></i>
               </span>
             }
-            <span className='filetree-node-label'>File Status
-              { displayOnly ? <span> ({node.leafNodes.length} changed) </span>
-              : <span> ({this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed) </span>
-              }
-            </span>
-          </div>)
+            { hideTitle ? ''
+              : <span className='filetree-node-label'>File Status
+                { displayOnly ? <span> ({node.leafNodes.length} changed) </span>
+                : <span> ({this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed) </span>
+                }
+              </span>
+            }
+          </div>
+          )
 
         : !showTreeView && node.isDir ? null // flatView
 
@@ -105,16 +114,20 @@ class _GitFileTreeNode extends Component {
             <span className='filetree-node-icon'>
               <i className={cx('fa file-status-indicator', node.status.toLowerCase(), {
                 'fa-folder-o': node.isDir,
-                'fa-pencil-square': node.status == 'MODIFIED',
-                'fa-plus-square': node.status == 'UNTRACKED',
-                'fa-minus-square': node.status == 'MISSING'
+                'fa-pencil-square': node.status == 'MODIFIED' || node.status == 'CHANGED',
+                'fa-plus-square': node.status == 'UNTRACKED' || node.status == 'ADD',
+                'fa-minus-square': node.status == 'MISSING',
+                'fa-exclamation-circle': node.status == 'CONFLICTION'
               })}></i>
             </span>
             <span className='filetree-node-label'>
               { showTreeView ?
                 (node.isDir && showShrinkPathView ?
                   node.path.replace(visualParentPath, '').replace(/^\//, '')
-                : node.name)
+                : (handleClick ? 
+                    <label onClick={handleClick.bind(null, node.path)}>{node.name}</label>
+                  : node.name)
+                )
               : node.path}
             </span>
             <div className='filetree-node-bg'></div>
@@ -126,13 +139,15 @@ class _GitFileTreeNode extends Component {
           <div className={cx('filetree-node-children', {isFolded: node.isFolded})}>
             {node.children.map(childNodePath =>
               <GitFileTreeNode
+                statusFiles={statusFiles}
                 key={childNodePath}
                 path={childNodePath}
                 showTreeView={showTreeView}
                 showShrinkPathView={showShrinkPathView}
                 visualParentPath={showShrinkPathView && this.shouldHideAtShrinkPath() ? visualParentPath : node.path}
                 indentCompensation={indentCompensation}
-                displayOnly={displayOnly} />
+                displayOnly={displayOnly}
+                handleClick={handleClick} />
             )}
           </div>
         : null }
@@ -197,8 +212,12 @@ class _GitFileTreeNode extends Component {
 }
 const GitFileTreeNode = connect(
   (state, ownProps) => ({
-    statusFiles: state.GitState.statusFiles,
-    node: state.GitState.statusFiles.get(ownProps.path)
+    // statusFiles: state.GitState.statusFiles,
+    statusFiles: ownProps.statusFiles,
+    node: ownProps.statusFiles.get(ownProps.path),
+    handleClick: ownProps.handleClick,
+    displayOnly: ownProps.displayOnly,
+    hideTitle: ownProps.hideTitle
   }),
   dispatch => bindActionCreators(GitActions, dispatch)
 )(_GitFileTreeNode)

@@ -10,6 +10,10 @@ export function gitGetBranches () {
   return request.get(`/git/${config.spaceKey}/branches`)
 }
 
+export function gitTags () {
+  return request.get(`/git/${config.spaceKey}/tags`)
+}
+
 export function gitNewBranch (branchName) {
   return request.post(`/git/${config.spaceKey}/branches`, {branchName})
 }
@@ -63,10 +67,42 @@ export function gitResetHead ({ref, resetType}) {
   return request.post(`/git/${config.spaceKey}/reset`, {ref, resetType})
 }
 
+export function gitConflicts ({path}) {
+  return request.get(`/git/${config.spaceKey}/conflicts`, {path, base64:false})
+}
+
+export function gitResolveConflict ({path, content}) {
+  return request.post(`/git/${config.spaceKey}/conflicts`, {path, content, base64:false})
+}
+
+export function gitCancelConflict ({path}) {
+  return request.delete(`/git/${config.spaceKey}/conflicts`, {path})
+}
+
+export function gitRebase ({branch, upstream, interactive, preserve}) {
+  return request.post(`/git/${config.spaceKey}/rebase`, {branch, upstream, interactive, preserve})
+}
+
 export function gitAddTag ({tagName, ref, message, force}) {
   return request.post(`/git/${config.spaceKey}/tags`, {tagName, ref, message, force})
 }
 
 export function gitMerge (branch) {
   return request.post(`/git/${config.spaceKey}/merge`, {name: branch})
+}
+
+export function gitRebaseState () {
+  return request.get(`/git/${config.spaceKey}?state`)
+}
+
+export function gitRebaseOperate ({operation, message}) {
+  return request.post(`/git/${config.spaceKey}/rebase/operate`, {operation, message})
+}
+
+export function gitRebaseUpdate (lines) {
+  return request.postJSON(`/git/${config.spaceKey}/rebase/update`, lines)
+}
+
+export function gitCommitDiff ({ref}) {
+  return request.get(`/git/${config.spaceKey}/diff`, {ref})
 }

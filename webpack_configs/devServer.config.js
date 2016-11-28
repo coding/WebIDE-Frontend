@@ -14,6 +14,21 @@ module.exports = function (options) {
       new webpack.HotModuleReplacementPlugin({
         multiStep: true
       })
-    ]
+    ],
+    module: {
+      loaders: [
+        {
+          test: /config\.js$/,
+          loader: 'regexp-replace',
+          query: {
+            match: {
+              pattern: 'baseURL: \'\' \\|\\| window\\.location\\.origin,',
+              flags: 'g'
+            },
+            replaceWith: 'baseURL: \'http://localhost:8080\' || window.location.origin,'
+          }
+        }
+      ]
+    }
   }
 }
