@@ -7,7 +7,7 @@ import * as WorkspaceActions from './actions'
 class WorkspaceList extends Component {
   constructor (props) {
     super(props)
-    this.state = {showPublicKey: false, percent: 0, hasCreated: false, realErrMsg: ''}
+    this.state = { showPublicKey: false, percent: 0, hasCreated: false }
   }
 
   componentDidMount () {
@@ -16,30 +16,31 @@ class WorkspaceList extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps.isCreating)
-    if (this.props.isCreating && !nextProps.isCreating) this.setState({percent: 100, hasCreated: true})
-  }
-
-  componentWillUpdate (nextProps, nextState) {
+    // isCreating true -> false
+    if (this.props.isCreating && !nextProps.isCreating) this.setState({ hasCreated: true })
+    // isCreating false -> true
     if (!this.props.isCreating && nextProps.isCreating) this.changePercent()
   }
 
   changePercent () {
-    const upLimit = 100
     let curPercent = 0
 
     const addPercent = () => {
-      let increment = Math.floor((700 + 2800 * Math.random()) / 1000)
+      let increment = Math.floor((500 + 3000 * Math.random()) / 1000)
       curPercent += increment
 
-      if (!this.state.hasCreated && curPercent > 90) return this.setState({ percent: 92 })
+      // wait at 95% till next condition turn valid
+      if (!this.state.hasCreated && curPercent > 90) curPercent = 95
 
-      if (curPercent > upLimit) return this.setState({ percent: upLimit })
+      if (this.state.hasCreated || curPercent >= 100) {
+        setTimeout(() => this.setState({ percent: 0, hasCreated: false }), 1000)
+        return this.setState({ percent: 100 })
+      }
 
       setTimeout(() => {
         this.setState({ percent: curPercent })
         addPercent()
-      }, increment * 70)
+      }, increment * 150)
     }
 
     addPercent()
