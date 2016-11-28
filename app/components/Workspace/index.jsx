@@ -7,7 +7,7 @@ import * as WorkspaceActions from './actions'
 class WorkspaceList extends Component {
   constructor (props) {
     super(props)
-    this.state = {showPublicKey: false, percent: 0}
+    this.state = {showPublicKey: false, percent: 0, hasCreated: false, realErrMsg: ''}
   }
 
   componentDidMount () {
@@ -15,33 +15,31 @@ class WorkspaceList extends Component {
     this.props.fetchPublicKey()
   }
 
-  componentWillUpdate = (nextProps, nextState) => {
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps.isCreating)
+    if (this.props.isCreating && !nextProps.isCreating) this.setState({percent: 100, hasCreated: true})
+  }
+
+  componentWillUpdate (nextProps, nextState) {
     if (!this.props.isCreating && nextProps.isCreating) this.changePercent()
   }
 
   changePercent () {
-    const upLimit = 100,
-      timeLimit = 10000
-    let curPercent = 0,
-      hasCreated = false
-
-    setTimeout(()=> {
-      hasCreated = true
-      this.setState({ percent: upLimit })
-    }, timeLimit)
+    const upLimit = 100
+    let curPercent = 0
 
     const addPercent = () => {
-      let increment = Math.floor((1000 + 1000 * Math.random()) / 1000)
+      let increment = Math.floor((700 + 2800 * Math.random()) / 1000)
       curPercent += increment
 
-      if (!hasCreated && curPercent > 90) return this.setState({ percent: 92 })
+      if (!this.state.hasCreated && curPercent > 90) return this.setState({ percent: 92 })
 
       if (curPercent > upLimit) return this.setState({ percent: upLimit })
 
       setTimeout(() => {
         this.setState({ percent: curPercent })
         addPercent()
-      }, increment * 100)
+      }, increment * 70)
     }
 
     addPercent()
@@ -77,7 +75,8 @@ class WorkspaceList extends Component {
                 </button>
             }
           </div>
-          { isCreating && !errMsg ? <p className="creating-workspace-process">Creating workspace...{this.state.percent}%</p> : null}
+          { (isCreating || this.state.hasCreated) && !errMsg ? <p className="creating-workspace-process">
+            Creating workspace...{this.state.percent}%</p> : null}
           { errMsg ? <p className='creating-workspace-indicator-error'>Error: {errMsg}</p> : null }
         </div>
         <div className='workspace-list-container'>
