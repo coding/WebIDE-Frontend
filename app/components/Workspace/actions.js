@@ -42,6 +42,7 @@ export function toggleCreatingWorkspaceErr (msg) {
 
 export function createWorkspace (url) {
   return dispatch => {
+    dispatch(toggleCreatingWorkspaceErr(null))
     dispatch(toggleCreatingWorkspace(true))
     api.createWorkspace(url).then(ws => {
       dispatch(fetchWorkspaceList())

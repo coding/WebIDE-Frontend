@@ -53,6 +53,7 @@
     "eslint-plugin-react": "^5.0.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
+    "regexp-replace-loader": "^0.0.1",
     "standard": "*",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
