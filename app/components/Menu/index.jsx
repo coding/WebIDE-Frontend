@@ -88,7 +88,7 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
             return;
           handleMenuItemCommand(item)&&deactivateTopLevelMenu()
         }} >
-        <div className={item.icon} style={{ paddingTop: '3px', marginRight: '5px' }}></div>
+        <div className={item.icon} style={{ paddingTop: '3px', marginRight: '8px', marginLeft: '-6px' }}></div>
         <div className='menu-item-name'>{item.displayName || item.name}</div>
         { item.shortcut?
           <div className='menu-item-shortcut'>{item.shortcut}</div>
