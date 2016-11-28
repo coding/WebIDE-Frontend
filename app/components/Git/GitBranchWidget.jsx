@@ -33,7 +33,7 @@ export default class GitBranchWidget extends Component {
               <h2 style={{ lineHeight: '1.5', fontSize: '1em' }}>Git Branches</h2>
             </div>
             <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}
-              style={{ position: 'relative' }}
+              style={{ position: 'relative', border: 0, borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
               items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
               deactivate={this.toggleActive.bind(this, false)} />
           </div>
