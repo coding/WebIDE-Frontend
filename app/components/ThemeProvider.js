@@ -2,9 +2,14 @@ import { Component, PropTypes } from 'react'
 import { createI18n } from '../utils'
 import { connect } from 'react-redux'
 
-const codeTranslate = {
-  English: 'en_US',
-  Chinese: 'zh_CN'
+const codeTranslate = (language) => {
+  const dic = {
+    English: 'en_US',
+    Chinese: 'zh_CN'
+  }
+  if (dic[language]) return dic[language]
+  if (Object.keys(dic).map(e => dic[e]).includes(language)) return language
+  return 'en_US'
 }
 
 class ThemeProvider extends Component {
@@ -19,7 +24,7 @@ class ThemeProvider extends Component {
   };
 
   getChildContext () {
-    const i18n = createI18n(codeTranslate[this.props.language || 'en_US'])
+    const i18n = createI18n(codeTranslate[this.props.language])
     return {
       i18n
     }

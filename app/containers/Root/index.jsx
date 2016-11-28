@@ -8,6 +8,13 @@ import WorkspaceList from '../../components/Workspace'
 import ThemeProvider from '../../components/ThemeProvider'
 import { initState } from './actions'
 
+const getDefaultLanguage = () => [
+  'language',
+  'browserLanguage',
+  'systemLanguage',
+  'userLanguage']
+.reduce((p, v) => p || window.navigator[v], '')
+
 class Root extends Component {
   static proptypes = {
     dispatch: PropTypes.func
@@ -27,7 +34,7 @@ Root = connect(
   state => state.WorkspaceState
 )(Root)
 
-const defaultLanguage = 'zh_CN'
+const defaultLanguage = getDefaultLanguage() || 'en_US'
 
 export default () => {
   return (
