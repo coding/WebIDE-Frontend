@@ -14,6 +14,14 @@ import {
   TAB_INSERT_AT
 } from './actions'
 
+import {
+  getTabGroupOfTab,
+  getNextSiblingOfTab,
+  getActiveTabGroup,
+  getActiveTabOfTabGroup,
+  getActiveTab,
+} from './selectors'
+
 const Tab = Record({
   id: '',
   flags: {},
@@ -38,18 +46,7 @@ const _state = {
   tabGroupIds: []
 }
 
-const getTabGroupOfTab = (state, tab) => state.tabGroups.get(tab.tabGroupId)
-const getNextSiblingOfTab = (state, tab) => {
-  const tabIds = getTabGroupOfTab(state, tab).tabIds
-  if (tabIds.size === 1) return tab
-  let nextTabId = tabIds.get(tabIds.indexOf(tab.id) + 1)
-  if (nextTabId === undefined) nextTabId = tabIds.get(tabIds.indexOf(tab.id) - 1)
-  return state.tabs.get(nextTabId)
-}
-const getActiveTabGroup = (state) => state.tabGroups.find(g => g.isActive)
-const getActiveTabOfTabGroup = (state, tabGroup) => {
-  return tabGroup.tabIds.map(tabId => state.tabs.get(tabId)).find(t => t.isActive)
-}
+
 
 const activateTab = (state, tab) => {
   if (tab.isActive) return state
