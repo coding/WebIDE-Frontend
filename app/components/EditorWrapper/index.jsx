@@ -37,8 +37,7 @@ const typeDetect = (title, types) => {
 
 const EditorWrapper = ({
   tab,
-}, { i18n }) => {
-  console.log('test i18n in componnet', i18n`titleBar_01:=File${123}`)
+}) => {
   const {
     title,
     content: { body = '', path = '' } = {},
@@ -71,7 +70,7 @@ getEditorByName.propTypes = {
 };
 
 EditorWrapper.contextTypes = {
-  i18n: React.PropTypes.func
+  language: PropTypes.string,
 };
 
 export default EditorWrapper;

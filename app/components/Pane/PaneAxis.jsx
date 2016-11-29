@@ -69,7 +69,6 @@ class Pane extends Component {
       var [dX, dY] = [oX - e.pageX, oY - e.pageY]
       ;[oX, oY] = [e.pageX, e.pageY]
     
-      console.log('offset', dX, oX);            
       this.props.dispatch(PaneActions.resize(sectionId, dX, dY))
       this.props.resizingListeners.forEach(listener => listener())
     }
