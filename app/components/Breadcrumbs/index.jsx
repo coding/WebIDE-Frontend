@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import config from '../../config'
+import * as Tab from '../Tab'
 
 let Breadcrumbs = ({currentPath}) => {
   const pathComps = currentPath.split('/')
@@ -22,10 +23,11 @@ let Breadcrumbs = ({currentPath}) => {
   )
 }
 Breadcrumbs = connect(state => {
-  if (state.TabState.getActiveGroup() && state.TabState.getActiveGroup().activeTab) {
-    return {currentPath: state.TabState.getActiveGroup().activeTab.path || ''}
+  const activeTab = Tab.selectors.getActiveTab(state.TabState)
+  if (activeTab) {
+    return { currentPath: activeTab.path || '' }
   } else {
-    return {currentPath: ''}
+    return { currentPath: '' }
   }
 })(Breadcrumbs)
 

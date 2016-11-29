@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import { createAction } from 'redux-actions'
 import api from '../../api'
-import * as TabActions from '../Tab/actions'
+import * as Tab from '../Tab'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
 export const FILETREE_SELECT_NODE_KEY = 'FILETREE_SELECT_NODE_KEY'
@@ -38,13 +38,13 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
 
           lastActiveOrder = 0
           TabState = getState().TabState
-          lastActiveEditorTabGroup = TabState.getActiveGroup()
+          lastActiveEditorTabGroup = Tab.selectors.getActiveTabGroup(TabState)
 
-          while (lastActiveEditorTabGroup.type === 'terminal') {
-            lastActiveEditorTabGroup = TabState.activatePrevGroup(--lastActiveOrder)
+          if (lastActiveEditorTabGroup.type === 'terminal') {
+            lastActiveEditorTabGroup = TabState.tabGroups.find(tabGroup => tabGroup.type === 'editor')
           }
 
-          dispatch(TabActions.createTabInGroup(lastActiveEditorTabGroup.id, {
+          dispatch(Tab.actions.createTabInGroup(lastActiveEditorTabGroup.id, {
             id: _.uniqueId('tab_'),
             title: node.name,
             path: node.path,

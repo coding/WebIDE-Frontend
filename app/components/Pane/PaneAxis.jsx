@@ -16,7 +16,7 @@ class Pane extends Component {
   }
 
   render () {
-    const { 
+    const {
       id,
       views,
       size,
@@ -32,7 +32,7 @@ class Pane extends Component {
       var tabGroupId = views[0];
       content = (
         <div className='pane'>
-          <TabContainer 
+          <TabContainer
             defaultContentClass={EditorWrapper}
             defaultContentType='editor'
             tabGroupId={tabGroupId}/>
@@ -62,22 +62,23 @@ class Pane extends Component {
     if (e.button !== 0) return // do nothing unless left button pressed
     e.preventDefault()
 
+    const { resizingListeners, dispatch } = this.props
     // dispatch(PaneActions.setCover(true))
     var [oX, oY] = [e.pageX, e.pageY]
 
     const handleResize = (e) => {
       var [dX, dY] = [oX - e.pageX, oY - e.pageY]
       ;[oX, oY] = [e.pageX, e.pageY]
-    
-      console.log('offset', dX, oX);            
-      this.props.dispatch(PaneActions.resize(sectionId, dX, dY))
-      this.props.resizingListeners.forEach(listener => listener())
+
+      console.log('offset', dX, oX);
+      dispatch(PaneActions.resize(sectionId, dX, dY))
+      Array.isArray(resizingListeners) && resizingListeners.forEach(listener => listener())
     }
 
     const stopResize = () => {
       window.document.removeEventListener('mousemove', handleResize)
       window.document.removeEventListener('mouseup', stopResize)
-      this.props.dispatch(PaneActions.confirmResize())
+      dispatch(PaneActions.confirmResize())
     }
 
     window.document.addEventListener('mousemove', handleResize)
@@ -97,17 +98,15 @@ const ResizeBar = ({parentFlexDirection, sectionId, startResize}) => {
 
 
 class PaneAxis extends Component {
-  static get propTypes () {
-    return {
-      id: PropTypes.string,
-      flexDirection: PropTypes.string,
-      views: PropTypes.array,
-      size: PropTypes.number
-    }
-  }
+  static propTypes = {
+    id: PropTypes.string,
+    flexDirection: PropTypes.string,
+    views: PropTypes.array,
+    size: PropTypes.number
+  };
 
-  static get childContextTypes ()  {
-    return { onResizing: PropTypes.func }
+  static childContextTypes = {
+    onResizing: PropTypes.func
   }
 
 
@@ -118,7 +117,9 @@ class PaneAxis extends Component {
   }
 
   onResizing (listener) {
-    this.resizingListeners.push(listener)
+    if (typeof listener === 'function') {
+      this.resizingListeners.push(listener)
+    }
   }
 
   constructor (props) {

@@ -11,4 +11,8 @@ export const getActiveTabOfTabGroup = (state, tabGroup) => {
   return tabGroup.tabIds.map(tabId => state.tabs.get(tabId)).find(t => t.isActive)
 }
 
-export const getActiveTab = (state) => getActiveTabOfTabGroup(state, getActiveTabGroup(state))
+export const getActiveTab = (state) => {
+  let activeTabGroup = getActiveTabGroup(state)
+  if (activeTabGroup) return getActiveTabOfTabGroup(state, activeTabGroup)
+  return null
+}

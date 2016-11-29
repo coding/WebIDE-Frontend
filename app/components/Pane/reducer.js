@@ -1,7 +1,7 @@
 /* @flow weak */
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
-
+import * as Tab from '../Tab'
 import {
   PANE_INITIALIZE,
   PANE_UNSET_COVER,
@@ -257,17 +257,38 @@ export const PaneCrossReducer = handleActions({
     if (tabGroupIds.length > 1) {
       var tabGroupIdToMergeInto = tabGroupIds[0]
       var tabGroupIdsToBeMerged = tabGroupIds.slice(1)
-      var mergedTabs = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
-        var tabGroup = TabState.getGroupById(tabGroupId)
-        tabGroup.deactivateAllTabsInGroup()
-        return [...tabGroup.tabs, ...acc]
-      }, [])
-      var mergerTabGroup = TabState.getGroupById(tabGroupIdToMergeInto)
-      mergerTabGroup.mergeTabs(mergedTabs)
-    }
-    return { ...allStates,
-      PaneState: {root: new Pane(pane)},
-      TabState: TabState.normalizeState(TabState)
+      var tabIdsToBeMerged = tabGroupIdsToBeMerged.reduceRight((acc, tabGroupId) => {
+        var tabGroup = TabState.tabGroups.get(tabGroupId)
+        // tabGroup.deactivateAllTabsInGroup()
+        if (!acc) return tabGroup.tabIds
+        return tabGroup.tabIds.concat(acc)
+      }, null)
+
+      let mergerTabGroup = TabState.tabGroups.get(tabGroupIdToMergeInto).asMutable()
+      let tabs = TabState.tabs.asMutable()
+      let tabGroups = TabState.tabGroups.asMutable()
+      tabIdsToBeMerged.forEach(tabId =>
+        tabs.update(tabId, tab =>
+          tab.set('isActive', false).set('tabGroupId', mergerTabGroup.id)
+        )
+      )
+      mergerTabGroup.update('tabIds', tabIds => tabIds.concat(tabIdsToBeMerged))
+      tabGroups.set(mergerTabGroup.id, mergerTabGroup.asImmutable())
+      tabGroupIdsToBeMerged.forEach(tabGroupId => tabGroups.remove(tabGroupId))
+
+
+      return { ...allStates,
+        PaneState: {root: new Pane(pane)},
+        TabState: {
+          ...TabState,
+          tabs: tabs.asImmutable(),
+          tabGroups: tabGroups.asImmutable()
+        }
+      }
+    } else {
+      return { ...allStates,
+        PaneState: {root: new Pane(pane)},
+      }
     }
   },
 

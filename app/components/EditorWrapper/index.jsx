@@ -1,16 +1,13 @@
-import React, { PropTypes } from 'react';
-import AceEditor from '../AceEditor';
-import MarkdownEditor from '../MarkdownEditor';
-import PictureEditor from '../PictureEditor';
-
-
+import React, { PropTypes } from 'react'
+import AceEditor from '../AceEditor'
+import MarkdownEditor from '../MarkdownEditor'
+import PictureEditor from '../PictureEditor'
 
 const editors = {
   AceEditor,
   MarkdownEditor,
-  PictureEditor,
-};
-
+  PictureEditor
+}
 
 const getEditorByName = ({
   type = 'default',
@@ -19,59 +16,57 @@ const getEditorByName = ({
   path
 }) => {
   if (type === 'default') {
-    return React.createElement(editors.AceEditor, { tab });
+    return React.createElement(editors.AceEditor, { tab })
   } else if (type === 'editorWithPreview') {
-    return React.createElement(editors.MarkdownEditor, { content: body, tab });
+    return React.createElement(editors.MarkdownEditor, { content: body, tab })
   } else if (type === 'pictureEditor') {
-    return React.createElement(editors.PictureEditor, { path });
+    return React.createElement(editors.PictureEditor, { path })
   }
-};
+}
 
 const typeDetect = (title, types) => {
   // title is the filename
   // typeArray is the suffix
-  if (!Array.isArray(types)) return title.endsWith(`.${types}`);
-  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false);
-};
-
+  if (!Array.isArray(types)) return title.endsWith(`.${types}`)
+  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
+}
 
 const EditorWrapper = ({
-  tab,
+  tab
 }, { i18n }) => {
-  console.log('test i18n in componnet', i18n`titleBar_01:=File${123}`)
   const {
     title,
-    content: { body = '', path = '' } = {},
-  } = tab;
-  let type = 'default';
+    content: { body = '', path = '' } = {}
+  } = tab
+  let type = 'default'
   if (typeDetect(title, 'md')) {
-    type = 'editorWithPreview';
+    type = 'editorWithPreview'
   }
   if (typeDetect(title, ['png', 'jpg', 'jpeg', 'gif'])) {
-    type = 'pictureEditor';
+    type = 'pictureEditor'
   }
   return getEditorByName({
     type,
     tab,
     body,
     path
-  });
-};
+  })
+}
 
 EditorWrapper.propTypes = {
   name: PropTypes.string,
-  tab: PropTypes.object,
-};
+  tab: PropTypes.object
+}
 
 getEditorByName.propTypes = {
   type: PropTypes.string,
   tab: PropTypes.object,
   body: PropTypes.object,
-  path: PropTypes.string,
-};
+  path: PropTypes.string
+}
 
 EditorWrapper.contextTypes = {
   i18n: React.PropTypes.func
-};
+}
 
-export default EditorWrapper;
+export default EditorWrapper
