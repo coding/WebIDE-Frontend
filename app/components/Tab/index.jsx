@@ -94,7 +94,6 @@ const TabContent = ({tabs, defaultContentClass}) => {
 }
 
 const TabContentItem = ({ tab, defaultContentClass }) => {
-  console.log('default', defaultContentClass, tab);
   return (
     <div className={cx('tab-content-item', {'active': tab.isActive})}>
       {React.createElement(defaultContentClass, { tab })}

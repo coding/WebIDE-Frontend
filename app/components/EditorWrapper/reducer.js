@@ -15,7 +15,6 @@ const defaultState = {
 export default handleActions({
   [EDITOR_RESIZE]: (state, action) => {
     const { sectionId, dX, dY } = action.payload;
-    console.log(sectionId, dX, dY);
     return state;
   }
 }, defaultState);
