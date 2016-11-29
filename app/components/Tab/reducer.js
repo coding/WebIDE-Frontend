@@ -1,5 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
+import { Record, Map, List } from 'immutable'
 import { handleActions } from 'redux-actions'
 import {
   TAB_CREATE,
@@ -7,230 +8,239 @@ import {
   TAB_ACTIVATE,
   TAB_CREATE_GROUP,
   TAB_REMOVE_GROUP,
-  TAB_DISSOLVE_GROUP,
   TAB_UPDATE,
   TAB_UPDATE_FLAGS,
   TAB_MOVE_TO_GROUP,
   TAB_INSERT_AT
 } from './actions'
 
-class Tab {
-  constructor (tab = {}, tabGroup) {
-    const {id, isActive, flags, icon, title, path, content} = tab
-    this.id = id || _.uniqueId('tab_')
-    this.flags = flags || {}
-    this.icon = icon || 'fa fa-folder-o'
-    this.title = title || 'untitled'
-    this.isActive = isActive || true
-    this.path = path
-    this.content = '' || content
-    this.group = tabGroup
+const Tab = Record({
+  id: '',
+  flags: {},
+  icon: 'fa fa-folder-',
+  title: 'untitled',
+  isActive: true,
+  path: '',
+  content: '',
+  tabGroupId: ''
+})
+
+const TabGroup = Record({
+  id: '',
+  tabIds: List(),
+  type: '', // default content type
+  isActive: true
+})
+
+const _state = {
+  tabGroups: Map(),
+  tabs: Map(),
+  tabGroupIds: []
+}
+
+const getTabGroupOfTab = (state, tab) => state.tabGroups.get(tab.tabGroupId)
+const getNextSiblingOfTab = (state, tab) => {
+  const tabIds = getTabGroupOfTab(state, tab).tabIds
+  if (tabIds.size === 1) return tab
+  let nextTabId = tabIds.get(tabIds.indexOf(tab.id) + 1)
+  if (nextTabId === undefined) nextTabId = tabIds.get(tabIds.indexOf(tab.id) - 1)
+  return state.tabs.get(nextTabId)
+}
+const getActiveTabGroup = (state) => state.tabGroups.find(g => g.isActive)
+const getActiveTabOfTabGroup = (state, tabGroup) => {
+  return tabGroup.tabIds.map(tabId => state.tabs.get(tabId)).find(t => t.isActive)
+}
+
+const activateTab = (state, tab) => {
+  if (tab.isActive) return state
+  let tabGroups = state.tabGroups.asMutable()
+  let tabs = state.tabs.asMutable()
+
+  const parentTabGroup = getTabGroupOfTab(state, tab)
+  const curActiveTab = getActiveTabOfTabGroup(state, parentTabGroup)
+  // deactivate currently active tab in parentTabGroup
+  if (curActiveTab) {
+    tabs.set(curActiveTab.id, curActiveTab.set('isActive', false))
+  }
+  tabs.set(tab.id, tab.set('isActive', true))
+
+  // activate tabGroup that contains the latest active tab
+  const curActiveTabGroup = getActiveTabGroup(state)
+  if (!parentTabGroup.isActive) {
+    tabGroups.set(curActiveTabGroup.id, curActiveTabGroup.set('isActive', false))
+    tabGroups.set(parentTabGroup.id, parentTabGroup.set('isActive', true))
   }
 
-  update (tab) {
-    _.extend(this, tab)
-  }
-
-  updateFlags (flags) {
-    _.extend(this.flags, flags)
+  return {
+    ...state,
+    tabs: tabs.asImmutable(),
+    tabGroups: tabGroups.asImmutable()
   }
 }
 
-class TabGroup {
-  constructor (id, type) {
-    let tabGroup = getGroupById(id)
-    if (tabGroup) return tabGroup
-    this.id = id || _.uniqueId('tab_group_')
-    this.tabs = []
-    this.type = type
-    this.isActive = true
-    this.activeTab = null
+const removeTab = (state, tab) => {
+  let nextState = state
+  if (tab.isActive) { /* activateNextTab */
+    let nextTab = getNextSiblingOfTab(state, tab)
+    nextState = activateTab(state, nextTab)
   }
 
-  getTabById (id) {
-    return _.find(this.tabs, {id: id})
-  }
+  let tabGroups = nextState.tabGroups.asMutable()
+  let tabs = nextState.tabs.asMutable()
 
-  removeTab (tab) {
-    if (typeof tab === 'string') tab = this.getTabById(tab)
-    if (tab) _.remove(this.tabs, tab)
-    if (this.activeTab === tab) this.activeTab = null
-  }
-
-  activateTab (tab) {
-    if (!tab) return
-    if (typeof tab === 'string') tab = this.getTabById(tab)
-    this.deactivateAllTabsInGroup()
-    tab.isActive = true
-    this.activeTab = tab
-    if (tab.editor && !tab.editor.isFocused()) tab.editor.focus()
-    activateGroup(tab.group)
-  }
-
-  activateNextTab () {
-    if (!this.activeTab) return
-    var i = this.tabs.indexOf(this.activeTab)
-    if (i == this.tabs.length - 1) var isLast = true
-    if (isLast) {
-      this.activateTab(this.tabs[i - 1])
-    } else {
-      this.activateTab(this.tabs[i + 1])
-    }
-  }
-
-  deactivateAllTabsInGroup () {
-    this.tabs.forEach(tab => tab.isActive = false)
-  }
-
-  mergeTabs (tabsToBeMerged) {
-    for (let i = 0; i < tabsToBeMerged.length; i++) {
-      this.tabs.push(tabsToBeMerged[i])
-    }
-    if (this.activeTab) {
-      this.activateTab(this.activeTab)
-    } else {
-      this.activateTab(this.tabs[0])
-    }
-  }
-
-}
-
-const tabGroups = []
-const indexes = {}
-const normalizeState = (prevState) => {
-  tabGroups.forEach(tabGroup => {
-    tabGroup.tabs.forEach(tab => tab.group = tabGroup)
-  })
-  return {_timestamp: Date.now(), tabGroups, getGroupById, getActiveGroup, activateGroup, activatePrevGroup, normalizeState}
-}
-
-function getGroupById (id) {
-  return _.find(tabGroups, {id: id})
-}
-
-function getTabById (id) {
-  var allTabs = tabGroups.reduce((accumulator, tabGroup) => {
-    return accumulator.concat(tabGroup.tabs)
-  }, [])
-  return _.find(allTabs, {id: id})
-}
-
-function getActiveGroup () {
-  var len = tabGroups.length
-  var ret = (len > 0) ? tabGroups[len - 1] : {}
-  return ret
-}
-
-function addGroup (group) {
-  tabGroups.push(group)
-  activateGroup(group)
-}
-
-function activateGroup (group) {
-  if (typeof group === 'string') group = getGroupById(id)
-  deactivateAllGroups()
-  group.isActive = true
-  // lift the active group to top of stack, or say end of the list
-  tabGroups.sort(_group => {
-    if (_group === group) return 1
-    return -1
-  })
-  return group
-}
-
-function deactivateAllGroups () {
-  tabGroups.forEach(tabGroup => tabGroup.isActive = false)
-}
-
-function activatePrevGroup (last = -1) {
-  if (last >= 0) return null
-  var len = tabGroups.length
-  if (len > 1) {
-    var prevActiveGroup = tabGroups[len - 1 + last]
-    activateGroup(prevActiveGroup)
-    return prevActiveGroup
-  } else {
-    return null
+  tabs.remove(tab.id)
+  tabGroups.update(tab.tabGroupId, tabGroup =>
+    tabGroup.update('tabIds', tabIds =>
+      tabIds.filterNot(tabId => tabId === tab.id)
+    )
+  )
+  return {
+    ...state,
+    tabGroups: tabGroups.asImmutable(),
+    tabs: tabs.asImmutable()
   }
 }
 
-let _state = normalizeState({tabGroups: []})
 export default handleActions({
   [TAB_CREATE]: (state, action) => {
-    const {groupId, tab} = action.payload
-    var tabGroup = getGroupById(groupId)
-    if (!tabGroup) tabGroup = getActiveGroup()
-    var newTab = new Tab(tab, tabGroup)
-    tabGroup.tabs.push(newTab)
-    tabGroup.activateTab(newTab)
-    return normalizeState(state)
+    const { groupId, tab: tabConfig } = action.payload
+    let tabGroups = state.tabGroups.asMutable()
+    let tabs = state.tabs.asMutable()
+
+    const newTab = new Tab({
+      id: _.uniqueId('tab_'),
+      tabGroupId: groupId,
+      ...tabConfig
+    })
+
+    // if the tabGroup that's gonna contain the newly create tab isn't currently active,
+    // then we set the currently active tabGroup to inactive
+    // cuz we are gonna activate THIS tabGroup instead
+    let tabGroup = tabGroups.get(groupId)
+    if (!tabGroup.isActive) {
+      const curActiveTabGroup = getActiveTabGroup(state)
+      tabGroups.set(curActiveTabGroup.id, curActiveTabGroup.set('isActive', false))
+    }
+
+    const curActiveTab = getActiveTabOfTabGroup(state, tabGroup)
+    if (curActiveTab) {
+      tabs.set(curActiveTab.id, curActiveTab.set('isActive', false))
+    }
+
+    tabGroup = tabGroup.withMutations(_tabGroup =>
+      _tabGroup
+        .set('isActive', true)
+        .update('tabIds', _tabIds => _tabIds.push(newTab.id))
+    )
+
+    return {
+      ...state,
+      tabGroups: tabGroups.set(tabGroup.id, tabGroup).asImmutable(),
+      tabs: tabs.set(newTab.id, newTab).asImmutable()
+    }
   },
 
   [TAB_REMOVE]: (state, action) => {
-    var tab = getTabById(action.payload)
-    if (tab.isActive) {
-      tab.group.activateNextTab()
-    }
-    tab.group.removeTab(tab)
-    return normalizeState(state)
+    const tab = state.tabs.get(action.payload)
+    return removeTab(state, tab)
   },
 
   [TAB_ACTIVATE]: (state, action) => {
-    const tab = getTabById(action.payload)
-    if (tab.isActive) return state
-    tab.group.activateTab(action.payload)
-    return normalizeState(state)
+    const tab = state.tabs.get(action.payload)
+    return activateTab(state, tab)
   },
 
   [TAB_CREATE_GROUP]: (state, action) => {
     const {groupId, defaultContentType} = action.payload
-    deactivateAllGroups()
-    addGroup(new TabGroup(groupId, defaultContentType))
-    return normalizeState(state)
+    const curActiveTabGroup = getActiveTabGroup(state)
+    const newTabGroup = new TabGroup({ id: groupId, type: defaultContentType })
+    return {
+      ...state,
+      tabGroups: state.tabGroups.withMutations(_tabGroups => {
+        if (curActiveTabGroup) {
+          _tabGroups.update(
+            curActiveTabGroup.id, tabGroup => tabGroup.set('isActive', false)
+          )
+        }
+        _tabGroups.set(newTabGroup.id, newTabGroup)
+        return _tabGroups
+      })
+    }
   },
 
   [TAB_REMOVE_GROUP]: (state, action) => {
-    _.remove(tabGroups, {id: action.payload})
-    return normalizeState(state)
+    // 还有 group active 的问题
+    return {
+      ...state,
+      tabGroups: state.tabGroups.remove(action.payload)
+    }
   },
 
   [TAB_UPDATE]: (state, action) => {
     const tabConfig = action.payload
-    const tab = getTabById(tabConfig.id)
-    tab.update(tabConfig)
-    return normalizeState(state)
+    return {
+      ...state,
+      tabs: state.tabs.update(tabConfig.id, tab => tab.merge(tabConfig))
+    }
   },
 
   [TAB_UPDATE_FLAGS]: (state, action) => {
     const {tabId, flags} = action.payload
-    var tab = getTabById(tabId)
-    tab.updateFlags(flags)
-    return normalizeState(state)
+    return {
+      ...state,
+      tabs: state.tabs.update(tabId, tab => tab.update('flags', _flags => ({..._flags, ...flags})))
+    }
   },
 
   [TAB_MOVE_TO_GROUP]: (state, action) => {
     const {tabId, groupId} = action.payload
-    let tab = getTabById(tabId)
-
-    let tabGroup = getGroupById(groupId)
-    if (tab.isActive) {
-      tab.group.activateNextTab()
+    let sourceTab = state.tabs.get(tabId).asMutable()
+    let nextState = state
+    if (sourceTab.isActive) {
+      let nextTab = getNextSiblingOfTab(state, sourceTab)
+      nextState = activateTab(state, nextTab)
     }
-    tab.group.removeTab(tab)
-    tabGroup.tabs.push(tab)
-    tabGroup.activateTab(tab)
-    return normalizeState(state)
+    nextState = removeTab(nextState, sourceTab)
+
+    // 2. add it to new group
+    let targetTabGroup = state.tabGroups.get(groupId)
+    const tabIds = targetTabGroup.tabIds
+    if (sourceTab.isActive) sourceTab.set('isActive', false)
+    sourceTab.set('tabGroupId', targetTabGroup.id)
+    targetTabGroup = targetTabGroup.set('tabIds', tabIds.push(tabId))
+
+    sourceTab = sourceTab.asImmutable()
+    nextState = {
+      ...nextState,
+      tabGroups: nextState.tabGroups.set(targetTabGroup.id, targetTabGroup),
+      tabs: nextState.tabs.set(sourceTab.id, sourceTab)
+    }
+
+    return activateTab(nextState, sourceTab)
   },
 
   [TAB_INSERT_AT]: (state, action) => {
     const {tabId, beforeTabId} = action.payload
-    let sourceTab = getTabById(tabId)
-    let targetTab = getTabById(beforeTabId)
-    if (sourceTab.isActive) sourceTab.group.activateNextTab()
-    sourceTab.group.removeTab(sourceTab)
-    targetTab.group.tabs.splice(targetTab.group.tabs.indexOf(targetTab), 0, sourceTab)
-    targetTab.group.activateTab(sourceTab)
-    return normalizeState(state)
+    let sourceTab = state.tabs.get(tabId).asMutable()
+    const targetTab = state.tabs.get(beforeTabId)
+    // 1. remove sourceTab from original group
+    let nextState = removeTab(state, sourceTab)
+
+    // 2. add it to new group
+    let targetTabGroup = getTabGroupOfTab(nextState, targetTab)
+    const tabIds = targetTabGroup.tabIds
+    if (sourceTab.isActive) sourceTab.set('isActive', false)
+    sourceTab.set('tabGroupId', targetTabGroup.id)
+    targetTabGroup = targetTabGroup.set('tabIds', tabIds.insert(tabIds.indexOf(beforeTabId), tabId))
+
+    sourceTab = sourceTab.asImmutable()
+    nextState = {
+      ...nextState,
+      tabGroups: nextState.tabGroups.set(targetTabGroup.id, targetTabGroup),
+      tabs: nextState.tabs.set(sourceTab.id, sourceTab)
+    }
+
+    return activateTab(nextState, sourceTab)
   }
 }, _state)
 
