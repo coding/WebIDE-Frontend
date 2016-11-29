@@ -1,4 +1,4 @@
-import React, { Proptypes } from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import * as languageDicPool from '../i18n'
 
@@ -17,7 +17,6 @@ const getMappedDic = () => {
   })
   return result
 }
-
 
 const translate = (origin = '', language) => {
   const dic = getMappedDic()
@@ -44,8 +43,8 @@ export default (template = [], ...values) => {
     const translatedWords = template.reduce((p, v, i) => `${p}${p ? values[i - 1] : ''}${translate(v, language)}`, '')
     return (<span>{translatedWords}</span>)
   }
-  translateComponent.proptypes = {
-    language: Proptypes.string
+  translateComponent.propTypes = {
+    language: PropTypes.string
   }
   return React.createElement(connect(mapStateToProps)(translateComponent))
 }
