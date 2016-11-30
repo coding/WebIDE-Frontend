@@ -18,10 +18,41 @@ export const confirmResize = createAction(PANE_CONFIRM_RESIZE)
 
 export const PANE_SPLIT_WITH_KEY = 'PANE_SPLIT_WITH_KEY'
 export const split = createAction(PANE_SPLIT_WITH_KEY,
-  (splitCount, flexDirection='row') => ({splitCount, flexDirection})
+  (splitCount, flexDirection = 'row') => ({splitCount, flexDirection})
 )
 
 export const PANE_SPLIT = 'PANE_SPLIT'
 export const splitTo = promiseActionMixin(
   createAction(PANE_SPLIT, (paneId, splitDirection) => ({paneId, splitDirection}))
 )
+
+export const startResize = (e, sectionId) => {
+  console.log('startResize')
+  return (dispatch, getState) => {
+    if (e.button !== 0) return // do nothing unless left button pressed
+    e.preventDefault()
+
+    // dispatch(setCover(true))
+    var [oX, oY] = [e.pageX, e.pageY]
+
+    const handleResize = (e) => {
+      var [dX, dY] = [oX - e.pageX, oY - e.pageY]
+      ;[oX, oY] = [e.pageX, e.pageY]
+
+      dispatch(resize(sectionId, dX, dY))
+      // Array.isArray(resizingListeners) && resizingListeners.forEach(listener => listener())
+    }
+
+    const stopResize = () => {
+      window.document.removeEventListener('mousemove', handleResize)
+      window.document.removeEventListener('mouseup', stopResize)
+      dispatch(confirmResize())
+    }
+
+    window.document.addEventListener('mousemove', handleResize)
+    window.document.addEventListener('mouseup', stopResize)
+  }
+}
+
+export const PANE_UPDATE = 'PANE_UPDATE'
+export const updatePane = createAction(PANE_UPDATE)

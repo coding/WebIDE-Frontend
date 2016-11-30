@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import * as TabActions from './actions';
+import * as PaneActions from '../Pane/actions';
 import { dragStart } from '../DragAndDrop/actions';
 import TabBar from './TabBar'
 import TabContent from './TabContent'
@@ -18,10 +19,11 @@ class TabContainer extends Component {
   }
 
   componentWillMount () {
-    const { tabGroups, createGroup, defaultContentType } = this.props
+    const { tabGroups, createGroup, updatePane, defaultContentType, containingPaneId } = this.props
     const { tabGroupId } = this.state
     const tabGroup = tabGroups.get(tabGroupId)
     if (!tabGroup) createGroup(tabGroupId, defaultContentType)
+    updatePane({ paneId: containingPaneId, tabGroupId })
   }
 
   componentDidMount () {
@@ -46,5 +48,6 @@ export default connect((state, { tabGroupId }) => ({
   createGroup: (tabGroupId, defaultContentType) =>
     dispatch(TabActions.createGroup(tabGroupId, defaultContentType)),
   addTab: (tabGroupId) => dispatch(TabActions.createTabInGroup(tabGroupId)),
+  updatePane: (updatePatch) => dispatch(PaneActions.updatePane(updatePatch))
 })
 )(TabContainer)

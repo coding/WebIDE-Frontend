@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import * as Tab from '../Tab'
 import {
+  PANE_UPDATE,
   PANE_INITIALIZE,
   PANE_UNSET_COVER,
   PANE_RESIZE,
@@ -10,86 +11,114 @@ import {
   PANE_SPLIT,
   PANE_SPLIT_WITH_KEY
 } from './actions'
+const debounced = _.debounce(function (func) { func() }, 50)
 
-// removeSingleChildedInternalNode 是为了避免无限级嵌套的 views.length === 1 出现
-// i.e. {views: [{ views: [ {views: [ content ]} ]}]}
-// 以上实际只需要 {views: [ content ]} 即可表达，中间的 wrapper 无用。
-//
-// 这个 func 做的就是干掉中间无用的 wrapper
-// 使得 outermostWrapper.views = innerMostWrapper.views && return outermostWrapper;
-const removeSingleChildedInternalNode = (view, originalWrapper) => {
-  if (view.views && view.views.length === 1) {
-    let lonelyItem = view.views[0]
-    if (typeof lonelyItem === 'string') { // then spawn tab group
-      if (originalWrapper) {
-        let _view = view
-        view = originalWrapper
-        view.views = _view.views
-      }
-      return view
+const Pane = (paneConfig, parent) => {
+  const defaults = {
+    id: _.uniqueId('pane_view_'),
+    flexDirection: 'row',
+    size: 100,
+    views: [],
+    parentId: '',
+  }
+
+  const pane = { ...defaults, ...paneConfig }
+
+  if (parent) pane.parentId = (typeof parent === 'string') ? parent : parent.id
+  return pane
+}
+
+const rootPane = Pane({
+  id: 'pane_view_1',
+  flexDirection: 'row',
+  size: 100,
+  views: ['']
+})
+const defaultState = {
+  panes: {
+    [rootPane.id]: rootPane
+  },
+  rootPaneId: rootPane.id
+}
+
+const getPaneById = (state, id) => state.panes[id]
+const getParent = (state, pane) => state.panes[pane.parentId]
+const getNextSibling = (state, pane) => {
+  let parent = getParent(state, pane)
+  let nextSiblingId = parent.views[parent.views.indexOf(pane.id) + 1]
+  return state.panes[nextSiblingId]
+}
+
+const addSiblingAfterPane = (state, pane, siblingPane) => addSibling(state, pane, siblingPane, 1)
+const addSiblingBeforePane = (state, pane, siblingPane) => addSibling(state, pane, siblingPane, -1)
+const addSibling = (state, pane, siblingPane, indexOffset) => {
+  let parent = getParent(state, pane)
+  let atIndex = parent.views.indexOf(pane.id) + indexOffset
+  parent.views = [...parent.views].splice(atIndex, 0, siblingPane.id)
+
+  return {
+    ...state,
+    panes: {
+      ...state.panes,
+      [parent.id]: {...parent},
+      [siblingPane.id]: siblingPane
     }
-    return removeSingleChildedInternalNode(lonelyItem, view)
-  } else {
-    if (originalWrapper) {
-      let _view = view
-      view = originalWrapper
-      view.views = _view.views
-    }
-    return view
   }
 }
 
-
-class Pane {
-  constructor (viewConfig, parent) {
-    viewConfig = removeSingleChildedInternalNode(viewConfig)
-    const { id, flexDirection, size } = viewConfig
-    this.id = id || _.uniqueId('pane_view_')
-    this.flexDirection = flexDirection || 'row'
-    this.size = size || 100
-
-    if (parent) {
-      this.parentId = parent.id
-    } else {
-      this.isRoot = true
-      Pane.root = this
+export default handleActions({
+  [PANE_UPDATE]: (state, action) => {
+    const { paneId, tabGroupId } = action.payload
+    let pane = getPaneById(state, paneId)
+    pane = {...pane, views: [tabGroupId]}
+    return {
+      ...state,
+      panes: {
+        ...state.panes,
+        [pane.id]: pane
+      }
     }
+  },
 
-    if (Array.isArray(viewConfig.views)) {
-      this.views = viewConfig.views.map(_viewConfig => {
-        if (typeof _viewConfig === 'string') {
-          if (!_viewConfig.startsWith('tab_group_')) {
-            _viewConfig = _.uniqueId('tab_group_')
-          }
-          return _viewConfig
-        } else {
-          return new Pane(_viewConfig, this)
-        }
-      })
+  [PANE_RESIZE]: (state, action) => {
+    const {sectionId, dX, dY} = action.payload
+    let leftPane = getPaneById(state, sectionId)
+    let rightPane = getNextSibling(state, leftPane)
+    let leftPaneDom = document.getElementById(leftPane.id)
+    let rightPaneDom = document.getElementById(rightPane.id)
+
+    var r, rA, rB
+    if (getParent(state, leftPane).flexDirection === 'column') {
+      r = dY
+      rA = leftPaneDom.offsetHeight
+      rB = rightPaneDom.offsetHeight
     } else {
-      this.views = []
+      r = dX
+      rA = leftPaneDom.offsetWidth
+      rB = rightPaneDom.offsetWidth
     }
+    leftPane.size = leftPane.size * (rA - r) / rA
+    rightPane.size = rightPane.size * (rB + r) / rB
 
-    Pane.indexes[this.id] = this
-  }
+    leftPaneDom.style.flexGrow = leftPane.size
+    rightPaneDom.style.flexGrow = rightPane.size
 
-  addSibling (siblingPane, toTheLeft) {
-    let parent = getPaneById(this.parentId)
-    let atIndex = parent.views.indexOf(this) + 1
-    if (toTheLeft === -1) atIndex -= 1
-    parent.views.splice(atIndex, 0, siblingPane)
-  }
+    // @coupled: trigger resize of views ace editor
+    debounced(function () {
+      leftPaneDom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+      rightPaneDom.querySelectorAll('[data-ace-resize]').forEach(
+        editorDOM => editorDOM.$ace_editor.resize()
+      )
+    })
+    return state
+  },
 
-  addChild (childPane, atIndex) {
-    if (typeof atIndex !== 'number')  atIndex = this.views.length
-    this.views.splice(atIndex, 0, childPane)
-  }
-  /**
-   * Mutate a pane instance's "views" property to reflect a splitted pane view
-   * @param {string} splitDirection
-   * @param {string} splitCount
-   */
-  splitToDirection (splitDirection) {
+  [PANE_SPLIT]: (state, action) => {
+    const { paneId, splitDirection } = action.payload
+    let pane = getPaneById(state, paneId)
+    /* ----- */
     let flexDirection, newPane
     if (splitDirection === 'center') return this
     switch (splitDirection) {
@@ -104,141 +133,43 @@ class Pane {
       default:
         throw 'Pane.splitToDirection method requires param "splitDirection"'
     }
-    this.flexDirection = flexDirection
 
-    let parent = getPaneById(this.parentId)
+    let parent = getParent(state, pane)
     // If flexDirection is same as parent's,
     // then we can simply push the newly splitted view into parent's "views" array
     if (parent && parent.flexDirection === flexDirection) {
-      newPane = new Pane({views: ['']}, parent)
+      newPane = Pane({views: ['']}, parent)
+      action.meta.resolve(newPane)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        this.addSibling(newPane)
+        return addSiblingAfterPane(state, pane, newPane)
       } else {
-        this.addSibling(newPane, -1)
+        return addSiblingBeforePane(state, pane, newPane)
       }
+
     // If flexDirection is NOT the same as parent's,
     // that means we should spawn a child pane
     } else {
-      let curTabGroupId = this.views.pop()
-      this.views.push(new Pane({views:[curTabGroupId]}, this))
-
-      newPane = new Pane({views: ['']}, this)
+      pane = {...pane, flexDirection}
+      let curTabGroupId = pane.views.pop()
+      let spawnKid = Pane({views: [curTabGroupId]}, pane)
+      newPane = Pane({views: ['']}, pane)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        this.addChild(newPane, 1)
+        pane.views = [spawnKid.id, newPane.id]
       } else {
-        this.addChild(newPane, 0)
+        pane.views = [newPane.id, spawnKid.id]
       }
-    }
-
-    return newPane
-  }
-
-  splitPane (splitCount=this.views.length+1, flexDirection=this.flexDirection) {
-    this.flexDirection = flexDirection
-    if (splitCount <= 0) splitCount = 1
-    if (splitCount === this.views.length) return []
-
-    let tabGroupIdsToBeMerged = []
-    if (splitCount > this.views.length) {
-      // add pane split
-      if (this.views.length === 1) {
-        let currentTabGroupId = this.views.pop()
-        this.views.push(new Pane({views:[currentTabGroupId]}))
-        while (--splitCount) this.views.push(new Pane({views:['']}))
-      } else {
-        while (splitCount > this.views.length) {
-          this.views.push(new Pane({views:['']}))
+      return {
+        ...state,
+        panes: {
+          ...state.panes,
+          [newPane.id]: newPane,
+          [pane.id]: pane,
+          [spawnKid.id]: spawnKid,
         }
       }
-    } else {
-      // merge pane split
-      while (splitCount < this.views.length) {
-        let viewToBeMerged = this.views.pop()
-        tabGroupIdsToBeMerged = tabGroupIdsToBeMerged.concat(viewToBeMerged.getTabGroupIds())
-      }
     }
-
-    // removeSingleChildedInternalNode, and even the size
-    if (this.views.length === 1) {
-      let lonelyItem = this.views[0]
-      if (lonelyItem.views && typeof lonelyItem.views[0] === 'string') {
-        this.views = lonelyItem.views
-      }
-    } else {
-      let baseSize = this.views[0]['size']
-      this.views.forEach( view => view.size = baseSize )
-    }
-
-    // handle tab groups merging
-    let tabGroupIdToMergeInto = this.views[this.views.length - 1]
-    if (typeof tabGroupIdToMergeInto !== 'string') {
-      tabGroupIdToMergeInto = tabGroupIdToMergeInto.getTabGroupIds()[0]
-    }
-
-    // then we're going to merge tab group from right to left
-    return [tabGroupIdToMergeInto].concat(tabGroupIdsToBeMerged)
   }
-
-  getTabGroupIds () {
-    return this.views.reduceRight((acc, view) => {
-      if (typeof view === 'string') {
-        return acc.concat(view)
-      } else {
-        return acc.concat(view.getTabGroupIds())
-      }
-    }, [])
-  }
-}
-
-
-Pane.indexes = {}
-const getPaneById = (id) => Pane.indexes[id]
-const debounced = _.debounce(function (func) { func() }, 50)
-
-const _state = {
-  root: new Pane({
-    id: 'pane_view_1',
-    flexDirection: 'row',
-    size: 100,
-    views: ['']
-  })
-}
-export default handleActions({
-  [PANE_RESIZE]: (state, action) => {
-    const {sectionId, dX, dY} = action.payload
-    let section_A = getPaneById(sectionId)
-    let parent = getPaneById(section_A.parentId)
-    let section_B = parent.views[parent.views.indexOf(section_A) + 1]
-    let section_A_Dom = document.getElementById(section_A.id)
-    let section_B_Dom = document.getElementById(section_B.id)
-    var r, rA, rB
-    if (parent.flexDirection === 'column') {
-      r = dY
-      rA = section_A_Dom.offsetHeight
-      rB = section_B_Dom.offsetHeight
-    } else {
-      r = dX
-      rA = section_A_Dom.offsetWidth
-      rB = section_B_Dom.offsetWidth
-    }
-    section_A.size = section_A.size * (rA - r) / rA
-    section_B.size = section_B.size * (rB + r) / rB
-
-    section_A_Dom.style.flexGrow = section_A.size
-    section_B_Dom.style.flexGrow = section_B.size
-
-    // @coupled: trigger resize of children ace editor
-    debounced(function () {
-      section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-      section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-    })
-    return state
-  }
-}, _state)
+}, defaultState)
 
 
 export const PaneCrossReducer = handleActions({
@@ -289,18 +220,6 @@ export const PaneCrossReducer = handleActions({
       return { ...allStates,
         PaneState: {root: new Pane(pane)},
       }
-    }
-  },
-
-  [PANE_SPLIT]: (allStates, action) => {
-    var {PaneState, TabState} = allStates
-    var {paneId, splitDirection} = action.payload
-    var pane = getPaneById(paneId)
-    var newPane = pane.splitToDirection(splitDirection)
-    action.meta.resolve(newPane)
-
-    return { ...allStates,
-      PaneState: {root: new Pane(Pane.root)}
     }
   }
 })
