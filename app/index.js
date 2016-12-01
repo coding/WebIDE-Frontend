@@ -15,6 +15,7 @@ if (spaceKey) {
 }
 
 window.i18n = createI18n
+window.extensions = {}
 
 const app = React.createElement(Root)
 render(app, document.getElementById('root'))

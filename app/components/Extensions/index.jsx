@@ -1,39 +1,78 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import * as actions from './actions'
 
 
 class ExtensionsView extends Component {
-  getRemoteExtensions () {
-    return <div>remote_extensions_lists</div>
+  static proptypes = {
+    localExtensions: PropTypes.array,
+    remoteExtensions: PropTypes.array,
+    disabledExtensions: PropTypes.array,
+    actions: PropTypes.object,
   }
-  getEnabledExtensions () {
-    return <div>enalbed_extensions_lists</div>
+  componentWillMount () {
+    this.props.actions.fetchExtensionsLists()
+    this.props.actions.updateExtensionCache()
   }
-  getDisabledExtensions () {
-    return <div>disabled_extensions_lists</div>
+  createRemoteExtensions (data) {
+    return Object.keys(data)
+    .map(extension => (
+      <div style={{ display: 'flex' }}>
+        <p>名字： {data[extension].name}</p>
+        <p>描述： {data[extension].desc}</p>
+        {data[extension].hasDownloaded ? null : (
+          <button onClick={() => this.props.actions.fetchExtensionByName(extension)}>
+          下载并安装
+          </button>
+        )}
+      </div>
+    ))
+  }
+  createEnabledExtensions (data) {
+    return Object.keys(data)
+    .map(extension => (
+      <div style={{ display: 'flex' }}>
+        <p>名字： {data[extension].name}</p>
+        <p>描述： {data[extension].desc}</p>
+        <button onClick={() => this.props.actions.uninstallExtensionByName(extension)}>禁用</button>
+      </div>
+    ))
+  }
+  createDisabledExtensions (data) {
+    return data.map(extension => (
+      <div style={{ display: 'flex' }}>
+        <p>名字: {extension}</p>
+        <button onClick={() => this.props.actions.installLocalExtension(extension)}>启用</button>
+      </div>
+    ))
   }
   render () {
-    const remoteExtensions = this.getRemoteExtensions()
-    const enabledExtensions = this.getEnabledExtensions()
-    const disabledExtensions = this.getDisabledExtensions()
+    const { localExtensions, remoteExtensions, disabledExtensions, cacheExtensions } = this.props
+    const newRemoteExtensions = Object.keys(remoteExtensions).reduce((p, v) => {
+      p[v] = { ...remoteExtensions[v], hasDownloaded: Object.keys(cacheExtensions).includes(v) }
+      return p
+    }, {})
+    const createRemoteExtensions = this.createRemoteExtensions(newRemoteExtensions)
+    const createEnabledExtensions = this.createEnabledExtensions(localExtensions)
+    const createDisabledExtensions = this.createDisabledExtensions(disabledExtensions)
+
     return (
       <div name="container">
         <div name="remote_extensions">
-          <div name="remote_extensions_manager">
-            <button>下载插件</button>
-            <button>获取插件列表</button>
-          </div>
           <div name="remote_extensions_lists">
-            {remoteExtensions}
+            <p>the remote extensions</p>
+            {createRemoteExtensions}
           </div>
         </div>
         <div name="extensions_lists">
           <div name="enabled_extensions">
-            {enabledExtensions}
+            <p>the enabled extensions</p>
+            {createEnabledExtensions}
           </div>
           <div name="disabled_extensions">
-            {disabledExtensions}
+            <p>the disabled extensions</p>
+            {createDisabledExtensions}
           </div>
         </div>
       </div>
@@ -42,8 +81,14 @@ class ExtensionsView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  // const localExtensions = state.extensions
+  console.log('stat', state)
+  const { localExtensions, remoteExtensions, cacheExtensions } = state.ExtensionState
+  const disabledExtensions = Object.keys(cacheExtensions)
+  .filter(key => !Object.keys(localExtensions).includes(key))
+  return { localExtensions, remoteExtensions, disabledExtensions, cacheExtensions }
+  // const cache
 }
 
+const mapDispatchToProps = dispatch => ({ actions: bindActionCreators(actions, dispatch) })
 
-export default connect(mapStateToProps)(ExtensionsView)
+export default connect(mapStateToProps, mapDispatchToProps)(ExtensionsView)

@@ -4,25 +4,38 @@ import { handleActions } from 'redux-actions'
 import {
   FETCH_EXTENSIONS_LISTS_SUCCESS,
   INSTALL_LOCAL_EXTENSION,
-  UNINSTALL_LOCAL_EXTENSION
+  UNINSTALL_LOCAL_EXTENSION,
+  UPDATE_EXTENSION_CACHE
 } from './actions'
 
 const defaultState = {
   localExtensions: {},
-  remoteExtensions: {}
+  remoteExtensions: {},
+  cacheExtensions: {}
 }
 
 export default handleActions({
-  [FETCH_EXTENSIONS_LISTS_SUCCESS]: (state, { data }) => ({
+  [UPDATE_EXTENSION_CACHE]: (state) => {
+    const cache = window.localStorage
+    const cacheExtensions = Object.keys(cache)
+    .filter(key => key.includes('extension'))
+    .reduce((p, v) => {
+      p[[v.split('_')[1]]] = cache[v]
+      return p
+    }, {})
+    return ({ ...state, cacheExtensions })
+  },
+  [FETCH_EXTENSIONS_LISTS_SUCCESS]: (state, { payload: { data } }) => ({
     ...state,
     remoteExtensions: data
   }),
-  [INSTALL_LOCAL_EXTENSION]: (state, { name, data }) => ({
+  [INSTALL_LOCAL_EXTENSION]: (state, { payload: { name = '', data = {} } = {} }) => ({
     ...state,
     localExtensions: { ...state.localExtensions, [name]: data }
   }),
-  [UNINSTALL_LOCAL_EXTENSION]: (state, { name }) => {
-    delete state.localExtensions[name]
-    return state
+  [UNINSTALL_LOCAL_EXTENSION]: (state, { payload: name }) => {
+    const newState = Object.assign(state)
+    delete newState.localExtensions[name]
+    return { ...state, ...newState }
   }
 }, defaultState)
