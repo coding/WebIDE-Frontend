@@ -55,6 +55,14 @@ const store = createStore(finalReducer, enhancer)
 window.getState = store.getState
 
 
+window.addEventListener('storage', (e) => {
+  console.log(e)
+  if (e.key.includes('extension')) {
+    store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
+  }
+})
+
+
 store.subscribe(() => {
   const updateStoreToRemoteInterval = 10000
 
