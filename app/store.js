@@ -17,9 +17,12 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
+import ExtensionReducer from './components/Extensions/reducer'
+
 
 const combinedReducers = combineReducers({
   MarkdownEditorState: MarkdownEditorReducer,
+  ExtensionState: ExtensionReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
