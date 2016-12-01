@@ -25,7 +25,7 @@ export const TAB_UPDATE = 'TAB_UPDATE'
 export const updateTab = createAction(TAB_UPDATE, tabConfig => tabConfig)
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
-export const updateTabFlags = (tabId, flag, value=true) => {
+export const updateTabFlags = (tabId, flag, value = true) => {
   if (!tabId) return
   var payload = { tabId }
 
@@ -48,7 +48,13 @@ export const moveTabToGroup = createAction(TAB_MOVE_TO_GROUP,
   (tabId, groupId) => ({tabId, groupId})
 )
 
+export const TAB_MOVE_TO_PANE = 'TAB_MOVE_TO_PANE'
+export const moveTabToPane = createAction(TAB_MOVE_TO_PANE,
+  (tabId, paneId) => ({tabId, paneId})
+)
+
 export const TAB_INSERT_AT = 'TAB_INSERT_AT'
 export const insertTabAt = createAction(TAB_INSERT_AT,
   (tabId, beforeTabId) => ({tabId, beforeTabId})
 )
+

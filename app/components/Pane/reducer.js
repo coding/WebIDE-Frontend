@@ -23,7 +23,6 @@ const Pane = (paneConfig, parent) => {
   }
 
   const pane = { ...defaults, ...paneConfig }
-
   if (parent) pane.parentId = (typeof parent === 'string') ? parent : parent.id
   return pane
 }
@@ -120,7 +119,11 @@ export default handleActions({
     let pane = getPaneById(state, paneId)
     /* ----- */
     let flexDirection, newPane
-    if (splitDirection === 'center') return this
+    if (splitDirection === 'center') {
+      // no pane arrangement changed, so no state change
+      action.meta.resolve(pane.id)
+      return state
+    }
     switch (splitDirection) {
       case 'right':
       case 'left':
@@ -139,7 +142,7 @@ export default handleActions({
     // then we can simply push the newly splitted view into parent's "views" array
     if (parent && parent.flexDirection === flexDirection) {
       newPane = Pane({views: ['']}, parent)
-      action.meta.resolve(newPane)
+      action.meta.resolve(newPane.id)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
         return addSiblingAfterPane(state, pane, newPane)
       } else {
@@ -158,6 +161,7 @@ export default handleActions({
       } else {
         pane.views = [newPane.id, spawnKid.id]
       }
+      action.meta.resolve(newPane.id)
       return {
         ...state,
         panes: {
@@ -221,6 +225,6 @@ export const PaneCrossReducer = handleActions({
         PaneState: {root: new Pane(pane)},
       }
     }
-  }
+  },
 })
 

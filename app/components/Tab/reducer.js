@@ -11,6 +11,7 @@ import {
   TAB_UPDATE,
   TAB_UPDATE_FLAGS,
   TAB_MOVE_TO_GROUP,
+  TAB_MOVE_TO_PANE,
   TAB_INSERT_AT
 } from './actions'
 
@@ -111,6 +112,33 @@ const activateTabGroup = (state, tabGroup) => {
   }
 }
 
+const moveTabToGroup = (state, tab, tabGroup) => {
+  let sourceTab = tab.asMutable()
+  // 1. remove it from original group
+  let nextState = state
+  if (sourceTab.isActive) {
+    let nextTab = getNextSiblingOfTab(state, sourceTab)
+    nextState = activateTab(state, nextTab)
+  }
+  nextState = removeTab(nextState, sourceTab)
+
+  // 2. add it to new group
+  let targetTabGroup = tabGroup
+  const tabIds = targetTabGroup.tabIds
+  if (sourceTab.isActive) sourceTab.set('isActive', false)
+  sourceTab.set('tabGroupId', targetTabGroup.id)
+  targetTabGroup = targetTabGroup.set('tabIds', tabIds.push(sourceTab.id))
+
+  sourceTab = sourceTab.asImmutable()
+  nextState = {
+    ...nextState,
+    tabGroups: nextState.tabGroups.set(targetTabGroup.id, targetTabGroup),
+    tabs: nextState.tabs.set(sourceTab.id, sourceTab)
+  }
+
+  return activateTab(nextState, sourceTab)
+}
+
 const TabReducer = handleActions({
   [TAB_CREATE]: (state, action) => {
     const { groupId, tab: tabConfig } = action.payload
@@ -187,30 +215,7 @@ const TabReducer = handleActions({
 
   [TAB_MOVE_TO_GROUP]: (state, action) => {
     const {tabId, groupId} = action.payload
-    let sourceTab = state.tabs.get(tabId).asMutable()
-    // 1. remove it from original group
-    let nextState = state
-    if (sourceTab.isActive) {
-      let nextTab = getNextSiblingOfTab(state, sourceTab)
-      nextState = activateTab(state, nextTab)
-    }
-    nextState = removeTab(nextState, sourceTab)
-
-    // 2. add it to new group
-    let targetTabGroup = nextState.tabGroups.get(groupId)
-    const tabIds = targetTabGroup.tabIds
-    if (sourceTab.isActive) sourceTab.set('isActive', false)
-    sourceTab.set('tabGroupId', targetTabGroup.id)
-    targetTabGroup = targetTabGroup.set('tabIds', tabIds.push(tabId))
-
-    sourceTab = sourceTab.asImmutable()
-    nextState = {
-      ...nextState,
-      tabGroups: nextState.tabGroups.set(targetTabGroup.id, targetTabGroup),
-      tabs: nextState.tabs.set(sourceTab.id, sourceTab)
-    }
-
-    return activateTab(nextState, sourceTab)
+    return moveTabToGroup(state, state.tabs.get(tabId), state.tabGroups.get(groupId))
   },
 
   [TAB_INSERT_AT]: (state, action) => {
@@ -241,6 +246,21 @@ const TabReducer = handleActions({
 
 export default (state, action) => (__state__ = TabReducer(state, action))
 
+export const TabCrossReducer = handleActions({
+  [TAB_MOVE_TO_PANE]: (allState, action) => {
+    const { PaneState, TabState } = allState
+    const { tabId, paneId } = action.payload
+    const pane = PaneState.panes[paneId]
+
+    const tab = TabState.tabs.get(tabId)
+    const tabGroup = TabState.tabGroups.get(pane.views[0])
+    return {
+      ...allState,
+      TabState: moveTabToGroup(TabState, tab, tabGroup)
+    }
+  }
+})
+
 /**
  * The state shape:
  *
@@ -250,18 +270,18 @@ export default (state, action) => (__state__ = TabReducer(state, action))
           id:         <String>
           type:       <String>
           isActive:   <Boolean>
-          tabs: {
-            [tab_id <String>]: {
-              id:       <String>
-              flags:    <Object>
-              icon:     <String>
-              title:    <String>
-              isActive: <Boolean>
-              path:     <String>
-              content:  <String>
-              groupId:  <String>
-            }
-          }
+        }
+      },
+      tabs: {
+        [tab_id <String>]: {
+          id:       <String>
+          flags:    <Object>
+          icon:     <String>
+          title:    <String>
+          isActive: <Boolean>
+          path:     <String>
+          content:  <String>
+          groupId:  <String>
         }
       }
     }
