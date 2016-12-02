@@ -42,7 +42,7 @@ class ExtensionsView extends Component {
   createDisabledExtensions (data) {
     return data.map(extension => (
       <div style={{ display: 'flex' }}>
-        <p>名字: {extension}</p>
+         <p>名字: {extension}</p>
         <button onClick={() => this.props.actions.installLocalExtension(extension)}>启用</button>
       </div>
     ))
@@ -81,7 +81,6 @@ class ExtensionsView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('stat', state)
   const { localExtensions, remoteExtensions, cacheExtensions } = state.ExtensionState
   const disabledExtensions = Object.keys(cacheExtensions)
   .filter(key => !Object.keys(localExtensions).includes(key))

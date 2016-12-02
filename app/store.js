@@ -18,6 +18,7 @@ import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
 import ExtensionReducer from './components/Extensions/reducer'
+import ExtensionsReducer from './utils/extensionReducers'
 
 
 const combinedReducers = combineReducers({
@@ -37,7 +38,7 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, ExtensionsReducer)
 const finalReducer = composeReducers(crossReducers, combinedReducers)
 
 // const store = createStore(finalReducer, compose(
@@ -48,7 +49,6 @@ window.getState = store.getState
 
 
 window.addEventListener('storage', (e) => {
-  console.log(e)
   if (e.key.includes('extension')) {
     store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
   }
