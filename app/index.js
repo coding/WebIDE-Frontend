@@ -6,7 +6,7 @@ import qs from 'querystring'
 import Root from './containers/Root'
 import './styles/main.styl'
 import config from './config'
-import { createI18n } from './utils'
+import { createI18n, getExtensions } from './utils'
 
 const {spaceKey} = qs.parse(window.location.hash.slice(1))
 if (spaceKey) {
@@ -16,6 +16,7 @@ if (spaceKey) {
 
 window.i18n = createI18n
 window.extensions = {}
+window.extension = getExtensions
 
 const app = React.createElement(Root)
 render(app, document.getElementById('root'))

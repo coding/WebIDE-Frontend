@@ -1,24 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-const dic = {
-  sideBar: ['./aaa']
-}
 
 const mapStateToProps = (state) => ({
-  extensions: state.extensions
+  ExtensionState: state.ExtensionState,
 })
 
-export const getExtensions = (template = []) => {
-  const addonInsertComponent = ({ extensions }) => {
+export const getExtensions = (template = [], ...values) => {
+  const addonInsertComponent = ({ ExtensionState, ...others }) => {
     const packages = window.extensions
     const addonName = template[0]
-    if (packages[addonName]) {
-      return packages[extensions[addonName]] || null
-    }
-    return null
+    const dom = packages[addonName]
+    if (!dom || !ExtensionState.localExtensions[addonName]) return null
+    return React.createElement(dom, others)
   }
-  return React.createElement(connect(mapStateToProps)(addonInsertComponent))
+  return React.createElement(connect(mapStateToProps)(addonInsertComponent), ...values)
 }
 
 // addon`sideBar`

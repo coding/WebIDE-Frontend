@@ -1,4 +1,3 @@
-import React from 'react'
 import 'isomorphic-fetch'
 import { createAction } from 'redux-actions'
 import { getLocalExtensionByName } from '../../utils/extensions'
@@ -24,14 +23,14 @@ export const installLocalExtension = createAction(INSTALL_LOCAL_EXTENSION, name 
   const tmpExtension = eval(installScript)
   if (!tmpExtension || !installScript) return
   // install in window
-  window.extensions[name] = React.createElement(tmpExtension.app)
-  return { name, data: tmpExtension.config }
+  window.extensions[name] = tmpExtension.app
+  const { app, ...otherProps } = tmpExtension
+  return { name, data: otherProps }
 })
 
 export const uninstallExtensionByName = createAction(UNINSTALL_LOCAL_EXTENSION, name => name)
 
 
-// export const fetchExtensionByNameSuccess = createAction(FETCH_EXTENSION_BY_NAME_SUCCESS, data => data)
 // get list
 export const fetchExtensionsLists = () => (dispatch) => {
   dispatch({ type: FETCH_EXTENSIONS_LISTS_REQUEST })

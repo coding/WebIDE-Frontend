@@ -15,6 +15,7 @@ const defaultState = {
 }
 
 export default handleActions({
+  // update cache
   [UPDATE_EXTENSION_CACHE]: (state) => {
     const cache = window.localStorage
     const cacheExtensions = Object.keys(cache)
@@ -34,7 +35,7 @@ export default handleActions({
     localExtensions: { ...state.localExtensions, [name]: data }
   }),
   [UNINSTALL_LOCAL_EXTENSION]: (state, { payload: name }) => {
-    const newState = Object.assign(state)
+    const newState = Object.assign({}, state)
     delete newState.localExtensions[name]
     return { ...state, ...newState }
   }
