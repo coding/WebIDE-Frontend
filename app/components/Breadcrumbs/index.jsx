@@ -36,7 +36,7 @@ const Crumb = ({node}) => {
     <div className='crumb'>
       {SHOW_ICON?<i className={node.isDir ? 'fa fa-folder-o' : 'fa fa-file-o'} style={{marginRight:'5px'}}></i>:null}
       <div className='crumb-node-name'>{node.name}</div>
-      <div className='crumb-node-name'>{extension`feature1${props}`}</div>
+      <div className='crumb-node-name'>{extension`siderBar${props}`}</div>
     </div>
   )
 }
