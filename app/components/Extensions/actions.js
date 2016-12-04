@@ -43,6 +43,11 @@ export const fetchExtensionsLists = () => (dispatch) => {
 }
 
 export const fetchExtensionByName = (name) => (dispatch) => {
+  if (localStorage.getItem(`extension_${name}`)) {
+    dispatch(updateExtensionCache())
+    dispatch({ type: FETCH_EXTENSION_BY_NAME_SUCCESS })
+    return dispatch(installLocalExtension(name))
+  }
   dispatch({ type: FETCH_EXTENSION_BY_NAME_REQUEST })
   fetch(`http://localhost:8083/extension?name=${name}`)
   .then(response => response.text())
