@@ -11,7 +11,8 @@ import {
 const defaultState = {
   localExtensions: {},
   remoteExtensions: {},
-  cacheExtensions: {}
+  cacheExtensions: {},
+  extensionsState: {}
 }
 
 export default handleActions({
