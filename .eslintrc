@@ -27,8 +27,7 @@
     }
   },
   "globals": {
-    "i18n": false
+    "i18n": false,
+    "extension": false
   }
 }
-
-

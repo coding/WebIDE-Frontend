@@ -17,9 +17,13 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
+import ExtensionReducer from './components/Extensions/reducer'
+import ExtensionsReducer from './utils/extensionReducers'
+
 
 const combinedReducers = combineReducers({
   MarkdownEditorState: MarkdownEditorReducer,
+  ExtensionState: ExtensionReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
@@ -34,7 +38,7 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, ExtensionsReducer)
 const finalReducer = composeReducers(crossReducers, combinedReducers)
 
 // const store = createStore(finalReducer, compose(
@@ -44,7 +48,15 @@ const store = createStore(finalReducer, applyMiddleware(thunkMiddleware))
 window.getState = store.getState
 
 
+window.addEventListener('storage', (e) => {
+  if (e.key.includes('extension')) {
+    store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
+  }
+})
+
+
 store.subscribe(() => {
+  window.store = store
   const updateStoreToRemoteInterval = 10000
 
   const stateFromStorage = localStorage.getItem('snapshot')

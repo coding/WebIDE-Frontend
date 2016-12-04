@@ -31,10 +31,12 @@ Breadcrumbs = connect(state => {
 
 const SHOW_ICON = false
 const Crumb = ({node}) => {
+  const props = { name: node.name }
   return (
     <div className='crumb'>
       {SHOW_ICON?<i className={node.isDir ? 'fa fa-folder-o' : 'fa fa-file-o'} style={{marginRight:'5px'}}></i>:null}
       <div className='crumb-node-name'>{node.name}</div>
+      <div className='crumb-node-name'>{extension`siderBar${props}`}</div>
     </div>
   )
 }
