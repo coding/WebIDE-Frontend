@@ -64,6 +64,7 @@ window.addEventListener('storage', (e) => {
 
 
 store.subscribe(() => {
+  window.store = store
   const updateStoreToRemoteInterval = 10000
 
   const stateFromStorage = localStorage.getItem('snapshot')

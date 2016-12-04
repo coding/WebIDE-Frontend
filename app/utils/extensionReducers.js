@@ -1,6 +1,4 @@
-export default (state = {
-  ExtensionsState: {}
-}, action) => {
+export default (state, action) => {
   const {
     ExtensionState: { localExtensions = {} },
   } = state
