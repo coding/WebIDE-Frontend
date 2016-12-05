@@ -23,7 +23,7 @@ class TabContainer extends Component {
     const { tabGroupId } = this.state
     const tabGroup = tabGroups.get(tabGroupId)
     if (!tabGroup) createGroup(tabGroupId, defaultContentType)
-    updatePane({ paneId: containingPaneId, tabGroupId })
+    updatePane({ id: containingPaneId, tabGroupId })
   }
 
   componentDidMount () {

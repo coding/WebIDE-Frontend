@@ -1,30 +1,41 @@
 /* @flow weak */
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
-import * as Tab from '../Tab'
 import {
   PANE_UPDATE,
-  PANE_INITIALIZE,
-  PANE_UNSET_COVER,
   PANE_RESIZE,
-  PANE_CONFIRM_RESIZE,
   PANE_SPLIT,
   PANE_SPLIT_WITH_KEY
 } from './actions'
-const debounced = _.debounce(function (func) { func() }, 50)
+import {
+  getPaneById,
+  getParent,
+  getNextSibling,
+} from './selectors'
+const debounced = _.debounce(func => func(), 50)
 
-const Pane = (paneConfig, parent) => {
+/*
+Pane.propTypes = {
+  id: PropTypes.string,
+  flexDirection: PropTypes.string,
+  size: PropTypes.number,
+  parentId: PropTypes.string,
+  views: PropTypes.arrayOf(PropTypes.string),
+  tabGroupId: PropTypes.string
+}
+*/
+
+const Pane = (paneConfig) => {
   const defaults = {
     id: _.uniqueId('pane_view_'),
     flexDirection: 'row',
     size: 100,
     views: [],
     parentId: '',
+    tabGroupId: '',
   }
 
-  const pane = { ...defaults, ...paneConfig }
-  if (parent) pane.parentId = (typeof parent === 'string') ? parent : parent.id
-  return pane
+  return { ...defaults, ...paneConfig }
 }
 
 const rootPane = Pane({
@@ -38,14 +49,6 @@ const defaultState = {
     [rootPane.id]: rootPane
   },
   rootPaneId: rootPane.id
-}
-
-const getPaneById = (state, id) => state.panes[id]
-const getParent = (state, pane) => state.panes[pane.parentId]
-const getNextSibling = (state, pane) => {
-  let parent = getParent(state, pane)
-  let nextSiblingId = parent.views[parent.views.indexOf(pane.id) + 1]
-  return state.panes[nextSiblingId]
 }
 
 const addSiblingAfterPane = (state, pane, siblingPane) => addSibling(state, pane, siblingPane, 1)
@@ -64,6 +67,7 @@ const addSibling = (state, pane, siblingPane, indexOffset) => {
     }
   }
 }
+
 
 export default handleActions({
   [PANE_UPDATE]: (state, action) => {
@@ -103,7 +107,7 @@ export default handleActions({
     rightPaneDom.style.flexGrow = rightPane.size
 
     // @coupled: trigger resize of views ace editor
-    debounced(function () {
+    debounced(() => {
       leftPaneDom.querySelectorAll('[data-ace-resize]').forEach(
         editorDOM => editorDOM.$ace_editor.resize()
       )
@@ -141,7 +145,7 @@ export default handleActions({
     // If flexDirection is same as parent's,
     // then we can simply push the newly splitted view into parent's "views" array
     if (parent && parent.flexDirection === flexDirection) {
-      newPane = Pane({views: ['']}, parent)
+      newPane = Pane({views: [''], parentId: parent.id})
       action.meta.resolve(newPane.id)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
         return addSiblingAfterPane(state, pane, newPane)
@@ -154,8 +158,8 @@ export default handleActions({
     } else {
       pane = {...pane, flexDirection}
       let curTabGroupId = pane.views.pop()
-      let spawnKid = Pane({views: [curTabGroupId]}, pane)
-      newPane = Pane({views: ['']}, pane)
+      let spawnKid = Pane({views: [curTabGroupId], parentId: pane.id})
+      newPane = Pane({views: [''], parentId: pane})
       if (splitDirection === 'right' || splitDirection === 'bottom') {
         pane.views = [spawnKid.id, newPane.id]
       } else {
@@ -171,24 +175,131 @@ export default handleActions({
           [spawnKid.id]: spawnKid,
         }
       }
+      // let { _state, _pane, _childPane } = spawnChildInPane(state, pane)
+      // newPane = Pane({views: ['']}, _pane)
+      // action.meta.resolve(newPane.id)
+      // if (splitDirection === 'right' || splitDirection === 'bottom') {
+      //   return addSiblingAfterPane(_state, _childPane, newPane)
+      // } else {
+      //   return addSiblingBeforePane(_state, _childPane, newPane)
+      // }
     }
   }
 }, defaultState)
 
+const convertContentChildToPane = (state, paneId) => {
+  if (typeof paneId !== 'string') paneId = paneId.id
+  let pane = state.panes[paneId]
+
+  if (pane.views.length > 1) return state
+  if (pane.views.length === 0 ) throw `Abnormal pane! Pane.id=${pane.id} has zero children`
+
+  const contentId = pane.views[0]
+  if (contentId.startsWith('pane_view')) return state
+
+  const childPane = Pane({views: [contentId], parentId: pane.id})
+  pane = Pane({...pane, views: [childPane.id]})
+  return {
+    ...state,
+    panes: {
+      ...state.panes,
+      [pane.id]: pane,
+      [childPane.id]: childPane
+    }
+  }
+}
+
+const addChildToPane = (state, paneId, numToAdd=1) => {
+  if (numToAdd <= 0) return state
+  if (typeof paneId !== 'string') paneId = paneId.id
+  let pane = state.panes[paneId]
+  let nextState
+
+  if (pane.views.length === 1 && !pane.views[0].startsWith('pane_view')) {
+    nextState = convertContentChildToPane(state, paneId)
+  } else {
+    nextState = {...state, panes: {...state.panes}}
+  }
+
+  pane = nextState.panes[paneId]
+  while (numToAdd--) {
+    let childPane = Pane({views: [''], parentId: pane.id})
+    pane.views.push(childPane.id)
+    nextState.panes[childPane.id] = childPane
+  }
+  nextState.panes[pane.id] = {...pane}
+  return nextState
+}
+
+const addPanes = (state, paneId) => {}
+const mergePanes = (state, paneId) => {}
+
+const splitPane = (state, pane, splitCount) => {
+  if (splitCount === pane.views.length) return []
+  let tabGroupIdsToBeMerged = []
+  let panesToBeRemoved = []
+  let nextState
+
+  if (splitCount > pane.views.length) { // add panes
+    let increment = splitCount - pane.views.length
+    nextState = addChildToPane(state, pane.id, increment)
+  } else { // merge panes
+    while (splitCount < pane.views.length) {
+      let paneToBeMerged = pane.views.pop()
+      panesToBeRemoved.concat(paneToBeMerged)
+      tabGroupIdsToBeMerged = tabGroupIdsToBeMerged.concat(getTabGroupIds(state, paneToBeMerged))
+    }
+  }
+
+  // removeSingleChildedInternalNode, and even the size
+  if (pane.views.length === 1) {
+    // let lonelyItem = pane.views[0]
+    // if (lonelyItem.views && typeof lonelyItem.views[0] === 'string') {
+    //   pane.views = lonelyItem.views
+    // }
+  } else {
+    let baseSize = state.panes[pane.views[0]]['size']
+    pane.views.forEach( paneId => state.panes[paneId].size = baseSize )
+  }
+
+  // handle tab groups merging
+  let tabGroupIdToMergeInto = pane.views[pane.views.length - 1]
+  if (tabGroupIdToMergeInto.startsWith('pane_view')) {
+    tabGroupIdToMergeInto = getTabGroupIds(state, tabGroupIdToMergeInto)[0]
+  }
+
+  // then we're going to merge tab group from right to left
+  return {
+    tabGroupIds: [tabGroupIdToMergeInto].concat(tabGroupIdsToBeMerged),
+    panesToBeRemoved
+  }
+
+}
+
+const getTabGroupIds = (state, paneId) => {
+  if (typeof paneId !== 'string') paneId = paneId.id
+  let pane = state.panes[paneId]
+  return pane.views.reduceRight((acc, viewId) => {
+    if (viewId.startsWith('tab_')) {
+      return acc.concat(viewId)
+    } else {
+      return acc.concat(getTabGroupIds(state, state.panes[viewId]))
+    }
+  }, [])
+}
 
 export const PaneCrossReducer = handleActions({
   [PANE_SPLIT_WITH_KEY]: (allStates, action) => {
-    var {PaneState, TabState} = allStates
-    var {pane, splitCount, flexDirection} = action.payload
-    if (!pane) pane = PaneState.root
+    const { PaneState, TabState } = allStates
+    const { splitCount, flexDirection } = action.payload
+    let pane = PaneState.panes[PaneState.rootPaneId]
 
     if (splitCount === pane.views.length &&
       flexDirection === pane.flexDirection) {
       return allStates
     }
 
-    pane = new Pane(pane)
-    var tabGroupIds = pane.splitPane(splitCount, flexDirection)
+    var tabGroupIds = splitPane(PaneState, pane, splitCount)
     if (tabGroupIds.length > 1) {
       var tabGroupIdToMergeInto = tabGroupIds[0]
       var tabGroupIdsToBeMerged = tabGroupIds.slice(1)
