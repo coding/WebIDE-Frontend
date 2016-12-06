@@ -21,12 +21,12 @@ class PaneAxis extends Component {
   render () {
     const { pane } = this.props
     let Subviews
-    if (pane.views.length === 1 && !Array.isArray(pane.views[0].views)) {
-      Subviews = <Pane paneId={pane.id} parentFlexDirection={pane.flexDirection} />
-    } else {
+    if (pane.views.length) {
       Subviews = pane.views.map(paneId =>
         <Pane key={paneId} paneId={paneId} parentFlexDirection={pane.flexDirection} />
       )
+    } else {
+      Subviews = <Pane paneId={pane.id} parentFlexDirection={pane.flexDirection} />
     }
 
     return (

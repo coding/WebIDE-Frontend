@@ -9,22 +9,22 @@ import PaneAxis from './PaneAxis'
 
 const _Pane = (props) => {
   const { pane, parentFlexDirection, dispatch } = props
-  const { id, views, size, display } = pane
 
-  const style = { flexGrow: size, display }
+  const style = { flexGrow: pane.size, display: pane.display }
   return (
-    <div id={id}
+    <div id={pane.id}
       style={style}
       className={cx('pane-container', parentFlexDirection)}
       data-droppable="PANE"
-    > {views.length > 1
+    > {pane.views.length // priortize `pane.views` over `pane.content`
       ? <PaneAxis pane={pane} />
       : <div className="pane">
-          <TabContainer tabGroupId={views[0]} containingPaneId={pane.id}
+          <TabContainer tabGroupId={pane.content.id} containingPaneId={pane.id}
             defaultContentClass={EditorWrapper} defaultContentType="editor"
           />
-        </div>}
-      <ResizeBar sectionId={id} dispatch={dispatch} parentFlexDirection={parentFlexDirection} />
+        </div>
+      }
+      <ResizeBar sectionId={pane.id} dispatch={dispatch} parentFlexDirection={parentFlexDirection} />
     </div>
   )
 }
