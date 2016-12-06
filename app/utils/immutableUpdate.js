@@ -29,4 +29,10 @@ const removeKey = (keyToRemove, original) => {
 update.extend('$removeKey', removeKey)
 update.extend('$delete', removeKey)
 
+update.extend('$map', (fn, original) => {
+  if (_.isArray(original)) return _.map(original, fn)
+  if (_.isObject(original)) return _.mapValues(original, fn)
+  return original
+})
+
 export default update

@@ -41,7 +41,9 @@ let enhancer = compose(
   applyMiddleware(thunkMiddleware),
   window.devToolsExtension ? window.devToolsExtension({
     serializeState: (key, value) => {
-      return key === 'DOMNode' ? {} : value
+      if (key === 'editor') return {}
+      if (key === 'DOMNode') return {}
+      return value
     }
   }) : f => f
 )

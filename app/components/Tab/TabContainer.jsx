@@ -21,7 +21,7 @@ class TabContainer extends Component {
   componentWillMount () {
     const { tabGroups, createGroup, updatePane, defaultContentType, containingPaneId } = this.props
     const { tabGroupId } = this.state
-    const tabGroup = tabGroups.get(tabGroupId)
+    const tabGroup = tabGroups[tabGroupId]
     if (!tabGroup) createGroup(tabGroupId, defaultContentType)
     if (containingPaneId) updatePane({ id: containingPaneId, tabGroupId })
   }
@@ -31,7 +31,7 @@ class TabContainer extends Component {
   }
 
   render () {
-    const tabGroup = this.props.tabGroups.get(this.state.tabGroupId)
+    const tabGroup = this.props.tabGroups[this.state.tabGroupId]
     if (!tabGroup) return null
     return (
       <div className='tab-container'>

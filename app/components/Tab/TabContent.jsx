@@ -20,14 +20,14 @@ const _TabContent = ({tabs, defaultContentClass}) => {
 }
 
 _TabContent.propTypes = {
-  tabs: PropTypes.object,
+  tabs: PropTypes.array,
   removeTab: PropTypes.func,
   activateTab: PropTypes.func,
   dragStart: PropTypes.func,
 }
 
 const TabContent = connect((state, { tabIds }) => ({
-  tabs: tabIds.map(tabId => state.TabState.tabs.get(tabId)),
+  tabs: tabIds.map(tabId => state.TabState.tabs[tabId]),
 }), dispatch => ({
   removeTab: (tabId) => dispatch(TabActions.removeTab(tabId)),
   activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),

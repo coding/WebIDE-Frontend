@@ -17,7 +17,7 @@ class _TabBar extends Component {
 
   static propTypes = {
     tabGroupId: PropTypes.string,
-    tabIds: PropTypes.object,
+    tabIds: PropTypes.array,
     isDraggedOver: PropTypes.bool,
     addTab: PropTypes.func,
     closePane: PropTypes.func,
@@ -34,7 +34,7 @@ class _TabBar extends Component {
     const tabLabelsItem = tabs && tabs.map(tab => ({
       name: tab.title || 'untitled',
       command: e => this.props.activateTab(tab.id)
-    })).toJS()
+    }))
 
     if (tabLabelsItem.length) {
       return baseItems.concat({name: '-'}, tabLabelsItem)
@@ -81,7 +81,7 @@ class _TabBar extends Component {
 }
 
 const TabBar = connect((state, { tabIds, tabGroupId, containingPaneId }) => ({
-  tabs: tabIds.map(tabId => state.TabState.tabs.get(tabId)),
+  tabs: tabIds.map(tabId => state.TabState.tabs[tabId]),
   isDraggedOver: state.DragAndDrop.meta
     ? state.DragAndDrop.meta.tabBarTargetId === `tab_bar_${tabGroupId}`
     : false,
@@ -136,7 +136,7 @@ const TabLabel = connect((state, { tabId }) => ({
   isDraggedOver: state.DragAndDrop.meta
     ? state.DragAndDrop.meta.tabLabelTargetId === `tab_label_${tabId}`
     : false,
-  tab: state.TabState.tabs.get(tabId),
+  tab: state.TabState.tabs[tabId],
 }), dispatch => ({
   removeTab: (tabId) => dispatch(TabActions.removeTab(tabId)),
   activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),
