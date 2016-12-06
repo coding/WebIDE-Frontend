@@ -253,7 +253,7 @@ export const TabCrossReducer = handleActions({
     const pane = PaneState.panes[paneId]
 
     const tab = TabState.tabs.get(tabId)
-    const tabGroup = TabState.tabGroups.get(pane.views[0])
+    const tabGroup = TabState.tabGroups.get(pane.content.id)
     return {
       ...allState,
       TabState: moveTabToGroup(TabState, tab, tabGroup)
