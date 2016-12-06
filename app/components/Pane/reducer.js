@@ -6,12 +6,14 @@ import {
   PANE_UPDATE,
   PANE_RESIZE,
   PANE_SPLIT,
-  PANE_SPLIT_WITH_KEY
+  PANE_SPLIT_WITH_KEY,
+  closePane
 } from './actions'
 import {
   getPaneById,
   getParent,
   getNextSibling,
+  getPanesWithPosMap,
 } from './selectors'
 const debounced = _.debounce(func => func(), 50)
 
@@ -177,6 +179,15 @@ export default handleActions({
         }
       })
     }
+  },
+
+  [closePane]: (state, action) => {
+    const paneId = action.payload
+    const parent = getParent(state, paneId)
+
+    return update(state, {
+      panes: {[parent.id]: {views: {$without: paneId}}}
+    })
   }
 }, defaultState)
 

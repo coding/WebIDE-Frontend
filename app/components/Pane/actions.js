@@ -56,3 +56,6 @@ export const startResize = (e, sectionId) => {
 
 export const PANE_UPDATE = 'PANE_UPDATE'
 export const updatePane = createAction(PANE_UPDATE)
+
+export const PANE_CLOSE = 'PANE_CLOSE'
+export const closePane = createAction(PANE_CLOSE)
