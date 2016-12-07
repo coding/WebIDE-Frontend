@@ -33,19 +33,9 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
     } else {
       api.readFile(node.path)
         .then(data => {
-          // get the last active group of type 'editor'
-          var lastActiveEditorTabGroup, lastActiveOrder, TabState
-
-          lastActiveOrder = 0
-          TabState = getState().TabState
-          lastActiveEditorTabGroup = Tab.selectors.getActiveTabGroup(TabState)
-
-          if (lastActiveEditorTabGroup.type === 'terminal') {
-            lastActiveEditorTabGroup = TabState.tabGroups.find(tabGroup => tabGroup.type === 'editor')
-          }
-
-          dispatch(Tab.actions.createTabInGroup(lastActiveEditorTabGroup.id, {
+          dispatch(Tab.actions.createTab({
             id: _.uniqueId('tab_'),
+            type: 'editor',
             title: node.name,
             path: node.path,
             content: {

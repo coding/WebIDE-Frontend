@@ -31,13 +31,9 @@ const typeDetect = (title, types) => {
   return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
 }
 
-const EditorWrapper = ({
-  tab
-}, { i18n }) => {
-  const {
-    title,
-    content: { body = '', path = '' } = {}
-  } = tab
+const EditorWrapper = ({ tab }, { i18n }) => {
+  const title = tab.title
+  const { body = '', path = '' } = tab.content ? tab.content : {}
   let type = 'default'
   if (typeDetect(title, 'md')) {
     type = 'editorWithPreview'

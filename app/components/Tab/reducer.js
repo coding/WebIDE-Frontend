@@ -4,6 +4,7 @@ import { update, Model } from '../../utils'
 import { handleActions } from 'redux-actions'
 import {
   TAB_CREATE,
+  TAB_CREATE_IN_GROUP,
   TAB_REMOVE,
   TAB_ACTIVATE,
   TAB_CREATE_GROUP,
@@ -34,29 +35,30 @@ let __state__ = defaultState
 
 const Tab = Model({
   id: '',
+  type: 'editor',
   flags: {},
   icon: 'fa fa-folder-',
   title: 'untitled',
   path: '',
-  content: '',
+  content: null,
   tabGroupId: ''
 })
 
 const TabGroup = Model({
   id: '',
   tabIds: [],
-  type: '', // default content type
+  type: 'editor', // default content type
   activeTabId: ''
 })
 
-const activateTabGroup = (state, tabGroup) => {
+const _activateTabGroup = (state, tabGroup) => {
   if (isActive(state, tabGroup)) return state
   return update(state, {
     activeTabGroupId: {$set: tabGroup.id}
   })
 }
 
-const activateTab = (state, tab) => {
+const _activateTab = (state, tab) => {
   if (!tab) return state
   const tabGroup = getTabGroupOfTab(state, tab)
   if (isActive(state, tab) && isActive(state, tabGroup)) return state
@@ -64,14 +66,14 @@ const activateTab = (state, tab) => {
   let nextState = update(state, {
     tabGroups: {[tabGroup.id]: {activeTabId: {$set: tab.id}}}
   })
-  return activateTabGroup(nextState, tabGroup)
+  return _activateTabGroup(nextState, tabGroup)
 }
 
-const removeTab = (state, tab) => {
+const _removeTab = (state, tab) => {
   let nextState = state
   if (isActive(state, tab)) { /* activateNextTab */
     let nextTab = getNextSiblingOfTab(state, tab)
-    if (nextTab) nextState = activateTab(state, nextTab)
+    if (nextTab) nextState = _activateTab(state, nextTab)
   }
 
   return update(nextState, {
@@ -84,9 +86,9 @@ const removeTab = (state, tab) => {
   })
 }
 
-const moveTabToGroup = (state, tab, tabGroup, insertIndex = tabGroup.tabIds.length) => {
+const _moveTabToGroup = (state, tab, tabGroup, insertIndex = tabGroup.tabIds.length) => {
   // 1. remove it from original group
-  let nextState = removeTab(state, tab)
+  let nextState = _removeTab(state, tab)
   if (tabGroup.id === tab.tabGroupId) tabGroup = nextState.tabGroups[tabGroup.id]
   // 2. add it to new group
   tab = update(tab, {tabGroupId: {$set: tabGroup.id}})
@@ -98,42 +100,55 @@ const moveTabToGroup = (state, tab, tabGroup, insertIndex = tabGroup.tabIds.leng
     tabs: {[tab.id]: {$set: tab}}
   })
 
-  return activateTab(nextState, tab)
+  return _activateTab(nextState, tab)
+}
+
+const _createTabInGroup = (state, tabConfig, tabGroup) => {
+  tabGroup = state.tabGroups[tabGroup.id]
+  const newTab = Tab({
+    id: _.uniqueId('tab_'),
+    tabGroupId: tabGroup.id,
+    ...tabConfig
+  })
+  let nextState = update(state, {
+    tabs: {[newTab.id]: {$set: newTab}},
+    tabGroups: {[tabGroup.id]: {tabIds: {$push: [newTab.id]}}}
+  })
+  return _activateTab(nextState, newTab)
 }
 
 const TabReducer = handleActions({
 
-  [TAB_CREATE]: (state, action) => {
-    const { groupId, tab: tabConfig } = action.payload
-    const newTab = Tab({
-      id: _.uniqueId('tab_'),
-      tabGroupId: groupId,
-      ...tabConfig
-    })
-
-    let tabGroup = state.tabGroups[groupId]
-    let nextState = update(state, {
-      tabs: {[newTab.id]: {$set: newTab}},
-      tabGroups: {[tabGroup.id]: {tabIds: {$push: [newTab.id]}}}
-    })
-    nextState = activateTab(nextState, newTab)
-
-    return nextState
+  [TAB_CREATE]:  (state, action) => {
+    const tabConfig = action.payload
+    // here we try our best to put the tab into the right group
+    // first we try the current active group, check if it's of same type
+    // if not, we try to find the group of same type as tab,
+    // if can find none, well, we fallback to the current active group we found
+    let tabGroup = getActiveTabGroup(state)
+    if (tabGroup.type !== tabConfig.type) {
+      let _tabGroup = _(state.tabGroups).find(g => g.type === tabConfig.type)
+      if (_tabGroup) tabGroup = _tabGroup
+    }
+    return _createTabInGroup(state, tabConfig, tabGroup)
   },
 
+  [TAB_CREATE_IN_GROUP]: (state, action) => {
+    const { groupId, tab: tabConfig } = action.payload
+    let tabGroup = state.tabGroups[groupId]
+    return _createTabInGroup(state, tabConfig, tabGroup)
+  },
 
   [TAB_REMOVE]: (state, action) => {
     const tab = state.tabs[action.payload]
-    return removeTab(state, tab)
+    return _removeTab(state, tab)
   },
-
 
   [TAB_ACTIVATE]: (state, action) => {
     const tab = state.tabs[action.payload]
-    let nextState = activateTab(state, tab)
+    let nextState = _activateTab(state, tab)
     return nextState
   },
-
 
   [TAB_CREATE_GROUP]: (state, action) => {
     const {groupId, defaultContentType} = action.payload
@@ -141,10 +156,9 @@ const TabReducer = handleActions({
     let nextState = update(state,{
       tabGroups: {[newTabGroup.id]: {$set: newTabGroup}}
     })
-    nextState = activateTabGroup(nextState, newTabGroup)
+    nextState = _activateTabGroup(nextState, newTabGroup)
     return nextState
   },
-
 
   [TAB_REMOVE_GROUP]: (state, action) => {
     // 还有 group active 的问题
@@ -153,14 +167,12 @@ const TabReducer = handleActions({
     })
   },
 
-
   [TAB_UPDATE]: (state, action) => {
     const tabConfig = action.payload
     return update(state, {
       tabs: {[tabConfig.id]: {$merge: tabConfig}}
     })
   },
-
 
   [TAB_UPDATE_FLAGS]: (state, action) => {
     const {tabId, flags} = action.payload
@@ -171,19 +183,17 @@ const TabReducer = handleActions({
     })
   },
 
-
   [TAB_MOVE_TO_GROUP]: (state, action) => {
     const {tabId, groupId} = action.payload
-    return moveTabToGroup(state, state.tabs[tabId], state.tabGroups[groupId])
+    return _moveTabToGroup(state, state.tabs[tabId], state.tabGroups[groupId])
   },
-
 
   [TAB_INSERT_AT]: (state, action) => {
     const { tabId, beforeTabId } = action.payload
     const sourceTab = state.tabs[tabId]
     const targetTabGroup = getTabGroupOfTab(state, state.tabs[beforeTabId])
     const insertIndex = targetTabGroup.tabIds.indexOf(beforeTabId)
-    return moveTabToGroup(state, sourceTab, targetTabGroup, insertIndex)
+    return _moveTabToGroup(state, sourceTab, targetTabGroup, insertIndex)
   }
 }, defaultState)
 
@@ -199,7 +209,7 @@ export const TabCrossReducer = handleActions({
 
     return {
       ...allState,
-      TabState: moveTabToGroup(TabState, tab, tabGroup)
+      TabState: _moveTabToGroup(TabState, tab, tabGroup)
     }
   }
 })
@@ -208,24 +218,25 @@ export const TabCrossReducer = handleActions({
  * The state shape:
  *
  *  TabState: {
+      activeTabGroupId: PropTypes.string,
       tabGroups: {
-        [tab_group_id <String>]: {
-          id:         <String>
-          type:       <String>
-          isActive:   <Boolean>
+        [tab_group_id]: {
+          id:     PropTypes.string,
+          type:   PropTypes.string,
+          tabIds: PropTypes.arrayOf(PropTypes.string),
+          activeTabId: PropTypes.string
         }
       },
       tabs: {
-        [tab_id <String>]: {
-          id:       <String>
-          flags:    <Object>
-          icon:     <String>
-          title:    <String>
-          isActive: <Boolean>
-          path:     <String>
-          content:  <String>
-          groupId:  <String>
+        [tab_id]: {
+          id:     PropTypes.string,
+          flags:  PropTypes.object,
+          icon:   PropTypes.string,
+          title:  PropTypes.string,
+          path:     PropTypes.string,
+          content:  PropTypes.object,
+          tabGroupId:  PropTypes.string
         }
       }
     }
- */
+*/

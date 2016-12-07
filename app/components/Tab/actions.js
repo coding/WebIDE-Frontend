@@ -4,8 +4,10 @@ import { createAction } from 'redux-actions'
 export const TAB_DISSOLVE_GROUP = 'TAB_DISSOLVE_GROUP'
 
 export const TAB_CREATE = 'TAB_CREATE'
-export const createTabInGroup = createAction(TAB_CREATE, (groupId, tab) => ({groupId, tab}))
-export const createTab = createAction(TAB_CREATE, tab => ({tab}))
+export const createTab = createAction(TAB_CREATE, tab => tab)
+
+export const TAB_CREATE_IN_GROUP = 'TAB_CREATE_IN_GROUP'
+export const createTabInGroup = createAction(TAB_CREATE_IN_GROUP, (groupId, tab) => ({groupId, tab}))
 
 export const TAB_REMOVE = 'TAB_REMOVE'
 export const removeTab = createAction(TAB_REMOVE, tabId => tabId)
