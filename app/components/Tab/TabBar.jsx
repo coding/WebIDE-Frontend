@@ -94,7 +94,7 @@ const TabBar = connect((state, { tabIds, tabGroupId, containingPaneId }) => ({
 )(_TabBar)
 
 
-const _TabLabel = ({tab, isDraggedOver, removeTab, activateTab, dragStart}) => {
+const _TabLabel = ({tab, isActive, isDraggedOver, removeTab, activateTab, dragStart}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -105,7 +105,7 @@ const _TabLabel = ({tab, isDraggedOver, removeTab, activateTab, dragStart}) => {
 
   return (
     <li className={cx('tab-label', {
-      active: tab.isActive,
+      active: isActive,
       modified: tab.flags.modified
     })}
       id={`tab_label_${tab.id}`}
@@ -132,12 +132,14 @@ _TabLabel.propTypes = {
   dragStart: PropTypes.func,
 }
 
-const TabLabel = connect((state, { tabId }) => ({
-  isDraggedOver: state.DragAndDrop.meta
+const TabLabel = connect((state, { tabId }) => {
+  const tab = state.TabState.tabs[tabId]
+  const isActive = state.TabState.tabGroups[tab.tabGroupId].activeTabId === tabId
+  const isDraggedOver = state.DragAndDrop.meta
     ? state.DragAndDrop.meta.tabLabelTargetId === `tab_label_${tabId}`
-    : false,
-  tab: state.TabState.tabs[tabId],
-}), dispatch => ({
+    : false
+  return { isDraggedOver, tab, isActive }
+}, dispatch => ({
   removeTab: (tabId) => dispatch(TabActions.removeTab(tabId)),
   activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),
   dragStart: (dragEventObj) => dispatch(dragStart(dragEventObj)),

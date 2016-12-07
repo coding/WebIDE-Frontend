@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 export const getTabGroupOfTab = (state, tab) => state.tabGroups[tab.tabGroupId]
 
 export const getNextSiblingOfTab = (state, tab) => {
@@ -10,14 +8,24 @@ export const getNextSiblingOfTab = (state, tab) => {
   return state.tabs[nextTabId]
 }
 
-export const getActiveTabGroup = (state) => _(state.tabGroups).find(g => g.isActive)
+export const getActiveTabGroup = (state) => state.tabGroups[state.activeTabGroupId]
 
-export const getActiveTabOfTabGroup = (state, tabGroup) => {
-  return _(tabGroup.tabIds).map(tabId => state.tabs[tabId]).find(t => t.isActive)
-}
+export const getActiveTabOfTabGroup = (state, tabGroup) => state.tabs[tabGroup.activeTabId]
 
 export const getActiveTab = (state) => {
   let activeTabGroup = getActiveTabGroup(state)
   if (activeTabGroup) return getActiveTabOfTabGroup(state, activeTabGroup)
   return null
+}
+
+export const isActive = (state, tabOrTabGroup) => {
+  let tab, tabGroup
+  if (typeof tabOrTabGroup.tabGroupId === 'string') { // is a tab
+    tab = tabOrTabGroup
+    tabGroup = state.tabGroups[tab.tabGroupId]
+    return tabGroup.activeTabId === tab.id
+  } else { // is a tabGroup
+    tabGroup = tabOrTabGroup
+    return state.activeTabGroupId === tabGroup.id
+  }
 }
