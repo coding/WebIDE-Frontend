@@ -26,6 +26,7 @@ export default class GitBranchWidget extends Component {
     const {current: currentBranch, local: localBranches, remote: remoteBranches} = this.props
     return (
       <div className='status-bar-menu-item' onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}>
+        <span>{extension`siderBar1${this.props}`}</span>
         <span>On Branches: {i18n`titleBar_01:=File`} {currentBranch}</span>
         { this.state.isActive ?
           <div style={{ display: 'flex', position: 'absolute', bottom: '30px', minWidth: '200px', right: '1px', flexDirection: 'column' }}>

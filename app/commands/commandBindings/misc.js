@@ -13,7 +13,9 @@ export default {
   'global:show_settings': c => {
     $d(Modal.showModal({type: 'Settings', position: 'center'}))
   },
-
+  'global:show_extensions': c => {
+    $d(Modal.showModal({type: 'Extensions', position: 'center'}))
+  },
   'modal:dismiss': (c) => {
     $d(Modal.dismissModal())
   }
