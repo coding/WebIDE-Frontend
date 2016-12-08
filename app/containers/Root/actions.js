@@ -8,11 +8,9 @@ export const INIT_STATE = 'INIT_STATE'
 // export const GET_REMOTE_STATE = 'GET_REMOTE_STATE'
 export const GET_REQUIRED_EXTENSIONS = 'GET_REQUIRED_EXTENSIONS'
 
-
 export const initState = () => (dispatch) => {
   // get extension by config name
   const { requiredExtensions = [] } = config
-  console.log('requiredExtension', requiredExtensions)
   requiredExtensions.forEach(name => {
     dispatch(fetchExtensionByName(name))
   })

@@ -1,6 +1,7 @@
 import 'isomorphic-fetch'
 import { createAction } from 'redux-actions'
 import { getLocalExtensionByName } from '../../utils/extensions'
+import config from '../../config'
 
 export const UPDATE_EXTENSION_CACHE = 'UPDATE_EXTENSION_CACHE'
 export const FETCH_EXTENSIONS_LISTS_REQUEST = 'FETCH_EXTENSIONS_LISTS_REQUEST'
@@ -20,12 +21,18 @@ export const fetchExtensionsListSuccess = createAction(FETCH_EXTENSIONS_LISTS_SU
 export const installLocalExtension = createAction(INSTALL_LOCAL_EXTENSION, name => {
   const installScript = getLocalExtensionByName(name)
   // install script
-  const tmpExtension = eval(installScript)
-  if (!tmpExtension || !installScript) return
-  // install in window
-  window.extensions[name] = tmpExtension.app
-  const { app, ...otherProps } = tmpExtension
-  return { name, data: otherProps }
+  let tmpExtension
+  try {
+    tmpExtension = eval(installScript)
+    if (!tmpExtension || !installScript) return
+    // install in window
+    window.extensions[name] = tmpExtension.app
+    const { app, ...otherProps } = tmpExtension
+    return { name, data: otherProps }
+  } catch (e) {
+    console.warn&&console.warn('Try install extension but fail, error message below:')
+    console.warn&&console.warn(e)
+  }
 })
 
 export const uninstallExtensionByName = createAction(UNINSTALL_LOCAL_EXTENSION, name => name)
@@ -34,7 +41,7 @@ export const uninstallExtensionByName = createAction(UNINSTALL_LOCAL_EXTENSION, 
 // get list
 export const fetchExtensionsLists = () => (dispatch) => {
   dispatch({ type: FETCH_EXTENSIONS_LISTS_REQUEST })
-  fetch('http://localhost:8083/extensions')
+  fetch(`${config.extensionServer}/extensions`)
   .then(response => response.json())
   .then(data => {
     dispatch(fetchExtensionsListSuccess(data))
@@ -49,9 +56,10 @@ export const fetchExtensionByName = (name) => (dispatch) => {
     return dispatch(installLocalExtension(name))
   }
   dispatch({ type: FETCH_EXTENSION_BY_NAME_REQUEST })
-  fetch(`http://localhost:8083/extension?name=${name}`)
+  fetch(`${config.extensionServer}/extension?name=${name}`)
   .then(response => response.text())
   .then(script => {
+    // should validate extension script here
     localStorage.setItem(`extension_${name}`, script)
     dispatch(updateExtensionCache())
     dispatch({ type: FETCH_EXTENSION_BY_NAME_SUCCESS })

@@ -31,10 +31,13 @@ export default handleActions({
     ...state,
     remoteExtensions: data
   }),
-  [INSTALL_LOCAL_EXTENSION]: (state, { payload: { name = '', data = {} } = {} }) => ({
-    ...state,
-    localExtensions: { ...state.localExtensions, [name]: data }
-  }),
+  [INSTALL_LOCAL_EXTENSION]: (state, { payload: { name = '', data = {} } = {} }) => {
+    if (!name) return state
+    return {
+      ...state,
+      localExtensions: { ...state.localExtensions, [name]: data }
+    }
+  },
   [UNINSTALL_LOCAL_EXTENSION]: (state, { payload: name }) => {
     const newState = Object.assign({}, state)
     delete newState.localExtensions[name]
