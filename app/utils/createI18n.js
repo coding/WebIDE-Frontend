@@ -1,3 +1,5 @@
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import * as languageDicPool from '../i18n'
 
 const separator = ':='
@@ -16,10 +18,6 @@ const getMappedDic = () => {
   return result
 }
 
-
-// 'hide ok|this is a test'  first is template and second is template
-// use case
-
 const translate = (origin = '', language) => {
   const dic = getMappedDic()
   const key = origin.split(separator)[0]
@@ -29,5 +27,24 @@ const translate = (origin = '', language) => {
   return dic[key][language] || ''
 }
 
-export default (language) => (template = [], ...values) =>
-  template.reduce((p, v, i) => `${p}${p ? values[i - 1] : ''}${translate(v, language)}`, '')
+const mapStateToProps = (state) => {
+  const languageToCode = {
+    English: 'en_US',
+    Chinese: 'zh_CN'
+  }
+  const languageSettings = state.SettingState.data.tabs.GENERAL.items
+  const languageSetting = languageSettings.find(e => e.name === 'Language')
+  const language = languageToCode[languageSetting.value]
+  return ({ language })
+}
+
+export default (template = [], ...values) => {
+  const translateComponent = ({ language }) => {
+    const translatedWords = template.reduce((p, v, i) => `${p}${p ? values[i - 1] : ''}${translate(v, language)}`, '')
+    return (<span>{translatedWords}</span>)
+  }
+  translateComponent.propTypes = {
+    language: PropTypes.string
+  }
+  return React.createElement(connect(mapStateToProps)(translateComponent))
+}

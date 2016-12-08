@@ -9,7 +9,7 @@ import * as GitActions from './actions'
 import Menu from '../Menu'
 
 @connect(state => state.GitState.branches,
-  dispatch => bindActionCreators(GitActions, dispatch) )
+  dispatch => bindActionCreators(GitActions, dispatch))
 export default class GitBranchWidget extends Component {
   constructor (props) {
     super(props)
@@ -26,7 +26,7 @@ export default class GitBranchWidget extends Component {
     const {current: currentBranch, local: localBranches, remote: remoteBranches} = this.props
     return (
       <div className='status-bar-menu-item' onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}>
-        <span>On branch: {currentBranch}</span>
+        <span>On Branches: {i18n`titleBar_01:=File`} {currentBranch}</span>
         { this.state.isActive ?
           <div style={{ display: 'flex', position: 'absolute', bottom: '30px', minWidth: '200px', right: '1px', flexDirection: 'column' }}>
             <div style={{ display: 'flex', zIndex: 502, backgroundColor: '#e1e1e1', height: '30px', justifyContent: 'center', alignItems: 'center' }}>

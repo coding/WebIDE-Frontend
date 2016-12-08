@@ -27,6 +27,9 @@
         "config": "webpack_configs/devServer.config.js"
       }
     }
+  },
+  "globals": {
+    "i18n": false
   }
 }
 

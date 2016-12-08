@@ -30,7 +30,6 @@ const startResize = (sectionId, e, actions) => {
         let dY = oY - e.pageY;
         oX = e.pageX; // reset x
         oY = e.pageY; // reset y
-        console.log('offset', dX, oX);
         actions.editorResize(sectionId, dX, dY);  
       }
 
