@@ -7,28 +7,36 @@ import {
   PANE_RESIZE,
   PANE_SPLIT,
   PANE_SPLIT_WITH_KEY,
-  closePane
+  PANE_CLOSE,
 } from './actions'
 import {
   getPaneById,
   getParent,
   getNextSibling,
+  getPrevSibling,
   getPanesWithPosMap,
 } from './selectors'
 const debounced = _.debounce(func => func(), 50)
 
-/*
-Pane.propTypes = {
-  id: PropTypes.string,
-  flexDirection: PropTypes.string,
-  size: PropTypes.number,
-  parentId: PropTypes.string,
-  views: PropTypes.arrayOf(PropTypes.string),
-  content: PropTypes.shape({
-    type: PropTypes.string,
-    id: PropTypes.string,
-  }),
-}
+/**
+ *  The state shape:
+ *
+ *  PaneState = {
+      rootPaneId: PropTypes.string,
+      panes: {
+        [pane_id]: {
+          id: PropTypes.string,
+          flexDirection: PropTypes.string,
+          size: PropTypes.number,
+          parentId: PropTypes.string,
+          views: PropTypes.arrayOf(PropTypes.string),
+          content: PropTypes.shape({
+            type: PropTypes.string,
+            id: PropTypes.string,
+          })
+        }
+      }
+    }
 */
 
 const Pane = (paneConfig) => {
@@ -61,9 +69,9 @@ const defaultState = {
   rootPaneId: rootPane.id
 }
 
-const addSiblingAfterPane = (state, pane, siblingPane) => addSibling(state, pane, siblingPane, 1)
-const addSiblingBeforePane = (state, pane, siblingPane) => addSibling(state, pane, siblingPane, -1)
-const addSibling = (state, pane, siblingPane, indexOffset) => {
+const _addSiblingAfterPane = (state, pane, siblingPane) => _addSibling(state, pane, siblingPane, 1)
+const _addSiblingBeforePane = (state, pane, siblingPane) => _addSibling(state, pane, siblingPane, -1)
+const _addSibling = (state, pane, siblingPane, indexOffset) => {
   let parent = getParent(state, pane)
   let atIndex = parent.views.indexOf(pane.id) + indexOffset
   parent.views.splice(atIndex, 0, siblingPane.id)
@@ -76,6 +84,24 @@ const addSibling = (state, pane, siblingPane, indexOffset) => {
   })
 }
 
+function _hoistSingleChild (state, parent) {
+  if (parent.views.length != 1) return state
+  const singleChild = state.panes[parent.views[0]]
+  if (singleChild.views.length > 0) {
+    parent = update(parent, {
+      views: {$set: singleChild.views},
+      flexDirection: {$set: singleChild.flexDirection}
+    })
+  } else {
+    parent = update(parent, {
+      views: {$set: []},
+      content: {$set: singleChild.content}
+    })
+  }
+  let nextState = update(state, {panes: {[parent.id]: {$set: parent}}})
+  nextState = update(nextState, {panes: {$delete: singleChild.id}})
+  return _hoistSingleChild(nextState, parent)
+}
 
 export default handleActions({
   [PANE_UPDATE]: (state, action) => {
@@ -152,9 +178,9 @@ export default handleActions({
       newPane = Pane({ parentId: parent.id, content: {type: 'tabGroup'} })
       action.meta.resolve(newPane.id)
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        return addSiblingAfterPane(state, pane, newPane)
+        return _addSiblingAfterPane(state, pane, newPane)
       } else {
-        return addSiblingBeforePane(state, pane, newPane)
+        return _addSiblingBeforePane(state, pane, newPane)
       }
 
     // If flexDirection is NOT the same as parent's,
@@ -181,14 +207,21 @@ export default handleActions({
     }
   },
 
-  [closePane]: (state, action) => {
-    const paneId = action.payload
-    const parent = getParent(state, paneId)
+  [PANE_CLOSE]: (state, action) => {
+    const { paneId, targetTabGroupId, sourceTabGroupId } = action.payload
+    let parent = getParent(state, paneId)
+    let nextState = state
 
-    return update(state, {
-      panes: {[parent.id]: {views: {$without: paneId}}}
-    })
-  }
+    // the `mergeTabGroups` part of the action is handled inside `Tab/reducer.js`
+    parent = update(parent, {views: {$without: paneId}})
+    nextState = update(nextState, {panes: {[parent.id]: {$set: parent}}})
+    nextState = _hoistSingleChild(nextState, parent)
+    parent = nextState.panes[parent.id]
+
+    nextState = update(nextState, {panes: {[parent.id]: {$set: parent}}})
+    nextState = update(nextState, {panes: {$delete: paneId}})
+    return nextState
+  },
 }, defaultState)
 
 

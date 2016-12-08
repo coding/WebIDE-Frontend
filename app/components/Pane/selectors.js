@@ -1,13 +1,50 @@
+import _ from 'lodash'
+
 const getPane = (state, pane) => typeof pane === 'object' ? state.panes[pane.id] : state.panes[pane]
 
 export const getPaneById = (state, id) => state.panes[id]
 export const getParent = (state, pane) => state.panes[getPane(state, pane).parentId]
-export const getNextSibling = (state, pane) => {
+
+const getLeafChild = (state, pane, firstOrLast = 'first') => {
   pane = getPane(state, pane)
-  const parent = getParent(state, pane)
-  const nextSiblingId = parent.views[parent.views.indexOf(pane.id) + 1]
-  return state.panes[nextSiblingId]
+  while (pane.views.length) {
+    let childPaneId = _[firstOrLast](pane.views)
+    if (pane.id === childPaneId) {throw 'Weird we got a pane that has itself as child...'}
+    pane = state.panes[childPaneId]
+    if (!pane) break
+  }
+  return pane
 }
+
+const getSibling = (state, pane, offset, traverse = false, lookAround = false) => {
+  pane = getPane(state, pane)
+  let lookAroundWorks = false
+  let parent = getParent(state, pane)
+  let siblingId = parent.views[parent.views.indexOf(pane.id) + offset]
+  if (!traverse) return state.panes[siblingId]
+
+  while (!siblingId) {
+    parent = getParent(state, pane)
+    if (!parent) break
+    siblingId = parent.views[parent.views.indexOf(pane.id) + offset]
+    if (!siblingId && lookAround) {
+      siblingId = parent.views[parent.views.indexOf(pane.id) - offset]
+      if (siblingId) {lookAroundWorks = true; console.log(siblingId)}
+    }
+    pane = parent
+  }
+
+  let firstOrLast
+  if (offset > 0) {
+    firstOrLast = lookAroundWorks ? 'last' : 'first'
+  } else {
+    firstOrLast = lookAroundWorks ? 'first' : 'last'
+  }
+  return getLeafChild(state, state.panes[siblingId], firstOrLast)
+}
+
+export const getNextSibling = (state, pane, traverse, lookAround) => getSibling(state, pane, 1, traverse, lookAround)
+export const getPrevSibling = (state, pane, traverse, lookAround) => getSibling(state, pane, -1, traverse, lookAround)
 
 const makePosPaneObj = (panes, pane, parent, accumulator) => {
   if (!parent.totalSize) {

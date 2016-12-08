@@ -1,4 +1,9 @@
 /* @flow weak */
+import {
+  getNextSibling,
+  getPrevSibling,
+} from './selectors'
+
 import { createAction } from 'redux-actions'
 import { promiseActionMixin } from '../../utils'
 
@@ -58,4 +63,24 @@ export const PANE_UPDATE = 'PANE_UPDATE'
 export const updatePane = createAction(PANE_UPDATE)
 
 export const PANE_CLOSE = 'PANE_CLOSE'
-export const closePane = createAction(PANE_CLOSE)
+export const closePane = (paneId) => {
+  return (dispatch, getState) => {
+    const { PaneState, TabState } = getState()
+    const content = PaneState.panes[paneId].content
+    let tabIds = TabState.tabGroups[content.id].tabIds
+    let siblingPane
+    if (tabIds.length) {
+      siblingPane = getPrevSibling(PaneState, paneId, true, true)
+      if (!siblingPane) siblingPane = getNextSibling(PaneState, paneId, true, true)
+    }
+
+    dispatch({
+      type: PANE_CLOSE,
+      payload: {
+        paneId: paneId,
+        sourceTabGroupId: content.id,
+        targetTabGroupId: siblingPane ? siblingPane.content.id : null
+      }
+    })
+  }
+}

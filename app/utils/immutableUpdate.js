@@ -17,11 +17,11 @@ const removeValue = (valueToRemove, original) => {
 update.extend('$removeValue', removeValue)
 update.extend('$without', removeValue)
 
-const removeKey = (keyToRemove, original) => {
+const removeKey = (keysToRemove, original) => {
   if (!_.isArray(original) && !_.isObject(original)) return original
-
+  if (!_.isArray(keysToRemove)) keysToRemove = [keysToRemove]
   return _.reduce(original, (result, value, key) => {
-    if (key !== keyToRemove) result[key] = value
+    if (!keysToRemove.includes(key)) result[key] = value
     return result
   }, _.isArray(original) ? [] : {})
 }

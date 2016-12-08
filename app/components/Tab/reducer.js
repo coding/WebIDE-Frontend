@@ -25,6 +25,32 @@ import {
   isActive,
 } from './selectors'
 
+/**
+ * The state shape:
+ *
+ *  TabState: {
+      activeTabGroupId: PropTypes.string,
+      tabGroups: {
+        [tab_group_id]: {
+          id:     PropTypes.string,
+          type:   PropTypes.string,
+          tabIds: PropTypes.arrayOf(PropTypes.string),
+          activeTabId: PropTypes.string
+        }
+      },
+      tabs: {
+        [tab_id]: {
+          id:     PropTypes.string,
+          flags:  PropTypes.object,
+          icon:   PropTypes.string,
+          title:  PropTypes.string,
+          path:     PropTypes.string,
+          content:  PropTypes.object,
+          tabGroupId:  PropTypes.string
+        }
+      }
+    }
+*/
 
 const defaultState = {
   tabGroups: {},
@@ -117,6 +143,28 @@ const _createTabInGroup = (state, tabConfig, tabGroup) => {
   return _activateTab(nextState, newTab)
 }
 
+const _mergeTabGroups = (state, targetTabGroupId, sourceTabGroupIds) => {
+  if (!_.isArray(sourceTabGroupIds)) sourceTabGroupIds = [sourceTabGroupIds]
+  let targetTabGroup = state.tabGroups[targetTabGroupId]
+  let sourceTabGroups = sourceTabGroupIds.map(id => state.tabGroups[id])
+  let tabIdsToBeMerged = sourceTabGroups.reduce((tabIds, tabGroup) => {
+    return tabIds.concat(tabGroup.tabIds)
+  }, [])
+  let targetTabIds = targetTabGroup.tabIds.concat(tabIdsToBeMerged)
+  let mergedTabs = tabIdsToBeMerged.reduce((tabs, tabId) => {
+    tabs[tabId] = {...state.tabs[tabId], tabGroupId: targetTabGroup.id}
+    return tabs
+  }, {})
+  let nextState = update(state, {
+    tabGroups: {
+      [targetTabGroup.id]: {tabIds: {$set: targetTabIds}}
+    },
+    tabs: {$merge: mergedTabs},
+    activeTabGroupId: {$set: targetTabGroup.id}
+  })
+  return update(nextState, {tabGroups: {$delete: sourceTabGroupIds}})
+}
+
 const TabReducer = handleActions({
 
   [TAB_CREATE]:  (state, action) => {
@@ -194,6 +242,12 @@ const TabReducer = handleActions({
     const targetTabGroup = getTabGroupOfTab(state, state.tabs[beforeTabId])
     const insertIndex = targetTabGroup.tabIds.indexOf(beforeTabId)
     return _moveTabToGroup(state, sourceTab, targetTabGroup, insertIndex)
+  },
+
+  'PANE_CLOSE': (state, action) => {
+    const { targetTabGroupId, sourceTabGroupId } = action.payload
+    if (!targetTabGroupId) return update(state, {tabGroups: {$delete: sourceTabGroupId}})
+    return _mergeTabGroups(state, targetTabGroupId, sourceTabGroupId)
   }
 }, defaultState)
 
@@ -213,30 +267,3 @@ export const TabCrossReducer = handleActions({
     }
   }
 })
-
-/**
- * The state shape:
- *
- *  TabState: {
-      activeTabGroupId: PropTypes.string,
-      tabGroups: {
-        [tab_group_id]: {
-          id:     PropTypes.string,
-          type:   PropTypes.string,
-          tabIds: PropTypes.arrayOf(PropTypes.string),
-          activeTabId: PropTypes.string
-        }
-      },
-      tabs: {
-        [tab_id]: {
-          id:     PropTypes.string,
-          flags:  PropTypes.object,
-          icon:   PropTypes.string,
-          title:  PropTypes.string,
-          path:     PropTypes.string,
-          content:  PropTypes.object,
-          tabGroupId:  PropTypes.string
-        }
-      }
-    }
-*/
