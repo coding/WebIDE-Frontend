@@ -8,31 +8,6 @@ import WorkspaceList from '../../components/Workspace'
 import { initState } from './actions'
 
 
-const codeTranslate = (language) => {
-  const dic = {
-    English: 'en_US',
-    Chinese: 'zh_CN'
-  }
-  if (Array.isArray(language)) {
-    const a = language.find(lan => {
-      if (lan.includes('-')) lan = lan.replace(/-/g, '_')
-      return Object.keys(dic).map(e => dic[e]).includes(lan)
-    })
-    return a.replace(/-/g, '_')
-  }
-  if (dic[language]) return dic[language]
-  if (Object.keys(dic).map(e => dic[e]).includes(language)) return language
-  return ''
-}
-
-const getDefaultLanguage = () => [
-  'languages',
-  'language',
-  'browserLanguage',
-  'systemLanguage',
-  'userLanguage']
-.reduce((p, v) => p || codeTranslate(window.navigator[v]), '')
-
 class Root extends Component {
   static proptypes = {
     dispatch: PropTypes.func
