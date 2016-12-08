@@ -6,7 +6,7 @@ import thunkMiddleware from 'redux-thunk'
 import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-import TabReducer from './components/Tab/reducer'
+import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
 import EditorReducer from './components/AceEditor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
@@ -34,13 +34,21 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer)
 const finalReducer = composeReducers(crossReducers, combinedReducers)
 
-// const store = createStore(finalReducer, compose(
-//   applyMiddleware(thunkMiddleware),
-//   window.devToolsExtension ? window.devToolsExtension() : f => f));
-const store = createStore(finalReducer, applyMiddleware(thunkMiddleware))
+let enhancer = compose(
+  applyMiddleware(thunkMiddleware),
+  window.devToolsExtension ? window.devToolsExtension({
+    serializeState: (key, value) => {
+      if (key === 'editor') return {}
+      if (key === 'DOMNode') return {}
+      return value
+    }
+  }) : f => f
+)
+// enhancer = applyMiddleware(thunkMiddleware)
+const store = createStore(finalReducer, enhancer)
 window.getState = store.getState
 
 

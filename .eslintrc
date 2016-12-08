@@ -13,6 +13,8 @@
     "no-return-assign": 0,
     "no-underscore-dangle": 0,
     "semi": ["error", "never"],
+    "one-var": 0,
+    "one-var-declaration-per-line": 0,
     "space-before-function-paren": ["error", {
       "anonymous": "always",
       "named": "always",
