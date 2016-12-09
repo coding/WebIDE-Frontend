@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
 import cx from 'classnames'
+import PanelAxis from './PanelAxis'
 import * as PanelActions from './actions'
 
 const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
@@ -59,58 +60,4 @@ ResizeBar = connect(null, (dispatch, ownProps) => {
   }
 })(ResizeBar)
 
-
-class PanelAxis extends Component {
-  static get propTypes () {
-    return {
-      id: PropTypes.string,
-      flexDirection: PropTypes.string,
-      views: PropTypes.array,
-      size: PropTypes.number
-    }
-  }
-
-  static get childContextTypes ()  {
-    return { onResizing: PropTypes.func }
-  }
-
-
-  getChildContext () {
-    return {
-      onResizing: this.onResizing.bind(this)
-    }
-  }
-
-  onResizing (listener) {
-    this.resizingListeners.push(listener)
-  }
-
-  constructor (props) {
-    super(props)
-    this.resizingListeners = []
-  }
-
-  render () {
-    var { views, flexDirection, className, style } = this.props
-    if (views.length === 1 && !Array.isArray(views[0].views) ) views = [this.props]
-    var Subviews = views.map( _props => {
-      return <Panel
-        key={_props.id}
-        id={_props.id}
-        views={_props.views}
-        size={_props.size}
-        flexDirection={_props.flexDirection}
-        parentFlexDirection={flexDirection}
-        resizingListeners={this.resizingListeners}
-        {..._props}
-      />
-    })
-
-    return (
-      <div className={cx('panel-axis', className)}
-        style={{flexDirection: flexDirection, ...style}}>{ Subviews }</div>
-    )
-  }
-}
-
-export default PanelAxis
+export default Panel

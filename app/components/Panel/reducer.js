@@ -3,7 +3,6 @@ import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import {
   PANEL_INITIALIZE,
-  PANEL_UNSET_COVER,
   PANEL_RESIZE,
   PANEL_CONFIRM_RESIZE
 } from './actions'

@@ -19,7 +19,9 @@
       "anonymous": "always",
       "named": "always",
       "asyncArrow": "ignore"
-    }]
+    }],
+    "jsx-quotes": ["error", "prefer-single"],
+    "react/jsx-first-prop-new-line": 0,
   },
   "settings": {
     "import/resolver": {

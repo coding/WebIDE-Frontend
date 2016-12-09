@@ -1,7 +1,7 @@
 /* @flow weak */
 import React, { Component } from 'react'
 import TopBar from '../components/TopBar'
-import Panels from './Panels'
+import PanelsContainer from '../components/Panel'
 import StatusBar from '../components/StatusBar'
 import Utilities from './Utilities'
 
@@ -24,7 +24,7 @@ class IDE extends Component {
     return (
       <div className='ide-container'>
         <TopBar />
-        <Panels />
+        <PanelsContainer />
         <StatusBar />
         <Utilities />
       </div>
