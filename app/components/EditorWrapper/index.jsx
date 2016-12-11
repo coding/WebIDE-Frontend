@@ -2,10 +2,12 @@ import React, { PropTypes } from 'react';
 import AceEditor from '../AceEditor';
 import MarkdownEditor from '../MarkdownEditor';
 import PictureEditor from '../PictureEditor';
+import CodeMirrorEditor from '../CodeMirrorEditor';
 
 
 
 const editors = {
+  CodeMirrorEditor,
   AceEditor,
   MarkdownEditor,
   PictureEditor,
@@ -19,7 +21,7 @@ const getEditorByName = ({
   path
 }) => {
   if (type === 'default') {
-    return React.createElement(editors.AceEditor, { tab });
+    return React.createElement(editors.CodeMirrorEditor, { tab });
   } else if (type === 'editorWithPreview') {
     return React.createElement(editors.MarkdownEditor, { content: body, tab });
   } else if (type === 'pictureEditor') {

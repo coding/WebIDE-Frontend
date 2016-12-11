@@ -1,6 +1,6 @@
 /* @flow weak */
 export default {
   projectName: '',
-  baseURL: '' || window.location.origin,
+  baseURL: 'http://localhost:3000' || window.location.origin,
   spaceKey: ''
 }

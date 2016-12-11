@@ -5,8 +5,7 @@ import { Provider, connect } from 'react-redux'
 import cx from 'classnames'
 import * as PanelActions from './actions'
 
-const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
-  var style = {
+const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => { var style = {
     flexGrow: size,
     display: _props.display
   }
