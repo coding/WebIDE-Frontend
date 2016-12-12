@@ -3,3 +3,4 @@ build
 **/*.md
 .idea/
 app/config.js
+*.bak
