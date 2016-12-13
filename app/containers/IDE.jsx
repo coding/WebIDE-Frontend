@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import PanelsContainer from '../components/Panel'
 import Utilities from './Utilities'
 
-import api from '../api'
+import api from '../backendAPI'
 import config from '../config'
 
 

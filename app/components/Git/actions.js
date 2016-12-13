@@ -1,6 +1,6 @@
 /* @flow weak */
 import _ from 'lodash'
-import api from '../../api'
+import api from '../../backendAPI'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, dismissModal, updateModal } from '../Modal/actions'
 import { createAction } from 'redux-actions'

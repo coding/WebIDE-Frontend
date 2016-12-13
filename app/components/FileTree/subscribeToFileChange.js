@@ -1,6 +1,6 @@
 /* @flow weak */
 import config from '../../config'
-import api from '../../api'
+import api from '../../backendAPI'
 import store, { dispatch } from '../../store'
 import * as FileTreeActions from './actions'
 

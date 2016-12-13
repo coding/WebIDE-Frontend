@@ -1,7 +1,7 @@
 /* @flow weak */
 import _ from 'lodash'
 import { createAction } from 'redux-actions'
-import api from '../../api'
+import api from '../../backendAPI'
 import * as Tab from '../Tab'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
