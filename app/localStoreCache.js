@@ -7,7 +7,7 @@ const stateDomainsToCache = [
   // 'FileTreeState',
   // 'PanelState',
   'PaneState',
-  'TabState',
+  // 'TabState',
   // 'EditorState',
   'ModalState',
   // 'TerminalState',

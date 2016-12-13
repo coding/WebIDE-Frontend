@@ -1,5 +1,6 @@
 /* @flow weak */
 import React from 'react'
+window.React = React // expose React to enable react devtool
 import { render } from 'react-dom'
 import Root from './containers/Root'
 import './styles/main.styl'
