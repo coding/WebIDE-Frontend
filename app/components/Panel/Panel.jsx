@@ -4,28 +4,54 @@ import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
 import cx from 'classnames'
 import PanelAxis from './PanelAxis'
+import PanelContent from './PanelContent'
 import * as PanelActions from './actions'
 
-const Panel = ({id, views, size, flexDirection, parentFlexDirection, resizingListeners, ..._props}) => {
-  var style = {
-    flexGrow: size,
-    display: _props.display
+const _Panel = (props) => {
+  const { panel, parentDirection, dispatch } = props
+  let style = {}
+  if (panel.resizable) {
+    style.flexGrow = panel.size
+  } else {
+    style.flexGrow = 0
+    style.flexBasis = 'auto'
   }
+  if (panel.hide) style.display = 'none'
+  if (panel.overflow) style.overflow = panel.overflow
 
   return (
-    <div id={id} style={style} className={cx('panel-container', parentFlexDirection)}>
-      { views.length > 1
-        ? <PanelAxis views={views} flexDirection={flexDirection} />
-        : <div className='panel'>{ views[0] }</div>
+    <div id={panel.id}
+      style={style}
+      className={cx('panel-container', parentDirection)}
+    > { panel.views.length
+        ? <PanelAxis panel={panel} />
+        : <div className='panel'><PanelContent panel={panel} /></div>
       }
-      <ResizeBar parentFlexDirection={parentFlexDirection}
-        sectionId={id} resizingListeners={resizingListeners} />
+      {panel.disableResizeBar
+        ? null
+        : <ResizeBar parentDirection={parentDirection} sectionId={panel.id} />
+      }
     </div>
   )
 }
 
-let ResizeBar = ({parentFlexDirection, sectionId, startResize}) => {
-  var barClass = (parentFlexDirection == 'row') ? 'col-resize' : 'row-resize'
+_Panel.propTypes = {
+  panel: PropTypes.object,
+  parentDirection: PropTypes.string,
+}
+
+const Panel = connect((state, { panelId }) =>
+  ({ panel: state.PanelState.panels[panelId] })
+)(_Panel)
+
+Panel.propTypes = {
+  panelId: PropTypes.string,
+  parentDirection: PropTypes.string,
+}
+
+
+let ResizeBar = ({parentDirection, sectionId, startResize}) => {
+  var barClass = (parentDirection == 'row') ? 'col-resize' : 'row-resize'
   return (
     <div className={cx('resize-bar', barClass)}
       onMouseDown={e => startResize(sectionId, e)}></div>

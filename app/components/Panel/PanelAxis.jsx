@@ -7,11 +7,9 @@ import Panel from './Panel'
 class PanelAxis extends Component {
   static propTypes = {
     id: PropTypes.string,
-    flexDirection: PropTypes.string,
-    views: PropTypes.array,
-    size: PropTypes.number,
-    style: PropTypes.object,
+    panel: PropTypes.object,
     className: PropTypes.string,
+    style: PropTypes.object,
   };
 
   static childContextTypes = {
@@ -32,26 +30,21 @@ class PanelAxis extends Component {
   }
 
   render () {
-    const { flexDirection, className, style } = this.props
-    let views = this.props.views
-    if (views.length === 1 && !Array.isArray(views[0].views)) views = [this.props]
-    const Subviews = views.map(_props =>
-      <Panel
-        key={_props.id}
-        id={_props.id}
-        views={_props.views}
-        size={_props.size}
-        flexDirection={_props.flexDirection}
-        parentFlexDirection={flexDirection}
-        resizingListeners={this.resizingListeners}
-        {..._props}
-      />
-    )
+    const { panel, className, style } = this.props
+    let subviews
+    if (panel.views.length) {
+      subviews = panel.views.map(panelId =>
+        <Panel key={panelId} panelId={panelId} parentDirection={panel.direction} />
+      )
+    } else {
+      subviews = <Panel panelId={panel.id} parentDirection={panel.direction} />
+    }
 
     return (
-      <div className={cx('panel-axis', className)}
-        style={{ flexDirection, ...style }}
-      >{Subviews}</div>
+      <div id={this.props.id}
+        className={cx('panel-axis', className)}
+        style={{ flexDirection: panel.direction, ...style }}
+      >{subviews}</div>
     )
   }
 }

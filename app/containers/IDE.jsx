@@ -1,8 +1,6 @@
 /* @flow weak */
 import React, { Component } from 'react'
-import TopBar from '../components/TopBar'
 import PanelsContainer from '../components/Panel'
-import StatusBar from '../components/StatusBar'
 import Utilities from './Utilities'
 
 import api from '../api'
@@ -26,9 +24,7 @@ class IDE extends Component {
     if (!this.state.isReady) return null
     return (
       <div className='ide-container'>
-        <TopBar />
         <PanelsContainer />
-        <StatusBar />
         <Utilities />
       </div>
     )
