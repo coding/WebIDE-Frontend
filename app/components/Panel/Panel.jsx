@@ -17,6 +17,7 @@ const _Panel = (props) => {
     style.flexBasis = 'auto'
   }
   if (panel.hide) style.display = 'none'
+  if (panel.disabled) style.display = 'none'
   if (panel.overflow) style.overflow = panel.overflow
 
   return (

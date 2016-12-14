@@ -5,6 +5,7 @@ import Breadcrumbs from '../Breadcrumbs'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
+import { SideBar } from '../Bar'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
@@ -20,9 +21,17 @@ const PanelContent = ({ panel }) => {
       return <StatusBar />
 
     default:
-      return <div> blank</div>
-
   }
+
+  switch (panel.ref) {
+    case 'BAR_LEFT':
+    case 'BAR_RIGHT':
+    case 'BAR_BOTTOM':
+      return <SideBar side={panel.ref.toLowerCase().replace('bar_', '')} />
+    default:
+  }
+
+  return <div>Panel Placeholder</div>
 }
 
 export default PanelContent

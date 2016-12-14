@@ -5,11 +5,14 @@ import { handleActions } from 'redux-actions'
 import {
   PANEL_INITIALIZE,
   PANEL_RESIZE,
-  PANEL_CONFIRM_RESIZE
+  PANEL_CONFIRM_RESIZE,
+  PANEL_TOGGLE_LAYOUT
 } from './actions'
 
 import {
-  getPrevSibling
+  getPanel,
+  getPrevSibling,
+  getPanelByRef,
 } from './selectors'
 
 /**
@@ -25,10 +28,9 @@ import {
           position: PropTypes.string,
           parentId: PropTypes.string,
           views: PropTypes.arrayOf(PropTypes.string),
-          content: PropTypes.shape({
-            type: PropTypes.string,
-            id: PropTypes.string,
-          })
+          contentType: PropTypes.string,
+          disabled: PropTypes.bool,
+          hide: PropTypes.bool,
         }
       }
     }
@@ -39,13 +41,13 @@ const BasePanelLayout = {
   ref: 'ROOT',
   direction: 'column',
   views: [
-    {ref: 'BAR_TOP_1', contentType: 'MENUBAR', resizable: false, overflow: 'visible'},
-    {ref: 'BAR_TOP_2', contentType: 'BREADCRUMBS', resizable: false, overflow: 'visible'},
+    {ref: 'MENUBAR', contentType: 'MENUBAR', resizable: false, overflow: 'visible'},
+    {ref: 'BAR_TOP', contentType: 'BREADCRUMBS', resizable: false, overflow: 'visible'},
     {
       ref: 'PRIMARY_ROW',
       direction: 'row',
       views: [
-        {ref: 'BAR_LEFT', resizable: false, hide: true},
+        {ref: 'BAR_LEFT', resizable: false, disabled: true},
         {
           ref: 'STAGE',
           direction: 'column',
@@ -53,20 +55,20 @@ const BasePanelLayout = {
             {
               direction: 'row',
               views: [
-                {ref: 'PANEL_LEFT', size: 20, contentType: 'FILETREE'},
-                {ref: 'PANEL_CENTER', size: 80, contentType: 'PANES'},
-                {ref: 'PANEL_RIGHT', size: 20, hide: true},
+                {ref: 'PANEL_LEFT', size: 10, contentType: 'FILETREE'},
+                {ref: 'PANEL_CENTER', size: 40, contentType: 'PANES'},
+                {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: false},
               ],
               size: 75
             },
-            {ref: 'PANEL_BOTTOM', size: 25, hide: true},
-            {ref: 'BAR_BOTTOM_2', resizable: false, hide: true},
+            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'EXTENSION_BOTTOM', hide: true},
+            {ref: 'BAR_BOTTOM', resizable: false, hide: false},
           ]
         },
-        {ref: 'BAR_RIGHT', resizable: false, hide: true},
+        {ref: 'BAR_RIGHT', resizable: false, hide: false},
       ]
     },
-    {ref: 'BAR_BOTTOM_1', contentType: 'STATUSBAR', resizable: false, overflow: 'visible'},
+    {ref: 'STATUSBAR', contentType: 'STATUSBAR', resizable: false, overflow: 'visible'},
   ]
 }
 
@@ -77,7 +79,7 @@ const Panel = (panelConfig) => {
     size: 100,
     views: [],
     parentId: '',
-    content: undefined,
+    contentType: '',
     disableResizeBar: false,
     resizable: true,
   }
@@ -91,6 +93,7 @@ const constructPanelState = (state, panelConfig, parent) => {
   let nextState = state
   let views = panelConfig.views
   let panel = Panel({...panelConfig, views: []})
+
   if (parent) {
     panel.parentId = parent.id
     parent.views.push(panel.id)
@@ -119,9 +122,26 @@ const constructPanelState = (state, panelConfig, parent) => {
   return nextState
 }
 
-const defaultState = constructPanelState({ panels: {} }, BasePanelLayout)
+let defaultState = { rootPanelId: '', panels: {} }
+defaultState = constructPanelState(defaultState, BasePanelLayout)
 
 
 export default handleActions({
+  [PANEL_TOGGLE_LAYOUT]: (state, action) => {
+    const { selectors: { refs, ids }, shouldShow } = action.payload
 
+    let selectedPanels = [].concat(
+      refs ? refs.map(ref => getPanelByRef(state, ref)) : [],
+      ids ? ids.map(id => getPanel(state, id)) : []
+    )
+
+    const panels = selectedPanels.reduce((acc, panel) => {
+      const hideOrShow = typeof shouldShow === 'boolean' ? shouldShow : !panel.hide
+      acc[panel.id] = { ...panel, hide: hideOrShow }
+      return acc
+    }, {})
+    return update(state, { panels: {
+      $merge: panels
+    }})
+  }
 }, defaultState)
