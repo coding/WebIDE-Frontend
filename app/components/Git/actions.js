@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import api from '../../api'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
-import { showModal, dismissModal, updateModal } from '../Modal/actions'
+import { showModal, addModal, dismissModal, updateModal } from '../Modal/actions'
 import { createAction } from 'redux-actions'
 
 export const GIT_STATUS = 'GIT_STATUS'
@@ -244,7 +244,7 @@ export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
 export function mergeFile (path) {
-  return dispatch => dispatch(showModal('GitMergeFile', {path}  ))
+  return dispatch => dispatch(addModal('GitMergeFile', {path}  ))
 }
 
 export function getConflicts ({path}) {
@@ -391,7 +391,7 @@ export function gitCommitDiff ({ref, title, oldRef}) {
       return file
     })
     dispatch(updateCommitDiff({files: files, ref, title, oldRef}))
-    dispatch(showModal('GitCommitDiff'))
+    dispatch(addModal('GitCommitDiff'))
   }).catch(res => {
     console.error(res)
     dispatch(notify({

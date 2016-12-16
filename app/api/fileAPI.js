@@ -63,3 +63,14 @@ export function deleteFile (path) {
     }
   })
 }
+
+export function searchFile (value, includeNonProjectItems = false) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/search`,
+    form: {
+      keyword: value,
+      includeNonProjectItems: includeNonProjectItems
+    }
+  })
+}
