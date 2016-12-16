@@ -17,14 +17,13 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
-import ExtensionReducer from './components/Extensions/reducer'
-import ExtensionsReducer from './utils/extensionReducers'
+import PackageReducer from './components/Package/reducer'
 
 import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
   MarkdownEditorState: MarkdownEditorReducer,
-  ExtensionState: ExtensionReducer,
+  PackageState: PackageReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
@@ -39,7 +38,7 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, ExtensionsReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,
