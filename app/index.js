@@ -8,7 +8,7 @@ import { createI18n, getExtensions } from './utils'
 
 window.i18n = createI18n
 window.extensions = {}
-window.extension = getExtensions
+window.extension = f=>null
 
 const app = React.createElement(Root)
 render(app, document.getElementById('root'))

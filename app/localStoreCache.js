@@ -3,19 +3,19 @@ let localStoreCache = {}
 
 const stateDomainsToCache = [
   'MarkdownEditorState',
-  'ExtensionState',
   // 'FileTreeState',
   // 'PanelState',
   'PaneState',
   // 'TabState',
   // 'EditorState',
-  'ModalState',
+  // 'ModalState',
   // 'TerminalState',
-  'GitState',
-  'NotificationState',
+  // 'GitState',
+  // 'NotificationState',
   // 'WorkspaceState',
   // 'DragAndDrop',
   'SettingState',
+  // 'PackageState',
 ]
 
 const stateFilter = (state) => stateDomainsToCache.reduce((stateToCache, domain) => {
@@ -28,6 +28,7 @@ const stateFilter = (state) => stateDomainsToCache.reduce((stateToCache, domain)
 let cachedState
 localStoreCache.beforeReducer = (state, action) => {
   // if (!state) state = JSON.parse(window.localStorage.getItem('snapshot'))
+  if (!state) return
   cachedState = JSON.stringify(stateFilter(state))
   return state
 }

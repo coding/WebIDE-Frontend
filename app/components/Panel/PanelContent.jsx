@@ -6,6 +6,7 @@ import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
 import { SideBar } from '../Bar'
+import { ExtensionPanelContent } from '../Package'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
@@ -20,6 +21,10 @@ const PanelContent = ({ panel }) => {
     case 'STATUSBAR':
       return <StatusBar />
 
+    case 'EXTENSION_LEFT':
+    case 'EXTENSION_RIGHT':
+    case 'EXTENSION_BOTTOM':
+      return <ExtensionPanelContent side={panel.contentType.toLowerCase().replace('extension_', '')} />
     default:
   }
 
