@@ -4,16 +4,18 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
-
 import * as GitActions from '../actions'
-import AceMerge from '../ace-merge'
-import getMode from '../../AceEditor/getAceMode';
-import 'brace/theme/github';
-import 'brace/theme/monokai';
+
+// CodeMirror
+import CodeMirror from 'codemirror'
+require(['diff_match_patch'], (lib) => {
+  Object.assign(window, lib)  //@fixme: diff_match_patch is now exposed into the global ns
+  require(['codemirror/addon/merge/merge.js'])
+})
+import 'codemirror/addon/merge/merge.css'
 
 class GitMergeView extends Component {
   static defaultProps = {
-    theme: 'ace/theme/monokai',//'monokai',
     mode: null,
     height: '100%',
     width: '100%',
@@ -24,8 +26,6 @@ class GitMergeView extends Component {
     this.state = {
       isLoading: true
     }
-    this.handleConfirm = this.handleConfirm.bind(this)
-    this.handleCancel = this.handleCancel.bind(this)
   }
 
   componentWillMount () {
@@ -73,23 +73,7 @@ class GitMergeView extends Component {
             <div
               id='flex-container'
               className='mergeContainer'>
-              <div key='leftEditor'>
-                <div id='editor1'></div>
-              </div>
-              <div
-                id='gutterLeft'
-                key='gutterLeft'>
-              </div>
-              <div key='middleEditor'>
-                <div id='editor3'></div>
-              </div>
-              <div
-                id='gutterRight'
-                key='gutterRight'>
-              </div>
-              <div key='rightEditor'>
-                <div id='editor2'></div>
-              </div>
+              <div id='cm-merge-view-wrapper' ref={r=>this.editorDOM=r} ></div>
             </div>
             { loadDiv }
           </div>
@@ -104,47 +88,26 @@ class GitMergeView extends Component {
   }
 
   initMerge (data) {
-    var that = this
-    require([`brace/mode/${getMode(that.props.content.path)}`], () => {
-      that.aceMerge = new AceMerge({
-        // mode: this.state.mode,
-        mode: `ace/mode/${getMode(that.props.content.path)}`,
-        left: {
-          id: "editor1",
-          content: data.local,
-          theme: that.state.theme,
-          editable: false
-        },
-        middle: {
-          id: "editor3",
-          content: data.base,
-          theme: that.state.theme,
-          copyLinkEnabled: false
-        },
-        right: {
-          id: "editor2",
-          content: data.remote,
-          theme: that.state.theme,
-          editable: false
-        },
-        classes: {
-          gutterLeftID: "gutterLeft",
-          gutterRightID: "gutterRight"
-        }
-      })
+    this.mergeView = CodeMirror.MergeView(this.editorDOM, {
+      origLeft: data.local,
+      origRight: data.remote,
+      value: data.base,
+      revertButtons: true,
     })
-    
+    this.mergeView.setSize('100%', '100%')
+
+    // require([`brace/mode/${getMode(that.props.content.path)}`], () => {
+    // })
   }
 
-  handleConfirm () {
-    let content = this.aceMerge.editors.middle.ace.getValue()
+  handleConfirm = () => {
     this.props.resolveConflict({
       path: this.props.content.path,
-      content
+      content: this.mergeView.edit.getValue()
     })
   }
 
-  handleCancel () {
+  handleCancel = () => {
     this.props.cancelConflict({
       path: this.props.content.path
     })
