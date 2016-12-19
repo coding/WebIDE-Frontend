@@ -1,9 +1,7 @@
 /*@flow weak*/
 import React, {Component} from 'react';
 import CodeMirror from 'codemirror';
-import CodeMirrorModeMeta from 'codemirror/mode/meta.js';
-import CodeMirrorLoadMode from 'codemirror/addon/mode/loadmode.js';
-import {} from 'codemirror/addon/hint/show-hint.js';
+import './addons';
 import {connect} from 'react-redux';
 import * as TabActions from '../Tab/actions';
 
@@ -24,13 +22,19 @@ class CodeMirrorEditor extends Component {
     const {theme, tab, width, height} = this.props;
     const editor = this.editor = CodeMirror(this.editorDOM, {
       theme: theme,
-      autofocus: true
+      autofocus: true,
+      lineNumbers: true,
+      matchBrackets: true,
+      autoCloseBrackets: true,
     });
+
+    // 1. resize
+    editor.setSize(width, height);
+
     if (tab.content) {
       const {body, path} = tab.content;
       const modeInfo = this.getMode(path);
       if (body) editor.setValue(body);
-      editor.setSize(width, height);
       if (modeInfo) {
         let mode = modeInfo.mode;
         require([`codemirror/mode/${mode}/${mode}.js`], () => {
@@ -39,13 +43,10 @@ class CodeMirrorEditor extends Component {
       }
     }
     editor.focus();
-    // little hack to make codemirror work with legacy interface
-    editor.isFocused = editor.hasFocus;
+    editor.isFocused = editor.hasFocus; // little hack to make codemirror work with legacy interface
     tab.editor = editor;
     editor.on('change', this.onChange);
-    editor.on('focus', () => {
-      this.props.dispatch(TabActions.activateTab(tab.id))
-    })
+    editor.on('focus', () => this.props.dispatch(TabActions.activateTab(tab.id)))
   }
 
   getMode(path) {
