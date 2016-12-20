@@ -1,7 +1,7 @@
 /* @flow weak */
 import _ from 'lodash'
 import React, { Component } from 'react'
-import api from '../../../api'
+import api from '../../../backendAPI'
 import store, { dispatch as $d } from '../../../store'
 import * as Tab from '../../Tab'
 import cx from 'classnames'
