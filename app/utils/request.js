@@ -26,7 +26,7 @@ function interceptResponse (response) {
     })
   } else {
     if (!response.ok) throw response.statusText
-    return true
+    return response.text().then(body => body)
   }
 }
 
@@ -61,7 +61,8 @@ function request (_options) {
     body: options.body
   })
 
-  var url = urlJoin(options.baseURL, options.url) + (options.qs ? '?' : '') + qs.stringify(options.qs)
+  var url = options.absURL ? options.absURL : urlJoin(options.baseURL, options.url)
+  url += (options.qs ? '?' : '') + qs.stringify(options.qs)
   return fetch(url, fetchOptions).then(interceptResponse)
 }
 
@@ -71,6 +72,7 @@ function parseMethodArgs (url, data, METHOD) {
   if (typeof url === 'object') {
     options = url
   } else if (typeof url === 'string') {
+    if (/^https?:\/\//.test(url)) options.absURL = url
     options.url = url
     switch (METHOD) {
       case 'GET':

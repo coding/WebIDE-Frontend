@@ -4,17 +4,18 @@ import cx from 'classnames'
 import Pane from './Pane'
 
 class PaneAxis extends Component {
-  constructor (props) {
-    super(props)
-    this.resizingListeners = []
-  }
-
   static propTypes = {
     id: PropTypes.string,
     pane: PropTypes.object,
   };
 
-  static childContextTypes = { onResizing: PropTypes.func }
+  static childContextTypes = { onResizing: PropTypes.func };
+
+  constructor (props) {
+    super(props)
+    this.resizingListeners = []
+  }
+
   getChildContext () { return { onResizing: this.onResizing.bind(this) } }
   onResizing (listener) { if (typeof listener === 'function') { this.resizingListeners.push(listener) } }
 

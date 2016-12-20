@@ -1,115 +1,147 @@
 /* @flow weak */
 import _ from 'lodash'
+import { update } from '../../utils'
 import { handleActions } from 'redux-actions'
 import {
   PANEL_INITIALIZE,
-  PANEL_UNSET_COVER,
   PANEL_RESIZE,
-  PANEL_CONFIRM_RESIZE
+  PANEL_CONFIRM_RESIZE,
+  PANEL_TOGGLE_LAYOUT
 } from './actions'
 
-// jailbreakLonelyView 是为了避免无限级嵌套的 views.length === 1 出现
-// i.e. {views: [{ views: [ {views: [ content ]} ]}]}
-// 以上实际只需要 {views: [ content ]} 即可表达，中间的 wrapper 无用。
-//
-// 这个 func 做的就是干掉中间无用的 wrapper
-// 使得 outermostWrapper.views = innerMostWrapper.views && return outermostWrapper;
-const jailbreakLonelyView = (view, originalWrapper) => {
-  if (view.views.length === 0 || view.views.length > 1) {
-    if (originalWrapper) {
-      let _views = view
-      view = originalWrapper
-      view.views = _views.views
-    }
-    return view
-  } else {
-    let lonelyItem = view.views[0]
-    if (!Array.isArray(lonelyItem.views)) { // is plain content
-      if (originalWrapper) {
-        let _views = view
-        view = originalWrapper
-        view.views = _views.views
+import {
+  getPanel,
+  getPrevSibling,
+  getPanelByRef,
+} from './selectors'
+
+/**
+ *  The state shape:
+ *
+ *  PanelState = {
+      rootPanelId: PropTypes.string,
+      panels: {
+        [panel_id]: {
+          id: PropTypes.string,
+          flexDirection: PropTypes.string,
+          size: PropTypes.number,
+          position: PropTypes.string,
+          parentId: PropTypes.string,
+          views: PropTypes.arrayOf(PropTypes.string),
+          contentType: PropTypes.string,
+          disabled: PropTypes.bool,
+          hide: PropTypes.bool,
+        }
       }
-      return view
     }
-    return jailbreakLonelyView(lonelyItem, view)
-  }
+*/
+
+// this can source from external config file or some API
+const BasePanelLayout = {
+  ref: 'ROOT',
+  direction: 'column',
+  views: [
+    {ref: 'MENUBAR', contentType: 'MENUBAR', resizable: false, overflow: 'visible'},
+    {ref: 'BAR_TOP', contentType: 'BREADCRUMBS', resizable: false, overflow: 'visible'},
+    {
+      ref: 'PRIMARY_ROW',
+      direction: 'row',
+      views: [
+        {ref: 'BAR_LEFT', resizable: false, disabled: true},
+        {
+          ref: 'STAGE',
+          direction: 'column',
+          views: [
+            {
+              direction: 'row',
+              views: [
+                {ref: 'PANEL_LEFT', size: 10, contentType: 'FILETREE'},
+                {ref: 'PANEL_CENTER', size: 40, contentType: 'PANES'},
+                {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: false},
+              ],
+              size: 75
+            },
+            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'EXTENSION_BOTTOM', hide: true},
+            {ref: 'BAR_BOTTOM', resizable: false, hide: false},
+          ]
+        },
+        {ref: 'BAR_RIGHT', resizable: false, hide: false},
+      ]
+    },
+    {ref: 'STATUSBAR', contentType: 'STATUSBAR', resizable: false, overflow: 'visible'},
+  ]
 }
 
-const normalizeState = (view, parentView, rootView) => {
-  var isRootView = !parentView
-  var retView = {}
-  if (isRootView) rootView = retView
+const Panel = (panelConfig) => {
+  const defaults = {
+    id: _.uniqueId('panel_view_'),
+    direction: 'row',
+    size: 100,
+    views: [],
+    parentId: '',
+    contentType: '',
+    disableResizeBar: false,
+    resizable: true,
+  }
 
-  view = jailbreakLonelyView(view)
+  let panel = { ...defaults, ...panelConfig }
+  if (!panel.resizable) panel.disableResizeBar = true
+  return panel
+}
 
-  if (!Array.isArray(view.views)) {
-    retView.views = [view]
+const constructPanelState = (state, panelConfig, parent) => {
+  let nextState = state
+  let views = panelConfig.views
+  let panel = Panel({...panelConfig, views: []})
+
+  if (parent) {
+    panel.parentId = parent.id
+    parent.views.push(panel.id)
   } else {
-    retView.views = view.views.map(_view => {
-      if (!Array.isArray(_view.views)) return _view
-      return normalizeState(_view, retView, rootView)
-    })
+    nextState.rootPanelId = panel.id
+  }
+  nextState = update(nextState, {panels: {
+    [panel.id]: { $set: panel }
+  }})
+
+  if (!panel.resizable) {
+    let prevSibling = getPrevSibling(nextState, panel)
+    if (prevSibling) {
+      prevSibling.disableResizeBar = true
+      nextState = update(nextState, {panels: {
+        [prevSibling.id]: { $set: prevSibling },
+      }})
+    }
   }
 
-  retView.id = view.id || _.uniqueId('pane_view_')
-  retView.parent = (isRootView) ? null : parentView
-  retView.flexDirection = view.flexDirection || 'row'
-  retView.size = view.size || 100
-  retView.display = (view.display === 'none') ? 'none' : 'block'
-
-  if (!rootView.directories) rootView.directories = {}
-  rootView.directories[retView.id] = retView
-
-  return retView
+  if (views && views.length) {
+    nextState = panelConfig.views.reduce((nextState, config) =>
+      constructPanelState(nextState, config, panel)
+    , nextState)
+  }
+  return nextState
 }
 
-const findViewById = (state, id) => state.directories[id]
-const debounced = _.debounce(function (func) { func() }, 50)
+let defaultState = { rootPanelId: '', panels: {} }
+defaultState = constructPanelState(defaultState, BasePanelLayout)
+
 
 export default handleActions({
-  [PANEL_INITIALIZE]: (state, action) => {
-    return normalizeState(action.payload)
-  },
+  [PANEL_TOGGLE_LAYOUT]: (state, action) => {
+    const { selectors: { refs, ids }, shouldShow } = action.payload
 
-  [PANEL_RESIZE]: (state, action) => {
-    const {sectionId, dX, dY} = action.payload
-    let section_A = state.directories[sectionId]
-    let parent = section_A.parent
-    let section_B = parent.views[parent.views.indexOf(section_A) + 1]
-    let section_A_Dom = document.getElementById(section_A.id)
-    let section_B_Dom = document.getElementById(section_B.id)
-    var r, rA, rB
-    if (parent.flexDirection === 'column') {
-      r = dY
-      rA = section_A_Dom.offsetHeight
-      rB = section_B_Dom.offsetHeight
-    } else {
-      r = dX
-      rA = section_A_Dom.offsetWidth
-      rB = section_B_Dom.offsetWidth
-    }
-    section_A.size = section_A.size * (rA - r) / rA
-    section_B.size = section_B.size * (rB + r) / rB
+    let selectedPanels = [].concat(
+      refs ? refs.map(ref => getPanelByRef(state, ref)) : [],
+      ids ? ids.map(id => getPanel(state, id)) : []
+    )
 
-    section_A_Dom.style.flexGrow = section_A.size
-    section_B_Dom.style.flexGrow = section_B.size
-
-    // @coupled: trigger resize of children ace editor
-    debounced(function () {
-      section_A_Dom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-      section_B_Dom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-    })
-
-    return state
-  },
-
-  [PANEL_CONFIRM_RESIZE]: (state, action) => {
-    return normalizeState(state)
+    const panels = selectedPanels.reduce((acc, panel) => {
+      const hideOrShow = typeof shouldShow === 'boolean' ? shouldShow : !panel.hide
+      acc[panel.id] = { ...panel, hide: hideOrShow }
+      return acc
+    }, {})
+    return update(state, { panels: {
+      $merge: panels
+    }})
   }
-
-}, {})
+}, defaultState)

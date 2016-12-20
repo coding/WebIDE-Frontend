@@ -17,13 +17,13 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
-import ExtensionReducer from './components/Extensions/reducer'
-import ExtensionsReducer from './utils/extensionReducers'
+import PackageReducer from './components/Package/reducer'
 
+import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
   MarkdownEditorState: MarkdownEditorReducer,
-  ExtensionState: ExtensionReducer,
+  PackageState: PackageReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
@@ -38,8 +38,13 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, ExtensionsReducer)
-const finalReducer = composeReducers(crossReducers, combinedReducers)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer)
+const finalReducer = composeReducers(
+  localStoreCache.afterReducer,
+  crossReducers,
+  combinedReducers,
+  localStoreCache.beforeReducer
+)
 
 let enhancer = compose(
   applyMiddleware(thunkMiddleware),
@@ -62,29 +67,6 @@ window.addEventListener('storage', (e) => {
   }
 })
 
-
-store.subscribe(() => {
-  window.store = store
-  const updateStoreToRemoteInterval = 10000
-
-  const stateFromStorage = localStorage.getItem('snapshot')
-  const newState = store.getState()
-  const newStateWithoutCircular = JSON.stringify(newState.SettingState)
-  const createTimeEvent = () => {
-    window.timer = setTimeout(() => {
-      console.log('update state to remote')
-      clearTimeout(window.timer)
-    }, updateStoreToRemoteInterval)
-  }
-
-  // update local state
-  if ((stateFromStorage !== newStateWithoutCircular) || !stateFromStorage) {
-    console.log('update state to localstorage')
-    localStorage.setItem('snapshot', newStateWithoutCircular)
-    if (window.timer) clearTimeout(window.timer)
-    createTimeEvent()
-  }
-})
 export default store
 export const getState = store.getState
 export const dispatch = store.dispatch

@@ -9,7 +9,7 @@ import {
 } from './actions'
 
 const defaultState = {
-  selectingWorkspace: true,
+  route: 'WORKSPACES',
   workspaces: [],
   currentWorkspace: null,
   publicKey: null,
@@ -29,7 +29,7 @@ export default handleActions({
   },
 
   [WORKSPACE_OPEN]: (state, action) => {
-    return {...state, selectingWorkspace: false, currentWorkspace: action.payload}
+    return {...state, route: 'IDE', currentWorkspace: action.payload}
   },
 
   [WORKSPACE_CREATING]: (state, action) => {

@@ -21,7 +21,7 @@ import {
   GitRebasePrepare,
   GitRebaseInput,
   GitCommitDiffView,
-  ExtensionsView
+  PackageControlView
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -110,8 +110,10 @@ class Modal extends Component {
 
         case 'Settings':
           return <SettingsView {...this.props} />
-        case 'Extensions':
-          return <ExtensionsView {...this.props} />
+
+        case 'Packages':
+          return <PackageControlView {...this.props} />
+
         default:
           return content
       }

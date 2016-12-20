@@ -13,30 +13,30 @@ import 'brace/ext/themelist'
 const aceThemes = ace.acequire('ace/ext/themelist')
   .themes.map((t, i) => ({value: t.theme, name: t.caption}))
 
-const codeToDisplay = {
+const langCodes = {
   en_US: 'English',
   zh_CN: 'Chinese'
 }
 
-const codeTranslate = (language = '') => {
-  if (Array.isArray(language)) {
-    const specLanguage = language.find(lan => {
-      lan = lan.replace(/-/g, '_')
-      return Object.keys(codeToDisplay).includes(lan)
-    })
-    return specLanguage.replace(/-/g, '_')
-  }
-  const specLanguage = language.replace(/-/g, '_')
-  return Object.keys(codeToDisplay).includes(specLanguage) ? specLanguage : ''
+const getDefaultLangCode = () => {
+  return [
+    'languages',
+    'language',
+    'browserLanguage',
+    'systemLanguage',
+    'userLanguage',
+  ].reduce((defaultLangCode, attr) => {
+    if (defaultLangCode) return defaultLangCode
+    let languages = window.navigator[attr]
+    if (!Array.isArray(languages)) languages = [languages]
+    return languages.reduce((defaultLangCode, lang) => {
+      lang = lang.replace(/-/g, '_')
+      if (Object.keys(langCodes).includes(lang)) return lang
+      return defaultLangCode
+    }, '')
+  }, '')
 }
 
-const getDefaultLanguage = () => [
-  'languages',
-  'language',
-  'browserLanguage',
-  'systemLanguage',
-  'userLanguage']
-.reduce((p, v) => p || codeTranslate(window.navigator[v]), '')
 
 const SettingState = {
   activeTabId: 'EDITOR',
@@ -46,7 +46,7 @@ const SettingState = {
       id: 'GENERAL',
       items: [{
         name: 'Language',
-        value: codeToDisplay[getDefaultLanguage()],
+        value: langCodes[getDefaultLangCode()],
         options: ['English', 'Chinese']
       }, {
         name: 'Theme',

@@ -11,7 +11,7 @@ export GitTagView from '../../Git/modals/tag';
 export GitMergeView from '../../Git/modals/merge';
 export GitNewBranchView from '../../Git/modals/newBranch';
 export SettingsView from '../../Setting';
-export ExtensionsView from '../../Extensions';
+export {PackageControlView} from '../../Package';
 export GitRebaseStart from '../../Git/modals/rebaseStart';
 export GitResolveConflictsView from '../../Git/modals/resolveConflicts';
 export GitMergeFileView from '../../Git/modals/mergeFile';

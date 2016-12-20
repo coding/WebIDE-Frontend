@@ -2,7 +2,7 @@
 import { bindActionCreators } from 'redux'
 import store, { getState, dispatch } from '../../store'
 import { path as pathUtil } from '../../utils'
-import api from '../../api'
+import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
 import * as Tab from '../../components/Tab'
 import { notify } from '../../components/Notification/actions'

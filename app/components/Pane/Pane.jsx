@@ -34,7 +34,9 @@ _Pane.propTypes = {
   parentFlexDirection: PropTypes.string,
 }
 
-const Pane = connect((state, { paneId }) => ({ pane: state.PaneState.panes[paneId] }))(_Pane)
+const Pane = connect((state, { paneId }) =>
+  ({ pane: state.PaneState.panes[paneId] })
+)(_Pane)
 
 
 const ResizeBar = ({ parentFlexDirection, sectionId, dispatch }) => {
