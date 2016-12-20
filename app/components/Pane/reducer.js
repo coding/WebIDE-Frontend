@@ -4,10 +4,10 @@ import { update } from '../../utils'
 import { handleActions } from 'redux-actions'
 import {
   PANE_UPDATE,
-  PANE_RESIZE,
   PANE_SPLIT,
   PANE_SPLIT_WITH_KEY,
   PANE_CLOSE,
+  PANE_CONFIRM_RESIZE,
 } from './actions'
 import {
   getPaneById,
@@ -113,41 +113,6 @@ export default handleActions({
     })
   },
 
-  [PANE_RESIZE]: (state, action) => {
-    const {sectionId, dX, dY} = action.payload
-    let leftPane = getPaneById(state, sectionId)
-    let rightPane = getNextSibling(state, leftPane)
-    let leftPaneDom = document.getElementById(leftPane.id)
-    let rightPaneDom = document.getElementById(rightPane.id)
-
-    var r, rA, rB
-    if (getParent(state, leftPane).flexDirection === 'column') {
-      r = dY
-      rA = leftPaneDom.offsetHeight
-      rB = rightPaneDom.offsetHeight
-    } else {
-      r = dX
-      rA = leftPaneDom.offsetWidth
-      rB = rightPaneDom.offsetWidth
-    }
-    leftPane.size = leftPane.size * (rA - r) / rA
-    rightPane.size = rightPane.size * (rB + r) / rB
-
-    leftPaneDom.style.flexGrow = leftPane.size
-    rightPaneDom.style.flexGrow = rightPane.size
-
-    // @coupled: trigger resize of views ace editor
-    debounced(() => {
-      leftPaneDom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-      rightPaneDom.querySelectorAll('[data-ace-resize]').forEach(
-        editorDOM => editorDOM.$ace_editor.resize()
-      )
-    })
-    return state
-  },
-
   [PANE_SPLIT]: (state, action) => {
     const { paneId, splitDirection } = action.payload
     let pane = getPaneById(state, paneId)
@@ -222,6 +187,15 @@ export default handleActions({
     nextState = update(nextState, {panes: {$delete: paneId}})
     return nextState
   },
+
+  [PANE_CONFIRM_RESIZE]: (state, { payload: { leftView, rightView } }) => {
+    return update(state, {
+      panes: {
+        [leftView.id]: { size: { $set: leftView.size } },
+        [rightView.id]: { size: { $set: rightView.size } },
+      }
+    })
+  }
 }, defaultState)
 
 

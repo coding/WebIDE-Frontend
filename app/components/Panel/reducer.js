@@ -143,5 +143,14 @@ export default handleActions({
     return update(state, { panels: {
       $merge: panels
     }})
+  },
+
+  [PANEL_CONFIRM_RESIZE]: (state, { payload: { leftView, rightView } }) => {
+    return update(state, {
+      panels: {
+        [leftView.id]: { size: { $set: leftView.size } },
+        [rightView.id]: { size: { $set: rightView.size } },
+      }
+    })
   }
 }, defaultState)
