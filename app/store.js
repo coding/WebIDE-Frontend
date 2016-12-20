@@ -6,7 +6,7 @@ import thunkMiddleware from 'redux-thunk'
 import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-import TabReducer from './components/Tab/reducer'
+import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
 import EditorReducer from './components/AceEditor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
@@ -17,9 +17,13 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
+import ExtensionReducer from './components/Extensions/reducer'
+import ExtensionsReducer from './utils/extensionReducers'
+
 
 const combinedReducers = combineReducers({
   MarkdownEditorState: MarkdownEditorReducer,
+  ExtensionState: ExtensionReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
@@ -34,17 +38,33 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, ExtensionsReducer)
 const finalReducer = composeReducers(crossReducers, combinedReducers)
 
-// const store = createStore(finalReducer, compose(
-//   applyMiddleware(thunkMiddleware),
-//   window.devToolsExtension ? window.devToolsExtension() : f => f));
-const store = createStore(finalReducer, applyMiddleware(thunkMiddleware))
+let enhancer = compose(
+  applyMiddleware(thunkMiddleware),
+  window.devToolsExtension ? window.devToolsExtension({
+    serializeState: (key, value) => {
+      if (key === 'editor') return {}
+      if (key === 'DOMNode') return {}
+      return value
+    }
+  }) : f => f
+)
+// enhancer = applyMiddleware(thunkMiddleware)
+const store = createStore(finalReducer, enhancer)
 window.getState = store.getState
 
 
+window.addEventListener('storage', (e) => {
+  if (e.key.includes('extension')) {
+    store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
+  }
+})
+
+
 store.subscribe(() => {
+  window.store = store
   const updateStoreToRemoteInterval = 10000
 
   const stateFromStorage = localStorage.getItem('snapshot')

@@ -7,6 +7,7 @@ import {
   Confirm,
   SettingsView,
   CommandPalette,
+  FilePalette,
   GitCommitView,
   GitStashView,
   GitUnstashView,
@@ -20,6 +21,7 @@ import {
   GitRebasePrepare,
   GitRebaseInput,
   GitCommitDiffView,
+  ExtensionsView
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -103,9 +105,13 @@ class Modal extends Component {
         case 'CommandPalette':
           return <CommandPalette {...this.props} />
 
+        case 'FilePalette':
+          return <FilePalette {...this.props} />
+
         case 'Settings':
           return <SettingsView {...this.props} />
-
+        case 'Extensions':
+          return <ExtensionsView {...this.props} />
         default:
           return content
       }

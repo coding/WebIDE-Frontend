@@ -10,10 +10,16 @@ export default {
     $d(Modal.showModal('CommandPalette'))
   },
 
+  'global:file_palette': c => {
+    $d(Modal.showModal('FilePalette'))
+  },
+
   'global:show_settings': c => {
     $d(Modal.showModal({type: 'Settings', position: 'center'}))
   },
-
+  'global:show_extensions': c => {
+    $d(Modal.showModal({type: 'Extensions', position: 'center'}))
+  },
   'modal:dismiss': (c) => {
     $d(Modal.dismissModal())
   }

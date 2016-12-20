@@ -2,5 +2,7 @@
 export default {
   projectName: '',
   baseURL: '' || window.location.origin,
-  spaceKey: ''
+  spaceKey: '',
+  extensionServer: '' || process.env.EXTENSION_SERVER,
+  requiredExtensions: []
 }

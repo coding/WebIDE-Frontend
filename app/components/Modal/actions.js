@@ -17,6 +17,20 @@ export const showModal = promiseActionMixin(
   })
 )
 
+export const MODAL_ADD = 'MODAL_ADD'
+export const addModal = promiseActionMixin(
+  createAction(MODAL_ADD, (modalConfig, content) => {
+    switch (typeof modalConfig) {
+      case 'object':
+        return {...modalConfig, id: _.uniqueId()}
+      case 'string':
+        return {type: modalConfig, id: _.uniqueId(), content}
+      default:
+        return {type: ''}
+    }
+  })
+)
+
 export const MODAL_DISMISS = 'MODAL_DISMISS'
 export const dismissModal = createAction(MODAL_DISMISS)
 

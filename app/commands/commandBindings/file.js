@@ -4,11 +4,10 @@ import store, { getState, dispatch } from '../../store'
 import { path as pathUtil } from '../../utils'
 import api from '../../api'
 import * as _Modal from '../../components/Modal/actions'
-import * as _Tab from '../../components/Tab/actions'
+import * as Tab from '../../components/Tab'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)
-const Tab = bindActionCreators(_Tab, dispatch)
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
@@ -57,8 +56,9 @@ export default {
 
 
   'file:save': (c) => {
-    var activeTab = getState().TabState.getActiveGroup().activeTab;
-    var content = activeTab.editor.getValue();
+    const TabState = getState().TabState
+    const activeTab = Tab.selectors.getActiveTab(TabState)
+    const content = activeTab.editor.getValue()
 
     if (!activeTab.path) {
       const createFile = createFileWithContent(content)
@@ -68,16 +68,16 @@ export default {
         selectionRange: [1, '/untitled'.length]
       })
         .then(createFile)
-        .then(path => Tab.updateTab({
+        .then(path => dispatch(Tab.actions.updateTab({
           id: activeTab.id,
           path: path,
           title: path.replace(/^.*\/([^\/]+$)/, '$1')
-        }))
-        .then(() => Tab.updateTabFlags(activeTab.id, 'modified', false))
+        })))
+        .then(() => dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false)))
 
     } else {
       api.writeFile(activeTab.path, content)
-        .then(() => Tab.updateTabFlags(activeTab.id, 'modified', false))
+        .then(() => dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false)))
     }
 
   },

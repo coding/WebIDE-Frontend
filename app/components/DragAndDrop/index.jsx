@@ -80,9 +80,8 @@ class DragAndDrop extends Component {
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
         dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
-          .then(newPane => {
-            let tabGroupId = newPane.views[0]
-            dispatch(TabActions.moveTabToGroup(source.id, tabGroupId))
+          .then(newPaneId => {
+            dispatch(TabActions.moveTabToPane(source.id, newPaneId))
           })
         break
 

@@ -138,7 +138,9 @@ class FileTreeNode extends Component {
               'fa fa-file-o': !node.isDir
             })}></i>
           </span>
-          <span className="filetree-node-label">
+          <span className={
+            `filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`
+          }>
             {node.name || 'Project'}
           </span>
           <div className="filetree-node-bg"></div>
