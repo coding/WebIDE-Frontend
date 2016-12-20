@@ -2,6 +2,7 @@
 import { handleActions } from 'redux-actions'
 import {
   MODAL_SHOW,
+  MODAL_ADD,
   MODAL_DISMISS,
   MODAL_UPDATE
 } from './actions'
@@ -15,6 +16,20 @@ const baseModal = {
 
 const ModalReducer = handleActions({
   [MODAL_SHOW]: (state, {payload: modalConfig, meta}) => {
+    let newModal = {
+      ...baseModal,
+      isActive: true,
+      ...modalConfig,
+      meta
+    }
+    return {
+      ...state,
+      stack: [newModal]
+    }
+  },
+
+  [MODAL_ADD]: (state, {payload: modalConfig, meta}) => {
+    console.log('MODAL_ADD')
     let newModal = {
       ...baseModal,
       isActive: true,

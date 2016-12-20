@@ -5,6 +5,7 @@ export default {
   'cmd+shift+c': 'git:commit',
   'esc': 'modal:dismiss',
   'cmd+shift+p': 'global:command_palette',
+  'cmd+p': 'global:file_palette',
   'cmd+alt+1':       'editor:split_pane_1',
   'cmd+alt+shift+1': 'editor:split_pane_1',
   'cmd+alt+2':       'editor:split_pane_vertical_2',
