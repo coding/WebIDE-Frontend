@@ -28,19 +28,19 @@ const defaultState = {
   },
 }
 
-const toggleExtensionAvailability = (state, pkgName) => {
+const toggleExtensionAvailability = (state, pkgId) => {
   // handle availability state of extension packages in side panels
-  let pkg = state.localPackages[pkgName]
+  let pkg = state.localPackages[pkgId]
   if (!pkg.type === 'extension' || !pkg.ui || !pkg.ui.position) return state
 
   let extensionIds = state.extensionsUIState.panels[pkg.ui.position].extensionIds
-  if (extensionIds.includes(pkgName) === pkg.enabled) return state
+  if (extensionIds.includes(pkgId) === pkg.enabled) return state
 
   return update(state, {
     extensionsUIState: { panels: { [pkg.ui.position]: {
       extensionIds: pkg.enabled
-        ? {'$push' : [pkgName] }
-        : {'$without': pkgName }
+        ? {'$push' : [pkgId] }
+        : {'$without': pkgId }
     }}}
   })
 
@@ -55,25 +55,25 @@ export default handleActions({
     const packageObj = action.payload
     let nextState = update(state, {
       localPackages: {
-        [packageObj.name]: { $set: packageObj }
+        [packageObj.id]: { $set: packageObj }
       }
     })
-    return toggleExtensionAvailability(nextState, packageObj.name)
+    return toggleExtensionAvailability(nextState, packageObj.id)
   },
 
   [togglePackage]: (state, action) => {
-    let { name, shouldEnable } = action.payload
-    let targetPackage = state.localPackages[name]
+    let { id, shouldEnable } = action.payload
+    let targetPackage = state.localPackages[id]
     if (shouldEnable === targetPackage.enabled) return state
     if (typeof shouldEnable !== 'boolean') shouldEnable = !targetPackage.enabled
 
     let nextState = update(state, {
       localPackages: {
-        [name]: { enabled: { $set: shouldEnable } }
+        [id]: { enabled: { $set: shouldEnable } }
       }
     })
 
-    return toggleExtensionAvailability(nextState, name)
+    return toggleExtensionAvailability(nextState, id)
   },
 
   [activateExtenstion]: (state, action) => {
@@ -93,7 +93,7 @@ export default handleActions({
 Example package manifest:
 
 {
-  name: "coding-ide-env",
+  id: "coding-ide-env",
   version: "0.0.1",
   description: "Extension for Coding WebIDE, manage IDE environment",
   main: "index.js",

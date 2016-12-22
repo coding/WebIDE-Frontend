@@ -18,9 +18,9 @@ const ExtensionContainer = connect((state, { extension }) => {
 const ExtensionPanelContent = ({ extensions, side, activeExtenstionId }) => {
   return (
     <div>{extensions.map((ext, idx) =>
-      <ExtensionContainer key={ext.name}
+      <ExtensionContainer key={ext.id}
         extension={ext}
-        isActive={activeExtenstionId ? activeExtenstionId === ext.name : idx === 0}
+        isActive={activeExtenstionId ? activeExtenstionId === ext.id : idx === 0}
       />
     )}</div>
   )

@@ -13,16 +13,16 @@ export const PACKAGE_UPDATE_LOCAL = 'PACKAGE_UPDATE_LOCAL'
 export const updateLocalPackage = createAction(PACKAGE_UPDATE_LOCAL)
 
 export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
-export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgName, shouldEnable) => ({
-  name: pkgName,
+export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) => ({
+  id: pkgId,
   shouldEnable: shouldEnable
 }))
 
-export const fetchPackage = (pkgName) => (dispatch, getState) => {
-  const pkgInfo = api.fetchPackageInfo(pkgName)
-  const pkgScript = api.fetchPackageScript(pkgName)
+export const fetchPackage = (pkgId) => (dispatch, getState) => {
+  const pkgInfo = api.fetchPackageInfo(pkgId)
+  const pkgScript = api.fetchPackageScript(pkgId)
     .then(script => {
-      let storageKey = `CodingPackage___${pkgName}`
+      let storageKey = `CodingPackage___${pkgId}`
       localStorage.setItem(storageKey, script)
       return storageKey
     })
