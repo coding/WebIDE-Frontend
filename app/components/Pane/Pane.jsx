@@ -1,14 +1,16 @@
 /* @flow weak */
 import React, { PropTypes } from 'react'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import * as PaneActions from './actions'
+import { confirmResize } from './actions'
 import TabContainer from '../Tab'
 import EditorWrapper from '../EditorWrapper'
 import PaneAxis from './PaneAxis'
+import ResizeBar from '../ResizeBar'
 
 const _Pane = (props) => {
-  const { pane, parentFlexDirection, dispatch } = props
+  const { pane, parentFlexDirection, confirmResize } = props
 
   const style = { flexGrow: pane.size, display: pane.display }
   return (
@@ -24,7 +26,9 @@ const _Pane = (props) => {
           />
         </div>
       }
-      <ResizeBar sectionId={pane.id} dispatch={dispatch} parentFlexDirection={parentFlexDirection} />
+      <ResizeBar viewId={pane.id}
+        confirmResize={confirmResize}
+        parentFlexDirection={parentFlexDirection} />
     </div>
   )
 }
@@ -34,18 +38,9 @@ _Pane.propTypes = {
   parentFlexDirection: PropTypes.string,
 }
 
-const Pane = connect((state, { paneId }) =>
-  ({ pane: state.PaneState.panes[paneId] })
+const Pane = connect(
+  (state, { paneId }) => ({ pane: state.PaneState.panes[paneId] }),
+  dispatch => bindActionCreators({ confirmResize }, dispatch)
 )(_Pane)
-
-
-const ResizeBar = ({ parentFlexDirection, sectionId, dispatch }) => {
-  const barClass = (parentFlexDirection === 'row') ? 'col-resize' : 'row-resize'
-  return (
-    <div className={cx('resize-bar', barClass)}
-      onMouseDown={e => dispatch(PaneActions.startResize(e, sectionId))}
-    ></div>
-  )
-}
 
 export default Pane

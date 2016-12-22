@@ -34,10 +34,10 @@ class PanelAxis extends Component {
     let subviews
     if (panel.views.length) {
       subviews = panel.views.map(panelId =>
-        <Panel key={panelId} panelId={panelId} parentDirection={panel.direction} />
+        <Panel key={panelId} panelId={panelId} parentFlexDirection={panel.direction} />
       )
     } else {
-      subviews = <Panel panelId={panel.id} parentDirection={panel.direction} />
+      subviews = <Panel panelId={panel.id} parentFlexDirection={panel.direction} />
     }
 
     return (
