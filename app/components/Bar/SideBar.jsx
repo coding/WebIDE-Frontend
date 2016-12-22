@@ -1,11 +1,11 @@
 /* @flow weak */
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import _ from 'lodash'
+import { activateExtenstion } from '../Package/actions'
 
-const SideBarLabel = ({ label }) => {
+const SideBarLabel = ({ label, isActive, onClick }) => {
   return (
-    <div className='side-bar-label'>
+    <div className='side-bar-label' onClick={onClick} >
       <div className='side-bar-label-container'>
         <div className='side-bar-label-content'>
           <i className={cx('icon', label.icon)}></i>
@@ -16,20 +16,26 @@ const SideBarLabel = ({ label }) => {
   )
 }
 
-const _SideBar = ({ side, labels }) => {
+const _SideBar = ({ labels, side, activeExtenstionId, dispatch }) => {
   return (
     <div className={'bar side-bar ' + side}>
-      {labels.map(label => <SideBarLabel label={label} key={label.name}></SideBarLabel>)}
+      {labels.map((label, idx) =>
+        <SideBarLabel key={label.packageId}
+          label={label}
+          onClick={e => dispatch(activateExtenstion(label.packageId))}
+          isActive={activeExtenstionId ? activeExtenstionId === label.packageId : idx === 0}
+        />
+      )}
     </div>
   )
 }
 
 export default connect((state, { side }) => {
   const localPackages = state.PackageState.localPackages
-  const labels = _.reduce(localPackages, (labels, pkg, pkgName) => {
-    if (pkg.type === 'extension' && pkg.ui.position === side)
-      labels.push({...pkg.ui.label, name: pkgName})
-    return labels
-  }, [])
-  return { labels }
+  const { extensionIds, activeExtenstionId } = state.PackageState.extensionsUIState.panels[side]
+  const labels = extensionIds.map(id => {
+    let label = localPackages[id].ui.label
+    return {...label, packageId: id}
+  })
+  return { labels, activeExtenstionId }
 })(_SideBar)

@@ -12,6 +12,12 @@ export const fetchPackageList = () => dispatch => {
 export const PACKAGE_UPDATE_LOCAL = 'PACKAGE_UPDATE_LOCAL'
 export const updateLocalPackage = createAction(PACKAGE_UPDATE_LOCAL)
 
+export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
+export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgName, shouldEnable) => ({
+  name: pkgName,
+  shouldEnable: shouldEnable
+}))
+
 export const fetchPackage = (pkgName) => (dispatch, getState) => {
   const pkgInfo = api.fetchPackageInfo(pkgName)
   const pkgScript = api.fetchPackageScript(pkgName)
@@ -26,9 +32,5 @@ export const fetchPackage = (pkgName) => (dispatch, getState) => {
   })
 }
 
-
-export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
-export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgName, shouldEnable) => ({
-  name: pkgName,
-  enable: shouldEnable
-}))
+export const PACKAGE_ACTIVATE_EXTENSION = 'PACKAGE_ACTIVATE_EXTENSION'
+export const activateExtenstion = createAction(PACKAGE_ACTIVATE_EXTENSION)
