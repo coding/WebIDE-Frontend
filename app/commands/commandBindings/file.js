@@ -122,6 +122,11 @@ export default {
     }
 
     Modal.dismissModal()
+  },
+
+
+  'file:download': c => {
+    api.downloadFile(c.context.path, c.context.isDir)
   }
   // 'file:unsaved_files_list':
 }

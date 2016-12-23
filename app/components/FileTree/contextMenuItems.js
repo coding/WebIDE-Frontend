@@ -13,6 +13,10 @@ var items = [
     name: 'Rename...',
     icon: '',
     command: 'file:rename'
+  }, {
+    name: 'Download',
+    icon: '',
+    command: 'file:download'
   }
 ]
 
