@@ -65,3 +65,12 @@ export function initializeFileTree () {
     api.fetchPath('/').then(data => dispatch(loadNodeData(data)))
   }
 }
+
+export const uploadFilesToPath = (files, path) => {
+  return (dispatch, getState) => {
+    if (!files.length) return
+    _(files).forEach(file => {
+      api.uploadFile(path, file)
+    })
+  }
+}

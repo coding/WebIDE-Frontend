@@ -10,7 +10,7 @@ export function fetchPath (path, other, group) {
   })
 }
 
-export function downloadFile(path, shouldPacked) {
+export function downloadFile (path, shouldPacked) {
   const packOrRaw = shouldPacked ? 'pack' : 'raw'
   let url = `${config.baseURL}/workspaces/${config.spaceKey}/${packOrRaw}`
   url += '?' + qs.stringify({
@@ -18,6 +18,16 @@ export function downloadFile(path, shouldPacked) {
     inline: false
   })
   window.open(url, '_blank')
+}
+
+export function uploadFile (path, file) {
+  let formdata = new FormData()
+  formdata.append('path', path)
+  formdata.append('files', file, file.name)
+  fetch(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, {
+    method: 'POST',
+    body: formdata,
+  })
 }
 
 

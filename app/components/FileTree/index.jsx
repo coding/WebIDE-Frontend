@@ -9,6 +9,19 @@ import * as FileTreeActions from './actions'
 import FileTreeContextMenuItems from './contextMenuItems'
 import subscribeToFileChange from './subscribeToFileChange'
 
+const FileUploadInput = ({ node, handleUpload }) => {
+  return (
+    <form id='filetree-hidden-input-form' style={{position: 'fixed',top: '-10000px'}}>
+      <input
+        id='filetree-hidden-input'
+        type='file'
+        name='files'
+        multiple={true}
+        onChange={e=>handleUpload(e.target.files, node.path)}
+      />
+    </form>
+  )
+}
 
 class FileTree extends Component {
   constructor (props) {
@@ -92,6 +105,8 @@ class FileTree extends Component {
           context={this.state.contextNode}
           deactivate={()=>this.setState({ isContextMenuActive: false })}
         />
+        <FileUploadInput node={this.state.contextNode}
+          handleUpload={this.props.uploadFilesToPath} />
       </div>
     )
   }
