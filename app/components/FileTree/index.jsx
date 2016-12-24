@@ -90,7 +90,7 @@ class FileTree extends Component {
           isActive={isContextMenuActive}
           pos={contextMenuPos}
           context={this.state.contextNode}
-          deactivate={this.setState.bind(this, { isContextMenuActive: false })}
+          deactivate={()=>this.setState({ isContextMenuActive: false })}
         />
       </div>
     )
