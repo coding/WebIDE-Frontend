@@ -19,44 +19,48 @@ const triangleIcon = (<div
 />)
 
 
-const handleMenuItemCommand = (item) => {
-  if (typeof item.command === 'function') {
-    item.command()
+const handleMenuItemCommand = (command) => {
+  if (typeof command === 'function') {
+    command()
     return true
-  } else if (typeof item.command === 'string') {
+  } else {
     // ↓ temporary measure to resolve a cyclic dependent conflict
-    require('../../commands').dispatchCommand(item.command)
+    require('../../commands').dispatchCommand(command)
     return true
   }
 }
 
 const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, state}) => {
+  let itemElement = item.element ? React.createElement(item.element, { item }) : null
   if (item.name == '-') return <li><hr /></li>
   const disabled = item.checkDisable ? item.checkDisable(state) : item.isDisabled
   return (
     <li className='menu-item'>
       <div
-        className={cx('menu-item-container', {active: isActive, disabled: disabled, padding: '4px 8px' })}
+        className={cx('menu-item-container', {
+          active: isActive,
+          disabled: disabled,
+          padding: '4px 8px'
+        })}
         onMouseEnter={e => toggleActive(index)}
         onClick={e => {
-          if(disabled)
-            return
-          handleMenuItemCommand(item)&&deactivateTopLevelMenu()
-        }} >
+          if (disabled) return
+          handleMenuItemCommand(item.command)&&deactivateTopLevelMenu()
+        }}
+      >
         <div className={item.icon} style={{ paddingTop: '3px', marginRight: '8px', marginLeft: '-6px' }}></div>
-        <div className='menu-item-name'>{item.displayName || item.name}</div>
-        { item.shortcut?
-          <div className='menu-item-shortcut'>{item.shortcut}</div>
-          : null }
-        {
-          item.items && item.items.length ?
-          triangleIcon : null
-        }
+        <div className='menu-item-name'>{itemElement || item.displayName || item.name}</div>
+        { item.shortcut
+          ? <div className='menu-item-shortcut'>{item.shortcut}</div>
+        : null }
+        { item.items && item.items.length
+          ? triangleIcon
+        : null }
       </div>
       { isActive && item.items && item.items.length ?
         <Menu items={item.items} className={cx({active: isActive})}
           deactivateTopLevelMenu={deactivateTopLevelMenu} />
-        : null}
+      : null }
     </li>
   )
 }
