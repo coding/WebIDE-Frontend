@@ -28,8 +28,19 @@ class CodeMirrorEditor extends Component {
       autoCloseBrackets: true,
     });
 
+    // @fixme:
+    // related counterparts:
+    // 1. IdeEnvironment.js
+    // 2. commandBindings/file.js
+    window.ide.editors[tab.id] = editor
+
     // 1. resize
     editor.setSize(width, height);
+
+    // 2. prevent default codemirror dragover handler, so the drag-to-split feature can work
+    //    but the default handler that open a file on drop is actually pretty neat,
+    //    should make our drag feature compatible with it later
+    editor.on('dragover', e => e.preventDefault())
 
     if (tab.content) {
       const {body, path} = tab.content;
@@ -44,7 +55,6 @@ class CodeMirrorEditor extends Component {
     }
     editor.focus();
     editor.isFocused = editor.hasFocus; // little hack to make codemirror work with legacy interface
-    tab.editor = editor;
     editor.on('change', this.onChange);
     editor.on('focus', () => this.props.dispatch(TabActions.activateTab(tab.id)))
   }

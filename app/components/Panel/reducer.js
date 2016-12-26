@@ -57,7 +57,7 @@ const BasePanelLayout = {
               views: [
                 {ref: 'PANEL_LEFT', size: 10, contentType: 'FILETREE'},
                 {ref: 'PANEL_CENTER', size: 40, contentType: 'PANES'},
-                {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: false},
+                {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true},
               ],
               size: 75
             },
@@ -104,6 +104,14 @@ const constructPanelState = (state, panelConfig, parent) => {
     [panel.id]: { $set: panel }
   }})
 
+  if (panel.ref) {
+    nextState = update(nextState, {
+      panelRefs: {
+        [panel.ref]: { $set: panel.id }
+      }
+    })
+  }
+
   if (!panel.resizable) {
     let prevSibling = getPrevSibling(nextState, panel)
     if (prevSibling) {
@@ -122,7 +130,7 @@ const constructPanelState = (state, panelConfig, parent) => {
   return nextState
 }
 
-let defaultState = { rootPanelId: '', panels: {} }
+let defaultState = { rootPanelId: '', panels: {}, panelRefs: {} }
 defaultState = constructPanelState(defaultState, BasePanelLayout)
 
 

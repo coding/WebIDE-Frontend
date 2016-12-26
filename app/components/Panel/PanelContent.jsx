@@ -6,7 +6,7 @@ import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
 import { SideBar } from '../Bar'
-import { ExtensionPanelContent } from '../Package'
+import ExtensionPanelContent from './ExtensionPanelContent'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {

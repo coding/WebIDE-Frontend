@@ -6,7 +6,7 @@ const stateDomainsToCache = [
   // 'FileTreeState',
   // 'PanelState',
   'PaneState',
-  // 'TabState',
+  'TabState',
   // 'EditorState',
   // 'ModalState',
   // 'TerminalState',
@@ -27,7 +27,7 @@ const stateFilter = (state) => stateDomainsToCache.reduce((stateToCache, domain)
 
 let cachedState
 localStoreCache.beforeReducer = (state, action) => {
-  // if (!state) state = JSON.parse(window.localStorage.getItem('snapshot'))
+  if (!state) state = JSON.parse(window.localStorage.getItem('snapshot'))
   if (!state) return
   cachedState = JSON.stringify(stateFilter(state))
   return state

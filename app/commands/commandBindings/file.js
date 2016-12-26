@@ -56,9 +56,9 @@ export default {
 
 
   'file:save': (c) => {
-    const TabState = getState().TabState
+    const { TabState } = getState()
     const activeTab = Tab.selectors.getActiveTab(TabState)
-    const content = activeTab.editor.getValue()
+    const content = activeTab ? ide.editors[activeTab.id].getValue() : ''
 
     if (!activeTab.path) {
       const createFile = createFileWithContent(content)

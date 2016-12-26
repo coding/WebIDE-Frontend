@@ -3,12 +3,47 @@ import { update } from '../../utils'
 import {
   updatePackageList,
   updateLocalPackage,
-  togglePackage
+  togglePackage,
+  activateExtenstion,
 } from './actions'
 
 const defaultState = {
   remotePackages: {},
-  localPackages: {}
+  localPackages: {},
+  extensionsUIState: {
+    panels: {
+      right: {
+        extensionIds: [],
+        activeExtenstionId: '',
+      },
+      left: {
+        extensionIds: [],
+        activeExtenstionId: '',
+      },
+      bottom: {
+        extensionIds: [],
+        activeExtenstionId: '',
+      }
+    },
+  },
+}
+
+const toggleExtensionAvailability = (state, pkgId) => {
+  // handle availability state of extension packages in side panels
+  let pkg = state.localPackages[pkgId]
+  if (!pkg.type === 'extension' || !pkg.ui || !pkg.ui.position) return state
+
+  let extensionIds = state.extensionsUIState.panels[pkg.ui.position].extensionIds
+  if (extensionIds.includes(pkgId) === pkg.enabled) return state
+
+  return update(state, {
+    extensionsUIState: { panels: { [pkg.ui.position]: {
+      extensionIds: pkg.enabled
+        ? {'$push' : [pkgId] }
+        : {'$without': pkgId }
+    }}}
+  })
+
 }
 
 export default handleActions({
@@ -18,23 +53,102 @@ export default handleActions({
 
   [updateLocalPackage]: (state, action) => {
     const packageObj = action.payload
-    updateLocalPackage(packageObj)
-    return update(state, {
+    let nextState = update(state, {
       localPackages: {
-        [packageObj.name]: { $set: packageObj }
+        [packageObj.id]: { $set: packageObj }
       }
     })
+    return toggleExtensionAvailability(nextState, packageObj.id)
   },
 
   [togglePackage]: (state, action) => {
-    let { name, enable } = action.payload
-    let targetPackage = state.localPackages[name]
-    if (enable === targetPackage.enabled) return state
-    if (typeof enable !== 'boolean') enable = !targetPackage.enabled
-    return update(state, {
+    let { id, shouldEnable } = action.payload
+    let targetPackage = state.localPackages[id]
+    if (shouldEnable === targetPackage.enabled) return state
+    if (typeof shouldEnable !== 'boolean') shouldEnable = !targetPackage.enabled
+
+    let nextState = update(state, {
       localPackages: {
-        [name]: { enabled: { $set: enable } }
+        [id]: { enabled: { $set: shouldEnable } }
+      }
+    })
+
+    return toggleExtensionAvailability(nextState, id)
+  }
+
+}, defaultState)
+
+
+const getPanelByRef = (PanelState, ref) => {
+  return PanelState.panels[PanelState.panelRefs[ref]]
+}
+export const PackageCrossReducer = handleActions({
+  [activateExtenstion]: (allState, action) => {
+    let nextState = allState
+    let packageId = action.payload
+
+    const { PackageState, PanelState } = allState
+    const pkg = PackageState.localPackages[packageId]
+    const panelSide = pkg.ui.position
+
+    const activeExtenstionId = PackageState.extensionsUIState.panels[panelSide].activeExtenstionId
+    const targetPanel = getPanelByRef(PanelState, `PANEL_${panelSide.toUpperCase()}`)
+
+    if (activeExtenstionId === packageId) packageId = ''
+    const shouldHidePanel = packageId ? false : true
+    nextState = update(nextState, {
+      PanelState: {
+        panels: {
+          [targetPanel.id]: { hide: { $set: shouldHidePanel } }
+        }
+      }
+    })
+
+    // special case: redistribute size between center and right panel
+    if (targetPanel.ref === 'PANEL_RIGHT') {
+      let centerPanel = getPanelByRef(nextState.PanelState, 'PANEL_CENTER')
+      let centerPanelSize = shouldHidePanel
+        ? centerPanel.size + targetPanel.size
+        : centerPanel.size - targetPanel.size
+      if (centerPanelSize <= 0) centerPanelSize = targetPanel.size
+
+      nextState = update(nextState, {
+        PanelState: {
+          panels: {
+            [centerPanel.id]: {
+              size: { $set: centerPanelSize }
+            }
+          }
+        }
+      })
+    }
+
+    return update(nextState, {
+      PackageState: {
+        extensionsUIState: { panels: {[panelSide]: {
+          activeExtenstionId: { $set: packageId }
+        }}}
       }
     })
   }
-}, defaultState)
+})
+
+/*
+Example package manifest:
+
+{
+  id: "coding-ide-env",
+  version: "0.0.1",
+  description: "Extension for Coding WebIDE, manage IDE environment",
+  main: "index.js",
+  type: "extension",
+  ui: {
+    position: "right",
+    label: {
+      text: "Environment",
+      icon: "fa fa-close"
+    }
+  }
+}
+
+ */
