@@ -195,7 +195,6 @@ const findNodeByPath = (path) => {
 
 var _state = {}
 _state.rootNode = RootNode
-
 const normalizeState = (_state) => {
   var state = {
     findNodeByPath,
@@ -205,6 +204,8 @@ const normalizeState = (_state) => {
   state.rootNode.name = config.projectName
   return state
 }
+
+_state = normalizeState(_state)
 
 export default handleActions({
   [FILETREE_LOAD_DATA]: (state, action) => {

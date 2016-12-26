@@ -23,7 +23,6 @@ class FileTree extends Component {
 
   componentDidMount () {
     subscribeToFileChange()
-    this.props.initializeFileTree()
   }
 
   onContextMenu = (e, node) => {
