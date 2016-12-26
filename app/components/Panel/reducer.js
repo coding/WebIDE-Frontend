@@ -55,8 +55,8 @@ const BasePanelLayout = {
             {
               direction: 'row',
               views: [
-                {ref: 'PANEL_LEFT', size: 10, contentType: 'FILETREE'},
-                {ref: 'PANEL_CENTER', size: 40, contentType: 'PANES'},
+                {ref: 'PANEL_LEFT', size: 20, contentType: 'FILETREE'},
+                {ref: 'PANEL_CENTER', size: 80, contentType: 'PANES'},
                 {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true},
               ],
               size: 75
