@@ -23,7 +23,7 @@ class Menu extends Component {
   }
 
   render () {
-    const {items, className, style, deactivate, deactivateTopLevelMenu} = this.props
+    const {items, className, context, style, deactivate, deactivateTopLevelMenu} = this.props
     return (
       <ul className={cx('menu', className)}
         style={style}
@@ -35,7 +35,8 @@ class Menu extends Component {
             toggleActive={this.activateItemAtIndex}
             deactivateTopLevelMenu={deactivate||deactivateTopLevelMenu}
             key={`menu-item-${item.name}-${i}`}
-            state={this.props.state} /> )}
+            state={this.props.state}
+            context={this.props.context} /> )}
       </ul>
     )
   }
