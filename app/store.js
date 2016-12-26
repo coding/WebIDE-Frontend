@@ -17,7 +17,7 @@ import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
-import PackageReducer from './components/Package/reducer'
+import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
 
 import localStoreCache from './localStoreCache'
 
@@ -38,7 +38,7 @@ const combinedReducers = combineReducers({
   SettingState: SettingReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, PackageCrossReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,

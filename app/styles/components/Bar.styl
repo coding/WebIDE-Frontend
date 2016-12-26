@@ -3,6 +3,7 @@ $bar-size= 25px
 // the rotated label trick, see: https://gist.github.com/aiboy/7406727
 .side-bar {
   display: flex;
+
   &.left, &.right {
     width: $bar-size;
     flex-direction: column;
@@ -13,10 +14,13 @@ $bar-size= 25px
   }
 
   .side-bar-label {
+    cursor: pointer;
     overflow: hidden;
-    border: 1px solid red;
-    padding-tb: 5px
-    text-align right
+    padding-tb: 5px;
+    text-align right;
+    &.active {
+      background-color: gray(90%);
+    }
   }
 
   .side-bar-label-container {

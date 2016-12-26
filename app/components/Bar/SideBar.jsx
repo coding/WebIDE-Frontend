@@ -5,7 +5,9 @@ import { activateExtenstion } from '../Package/actions'
 
 const SideBarLabel = ({ label, isActive, onClick }) => {
   return (
-    <div className='side-bar-label' onClick={onClick} >
+    <div className={cx('side-bar-label', {
+      active: isActive
+    })} onClick={onClick} >
       <div className='side-bar-label-container'>
         <div className='side-bar-label-content'>
           <i className={cx('icon', label.icon)}></i>
@@ -23,7 +25,7 @@ const _SideBar = ({ labels, side, activeExtenstionId, dispatch }) => {
         <SideBarLabel key={label.packageId}
           label={label}
           onClick={e => dispatch(activateExtenstion(label.packageId))}
-          isActive={activeExtenstionId ? activeExtenstionId === label.packageId : idx === 0}
+          isActive={activeExtenstionId === label.packageId}
         />
       )}
     </div>

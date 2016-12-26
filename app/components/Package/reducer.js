@@ -74,20 +74,64 @@ export default handleActions({
     })
 
     return toggleExtensionAvailability(nextState, id)
-  },
-
-  [activateExtenstion]: (state, action) => {
-    const packageId = action.payload
-    let pkg = state.localPackages[packageId]
-    let panelSide = pkg.ui.position
-    return update(state, {
-      extensionsUIState: { panels: {[panelSide]: {
-        activeExtenstionId: { $set: packageId }
-      }}}
-    })
   }
+
 }, defaultState)
 
+
+const getPanelByRef = (PanelState, ref) => {
+  return PanelState.panels[PanelState.panelRefs[ref]]
+}
+export const PackageCrossReducer = handleActions({
+  [activateExtenstion]: (allState, action) => {
+    let nextState = allState
+    let packageId = action.payload
+
+    const { PackageState, PanelState } = allState
+    const pkg = PackageState.localPackages[packageId]
+    const panelSide = pkg.ui.position
+
+    const activeExtenstionId = PackageState.extensionsUIState.panels[panelSide].activeExtenstionId
+    const targetPanel = getPanelByRef(PanelState, `PANEL_${panelSide.toUpperCase()}`)
+
+    if (activeExtenstionId === packageId) packageId = ''
+    const shouldHidePanel = packageId ? false : true
+    nextState = update(nextState, {
+      PanelState: {
+        panels: {
+          [targetPanel.id]: { hide: { $set: shouldHidePanel } }
+        }
+      }
+    })
+
+    // special case: redistribute size between center and right panel
+    if (targetPanel.ref === 'PANEL_RIGHT') {
+      let centerPanel = getPanelByRef(nextState.PanelState, 'PANEL_CENTER')
+      let centerPanelSize = shouldHidePanel
+        ? centerPanel.size + targetPanel.size
+        : centerPanel.size - targetPanel.size
+      if (centerPanelSize <= 0) centerPanelSize = targetPanel.size
+
+      nextState = update(nextState, {
+        PanelState: {
+          panels: {
+            [centerPanel.id]: {
+              size: { $set: centerPanelSize }
+            }
+          }
+        }
+      })
+    }
+
+    return update(nextState, {
+      PackageState: {
+        extensionsUIState: { panels: {[panelSide]: {
+          activeExtenstionId: { $set: packageId }
+        }}}
+      }
+    })
+  }
+})
 
 /*
 Example package manifest:

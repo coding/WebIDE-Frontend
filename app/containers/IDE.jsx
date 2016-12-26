@@ -1,5 +1,7 @@
 /* @flow weak */
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { initializeFileTree } from '../components/FileTree/actions'
 import PanelsContainer from '../components/Panel'
 import Utilities from './Utilities'
 
@@ -13,7 +15,8 @@ class IDE extends Component {
     this.state = { isReady: false }
   }
 
-  componentWillMount () {
+  componentWillMount () {  // initLifecycle_3: IDE specific init
+    this.props.dispatch(initializeFileTree()) // @fixme: this is related to the quirk in filetree state
     api.setupWorkspace().then(_config => {
       Object.assign(config, _config)
       this.setState({ isReady: true })
@@ -31,4 +34,4 @@ class IDE extends Component {
   }
 }
 
-export default IDE
+export default connect()(IDE)
