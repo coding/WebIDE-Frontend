@@ -25,7 +25,8 @@ var items = [
       document.getElementById('filetree-hidden-input-form').reset()
       const input = document.getElementById('filetree-hidden-input')
       input.dispatchEvent(new MouseEvent('click'))
-    }
+    },
+    visible: ctx => Boolean(ctx.isDir)
   }
 ]
 

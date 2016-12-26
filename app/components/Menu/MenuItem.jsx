@@ -30,10 +30,12 @@ const handleMenuItemCommand = (command) => {
   }
 }
 
-const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, state}) => {
+const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, state, context}) => {
+  if (item.visible && !item.visible(context)) return null
   let itemElement = item.element ? React.createElement(item.element, { item }) : null
   if (item.name == '-') return <li><hr /></li>
   const disabled = item.checkDisable ? item.checkDisable(state) : item.isDisabled
+
   return (
     <li className='menu-item'>
       <div
