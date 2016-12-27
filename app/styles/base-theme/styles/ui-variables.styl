@@ -1,17 +1,21 @@
-// Text Colors
-$text-color= #333;
-$text-color-subtle= #777;
-$text-color-highlight= #111;
-$text-color-selected= $text-color-highlight;
+gray($amount) {
+  lighten(#000000, $amount);
+}
 
-$text-color-info= #5293d8;
-$text-color-success= #1fe977;
-$text-color-warning= #f78a46;
-$text-color-error= #c00;
+// Text Colors
+$text-color            = gray(30%);
+$text-color-subtle     = gray(50%);
+$text-color-highlight  = gray(20%);
+$text-color-selected   = $text-color-highlight;
+
+$text-color-info       = hsl(219,  79%, 66%);
+$text-color-success    = hsl(140,  44%, 62%);
+$text-color-warning    = hsl( 36,  60%, 72%);
+$text-color-error      = hsl(  9, 100%, 64%);
 
 // Base colors
-$base-background-color= #fff;
-$base-border-color= #eee;
+$base-background-color = gray(96%);
+$base-border-color     = darken($base-background-color, 8%);
 
 // Background colors
 $background-color-info= #0098ff;
@@ -47,11 +51,11 @@ $button-background-color-hover= lighten($button-background-color, 5%);
 $button-background-color-selected= $button-background-color-hover;
 $button-border-color= #aaa;
 
-$tab-background-color= #f4f4f4;
-$tab-background-color-active= #fff;
-$tab-border-color= $base-border-color;
-$tab-bar-background-color= #fff;
-$tab-bar-border-color= darken($tab-background-color-active, 10%);
+$tab-bar-background-color    = $base-background-color;
+$tab-bar-border-color        = $base-border-color;
+$tab-background-color        = $tab-bar-background-color;
+$tab-background-color-active = lighten($tab-bar-background-color, 100%);
+$tab-border-color            = $base-border-color;
 
 $tree-view-background-color= $tool-panel-background-color;
 $tree-view-background-color-highlight= darken($tree-view-background-color, 5%);
@@ -81,7 +85,7 @@ $component-icon-size= 16px;
 $component-line-height= 25px;
 $component-border-radius= 2px;
 
-$tab-height= 30px;
+$tab-height= 28px;
 
 // Other
 $font-family= 'BlinkMacSystemFont', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
@@ -102,3 +106,6 @@ $added-color = #0fd000;
 $deleted-color = #616161;
 
 
+// panel
+$panel-background-color = $base-background-color;
+$panel-border-color     = $base-border-color;

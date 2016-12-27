@@ -1,6 +1,4 @@
-$tab-height = 30px;
-$tab-control-width = 16px;
-
+$tab-control-width = $tab-height*0.5;
 .tab-container {
   position: relative;
   display: flex;
@@ -9,7 +7,6 @@ $tab-control-width = 16px;
   width: 100%;
   height: 100%;
 }
-
 
 .tab-content {
   flex: 1 0 auto;
@@ -65,7 +62,7 @@ $tab-control-width = 16px;
 
 .tab-label-insert-pos {
   width: 2px;
-  background-color: $blue-highlight-color;
+  background-color: $text-color-info;
   height: 100%;
   position: relative;
   &:before {
@@ -75,7 +72,7 @@ $tab-control-width = 16px;
     border-color: transparent;
     border-width: 6px;
     border-bottom: none;
-    border-top-color: $blue-highlight-color;
+    border-top-color: $text-color-info;
     absolute(top 4px left -5px)
     margin-top: -4px;
   }
@@ -127,7 +124,7 @@ $tab-control-width = 16px;
     margin-top: $tab-control-width*0.25;
     margin-left: $tab-control-width*0.25;
     border-radius: 100%;
-    background-color: $blue-highlight-color;
+    background-color: $text-color-info;
     display: none;
   }
 
@@ -137,7 +134,7 @@ $tab-control-width = 16px;
   }
 
   &.active {
-    border-left-color: $blue-highlight-color
+    border-left-color: $text-color-info
   }
 
   // case hover-on-tab / tab-is-active:
@@ -157,10 +154,10 @@ $tab-control-width = 16px;
 
 }
 
-
 .tab-content-item {
   display: none;
   &.active {
     display: block;
   }
 }
+
