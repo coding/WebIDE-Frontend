@@ -1,11 +1,3 @@
-hsb($h-hsb, $s-hsb, $b-hsb, $a = 1)
-  if $b-hsb == 0
-    return rgba(hsla(0, 0, 0, $a))
-  else
-    $l-hsl = ($b-hsb / 2) * (2 - ($s-hsb / 100))
-    $s-hsl = ($b-hsb * $s-hsb) / ($l-hsl < 50 ? $l-hsl * 2 : 200 - $l-hsl * 2)
-    return rgba(hsla($h-hsb, $s-hsl, $l-hsl, $a))
-
 -pos(type, args)
   // always set a position
   position: unquote(type)
@@ -60,43 +52,4 @@ absolute() {
 
 relative() {
   -pos('relative', arguments);
-}
-
-noSelect() {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-}
-
-codingMonkeyBackground() {
-  background-image: url("https://dn-coding-net-production-static.qbox.me/static/cb75498a0ffd36e2c694da62f1bdb86c.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-gray($amount) {
-  lighten(#000000, $amount);
-}
-
-margin-lr($margin) {
-  margin-left: $margin;
-  margin-right: $margin;
-}
-
-margin-tb($margin) {
-  margin-top: $margin;
-  margin-bottom: $margin;
-}
-
-padding-lr($padding) {
-  padding-left: $padding;
-  padding-right: $padding;
-}
-
-padding-tb($padding) {
-  padding-top: $padding;
-  padding-bottom: $padding;
 }
