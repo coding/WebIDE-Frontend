@@ -247,8 +247,26 @@ export function mergeFile (path) {
   return dispatch => dispatch(addModal('GitMergeFile', {path}  ))
 }
 
-export function getConflicts ({path}) {
-  return dispatch => api.gitConflicts({path})
+export const GIT_DIFF = 'GIT_DIFF'
+export const gitDiff = createAction(GIT_DIFF)
+export function diffFile ({ path, newRef, oldRef }) {
+  return dispatch => dispatch(addModal('GitDiffFile', { path, newRef, oldRef }))
+}
+
+export function gitFileDiff ({ path, newRef, oldRef }) {
+  return dispatch => api.gitFileDiff({ path, newRef, oldRef })
+}
+
+export function getConflicts ({ path }) {
+  return dispatch => api.gitConflicts({ path })
+}
+
+export function gitReadFile ({ref, path}) {
+  return dispatch => api.gitReadFile({ref, path})
+}
+
+export function readFile ({path}) {
+  return dispatch => api.readFile(path)
 }
 
 export function resolveConflict ({path, content}) {

@@ -14,10 +14,11 @@ class GitCommitDiffView extends Component {
     super(props)
     this.state = {
     }
+    this.handleFileClick = this.handleFileClick.bind(this)
   }
 
   render () {
-    const {title} = this.props.commitDiff
+    const {title, ref} = this.props.commitDiff
     return (
       <div>
         <div className='git-resolve-conflicts'>
@@ -41,7 +42,16 @@ class GitCommitDiffView extends Component {
   }
 
   handleFileClick (path) {
-    // this.props.mergeFile(_.trimStart(path, '/'))
+    const {oldRef, ref} = this.props.commitDiff
+    if (oldRef) {
+      this.props.diffFile({
+        path, newRef: ref, oldRef
+      })
+    } else {
+      this.props.diffFile({
+        path, newRef: ref, oldRef: '~~unstaged~~'
+      })
+    }
   }
 }
 

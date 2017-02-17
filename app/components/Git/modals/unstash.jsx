@@ -16,6 +16,7 @@ class GitUntashView extends Component {
     this.handleClear = this.handleClear.bind(this)
     this.handleApply = this.handleApply.bind(this)
     this.handleBranchName = this.handleBranchName.bind(this)
+    this.handleView = this.handleView.bind(this)
   }
 
   render () {
@@ -53,11 +54,11 @@ class GitUntashView extends Component {
                 {this.renderStashList(stashList, selectStash, selectedStash)}
               </div>
               <div className="col-lg-2 btn-list">
-                {/*<button className='btn btn-default'
+                <button className='btn btn-default'
                   type='button'
-                  onClick={e => console.log('view')}>
+                  onClick={this.handleView}>
                   View
-                </button>*/}
+                </button>
                 <button className='btn btn-default'
                   type='button'
                   disabled={!selectedStash}
@@ -133,6 +134,17 @@ class GitUntashView extends Component {
         </ul>
       </div>
     )
+  }
+
+  handleView(e) {
+    let commit = this.props.unstash.selectedStash.name
+    // let oldRef = commit + '^'
+    this.props.gitCommitDiff({
+      title: 'View Changes',
+      ref: commit
+    })
+    e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
   }
 
   handleDrop(e) {

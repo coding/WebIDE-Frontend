@@ -15,6 +15,7 @@ export {PackageControlView} from '../../Package';
 export GitRebaseStart from '../../Git/modals/rebaseStart';
 export GitResolveConflictsView from '../../Git/modals/resolveConflicts';
 export GitMergeFileView from '../../Git/modals/mergeFile';
+export GitDiffFileView from '../../Git/modals/diffFile';
 export GitRebasePrepare from '../../Git/modals/rebasePrepare';
 export GitRebaseInput from '../../Git/modals/rebaseInput';
 export GitCommitDiffView from '../../Git/modals/commitDiff';

@@ -106,3 +106,11 @@ export function gitRebaseUpdate (lines) {
 export function gitCommitDiff ({ref}) {
   return request.get(`/git/${config.spaceKey}/diff`, {ref})
 }
+
+export function gitFileDiff ({ path, oldRef, newRef }) {
+  return request.get(`/git/${config.spaceKey}/diff`, { path, oldRef, newRef })
+}
+
+export function gitReadFile ({ref, path}) {
+  return request.get(`/git/${config.spaceKey}/read`, { path, ref, base64: false })
+}

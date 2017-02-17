@@ -57,7 +57,6 @@ class _GitFileTreeNode extends Component {
     const childrenStagingStatus = this.getChildrenStagingStatus()
     const FILETREE_INDENT = 14
     let indentCompensation = this.getIndentCompensation()
-
     return (
       <div className='filetree-node-container'>
         { node.isRoot ?
@@ -114,7 +113,7 @@ class _GitFileTreeNode extends Component {
             <span className='filetree-node-icon'>
               <i className={cx('fa file-status-indicator', node.status.toLowerCase(), {
                 'fa-folder-o': node.isDir,
-                'fa-pencil-square': node.status == 'MODIFIED' || node.status == 'CHANGED',
+                'fa-pencil-square': node.status == 'MODIFIED' || node.status == 'CHANGED' || node.status == 'MODIFY',
                 'fa-plus-square': node.status == 'UNTRACKED' || node.status == 'ADD',
                 'fa-minus-square': node.status == 'MISSING',
                 'fa-exclamation-circle': node.status == 'CONFLICTION'
