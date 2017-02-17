@@ -40,28 +40,26 @@ class GitDiffView extends Component {
         this.setState({
           isLoading: false,
         })
-        if (res.diff) {
-          const diffPatch = res.diff
-          if (diffPatch.split('\n')[3] === '--- /dev/null') {
-            this.props.gitReadFile({ref: newRef, path: path})
-              .then(res => {
-                this.initDiff('', res.content)
-              })
-          } else if (oldRef && oldRef !== '~~unstaged~~'){
-            this.props.gitReadFile({ref: oldRef, path: path})
-              .then(res => {
-                let content = res.content
-                let newContent = jsdiff.applyPatch(content, diffPatch)
-                this.initDiff(newContent, content)
-              })
-          } else {
-            this.props.readFile({ path: path })
-              .then(res => {
-                let content = res.content
-                let newContent = jsdiff.applyPatch(content, diffPatch)
-                this.initDiff(newContent, content)
-              })
-          }
+        const diffPatch = res.diff
+        if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
+          this.props.gitReadFile({ref: newRef, path: path})
+            .then(res => {
+              this.initDiff('', res.content)
+            })
+        } else if (oldRef && oldRef !== '~~unstaged~~'){
+          this.props.gitReadFile({ref: oldRef, path: path})
+            .then(res => {
+              let content = res.content
+              let newContent = jsdiff.applyPatch(content, diffPatch)
+              this.initDiff(newContent, content)
+            })
+        } else {
+          this.props.readFile({ path: path })
+            .then(res => {
+              let content = res.content
+              let newContent = jsdiff.applyPatch(content, diffPatch)
+              this.initDiff(newContent, content)
+            })
         }
       })
     } else {
