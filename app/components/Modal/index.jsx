@@ -18,6 +18,7 @@ import {
   GitRebaseStart,
   GitResolveConflictsView,
   GitMergeFileView,
+  GitDiffFileView,
   GitRebasePrepare,
   GitRebaseInput,
   GitCommitDiffView,
@@ -95,6 +96,9 @@ class Modal extends Component {
 
         case 'GitMergeFile':
           return <GitMergeFileView {...this.props} />
+
+        case 'GitDiffFile':
+          return <GitDiffFileView {...this.props} />
 
         case 'Prompt':
           return <Prompt {...this.props} />
