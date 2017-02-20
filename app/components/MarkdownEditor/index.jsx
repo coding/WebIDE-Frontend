@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AceEditor from '../AceEditor';
+import CodeMirrorEditor from '../CodeMirrorEditor'
 import { markdown } from 'markdown';
 import { connect } from 'react-redux';
 import cx from 'classnames';
@@ -12,7 +12,7 @@ const styles = {
 const PreviewEditor = (content) => {
   const makeHTMLComponent = (html) => React.DOM.div({ dangerouslySetInnerHTML: {__html: html} });
   return (
-    <div name="markdown_preview">
+    <div name="markdown_preview" className="markdown content">
     { makeHTMLComponent(markdown.toHTML(content)) }
     </div>);
 }
@@ -97,7 +97,7 @@ const MarkdownEditor = ({
           flexShrink: 0,
           flexBasis: 0,
         }}>
-        {React.createElement(AceEditor, { tab })}
+        {React.createElement(CodeMirrorEditor, { tab })}
       </div>): null
     }
       { (showPreview && !showBigSize) ? (
