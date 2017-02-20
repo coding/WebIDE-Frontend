@@ -75,6 +75,17 @@ $tab-highlight-bg-darker = #8ab0f3;
     &.mergeContainer {
       padding-top: 20px;
     }
+    &.diffContainer {
+      padding-top: 0;
+      padding-bottom: 0;
+      .CodeMirror-merge-2pane .CodeMirror-merge-pane {
+        height: 100%;
+        
+      }
+      .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
+        height: 100%;
+      }
+    }
     &>div {
       flex-grow: 1;
       -webkit-flex-grow: 1;

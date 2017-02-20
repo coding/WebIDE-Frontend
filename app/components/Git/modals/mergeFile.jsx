@@ -53,7 +53,7 @@ class GitMergeView extends Component {
       <div>
         <div className='git-merge'>
           <h1>
-          Conflicts List
+          Merge File: {this.props.content.path}
           </h1>
           <hr />
           <div className='diffModal'>
@@ -90,11 +90,11 @@ class GitMergeView extends Component {
   initMerge (data) {
     this.mergeView = CodeMirror.MergeView(this.editorDOM, {
       origLeft: data.local,
-      origRight: data.remote,
+      orig: data.remote,
       value: data.base,
       revertButtons: true,
     })
-    this.mergeView.setSize('100%', '100%')
+    this.mergeView.wrap.style.height = '100%'
 
     // require([`brace/mode/${getMode(that.props.content.path)}`], () => {
     // })
