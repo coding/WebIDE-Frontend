@@ -139,11 +139,10 @@ class FileTreeNode extends Component {
           <span className="filetree-node-arrow"
             onClick={e => openNode(node, null, e.altKey)}
           >
-            <i className={cx({
+            {(node.isDir && node.childrenCount !== 0)&&<i className={cx({
               'fa fa-angle-right': node.isFolded,
               'fa fa-angle-down': !node.isFolded,
-              hidden: !node.isDir || node.childrenCount === 0
-            })}></i>
+            })}></i>}
           </span>
           <span className="filetree-node-icon">
             <i className={cx({
