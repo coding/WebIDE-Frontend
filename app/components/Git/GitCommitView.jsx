@@ -10,12 +10,17 @@ import * as GitActions from './actions'
 import GitFileTree from './GitFileTree'
 
 var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
-  const {updateCommitMessage, commit, statusFiles} = actionProps
+  const {updateCommitMessage, commit, statusFiles, diffFile} = actionProps
   return isWorkingDirClean ?
     <h1 className=''>Your working directory is clean. Nothing to commit.</h1>
   : (<div>
       <GitFileTree
         statusFiles={statusFiles}
+        handleClick={(path) => {
+          diffFile({
+            path, newRef: 'HEAD', oldRef: '~~unstaged~~'
+          })
+        }}
       />
       <hr />
       <div className='git-commit-message-container'>
