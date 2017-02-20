@@ -7,57 +7,14 @@
 @import 'bootstrap/buttons';
 @import 'bootstrap/forms';
 
-@import "./mixins";
-@import "./variables";
-@import "./zindex";
-@import "./components";
-@import "./themes/light";
+@import 'normalize';
+@import 'ui-variables';
+@import "mixins";
+@import 'scaffolding';
 
-// 非大面积文字排版网站通常不需要列表项，如果需要可单独设置
-ul, ol {
-  list-style-type: none;
-  list-style-image: none;
-  margin: 0;
-  padding: 0;
-}
+@import "core-ui"
 
-.hidden {display: none;}
-
-html, body, #root {
-  width: 100vw;
-  height: 100vh;
-}
-
-::-webkit-scrollbar {
-    // width: 8px;
-    // height: 8px;
-    // -webkit-border-radius: 8px;
-    width: 0;
-    height: 0;
-    display: none;
-}
-
-::-webkit-scrollbar-button {
-  width: 0;
-  height: 0;
-  display: none;
-}
-
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-*[tabindex]:focus {
-  outline: 0 none
-}
-
-// ::-webkit-scrollbar-thumb {
-//   background-color: rgba(91, 91, 91, 0.50);
-// }
-
-// ::-webkit-scrollbar-thumb:hover {
-//   background-color: rgba(170, 170, 170, 0.80);
-// }
+.hidden {display: none !important;}
 
 .ide-container {
   width: 100%;
