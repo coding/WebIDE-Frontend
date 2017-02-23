@@ -25,7 +25,7 @@ const CommonConfig = {
     }),
     new CopyWebpackPlugin([{
       from: 'static/favicon.ico'
-    }])
+    }]),
   ],
   module: {
     loaders: [

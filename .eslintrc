@@ -21,7 +21,7 @@
       "asyncArrow": "ignore"
     }],
     "jsx-quotes": ["error", "prefer-single"],
-    "react/jsx-first-prop-new-line": 0,
+    "react/jsx-first-prop-new-line": 0
   },
   "settings": {
     "import/resolver": {
@@ -32,6 +32,8 @@
   },
   "globals": {
     "i18n": false,
-    "extension": false
+    "extension": false,
+    "__DEV__": false,
+    "__PACKAGE__": false
   }
 }
