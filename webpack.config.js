@@ -16,7 +16,10 @@ const CommonConfig = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['*', '.js', '.jsx']
+  },
+  resolveLoader: {
+    modules: [path.resolve(__dirname, "webpack_configs/loaders/"), "node_modules"]
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -28,7 +31,7 @@ const CommonConfig = {
     }])
   ],
   module: {
-    loaders: [
+    rules: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' }
     ]
   }

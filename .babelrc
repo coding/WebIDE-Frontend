@@ -1,11 +1,10 @@
 {
   "presets": [
     "react",
-    "es2015",
+    "env",
     "stage-0"
   ],
   "plugins": [
-    "transform-runtime",
     "transform-decorators-legacy"
   ],
   "env": {
@@ -15,3 +14,50 @@
   }
 }
 
+/* Noted at 2017-02-23
+* most plugins at semver "^6.22.0"
+* below are plugins that're included in preset-env and preset-stage-0
+
+* stage-0 to stage-3:
+bable-plugin-syntax-trailing-function-commas
+bable-plugin-transform-async-generator-functions
+bable-plugin-transform-async-to-generator
+bable-plugin-transform-exponentiation-operator
+bable-plugin-transform-object-rest-spread
+bable-plugin-transform-class-properties
+bable-plugin-transform-decorators
+bable-plugin-syntax-dynamic-import
+bable-plugin-transform-class-constructor-call
+bable-plugin-transform-export-extensions
+bable-plugin-transform-do-expressions
+bable-plugin-transform-function-bind
+
+* preset-es2015, es2016, es2017:
+bable-plugin-syntax-trailing-function-commas
+bable-plugin-transform-async-to-generator
+bable-plugin-transform-exponentiation-operator
+bable-plugin-check-es2015-constants
+bable-plugin-transform-es2015-arrow-functions
+bable-plugin-transform-es2015-block-scoped-functions
+bable-plugin-transform-es2015-block-scoping
+bable-plugin-transform-es2015-classes
+bable-plugin-transform-es2015-computed-properties
+bable-plugin-transform-es2015-destructuring
+bable-plugin-transform-es2015-duplicate-keys
+bable-plugin-transform-es2015-for-of
+bable-plugin-transform-es2015-function-name
+bable-plugin-transform-es2015-literals
+bable-plugin-transform-es2015-modules-amd
+bable-plugin-transform-es2015-modules-commonjs
+bable-plugin-transform-es2015-modules-systemjs
+bable-plugin-transform-es2015-modules-umd
+bable-plugin-transform-es2015-object-super
+bable-plugin-transform-es2015-parameters
+bable-plugin-transform-es2015-shorthand-properties
+bable-plugin-transform-es2015-spread
+bable-plugin-transform-es2015-sticky-regex
+bable-plugin-transform-es2015-template-literals
+bable-plugin-transform-es2015-typeof-symbol
+bable-plugin-transform-es2015-unicode-regex
+bable-plugin-transform-regenerator
+*/
