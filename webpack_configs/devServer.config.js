@@ -16,11 +16,11 @@ module.exports = function (options) {
       })
     ],
     module: {
-      loaders: [
+      rules: [
         {
           test: /config\.js$/,
-          loader: 'regexp-replace',
-          query: {
+          loader: 'regexp-replace-loader',
+          options: {
             match: {
               pattern: 'baseURL: \'\' \\|\\| window\\.location\\.origin,',
               flags: 'g'
