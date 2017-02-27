@@ -5,9 +5,11 @@ import _ from 'lodash'
 
 
 const _ExtensionContainer = ({ extension, isActive }) => {
-  const script = localStorage.getItem(extension.storageKey)
-  let reactElement = eval(script) // <- this should be store in IDE Environment object
-  return <div style={{display: isActive ? 'block' : 'none'}}>{reactElement}</div>
+  const reactElement = window.extensions[extension.name].app
+  // <- this should be store in window
+  return (<div style={{ display: isActive ? 'block' : 'none' }}>
+    {React.createElement(reactElement)}
+  </div>)
 }
 
 const ExtensionContainer = connect((state, { extension }) => {

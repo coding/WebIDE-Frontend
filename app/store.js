@@ -64,7 +64,7 @@ window.getState = store.getState
 
 
 window.addEventListener('storage', (e) => {
-  if (e.key.includes('CodingPackage')) {
+  if (e.key && e.key.includes('CodingPackage')) {
     store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
   }
 })

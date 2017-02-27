@@ -30,30 +30,29 @@ const defaultState = {
 
 const toggleExtensionAvailability = (state, pkgId) => {
   // handle availability state of extension packages in side panels
-  let pkg = state.localPackages[pkgId]
+  const pkg = state.localPackages[pkgId]
   if (!pkg.type === 'extension' || !pkg.ui || !pkg.ui.position) return state
 
-  let extensionIds = state.extensionsUIState.panels[pkg.ui.position].extensionIds
+  const extensionIds = state.extensionsUIState.panels[pkg.ui.position].extensionIds
   if (extensionIds.includes(pkgId) === pkg.enabled) return state
 
-  return update(state, {
+  const res = update(state, {
     extensionsUIState: { panels: { [pkg.ui.position]: {
       extensionIds: pkg.enabled
-        ? {'$push' : [pkgId] }
-        : {'$without': pkgId }
-    }}}
+        ? { $push: [pkgId] }
+        : { $without: pkgId }
+    } }
+    }
   })
-
+  return res
 }
 
 export default handleActions({
-  [updatePackageList]: (state, action) => {
-    return { ...state, remotePackages: action.payload }
-  },
+  [updatePackageList]: (state, action) => ({ ...state, remotePackages: action.payload }),
 
   [updateLocalPackage]: (state, action) => {
     const packageObj = action.payload
-    let nextState = update(state, {
+    const nextState = update(state, {
       localPackages: {
         [packageObj.id]: { $set: packageObj }
       }
@@ -62,12 +61,13 @@ export default handleActions({
   },
 
   [togglePackage]: (state, action) => {
-    let { id, shouldEnable } = action.payload
-    let targetPackage = state.localPackages[id]
+    const { id } = action.payload
+    let { shouldEnable } = action.payload
+    const targetPackage = state.localPackages[id]
     if (shouldEnable === targetPackage.enabled) return state
     if (typeof shouldEnable !== 'boolean') shouldEnable = !targetPackage.enabled
 
-    let nextState = update(state, {
+    const nextState = update(state, {
       localPackages: {
         [id]: { enabled: { $set: shouldEnable } }
       }
@@ -79,9 +79,7 @@ export default handleActions({
 }, defaultState)
 
 
-const getPanelByRef = (PanelState, ref) => {
-  return PanelState.panels[PanelState.panelRefs[ref]]
-}
+const getPanelByRef = (PanelState, ref) => PanelState.panels[PanelState.panelRefs[ref]]
 export const PackageCrossReducer = handleActions({
   [activateExtenstion]: (allState, action) => {
     let nextState = allState
@@ -106,7 +104,7 @@ export const PackageCrossReducer = handleActions({
 
     // special case: redistribute size between center and right panel
     if (targetPanel.ref === 'PANEL_RIGHT') {
-      let centerPanel = getPanelByRef(nextState.PanelState, 'PANEL_CENTER')
+      const centerPanel = getPanelByRef(nextState.PanelState, 'PANEL_CENTER')
       let centerPanelSize = shouldHidePanel
         ? centerPanel.size + targetPanel.size
         : centerPanel.size - targetPanel.size
@@ -125,9 +123,9 @@ export const PackageCrossReducer = handleActions({
 
     return update(nextState, {
       PackageState: {
-        extensionsUIState: { panels: {[panelSide]: {
+        extensionsUIState: { panels: { [panelSide]: {
           activeExtenstionId: { $set: packageId }
-        }}}
+        } } }
       }
     })
   }
