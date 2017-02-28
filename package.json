@@ -13,7 +13,7 @@
     "npm": ">=3.0.0"
   },
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port=8060 --progress --colors",
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress --colors",
     "build": "./node_modules/cross-env/bin/cross-env.js NODE_ENV=production ./node_modules/webpack/bin/webpack.js --progress --colors",
     "lint": "eslint app",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
@@ -43,6 +43,7 @@
     "eslint-plugin-react": "^5.0.1",
     "file-loader": "^0.10.0",
     "html-webpack-plugin": "^2.28.0",
+    "react-hot-loader": "next",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^2.5.0",
