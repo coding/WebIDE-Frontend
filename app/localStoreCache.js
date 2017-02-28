@@ -36,7 +36,7 @@ localStoreCache.beforeReducer = (state, action) => {
 localStoreCache.afterReducer = (state, action) => {
   let nextCachedState = JSON.stringify(stateFilter(state))
   if (nextCachedState !== cachedState) {
-    window.localStorage.setItem('snapshot', nextCachedState)
+    localStorage.setItem('snapshot', nextCachedState)
     cachedState = nextCachedState
   }
   return state

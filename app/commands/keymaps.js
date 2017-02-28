@@ -1,6 +1,7 @@
 /* @flow weak */
 // Unavailable shortcuts: shift / ctrl + (q|n|w|t|↹)
 export default {
+  'alt+n': 'file:new_file',
   'cmd+s': 'file:save',
   'cmd+shift+c': 'git:commit',
   'esc': 'modal:dismiss',
@@ -15,4 +16,11 @@ export default {
   'cmd+alt+4':       'editor:split_pane_vertical_4',
   'cmd+comma': 'global:show_settings',
   'cmd+0': 'global:show_packages'
+}
+
+export const keybordSettings = {
+  'alt': '⎇',
+  'cmd': '⌘',
+  'comma': ',',
+  'shift': '⇧',
 }

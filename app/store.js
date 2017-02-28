@@ -46,13 +46,15 @@ const finalReducer = composeReducers(
   localStoreCache.beforeReducer
 )
 
-let enhancer = compose(
+const enhancer = compose(
   applyMiddleware(thunkMiddleware),
   window.devToolsExtension ? window.devToolsExtension({
-    serializeState: (key, value) => {
-      if (key === 'editor') return {}
-      if (key === 'DOMNode') return {}
-      return value
+    serialize: {
+      replacer: (key, value) => {
+        if (key === 'editor') return {}
+        if (key === 'DOMNode') return {}
+        return value
+      }
     }
   }) : f => f
 )
@@ -62,7 +64,7 @@ window.getState = store.getState
 
 
 window.addEventListener('storage', (e) => {
-  if (e.key.includes('extension')) {
+  if (e.key && e.key.includes('CodingPackage')) {
     store.dispatch({ type: 'UPDATE_EXTENSION_CACHE' })
   }
 })

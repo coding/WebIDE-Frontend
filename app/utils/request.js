@@ -13,7 +13,7 @@ const defaultRequestOptions = {
 const defaultFetchOptions = {
   method: 'GET',
   mode: 'cors',
-  credentials: 'include',
+  credentials: __DEV__ ? '' : 'include',
   redirect: 'manual'
 }
 

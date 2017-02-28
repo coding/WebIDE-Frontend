@@ -1,11 +1,13 @@
 /* @flow weak */
 import store from '../../store.js'
 import * as GitActions from '../Git/actions'
+import React from 'react';
+import mapShortcutToItems from './utils';
 
 var dividItem = { name: '-' }
 var menuBarItems = [
   {
-    name: '',
+    name: (<div className="menu-bar-item-logo"></div>),
     className: 'coding-logo',
     items: [
       {
@@ -21,13 +23,11 @@ var menuBarItems = [
       {
         name: 'New File',
         icon: 'fa fa-file-o',
-        shortcut: '⎇N',
         command: 'file:new_file',
         // isDisabled: true
       }, {
         name: 'Save',
         icon: 'fa fa-floppy-o',
-        shortcut: '⌘S',
         command: 'file:save'
       }
     ]
@@ -130,4 +130,4 @@ function handleGitOnOpen () {
   store.dispatch(GitActions.getRebaseState())
 }
 
-export default menuBarItems
+export default mapShortcutToItems(menuBarItems)

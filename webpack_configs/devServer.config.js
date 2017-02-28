@@ -13,7 +13,11 @@ module.exports = function (options) {
     plugins: [
       new webpack.HotModuleReplacementPlugin({
         multiStep: true
-      })
+      }),
+      new webpack.DefinePlugin({
+        __PACKAGE_SERVER__: JSON.stringify(process.env.PACKAGE_SERVER || ''),
+        __DEV__: true,
+      }),
     ],
     module: {
       rules: [
