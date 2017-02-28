@@ -15,7 +15,7 @@ module.exports = function (options) {
         multiStep: true
       }),
       new webpack.DefinePlugin({
-        __PACKAGE__: JSON.stringify(process.env.PACKAGE_SERVER || ''),
+        __PACKAGE_SERVER__: JSON.stringify(process.env.PACKAGE_SERVER || ''),
         __DEV__: true,
       }),
     ],

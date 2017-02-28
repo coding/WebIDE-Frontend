@@ -34,6 +34,6 @@
     "i18n": false,
     "extension": false,
     "__DEV__": false,
-    "__PACKAGE__": false
+    "__PACKAGE_SERVER__": false
   }
 }

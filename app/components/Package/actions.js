@@ -34,8 +34,8 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
 })
 
 export const fetchPackage = (pkgId) => (dispatch) => {
-  const pkgInfo = api.fetchPackageInfo(pkgId, __PACKAGE__)
-  const pkgScript = api.fetchPackageScript(pkgId, __PACKAGE__)
+  const pkgInfo = api.fetchPackageInfo(pkgId, __PACKAGE_SERVER__)
+  const pkgScript = api.fetchPackageScript(pkgId, __PACKAGE_SERVER__)
     .then(script => {
       localStorage.setItem(pkgId, script)
       return pkgId
@@ -49,7 +49,7 @@ export const fetchPackage = (pkgId) => (dispatch) => {
     dispatch(togglePackage(pkgId, true))
   })
 
-    // return api.fetchPackageScript(pkgId, __PACKAGE__)
+    // return api.fetchPackageScript(pkgId, __PACKAGE_SERVER__)
     // .then(script => {
     //   const storageKey = `CodingPackage___${pkgId}`
     //   localStorage.setItem(storageKey, script)

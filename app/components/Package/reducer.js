@@ -36,7 +36,7 @@ const toggleExtensionAvailability = (state, pkgId) => {
   const extensionIds = state.extensionsUIState.panels[pkg.ui.position].extensionIds
   if (extensionIds.includes(pkgId) === pkg.enabled) return state
 
-  const res = update(state, {
+  const nextState = update(state, {
     extensionsUIState: { panels: { [pkg.ui.position]: {
       extensionIds: pkg.enabled
         ? { $push: [pkgId] }
@@ -44,7 +44,7 @@ const toggleExtensionAvailability = (state, pkgId) => {
     } }
     }
   })
-  return res
+  return nextState
 }
 
 export default handleActions({
