@@ -35,14 +35,13 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
   let itemElement = item.element ? React.createElement(item.element, { item }) : null
   if (item.name == '-') return <li><hr /></li>
   const disabled = item.checkDisable ? item.checkDisable(state) : item.isDisabled
-
   return (
     <li className='menu-item'>
       <div
         className={cx('menu-item-container', {
           active: isActive,
           disabled: disabled,
-          padding: '4px 8px'
+          padding: '4px 10px'
         })}
         onMouseEnter={e => toggleActive(index)}
         onClick={e => {
@@ -50,7 +49,7 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
           handleMenuItemCommand(item.command)&&deactivateTopLevelMenu()
         }}
       >
-        <div className={item.icon} style={{ paddingTop: '3px', marginRight: '8px', marginLeft: '-6px' }}></div>
+        <div className={item.icon}>{item.iconElement || <div style={{ marginLeft :'15px' }} />}</div>
         <div className='menu-item-name'>{itemElement || item.displayName || item.name}</div>
         { item.shortcut
           ? <div className='menu-item-shortcut'>{item.shortcut}</div>
