@@ -27,7 +27,10 @@ export default class GitBranchWidget extends Component {
     return (
       <div className='status-bar-menu-item' onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}>
         <span>{extension`siderBar1${this.props}`}</span>
-        <span>On Branches: {i18n`titleBar_01:=File`} {currentBranch}</span>
+        <span>
+          <span className='fa fa-code-fork' style={{ fontWeight: 800, marginRight: '5px' }}/>
+          {currentBranch}
+        </span>
         { this.state.isActive ?
           <div style={{ display: 'flex', position: 'absolute', bottom: '30px', minWidth: '200px', right: '1px', flexDirection: 'column' }}>
             <div style={{ display: 'flex', zIndex: 502, backgroundColor: '#e1e1e1', height: '30px', justifyContent: 'center', alignItems: 'center' }}>
@@ -76,7 +79,8 @@ export default class GitBranchWidget extends Component {
       }
     })
     return [
-      {name: '+  New Branch', command: () => dispatchCommand('git:new_branch')},
+      {name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
+      iconElement:(<span style={{ marginRight: '4px'}}>+</span>)},
       {name: '-', isDisabled: true},
       {name: 'Local Branches', isDisabled: true},
       ...localBranchItems,

@@ -1,11 +1,12 @@
 /* @flow weak */
 import store from '../../store.js'
 import * as GitActions from '../Git/actions'
+import React from 'react';
 
 var dividItem = { name: '-' }
 var menuBarItems = [
   {
-    name: '',
+    name: (<div className="menu-bar-item-logo"></div>),
     className: 'coding-logo',
     items: [
       {
