@@ -17,29 +17,33 @@ class PackageControlView extends Component {
   render () {
     const { remotePackages, localPackages, dispatch } = this.props
     return (
-      <div name="container">
-        <div name="remote_extensions">
+      <div name='container'>
+        <div name='remote_extensions'>
           <h3>Available Packages:</h3>
-          { _.map(remotePackages, pkg =>
+          {_.map(remotePackages, pkg =>
             <div key={pkg.name} style={{ display: 'flex' }}>
-              <div>name: {pkg.name}</div>
-              { false && localPackages[pkg.name]
-                ? <button disabled={true} >Installed</button>
-                : <button onClick={e=>dispatch(fetchPackage(pkg.name))}>
+              <div>插件名字: {pkg.displayName}</div>
+              {false && localPackages[pkg.name]
+                ? <button disabled >Installed</button>
+                : <button onClick={e => dispatch(fetchPackage(pkg.name))}>
                     Install
                   </button>
               }
             </div>
           )}
         </div>
-        <div name="local_packages">
-          <div name="enabledπ">
+        <div name='local_packages'>
+          <div name='enabled'>
             <h3>Installed Packages:</h3>
-            { _.map(localPackages, pkg =>
+            {_.map(localPackages, pkg =>
               <div key={pkg.name} style={{ display: 'flex' }}>
                 <div>name: {pkg.name}</div>
-                <label><input type='checkbox' onChange={e=>dispatch(togglePackage(pkg.name))} checked={pkg.enabled}/>
-                  { pkg.enabled ? 'Enabled' : 'Disabled' }
+                <label><input
+                  type='checkbox'
+                  onChange={e => dispatch(togglePackage(pkg.name, e.target.checked))}
+                  checked={pkg.enabled}
+                />
+                enabled
                 </label>
               </div>
             )}
@@ -51,8 +55,13 @@ class PackageControlView extends Component {
 }
 
 
-export default connect(state => ({
-  remotePackages: state.PackageState.remotePackages,
-  localPackages: state.PackageState.localPackages
-})
+export default connect(state => {
+  const {
+    PackageState: { remotePackages, localPackages }
+  } = state
+  return ({
+    remotePackages: Object.keys(remotePackages).map(key => remotePackages[key]),
+    localPackages
+  })
+}
 )(PackageControlView)
