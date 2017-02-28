@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, '..')
 
 const CommonConfig = {
   entry: {
-    main: path.join(rootDir, 'app'),
+    main: [path.join(rootDir, 'app')],
     vendor: ['babel-polyfill']
   },
   output: {

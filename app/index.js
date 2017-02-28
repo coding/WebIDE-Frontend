@@ -1,4 +1,5 @@
 /* @flow weak */
+import { AppContainer } from 'react-hot-loader';
 import React from 'react'
 window.React = React // expose React to enable react devtool
 import { render } from 'react-dom'
@@ -11,5 +12,15 @@ window.i18n = createI18n
 window.extensions = {}
 window.extension = f => getExtensions
 
-const app = React.createElement(Root)
-render(app, document.getElementById('root'))
+const rootElement = document.getElementById('root')
+
+if (__DEV__) {
+  const hotLoaderRender = () =>
+    render(<AppContainer><Root /></AppContainer>, rootElement)
+
+  hotLoaderRender()
+  if (module.hot) module.hot.accept('./containers/Root', hotLoaderRender)
+
+} else {
+  render(<Root />, rootElement)
+}
