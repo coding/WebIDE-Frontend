@@ -23,7 +23,6 @@ export default {
     $d(Modal.showModal({type: 'Packages', position: 'center'}))
   },
   'global:show_branches': () => {
-    console.log('here')
     getComponentByName('GitBranchWidget').openGitBranches()
   },
   'modal:dismiss': c => {

@@ -68,11 +68,11 @@ export default class GitBranchWidget extends Component {
         name: 'Checkout',
         command: () => { this.props.checkoutBranch(branch) }
       }, {
-        name: 'Checkout as new local branch',
-        command: () => { this.props.checkoutBranch(localBranch, remoteBranch) }
+        name: 'Checkout as new branch',
+        command: () => dispatchCommand('git:local_checkout')
       }, {
         name: 'delete',
-        command: () => { console.log('delete')}
+        command: () => { this.props.gitDeleteBranch(branch) }
       }]
     }))
 
@@ -81,22 +81,22 @@ export default class GitBranchWidget extends Component {
       return {
         name: remoteBranch,
         items: [{
-          name: 'Checkout as new local branch',
-          // @todo: should prompt to input local branch name
-          command: () => { this.props.checkoutBranch(localBranch, remoteBranch) }
-        }, {
           name: 'chekout',
-          command: () => { this.props.checkoutBranch(localBranch, remoteBranch) }
+          command: () => { this.props.checkoutBranch(remoteBranch) }
+        },{
+          name: 'Checkout as new branch',
+          // @todo: should prompt to input local branch name
+          command: () => dispatchCommand('git:local_checkout')
         }, {
           name: 'delete',
-          command: () => { console.log('delete')}
+          command: () => { this.props.gitDeleteBranch(branch) }
         }]
       }
     })
     return [
       {name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
       iconElement:(<span style={{ marginRight: '4px'}}>+</span>)},
-      {name: 'Synchronize', command: () => this.props.getCurrentBranch()},
+      {name: 'Synchronize', command: () => this.props.getFetch()},
       {name: '-', isDisabled: true},
       {name: 'Local Branches', isDisabled: true},
       ...localBranchItems,
