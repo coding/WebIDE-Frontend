@@ -4,14 +4,17 @@ const CommonConfig = require('./common.config.js')
 const devServer = require('./devServer.config')
 const stylesheet = require('./stylesheet.config')
 
+const reactHotLoaderPrependEntries = [
+  'react-hot-loader/patch',
+  'webpack-dev-server/client?http://localhost:8060',
+  'webpack/hot/only-dev-server',
+]
+
 module.exports = merge(
   {
     entry: {
-      main: [
-        'react-hot-loader/patch',
-        'webpack-dev-server/client?http://localhost:8060',
-        'webpack/hot/only-dev-server',
-      ]
+      main: reactHotLoaderPrependEntries,
+      workspaces: reactHotLoaderPrependEntries,
     }
   },
   CommonConfig,
