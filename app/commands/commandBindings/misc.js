@@ -6,6 +6,7 @@ import api from '../../backendAPI'
 import * as Modal from '../../components/Modal/actions'
 import * as Panel from '../../components/Panel/actions'
 
+const getComponentByName = name => window.refs[name].getWrappedInstance();
 export default {
   'global:command_palette': c => {
     $d(Modal.showModal('CommandPalette'))
@@ -20,6 +21,10 @@ export default {
   },
   'global:show_packages': c => {
     $d(Modal.showModal({type: 'Packages', position: 'center'}))
+  },
+  'global:show_branches': () => {
+    console.log('here')
+    getComponentByName('GitBranchWidget').openGitBranches()
   },
   'modal:dismiss': c => {
     $d(Modal.dismissModal())

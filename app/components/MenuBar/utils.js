@@ -1,4 +1,4 @@
-import keyMapConfig, { keybordSettings } from '../../commands/keymaps';
+import keyMapConfig, { modifierKeysMap } from '../../commands/keymaps';
 
 
 const findKeyByValue = (value) => Object
@@ -8,9 +8,9 @@ const findKeyByValue = (value) => Object
         return p;
     }, {})[value] || ''
 
-const getSignByKey = (value) => {
+const withModifierKeys = (value) => {
     return value.split('+')
-    .map(e => keybordSettings[e] || e.toUpperCase()).join(' ')
+    .map(e => modifierKeysMap[e] || e.toUpperCase()).join(' ')
 }
 
 
@@ -19,7 +19,7 @@ const mapShortcutToConfig = (configs) => {
         ...config,
         items: config.items.map(item => ({
             ...item,
-            shortcut: getSignByKey(findKeyByValue(item.command))
+            shortcut: withModifierKeys(findKeyByValue(item.command))
         }))
     }))
 }

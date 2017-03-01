@@ -69,8 +69,13 @@ var menuBarItems = [
         command: 'git:reset_head'
       }, dividItem,
       {
+        name: 'Branches...',
+        icon: 'octicon octicon-git-branch',
+        command: 'global:show_branches'
+      },
+      {
         name: 'Merge Branch...',
-        icon: 'fa',
+        icon: 'octicon octicon-git-merge',
         command: 'git:merge'
       },
       {
