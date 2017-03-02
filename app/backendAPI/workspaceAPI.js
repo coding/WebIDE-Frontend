@@ -30,3 +30,28 @@ export function setupWorkspace () {
     })
   })
 }
+
+
+export function isWorkspaceExist () {
+  return request.get(`/workspaces/${config.spaceKey}`).catch(() => false).then(() => true)
+}
+
+
+export function setupWorkspace2 () {
+  return request.post(`/workspaces/${config.spaceKey}/setup`)
+}
+
+export function connectWebsocketClient () {
+  return new Promise(function (resolve, reject) {
+    Client.connect(function () {
+      connectedResolve(this)
+      resolve(true)
+    })
+  })
+}
+
+export function getSettings () {
+  return request.get(`/workspaces/${config.spaceKey}/settings`).then(({ content={} }) => {
+    return JSON.parse(content)
+  })
+}
