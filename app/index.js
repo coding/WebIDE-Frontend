@@ -8,6 +8,7 @@ import './styles/main.styl'
 import './styles/base-theme/index.styl'
 import { createI18n, getExtensions } from './utils'
 
+window.refs = {}
 window.i18n = createI18n
 window.extensions = {}
 window.extension = f => getExtensions

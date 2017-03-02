@@ -6,17 +6,11 @@ export function gitStatus () {
   return request.get(`/git/${config.spaceKey}`)
 }
 
-export function gitGetBranches () {
-  return request.get(`/git/${config.spaceKey}/branches`)
-}
 
 export function gitTags () {
   return request.get(`/git/${config.spaceKey}/tags`)
 }
 
-export function gitNewBranch (branchName) {
-  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
-}
 
 export function gitCheckout (branch, remoteBranch) {
   return request.post(`/git/${config.spaceKey}/checkout`, {
@@ -38,10 +32,25 @@ export function gitPushAll () {
     if (!res.ok) return false
   })
 }
+export function gitFetch () {
+  return request.post(`/git/${config.spaceKey}/fetch`)
+}
+// branches
+export function gitNewBranch (branchName) {
+  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
+}
+export function gitGetBranches () {
+  return request.get(`/git/${config.spaceKey}/branches`)
+}
 
 export function gitCurrentBranch (){
   return request.get(`/git/${config.spaceKey}/branch`)
 }
+export function gitDeleteBranch (branchName) {
+  return request.delete(`/git/${config.spaceKey}/branches/${branchName}`)
+}
+
+
 
 export function gitCreateStash (message){
   return request.post(`/git/${config.spaceKey}/stash`, {message: message})
