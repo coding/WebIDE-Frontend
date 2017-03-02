@@ -19,15 +19,16 @@ class CodeMirrorEditor extends Component {
   }
 
   componentDidMount() {
-    const {theme, tab, width, height} = this.props;
+    const {themeSetting, tab, width, height} = this.props;
+    const themeConfig = themeSetting.items[1].value.split('/').pop();
+    // todo add other setting item from config
     const editor = this.editor = CodeMirror(this.editorDOM, {
-      theme: theme,
+      theme: themeConfig,
       autofocus: true,
       lineNumbers: true,
       matchBrackets: true,
       autoCloseBrackets: true,
     });
-
     // @fixme:
     // related counterparts:
     // 1. IdeEnvironment.js
@@ -91,6 +92,10 @@ class CodeMirrorEditor extends Component {
 
 }
 
-CodeMirrorEditor = connect(state => ({setting: state.SettingState.views.tabs.EDITOR}), null)(CodeMirrorEditor);
+CodeMirrorEditor = connect(state => ({
+  setting: state.SettingState.views.tabs.EDITOR,
+  themeSetting: state.SettingState.views.tabs.THEME,
+}),
+ null)(CodeMirrorEditor);
 
 export default CodeMirrorEditor;
