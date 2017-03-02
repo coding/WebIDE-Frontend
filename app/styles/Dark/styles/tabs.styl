@@ -1,0 +1,65 @@
+.tab-bar {
+  background-color: $tab-bar-background-color;
+  border-bottom: 1px solid $base-border-color;
+  height: $tab-height;
+
+
+  .tab-label {
+    font-size: $font-size;
+    color: $text-color-subtle;
+    height: $tab-height;
+    line-height: $tab-height;
+    border-right: 1px solid $tab-border-color;
+    background-color: $tab-background-color;
+    &.active {
+      color: $text-color-selected;
+      background-color: $tab-background-color-active;
+    }
+
+
+    // // Modified Icon (the blue circle) -------------------
+    // &.modified:not(:hover) .close-icon {
+    //   top: 50%;
+    //   right: $component-padding + 4px; // 4px -> half of icon size
+    //   margin-top: -3px;
+    //   border-color: $text-color-info;
+    // }
+    &.modified:hover .close {
+      color: currentColor;
+    }
+
+
+    // Close Icon (the X) -------------------
+    .close:hover {
+      color: $text-color-selected;
+    }
+    &.active .close-icon:hover {
+      color: $text-color;
+    }
+
+
+    // Dragging -------------------
+    // Styles get applied while dragging a tab
+    &.is-dragging {
+      background: darken($tab-background-color, 10%);
+      border-color: transparent;
+      opacity: .5;
+      & .close-icon {
+        visibility: hidden;
+      }
+    }
+  }
+
+
+  .tab-add-btn {
+    color: $text-color;
+    border: 1px solid gray;
+    // padding-left: 4px;
+    // padding-right: 4px;
+  }
+
+
+  .tab-show-list {
+    color: $text-color;
+  }
+}
