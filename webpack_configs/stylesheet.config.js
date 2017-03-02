@@ -27,7 +27,7 @@ module.exports = function (paths) {
         }, {
           test: /\.styl$/,
           use: [
-            'style-loader',
+            'style-loader/useable',
             'css-loader',
             'stylus-loader'
           ]

@@ -7,11 +7,13 @@ import {
   CONFIRM_UPDATE_FIELD,
   CANCEL_UPDATE_FIELD
 } from './actions'
-
+import { changeTheme, changeCodeTheme } from '../../utils/themeManager'
 import ace from 'brace'
 import 'brace/ext/themelist'
 const aceThemes = ace.acequire('ace/ext/themelist')
-  .themes.map((t, i) => ({value: t.theme, name: t.caption}))
+  .themes
+  .filter(theme => theme.name.match('monokai|ambiance'))  // temporary get only avaliable theme
+  .map((t, i) => ({value: t.theme, name: t.caption}))
 
 const langCodes = {
   en_US: 'English',
@@ -37,21 +39,30 @@ const getDefaultLangCode = () => {
   }, '')
 }
 
+export const UIthemeOption = ['Light', 'Dark']
 
 const SettingState = {
-  activeTabId: 'EDITOR',
-  tabIds: ['GENERAL', 'EDITOR'],
+  activeTabId: 'GENERAL',
+  tabIds: ['GENERAL', 'THEME', 'EDITOR'],
   tabs: {
+    THEME: {
+      id: 'THEME',
+      items: [{
+        name: 'UI Theme',
+        value: 'Light',
+        options: UIthemeOption
+      }, {
+        name: 'Syntax Theme',
+        value: 'Default',
+        options: aceThemes
+      }]
+    },
     GENERAL: {
       id: 'GENERAL',
       items: [{
         name: 'Language',
         value: langCodes[getDefaultLangCode()],
         options: ['English', 'Chinese']
-      }, {
-        name: 'Theme',
-        value: 'Light',
-        options: ['Light', 'Dark']
       }, {
         name: 'Hide Files',
         value: '/.git,/.coding-ide'
@@ -70,10 +81,6 @@ const SettingState = {
         name: 'Font Family',
         value: 'Consolas',
         options: ['Consolas', 'Courier', 'Courier New', 'Menlo']
-      }, {
-        name: 'Editor Theme',
-        value: 'Default',
-        options: aceThemes
       }, {
         name: 'Charset',
         value: 'utf8',
@@ -116,6 +123,8 @@ export default handleActions({
 
   [SETTING_UPDATE_FIELD]: (state, action) => {
     const { domain, fieldName, value } = action.payload
+    if (fieldName === 'UI Theme') { changeTheme(value); }
+    if (fieldName === 'Syntax Theme') { changeCodeTheme(value); }
     return {
       ...state,
       views: { ...state.views,
