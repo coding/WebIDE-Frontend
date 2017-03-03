@@ -1,9 +1,11 @@
 /* @flow weak */
 import _ from 'lodash'
-import io from 'socket.io-client'
 import config from '../../config'
+import { request } from '../../utils'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
+
+var io = require(__RUN_MODE__ === 'platform' ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 class Term {
   constructor ({id, cols, rows}) {
@@ -36,7 +38,29 @@ class TerminalClient {
   }
 
   createSocket () {
-    socket = io.connect(config.baseURL, {'resource': 'coding-ide-tty1'})
+    if (config.isPlatform) {
+      const wsUrl = config.wsURL
+      const firstSlashIdx = wsUrl.indexOf('/', 8)
+      let host, path
+      if (firstSlashIdx !== -1) {
+        host = wsUrl.substring(0, firstSlashIdx)
+        path = wsUrl.substring(firstSlashIdx)
+      } else {
+        host = wsUrl
+        path = ''
+      }
+      socket = io.connect(host, {
+        'force new connection': true,
+        'reconnection': true,
+        'reconnectionDelay': 1500,
+        'reconnectionDelayMax': 10000,
+        'reconnectionAttempts': 5,
+        path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
+        transports: ['websocket']
+      })
+    } else {
+      socket = io.connect(config.baseURL, { 'resource': 'coding-ide-tty1' })
+    }
     return this.bindSocketEvent()
   }
 

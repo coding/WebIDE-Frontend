@@ -1,8 +1,11 @@
 /* @flow weak */
 export default {
   projectName: '',
-  baseURL: '' || window.location.origin,
   spaceKey: '',
-  packageServer: 'http://localhost:8081' || process.env.CODING_PACKAGE_SERVER,
-  requiredExtensions: []
+  requiredExtensions: [],
+  baseURL: __BACKEND_URL__ || window.location.origin,
+  packageServer: __PACKAGE_SERVER__ || window.location.origin,
+  wsURL: __WS_URL__,
+  runMode: __RUN_MODE__,
+  isPlatform: __RUN_MODE__ === 'platform',
 }

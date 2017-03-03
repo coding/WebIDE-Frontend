@@ -46,7 +46,11 @@ export function writeFile (path, content, base64) {
 }
 
 export function readFile (path) {
-  return request.get(`/workspaces/${config.spaceKey}/file/read`, {
+  const url = config.isPlatform ?
+    `/workspaces/${config.spaceKey}/read`
+  : `/workspaces/${config.spaceKey}/file/read`
+
+  return request.get(url, {
     path: path,
     base64: false
   })

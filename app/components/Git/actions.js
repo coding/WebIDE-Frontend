@@ -66,7 +66,7 @@ export function pull () {
       if (res === true)
         dispatch(notify({message: 'Git pull success.'}))
       else
-        dispatch(notify({message: 'Git pull fail.' }))
+        dispatch(notify({message: `Git pull fail: ${res}` }))
     })
   }
 }
@@ -77,7 +77,7 @@ export function push () {
       if (res === true)
         dispatch(notify({message: 'Git push success.'}))
       else
-        dispatch(notify({message: 'Git push fail.' }))
+        dispatch(notify({message: `Git push fail: ${res}` }))
     })
   }
 }
@@ -398,8 +398,8 @@ export function gitRebaseUpdate (lines) {
 
 export const GIT_COMMIT_DIFF = 'GIT_COMMIT_DIFF'
 export const updateCommitDiff = createAction(GIT_COMMIT_DIFF)
-export function gitCommitDiff ({ref, title, oldRef}) {
-  return dispatch => api.gitCommitDiff({ref}).then(res => {
+export function gitCommitDiff ({rev, title, oldRef}) {
+  return dispatch => api.gitCommitDiff({rev}).then(res => {
     let files = res.map(item => {
       let file = {
         status: item.changeType,
@@ -408,13 +408,17 @@ export function gitCommitDiff ({ref, title, oldRef}) {
       }
       return file
     })
-    dispatch(updateCommitDiff({files: files, ref, title, oldRef}))
+    dispatch(updateCommitDiff({files: files, ref: rev, title, oldRef}))
     dispatch(addModal('GitCommitDiff'))
   }).catch(res => {
-    console.error(res)
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Get commit diff error: ' + res.msg,
     }))
   })
+}
+
+export const SWITCH_VERSION = 'SWITCH_VERSION'
+export function switchVersion () {
+  return dispatch => api.switchVersion()
 }

@@ -33,7 +33,7 @@ class GitUntashView extends Component {
       confirmBtn = 'Branch'
     else
       confirmBtn = 'Apply'
-      
+
     return (
       <div>
         <div className='git-unstash-container'>
@@ -137,11 +137,11 @@ class GitUntashView extends Component {
   }
 
   handleView(e) {
-    let commit = this.props.unstash.selectedStash.name
+    let commit = this.props.unstash.selectedStash.rev
     // let oldRef = commit + '^'
     this.props.gitCommitDiff({
       title: 'View Changes',
-      ref: commit
+      rev: commit
     })
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()

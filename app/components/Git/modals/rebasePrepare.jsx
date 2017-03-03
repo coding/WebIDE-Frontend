@@ -255,7 +255,7 @@ class GitRebasePrepare extends Component {
     let oldRef = commit + '^'
     this.props.gitCommitDiff({
       title: 'View Changes',
-      ref: commit,
+      rev: commit,
       oldRef
     })
     // GitActions.diff commit, @getIntlMessage('git.modal.viewChanges'), oldRef
@@ -283,5 +283,4 @@ class GitRebasePrepare extends Component {
 export default GitRebasePrepare = connect(
   state => state.GitState,
   dispatch => bindActionCreators(GitActions, dispatch)
-)(GitRebasePrepare)         
-
+)(GitRebasePrepare)

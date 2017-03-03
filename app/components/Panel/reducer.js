@@ -61,7 +61,7 @@ const BasePanelLayout = {
               ],
               size: 75
             },
-            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'EXTENSION_BOTTOM', hide: true},
+            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'EXTENSION_BOTTOM', hide: false},
             {ref: 'BAR_BOTTOM', resizable: false, hide: false},
           ]
         },

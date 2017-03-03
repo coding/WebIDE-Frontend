@@ -14,6 +14,7 @@ const CommonConfig = {
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
+    publicPath: '/',
     path: path.join(rootDir, 'build'),
     filename: '[name].[hash].js'
   },
@@ -37,6 +38,7 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
+      filename: process.env.RUN_MODE === 'platform' ? 'workspace.html' : 'index.html',
       template: path.join(rootDir, 'app/index.html')
     }),
     new HtmlWebpackPlugin({

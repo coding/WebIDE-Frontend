@@ -6,6 +6,7 @@ import cx from 'classnames';
 import Menu from '../Menu';
 import menuBarItems from './menuBarItems';
 import * as GitActions from '../Git/actions'
+import config from '../../config'
 
 class MenuBar extends Component {
   static defaultProps = {
@@ -22,17 +23,22 @@ class MenuBar extends Component {
   render() {
     const {items} = this.props;
     return (
-      <ul className='menu-bar'>
-        { items.map( (menuBarItem, i) =>
-          <MenuBarItem item={menuBarItem}
-            isActive={this.state.activeItemIndex == i}
-            shouldHoverToggleActive={this.state.activeItemIndex > -1}
-            toggleActive={this.activateItemAtIndex}
-            key={`menu-bar-${menuBarItem.name}`}
-            index={i}
-            state={this.props}
-          />) }
-      </ul>
+      <div className='menu-bar-container'>
+        <ul className='menu-bar'>
+          { items.map( (menuBarItem, i) =>
+            <MenuBarItem item={menuBarItem}
+              isActive={this.state.activeItemIndex == i}
+              shouldHoverToggleActive={this.state.activeItemIndex > -1}
+              toggleActive={this.activateItemAtIndex}
+              key={`menu-bar-${menuBarItem.name}`}
+              index={i}
+              state={this.props}
+            />) }
+        </ul>
+        {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+          Use old version
+        </div>)}
+      </div>
     );
   }
 
@@ -42,6 +48,10 @@ class MenuBar extends Component {
     } else {
       this.setState({activeItemIndex:index})
     }
+  }
+
+  handleSwitch = () => {
+    this.props.switchVersion()
   }
 }
 

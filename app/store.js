@@ -7,7 +7,6 @@ import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
-import EditorReducer from './components/AceEditor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
@@ -27,7 +26,6 @@ const combinedReducers = combineReducers({
   PanelState: PanelReducer,
   PaneState: PaneReducer,
   TabState: TabReducer,
-  EditorState: EditorReducer,
   ModalState: ModalsReducer,
   TerminalState: TerminalReducer,
   GitState: GitReducer,
