@@ -8,11 +8,6 @@ import {
   CANCEL_UPDATE_FIELD
 } from './actions'
 
-import ace from 'brace'
-import 'brace/ext/themelist'
-const aceThemes = ace.acequire('ace/ext/themelist')
-  .themes.map((t, i) => ({value: t.theme, name: t.caption}))
-
 const langCodes = {
   en_US: 'English',
   zh_CN: 'Chinese'
@@ -70,10 +65,6 @@ const SettingState = {
         name: 'Font Family',
         value: 'Consolas',
         options: ['Consolas', 'Courier', 'Courier New', 'Menlo']
-      }, {
-        name: 'Editor Theme',
-        value: 'Default',
-        options: aceThemes
       }, {
         name: 'Charset',
         value: 'utf8',

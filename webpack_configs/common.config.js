@@ -10,11 +10,13 @@ const rootDir = path.resolve(__dirname, '..')
 const CommonConfig = {
   entry: {
     main: [path.join(rootDir, 'app')],
-    vendor: ['babel-polyfill']
+    workspaces: [path.join(rootDir, 'app/workspaces_standalone')],
+    vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
+    publicPath: '/',
     path: path.join(rootDir, 'build'),
-    filename: '[name].[chunkhash].js'
+    filename: '[name].[hash].js'
   },
   resolve: {
     extensions: ['*', '.js', '.jsx']
@@ -29,13 +31,21 @@ const CommonConfig = {
       minChunks: Infinity
     }),
     new CommonsChunkPlugin({
-      name: 'meta',
-      chunks: ['vendor'],
-      filename: 'webpackRuntime.js'
+      name: 'webpackRuntime',
+      chunks: ['vendor', 'workspaces'],
+      filename: 'webpackRuntime.[hash].js'
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
+      excludeChunks: ['workspaces'],
+      filename: process.env.RUN_MODE === 'platform' ? 'workspace.html' : 'index.html',
       template: path.join(rootDir, 'app/index.html')
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      excludeChunks: ['main'],
+      filename: 'workspaces_list.html',
+      template: path.join(rootDir, 'app/workspaces_standalone/index.html')
     }),
     new CopyWebpackPlugin([{
       from: path.join(rootDir, 'static/favicon.ico')

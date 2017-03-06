@@ -17,10 +17,7 @@ class IDE extends Component {
 
   componentWillMount () {  // initLifecycle_3: IDE specific init
     this.props.dispatch(initializeFileTree()) // @fixme: this is related to the quirk in filetree state
-    api.setupWorkspace().then(_config => {
-      Object.assign(config, _config)
-      this.setState({ isReady: true })
-    })
+    this.setState({ isReady: true })
   }
 
   render () {
