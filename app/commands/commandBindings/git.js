@@ -15,6 +15,10 @@ export default {
 
   'git:pull': c => $d(Git.pull()),
   'git:push': c => $d(Git.push()),
+  'git:delete_branch': c => $d(Git.gitDeleteBranch(c)
+  .then(() => {
+      $d(Git.getBranches())
+  })),
   'git:resolve_conflicts': c => {
     api.gitStatus().then(({files, clean}) => {
       files =  _.filter(files, (file) => {
@@ -27,6 +31,13 @@ export default {
   },
 
   // 'git:commit_and_push':
+  'git:local_checkout': c => {
+    $d(Git.getBranches()).then(() =>
+      $d(Git.getCurrentBranch()).then(() =>
+        $d(Modal.showModal('GitCheckout'))
+      )
+    )
+  },
   'git:new_branch': c => {
     $d(Git.getBranches()).then(() =>
       $d(Git.getCurrentBranch()).then(() =>

@@ -33,6 +33,11 @@ export function updateStagingArea (action, file) {
     return unstageFile(file)
   }
 }
+export const GIT_FETCH = 'GIT_FETCH'
+export function getFetch() {
+  return dispatch => api.gitFetch().then(
+      dispatch(notify({ message: 'Get Fetch Success'})))
+}
 
 export const GIT_BRANCH = 'GIT_BRANCH'
 export function getBranches () {
@@ -49,6 +54,16 @@ export function checkoutBranch (branch, remoteBranch) {
     api.gitCheckout(branch, remoteBranch).then(data => {
       dispatch(createAction(GIT_CHECKOUT)({ branch }))
       dispatch(notify({message: `Check out ${branch}`}))
+    })
+  }
+}
+
+export const GIT_DELETE_BRANCH = 'GIT_DELETE_BRANCH'
+export function gitDeleteBranch (branch) {
+  return dispatch => {
+    api.gitDeleteBranch(branch)
+    .then(() => {
+      dispatch(notify({message: `deleted branch ${branch} success`}))
     })
   }
 }
@@ -166,9 +181,10 @@ export function checkoutStash ({stashRef, branch}) {
   })
 }
 
-export function getCurrentBranch () {
+export function getCurrentBranch (showSuccess) {
   return dispatch => api.gitCurrentBranch().then(({ name }) => {
     dispatch(updateCurrentBranch({name}))
+    if (showSuccess) dispatch(notify({ message: 'sync success '}))
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,

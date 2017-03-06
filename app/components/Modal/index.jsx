@@ -22,6 +22,7 @@ import {
   GitRebasePrepare,
   GitRebaseInput,
   GitCommitDiffView,
+  GitCheckoutView,
   PackageControlView
 } from './modals'
 
@@ -99,7 +100,8 @@ class Modal extends Component {
 
         case 'GitDiffFile':
           return <GitDiffFileView {...this.props} />
-
+        case 'GitCheckout':
+          return <GitCheckoutView {...this.props} />
         case 'Prompt':
           return <Prompt {...this.props} />
 
