@@ -1,6 +1,8 @@
 /* @flow weak */
 import { urlJoin, querystring as qs } from './url-helpers'
 import config from '../config'
+import axios from 'axios'
+
 
 const defaultRequestOptions = {
   method: 'GET',
@@ -17,28 +19,10 @@ const defaultRequestOptions = {
 const defaultFetchOptions = {
   method: 'GET',
   mode: 'cors',
-  credentials: 'include',
+  withCredentials: true,
   redirect: 'manual'
 }
 
-function interceptResponse (response) {
-  if (config.isPlatform && response.headers.get('Requests-Auth') === '1') {
-    const authUrl = response.headers.get('Requests-Auth-Url')
-    return location.href = authUrl
-  }
-  var contentType = response.headers.get('Content-Type')
-  if (contentType && contentType.includes('json')) {
-    return response.json().then(json => {
-      if (!response.ok) throw {error: true, ...json}
-      return json
-    })
-  } else if (response.status === 204) {
-    return true
-  } else {
-    if (!response.ok) throw response.statusText
-    return response.text().then(body => body)
-  }
-}
 
 function handleErrorResponse (response) {
   return response
@@ -49,12 +33,12 @@ function request (_options) {
   var queryString, fetchOptions
   if (options.json) {
     options.headers['Content-Type'] = 'application/json'
-    options.body = options.json
+    options.data = options.json
   }
 
   if (options.form) {
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    options.body = options.form
+    options.data = options.form
   }
 
   if (options.body) {
@@ -77,7 +61,7 @@ function request (_options) {
 
   var url = options.absURL ? options.absURL : urlJoin(options.baseURL, options.url)
   url += (options.qs ? '?' : '') + qs.stringify(options.qs)
-  return fetch(url, fetchOptions).then(interceptResponse).catch(handleErrorResponse)
+  return axios(url, fetchOptions).then(res => res.data).catch(handleErrorResponse)
 }
 
 function parseMethodArgs (url, data, METHOD) {

@@ -6,7 +6,6 @@ import { updateDragOverTarget, updateDragOverMeta, dragEnd, dragStart } from './
 import * as PaneActions from '../Pane/actions'
 import * as TabActions from '../Tab/actions'
 import * as FileTreeActions from '../FileTree/actions'
-import uuid from 'uuid'
 
 @connect(state => state.DragAndDrop)
 class DragAndDrop extends Component {
@@ -43,18 +42,10 @@ class DragAndDrop extends Component {
     window.ondragleave = this.onDragLeave
   }
   onDragLeave = (e) => {
-    console.log('ondragleave', e)
     e.preventDefault()
     const {source = {}, dispatch} = this.props
-    if (source.type && source.type === 'File_Outside') {
-      setTimeout(() => {
-        // if (this.props.source && this.props.source.id === firstId) {
-        //   console.log('s', this.props.source)
-        //   console.log('out')
-        //   return
-        // }
-        dispatch(dragEnd())
-      }, 5000)
+    if (source.type && source.type === 'EXTERNAL_FILE') {
+      setTimeout(() => dispatch(dragEnd()), 1000)
     }
   }
   onDragOver = (e) => {
@@ -63,8 +54,8 @@ class DragAndDrop extends Component {
     const prevTarget = this.props.target
     if (!source) {
       dispatch(dragStart({
-        sourceType: 'File_Outside',
-        sourceId: uuid.v1()
+        sourceType: 'EXTERNAL_FILE',
+        sourceId: Date.now(),
       }))
     }
     const [oX, oY] = [e.pageX, e.pageY]
@@ -81,11 +72,10 @@ class DragAndDrop extends Component {
     // if (!prevTarget || target.id !== prevTarget.id) {
       dispatch(updateDragOverTarget({id: target.id, type: target.type }))
     // }
-    console.log('overer', `${source.type}_on_${target.type}`)
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
         return this.dragTabOverPane(e, target)
-      case 'File_Outside_on_FILE_TREE_NODE':
+      case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
         return this.dragTabOverFileTree(e, target)
       case 'TAB_on_TABBAR':
       case 'TAB_on_TABLABEL':
@@ -106,7 +96,7 @@ class DragAndDrop extends Component {
             dispatch(TabActions.moveTabToPane(source.id, newPaneId))
           })
         break
-      case 'File_Outside_on_FILE_TREE_NODE':
+      case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
         dispatch(FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id))
         break;
       case 'TAB_on_TABBAR':
@@ -141,10 +131,9 @@ class DragAndDrop extends Component {
 
   dragTabOverFileTree (e, target) {
     const id = target.id
-    console.log('id', id)
     if (id.split('_')[0] === 'folder') {
-      // const DOMNode = document.getElementById(target.id)
-      // DOMNode.firstChild.firstChild.click()
+      const DOMNode = document.getElementById(target.id)
+      DOMNode.firstChild.click()
     }
   }
   dragTabOverPane (e, target) {
