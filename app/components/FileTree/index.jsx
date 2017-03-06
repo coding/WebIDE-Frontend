@@ -89,7 +89,9 @@ class FileTree extends Component {
     const HideFilesSetting = generalSettings.items.find(st => st.name === 'Hide Files');
     const HideFilesArray = HideFilesSetting.value.split(',');
     return (
-      <div className="filetree-container" tabIndex={1} onKeyDown={this.onKeyDown}>
+      <div className="filetree-container"
+            tabIndex={1}
+            onKeyDown={this.onKeyDown}>
         <FileTreeNode
           node={{
             ...rootNode,
@@ -128,7 +130,10 @@ class FileTreeNode extends Component {
     const { node, ...actionProps } = this.props
     const { openNode, selectNode, onContextMenu } = actionProps
     return (
-      <div className="filetree-node-container"
+      <div
+        id={`${node.isDir ? 'folder' : 'file'}_${node.path}`}
+        className="filetree-node-container"
+        data-droppable="FILE_TREE_NODE"
         onContextMenu={e => { selectNode(node); onContextMenu(e, node) }}
       >
         <div className={cx('filetree-node', { focus: node.isFocused })}

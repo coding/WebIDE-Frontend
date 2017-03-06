@@ -21,7 +21,7 @@ class GitFileTree extends Component {
 
   render () {
     return (
-      <div className='git-filetree-container' tabIndex={1} >
+      <div className='git-filetree-container' tabIndex={1}>
         <GitFileTreeNode path='/'
           visualParentPath='/'
           statusFiles={this.props.statusFiles}
@@ -123,7 +123,7 @@ class _GitFileTreeNode extends Component {
               { showTreeView ?
                 (node.isDir && showShrinkPathView ?
                   node.path.replace(visualParentPath, '').replace(/^\//, '')
-                : (handleClick ? 
+                : (handleClick ?
                     <label onClick={handleClick.bind(null, node.path)}>{node.name}</label>
                   : node.name)
                 )

@@ -66,7 +66,15 @@ export function initializeFileTree () {
   }
 }
 
+const pathToDir = (path) =>
+path.split('_')[1] ? path.split('_')[1].split('/').slice(0, -1).join('/') || '/' : path
+
 export const uploadFilesToPath = (files, path) => {
+  if (path.split('_')[0] === 'folder') {
+    path = path.split('_')[1]
+  }
+  path = pathToDir(path)
+  console.log('files', files, path)
   return (dispatch, getState) => {
     if (!files.length) return
     _(files).forEach(file => {
