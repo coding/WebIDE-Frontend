@@ -95,9 +95,6 @@ class GitMergeView extends Component {
       revertButtons: true,
     })
     this.mergeView.wrap.style.height = '100%'
-
-    // require([`brace/mode/${getMode(that.props.content.path)}`], () => {
-    // })
   }
 
   handleConfirm = () => {

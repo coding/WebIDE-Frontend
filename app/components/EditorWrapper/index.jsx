@@ -1,12 +1,10 @@
 import React, { PropTypes } from 'react'
-import AceEditor from '../AceEditor'
 import MarkdownEditor from '../MarkdownEditor'
 import PictureEditor from '../PictureEditor'
 import CodeMirrorEditor from '../CodeMirrorEditor'
 
 const editors = {
   CodeMirrorEditor,
-  AceEditor,
   MarkdownEditor,
   PictureEditor
 }

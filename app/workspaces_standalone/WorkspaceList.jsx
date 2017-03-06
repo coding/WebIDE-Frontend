@@ -55,8 +55,8 @@ class WorkspaceList extends Component {
           <div>
             <h3>Create Workspace</h3>
             <p>1. Ensure you have add the public key to your account.
-              {this.state.showPublicKey ? <a onClick={e => this.setState({showPublicKey: false})}> Hide public key</a>
-                : <a onClick={e => this.setState({showPublicKey: true})}> Show public key</a>}
+              {this.state.showPublicKey ? <a href='#' onClick={e => this.setState({showPublicKey: false})}> Hide public key</a>
+                : <a href='#' onClick={e => this.setState({showPublicKey: true})}> Show public key</a>}
             </p>
             {this.state.showPublicKey ? <div>
               <div className='pre'>{publicKey}</div>
@@ -85,8 +85,9 @@ class WorkspaceList extends Component {
             <div key={ws.spaceKey} className='workspace'>
               <div className='workspace-name'>{ws.projectName}</div>
               <div className='workspace-action'>
-                <a className='btn btn-default' href={'#spaceKey=' + ws.spaceKey}
-                   onClick={e => openWorkspace(ws)}>Open</a>
+                <a className='btn btn-default'
+                  href={window.location.origin + '#spaceKey=' + ws.spaceKey}
+                  onClick={e => openWorkspace(ws)}>Open</a>
                 <button className='btn btn-danger'
                   style={{marginLeft: '4px'}}
                   onClick={e => deleteWorkspace(ws.spaceKey)} >
@@ -102,7 +103,7 @@ class WorkspaceList extends Component {
 }
 
 WorkspaceList = connect(
-  state => state.WorkspaceState,
+  state => state,
   dispatch => bindActionCreators(WorkspaceActions, dispatch)
 )(WorkspaceList)
 

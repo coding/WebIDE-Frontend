@@ -77,7 +77,12 @@ export default {
 
     } else {
       api.writeFile(activeTab.path, content)
-        .then(() => dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false)))
+        .then(() => {
+          dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false))
+          dispatch(Tab.actions.updateTab({
+            id: activeTab.id, content: { body: content }
+          }))
+        })
     }
 
   },

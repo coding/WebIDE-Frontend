@@ -22,7 +22,11 @@ const _resetRetryDelay = () => {
 
 const Client = {
   connect: function (connectCallback, errorCallback) {
-    var socket = new SockJS(`${config.baseURL}/sockjs/`, {}, {server: `${config.spaceKey}`, transports: 'websocket'})
+    const url = config.isPlatform ?
+      `${config.wsURL}/sockjs/${config.spaceKey}`
+    : `${config.baseURL}/sockjs/`
+
+    const socket = new SockJS(url, {}, {server: `${config.spaceKey}`, transports: 'websocket'})
     var stompClient = Stomp.over(socket)
 
     return stompClient.connect({},
