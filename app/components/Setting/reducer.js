@@ -1,6 +1,7 @@
 /* @flow weak */
 import { handleActions } from 'redux-actions'
 import { OrderedMap } from 'immutable'
+import { changeTheme, changeCodeTheme } from '../../utils/themeManager'
 import {
   SETTING_ACTIVATE_TAB,
   SETTING_UPDATE_FIELD,
@@ -32,21 +33,31 @@ const getDefaultLangCode = () => {
   }, '')
 }
 
+export const UIThemeOptions = ['Light', 'Dark']
+export const SyntaxThemeOptions = ['monokai', 'ambiance']
 
 const SettingState = {
-  activeTabId: 'EDITOR',
-  tabIds: ['GENERAL', 'EDITOR'],
+  activeTabId: 'GENERAL',
+  tabIds: ['GENERAL', 'THEME', 'EDITOR'],
   tabs: {
+    THEME: {
+      id: 'THEME',
+      items: [{
+        name: 'UI Theme',
+        value: 'Light',
+        options: UIThemeOptions
+      }, {
+        name: 'Syntax Theme',
+        value: 'Default',
+        options: SyntaxThemeOptions
+      }]
+    },
     GENERAL: {
       id: 'GENERAL',
       items: [{
         name: 'Language',
         value: langCodes[getDefaultLangCode()],
         options: ['English', 'Chinese']
-      }, {
-        name: 'Theme',
-        value: 'Light',
-        options: ['Light', 'Dark']
       }, {
         name: 'Hide Files',
         value: '/.git,/.coding-ide'
@@ -107,6 +118,8 @@ export default handleActions({
 
   [SETTING_UPDATE_FIELD]: (state, action) => {
     const { domain, fieldName, value } = action.payload
+    if (fieldName === 'UI Theme') { changeTheme(value); }
+    if (fieldName === 'Syntax Theme') { changeCodeTheme(value); }
     return {
       ...state,
       views: { ...state.views,

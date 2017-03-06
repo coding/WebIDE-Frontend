@@ -20,7 +20,7 @@ module.exports = merge(
     }
   },
   CommonConfig,
-  { devtool: 'inline-source-map' },
+  { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
       new webpack.DefinePlugin({
         __DEV__: true,
