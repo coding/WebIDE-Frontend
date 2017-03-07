@@ -41,6 +41,7 @@ async function initialize () {
     window.extension = f => getExtensions
     window.request = request
     window.config = config
+    window.refs = {}
   })
 }
 
