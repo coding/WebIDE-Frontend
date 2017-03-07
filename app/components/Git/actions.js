@@ -81,7 +81,7 @@ export function pull () {
       if (res === true)
         dispatch(notify({message: 'Git pull success.'}))
       else
-        dispatch(notify({message: `Git pull fail: ${res}` }))
+        dispatch(notify({message: `Git pull fail: ${res.msg}` }))
     })
   }
 }
@@ -92,7 +92,7 @@ export function push () {
       if (res === true)
         dispatch(notify({message: 'Git push success.'}))
       else
-        dispatch(notify({message: `Git push fail: ${res}` }))
+        dispatch(notify({message: `Git push fail: ${res.msg}` }))
     })
   }
 }
