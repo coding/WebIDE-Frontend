@@ -12,6 +12,9 @@ const reactHotLoaderPrependEntries = [
   'webpack/hot/only-dev-server',
 ]
 
+
+const addHttpSchema = (server = '') => server.startsWith('http') ? server : `http://${server}`
+
 module.exports = merge(
   {
     entry: {
@@ -27,7 +30,7 @@ module.exports = merge(
         __RUN_MODE__: str(process.env.RUN_MODE || 'open'),
         __BACKEND_URL__: str(process.env.RUN_MODE === 'platform' ? process.env.BACKEND_URL : 'http://localhost:8080'),
         __WS_URL__: str(process.env.RUN_MODE === 'platform' ? process.env.WS_URL : ''),
-        __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || ''),
+        __PACKAGE_SERVER__: str(addHttpSchema(process.env.PACKAGE_SERVER)),
       }),
     ]
   },
