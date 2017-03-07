@@ -78,10 +78,10 @@ export function getTags () {
 export function pull () {
   return dispatch => {
     api.gitPull().then(res => {
-      if (res === true)
-        dispatch(notify({message: 'Git pull success.'}))
-      else
+      if (res.code && res.code !== 0)
         dispatch(notify({message: `Git pull fail: ${res.msg}` }))
+      else
+        dispatch(notify({message: 'Git pull success.'}))
     })
   }
 }
@@ -89,10 +89,10 @@ export function pull () {
 export function push () {
   return dispatch => {
     api.gitPushAll().then(res => {
-      if (res === true)
-        dispatch(notify({message: 'Git push success.'}))
-      else
+      if (res.code && res.code !== 0)
         dispatch(notify({message: `Git push fail: ${res.msg}` }))
+      else
+        dispatch(notify({message: 'Git push success.'}))
     })
   }
 }

@@ -217,6 +217,7 @@ const TabReducer = handleActions({
 
   [TAB_UPDATE]: (state, action) => {
     const tabConfig = action.payload
+    if (!state.tabs[tabConfig.id]) return state
     return update(state, {
       tabs: {[tabConfig.id]: {$merge: tabConfig}}
     })
