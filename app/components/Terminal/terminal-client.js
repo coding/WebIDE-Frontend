@@ -1,7 +1,9 @@
 /* @flow weak */
 import _ from 'lodash'
+import { bindActionCreators } from 'redux'
 import config from '../../config'
 import { request } from '../../utils'
+import { dispatch } from '../../store'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
@@ -34,7 +36,7 @@ class TerminalClient {
   }
 
   setActions (actions) {
-    this.actions = actions
+    this.actions = bindActionCreators(actions, dispatch)
   }
 
   createSocket () {
@@ -76,15 +78,15 @@ class TerminalClient {
       }
     })
 
-    // socket.on('shell.exit', (data) => {
-    //   var term;
-    //   term = _.find(terms, function(term) {
-    //     return term.name === data.id;
-    //   });
-    //   if (term) {
-    //     return this.actions.close(term.tabId);
-    //   }
-    // });
+    socket.on('shell.exit', (data) => {
+      var term;
+      term = _.find(terms, function(term) {
+        return term.name === data.id;
+      });
+      if (term) {
+        return this.actions.removeTab(term.tabId);
+      }
+    });
 
     // socket.on('port.found', function(ports) {
     //   var j, len, port, results;
@@ -98,15 +100,12 @@ class TerminalClient {
     //   return results;
     // });
 
-    // socket.on('reconnect', (data) => {
-    //   var i, j, len, results, term;
-    //   results = [];
-    //   for (i = j = 0, len = terms.length; j < len; i = ++j) {
-    //     term = terms[i];
-    //     results.push(this.add(term));
-    //   }
-    //   return results;
-    // });
+    socket.on('reconnect', (data) => {
+      let i, j, len
+      for (i = j = 0, len = terms.length; j < len; i = ++j) {
+        this.openTerm(terms[i])
+      }
+    })
 
     // socket.on('disconnect', (data) => {
     //   return this.setOnline(false);
@@ -129,9 +128,12 @@ class TerminalClient {
 
   add (term) {
     terms.push(term)
-    if (!socket) this.createSocket()
+    this.openTerm(term)
+  }
 
-    var termJSON = new Term({
+  openTerm (term) {
+    if (!socket) this.createSocket()
+    const termJSON = new Term({
       id: term.name,
       cols: term.cols,
       rows: term.rows

@@ -23,6 +23,14 @@ const defaultFetchOptions = {
   redirect: 'manual'
 }
 
+function interceptResponse (response) {
+  if (config.isPlatform && response.headers['requests-auth'] === '1') {
+    const authUrl = response.headers['requests-auth-url']
+    return location.href = authUrl
+  }
+  return response.data
+}
+
 
 function handleErrorResponse (response) {
   return response
@@ -33,12 +41,12 @@ function request (_options) {
   var queryString, fetchOptions
   if (options.json) {
     options.headers['Content-Type'] = 'application/json'
-    options.data = options.json
+    options.body = options.json
   }
 
   if (options.form) {
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    options.data = options.form
+    options.body = options.form
   }
 
   if (options.body) {
@@ -56,12 +64,13 @@ function request (_options) {
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},
-    body: options.body
+    data: options.body
   })
+
 
   var url = options.absURL ? options.absURL : urlJoin(options.baseURL, options.url)
   url += (options.qs ? '?' : '') + qs.stringify(options.qs)
-  return axios(url, fetchOptions).then(res => res.data).catch(handleErrorResponse)
+  return axios(url, fetchOptions).then(interceptResponse).catch(handleErrorResponse)
 }
 
 function parseMethodArgs (url, data, METHOD) {
