@@ -11,6 +11,7 @@ request.get(`${devPackageServer || packageServer}/packages/${pkgName}`)
 
 export const fetchPackageScript = (pkgName) => {
   if (devPackageServer) {
-    return request.get(`${devPackageServer}/static/${pkgName}.js`)
+    return request.get(`${devPackageServer}/packages/${pkgName}/download`)
   }
 }
+
