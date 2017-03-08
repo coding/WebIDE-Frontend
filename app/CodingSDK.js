@@ -2,6 +2,7 @@ import { request } from './utils'
 import store from './store'
 import { bindActionCreators } from 'redux'
 import config from './config'
+import * as Modal from './components/Modal/actions'
 
 
 export default class {
@@ -30,6 +31,6 @@ export default class {
     return config
   }
   get Modal () {
-    return bindActionCreators(Modal, dispatch)
+    return bindActionCreators(Modal, store.dispatch)
   }
 }
