@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 class PackageControlView extends Component {
   static propTypes = {
-    remotePackages: PropTypes.object,
+    remotePackages: PropTypes.array,
     localPackages: PropTypes.object,
     dispatch: PropTypes.func,
   }

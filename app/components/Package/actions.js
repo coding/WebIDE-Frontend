@@ -25,6 +25,7 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
     delete window.extensions[pkgId]
   } else {
     // plugin will mount
+    // @fixme @hackape consider theme situation
     try {
       const plugin = eval(script)
       const { Manager = '' } = plugin
