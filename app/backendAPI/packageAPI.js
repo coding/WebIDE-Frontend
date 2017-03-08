@@ -19,8 +19,7 @@ export const fetchPackageScript = (pkgName) => {
   }
 }
 export const enablePackageHotReload = () => {
-  const socket = io.connect('http://localhost:4000', {
-    // 'force new connection': true,
+  const socket = io.connect(devPackageServer, {
     reconnection: true,
     reconnectionDelay: 1500,
     reconnectionDelayMax: 10000,
