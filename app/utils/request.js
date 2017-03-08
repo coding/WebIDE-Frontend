@@ -74,7 +74,6 @@ function request (_options) {
 }
 
 function parseMethodArgs (url, data, METHOD) {
-  console.log('data', data)
   var options = {}
   options.method = METHOD
   if (typeof url === 'object') {
