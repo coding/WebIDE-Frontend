@@ -16,6 +16,7 @@ import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
+import StatusBarReducer from './components/StatusBar/reducer'
 
 import localStoreCache from './localStoreCache'
 
@@ -32,6 +33,7 @@ const combinedReducers = combineReducers({
   NotificationState: NotificationReducer,
   DragAndDrop: DragAndDropReducer,
   SettingState: SettingReducer,
+  StatusBarState: StatusBarReducer,
 })
 
 const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, PackageCrossReducer)

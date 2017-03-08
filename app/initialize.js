@@ -1,14 +1,30 @@
 import React from 'react'
 import qs from 'query-string'
+import { bindActionCreators } from 'redux'
 import config from './config'
 import api from './backendAPI'
 import { stepFactory, createI18n, getExtensions, request } from './utils'
+import * as Modal from './components/Modal/actions'
+import store, { dispatch } from './store'
+import { notify, NOTIFY_TYPE } from './components/Notification/actions'
+import CodingSDK from './CodingSDK'
+
 
 async function initialize () {
   const step = stepFactory()
 
   await step('[0] Get spaceKey from window.location', () => {
-    const { spaceKey } = qs.parse(window.location.hash.slice(1))
+    let spaceKey = null
+    if (config.isPlatform) {
+      const urlPath = window.location.pathname
+      const queryEntryPathPattern = /^\/ws\/?$/
+      const wsPathPattern = /^\/ws\/([^\/]+)$/
+      const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
+      const match = wsPathPattern.exec(urlPath)
+      if (match) spaceKey = match[1]
+    } else {
+      spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
+    }
     if (spaceKey) config.spaceKey = spaceKey
     return Boolean(spaceKey)
   })
@@ -35,11 +51,13 @@ async function initialize () {
   )
 
   await step('[5] Expose essential APIs into window object', () => {
+    window.CodingSDK = CodingSDK
+    window.store = store
     window.React = React
     window.i18n = createI18n
     window.extensions = {}
     window.extension = f => getExtensions
-    window.request = request
+    // window.request = request
     window.config = config
     window.refs = {}
   })

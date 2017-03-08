@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
 import * as Tab from '../Tab'
-
+import { updateUploadProgress } from '../StatusBar/actions'
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
 export const FILETREE_SELECT_NODE_KEY = 'FILETREE_SELECT_NODE_KEY'
 export function selectNode (node, multiSelect = false) {
@@ -12,12 +12,12 @@ export function selectNode (node, multiSelect = false) {
       type: FILETREE_SELECT_NODE_KEY,
       payload: {offset: node}
     }
-  } else {
+  }
     return {
       type: FILETREE_SELECT_NODE,
       payload: {node, multiSelect}
     }
-  }
+
 }
 
 export function openNode (node, shouldBeFolded = null, deep = false) {
@@ -51,26 +51,43 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
 
 export const FILETREE_FOLD_NODE = 'FILETREE_FOLD_NODE'
 export const toggleNodeFold = createAction(FILETREE_FOLD_NODE,
-  (node, shouldBeFolded = null, deep = false) => ({node, shouldBeFolded, deep})
+  (node, shouldBeFolded = null, deep = false) => ({ node, shouldBeFolded, deep })
 )
 
 export const FILETREE_REMOVE_NODE = 'FILETREE_REMOVE_NODE'
 export const removeNode = createAction(FILETREE_REMOVE_NODE, node => node)
 
 export const FILETREE_LOAD_DATA = 'FILETREE_LOAD_DATA'
-export const loadNodeData = createAction(FILETREE_LOAD_DATA, (data, node) => ({data, node}))
+export const loadNodeData = createAction(FILETREE_LOAD_DATA, (data, node) => ({ data, node }))
 
 export function initializeFileTree () {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     api.fetchPath('/').then(data => dispatch(loadNodeData(data)))
   }
 }
 
+const pathToDir = (path) =>
+path.split('_')[1] ? path.split('_')[1].split('/').slice(0, -1).join('/') || '/' : path
+
 export const uploadFilesToPath = (files, path) => {
-  return (dispatch, getState) => {
+  if (path.split('_')[0] === 'folder') {
+    path = path.split('_')[1]
+  }
+  path = pathToDir(path)
+  return (dispatch) => {
     if (!files.length) return
     _(files).forEach(file => {
-      api.uploadFile(path, file)
+      api.uploadFile(path, file, {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          dispatch(updateUploadProgress(percentCompleted))
+          if (percentCompleted === 100) {
+            setTimeout(() => {
+              dispatch(updateUploadProgress(''))
+            }, 3000)
+          }
+        }
+      })
     })
   }
 }

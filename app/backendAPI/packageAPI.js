@@ -3,11 +3,14 @@ import { request } from '../utils'
 import config from '../config'
 
 const { packageServer } = config
+const devPackageServer = __PACKAGE_SERVER__
 
-export const fetchPackageList = () => request.get(`${packageServer}/packages`)
-export const fetchPackageInfo = (pkgName) => request.get(`${packageServer}/packages/${pkgName}`)
-export const fetchPackageScript = (pkgName, debugServer) => {
-  if (debugServer) {
-    return request.get(`${debugServer}/${pkgName}.js`)
+export const fetchPackageList = () => request.get(`${devPackageServer || packageServer}/packages`)
+export const fetchPackageInfo = (pkgName) =>
+request.get(`${devPackageServer || packageServer}/packages/${pkgName}`)
+
+export const fetchPackageScript = (pkgName) => {
+  if (devPackageServer) {
+    return request.get(`${devPackageServer}/static/${pkgName}.js`)
   }
 }

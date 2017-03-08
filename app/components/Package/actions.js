@@ -15,14 +15,23 @@ export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
 // 往本地localstoage写一个插件的信息
 
 export const updateLocalPackage = createAction(PACKAGE_UPDATE_LOCAL, p => p)
+
+
 export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) => {
   const script = localStorage.getItem(pkgId)
   if (!shouldEnable) {
+    // plugin will unmount
+    window.extensions[pkgId].manager.pluginOnUnmount()
     delete window.extensions[pkgId]
   } else {
+    // plugin will mount
     try {
-      const component = eval(script)
-      window.extensions[pkgId] = component
+      const plugin = eval(script)
+      const { Manager = '' } = plugin
+      const manager = new Manager()
+      manager.pluginWillMount()
+      plugin.manager = manager
+      window.extensions[pkgId] = plugin
     } catch (err) {
       throw err
     }
@@ -34,8 +43,8 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
 })
 
 export const fetchPackage = (pkgId) => (dispatch) => {
-  const pkgInfo = api.fetchPackageInfo(pkgId, __PACKAGE_SERVER__)
-  const pkgScript = api.fetchPackageScript(pkgId, __PACKAGE_SERVER__)
+  const pkgInfo = api.fetchPackageInfo(pkgId)
+  const pkgScript = api.fetchPackageScript(pkgId)
     .then(script => {
       localStorage.setItem(pkgId, script)
       return pkgId

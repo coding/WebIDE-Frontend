@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import terms from './terminal-client';
 import * as TabActions from '../Tab/actions';
+terms.setActions(TabActions);
 
 class Term extends Component {
   static contextTypes = {
