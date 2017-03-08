@@ -5,8 +5,10 @@ import config from './config'
 import api from './backendAPI'
 import { stepFactory, createI18n, getExtensions, request } from './utils'
 import * as Modal from './components/Modal/actions'
-import { dispatch } from './store'
+import store, { dispatch } from './store'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
+import CodingSDK from './CodingSDK'
+
 
 async function initialize () {
   const step = stepFactory()
@@ -49,11 +51,13 @@ async function initialize () {
   )
 
   await step('[5] Expose essential APIs into window object', () => {
+    window.CodingSDK = CodingSDK
+    window.store = store
     window.React = React
     window.i18n = createI18n
     window.extensions = {}
     window.extension = f => getExtensions
-    window.request = request
+    // window.request = request
     window.config = config
     window.refs = {}
     window.Modal = bindActionCreators(Modal, dispatch)

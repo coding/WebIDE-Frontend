@@ -33,12 +33,12 @@ function request (_options) {
   var queryString, fetchOptions
   if (options.json) {
     options.headers['Content-Type'] = 'application/json'
-    options.data = options.json
+    options.body = options.json
   }
 
   if (options.form) {
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    options.data = options.form
+    options.body = options.form
   }
 
   if (options.body) {
@@ -56,7 +56,7 @@ function request (_options) {
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},
-    body: options.body
+    data: options.body
   })
 
   var url = options.absURL ? options.absURL : urlJoin(options.baseURL, options.url)
@@ -65,6 +65,7 @@ function request (_options) {
 }
 
 function parseMethodArgs (url, data, METHOD) {
+  console.log('data', data)
   var options = {}
   options.method = METHOD
   if (typeof url === 'object') {
