@@ -57,7 +57,6 @@ const defaultState = {
   tabs: {},
   activeTabGroupId: ''
 }
-let __state__ = defaultState
 
 const Tab = Model({
   id: '',
@@ -219,7 +218,7 @@ const TabReducer = handleActions({
     const tabConfig = action.payload
     if (!state.tabs[tabConfig.id]) return state
     return update(state, {
-      tabs: {[tabConfig.id]: {$merge: tabConfig}}
+      tabs: {[tabConfig.id]: {$merge: tabConfig || {} }}
     })
   },
 
@@ -253,7 +252,7 @@ const TabReducer = handleActions({
 }, defaultState)
 
 
-export default (state, action) => (__state__ = TabReducer(state, action))
+export default TabReducer
 
 export const TabCrossReducer = handleActions({
   [TAB_MOVE_TO_PANE]: (allState, { payload: { tabId, paneId }}) => {

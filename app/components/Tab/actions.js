@@ -24,7 +24,7 @@ export const TAB_REMOVE_GROUP = 'TAB_REMOVE_GROUP'
 export const removeGroup = createAction(TAB_REMOVE_GROUP, groupId => groupId)
 
 export const TAB_UPDATE = 'TAB_UPDATE'
-export const updateTab = createAction(TAB_UPDATE, tabConfig => tabConfig)
+export const updateTab = createAction(TAB_UPDATE, (tabConfig = {}) => tabConfig)
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
 export const updateTabFlags = (tabId, flag, value = true) => {
