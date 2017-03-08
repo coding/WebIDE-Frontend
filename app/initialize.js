@@ -36,15 +36,16 @@ async function initialize () {
   await step('[2] Setting up workspace...', () =>
     api.setupWorkspace().then(res => {
       Object.assign(config, res)
-      if (config.project && config.project.name)
-        config.projectName = config.project.name
+      if (config.project && config.project.name) { config.projectName = config.project.name }
       return true
     })
   )
 
-  if (!config.isPlatform) await step('[3] Get workspace settings', () =>
+  if (!config.isPlatform) {
+    await step('[3] Get workspace settings', () =>
     api.getSettings().then(settings => config.settings = settings)
   )
+  }
 
   await step('[4] Connect websocket', () =>
     api.connectWebsocketClient()
@@ -63,7 +64,14 @@ async function initialize () {
     window.Modal = bindActionCreators(Modal, dispatch)
     window.notify = bindActionCreators(notify, dispatch)
     window.NOTIFY_TYPE = NOTIFY_TYPE
+    return true
   })
+
+  if (__PACKAGE_SERVER__) {
+    await step('[6] enable package server hotreload', () => {
+      api.enablePackageHotReload()
+    })
+  }
 }
 
 export default initialize
