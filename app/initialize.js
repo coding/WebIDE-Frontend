@@ -79,12 +79,7 @@ async function initialize () {
     window.i18n = createI18n
     window.extensions = {}
     window.extension = f => getExtensions
-    // window.request = request
-    window.config = config
     window.refs = {}
-    window.Modal = bindActionCreators(Modal, dispatch)
-    window.notify = bindActionCreators(notify, dispatch)
-    window.NOTIFY_TYPE = NOTIFY_TYPE
     return true
   })
 

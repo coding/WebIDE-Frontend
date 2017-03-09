@@ -3,7 +3,7 @@ import store from './store'
 import { bindActionCreators } from 'redux'
 import config from './config'
 import * as Modal from './components/Modal/actions'
-
+import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 
 export default class {
   // app data
@@ -32,5 +32,11 @@ export default class {
   }
   get Modal () {
     return bindActionCreators(Modal, store.dispatch)
+  }
+  get Notify () {
+    return ({
+      notify: bindActionCreators(notify, store.dispatch),
+      NOTIFY_TYPE
+    })
   }
 }
