@@ -55,10 +55,14 @@
   position: relative;
 }
 
+.menu-item-name {
+  word-break: break-all;
+  word-wrap: break-word;
+}
 .menu-item-container {
   display: flex;
   min-width: 140px;
-  padding: 4px 20px;
+  padding: 4px 15px;
   cursor: default;
   &.active {
     background-color: $background-color-highlight;
@@ -75,7 +79,8 @@
   }
 
   .menu-item-shortcut {
-    margin-left: auto;
+    color: $menu-item-shortcut-color
+    margin-left: 10px;
     margin-right: -6px;
   }
 }

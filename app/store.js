@@ -7,17 +7,16 @@ import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
-import EditorReducer from './components/AceEditor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
 import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
-import WorkspaceReducer from './components/Workspace/reducer'
 import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
+import StatusBarReducer from './components/StatusBar/reducer'
 
 import localStoreCache from './localStoreCache'
 
@@ -28,14 +27,13 @@ const combinedReducers = combineReducers({
   PanelState: PanelReducer,
   PaneState: PaneReducer,
   TabState: TabReducer,
-  EditorState: EditorReducer,
   ModalState: ModalsReducer,
   TerminalState: TerminalReducer,
   GitState: GitReducer,
   NotificationState: NotificationReducer,
-  WorkspaceState: WorkspaceReducer,
   DragAndDrop: DragAndDropReducer,
   SettingState: SettingReducer,
+  StatusBarState: StatusBarReducer,
 })
 
 const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, PackageCrossReducer)

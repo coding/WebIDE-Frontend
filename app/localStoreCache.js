@@ -2,11 +2,11 @@ import _ from 'lodash'
 let localStoreCache = {}
 
 const stateDomainsToCache = [
-  'MarkdownEditorState',
+  // 'MarkdownEditorState',
   // 'FileTreeState',
   // 'PanelState',
-  'PaneState',
-  'TabState',
+  // 'PaneState',
+  // 'TabState',
   // 'EditorState',
   // 'ModalState',
   // 'TerminalState',
@@ -14,7 +14,7 @@ const stateDomainsToCache = [
   // 'NotificationState',
   // 'WorkspaceState',
   // 'DragAndDrop',
-  'SettingState',
+  // 'SettingState',
   // 'PackageState',
 ]
 
@@ -27,7 +27,7 @@ const stateFilter = (state) => stateDomainsToCache.reduce((stateToCache, domain)
 
 let cachedState
 localStoreCache.beforeReducer = (state, action) => {
-  if (!state) state = JSON.parse(window.localStorage.getItem('snapshot'))
+  // if (!state) state = JSON.parse(window.localStorage.getItem('snapshot'))
   if (!state) return
   cachedState = JSON.stringify(stateFilter(state))
   return state

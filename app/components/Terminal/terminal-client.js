@@ -1,9 +1,13 @@
 /* @flow weak */
 import _ from 'lodash'
-import io from 'socket.io-client'
+import { bindActionCreators } from 'redux'
 import config from '../../config'
+import { request } from '../../utils'
+import { dispatch } from '../../store'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
+
+var io = require(__RUN_MODE__ === 'platform' ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 class Term {
   constructor ({id, cols, rows}) {
@@ -32,11 +36,33 @@ class TerminalClient {
   }
 
   setActions (actions) {
-    this.actions = actions
+    this.actions = bindActionCreators(actions, dispatch)
   }
 
   createSocket () {
-    socket = io.connect(config.baseURL, {'resource': 'coding-ide-tty1'})
+    if (config.isPlatform) {
+      const wsUrl = config.wsURL
+      const firstSlashIdx = wsUrl.indexOf('/', 8)
+      let host, path
+      if (firstSlashIdx !== -1) {
+        host = wsUrl.substring(0, firstSlashIdx)
+        path = wsUrl.substring(firstSlashIdx)
+      } else {
+        host = wsUrl
+        path = ''
+      }
+      socket = io.connect(host, {
+        'force new connection': true,
+        'reconnection': true,
+        'reconnectionDelay': 1500,
+        'reconnectionDelayMax': 10000,
+        'reconnectionAttempts': 5,
+        path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
+        transports: ['websocket']
+      })
+    } else {
+      socket = io.connect(config.baseURL, { 'resource': 'coding-ide-tty1' })
+    }
     return this.bindSocketEvent()
   }
 
@@ -52,15 +78,15 @@ class TerminalClient {
       }
     })
 
-    // socket.on('shell.exit', (data) => {
-    //   var term;
-    //   term = _.find(terms, function(term) {
-    //     return term.name === data.id;
-    //   });
-    //   if (term) {
-    //     return this.actions.close(term.tabId);
-    //   }
-    // });
+    socket.on('shell.exit', (data) => {
+      var term;
+      term = _.find(terms, function(term) {
+        return term.name === data.id;
+      });
+      if (term) {
+        return this.actions.removeTab(term.tabId);
+      }
+    });
 
     // socket.on('port.found', function(ports) {
     //   var j, len, port, results;
@@ -74,15 +100,12 @@ class TerminalClient {
     //   return results;
     // });
 
-    // socket.on('reconnect', (data) => {
-    //   var i, j, len, results, term;
-    //   results = [];
-    //   for (i = j = 0, len = terms.length; j < len; i = ++j) {
-    //     term = terms[i];
-    //     results.push(this.add(term));
-    //   }
-    //   return results;
-    // });
+    socket.on('reconnect', (data) => {
+      let i, j, len
+      for (i = j = 0, len = terms.length; j < len; i = ++j) {
+        this.openTerm(terms[i])
+      }
+    })
 
     // socket.on('disconnect', (data) => {
     //   return this.setOnline(false);
@@ -105,9 +128,12 @@ class TerminalClient {
 
   add (term) {
     terms.push(term)
-    if (!socket) this.createSocket()
+    this.openTerm(term)
+  }
 
-    var termJSON = new Term({
+  openTerm (term) {
+    if (!socket) this.createSocket()
+    const termJSON = new Term({
       id: term.name,
       cols: term.cols,
       rows: term.rows

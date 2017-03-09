@@ -1,6 +1,7 @@
 /* @flow weak */
 import { request, querystring as qs } from '../utils'
 import config from '../config'
+import axios from 'axios'
 
 export function fetchPath (path, other, group) {
   return request.get(`/workspaces/${config.spaceKey}/files`, {
@@ -20,13 +21,14 @@ export function downloadFile (path, shouldPacked) {
   window.open(url, '_blank')
 }
 
-export function uploadFile (path, file) {
-  let formdata = new FormData()
+export function uploadFile (path, file, option) {
+  const formdata = new FormData()
   formdata.append('path', path)
   formdata.append('files', file, file.name)
-  fetch(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, {
+  axios(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, {
     method: 'POST',
-    body: formdata,
+    data: formdata,
+    onUploadProgress: option.onUploadProgress
   })
 }
 
@@ -46,7 +48,11 @@ export function writeFile (path, content, base64) {
 }
 
 export function readFile (path) {
-  return request.get(`/workspaces/${config.spaceKey}/file/read`, {
+  const url = config.isPlatform ?
+    `/workspaces/${config.spaceKey}/read`
+  : `/workspaces/${config.spaceKey}/file/read`
+
+  return request.get(url, {
     path: path,
     base64: false
   })

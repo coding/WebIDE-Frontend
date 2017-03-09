@@ -1,33 +1,39 @@
 /* @flow weak */
 import { urlJoin, querystring as qs } from './url-helpers'
 import config from '../config'
+import axios from 'axios'
+
 
 const defaultRequestOptions = {
   method: 'GET',
   baseURL: config.baseURL,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/x-www-form-urlencoded',
+    ...(config.isPlatform && {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Accept': 'application/vnd.coding.v2+json'
+    })
   }
 }
 
 const defaultFetchOptions = {
   method: 'GET',
   mode: 'cors',
-  credentials: __DEV__ ? '' : 'include',
+  withCredentials: true,
   redirect: 'manual'
 }
 
 function interceptResponse (response) {
-  var contentType = response.headers.get('Content-Type')
-  if (contentType && contentType.includes('application/json')) {
-    return response.json().then(json => {
-      if (!response.ok) throw {error: true, ...json}
-      return json
-    })
-  } else {
-    if (!response.ok) throw response.statusText
-    return response.text().then(body => body)
+  if (config.isPlatform && response.headers['requests-auth'] === '1') {
+    const authUrl = response.headers['requests-auth-url']
+    return location.href = authUrl
   }
+  return response.data
+}
+
+
+function handleErrorResponse (response) {
+  return response
 }
 
 function request (_options) {
@@ -58,12 +64,13 @@ function request (_options) {
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},
-    body: options.body
+    data: options.body
   })
+
 
   var url = options.absURL ? options.absURL : urlJoin(options.baseURL, options.url)
   url += (options.qs ? '?' : '') + qs.stringify(options.qs)
-  return fetch(url, fetchOptions).then(interceptResponse)
+  return axios(url, fetchOptions).then(interceptResponse).catch(handleErrorResponse)
 }
 
 function parseMethodArgs (url, data, METHOD) {
@@ -97,6 +104,24 @@ function parseMethodArgs (url, data, METHOD) {
 
 request.get = function (url, data) {
   return request(parseMethodArgs(url, data, 'GET'))
+}
+
+request.diff = function (url, data) {
+  let options = parseMethodArgs(url, data, 'GET')
+  options.headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/vnd.coding.v2.diff+json'
+  }
+  return request(options)
+}
+
+request.diffFilesList = function (url, data) {
+  let options = parseMethodArgs(url, data, 'GET')
+  options.headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/vnd.coding.v2.diff-files-list+json'
+  }
+  return request(options)
 }
 
 request.post = function (url, data) {

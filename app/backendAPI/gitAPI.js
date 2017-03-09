@@ -6,17 +6,11 @@ export function gitStatus () {
   return request.get(`/git/${config.spaceKey}`)
 }
 
-export function gitGetBranches () {
-  return request.get(`/git/${config.spaceKey}/branches`)
-}
 
 export function gitTags () {
   return request.get(`/git/${config.spaceKey}/tags`)
 }
 
-export function gitNewBranch (branchName) {
-  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
-}
 
 export function gitCheckout (branch, remoteBranch) {
   return request.post(`/git/${config.spaceKey}/checkout`, {
@@ -25,7 +19,8 @@ export function gitCheckout (branch, remoteBranch) {
 }
 
 export function gitCommit ({files, message}) {
-  return request.post(`/git/${config.spaceKey}`, {files, message})
+  const url = config.isPlatform ? `/git/${config.spaceKey}/commits` : `/git/${config.spaceKey}`
+  return request.post(url, {files, message})
 }
 
 export function gitPull () {
@@ -38,10 +33,25 @@ export function gitPushAll () {
     if (!res.ok) return false
   })
 }
+export function gitFetch () {
+  return request.post(`/git/${config.spaceKey}/fetch`)
+}
+// branches
+export function gitNewBranch (branchName) {
+  return request.post(`/git/${config.spaceKey}/branches`, {branchName})
+}
+export function gitGetBranches () {
+  return request.get(`/git/${config.spaceKey}/branches`)
+}
 
 export function gitCurrentBranch (){
   return request.get(`/git/${config.spaceKey}/branch`)
 }
+export function gitDeleteBranch (branchName) {
+  return request.delete(`/git/${config.spaceKey}/branches/${branchName}`)
+}
+
+
 
 export function gitCreateStash (message){
   return request.post(`/git/${config.spaceKey}/stash`, {message: message})
@@ -104,11 +114,15 @@ export function gitRebaseUpdate (lines) {
 }
 
 export function gitCommitDiff ({ref}) {
-  return request.get(`/git/${config.spaceKey}/diff`, {ref})
+  return config.isPlatform ?
+    request.diffFilesList(`/git/${config.spaceKey}/commits/${ref}`)
+  : request.get(`/git/${config.spaceKey}/diff`, {ref})
 }
 
 export function gitFileDiff ({ path, oldRef, newRef }) {
-  return request.get(`/git/${config.spaceKey}/diff`, { path, oldRef, newRef })
+  return config.isPlatform ?
+    request.diff(`/git/${config.spaceKey}/commits/${oldRef}...${newRef}`, { path })
+  : request.get(`/git/${config.spaceKey}/diff`, { path, oldRef, newRef })
 }
 
 export function gitReadFile ({ref, path}) {

@@ -24,7 +24,7 @@ class Confirm extends Component {
           <div className='message'>{content.statusMessage}</div>
         : null }
 
-        <div className='footer'>
+        <div className='footer modal-ops'>
           <button className='btn btn-primary' onClick={e => meta.resolve(true)}>{content.okText || 'OK'}</button>
           <button className='btn btn-default' onClick={e => meta.resolve(false)}>Cancel</button>
         </div>

@@ -12,10 +12,8 @@ export default handleActions({
   [INIT_STATE]: (state, action) => {
     const {spaceKey} = qs.parse(window.location.hash.slice(1))
     if (spaceKey) config.spaceKey = spaceKey
-    const route = spaceKey ? 'IDE' : 'WORKSPACES'
     return ({
       ...state,
-      WorkspaceState: { ...state.WorkspaceState, route }
     })
   }
 })

@@ -122,8 +122,6 @@ class GitDiffView extends Component {
       readOnly: true
     })
     this.mergeView.wrap.style.height = '100%'
-    // require([`brace/mode/${getMode(that.props.content.path)}`], () => {
-    // })
   }
 }
 
