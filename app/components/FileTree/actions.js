@@ -1,31 +1,21 @@
-/* @flow weak */
 import _ from 'lodash'
 import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
 import * as Tab from '../Tab'
 import { updateUploadProgress } from '../StatusBar/actions'
-export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
-export const FILETREE_SELECT_NODE_KEY = 'FILETREE_SELECT_NODE_KEY'
-export function selectNode (node, multiSelect = false) {
-  if (typeof node === 'number') {
-    return {
-      type: FILETREE_SELECT_NODE_KEY,
-      payload: {offset: node}
-    }
-  }
-    return {
-      type: FILETREE_SELECT_NODE,
-      payload: {node, multiSelect}
-    }
+export const ROOT_PATH = ''
 
-}
+export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
+export const selectNode = createAction(FILETREE_SELECT_NODE,
+  (node, multiSelect = false) => ({ node, multiSelect })
+)
 
 export function openNode (node, shouldBeFolded = null, deep = false) {
   return (dispatch, getState) => {
     if (node.isDir) {
-      if (node.shouldBeUpdated) {
+      if (true || node.shouldBeUpdated) {
         api.fetchPath(node.path)
-          .then(data => dispatch(loadNodeData(data, node)))
+          .then(data => dispatch(loadNodeData(data)))
           .then(() => dispatch(toggleNodeFold(node, shouldBeFolded, deep)))
       } else {
         dispatch(toggleNodeFold(node, shouldBeFolded, deep))
@@ -55,16 +45,28 @@ export const toggleNodeFold = createAction(FILETREE_FOLD_NODE,
 )
 
 export const FILETREE_REMOVE_NODE = 'FILETREE_REMOVE_NODE'
-export const removeNode = createAction(FILETREE_REMOVE_NODE, node => node)
+export const removeNode = createAction(FILETREE_REMOVE_NODE)
 
 export const FILETREE_LOAD_DATA = 'FILETREE_LOAD_DATA'
-export const loadNodeData = createAction(FILETREE_LOAD_DATA, (data, node) => ({ data, node }))
+export const loadNodeData = createAction(FILETREE_LOAD_DATA)
 
 export function initializeFileTree () {
-  return (dispatch) => {
-    api.fetchPath('/').then(data => dispatch(loadNodeData(data)))
-  }
+  return dispatch => api.fetchPath('/').then(data => dispatch(loadNodeData(data)))
 }
+
+export const FILETREE_CONTEXT_MENU_OPEN = 'FILETREE_CONTEXT_MENU_OPEN'
+export const openContextMenu = createAction(FILETREE_CONTEXT_MENU_OPEN, (e, node) => {
+  e.stopPropagation()
+  e.preventDefault()
+  return {
+    isActive: true,
+    pos: { x: e.clientX, y: e.clientY },
+    contextNode: node,
+  }
+})
+
+export const FILETREE_CONTEXT_MENU_CLOSE = 'FILETREE_CONTEXT_MENU_CLOSE'
+export const closeContextMenu = createAction(FILETREE_CONTEXT_MENU_CLOSE)
 
 const pathToDir = (path) =>
 path.split('_')[1] ? path.split('_')[1].split('/').slice(0, -1).join('/') || '/' : path

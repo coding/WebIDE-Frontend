@@ -1,86 +1,112 @@
-/* @flow weak */
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import config from '../../config'
-
+import { update } from '../../utils'
 import {
-  FILETREE_LOAD_DATA,
-  FILETREE_FOLD_NODE,
-  FILETREE_SELECT_NODE,
-  FILETREE_SELECT_NODE_KEY,
-  FILETREE_REMOVE_NODE
+  loadNodeData,
+  toggleNodeFold,
+  selectNode,
+  removeNode,
+  openContextMenu,
+  closeContextMenu,
+  ROOT_PATH,
 } from './actions'
 
+// the @action decorator is just a hint to denote where the actual mutation happens
+// whereas @computed denotes where it's a getter that has no side effect
+// these syntaxes are taken from mobx
+function action () { return f => f }
+function computed () { return f => f }
 
-let focusedNodes = []
 class Node {
+  static nodes = {};
+  static get root () { return Node.nodes[ROOT_PATH] }
+
   constructor (nodeInfo) {
     const {
-      name, path, isDir, isRoot, shouldBeUpdated,
-      directoriesCount, filesCount,
-      gitStatus, lastModified, lastAccessed,
-      contentType
+      name,
+      path,
+      isDir,
+      gitStatus,
+      isFolded,
+      isFocused,
     } = nodeInfo
 
     this.name = name
     this.path = path
     this.isDir = isDir
-    this.shouldBeUpdated = true || shouldBeUpdated
     this.gitStatus = gitStatus
-    this.lastModified = new Date(lastModified)
-    this.lastAccessed = new Date(lastAccessed)
-    this.contentType = contentType
-
-    this.isFolded = true
-    this.isFocused = false
-    this.children = []
-
-    if (isDir) {
-      this.directoriesCount = directoriesCount
-      this.filesCount = filesCount
-      this.childrenCount = directoriesCount + filesCount
-    }
-
-    if (isRoot) {
-      Node.rootNode = this
-      this.isRoot = isRoot
-      this.isFolded = false
-    }
+    this.isFolded = _.isBoolean(isFolded) ? isFolded : true
+    this.isFocused = _.isBoolean(isFocused) ? isFocused : false
   }
 
+  // this is solely for triggering re-render of a redux-connected component
+  // with mobx this won't be necessary
+  reconstruct () {
+    Node.nodes[this.path] = new Node(this)
+  }
+
+  @computed
+  get isRoot () {
+    return this.path === ROOT_PATH
+  }
+
+  @computed
   get depth () {
     var slashMatches = this.path.match(/\/(?=.)/g)
     return slashMatches ? slashMatches.length : 0
   }
 
-  set depth (v) { /* no-op */ }
-
-  focus () {
-    this.isFocused = true
-    if (focusedNodes.indexOf(this) === -1) focusedNodes.push(this)
+  @computed
+  get parent () {
+    const pathComps = this.path.split('/')
+    pathComps.pop()
+    const parentPath = pathComps.join('/')
+    return Node.nodes[parentPath]
   }
 
-  unfocus () {
-    this.isFocused = false
-    _.remove(focusedNodes, this)
+  @computed
+  get children () {
+    const depth = this.depth
+    return Object.values(Node.nodes)
+      .filter(node => node.path.startsWith(`${this.path}/`) && node.depth === depth + 1)
   }
 
-  getSiblings () {
-    if (this.isRoot) return [this]
+  @computed
+  get siblings () {
     return this.parent.children
+  }
+
+  @computed
+  get firstChild () {
+    return this.children[0]
+  }
+
+  @computed
+  get lastChild () {
+    return this.children.pop()
+  }
+
+  @computed
+  get lastVisibleDescendant () {
+    var lastChild = this.lastChild
+    if (!lastChild) return this
+    if (!lastChild.isDir) return lastChild
+    if (lastChild.isFolded) return lastChild
+    return lastChild.lastVisibleDescendant
   }
 
   prev (jump) {
     if (this.isRoot) return this
-    var siblings = this.getSiblings()
-    var curIndex = siblings.indexOf(this)
-    var prevNode = siblings[curIndex - 1]
+
+    const siblings = this.siblings
+    const prevNode = siblings[siblings.indexOf(this) - 1]
 
     if (prevNode) {
       if (!jump) return prevNode
       if (!prevNode.isDir || prevNode.isFolded) return prevNode
-      if (prevNode.lastChild()) {
-        return prevNode.lastVisibleDescendant()
+      if (prevNode.lastChild) {
+        return prevNode.lastVisibleDescendant
       } else {
         return prevNode
       }
@@ -91,14 +117,13 @@ class Node {
 
   next (jump) {
     if (jump && this.isDir && !this.isFolded) {
-      if (this.firstChild()) return this.firstChild()
+      if (this.firstChild) return this.firstChild
     } else if (this.isRoot) {
       return this
     }
 
-    var siblings = this.getSiblings()
-    var curIndex = siblings.indexOf(this)
-    var nextNode = siblings[curIndex + 1]
+    const siblings = this.siblings
+    const nextNode = siblings[siblings.indexOf(this) + 1]
 
     if (nextNode) {
       return nextNode
@@ -108,31 +133,7 @@ class Node {
     }
   }
 
-  firstChild () {
-    return this.children[0]
-  }
-
-  lastChild () {
-    return this.children[this.children.length - 1]
-  }
-
-  lastVisibleDescendant () {
-    var lastChild = this.children[this.children.length - 1]
-    if (!lastChild) return this
-    if (!lastChild.isDir) return lastChild
-    if (lastChild.isFolded) return lastChild
-    return lastChild.lastVisibleDescendant()
-  }
-
-  _findChildNodeByPathComponents (pathComponents) {
-    var pathComponent = pathComponents[0]
-    var childNode = _.filter(this.children, {name: pathComponent})[0]
-    var nextPathComponents = pathComponents.slice(1)
-    if (nextPathComponents.length === 0) { return childNode }
-    return childNode._findChildNodeByPathComponents(nextPathComponents)
-  }
-
-  // apply to not only direct children but all descendants
+  @action
   forEachDescendant (handler) {
     if (!this.isDir) return
     this.children.forEach(childNode => {
@@ -141,135 +142,145 @@ class Node {
     })
   }
 
-  applyChangeToNode (nodeInfo, changeType) {
-    const pathComponents = nodeInfo.path.split('/') // => ['', 'depth_1', 'depth_2']
-    const childNodeName = pathComponents[this.depth + 1]
-    var childNode = _.find(this.children, {name: childNodeName})
+  @action
+  focus () {
+    if (this.isFocused) return
+    this.isFocused = true
+    this.reconstruct()
+  }
 
-    if (this.depth + 1 === pathComponents.length - 1) {
-      // reach target node!
-      switch (changeType) {
-        case 'create':
-          if (childNode) break
-          childNode = new Node(nodeInfo)
-          childNode.parent = this
-          this.children.push(childNode)
-          break
-        case 'delete':
-          if (!childNode) break
-          _.remove(this.children, childNode)
-          break
-      }
+  @action
+  unfocus () {
+    if (!this.isFocused) return
+    this.isFocused = false
+    this.reconstruct()
+  }
+
+  @action
+  fold () {
+    if (!this.isDir || this.isFolded) return
+    this.isFolded = true
+    this.reconstruct()
+  }
+
+  @action
+  unfold () {
+    if (!this.isDir || !this.isFolded) return
+    this.isFolded = false
+    this.reconstruct()
+  }
+
+  @action
+  toggleFold (shouldBeFolded) {
+    if (shouldBeFolded) {
+      this.fold()
     } else {
-      // internal node case,
-      // if doesn't exist, init a placeholder node and continue traverse deeper.
-      if (!childNode) {
-        childNode = new Node({
-          isDir: true,
-          name: childNodeName,
-          path: pathComponents.slice(0, this.depth + 2).join('/')
-        })
-        childNode.parent = this
-        this.children.push(childNode) // @todo: update children-related counts in parentNode
-      }
-
-      childNode.applyChangeToNode(nodeInfo, changeType)
+      this.unfold()
     }
   }
 }
 
-// =========================
-
-var RootNode = new Node({
-  name: config.projectName || '',
-  path: '/',
-  isDir: true,
-  isRoot: true
-})
-
-const findNodeByPath = (path) => {
-  if (path === '/') return Node.rootNode
-  const pathComponents = path.split('/').slice(1)
-  return Node.rootNode._findChildNodeByPathComponents(pathComponents)
+const bootstrapRootNode = () => {
+  Node.nodes[ROOT_PATH] = new Node({
+    path: ROOT_PATH,
+    name: config.projectName,
+    isDir: true,
+    isFolded: false,
+  })
 }
 
-var _state = {}
-_state.rootNode = RootNode
-const normalizeState = (_state) => {
-  var state = {
-    findNodeByPath,
-    focusedNodes
+const initialState = {
+  nodes: Node.nodes,
+  contextMenuState: {
+    isActive: false,
+    pos: { x: 0, y: 0 },
+    contextNode: null,
   }
-  state.rootNode = _state.rootNode
-  state.rootNode.name = config.projectName
-  return state
 }
 
-_state = normalizeState(_state)
+const focusedNodes = () =>
+  Object.values(Node.nodes).filter(node => node.isFocused)
 
 export default handleActions({
-  [FILETREE_LOAD_DATA]: (state, action) => {
-    let {node, data} = action.payload
-    if (!node) node = RootNode
-    node.shouldBeUpdated = false
-    data.forEach(nodeInfo => node.applyChangeToNode(nodeInfo, 'create'))
-    state.rootNode = RootNode
-    return normalizeState(state)
+  [loadNodeData]: (state, action) => {
+    if (!Node.nodes[ROOT_PATH]) bootstrapRootNode()
+    action.payload.forEach(nodeInfo => {
+      let nextNodeInfo = { ...nodeInfo, path: ROOT_PATH + nodeInfo.path }
+      const curNodeInfo = Node.nodes[nextNodeInfo.path]
+      if (curNodeInfo) nextNodeInfo = {...curNodeInfo, ...nextNodeInfo}
+      Node.nodes[nextNodeInfo.path] = new Node(nextNodeInfo)
+    })
+
+    Node.root.reconstruct()
+    return update(state, {
+      nodes: { $merge: Node.nodes }
+    })
   },
 
-  [FILETREE_SELECT_NODE_KEY]: (state, action) => {
-    let node
-    let {offset, multiSelect} = action.payload
-    if (offset === 1) {
-      node = focusedNodes[0].next(true)
-    } else if (offset === -1 ) {
-      node = focusedNodes[0].prev(true)
-    }
-
-    if (!multiSelect) {
-      RootNode.unfocus()
-      RootNode.forEachDescendant(childNode => childNode.unfocus())
-    }
-    node.focus()
-
-    return normalizeState(state)
-  },
-
-  [FILETREE_SELECT_NODE]: (state, action) => {
-    let {node, multiSelect} = action.payload
-
-    if (!multiSelect) {
-      RootNode.unfocus()
-      RootNode.forEachDescendant(childNode => childNode.unfocus())
-    }
-    node.focus()
-
-    return normalizeState(state)
-  },
-
-  [FILETREE_FOLD_NODE]: (state, action) => {
-    let {node, shouldBeFolded, deep} = action.payload
-    if (!node.isDir) return state
-
-    if (typeof shouldBeFolded === 'boolean') {
-      var isFolded = shouldBeFolded
+  [selectNode]: (state, action) => {
+    const { node: nodeOrOffset, multiSelect } = action.payload
+    let offset, node
+    if (typeof nodeOrOffset === 'number') {
+      offset = nodeOrOffset
     } else {
-      var isFolded = !node.isFolded
+      node = nodeOrOffset
     }
-    node.isFolded = isFolded
+
+    if (offset === 1) {
+      node = focusedNodes()[0].next(true)
+    } else if (offset === -1) {
+      node = focusedNodes()[0].prev(true)
+    }
+
+    if (!multiSelect) {
+      Node.root.unfocus()
+      Node.root.forEachDescendant(childNode => childNode.unfocus())
+    }
+
+    node.focus()
+
+    return update(state, {
+      nodes: { $merge: Node.nodes }
+    })
+  },
+
+  [toggleNodeFold]: (state, action) => {
+    let { node, shouldBeFolded, deep } = action.payload
+    if (!node.isDir) return state
+    let isFolded
+    if (typeof shouldBeFolded === 'boolean') {
+      isFolded = shouldBeFolded
+    } else {
+      isFolded = !node.isFolded
+    }
+    node.toggleFold(isFolded)
     if (deep) {
       node.forEachDescendant(childNode => {
-        if (childNode.isDir) childNode.isFolded = isFolded
+        childNode.toggleFold(isFolded)
       })
     }
-    return normalizeState(state)
+    return update(state, {
+      nodes: { $merge: Node.nodes }
+    })
   },
 
-  [FILETREE_REMOVE_NODE]: (state, action) => {
+  [removeNode]: (state, action) => {
     let node = action.payload
-    RootNode.applyChangeToNode(node, 'delete')
-    state.rootNode = RootNode
-    return normalizeState(state)
-  }
+    delete Node.nodes[node.path]
+    return update(state, {
+      nodes: { $set: {...Node.nodes} }
+    })
+  },
 
-}, _state)
+  [openContextMenu]: (state, action) => {
+    return update(state, {
+      contextMenuState: { $set: action.payload }
+    })
+  },
+
+  [closeContextMenu]: (state, action) => {
+    return update(state, {
+      contextMenuState: { isActive: { $set: false } }
+    })
+  },
+}, initialState)
