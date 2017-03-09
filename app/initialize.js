@@ -55,6 +55,10 @@ async function initialize () {
         return api.createWorkspace(options).then(res => {
           Object.assign(config, res)
           if (config.project && config.project.name) { config.projectName = config.project.name }
+          if (history.pushState) {
+            history.pushState(null, null,
+              `${location.origin}/ws/${config.spaceKey}`)
+          }
           return true
         })
       }
