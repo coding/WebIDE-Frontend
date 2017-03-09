@@ -12,34 +12,55 @@ import CodingSDK from './CodingSDK'
 
 async function initialize () {
   const step = stepFactory()
+  const urlPath = window.location.pathname
 
   await step('[0] Get spaceKey from window.location', () => {
     let spaceKey = null
     if (config.isPlatform) {
-      const urlPath = window.location.pathname
-      const queryEntryPathPattern = /^\/ws\/?$/
       const wsPathPattern = /^\/ws\/([^\/]+)$/
-      const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
       const match = wsPathPattern.exec(urlPath)
       if (match) spaceKey = match[1]
     } else {
       spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
     }
     if (spaceKey) config.spaceKey = spaceKey
-    return Boolean(spaceKey)
+    return true
   })
 
-  await step('[1] Check if workspace exist', () =>
-    api.isWorkspaceExist()
-  )
-
-  await step('[2] Setting up workspace...', () =>
-    api.setupWorkspace().then(res => {
-      Object.assign(config, res)
-      if (config.project && config.project.name) { config.projectName = config.project.name }
-      return true
+  if (config.spaceKey) {
+    await step('[1] Check if workspace exist', () =>
+      api.isWorkspaceExist()
+    )
+    await step('[2] Setting up workspace...', () =>
+      api.setupWorkspace().then(res => {
+        Object.assign(config, res)
+        if (config.project && config.project.name) { config.projectName = config.project.name }
+        return true
+      })
+    )
+  } else {
+    await step('[1] Try create workspace', () => {
+      const queryEntryPathPattern = /^\/ws\/?$/
+      const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
+      if (isFromQueryEntryPath) {
+        const parsed = qs.parse(location.search)
+        config.openFile = parsed.openFile
+        const options = {
+          ownerName: parsed.ownerName,
+          projectName: parsed.projectName,
+          host: parsed.host,
+        }
+        if (parsed.envId) options.envId = parsed.envId
+        if (parsed.isTry) options.try = true
+        return api.createWorkspace(options).then(res => {
+          Object.assign(config, res)
+          if (config.project && config.project.name) { config.projectName = config.project.name }
+          return true
+        })
+      }
+      return false
     })
-  )
+  }
 
   if (!config.isPlatform) {
     await step('[3] Get workspace settings', () =>
