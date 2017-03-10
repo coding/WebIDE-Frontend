@@ -8,6 +8,20 @@ import ContextMenu from '../ContextMenu'
 import FileTreeContextMenuItems from './contextMenuItems'
 import subscribeToFileChange from './subscribeToFileChange'
 
+const FileUploadInput = ({ node, handleUpload }) => {
+  return (
+    <form id='filetree-hidden-input-form' style={{position: 'fixed',top: '-10000px'}}>
+      <input
+        id='filetree-hidden-input'
+        type='file'
+        name='files'
+        multiple={true}
+        onChange={e=>handleUpload(e.target.files, node.path)}
+      />
+    </form>
+  )
+}
+
 class FileTree extends Component {
   componentDidMount () {
     subscribeToFileChange()
@@ -45,7 +59,7 @@ class FileTree extends Component {
     }
   }
   render () {
-    const { contextMenu, closeContextMenu } = this.props
+    const { contextMenu, closeContextMenu, uploadFilesToPath } = this.props
     return (
       <div className="filetree-container"
         tabIndex={1}
@@ -58,6 +72,9 @@ class FileTree extends Component {
           pos={contextMenu.pos}
           context={contextMenu.contextNode}
           deactivate={closeContextMenu}
+        />
+        <FileUploadInput node={contextMenu.contextNode}
+          handleUpload={uploadFilesToPath}
         />
       </div>
     )

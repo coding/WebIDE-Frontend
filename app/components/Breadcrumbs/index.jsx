@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import config from '../../config'
 import * as Tab from '../Tab'
 
-let Breadcrumbs = ({currentPath, fileNode}) => {
+let Breadcrumbs = ({ currentPath, fileNode }) => {
   const pathComps = currentPath.split('/')
   const rootCrumb = {path: '/', name: config.projectName, isDir: true}
-  const crumbs = pathComps.map((pathComp, idx, pathComps) => {
+  const crumbs = pathComps.map(( pathComp, idx, pathComps ) => {
     if (pathComp === '') return rootCrumb
     return {
       name: pathComp,
@@ -26,12 +26,10 @@ let Breadcrumbs = ({currentPath, fileNode}) => {
 Breadcrumbs = connect(state => {
   const activeTab = Tab.selectors.getActiveTab(state.TabState)
   let currentPath = ''
+  if (activeTab) currentPath = activeTab.path || ''
   let fileNode
-  if (activeTab) {
-    currentPath = activeTab.path || ''
-  }
   if (currentPath != '') {
-    fileNode = state.FileTreeState.findNodeByPath(currentPath)
+    fileNode = state.FileTreeState.nodes[currentPath]
   }
   return { currentPath, fileNode }
 })(Breadcrumbs)

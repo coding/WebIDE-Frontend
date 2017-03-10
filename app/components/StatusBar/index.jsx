@@ -21,7 +21,7 @@ const StatusBar = ({ uploadProgress }) => {
 }
 
 StatusBar.propTypes = {
-  uploadProgress: PropTypes.func
+  uploadProgress: PropTypes.string
 }
 
 export default connect(state => {

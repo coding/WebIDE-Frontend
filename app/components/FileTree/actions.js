@@ -71,18 +71,13 @@ export const openContextMenu = createAction(FILETREE_CONTEXT_MENU_OPEN, (e, node
 export const FILETREE_CONTEXT_MENU_CLOSE = 'FILETREE_CONTEXT_MENU_CLOSE'
 export const closeContextMenu = createAction(FILETREE_CONTEXT_MENU_CLOSE)
 
-const pathToDir = (path) =>
-path.split('_')[1] ? path.split('_')[1].split('/').slice(0, -1).join('/') || '/' : path
-
 export const uploadFilesToPath = (files, path) => {
-  if (path.split('_')[0] === 'folder') {
-    path = path.split('_')[1]
-  }
-  path = pathToDir(path)
-  return (dispatch) => {
+  return (dispatch, getState) => {
     if (!files.length) return
+    const node = getState().FileTreeState.nodes[path]
+    const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
     _(files).forEach(file => {
-      api.uploadFile(path, file, {
+      api.uploadFile(targetDirPath, file, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           dispatch(updateUploadProgress(percentCompleted))
