@@ -14,7 +14,9 @@ class _FileTreeNode extends Component {
     if (!node) return null
     return (
       <div id={node.path}
-        className="filetree-node-container"
+        className={cx('filetree-node-container', {
+          highlight: node.isHighlighted
+        })}
         data-droppable="FILE_TREE_NODE"
         onContextMenu={e => { selectNode(node); openContextMenu(e, node) }}
       >
@@ -25,8 +27,7 @@ class _FileTreeNode extends Component {
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           <span className="filetree-node-arrow"
-            onClick={e => openNode(node, null, e.altKey)}
-          >
+            onClick={e => openNode(node, null, e.altKey)}>
             {node.isDir && <i className={cx({
               'fa fa-angle-right': node.isFolded,
               'fa fa-angle-down': !node.isFolded,
@@ -39,23 +40,19 @@ class _FileTreeNode extends Component {
               'fa fa-file-o': !node.isDir
             })}></i>
           </span>
-          <span className={
-            `filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`
-          }>
+          <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
             {node.name || 'Project'}
           </span>
         </div>
 
-        {node.isDir ?
-          <div className={cx('filetree-node-children', {
-            isFolded: node.isFolded
-          })}>
-            {node.children.map(childNode =>
-              <FileTreeNode key={childNode.path} path={childNode.path} />
-            )}
-          </div>
-          : null}
-
+        {node.isDir &&
+        <div className={cx('filetree-node-children', {
+          isFolded: node.isFolded
+        })}>
+          {node.children.map(childNode =>
+            <FileTreeNode key={childNode.path} path={childNode.path} />
+          )}
+        </div>}
       </div>
     )
   }

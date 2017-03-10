@@ -6,6 +6,7 @@ import {
   loadNodeData,
   toggleNodeFold,
   selectNode,
+  highlightDirNode,
   removeNode,
   openContextMenu,
   closeContextMenu,
@@ -30,6 +31,7 @@ class Node {
       gitStatus,
       isFolded,
       isFocused,
+      isHighlighted,
     } = nodeInfo
 
     this.name = name
@@ -38,6 +40,7 @@ class Node {
     this.gitStatus = gitStatus
     this.isFolded = _.isBoolean(isFolded) ? isFolded : true
     this.isFocused = _.isBoolean(isFocused) ? isFocused : false
+    this.isHighlighted = _.isBoolean(isHighlighted) ? isHighlighted : false
   }
 
   // this is solely for triggering re-render of a redux-connected component
@@ -178,6 +181,20 @@ class Node {
       this.unfold()
     }
   }
+
+  @action
+  highlight () {
+    if (!this.isDir || this.isHighlighted) return
+    this.isHighlighted = true
+    this.reconstruct()
+  }
+
+  @action
+  unhighlight () {
+    if (!this.isDir || !this.isHighlighted) return
+    this.isHighlighted = false
+    this.reconstruct()
+  }
 }
 
 const bootstrapRootNode = () => {
@@ -239,6 +256,14 @@ export default handleActions({
 
     node.focus()
 
+    return update(state, {
+      nodes: { $merge: Node.nodes }
+    })
+  },
+
+  [highlightDirNode]: (state, action) => {
+    node = action.payload
+    if (node.isDir) node.highlight()
     return update(state, {
       nodes: { $merge: Node.nodes }
     })

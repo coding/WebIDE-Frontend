@@ -10,6 +10,9 @@ export const selectNode = createAction(FILETREE_SELECT_NODE,
   (node, multiSelect = false) => ({ node, multiSelect })
 )
 
+export const FILETREE_HIGHLIGHT_DIR_NODE = 'FILETREE_HIGHLIGHT_DIR_NODE'
+export const highlightDirNode = createAction(FILETREE_HIGHLIGHT_DIR_NODE)
+
 export function openNode (node, shouldBeFolded = null, deep = false) {
   return (dispatch, getState) => {
     if (node.isDir) {
