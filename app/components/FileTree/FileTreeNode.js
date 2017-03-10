@@ -22,6 +22,7 @@ class _FileTreeNode extends Component {
           ref={r => this.nodeDOM = r}
           onDoubleClick={e => openNode(node)}
           onClick={e => selectNode(node)}
+          style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           <span className="filetree-node-arrow"
             onClick={e => openNode(node, null, e.altKey)}
@@ -43,7 +44,6 @@ class _FileTreeNode extends Component {
           }>
             {node.name || 'Project'}
           </span>
-          <div className="filetree-node-bg"></div>
         </div>
 
         {node.isDir ?
