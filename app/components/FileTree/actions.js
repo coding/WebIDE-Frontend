@@ -16,7 +16,7 @@ export const highlightDirNode = createAction(FILETREE_HIGHLIGHT_DIR_NODE)
 export function openNode (node, shouldBeFolded = null, deep = false) {
   return (dispatch, getState) => {
     if (node.isDir) {
-      if (true || node.shouldBeUpdated) {
+      if (!node.children.length) {
         api.fetchPath(node.path)
           .then(data => dispatch(loadNodeData(data)))
           .then(() => dispatch(toggleNodeFold(node, shouldBeFolded, deep)))
