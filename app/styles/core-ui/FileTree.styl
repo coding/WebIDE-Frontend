@@ -1,48 +1,41 @@
-$filetree-indent = $font-size;
+$filetree-indent = 1em;
 
 .filetree-container {
   scrollBar();
-}
-.filetree-container, .git-filetree-container {
   noSelect();
-  padding-left: 20px;
   height: 100%;
   overflow: scroll;
 
-  & > .filetree-node-container {
-    float: left;
-    min-width: 100%;
+  // ✝ this is where magic happens to let the max[widthOf(children)]
+  //   determine their parent's min-width
+  .filetree-node-container {
+    float: left;             // <- ✝
+    min-width: 100%;         // <- ✝
   }
-}
 
-.filetree-node {
-  display: flex;
-  align-items: center;
-  cursor: default;
-  position: relative;
-  padding: 4px 0;
+  .filetree-node-children {
+    clearfix()
+    &.isFolded {display: none}
+  }
 
-  > span {
-    display: inline-block;
-    flex: 0 0 auto;
-  }
-  > .filetree-node-bg {
-    absolute(0);
-    left: -1000px;
-  }
-  &.focus > .filetree-node-bg {
-    z-index: z(filetree-node-bg);
-  }
-  .filetree-node-checkbox,
-  .filetree-node-arrow,
-  .filetree-node-icon,
-  .filetree-node-label {
-    z-index: z(filetree-node-label);
-  }
-  .filetree-node-label label{
-    margin: 0;
-    font-weight: normal;
-    cursor: pointer;
+  .filetree-node {
+    cursor: default;
+    padding: 4px 0;
+    white-space: nowrap;     // <- ✝
+    > span {
+      display: inline-block; // <- ✝
+    }
+    .filetree-node-checkbox,
+    .filetree-node-arrow,
+    .filetree-node-icon,
+    .filetree-node-label {
+      z-index: z(filetree-node-label);
+    }
+    .filetree-node-label label{
+      margin: 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
   }
 }
 
@@ -61,22 +54,49 @@ $filetree-indent = $font-size;
 }
 
 
-.filetree-container .filetree-node-children {
-  padding-left: $filetree-indent;
-  &.isFolded {display: none}
-}
-
 // git commit view specific styles
 .git-filetree-container {
-  padding-left: 0;
+  noSelect();
+  height: 100%;
+  overflow: scroll;
+
+  & > .filetree-node-container {
+    float: left;
+    min-width: 100%;
+  }
 
   .filetree-node {
     border-bottom: 1px solid gray(90);
     padding-left: 10px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    position: relative;
+    padding: 4px 0;
+
+    > span {
+      display: inline-block;
+      flex: 0 0 auto;
+    }
+    .filetree-node-checkbox,
+    .filetree-node-arrow,
+    .filetree-node-icon,
+    .filetree-node-label {
+      z-index: z(filetree-node-label);
+    }
+    .filetree-node-label label{
+      margin: 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
     > .filetree-node-bg {
       absolute(0);
     }
+    &.focus > .filetree-node-bg {
+      z-index: z(filetree-node-bg);
+    }
   }
+
   .filetree-node-children {
     &.isFolded {display: none}
   }

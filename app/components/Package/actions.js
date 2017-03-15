@@ -50,6 +50,9 @@ export const fetchPackage = (pkgId) => (dispatch) => {
       localStorage.setItem(pkgId, script)
       return pkgId
     })
+  if (window.extensions[pkgId]) {
+    dispatch(togglePackage(pkgId, false))
+  }
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
     dispatch(updateLocalPackage({
       ...pkg,
