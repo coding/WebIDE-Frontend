@@ -9,7 +9,7 @@ const uglify = require('./uglify.config')
 module.exports = merge(
   CommonConfig,
   stylesheet(),
-  uglify()
+  uglify(),
   {
     plugins: [
       new webpack.DefinePlugin({
