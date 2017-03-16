@@ -3,10 +3,8 @@ import api from '../../backendAPI'
 export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 export const updatePackageList = createAction(PACKAGE_UPDATE_LIST, list => list)
 
-
 export const fetchPackageList = () => dispatch => {
-  api.fetchPackageList()
-  .then(list => dispatch(updatePackageList(list)))
+  api.fetchPackageList().then(list => dispatch(updatePackageList(list)))
 }
 
 export const PACKAGE_UPDATE_LOCAL = 'PACKAGE_UPDATE_LOCAL'
@@ -27,7 +25,8 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
     // plugin will mount
     // @fixme @hackape consider theme situation
     try {
-      const plugin = eval(script)
+      eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
+      const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
       const { Manager = '' } = plugin
       const manager = new Manager()
       manager.pluginWillMount()
@@ -43,16 +42,15 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
   })
 })
 
-export const fetchPackage = (pkgId) => (dispatch) => {
-  const pkgInfo = api.fetchPackageInfo(pkgId)
-  const pkgScript = api.fetchPackageScript(pkgId)
+export const fetchPackage = (pkgId, pkgVersion) => (dispatch) => {
+  const pkgInfo = api.fetchPackageInfo(pkgId, pkgVersion).then(pkg => pkg.codingIdePackage)
+  const pkgScript = api.fetchPackageScript(pkgId, pkgVersion)
     .then(script => {
       localStorage.setItem(pkgId, script)
       return pkgId
     })
-  if (window.extensions[pkgId]) {
-    dispatch(togglePackage(pkgId, false))
-  }
+
+  if (window.extensions[pkgId]) dispatch(togglePackage(pkgId, false))
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
     dispatch(updateLocalPackage({
       ...pkg,
@@ -61,27 +59,15 @@ export const fetchPackage = (pkgId) => (dispatch) => {
     }))
     dispatch(togglePackage(pkgId, true))
   })
-
-    // return api.fetchPackageScript(pkgId, __PACKAGE_SERVER__)
-    // .then(script => {
-    //   const storageKey = `CodingPackage___${pkgId}`
-    //   localStorage.setItem(storageKey, script)
-    //   dispatch(updateLocalPackage, {
-
-    //   })
-    //   return storageKey
-    // })
-  // const pkgInfo = api.fetchPackageInfo(pkgId)
-  // const pkgScript = api.fetchPackageScript(pkgId)
-  //   .then(script => {
-  //     const storageKey = `CodingPackage___${pkgId}`
-  //     localStorage.setItem(storageKey, script)
-  //     return storageKey
-  //   })
-  // Promise.all([pkgInfo, pkgScript]).then(([pkg, storageKey]) => {
-  //   dispatch(updateLocalPackage({ ...pkg, storageKey, enabled: true }))
-  // })
 }
 
 export const PACKAGE_ACTIVATE_EXTENSION = 'PACKAGE_ACTIVATE_EXTENSION'
 export const activateExtenstion = createAction(PACKAGE_ACTIVATE_EXTENSION)
+
+export const preloadRequirePackages = () => dispatch => {
+  api.fetchPackageList()
+    .then(list => list.filter(pkg => pkg.requirement === 'required'))
+    .then(list => list.forEach(pkg => {
+      dispatch(fetchPackage(pkg.name, pkg.version))
+    }))
+}

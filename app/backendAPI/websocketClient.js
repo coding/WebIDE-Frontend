@@ -28,6 +28,7 @@ const Client = {
 
     const socket = new SockJS(url, {}, {server: `${config.spaceKey}`, transports: 'websocket'})
     var stompClient = Stomp.over(socket)
+    stompClient.debug = false // stop logging PING/PONG
 
     return stompClient.connect({},
       function () {
