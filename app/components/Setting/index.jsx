@@ -94,7 +94,17 @@ const EditorSettings = (props) => (
       )}
     </div>
   )
-
+const ThemeSettings = (props) => (
+    <div>
+      <h2 className='settings-content-header'>Theme Settings</h2>
+      {props.items.map(settingItem =>
+        <FormGroupFactory
+          key={settingItem.name}
+          domain='THEME'
+          settingItem={settingItem} />
+      )}
+    </div>
+  )
 
 const SettingsContent = ({ content }) => {
   switch (content.id) {
@@ -103,6 +113,8 @@ const SettingsContent = ({ content }) => {
       return <GeneralSettings {...content} />
     case 'EDITOR':
       return <EditorSettings {...content} />
+    case 'THEME':
+      return <ThemeSettings {...content} />
   }
 }
 

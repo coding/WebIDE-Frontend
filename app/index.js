@@ -4,7 +4,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import Root from './containers/Root'
 import './styles/main.styl'
-import './styles/base-theme/index.styl'
+const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/base-theme/index.styl')
+baseTheme.use()
 
 import initialize from './initialize'
 

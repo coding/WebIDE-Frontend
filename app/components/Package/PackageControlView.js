@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 class PackageControlView extends Component {
   static propTypes = {
-    remotePackages: PropTypes.object,
+    remotePackages: PropTypes.array,
     localPackages: PropTypes.object,
     dispatch: PropTypes.func,
   }
@@ -22,10 +22,10 @@ class PackageControlView extends Component {
           <h3>Available Packages:</h3>
           {_.map(remotePackages, pkg =>
             <div key={pkg.name} style={{ display: 'flex' }}>
-              <div>插件名字: {pkg.displayName}</div>
+              <div>插件名字: {pkg.displayName || pkg.name}</div>
               {false && localPackages[pkg.name]
                 ? <button disabled >Installed</button>
-                : <button onClick={e => dispatch(fetchPackage(pkg.name))}>
+                : <button onClick={e => dispatch(fetchPackage(pkg.name, pkg.version))}>
                     Install
                   </button>
               }
@@ -60,7 +60,7 @@ export default connect(state => {
     PackageState: { remotePackages, localPackages }
   } = state
   return ({
-    remotePackages: Object.keys(remotePackages).map(key => remotePackages[key]),
+    remotePackages,
     localPackages
   })
 }

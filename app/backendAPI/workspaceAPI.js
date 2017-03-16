@@ -42,3 +42,16 @@ export function switchVersion () {
     window.location.reload()
   })
 }
+
+export function getUserProfile () {
+  // @fixme: platform v1 api
+  // return request.get('/user/current').then(res => res.data)
+  return request({
+    method: 'GET',
+    baseURL: config.baseURL,
+    url: '/user/current',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  }).then(res => res.data)
+}

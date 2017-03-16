@@ -7,6 +7,7 @@ import { stepFactory, createI18n, getExtensions, request } from './utils'
 import * as Modal from './components/Modal/actions'
 import store, { dispatch } from './store'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
+import { preloadRequirePackages } from './components/Package/actions'
 import CodingSDK from './CodingSDK'
 
 
@@ -68,8 +69,17 @@ async function initialize () {
 
   if (!config.isPlatform) {
     await step('[3] Get workspace settings', () =>
-    api.getSettings().then(settings => config.settings = settings)
-  )
+      api.getSettings().then(settings => config.settings = settings)
+    )
+  }
+
+  if (config.isPlatform) {
+    await step('[3] Get user globalKey', () =>
+      api.getUserProfile().then(({ global_key }) => {
+        config.globalKey = global_key
+        return true
+      })
+    )
   }
 
   await step('[4] Connect websocket', () =>
@@ -84,14 +94,22 @@ async function initialize () {
     window.extensions = {}
     window.extension = f => getExtensions
     window.refs = {}
+    window.config = config
     return true
   })
 
+  /*
   if (__PACKAGE_SERVER__) {
     await step('[6] enable package server hotreload', () => {
       api.enablePackageHotReload()
+      return true
     })
   }
+  */
+
+  await step('[7] load required packages', () => {
+    dispatch(preloadRequirePackages())
+  })
 }
 
 export default initialize

@@ -8,7 +8,7 @@ import {
 } from './actions'
 
 const defaultState = {
-  remotePackages: {},
+  remotePackages: [],
   localPackages: {},
   extensionsUIState: {
     panels: {
