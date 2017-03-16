@@ -38,7 +38,7 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
-      filename: process.env.RUN_MODE === 'platform' ? 'workspace.html' : 'index.html',
+      filename: process.env.RUN_MODE ? 'workspace.html' : 'index.html',
       template: path.join(rootDir, 'app/index.html')
     }),
     new HtmlWebpackPlugin({

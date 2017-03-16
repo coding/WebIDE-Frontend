@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 
 // 调用平台版后台
-const isPlatform = (process.env.RUN_MODE == 'platform');
+const isPlatform = Boolean(process.env.RUN_MODE);
 
 module.exports = function (options) {
   return {

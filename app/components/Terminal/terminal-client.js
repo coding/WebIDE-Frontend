@@ -7,7 +7,7 @@ import { dispatch } from '../../store'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
-var io = require(__RUN_MODE__ === 'platform' ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
+var io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 class Term {
   constructor ({id, cols, rows}) {

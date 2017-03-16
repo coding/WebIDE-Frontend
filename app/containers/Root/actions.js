@@ -7,7 +7,7 @@ import qs from 'query-string'
 // initAppState
 export const INIT_STATE = 'INIT_STATE'
 export const initState = () => (dispatch) => {
-  if (config.runMode === 'platform') {
+  if (config.isPlatform) {
     const urlPath = window.location.pathname
     const queryEntryPathPattern = /^\/ws\/?$/
     const wsPathPattern = /^\/ws\/([^\/]+)$/
