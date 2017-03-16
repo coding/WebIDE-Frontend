@@ -66,7 +66,7 @@ export const activateExtenstion = createAction(PACKAGE_ACTIVATE_EXTENSION)
 
 export const preloadRequirePackages = () => dispatch => {
   api.fetchPackageList()
-    .then(list => list.filter(pkg => pkg.requirement === 'required'))
+    .then(list => list.filter(pkg => pkg.requirement === 'Required'))
     .then(list => list.forEach(pkg => {
       dispatch(fetchPackage(pkg.name, pkg.version))
     }))
