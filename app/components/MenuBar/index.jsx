@@ -36,7 +36,7 @@ class MenuBar extends Component {
             />) }
         </ul>
         {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-          Use old version
+          Switch to v1
         </div>)}
       </div>
     );
