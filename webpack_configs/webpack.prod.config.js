@@ -11,6 +11,9 @@ module.exports = merge(
   stylesheet(),
   uglify(),
   {
+    output: {
+      publicPath: process.env.RUN_MODE ? '/rs' : '/',
+    },
     plugins: [
       new webpack.DefinePlugin({
         __DEV__: false,
