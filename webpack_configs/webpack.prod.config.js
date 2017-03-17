@@ -16,7 +16,7 @@ module.exports = merge(
       path: process.env.RUN_MODE ?
           path.join(CommonConfig.output.path, 'rs2')
         : CommonConfig.output.path,
-      publicPath: process.env.RUN_MODE ? '/rs2' : '/',
+      publicPath: process.env.RUN_MODE ? '/rs2/' : '/',
     },
     plugins: [
       new webpack.DefinePlugin({
