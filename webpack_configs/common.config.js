@@ -38,7 +38,7 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
-      filename: process.env.RUN_MODE ? 'workspace.html' : 'index.html',
+      filename: process.env.RUN_MODE ? '../workspace.html' : 'index.html',
       template: path.join(rootDir, 'app/index.html')
     }),
     new HtmlWebpackPlugin({
@@ -48,7 +48,8 @@ const CommonConfig = {
       template: path.join(rootDir, 'app/workspaces_standalone/index.html')
     }),
     new CopyWebpackPlugin([{
-      from: path.join(rootDir, 'static/favicon.ico')
+      from: path.join(rootDir, 'static/favicon.ico'),
+      to: process.env.RUN_MODE ? '../' : './',
     }])
   ],
   module: {

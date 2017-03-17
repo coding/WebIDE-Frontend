@@ -1,3 +1,4 @@
+const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const str = JSON.stringify
@@ -12,6 +13,9 @@ module.exports = merge(
   uglify(),
   {
     output: {
+      path: process.env.RUN_MODE ?
+          path.join(CommonConfig.output.path, 'rs2')
+        : CommonConfig.output.path,
       publicPath: process.env.RUN_MODE ? '/rs2' : '/',
     },
     plugins: [
