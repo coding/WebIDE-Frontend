@@ -12,7 +12,7 @@ module.exports = merge(
   uglify(),
   {
     output: {
-      publicPath: process.env.RUN_MODE ? '/rs' : '/',
+      publicPath: process.env.RUN_MODE ? '/rs2' : '/',
     },
     plugins: [
       new webpack.DefinePlugin({
