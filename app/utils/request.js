@@ -2,7 +2,7 @@
 import { urlJoin, querystring as qs } from './url-helpers'
 import config from '../config'
 import axios from 'axios'
-
+window.axios = axios
 
 const defaultRequestOptions = {
   method: 'GET',
@@ -61,6 +61,11 @@ function request (_options) {
       }
     })()
   }
+
+  if (config.isPlatform && config.spaceKey) {
+    options.headers['X-Space-Key'] = config.spaceKey
+  }
+
   fetchOptions = Object.assign({}, defaultFetchOptions, {
     method: options.method,
     headers: options.headers || {},

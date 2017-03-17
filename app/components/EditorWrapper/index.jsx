@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'
 import MarkdownEditor from '../MarkdownEditor'
-import PictureEditor from '../PictureEditor'
+import ImageEditor from '../ImageEditor'
 import CodeMirrorEditor from '../CodeMirrorEditor'
 
 const editors = {
   CodeMirrorEditor,
   MarkdownEditor,
-  PictureEditor
+  ImageEditor
 }
 
 const getEditorByName = ({
@@ -19,8 +19,8 @@ const getEditorByName = ({
     return React.createElement(editors.CodeMirrorEditor, { tab });
   } else if (type === 'editorWithPreview') {
     return React.createElement(editors.MarkdownEditor, { content: body, tab })
-  } else if (type === 'pictureEditor') {
-    return React.createElement(editors.PictureEditor, { path })
+  } else if (type === 'imageEditor') {
+    return React.createElement(editors.ImageEditor, { path })
   }
 }
 
@@ -39,7 +39,7 @@ const EditorWrapper = ({ tab }, { i18n }) => {
     type = 'editorWithPreview'
   }
   if (typeDetect(title, ['png', 'jpg', 'jpeg', 'gif'])) {
-    type = 'pictureEditor'
+    type = 'imageEditor'
   }
   return getEditorByName({
     type,
