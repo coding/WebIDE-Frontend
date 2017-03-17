@@ -15,8 +15,8 @@
   "scripts": {
     "start-platform": "RUN_MODE=platform webpack-dev-server --port=8060 --progress --colors",
     "start": "webpack-dev-server --progress --colors",
-    "build": "cross-env NODE_ENV=production webpack --progress --colors",
-    "deploy": "cross-env RUN_MODE=platform NODE_ENV=production webpack --progress --colors",
+    "clean": "rm -rf build",
+    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --colors",
     "lint": "eslint app",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
