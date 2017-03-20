@@ -1,5 +1,5 @@
 import React from 'react'
-import qs from 'query-string'
+import qs from 'qs'
 import { bindActionCreators } from 'redux'
 import config from './config'
 import api from './backendAPI'

@@ -1,7 +1,7 @@
 /* @flow weak */
 import axios from 'axios'
+import qs from 'qs'
 import config from '../config'
-import { urlJoin, querystring as qs } from './url-helpers'
 
 const request = axios.create({
   baseURL: config.baseURL,
@@ -40,10 +40,20 @@ const responseInterceptor = request.interceptors.response.use(function (response
     return location.href = authUrl
   }
   return response.data
-}/*, function (error) {...}*/)
+})
 
 request.get = function (url, params, options={}) {
   return request({
+    method: 'get',
+    url,
+    params,
+    ...options,
+  })
+}
+
+request.delete = function (url, params, options={}) {
+  return request({
+    method: 'delete',
     url,
     params,
     ...options,
