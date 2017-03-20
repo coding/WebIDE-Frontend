@@ -21,9 +21,8 @@ async function initialize () {
       const wsPathPattern = /^\/ws\/([^\/]+)$/
       const match = wsPathPattern.exec(urlPath)
       if (match) spaceKey = match[1]
-    } else {
-      spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
     }
+    if (!spaceKey) spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
     if (spaceKey) config.spaceKey = spaceKey
     return true
   })
