@@ -110,7 +110,9 @@ export function gitRebaseOperate ({operation, message}) {
 }
 
 export function gitRebaseUpdate (lines) {
-  return request.postJSON(`/git/${config.spaceKey}/rebase/update`, lines)
+  return request.post(`/git/${config.spaceKey}/rebase/update`, lines,
+    { headers: { 'Content-Type': 'application/json' } }
+  )
 }
 
 export function gitCommitDiff ({ref}) {

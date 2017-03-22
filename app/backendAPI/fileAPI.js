@@ -1,5 +1,5 @@
 /* @flow weak */
-import { request, querystring as qs } from '../utils'
+import { request, qs } from '../utils'
 import config from '../config'
 import axios from 'axios'
 
@@ -37,7 +37,7 @@ export function writeFile (path, content, base64) {
   return request({
     method: 'PUT',
     url: `/workspaces/${config.spaceKey}/files`,
-    form: {
+    data: {
       path: path,
       content: content,
       base64: base64 || false,
@@ -62,7 +62,7 @@ export function createFile (path) {
   return request({
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/files`,
-    form: {
+    data: {
       path: path
     }
   })
@@ -72,7 +72,7 @@ export function moveFile (from, to, force = false) {
   return request({
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/move`,
-    form: {
+    data: {
       from: from,
       to: to,
       force: force
@@ -84,7 +84,7 @@ export function deleteFile (path) {
   return request({
     method: 'DELETE',
     url: `/workspaces/${config.spaceKey}/files`,
-    qs: {
+    params: {
       path: path,
       recursive: true
     }
@@ -95,7 +95,7 @@ export function searchFile (value, includeNonProjectItems = false) {
   return request({
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/search`,
-    form: {
+    data: {
       keyword: value,
       includeNonProjectItems: includeNonProjectItems
     }

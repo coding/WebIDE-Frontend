@@ -2,7 +2,7 @@
 // import { createAction } from 'redux-actions'
 import config from '../../config'
 import ide from '../../IDE'
-import qs from 'query-string'
+import qs from 'qs'
 
 // initAppState
 export const INIT_STATE = 'INIT_STATE'

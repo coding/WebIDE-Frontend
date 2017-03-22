@@ -46,12 +46,7 @@ export function switchVersion () {
 export function getUserProfile () {
   // @fixme: platform v1 api
   // return request.get('/user/current').then(res => res.data)
-  return request({
-    method: 'GET',
-    baseURL: config.baseURL,
-    url: '/user/current',
-    headers: {
-      'X-Requested-With': 'XMLHttpRequest',
-    },
-  }).then(res => res.data)
+  return request.get('/user/current', null,
+    { headers: { 'Accept': '*/*' } }
+  ).then(res => res.data)
 }
