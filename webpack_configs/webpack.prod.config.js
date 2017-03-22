@@ -13,10 +13,10 @@ module.exports = merge(
   uglify(),
   {
     output: {
-      path: process.env.RUN_MODE ?
+      path: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ?
           path.join(CommonConfig.output.path, 'rs2')
         : CommonConfig.output.path,
-      publicPath: process.env.RUN_MODE ? '/rs2/' : '/',
+      publicPath: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '/rs2/' : '/',
     },
     plugins: [
       new webpack.DefinePlugin({

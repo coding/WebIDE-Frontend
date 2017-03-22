@@ -19,7 +19,10 @@ const CommonConfig = {
     filename: '[name].[hash].js'
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.js', '.jsx'],
+    alias: {
+      'utils': path.join(rootDir, 'app/utils/index.js')
+    }
   },
   resolveLoader: {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
@@ -38,7 +41,7 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
-      filename: process.env.RUN_MODE ? '../workspace.html' : 'index.html',
+      filename: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '../workspace.html' : 'index.html',
       template: path.join(rootDir, 'app/index.html')
     }),
     new HtmlWebpackPlugin({
@@ -49,7 +52,7 @@ const CommonConfig = {
     }),
     new CopyWebpackPlugin([{
       from: path.join(rootDir, 'static/favicon.ico'),
-      to: process.env.RUN_MODE ? '../' : './',
+      to: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '../' : './',
     }])
   ],
   module: {
