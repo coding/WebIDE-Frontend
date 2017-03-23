@@ -1,6 +1,5 @@
 /* @flow weak */
-import qs from 'querystring'
-import _ from 'lodash'
+import qs from 'qs'
 
 // source: https://github.com/jfromaniello/url-join
 export function urlJoin () {
@@ -23,15 +22,8 @@ export function urlJoin () {
 
 const _stringify = qs.stringify.bind(qs)
 qs.stringify = function (queryObject) {
-  if (!queryObject) return ''
-  _.forEach(queryObject, (value, key) => {
-    if (_.isArray(queryObject[key])) {
-      let _key = key + '[]'
-      queryObject[_key] = queryObject[key]
-      delete queryObject[key]
-    }
-  })
-  return _stringify(queryObject)
+  // https://github.com/ljharb/qs#stringifying
+  return _stringify(queryObject, { arrayFormat: 'brackets' })
 }
 
-export const querystring = qs
+export { qs }
