@@ -208,14 +208,6 @@ class Node {
   }
 }
 
-const bootstrapRootNode = () => {
-  Node.nodes[ROOT_PATH] = new Node({
-    path: ROOT_PATH,
-    name: config.projectName,
-    isDir: true,
-    isFolded: false,
-  })
-}
 
 const initialState = {
   nodes: Node.nodes,
@@ -225,6 +217,17 @@ const initialState = {
     contextNode: null,
   }
 }
+
+const bootstrapRootNode = () => {
+  Node.nodes[ROOT_PATH] = new Node({
+    path: ROOT_PATH,
+    name: config.projectName,
+    isDir: true,
+    isFolded: false,
+  })
+}
+
+bootstrapRootNode()
 
 const focusedNodes = () =>
   Object.values(Node.nodes).filter(node => node.isFocused).sort(nodeSorter)
