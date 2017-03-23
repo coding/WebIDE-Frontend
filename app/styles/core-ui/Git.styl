@@ -68,3 +68,25 @@
     padding-right: 20px;
   }
 }
+
+.git-branch-widget {
+  display: flex;
+  position: absolute;
+  bottom: 30px;
+  min-width: 200px;
+  right: 1px;
+  flex-direction: column;
+
+  .widget-header {
+    display: flex;
+    z-index: 0;
+    background-color: #e1e1e1;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    > h2 {
+      line-height: 1.5;
+      font-size: 1em;
+    }
+  }
+}

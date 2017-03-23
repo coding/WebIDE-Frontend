@@ -10,8 +10,8 @@ import {
   removeNode,
   openContextMenu,
   closeContextMenu,
-  ROOT_PATH,
 } from './actions'
+
 
 // the @action decorator is just a hint to denote where the actual mutation happens
 // whereas @computed denotes where it's a getter that has no side effect
@@ -19,6 +19,16 @@ import {
 function action () { return f => f }
 function computed () { return f => f }
 
+const nodeSorter = (a, b) => {
+  // node.isDir comes first
+  // then sort by node.path alphabetically
+  if (a.isDir && !b.isDir) return -1
+  if (a.path < b.path) return -1
+  if (a.path > b.path) return 1
+  return 0
+}
+
+const ROOT_PATH = ''
 class Node {
   static nodes = {};
   static get root () { return Node.nodes[ROOT_PATH] }
@@ -73,6 +83,7 @@ class Node {
     const depth = this.depth
     return Object.values(Node.nodes)
       .filter(node => node.path.startsWith(`${this.path}/`) && node.depth === depth + 1)
+      .sort(nodeSorter)
   }
 
   @computed
@@ -197,14 +208,6 @@ class Node {
   }
 }
 
-const bootstrapRootNode = () => {
-  Node.nodes[ROOT_PATH] = new Node({
-    path: ROOT_PATH,
-    name: config.projectName,
-    isDir: true,
-    isFolded: false,
-  })
-}
 
 const initialState = {
   nodes: Node.nodes,
@@ -215,8 +218,19 @@ const initialState = {
   }
 }
 
+const bootstrapRootNode = () => {
+  Node.nodes[ROOT_PATH] = new Node({
+    path: ROOT_PATH,
+    name: config.projectName,
+    isDir: true,
+    isFolded: false,
+  })
+}
+
+bootstrapRootNode()
+
 const focusedNodes = () =>
-  Object.values(Node.nodes).filter(node => node.isFocused)
+  Object.values(Node.nodes).filter(node => node.isFocused).sort(nodeSorter)
 
 export default handleActions({
   [loadNodeData]: (state, action) => {

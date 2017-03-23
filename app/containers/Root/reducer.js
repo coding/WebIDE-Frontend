@@ -1,6 +1,6 @@
 /* @flow weak */
 import { handleActions } from 'redux-actions'
-import qs from 'qs'
+import { qs } from 'utils'
 import config from '../../config'
 
 import {

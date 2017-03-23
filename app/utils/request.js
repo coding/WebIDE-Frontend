@@ -1,6 +1,6 @@
 /* @flow weak */
 import axios from 'axios'
-import qs from 'qs'
+import { qs } from './url-helpers'
 import config from '../config'
 
 const request = axios.create({

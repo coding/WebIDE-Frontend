@@ -7,11 +7,11 @@ import * as FileTreeActions from './actions'
 export default function subscribeToFileChange () {
   return api.websocketConnectedPromise.then(client =>
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, frame => {
-      var data = JSON.parse(frame.body)
-      var node = data.fileInfo
-      if (data.lastModified) node.lastModified = data.lastModified
+      const data = JSON.parse(frame.body)
+      const node = data.fileInfo
       switch (data.changeType) {
         case 'create':
+        case 'modify':
           dispatch(FileTreeActions.loadNodeData([node]))
           break
         case 'delete':

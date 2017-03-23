@@ -1,17 +1,19 @@
 /*@flow weak*/
 import React, {Component} from 'react';
 import CodeMirror from 'codemirror';
-import './addons';
 import {connect} from 'react-redux';
+import './addons';
+import { dispatchCommand } from '../../commands'
+import _ from 'lodash'
 import * as TabActions from '../Tab/actions';
 
+const debouncedDispatch = _.debounce(dispatchCommand, 1000)
 class CodeMirrorEditor extends Component {
   static defaultProps = {
     theme: 'monokai',
     height: '100%',
     width: '100%',
   };
-
 
   constructor(props) {
     super(props);
@@ -75,8 +77,8 @@ class CodeMirrorEditor extends Component {
     if (!tab.flags.modified) {
       dispatch(TabActions.updateTabFlags(tab.id, 'modified', true))
     }
+    if (tab.path) debouncedDispatch('file:save')
   };
-
 
   render() {
     const {width, height} = this.props;
@@ -95,7 +97,7 @@ class CodeMirrorEditor extends Component {
 CodeMirrorEditor = connect(state => ({
   setting: state.SettingState.views.tabs.EDITOR,
   themeSetting: state.SettingState.views.tabs.THEME,
-}),
- null)(CodeMirrorEditor);
+})
+)(CodeMirrorEditor);
 
 export default CodeMirrorEditor;

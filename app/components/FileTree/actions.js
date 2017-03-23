@@ -3,7 +3,6 @@ import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
 import * as Tab from '../Tab'
 import { updateUploadProgress } from '../StatusBar/actions'
-export const ROOT_PATH = ''
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
 export const selectNode = createAction(FILETREE_SELECT_NODE,
