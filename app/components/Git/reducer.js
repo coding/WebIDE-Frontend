@@ -19,6 +19,7 @@ import {
   GIT_UPDATE_UNSTASH_BRANCH_NAME,
   GIT_REBASE_STATE,
   GIT_COMMIT_DIFF,
+  GIT_TAGS,
 } from './actions'
 
 const _state = {
@@ -201,6 +202,13 @@ export default handleActions({
     state.branches = action.payload.branches
     return state
   },
+
+  [GIT_TAGS]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.tags = action.payload.tags
+    return state
+  },
+
   [GIT_CHECKOUT]: (state, action) => {
     state = _.cloneDeep(state)
     state.branches.current = action.payload.branch

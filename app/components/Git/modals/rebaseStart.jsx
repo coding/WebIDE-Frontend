@@ -137,16 +137,20 @@ class GitRebaseStart extends Component {
   }
 
   renderOptions () {
-    let branches = null
-    if(this.state.showRemote){
-      branches = this.props.branches.local.map((item, i) => {
-        return ('refs/heads/' + item)
-      }).concat(
+    let branches = this.props.branches.local.map((item, i) => {
+      return ('refs/heads/' + item)
+    })
+    if (this.state.showRemote) {
+      branches = branches.concat(
         this.props.branches.remote.map((item, i) => {
         return ('refs/remotes/' + item)
       }))
-    } else {
-      branches = this.props.branches.local
+    }
+    if (this.state.showTag) {
+      branches = branches.concat(
+        this.props.tags.map((item, i) => {
+        return ('refs/tags/' + item)
+      }))
     }
     branches = [''].concat(branches)
     return (
