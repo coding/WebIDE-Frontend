@@ -71,7 +71,7 @@ export function gitDeleteBranch (branch) {
 export const GIT_TAGS = 'GIT_TAGS'
 export function getTags () {
   return (dispatch) => api.gitTags().then(data => {
-    dispatch(createAction(GIT_TAGS)({ tabs: data }))
+    dispatch(createAction(GIT_TAGS)({ tags: data }))
   })
 }
 
