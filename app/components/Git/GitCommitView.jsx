@@ -25,7 +25,9 @@ var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
       <hr />
       <div className='git-commit-message-container'>
         <textarea name='git-commit-message' id='git-commit-message' rows='4'
-          onChange={e => updateCommitMessage(e.target.value)} />
+          onChange={e => updateCommitMessage(e.target.value)}
+          onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) commit()}}
+        />
       </div>
       <hr />
       <div className='modal-ops'>
