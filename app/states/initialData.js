@@ -118,7 +118,7 @@ var menubar = [
         icon: 'octicon',
         command: 'git:tag'
       }, {
-        name: 'Merge Changes...',
+        name: 'Merge Branches...',
         icon: 'octicon octicon-git-merge',
         command: 'git:merge'
       }, dividItem, {
