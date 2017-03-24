@@ -13,8 +13,7 @@ var menuBarItems = [
       {
         name: 'Settings',
         icon: 'octicon octicon-gear',
-        command: 'app:settings',
-        isDisabled: true
+        command: 'global:show_settings',
       }
     ]
   }, {
