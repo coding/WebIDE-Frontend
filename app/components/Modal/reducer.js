@@ -50,7 +50,13 @@ const ModalReducer = handleActions({
 
   [MODAL_UPDATE]: (state, action) => {
     let lastModal = state.stack.pop()
-    if (lastModal) lastModal = {...lastModal, content: action.payload.content}
+    if (lastModal) lastModal = {
+      ...lastModal,
+      content: {
+        ...lastModal.content,
+        ...action.payload.content
+      }
+    }
     return {
       ...state,
       stack: [...state.stack, lastModal]

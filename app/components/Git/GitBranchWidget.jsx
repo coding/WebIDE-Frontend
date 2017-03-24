@@ -73,9 +73,9 @@ export default class GitBranchWidget extends Component {
         command: () => { this.props.checkoutBranch(branch) }
       }, {
         name: 'Checkout as new branch',
-        command: () => dispatchCommand('git:local_checkout')
+        command: () => dispatchCommand('git:checkout_new_branch', null, { fromBranch: branch })
       }, {
-        name: 'delete',
+        name: 'Delete',
         command: () => { this.props.gitDeleteBranch(branch) }
       }]
     }))
@@ -85,14 +85,13 @@ export default class GitBranchWidget extends Component {
       return {
         name: remoteBranch,
         items: [{
-          name: 'chekout',
-          command: () => { this.props.checkoutBranch(remoteBranch) }
-        }, {
-          name: 'Checkout as new branch',
+          name: 'Checkout as new local branch',
           // @todo: should prompt to input local branch name
-          command: () => dispatchCommand('git:local_checkout')
+          command: () => dispatchCommand('git:checkout_new_branch',
+            null, { fromBranch: remoteBranch, toBranch: localBranch }
+          )
         }, {
-          name: 'delete',
+          name: 'Delete',
           command: () => { this.props.gitDeleteBranch(remoteBranch) }
         }]
       }

@@ -31,7 +31,12 @@ class GitNewBranchView extends Component {
                 <input type="text"
                   className="form-control"
                   value={this.state.newBranch}
-                  onChange={e => this.setState({newBranch: e.target.value})} />
+                  onChange={e => this.setState({newBranch: e.target.value})}
+                  onKeyDown={e => { if (e.keyCode === 13) {
+                    e.preventDefault()
+                    this.confirmCreateNewBranch()
+                  }}}
+                />
                 { content && content.statusMessage ?
                   <div className='message'>{content.statusMessage}</div>
                 : null }

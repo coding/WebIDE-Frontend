@@ -33,7 +33,12 @@ class GitTagView extends Component {
                 <input type="text"
                   className="form-control"
                   value={this.state.tagName}
-                  onChange={e => this.setState({tagName: e.target.value})} />
+                  onChange={e => this.setState({tagName: e.target.value})}
+                  onKeyDown={e => {if (e.keyCode === 13) {
+                    e.preventDefault()
+                    this.addTag()
+                  }}}
+                />
               </label>
             </div>
             <div className="form-group">
@@ -51,7 +56,13 @@ class GitTagView extends Component {
                 <textarea type="text"
                   className="form-control"
                   value={this.state.message}
-                  onChange={e => this.setState({message: e.target.value})} />
+                  placeholder='optional'
+                  onChange={e => this.setState({message: e.target.value})}
+                  onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) {
+                    e.preventDefault()
+                    this.addTag()
+                  }}}
+                />
               </label>
             </div>
           </form>
@@ -59,16 +70,21 @@ class GitTagView extends Component {
           <div className='modal-ops'>
             <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
             <button className='btn btn-primary'
-              onClick={e => dispatch(GitActions.addTag({
-                tagName: this.state.tagName,
-                ref: this.state.commit,
-                message: this.state.message,
-              }))}
-              disabled={!this.state.commit}>OK</button>
+              onClick={e => this.addTag()}
+              disabled={!this.state.commit || !this.state.tagName}>OK</button>
           </div>
         </div>
       </div>
     )
+  }
+
+  addTag () {
+    if (!this.state.commit || !this.state.tagName) return
+    this.props.dispatch(GitActions.addTag({
+      tagName: this.state.tagName,
+      ref: this.state.commit,
+      message: this.state.message,
+    }))
   }
 }
 

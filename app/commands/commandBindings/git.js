@@ -31,10 +31,10 @@ export default {
   },
 
   // 'git:commit_and_push':
-  'git:local_checkout': c => {
+  'git:checkout_new_branch': c => {
     $d(Git.getBranches()).then(() =>
       $d(Git.getCurrentBranch()).then(() =>
-        $d(Modal.showModal('GitCheckout'))
+        $d(Modal.showModal('GitCheckout', c.data))
       )
     )
   },
