@@ -5,33 +5,37 @@ import { dispatchCommand } from '../../../commands'
 import * as GitActions from '../actions'
 import * as ModalActions from '../../Modal/actions'
 
-@connect(state => state.GitState)
 class GitCheckout extends Component {
   constructor (props) {
     super(props)
-    this.state = {newBranch: ''}
+    this.state = { newBranch: props.toBranch || '' }
   }
 
   render () {
-    const { branches: {current: currentBranch}, dispatch, content } = this.props
-    const allBranches = [...this.props.branches.local, ...this.props.branches.remote]
+    // const { branches: {current: currentBranch}, dispatch, content } = this.props
+    const { fromBranch, content } = this.props
     return (
       <div>
         <div className='git-reset-container'>
-          <h1>Create New Checkout Branch</h1>
+          <h1>Checkout New Branch</h1>
           <hr />
           <form className="form-horizontal">
             <div className="form-group">
-              <label className="col-sm-3 control-label">Current Branch</label>
-              <label className="col-sm-9 checkbox-inline">{currentBranch}</label>
+              <label className="col-sm-3 control-label">From branch</label>
+              <label className="col-sm-9 checkbox-inline">{fromBranch}</label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">New Branch</label>
+              <label className="col-sm-3 control-label">New branch</label>
               <label className="col-sm-9">
                 <input type="text"
                   className="form-control"
                   value={this.state.newBranch}
-                  onChange={e => this.setState({newBranch: e.target.value})} />
+                  onChange={e => this.setState({newBranch: e.target.value})}
+                  onKeyDown={e => { if (e.keyCode === 13) {
+                    e.preventDefault()
+                    this.confirmCreateNewBranch()
+                  }}}
+                  />
                 { content && content.statusMessage ?
                   <div className='message'>{content.statusMessage}</div>
                 : null }
@@ -52,13 +56,18 @@ class GitCheckout extends Component {
   }
 
   confirmCreateNewBranch = () => {
-    const {branches: {local: localBranches, current: currentBranch}, dispatch} = this.props
+    if (!this.state.newBranch) return
+    const { localBranches, dispatch, fromBranch } = this.props
     if (localBranches.includes(this.state.newBranch)) {
       dispatch(ModalActions.updateModal({statusMessage: 'Branch ref already exists. Pick another name.'}))
     } else {
-      dispatch(GitActions.checkoutBranch(this.state.newBranch, currentBranch))
+      dispatch(ModalActions.dismissModal())
+      dispatch(GitActions.checkoutBranch(this.state.newBranch, fromBranch))
     }
   }
 }
 
-export default GitCheckout
+export default connect((state, { content: { fromBranch, toBranch } }) => {
+  const { branches: { local: localBranches } } = state.GitState
+  return { fromBranch, toBranch, localBranches }
+})(GitCheckout)
