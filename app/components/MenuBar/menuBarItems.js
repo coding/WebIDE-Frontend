@@ -1,8 +1,8 @@
 /* @flow weak */
 import store from '../../store.js'
 import * as GitActions from '../Git/actions'
-import React from 'react';
-import mapShortcutToItems from './utils';
+import React from 'react'
+import mapShortcutToItems from './utils'
 
 var dividItem = { name: '-' }
 var menuBarItems = [
@@ -13,8 +13,7 @@ var menuBarItems = [
       {
         name: 'Settings',
         icon: 'octicon octicon-gear',
-        command: 'app:settings',
-        isDisabled: true
+        command: 'global:show_settings',
       }
     ]
   }, {
@@ -25,6 +24,10 @@ var menuBarItems = [
         icon: 'fa fa-file-o',
         command: 'file:new_file',
         // isDisabled: true
+      }, {
+        name: 'New Folder',
+        icon: '',
+        command: 'file:new_folder'
       }, {
         name: 'Save',
         icon: 'fa fa-floppy-o',

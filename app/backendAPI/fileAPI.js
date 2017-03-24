@@ -68,6 +68,16 @@ export function createFile (path) {
   })
 }
 
+export function createFolder (path) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/mkdir`,
+    data: {
+      path
+    }
+  })
+}
+
 export function moveFile (from, to, force = false) {
   return request({
     method: 'POST',
