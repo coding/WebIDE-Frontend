@@ -6,6 +6,10 @@ var items = [
     icon: '',
     command: 'file:new_file'
   }, {
+    name: 'New Folder',
+    icon: '',
+    command: 'file:new_folder'
+  }, {
     name: 'Delete...',
     icon: '',
     command: 'file:delete'

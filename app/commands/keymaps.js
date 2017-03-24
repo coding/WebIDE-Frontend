@@ -2,6 +2,7 @@
 // Unavailable shortcuts: shift / ctrl + (q|n|w|t|↹)
 export default {
   'alt+n': 'file:new_file',
+  'alt+shift+n': 'file:new_folder',
   'cmd+s': 'file:save',
   'cmd+shift+c': 'git:commit',
   'esc': 'modal:dismiss',

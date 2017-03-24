@@ -10,7 +10,7 @@ import { notify } from '../../components/Notification/actions'
 const Modal = bindActionCreators(_Modal, dispatch)
 
 const nodeToNearestDirPath = (node) => {
-  if (!node) node = {isDir:true, path:'/'} // fake a root node if !node
+  if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
   if (node.isDir) {
     var path = node.path
   } else {
@@ -21,40 +21,58 @@ const nodeToNearestDirPath = (node) => {
 }
 
 const nodeToParentDirPath = (node) => {
-  var pathSplitted = node.path.split('/')
+  let pathSplitted = node.path.split('/')
   if (pathSplitted.pop() == '') { pathSplitted.pop() }
-  return pathSplitted.join('/')+'/'
+  return `${pathSplitted.join('/')}/`
 }
 
 function createFileWithContent (content) {
   return function createFileAtPath (path) {
     return api.createFile(path, content)
-      .then(() => {if (content) api.writeFile(path, content)})
+      .then(() => { if (content) api.writeFile(path, content) })
       .then(Modal.dismissModal)
       .then(() => path)
       // if error, try again.
-      .catch(err=>
-        Modal.updateModal({statusMessage:err.msg}).then(createFileAtPath)
+      .catch(err =>
+        Modal.updateModal({ statusMessage: err.msg }).then(createFileAtPath)
       )
   }
 }
 
+function createFolderAtPath (path) {
+  return api.createFolder(path)
+  .then(Modal.dismissModal)
+  .then(() => path)
+    // if error, try again.
+  .catch(err =>
+    Modal.updateModal({ statusMessage: err.msg }).then(createFolderAtPath)
+  )
+}
+
 export default {
   'file:new_file': (c) => {
-    var node = c.context
-    var path = nodeToNearestDirPath(node)
-    var defaultValue = pathUtil.join(path, 'untitled')
+    const node = c.context
+    const path = nodeToNearestDirPath(node)
+    const defaultValue = pathUtil.join(path, 'untitled')
 
     const createFile = createFileWithContent(null)
 
     Modal.showModal('Prompt', {
       message: 'Enter the path for the new file.',
-      defaultValue: defaultValue,
+      defaultValue,
       selectionRange: [path.length, defaultValue.length]
     }).then(createFile)
   },
-
-
+  'file:new_folder': (c) => {
+    const node = c.context
+    const path = nodeToNearestDirPath(node)
+    const defaultValue = pathUtil.join(path, 'untitled')
+    Modal.showModal('Prompt', {
+      message: 'Enter the path for the new folder.',
+      defaultValue,
+      selectionRange: [path.length, defaultValue.length],
+    }).then(createFolderAtPath)
+  },
   'file:save': (c) => {
     const { TabState } = getState()
     const activeTab = Tab.selectors.getActiveTab(TabState)
@@ -70,11 +88,10 @@ export default {
         .then(createFile)
         .then(path => dispatch(Tab.actions.updateTab({
           id: activeTab.id,
-          path: path,
+          path,
           title: path.replace(/^.*\/([^\/]+$)/, '$1')
         })))
         .then(() => dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false)))
-
     } else {
       api.writeFile(activeTab.path, content)
         .then(() => {
@@ -84,19 +101,18 @@ export default {
           }))
         })
     }
-
   },
 
 
   'file:rename': (c) => {
-    var node = c.context
-    var parentPath = nodeToParentDirPath(node)
+    let node = c.context
+    let parentPath = nodeToParentDirPath(node)
 
     const moveFile = (from, newPath, force) => {
       api.moveFile(node.path, newPath, force)
-        .then( ()=>Modal.dismissModal() )
-        .catch(err=>
-          Modal.updateModal({statusMessage:err.msg})
+        .then(() => Modal.dismissModal())
+        .catch(err =>
+          Modal.updateModal({ statusMessage: err.msg })
           .then((newPath, force) =>
             moveFile(from, newPath, force)
           )
@@ -107,12 +123,12 @@ export default {
       message: 'Enter the new name (or new path) for this file.',
       defaultValue: node.path,
       selectionRange: [parentPath.length, node.path.length]
-    }).then(newPath => moveFile(node.path, newPath) )
+    }).then(newPath => moveFile(node.path, newPath))
   },
 
 
   'file:delete': async (c) => {
-    var confirmed = await Modal.showModal('Confirm', {
+    let confirmed = await Modal.showModal('Confirm', {
       header: 'Are you sure you want to delete this file?',
       message: `You're trying to delete ${c.context.path}`,
       okText: 'Delete'
@@ -120,9 +136,9 @@ export default {
 
     if (confirmed) {
       api.deleteFile(c.context.path)
-        .then( ()=>dispatch( notify({message:'Delete success!'}) ) )
-        .catch(err=>
-          dispatch( notify({message:`Delete fail: ${err.msg}`}) )
+        .then(() => dispatch(notify({ message: 'Delete success!' })))
+        .catch(err =>
+          dispatch(notify({ message: `Delete fail: ${err.msg}` }))
         )
     }
 
