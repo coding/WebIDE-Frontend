@@ -123,7 +123,7 @@ export function gitCommitDiff ({rev}) {
 
 export function gitFileDiff ({ path, oldRef, newRef }) {
   return config.isPlatform ?
-    request.diff(`/git/${config.spaceKey}/commits/${oldRef}...${newRef}`, { path })
+    request.diff(`/git/${config.spaceKey}/commits`, { path, oldRef, newRef })
   : request.get(`/git/${config.spaceKey}/diff`, { path, oldRef, newRef })
 }
 
