@@ -112,7 +112,7 @@ export function createStash (message) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: res.msg,
+      message: res.response.data.msg,
     }))
     dispatch(dismissModal())
   })
