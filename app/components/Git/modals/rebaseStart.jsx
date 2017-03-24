@@ -25,6 +25,7 @@ class GitRebaseStart extends Component {
     this.handleLocalBranchChange = this.handleLocalBranchChange.bind(this)
     this.handleOntoChange = this.handleOntoChange.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
+    this.handleValidate = this.handleValidate.bind(this)
   }
   render () {
     const { branches } = this.props
@@ -66,8 +67,11 @@ class GitRebaseStart extends Component {
             </div>
             <div className="form-group">
               <label className="col-sm-3 control-label">Onto</label>
-              <label className="col-sm-9">
+              <label className="col-sm-7">
                 {this.renderOptions()}
+              </label>
+              <label className="col-sm-2">
+                <button className='btn btn-default' onClick={this.handleValidate}>Validate</button>
               </label>
             </div>
             <div className="form-group">
@@ -223,6 +227,18 @@ class GitRebaseStart extends Component {
       interactive: this.state.interactive,
       preserve: this.state.preserveMerges,
     })
+    e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
+  }
+
+  handleValidate (e) {
+    console.log('validate', this.state.selectedOnto)
+    if (this.state.selectedOnto) {
+      this.props.gitCommitDiff({
+        title: 'View Changes',
+        rev: this.state.selectedOnto
+      })
+    }
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
   }

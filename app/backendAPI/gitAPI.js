@@ -115,10 +115,10 @@ export function gitRebaseUpdate (lines) {
   )
 }
 
-export function gitCommitDiff ({ref}) {
+export function gitCommitDiff ({rev}) {
   return config.isPlatform ?
-    request.diffFilesList(`/git/${config.spaceKey}/commits/${ref}`)
-  : request.get(`/git/${config.spaceKey}/diff`, {ref})
+    request.diffFilesList(`/git/${config.spaceKey}/commits`, { ref: rev })
+  : request.get(`/git/${config.spaceKey}/diff`, {rev})
 }
 
 export function gitFileDiff ({ path, oldRef, newRef }) {
