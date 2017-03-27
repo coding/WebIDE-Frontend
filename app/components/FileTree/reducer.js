@@ -42,6 +42,8 @@ class Node {
       isFolded,
       isFocused,
       isHighlighted,
+      contentType,
+      size,
     } = nodeInfo
 
     this.name = name
@@ -51,6 +53,8 @@ class Node {
     this.isFolded = _.isBoolean(isFolded) ? isFolded : true
     this.isFocused = _.isBoolean(isFocused) ? isFocused : false
     this.isHighlighted = _.isBoolean(isHighlighted) ? isHighlighted : false
+    this.contentType = contentType
+    this.size = size
   }
 
   // this is solely for triggering re-render of a redux-connected component
