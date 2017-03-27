@@ -13,7 +13,9 @@ class GitMergeView extends Component {
 
   render () {
     const { branches: {current: currentBranch}, dispatch } = this.props
-    const allBranches = [...this.props.branches.local, ...this.props.branches.remote]
+    const allBranches = [
+      ...this.props.branches.local.filter(branch => branch !== currentBranch),
+      ...this.props.branches.remote]
     return (
       <div>
         <div className='git-reset-container'>
@@ -30,9 +32,8 @@ class GitMergeView extends Component {
                 <select className="form-control"
                   onChange={e => this.setState({branchToMerge: e.target.value})}
                   value={this.state.branchToMerge} >
-                  { allBranches.map(branch => (branch !== currentBranch
-                    ? <option key={branch} value={branch}>{branch}</option>
-                    : <option key='null' value=''></option>))}
+                  <option key='null' value=''></option>
+                  { allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>) }
                 </select>
               </label>
             </div>
