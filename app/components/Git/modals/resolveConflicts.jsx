@@ -24,7 +24,6 @@ class GitResolveConflictsView extends Component {
 
   render () {
     const statics = this.props.statusFiles
-    console.log('123', statics.toJS())
     const gitContent = Object.keys(statics.toJS()).length === 1 ?
     (<div>No conflict detected</div>) : (
           <GitFileTree
