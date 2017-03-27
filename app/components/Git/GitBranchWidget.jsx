@@ -85,7 +85,7 @@ export default class GitBranchWidget extends Component {
       return {
         name: remoteBranch,
         items: [{
-          name: 'Checkout as new local branch',
+          name: 'Checkout as new branch',
           // @todo: should prompt to input local branch name
           command: () => dispatchCommand('git:checkout_new_branch',
             null, { fromBranch: remoteBranch, toBranch: localBranch }
@@ -98,7 +98,7 @@ export default class GitBranchWidget extends Component {
     })
     return [
       { name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
-        iconElement: (<span style={{ marginRight: '4px' }}>+</span>) },
+        iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
       { name: 'Synchronize', command: () => this.props.getFetch() },
       { name: '-', isDisabled: true },
       { name: 'Local Branches', isDisabled: true },

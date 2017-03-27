@@ -12,8 +12,7 @@ import GitFileTree from '../GitFileTree'
 class GitResolveConflictsView extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-    }
+    this.state = {}
   }
 
   componentWillReceiveProps (nextProps) {
@@ -23,22 +22,31 @@ class GitResolveConflictsView extends Component {
   }
 
   render () {
+    const statics = this.props.statusFiles
+    const gitContent = Object.keys(statics.toJS()).length === 1
+      ? (
+        <div>No conflict detected</div>
+      )
+      : (<GitFileTree
+        statusFiles={this.props.statusFiles}
+        displayOnly
+        hideTitle
+        handleClick={(path) => {
+          this.handleFileClick(path)
+        }}
+      />)
     return (
       <div>
         <div className='git-resolve-conflicts'>
-          <h1>
-          Conflicts List
+          <h1 className='title'>
+            Conflicts List
           </h1>
-          <GitFileTree
-            statusFiles={this.props.statusFiles}
-            displayOnly={true}
-            hideTitle={true}
-            handleClick={(path) => {
-              this.handleFileClick(path)
-          }} />
-          
+          {gitContent}
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button
+              className='btn btn-default'
+              onClick={e => dispatchCommand('modal:dismiss')}
+            >Cancel</button>
           </div>
         </div>
       </div>
@@ -50,7 +58,4 @@ class GitResolveConflictsView extends Component {
   }
 }
 
-export default GitResolveConflictsView = connect(
-  state => state.GitState,
-  dispatch => bindActionCreators(GitActions, dispatch)
-)(GitResolveConflictsView)
+export default GitResolveConflictsView = connect(state => state.GitState, dispatch => bindActionCreators(GitActions, dispatch))(GitResolveConflictsView)

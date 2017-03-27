@@ -49,7 +49,7 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
           handleMenuItemCommand(item.command)&&deactivateTopLevelMenu()
         }}
       >
-        <div className={item.icon}>{item.iconElement || <div style={{ marginLeft :'15px' }} />}</div>
+        <div className={item.icon}>{item.iconElement || <div style={{ marginLeft :'1em' }} />}</div>
         <div className='menu-item-name'>{itemElement || item.displayName || item.name}</div>
         { item.shortcut
           ? <div className='menu-item-shortcut'>{item.shortcut}</div>
