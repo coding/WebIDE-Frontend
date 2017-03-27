@@ -2,7 +2,6 @@
 import store from '../../store'
 const { getState, dispatch: $d } = store
 
-import api from '../../backendAPI'
 import * as Modal from '../../components/Modal/actions'
 import * as Panel from '../../components/Panel/actions'
 
