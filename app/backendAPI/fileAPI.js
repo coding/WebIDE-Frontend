@@ -25,9 +25,7 @@ export function uploadFile (path, file, option) {
   const formdata = new FormData()
   formdata.append('path', path)
   formdata.append('files', file, file.name)
-  axios(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, {
-    method: 'POST',
-    data: formdata,
+  request.upload(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, formdata, {
     onUploadProgress: option.onUploadProgress
   })
 }

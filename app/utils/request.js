@@ -9,7 +9,7 @@ const request = axios.create({
     'Content-Type': 'application/x-www-form-urlencoded',
     ...(config.isPlatform && {
       'X-Requested-With': 'XMLHttpRequest',
-      'Accept': 'application/vnd.coding.v2+json'
+      Accept: 'application/vnd.coding.v2+json'
     })
   },
   mode: 'cors',
@@ -27,14 +27,14 @@ const request = axios.create({
   }]
 })
 
-const requestInterceptor = request.interceptors.request.use(function (options) {
+const requestInterceptor = request.interceptors.request.use((options) => {
   if (config.isPlatform && config.spaceKey) {
     options.headers['X-Space-Key'] = config.spaceKey
   }
   return options
 })
 
-const responseInterceptor = request.interceptors.response.use(function (response) {
+const responseInterceptor = request.interceptors.response.use((response) => {
   if (config.isPlatform && response.headers['requests-auth'] === '1') {
     const authUrl = response.headers['requests-auth-url']
     return location.href = authUrl
@@ -42,7 +42,7 @@ const responseInterceptor = request.interceptors.response.use(function (response
   return response.data
 })
 
-request.get = function (url, params, options={}) {
+request.get = function (url, params, options = {}) {
   return request({
     method: 'get',
     url,
@@ -51,7 +51,17 @@ request.get = function (url, params, options={}) {
   })
 }
 
-request.delete = function (url, params, options={}) {
+request.upload = function (url, data, options) {
+  return request({
+    method: 'POST',
+    transformRequest: d => d,
+    url,
+    data,
+    ...options,
+  })
+}
+
+request.delete = function (url, params, options = {}) {
   return request({
     method: 'delete',
     url,
@@ -60,25 +70,25 @@ request.delete = function (url, params, options={}) {
   })
 }
 
-request.diff = function (url, params, options={}) {
+request.diff = function (url, params, options = {}) {
   return request({
     url,
     params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/vnd.coding.v2.diff+json',
+      Accept: 'application/vnd.coding.v2.diff+json',
     },
     ...options,
   })
 }
 
-request.diffFilesList = function (url, params, options={}) {
+request.diffFilesList = function (url, params, options = {}) {
   return request({
     url,
     params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/vnd.coding.v2.diff-files-list+json',
+      Accept: 'application/vnd.coding.v2.diff-files-list+json',
     },
     ...options,
   })
