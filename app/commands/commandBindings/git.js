@@ -15,10 +15,9 @@ export default {
 
   'git:pull': c => $d(Git.pull()),
   'git:push': c => $d(Git.push()),
-  'git:delete_branch': c => $d(Git.gitDeleteBranch(c)
-  .then(() => {
-      $d(Git.getBranches())
-  })),
+  'git:delete_branch': c => $d(Git.gitDeleteBranch(c).then(
+    () => { $d(Git.getBranches()) }
+  )),
   'git:resolve_conflicts': c => {
     api.gitStatus().then(({files, clean}) => {
       files =  _.filter(files, (file) => {

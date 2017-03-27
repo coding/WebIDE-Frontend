@@ -48,10 +48,8 @@ export function gitCurrentBranch (){
   return request.get(`/git/${config.spaceKey}/branch`)
 }
 export function gitDeleteBranch (branchName) {
-  return request.delete(`/git/${config.spaceKey}/branches/${branchName}`)
+  return request.delete(`/git/${config.spaceKey}/branches/`, {branchName})
 }
-
-
 
 export function gitCreateStash (message){
   return request.post(`/git/${config.spaceKey}/stash`, {message: message})
