@@ -61,9 +61,13 @@ export function checkoutBranch (branch, remoteBranch) {
 export const GIT_DELETE_BRANCH = 'GIT_DELETE_BRANCH'
 export function gitDeleteBranch (branch) {
   return dispatch => {
-    api.gitDeleteBranch(branch)
-    .then(() => {
+    api.gitDeleteBranch(branch).then(() => {
       dispatch(notify({message: `deleted branch ${branch} success`}))
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
