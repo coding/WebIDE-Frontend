@@ -2,12 +2,15 @@
 import Keymapper from './lib/keymapper'
 import keymaps from './keymaps'
 import commandBindings from './commandBindings'
+import dispatchCommand from './dispatchCommand'
+import { emitter } from 'utils'
 
-var key = new Keymapper()
+const key = new Keymapper({ dispatchCommand })
 key.loadKeymaps(keymaps)
-key.loadCommandHandlers(commandBindings)
 
-export const dispatchCommand = Keymapper.dispatchCommand
-export const setScope = Keymapper.setScope
-export const setContext = Keymapper.setContext
+Object.keys(commandBindings).map(commandType => {
+  emitter.on(commandType, commandBindings[commandType])
+})
+
+export dispatchCommand, { setContext } from './dispatchCommand'
 export { CommandPalette } from './CommandPalette'

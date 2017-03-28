@@ -8,10 +8,9 @@ Key Combination: 键位组合，指的是一个快捷键组合，e.g. `ctrl+c`
 Key Composition: 复合快捷键，指的是连续按几个快捷键组合，e.g. `ctrl+K,ctrl+F`
 */
 
-let _commandHandlers = {}
-let _context = null
 class Keymapper {
   static defaults = {
+    dispatchCommand: console.log || (f => f),
     combinator: '+',
     delimiter: ',',
     wait: 500,
@@ -19,7 +18,8 @@ class Keymapper {
 
   constructor (opts) {
     const options = { ...Keymapper.defaults, ...opts }
-    const { combinator, delimiter, wait } = options
+    const { dispatchCommand, combinator, delimiter, wait } = options
+    this.dispatchCommand = dispatchCommand
     this.combinator = combinator
     this.delimiter = delimiter
     this.wait = wait
@@ -76,7 +76,7 @@ class Keymapper {
   consumeBuffer () {
     this.lastTimeoutId = false
     const keys = this.buffer.read()
-    if (keys) dispatchCommand(this.keymaps[keys])
+    if (keys) this.dispatchCommand(this.keymaps[keys])
     this.buffer.reset()
   }
 
@@ -116,34 +116,6 @@ class Keymapper {
       }
     })
   }
-
-  loadCommandHandlers (commandHandlers, override) {
-    _commandHandlers = override ? commandHandlers : Object.assign(_commandHandlers, commandHandlers)
-  }
 }
 
-
-/* this should be part of the event streamline */
-function dispatchCommand (commandType, data) {
-  let command
-  if (typeof commandType === 'object') command = commandType
-  else if (typeof commandType === 'string') command = { type: commandType, data }
-  else return
-
-  handleCommand(command)
-}
-
-function handleCommand (command) {
-  var handler = _commandHandlers[command.type]
-  if (!handler) return false
-  command.context = _context  // bind context to command before run, there's no way to change it at this point.
-  return !handler(command) // handler can explicitly return true to continue propagation.
-}
-/* end */
-
-Keymapper.setContext = function setContext (context) {
-  _context = context
-}
-
-Keymapper.dispatchCommand = dispatchCommand
 export default Keymapper
