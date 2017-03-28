@@ -96,14 +96,13 @@ async function initialize () {
     return true
   })
 
-  /*
+
   if (__PACKAGE_SERVER__) {
     await step('[6] enable package server hotreload', () => {
       api.enablePackageHotReload()
       return true
     })
   }
-  */
 
   await step('[7] load required packages', () => {
     dispatch(preloadRequirePackages())

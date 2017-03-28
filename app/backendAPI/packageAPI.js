@@ -9,6 +9,9 @@ const { packageServer } = config
 const io = require('socket.io-client/dist/socket.io.min.js')
 
 export const fetchPackageList = () => {
+  if (__DEV__) {
+    return request.get(`${packageServer}/packages/`)
+  }
   if (config.isPlatform) {
     return request.get(`/users/${config.globalKey}/packages`)
   } else {
@@ -34,7 +37,8 @@ export const enablePackageHotReload = () => {
     console.log('plugin is reloading')
     const { localPackages } = store.getState().PackageState
     if (Object.keys(localPackages).length) {
-      store.dispatch(fetchPackage(Object.keys(localPackages)[0]))
+      const targetPackageName = Object.keys(localPackages)[0]
+      store.dispatch(fetchPackage(targetPackageName, localPackages[targetPackageName].version))
     }
   })
 }
