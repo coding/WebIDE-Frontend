@@ -97,7 +97,7 @@ async function initialize () {
   })
 
 
-  if (__PACKAGE_SERVER__) {
+  if (__DEV__ && __PACKAGE_SERVER__) {
     await step('[6] enable package server hotreload', () => {
       api.enablePackageHotReload()
       return true
