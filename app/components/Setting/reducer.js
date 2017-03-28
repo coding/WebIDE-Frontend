@@ -26,6 +26,7 @@ const getDefaultLangCode = () => {
     let languages = window.navigator[attr]
     if (!Array.isArray(languages)) languages = [languages]
     return languages.reduce((defaultLangCode, lang) => {
+      if (!lang) return defaultLangCode
       lang = lang.replace(/-/g, '_')
       if (Object.keys(langCodes).includes(lang)) return lang
       return defaultLangCode
@@ -34,7 +35,7 @@ const getDefaultLangCode = () => {
 }
 
 export const UIThemeOptions = ['Light', 'Dark']
-export const SyntaxThemeOptions = ['monokai', 'ambiance']
+export const SyntaxThemeOptions = ['monokai', 'neo', 'eclipse', 'material']
 
 const SettingState = {
   activeTabId: 'GENERAL',
@@ -48,7 +49,7 @@ const SettingState = {
         options: UIThemeOptions
       }, {
         name: 'Syntax Theme',
-        value: 'Default',
+        value: 'eclipse',
         options: SyntaxThemeOptions
       }]
     },
