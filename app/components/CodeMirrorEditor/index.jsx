@@ -10,7 +10,7 @@ import * as TabActions from '../Tab/actions';
 const debouncedDispatch = _.debounce(dispatchCommand, 1000)
 class CodeMirrorEditor extends Component {
   static defaultProps = {
-    theme: 'monokai',
+    theme: 'default',
     height: '100%',
     width: '100%',
   };
@@ -47,14 +47,15 @@ class CodeMirrorEditor extends Component {
 
     if (tab.content) {
       const body = tab.content.body;
-      const path = tab.path;
-      const modeInfo = this.getMode(path);
+      const modeInfo = this.getMode(tab);
       if (body) editor.setValue(body);
       if (modeInfo) {
         let mode = modeInfo.mode;
-        require([`codemirror/mode/${mode}/${mode}.js`], () => {
-          editor.setOption('mode', mode);
-        });
+        if (mode === 'null') {
+          editor.setOption('mode', mode)
+        } else {
+          require([`codemirror/mode/${mode}/${mode}.js`], () => editor.setOption('mode', mode));
+        }
       }
     }
     editor.focus();
@@ -63,14 +64,9 @@ class CodeMirrorEditor extends Component {
     editor.on('focus', () => this.props.dispatch(TabActions.activateTab(tab.id)))
   }
 
-  getMode(path) {
-    const m = /.+\.([^.]+)$/.exec(path);
-    if (m) {
-      const info = CodeMirror.findModeByExtension(m[1]);
-      if (info) {
-        return info
-      }
-    }
+  // Ref: codemirror/mode/meta.js
+  getMode (tab) {
+    return CodeMirror.findModeByMIME(tab.contentType) || CodeMirror.findModeByFileName(tab.path.split('/').pop())
   }
 
   onChange = (e) => {

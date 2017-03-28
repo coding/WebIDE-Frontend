@@ -35,7 +35,7 @@ const getDefaultLangCode = () => {
 }
 
 export const UIThemeOptions = ['Light', 'Dark']
-export const SyntaxThemeOptions = ['monokai', 'neo', 'eclipse', 'material']
+export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
 const SettingState = {
   activeTabId: 'GENERAL',
@@ -49,7 +49,7 @@ const SettingState = {
         options: UIThemeOptions
       }, {
         name: 'Syntax Theme',
-        value: 'eclipse',
+        value: 'default',
         options: SyntaxThemeOptions
       }]
     },
