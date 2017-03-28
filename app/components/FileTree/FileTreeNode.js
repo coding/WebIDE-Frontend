@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import config from '../../config'
 import cx from 'classnames'
 import * as FileTreeActions from './actions'
 
@@ -44,7 +45,7 @@ class _FileTreeNode extends Component {
               })}></i>
             </span>
             <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
-              {node.name || 'Project'}
+              {node.name || config.projectName}
             </span>
           </div>
         )}

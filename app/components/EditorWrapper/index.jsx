@@ -2,18 +2,22 @@ import React, { PropTypes } from 'react'
 import MarkdownEditor from '../MarkdownEditor'
 import ImageEditor from '../ImageEditor'
 import CodeMirrorEditor from '../CodeMirrorEditor'
+import UnknownEditor from '../UnknownEditor'
+import * as Tab from '../Tab'
 
 const editors = {
   CodeMirrorEditor,
   MarkdownEditor,
-  ImageEditor
+  ImageEditor,
+  UnknownEditor,
 }
 
 const getEditorByName = ({
   type = 'default',
   tab,
   body,
-  path
+  path,
+  size
 }) => {
   if (type === 'default') {
     return React.createElement(editors.CodeMirrorEditor, { tab });
@@ -22,6 +26,7 @@ const getEditorByName = ({
   } else if (type === 'imageEditor') {
     return React.createElement(editors.ImageEditor, { path })
   }
+  return React.createElement(editors.UnknownEditor, { path, size })
 }
 
 const typeDetect = (title, types) => {
@@ -33,8 +38,16 @@ const typeDetect = (title, types) => {
 
 const EditorWrapper = ({ tab }, { i18n }) => {
   const title = tab.title
-  const { body = '', path = '' } = tab.content ? tab.content : {}
+  const { body = '' } = tab.content ? tab.content : {}
+  const { path = '' } = tab
   let type = 'default'
+  if (tab.contentType) {
+    if (Tab.types.getTabType(tab) === 'IMAGE') {
+      type = 'imageEditor'
+    } else if (Tab.types.getTabType(tab) === 'UNKNOWN') {
+      type = 'unknownEditor'
+    }
+  }
   if (typeDetect(title, 'md')) {
     type = 'editorWithPreview'
   }
@@ -45,7 +58,8 @@ const EditorWrapper = ({ tab }, { i18n }) => {
     type,
     tab,
     body,
-    path
+    path,
+    size: tab.size
   })
 }
 
@@ -58,7 +72,8 @@ getEditorByName.propTypes = {
   type: PropTypes.string,
   tab: PropTypes.object,
   body: PropTypes.object,
-  path: PropTypes.string
+  path: PropTypes.string,
+  size: PropTypes.number
 }
 
 EditorWrapper.contextTypes = {

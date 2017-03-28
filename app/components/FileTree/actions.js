@@ -23,20 +23,35 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
         dispatch(toggleNodeFold(node, shouldBeFolded, deep))
       }
     } else {
-      api.readFile(node.path)
-        .then(data => {
-          dispatch(Tab.actions.createTab({
-            id: _.uniqueId('tab_'),
-            type: 'editor',
-            title: node.name,
-            path: node.path,
-            content: {
-              body: data.content,
+      const tabType = Tab.types.getTabType(node)
+      if (
+        Tab.types.getTabType(node) === 'TEXT'
+      ) {
+        api.readFile(node.path)
+          .then(data => {
+            dispatch(Tab.actions.createTab({
+              id: _.uniqueId('tab_'),
+              type: 'editor',
+              title: node.name,
               path: node.path,
-              contentType: node.contentType
-            }
-          }))
-        })
+              content: {
+                body: data.content,
+                // path: node.path,
+                // contentType: node.contentType
+              },
+              contentType: node.contentType,
+            }))
+          })
+      } else {
+        dispatch(Tab.actions.createTab({
+          id: _.uniqueId('tab_'),
+          type: 'editor',
+          title: node.name,
+          path: node.path,
+          contentType: node.contentType,
+          size: node.size
+        }))
+      }
     }
   }
 }
