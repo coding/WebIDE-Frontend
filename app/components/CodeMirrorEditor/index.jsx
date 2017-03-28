@@ -46,7 +46,8 @@ class CodeMirrorEditor extends Component {
     editor.on('dragover', e => e.preventDefault())
 
     if (tab.content) {
-      const {body, path} = tab.content;
+      const body = tab.content.body;
+      const path = tab.path;
       const modeInfo = this.getMode(path);
       if (body) editor.setValue(body);
       if (modeInfo) {
