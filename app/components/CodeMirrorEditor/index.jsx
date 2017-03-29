@@ -7,10 +7,10 @@ import { dispatchCommand } from '../../commands'
 import _ from 'lodash'
 import * as TabActions from '../Tab/actions';
 
-const debouncedDispatch = _.debounce(dispatchCommand, 1000)
+const debounced = _.debounce(func => func(), 1000)
 class CodeMirrorEditor extends Component {
   static defaultProps = {
-    theme: 'monokai',
+    theme: 'default',
     height: '100%',
     width: '100%',
   };
@@ -46,14 +46,16 @@ class CodeMirrorEditor extends Component {
     editor.on('dragover', e => e.preventDefault())
 
     if (tab.content) {
-      const {body, path} = tab.content;
-      const modeInfo = this.getMode(path);
+      const body = tab.content.body;
+      const modeInfo = this.getMode(tab);
       if (body) editor.setValue(body);
       if (modeInfo) {
         let mode = modeInfo.mode;
-        require([`codemirror/mode/${mode}/${mode}.js`], () => {
-          editor.setOption('mode', mode);
-        });
+        if (mode === 'null') {
+          editor.setOption('mode', mode)
+        } else {
+          require([`codemirror/mode/${mode}/${mode}.js`], () => editor.setOption('mode', mode));
+        }
       }
     }
     editor.focus();
@@ -62,23 +64,31 @@ class CodeMirrorEditor extends Component {
     editor.on('focus', () => this.props.dispatch(TabActions.activateTab(tab.id)))
   }
 
-  getMode(path) {
-    const m = /.+\.([^.]+)$/.exec(path);
-    if (m) {
-      const info = CodeMirror.findModeByExtension(m[1]);
-      if (info) {
-        return info
-      }
-    }
+  // Ref: codemirror/mode/meta.js
+  getMode (tab) {
+    return CodeMirror.findModeByMIME(tab.contentType) || CodeMirror.findModeByFileName(tab.path.split('/').pop())
   }
 
   onChange = (e) => {
+    if (!this.isChanging) this.isChanging = true
     const {tab, dispatch} = this.props;
-    if (!tab.flags.modified) {
-      dispatch(TabActions.updateTabFlags(tab.id, 'modified', true))
-    }
-    if (tab.path) debouncedDispatch('file:save')
+    dispatch(TabActions.updateTab({
+      id: tab.id,
+      flags: { modified: true },
+      content: { body: this.editor.getValue() }
+    }))
+    if (tab.path) debounced(() => {
+      dispatchCommand('file:save')
+      this.isChanging = false
+    })
   };
+
+  componentWillReceiveProps ({ tab }) {
+    if (tab.flags.modified || !this.editor || !tab.content) return
+    if (tab.content.body !== this.editor.getValue()) {
+      this.editor.setValue(tab.content.body)
+    }
+  }
 
   render() {
     const {width, height} = this.props;

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import config from '../../config'
-import axios from 'axios'
+import { request } from 'utils'
 
 const previewPic = 'https://dn-coding-net-production-static.qbox.me/static/5d487aa5c207cf1ca5a36524acb953f1.gif'
 class ImageEditor extends Component {
@@ -13,13 +13,9 @@ class ImageEditor extends Component {
     const { baseURL, spaceKey } = config
     const backgroundImageUrl =
      `${baseURL}/workspaces/${spaceKey}/raw?path=${encodeURIComponent(this.props.path)}`
-    axios.get(backgroundImageUrl, {
+    request.get(backgroundImageUrl, {}, {
       responseType: 'blob',
-      headers: {
-        'X-Space-Key': config.spaceKey
-      }
-    }).then(res => {
-      const blob = res.data
+    }).then(blob => {
       const imageUrl = window.URL.createObjectURL(blob)
       this.setState({ imageUrl })
     })

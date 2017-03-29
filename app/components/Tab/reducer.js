@@ -11,6 +11,7 @@ import {
   TAB_REMOVE_GROUP,
   TAB_UPDATE,
   TAB_UPDATE_FLAGS,
+  TAB_UPDATE_BY_PATH,
   TAB_MOVE_TO_GROUP,
   TAB_MOVE_TO_PANE,
   TAB_INSERT_AT
@@ -23,6 +24,7 @@ import {
   getActiveTabOfTabGroup,
   getActiveTab,
   isActive,
+  getTabsByPath,
 } from './selectors'
 
 /**
@@ -229,6 +231,17 @@ const TabReducer = handleActions({
         flags: {$merge: flags}
       }}
     })
+  },
+
+  [TAB_UPDATE_BY_PATH]: (state, action) => {
+    const tabConfig = action.payload
+    const tabs = getTabsByPath(state, tabConfig.path)
+    if (!tabs.length) return state
+    return tabs.reduce((nextState, tab) =>
+      update(nextState, {
+        tabs: {[tab.id]: { $merge: tabConfig || {} }}
+      })
+    , state)
   },
 
   [TAB_MOVE_TO_GROUP]: (state, action) => {

@@ -52,8 +52,8 @@
 
 
   .tab-add-btn {
-    color: $text-color;
-    border: 1px solid gray;
+    color: $text-color-subtle;
+    border: 1px solid $text-color-subtle;
     // padding-left: 4px;
     // padding-right: 4px;
   }
@@ -62,4 +62,131 @@
   .tab-show-list {
     color: $text-color;
   }
+}
+
+// UnknownViewer
+.unknown-viewer-container {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: auto;
+  background: #f8f8f8;
+  .editor-tools {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    .toolbar-commands {
+      margin-top: 0px;
+    }
+  }
+
+  .unknown-viewer-content {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    border-radius: 0px;
+    padding: 0px;
+    width: 250px;
+    height: 350px;
+    text-align: center;
+    margin: auto;
+  }
+
+  .c-download-file {
+    position: relative;
+    background: #fff;
+    color: #f8f8f8;
+    width: 250px;
+    height: 330px;
+
+    /* 渐变 */
+    background: linear-gradient(180deg, #ffffff, #e5e5e5); 
+  }
+
+  .c-file-ext {
+    height: 70px;
+    background-color: #131313;
+    color: white;
+    font-size: 53px;
+    text-transform: uppercase;
+    line-height: 70px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &.c-ext-7z {
+      background-color: rgb(142, 109, 210);
+    }
+
+    &.c-ext- {
+      &doc, &docx {
+        background-color: rgb(74, 131, 220);
+      }
+      &zip, &rar, &tar {
+        background-color: rgb(142, 109, 210);
+      }
+      &ppt, &pptx {
+        background-color: rgb(252, 186, 23);
+      }
+
+      &xls, &xlsx {
+        background-color: rgb(0, 192, 117);
+      }
+      &pdf {
+        background-color: rgb(255, 0, 52);
+      }
+
+    }
+
+  }
+
+  .c-cloud {
+    font-size: 130px;
+    line-height: 290px;
+    color: #9C9C9C;
+  }
+
+  .folded-corner {
+    position: relative;
+    -webkit-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.4);
+  }
+
+  .folded-corner:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 70px solid #eee;
+    border-right: 70px solid @tabActiveColor; /*Set to background color, not transparent!*/
+    -webkit-box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
+    box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
+  }
+
+  .c-ellipsis {
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .unknown-file-info {
+    position: absolute;
+    bottom: 0;
+    padding: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background: white;
+  }
+
 }
