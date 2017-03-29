@@ -57,12 +57,18 @@ $tab-control-width = $tab-height*0.5;
   }
 
   .tab-add-btn {
-    // text-align: center;
+    text-align: center;
     margin-left: 8px;
     flex-shrink: 0;
-    line-height: 1;
+    line-height: 1.2em;
+    width: 1.2em;
     font-weight: bold;
     cursor: pointer;
+    color: $text-color-subtle;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
