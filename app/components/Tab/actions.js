@@ -26,6 +26,9 @@ export const removeGroup = createAction(TAB_REMOVE_GROUP, groupId => groupId)
 export const TAB_UPDATE = 'TAB_UPDATE'
 export const updateTab = createAction(TAB_UPDATE, (tabConfig = {}) => tabConfig)
 
+export const TAB_UPDATE_BY_PATH = 'TAB_UPDATE_BY_PATH'
+export const updateTabByPath = createAction(TAB_UPDATE_BY_PATH, (tabConfig = {}) => tabConfig)
+
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
 export const updateTabFlags = (tabId, flag, value = true) => {
   if (!tabId) return
@@ -59,4 +62,3 @@ export const TAB_INSERT_AT = 'TAB_INSERT_AT'
 export const insertTabAt = createAction(TAB_INSERT_AT,
   (tabId, beforeTabId) => ({tabId, beforeTabId})
 )
-
