@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import getPaletteItems from './getPaletteItems'
 import cx from 'classnames'
 
-import {dispatchCommand} from '../lib/keymapper'
+import dispatchCommand from '../dispatchCommand'
 
 class CommandPalette extends Component {
   constructor(props) {
