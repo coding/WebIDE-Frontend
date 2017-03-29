@@ -66,7 +66,9 @@ class _TabBar extends Component {
           ) }
         </ul>
         {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
-        <div className='tab-add-btn' onClick={addTab} >＋</div>
+        <div className='tab-add-btn' onClick={addTab} >
+          <i className='fa fa-plus'></i>
+        </div>
         <div className='tab-show-list'
           style={{position: 'relative'}}
           onClick={e=>{e.stopPropagation();this.setState({showDropdownMenu: true})}}

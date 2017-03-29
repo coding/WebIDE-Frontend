@@ -15,7 +15,7 @@ $tab-control-width = $tab-height*0.5;
 .tab-content-placeholder-monkey {
   width: 100%;
   height: 100%;
-  opacity: 0.618;
+  opacity: 0.3;
   background: url("https://dn-coding-net-production-static.qbox.me/static/cb75498a0ffd36e2c694da62f1bdb86c.svg") no-repeat center
 }
 .tab-content-container {
@@ -57,12 +57,18 @@ $tab-control-width = $tab-height*0.5;
   }
 
   .tab-add-btn {
-    // text-align: center;
+    text-align: center;
     margin-left: 8px;
     flex-shrink: 0;
-    line-height: 1;
+    line-height: 1.2em;
+    width: 1.2em;
     font-weight: bold;
     cursor: pointer;
+    color: $text-color-subtle;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
@@ -110,6 +116,7 @@ $tab-control-width = $tab-height*0.5;
     height: $tab-control-width;
     cursor: pointer;
     margin-left: auto;
+    margin-right: 2px;
     position: relative;
   }
 }
@@ -135,12 +142,13 @@ $tab-control-width = $tab-height*0.5;
   }
 
   .close {
-    margin-top: -1px;
     display: none;
+    font-size: 1.4em;
+    opacity: 0.5;
   }
 
   &.active {
-    border-left-color: $text-color-info
+    border-left-color: $text-color-info;
   }
 
   // case hover-on-tab / tab-is-active:
@@ -151,11 +159,16 @@ $tab-control-width = $tab-height*0.5;
   // case modified flag:
   &.modified {
     .dot {display: block;}
+    .close {display: none;}
   }
 
   // case hover-on-tab-control
   .control:hover {
     .dot {display: none;}
+    .close {
+      display: block;
+      opacity: 1;
+    }
   }
 
 }
