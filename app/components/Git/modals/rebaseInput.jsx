@@ -11,7 +11,7 @@ class GitRebaseInput extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      message: ''
+      message: this.props.content
     }
     this.updateMessage = this.updateMessage.bind(this)
     this.handleConfirm = this.handleConfirm.bind(this)
@@ -27,8 +27,8 @@ class GitRebaseInput extends Component {
           <form className="form-horizontal">
             <div className="form-group">
               <div className="col-sm-12">
-                <textarea name='git-commit-message' id='git-commit-message' rows='4'
-          onChange={e => this.updateMessage(e.target.value)} />
+                <textarea name='git-commit-message' id='git-commit-message' rows='12'
+          onChange={e => this.updateMessage(e.target.value)} value={this.state.message} />
               </div>
             </div>
           </form>

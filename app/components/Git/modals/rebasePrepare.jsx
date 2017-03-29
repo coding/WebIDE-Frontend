@@ -19,9 +19,9 @@ const TextCell = ({rowIndex, data, columnKey, selectedRow, ...props}) => (
 const actionOptions = [
   'PICK',
   'EDIT',
-  'SKIP',
+  // 'SKIP',
   'SQUASH',
-  // 'REWORD',
+  'REWORD',
   'FIXUP',
 ]
 
@@ -179,6 +179,9 @@ class GitRebasePrepare extends Component {
           actionOptions.map((item, i) => {
             let name, value
             name = value = item
+            if (rowIndex === 0 && (i === 2 || i === 4)) {
+              return null
+            }
             return (
               <option key={i}
                 value={value}

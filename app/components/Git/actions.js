@@ -357,8 +357,7 @@ function resolveRebase (data, dispatch) {
       dispatch(showModal('GitResolveConflicts'))
     )
   } else if (data.status === 'INTERACTIVE_EDIT') {
-    // AppActions.openRebaseInput(data.message)
-    dispatch(showModal('GitRebaseInput'))
+    dispatch(showModal('GitRebaseInput', data.message))
   } else if (data.status === 'ABORTED') {
     dispatch(notify({
       message: 'Rebase aborted.',
@@ -366,6 +365,14 @@ function resolveRebase (data, dispatch) {
   } else if (data.status === 'INTERACTIVE_PREPARED') {
     let rebaseTodoLines = data.rebaseTodoLines
     dispatch(showModal('GitRebasePrepare', rebaseTodoLines))
+  } else if (data.status === 'UNCOMMITTED_CHANGES') {
+    dispatch(notify({
+      message: 'Cannot rebase: Your index contains uncommitted changes. Please commit or stash them.',
+    }))
+  } else if (data.status === 'EDIT') {
+    dispatch(notify({
+      message: 'Current status is EDIT, we have stopped rebasing for you. \nPlease edit your files and then continue rebasing.',
+    }))
   }
 }
 
@@ -452,4 +459,14 @@ export function gitCommitDiff ({rev, title, oldRef}) {
 export const SWITCH_VERSION = 'SWITCH_VERSION'
 export function switchVersion () {
   return dispatch => api.switchVersion()
+}
+
+export const GIT_HISTORY = 'GIT_HISTORY'
+export const updateHistory = createAction(GIT_HISTORY)
+export const fetchHistory = ({ path, page, size }) => {
+  return (dispatch) => {
+    api.gitHistory({ path, page, size }).then(res => {
+      dispatch(updateHistory(res))
+    })
+  }
 }
