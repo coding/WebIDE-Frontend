@@ -5,10 +5,10 @@ import Breadcrumbs from '../Breadcrumbs'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
-import { SideBar } from '../Bar'
 import ExtensionPanelContent from './ExtensionPanelContent'
 import Terminal from '../Terminal'
 import TabContainer from '../Tab'
+import SideBar from './SideBar'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
