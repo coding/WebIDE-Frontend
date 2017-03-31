@@ -2,22 +2,19 @@ const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const str = JSON.stringify
-const CommonConfig = require('./common.config.js')
+const commonConfig = require('./common.config.js')
 
 const stylesheet = require('./stylesheet.config')
 const uglify = require('./uglify.config')
 
 module.exports = merge(
-  CommonConfig,
+  commonConfig({
+    mainEntryHtmlName: process.env.RUN_MODE ? 'workspace.html' : 'index.html',
+    staticDir: process.env.RUN_MODE ? 'rs2' : 'rs',
+  }),
   stylesheet(),
   uglify(),
   {
-    output: {
-      path: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ?
-          path.join(CommonConfig.output.path, 'rs2')
-        : CommonConfig.output.path,
-      publicPath: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '/rs2/' : '/',
-    },
     plugins: [
       new webpack.DefinePlugin({
         __DEV__: false,

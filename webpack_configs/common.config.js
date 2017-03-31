@@ -7,15 +7,24 @@ const merge = require('webpack-merge')
 
 const rootDir = path.resolve(__dirname, '..')
 
-const CommonConfig = {
+module.exports = function (options={}) {
+  const {
+    mainEntryHtmlName = 'index.html',
+    workspacesEntryHtmlName = 'workspaces_list.html',
+    staticDir = 'rs',
+  } = options
+
+let publicPath = path.join('/', staticDir)
+if (!publicPath.endsWith('/')) publicPath + '/'
+return {
   entry: {
     main: [path.join(rootDir, 'app')],
     workspaces: [path.join(rootDir, 'app/workspaces_standalone')],
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
-    publicPath: '/',
-    path: path.join(rootDir, 'build'),
+    publicPath,
+    path: path.join(rootDir, 'build', staticDir),
     filename: '[name].[hash].js'
   },
   resolve: {
@@ -41,18 +50,18 @@ const CommonConfig = {
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
-      filename: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '../workspace.html' : 'index.html',
+      filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(rootDir, 'app/index.html')
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['main'],
-      filename: 'workspaces_list.html',
+      filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
       template: path.join(rootDir, 'app/workspaces_standalone/index.html')
     }),
     new CopyWebpackPlugin([{
       from: path.join(rootDir, 'static/favicon.ico'),
-      to: process.env.RUN_MODE&&process.env.NODE_ENV==='production' ? '../' : './',
+      to: (staticDir ? '../' : './'),
     }])
   ],
   module: {
@@ -61,5 +70,4 @@ const CommonConfig = {
     ]
   }
 }
-
-module.exports = CommonConfig
+}
