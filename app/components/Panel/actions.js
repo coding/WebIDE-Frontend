@@ -18,3 +18,9 @@ export const togglePanelLayout = createAction(PANEL_TOGGLE_LAYOUT, (selectors, s
   if (selectors.ref && typeof selectors.ref === 'string') selectors.refs = [selectors.ref]
   return { selectors, shouldShow }
 })
+
+export const PANEL_REGISTER_VIEW = 'PANEL_REGISTER_VIEW'
+export const registerSidePanelView = createAction(PANEL_REGISTER_VIEW)
+
+export const PANEL_ACTIVATE_VIEW = 'PANEL_ACTIVATE_VIEW'
+export const activateSidePanelView = createAction(PANEL_ACTIVATE_VIEW)
