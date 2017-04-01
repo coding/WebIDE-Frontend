@@ -9,7 +9,6 @@ const uglify = require('./uglify.config')
 
 module.exports = merge(
   commonConfig({
-    mainEntryHtmlName: process.env.RUN_MODE ? 'workspace.html' : 'index.html',
     staticDir: process.env.RUN_MODE ? 'rs2' : 'rs',
   }),
   stylesheet(),

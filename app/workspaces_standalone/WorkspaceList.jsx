@@ -86,7 +86,7 @@ class WorkspaceList extends Component {
               <div className='workspace-name'>{ws.projectName}</div>
               <div className='workspace-action'>
                 <a className='btn btn-default'
-                  href={window.location.origin + '#spaceKey=' + ws.spaceKey}
+                  href={'/workspace.html#spaceKey=' + ws.spaceKey}
                   onClick={e => openWorkspace(ws)}>Open</a>
                 <button className='btn btn-danger'
                   style={{marginLeft: '4px'}}

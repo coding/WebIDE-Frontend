@@ -9,8 +9,8 @@ const rootDir = path.resolve(__dirname, '..')
 
 module.exports = function (options={}) {
   const {
-    mainEntryHtmlName = 'index.html',
-    workspacesEntryHtmlName = 'workspaces_list.html',
+    mainEntryHtmlName = 'workspace.html',
+    workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
   } = options
 
