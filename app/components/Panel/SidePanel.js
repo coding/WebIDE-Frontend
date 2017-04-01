@@ -14,14 +14,20 @@ class SidePanelContainer extends Component {
   constructor (props) {
     super(props)
     const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children]
-    this.props.dispatch(registerSidePanelView({
-      side: this.props.side,
+    const { side, dispatch } = this.props
+
+    dispatch(registerSidePanelView({
+      side: side,
       labels: children.map((sidePanelView, idx) => {
         return {
           ...sidePanelView.props.label,
-          viewId: `${this.props.side}_${idx}`,
+          viewId: `${side}_${idx}`,
         }
-      })
+      }),
+      activeViewId: `${side}_` + children.reduce((activeViewIndex, sidePanelView, idx) => {
+        if (sidePanelView.props.active) activeViewIndex = idx
+        return activeViewIndex
+      }, 0)
     }))
   }
 

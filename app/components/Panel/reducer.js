@@ -145,7 +145,6 @@ let defaultState = {
 
 defaultState = constructPanelState(defaultState, BasePanelLayout)
 
-
 export default handleActions({
   [PANEL_TOGGLE_LAYOUT]: (state, action) => {
     const { selectors: { refs, ids }, shouldShow } = action.payload
@@ -174,11 +173,12 @@ export default handleActions({
     })
   },
 
-  [PANEL_REGISTER_VIEW]: (state, { payload: { side, labels } }) => {
+  [PANEL_REGISTER_VIEW]: (state, { payload: { side, labels, activeViewId } }) => {
     return update(state, {
       sidePanelViews: {
         [side]: {
-          labels: { $set: labels }
+          labels: { $set: labels },
+          activeViewId: { $set: activeViewId },
         }
       }
     })
@@ -186,10 +186,19 @@ export default handleActions({
 
   [PANEL_ACTIVATE_VIEW]: (state, { payload: viewId }) => {
     const side = viewId.split('_')[0]
+    const activeViewId = state.sidePanelViews[side].activeViewId
+    if (activeViewId === viewId) viewId = ''
+
+    const shouldHidePanel = viewId ? false : true
+    const targetPanel = getPanelByRef(state, `PANEL_${side.toUpperCase()}`)
+
     return update(state, {
+      panels: {
+        [targetPanel.id]: { hide: { $set: shouldHidePanel } }
+      },
       sidePanelViews: {
         [side]: {
-          activeViewId: { $apply: (curValue) => (curValue === viewId ? '' : viewId) }
+          activeViewId: { $set: viewId }
         }
       }
     })

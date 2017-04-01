@@ -40,7 +40,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
-          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }}>
+          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }} active>
             <FileTree />
           </SidePanelView>
         </SidePanelContainer>
@@ -48,7 +48,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_BOTTOM':
       return (
         <SidePanelContainer side='bottom'>
-          <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }}>
+          <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>
             <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
           </SidePanelView>
 
