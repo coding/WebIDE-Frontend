@@ -8,7 +8,8 @@ import FileTree from '../FileTree'
 import ExtensionPanelContent from './ExtensionPanelContent'
 import Terminal from '../Terminal'
 import TabContainer from '../Tab'
-import SideBar from './SideBar'
+import SideBar, { SideBar2 } from './SideBar'
+import { SidePanelContainer, SidePanelView } from './SidePanel'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
@@ -23,19 +24,40 @@ const PanelContent = ({ panel }) => {
     case 'STATUSBAR':
       return <StatusBar />
 
-    case 'EXTENSION_LEFT':
-    case 'EXTENSION_RIGHT':
-      return <ExtensionPanelContent side={panel.contentType.toLowerCase().replace('extension_', '')} />
-    case 'EXTENSION_BOTTOM':
-      return <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
     default:
   }
 
   switch (panel.ref) {
-    case 'BAR_LEFT':
     case 'BAR_RIGHT':
-    case 'BAR_BOTTOM':
       return <SideBar side={panel.ref.toLowerCase().replace('bar_', '')} />
+    case 'BAR_LEFT':
+    case 'BAR_BOTTOM':
+      return <SideBar2 side={panel.ref.toLowerCase().replace('bar_', '')} />
+
+
+    case 'PANEL_RIGHT':
+      return <ExtensionPanelContent side={panel.contentType.toLowerCase().replace('extension_', '')} />
+    case 'PANEL_LEFT':
+      return (
+        <SidePanelContainer side='left'>
+          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }}>
+            <FileTree />
+          </SidePanelView>
+        </SidePanelContainer>
+      )
+    case 'PANEL_BOTTOM':
+      return (
+        <SidePanelContainer side='bottom'>
+          <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }}>
+            <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
+          </SidePanelView>
+
+          <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }}>
+            <h2>Git History View Placeholder</h2>
+          </SidePanelView>
+
+        </SidePanelContainer>
+      )
     default:
   }
 

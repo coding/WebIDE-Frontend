@@ -7,32 +7,48 @@ $bar-size= 25px
   &.left, &.right {
     width: $bar-size;
     flex-direction: column;
+    .side-bar-label {
+      padding-tb: 5px;
+      text-align right;
+    }
   }
   &.top, &.bottom {
     height: $bar-size;
     flex-direction: row;
+    .side-bar-label {
+      padding-lr: 5px;
+      text-align center;
+    }
   }
 
   .side-bar-label {
     cursor: pointer;
     overflow: hidden;
-    padding-tb: 5px;
-    text-align right;
     &.active {
       background-color: gray(90%);
     }
   }
 
-  .side-bar-label-container {
-    display: inline-block;
-    white-space: nowrap;
-    transform: translate(0.9em, -0.5em) rotate(90deg);
-    transform-origin: 0 0.5em;
-    &:before {
-      // this is the key, it keeps the box from collapse
-      content: "";
-      float: right;
-      margin-bottom: 100%;
+  &.top, &.bottom {
+    .side-bar-label-container {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  &.left, &.right {
+    .side-bar-label-container {
+      display: inline-block;
+      white-space: nowrap;
+      transform: translate(0.9em, -0.5em) rotate(90deg);
+      transform-origin: 0 0.5em;
+      &:before {
+        // this is the key, it keeps the box from collapse
+        content: "";
+        float: right;
+        margin-bottom: 100%;
+      }
     }
   }
 
@@ -46,5 +62,6 @@ $bar-size= 25px
   &.left .side-bar-label-content {
     transform: rotate(180deg);
   }
+
 }
 

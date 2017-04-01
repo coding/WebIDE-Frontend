@@ -42,7 +42,7 @@ class Term extends Component {
     }, 300));
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     emitter.removeListener('panel_resized', this.onResize)
   }
 

@@ -6,7 +6,9 @@ import {
   PANEL_INITIALIZE,
   PANEL_RESIZE,
   PANEL_CONFIRM_RESIZE,
-  PANEL_TOGGLE_LAYOUT
+  PANEL_TOGGLE_LAYOUT,
+  PANEL_REGISTER_VIEW,
+  PANEL_ACTIVATE_VIEW,
 } from './actions'
 
 import {
@@ -47,7 +49,7 @@ const BasePanelLayout = {
       ref: 'PRIMARY_ROW',
       direction: 'row',
       views: [
-        {ref: 'BAR_LEFT', resizable: false, disabled: true},
+        {ref: 'BAR_LEFT', resizable: false},
         {
           ref: 'STAGE',
           direction: 'column',
@@ -55,13 +57,13 @@ const BasePanelLayout = {
             {
               direction: 'row',
               views: [
-                {ref: 'PANEL_LEFT', size: 20, contentType: 'FILETREE'},
+                {ref: 'PANEL_LEFT', size: 20, contentType: 'PANEL_LEFT'},
                 {ref: 'PANEL_CENTER', size: 80, contentType: 'PANES'},
                 {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true},
               ],
               size: 75
             },
-            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'EXTENSION_BOTTOM', hide: false},
+            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hide: false},
             {ref: 'BAR_BOTTOM', resizable: false, hide: false},
           ]
         },
@@ -130,7 +132,17 @@ const constructPanelState = (state, panelConfig, parent) => {
   return nextState
 }
 
-let defaultState = { rootPanelId: '', panels: {}, panelRefs: {} }
+let defaultState = {
+  rootPanelId: '',
+  panels: {},
+  panelRefs: {},
+  sidePanelViews: {
+    left: {},
+    right: {},
+    bottom: {},
+  },
+}
+
 defaultState = constructPanelState(defaultState, BasePanelLayout)
 
 
@@ -158,6 +170,27 @@ export default handleActions({
       panels: {
         [leftView.id]: { size: { $set: leftView.size } },
         [rightView.id]: { size: { $set: rightView.size } },
+      }
+    })
+  },
+
+  [PANEL_REGISTER_VIEW]: (state, { payload: { side, labels } }) => {
+    return update(state, {
+      sidePanelViews: {
+        [side]: {
+          labels: { $set: labels }
+        }
+      }
+    })
+  },
+
+  [PANEL_ACTIVATE_VIEW]: (state, { payload: viewId }) => {
+    const side = viewId.split('_')[0]
+    return update(state, {
+      sidePanelViews: {
+        [side]: {
+          activeViewId: { $apply: (curValue) => (curValue === viewId ? '' : viewId) }
+        }
       }
     })
   }

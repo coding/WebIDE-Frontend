@@ -2,7 +2,15 @@
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import { activateExtenstion } from '../Package/actions'
+import { activateSidePanelView } from './actions'
 
+/* shape of label
+label = {
+  text: String,
+  icon: String,
+  viewId: String,
+}
+*/
 const SideBarLabel = ({ label, isActive, onClick }) => {
   return (
     <div className={cx('side-bar-label', {
@@ -18,14 +26,14 @@ const SideBarLabel = ({ label, isActive, onClick }) => {
   )
 }
 
-const _SideBar = ({ labels, side, activeExtenstionId, dispatch }) => {
+const _SideBar = ({ labels=[], side, activeViewId, activateView }) => {
   return (
     <div className={'bar side-bar ' + side}>
       {labels.map((label, idx) =>
-        <SideBarLabel key={label.packageId}
+        <SideBarLabel key={label.viewId}
           label={label}
-          onClick={e => dispatch(activateExtenstion(label.packageId))}
-          isActive={activeExtenstionId === label.packageId}
+          onClick={e => activateView(label.viewId)}
+          isActive={activeViewId === label.viewId}
         />
       )}
     </div>
@@ -37,7 +45,19 @@ export default connect((state, { side }) => {
   const { extensionIds, activeExtenstionId } = state.PackageState.extensionsUIState.panels[side]
   const labels = extensionIds.map(id => {
     let label = localPackages[id].ui.label
-    return {...label, packageId: id}
+    return {...label, viewId: id}
   })
-  return { labels, activeExtenstionId }
-})(_SideBar)
+  return { side, labels, activeViewId: activeExtenstionId }
+}, dispatch => ({
+  activateView: viewId => dispatch(activateExtenstion(viewId))
+}))(_SideBar)
+
+
+
+export const SideBar2 = connect((state, { side }) => {
+  const sidePanelViews = state.PanelState.sidePanelViews[side]
+  const { labels, activeViewId } = sidePanelViews
+  return { side, labels, activeViewId }
+}, dispatch => ({
+  activateView: viewId => dispatch(activateSidePanelView(viewId))
+}))(_SideBar)
