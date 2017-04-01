@@ -7,7 +7,7 @@ import { dispatchCommand } from '../../commands'
 import _ from 'lodash'
 import * as TabActions from '../Tab/actions';
 
-const debouncedDispatch = _.debounce(dispatchCommand, 1000)
+const debounced = _.debounce(func => func(), 1000)
 class CodeMirrorEditor extends Component {
   static defaultProps = {
     theme: 'default',
@@ -70,12 +70,25 @@ class CodeMirrorEditor extends Component {
   }
 
   onChange = (e) => {
+    if (!this.isChanging) this.isChanging = true
     const {tab, dispatch} = this.props;
-    if (!tab.flags.modified) {
-      dispatch(TabActions.updateTabFlags(tab.id, 'modified', true))
-    }
-    if (tab.path) debouncedDispatch('file:save')
+    dispatch(TabActions.updateTab({
+      id: tab.id,
+      flags: { modified: true },
+      content: { body: this.editor.getValue() }
+    }))
+    if (tab.path) debounced(() => {
+      dispatchCommand('file:save')
+      this.isChanging = false
+    })
   };
+
+  componentWillReceiveProps ({ tab }) {
+    if (tab.flags.modified || !this.editor || !tab.content) return
+    if (tab.content.body !== this.editor.getValue()) {
+      this.editor.setValue(tab.content.body)
+    }
+  }
 
   render() {
     const {width, height} = this.props;

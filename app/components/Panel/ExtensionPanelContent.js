@@ -30,7 +30,7 @@ const ExtensionPanelContent = ({ extensions, side, activeExtenstionId }) => {
 
 export default connect((state, { side }) => {
   const localPackages = state.PackageState.localPackages
-  const { extensionIds, activeExtenstionId } = state.PackageState.extensionsUIState.panels[side]
+  const { extensionIds=[], activeExtenstionId } = state.PackageState.extensionsUIState.panels[side] || {}
   const extensions = extensionIds.map(id => localPackages[id])
   return { extensions, activeExtenstionId }
 })(ExtensionPanelContent)

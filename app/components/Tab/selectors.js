@@ -29,3 +29,7 @@ export const isActive = (state, tabOrTabGroup) => {
     return state.activeTabGroupId === tabGroup.id
   }
 }
+
+export const getTabsByPath = (state, path) => {
+  return Object.values(state.tabs).filter(tab => tab.path === path)
+}

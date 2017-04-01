@@ -7,6 +7,8 @@ import moment from 'moment'
 import { Table, Column, Cell } from 'fixed-data-table'
 import cx from 'classnames'
 import ContextMenu from '../ContextMenu'
+import { emitter, E } from 'utils'
+
 const items = [
   {
     name: 'Compare',
@@ -70,9 +72,16 @@ class History extends Component {
     this._onRowContextMenu = this._onRowContextMenu.bind(this)
   }
 
+  componentWillMount () {
+    emitter.on(E.PANEL_RESIZED, this.fitHistoryTable)
+  }
   componentDidMount () {
     this.fetchHistory({ reset: true })
     this.fitHistoryTable()
+  }
+
+  componentWillUnmount () {
+    emitter.removeListener(E.PANEL_RESIZED, this.fitHistoryTable)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -84,6 +93,7 @@ class History extends Component {
         isEnd: this.props.history.isEnd,
         isLoading: false
       })
+      this.fitHistoryTable()
     }
     if (nextProps.focusedNode !== this.props.focusedNode) {
       this.state.path = nextProps.focusedNode ? nextProps.focusedNode.path : '/'
@@ -92,12 +102,14 @@ class History extends Component {
   }
 
   fitHistoryTable () {
-    if (this.historyDOM.clientWidth > 0) {
-      this.setState({
-        tableHeight: this.historyDOM.clientHeight - 22,
-        tableWidth: this.historyDOM.clientWidth
-      })
-    }
+    setTimeout(() => {
+      if (this.historyDOM.clientWidth > 0) {
+        this.setState({
+          tableHeight: this.historyDOM.clientHeight - 22,
+          tableWidth: this.historyDOM.clientWidth
+        })
+      }
+    }, 0)
   }
 
   render () {
@@ -282,7 +294,7 @@ class History extends Component {
     return this.state.historyRows[rowIndex]
   }
 
-  fetchHistory ({ reset }) {
+  fetchHistory ({ reset=false }) {
     this.setState({
       isLoading: true
     })

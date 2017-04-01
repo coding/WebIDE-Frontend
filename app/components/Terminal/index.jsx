@@ -4,16 +4,13 @@ import React, { Component, PropTypes } from 'react';
 import Terminal from 'sh.js';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { emitter, E } from 'utils'
 
 import terms from './terminal-client';
 import * as TabActions from '../Tab/actions';
 terms.setActions(TabActions);
 
 class Term extends Component {
-  static contextTypes = {
-    onResizing: PropTypes.func
-  };
-
   constructor(props) {
     super(props);
   }
@@ -33,7 +30,9 @@ class Term extends Component {
     terminal.on('resize', (cols, rows) => {
       terms.resize(terminal, cols, rows);
     });
-    terminal.sizeToFit();
+    setTimeout(() => terminal.sizeToFit(), 0)
+    emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
+
     terms.add(terminal);
     terminal.on('data', data => {
       terms.getSocket().emit('term.input', {id: terminal.name, input: data})
@@ -41,10 +40,10 @@ class Term extends Component {
     terminal.on('title', _.debounce(title => {
       _this.props.handleTabTitle(_this.props.tab.id, title) // change tab title.
     }, 300));
+  }
 
-    this.context.onResizing( ()=>{terminal.sizeToFit()} );
-
-    // this.setTheme
+  componentWillUnmount() {
+    emitter.removeListener(E.PANEL_RESIZED, this.onResize)
   }
 
   render() {
@@ -56,6 +55,10 @@ class Term extends Component {
         </div>
       </div>
     );
+  }
+
+  onResize () {
+    this.terminal.sizeToFit()
   }
 
   setTheme(themeName) {
