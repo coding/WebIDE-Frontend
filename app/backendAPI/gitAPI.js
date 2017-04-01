@@ -19,8 +19,7 @@ export function gitCheckout (branch, remoteBranch) {
 }
 
 export function gitCommit ({files, message}) {
-  const url = config.isPlatform ? `/git/${config.spaceKey}/commits` : `/git/${config.spaceKey}`
-  return request.post(url, {files, message})
+  return request.post(`/git/${config.spaceKey}/commits`, {files, message})
 }
 
 export function gitPull () {
@@ -114,17 +113,17 @@ export function gitRebaseUpdate (lines) {
 }
 
 export function gitCommitDiff ({rev}) {
-  return config.isPlatform ?
-    request.diffFilesList(`/git/${config.spaceKey}/commits`, { ref: rev })
-  : request.get(`/git/${config.spaceKey}/diff`, {rev})
+  return request.diffFilesList(`/git/${config.spaceKey}/commits`, { ref: rev })
 }
 
 export function gitFileDiff ({ path, oldRef, newRef }) {
-  return config.isPlatform ?
-    request.diff(`/git/${config.spaceKey}/commits`, { path, oldRef, newRef })
-  : request.get(`/git/${config.spaceKey}/diff`, { path, oldRef, newRef })
+  return request.diff(`/git/${config.spaceKey}/commits`, { path, oldRef, newRef })
 }
 
 export function gitReadFile ({ref, path}) {
   return request.get(`/git/${config.spaceKey}/read`, { path, ref, base64: false })
+}
+
+export function gitHistory ({ path, page, size }) {
+  return request.get(`/git/${config.spaceKey}/logs`, { path, page, size })
 }

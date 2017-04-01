@@ -4,7 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import Terminal from 'sh.js';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { emitter } from 'utils'
+import { emitter, E } from 'utils'
 
 import terms from './terminal-client';
 import * as TabActions from '../Tab/actions';
@@ -31,7 +31,7 @@ class Term extends Component {
       terms.resize(terminal, cols, rows);
     });
     setTimeout(() => terminal.sizeToFit(), 0)
-    emitter.on('panel_resized', this.onResize.bind(this))
+    emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
 
     terms.add(terminal);
     terminal.on('data', data => {
@@ -43,7 +43,7 @@ class Term extends Component {
   }
 
   componentWillUnmount() {
-    emitter.removeListener('panel_resized', this.onResize)
+    emitter.removeListener(E.PANEL_RESIZED, this.onResize)
   }
 
   render() {

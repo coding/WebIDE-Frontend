@@ -232,7 +232,6 @@ class GitRebaseStart extends Component {
   }
 
   handleValidate (e) {
-    console.log('validate', this.state.selectedOnto)
     if (this.state.selectedOnto) {
       this.props.gitCommitDiff({
         title: 'View Changes',

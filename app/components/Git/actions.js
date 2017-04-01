@@ -5,6 +5,8 @@ import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, addModal, dismissModal, updateModal } from '../Modal/actions'
 import { createAction } from 'redux-actions'
 
+import Clipboard from 'clipboard'
+
 export const GIT_STATUS = 'GIT_STATUS'
 export const updateStatus = createAction(GIT_STATUS)
 
@@ -357,8 +359,7 @@ function resolveRebase (data, dispatch) {
       dispatch(showModal('GitResolveConflicts'))
     )
   } else if (data.status === 'INTERACTIVE_EDIT') {
-    // AppActions.openRebaseInput(data.message)
-    dispatch(showModal('GitRebaseInput'))
+    dispatch(showModal('GitRebaseInput', data.message))
   } else if (data.status === 'ABORTED') {
     dispatch(notify({
       message: 'Rebase aborted.',
@@ -366,6 +367,14 @@ function resolveRebase (data, dispatch) {
   } else if (data.status === 'INTERACTIVE_PREPARED') {
     let rebaseTodoLines = data.rebaseTodoLines
     dispatch(showModal('GitRebasePrepare', rebaseTodoLines))
+  } else if (data.status === 'UNCOMMITTED_CHANGES') {
+    dispatch(notify({
+      message: 'Cannot rebase: Your index contains uncommitted changes. Please commit or stash them.',
+    }))
+  } else if (data.status === 'EDIT') {
+    dispatch(notify({
+      message: 'Current status is EDIT, we have stopped rebasing for you. \nPlease edit your files and then continue rebasing.',
+    }))
   }
 }
 
@@ -453,3 +462,33 @@ export const SWITCH_VERSION = 'SWITCH_VERSION'
 export function switchVersion () {
   return dispatch => api.switchVersion()
 }
+
+export const GIT_HISTORY = 'GIT_HISTORY'
+export const updateHistory = createAction(GIT_HISTORY)
+export const fetchHistory = ({ path, page, size, reset }) => {
+  return (dispatch) => {
+    api.gitHistory({ path, page, size }).then(res => {
+      dispatch(updateHistory({ reset, res }))
+    })
+  }
+}
+
+export const GIT_HISTORY_CONTEXT_MENU_OPEN = 'GIT_HISTORY_CONTEXT_MENU_OPEN'
+export const openContextMenu = createAction(GIT_HISTORY_CONTEXT_MENU_OPEN, (e, node) => {
+  e.stopPropagation()
+  e.preventDefault()
+  setTimeout(()=>{
+    new Clipboard('.clipboard', {
+      text: (trigger) => node.name
+    })
+  }, 0)
+
+  return {
+    isActive: true,
+    pos: { x: e.clientX, y: e.clientY },
+    contextNode: node,
+  }
+})
+
+export const GIT_HISTORY_CONTEXT_MENU_CLOSE = 'GIT_HISTORY_CONTEXT_MENU_CLOSE'
+export const closeContextMenu = createAction(GIT_HISTORY_CONTEXT_MENU_CLOSE)

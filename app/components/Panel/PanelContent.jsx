@@ -10,6 +10,7 @@ import Terminal from '../Terminal'
 import TabContainer from '../Tab'
 import SideBar, { SideBar2 } from './SideBar'
 import { SidePanelContainer, SidePanelView } from './SidePanel'
+import GitHistoryView from '../Git/GitHistoryView'
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
@@ -46,14 +47,15 @@ const PanelContent = ({ panel }) => {
         </SidePanelContainer>
       )
     case 'PANEL_BOTTOM':
+      // return <GitHistoryView />
       return (
         <SidePanelContainer side='bottom'>
           <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>
             <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
           </SidePanelView>
 
-          <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }}>
-            <h2>Git History View Placeholder</h2>
+          <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }} >
+            <GitHistoryView />
           </SidePanelView>
 
         </SidePanelContainer>

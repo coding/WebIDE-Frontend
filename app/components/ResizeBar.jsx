@@ -3,7 +3,7 @@ import _ from 'lodash'
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { emitter } from 'utils'
+import { emitter, E } from 'utils'
 
 const getNextSiblingNode = (currentDOM) => {
   let sibling = currentDOM.nextSibling
@@ -70,7 +70,7 @@ const resize = (leftViewId, rightViewId, dX, dY) => {
   rightViewDom.style.flexGrow = rightSize
 
   debounced(() => {
-    emitter.emit('panel_resized')
+    emitter.emit(E.PANEL_RESIZED)
   })
 
   return [leftSize, rightSize]

@@ -1,0 +1,29 @@
+.ide-history {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  // font-family: 'Source Code Pro', sans-serif;
+
+  .history-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .history-title {
+      border-bottom: 1px solid gray(80%);
+      background-color: $base-top-menu-bar-background;
+      color: gray(15%);
+      padding: 4px 10px;
+    }
+
+    .selected .public_fixedDataTableCell_cellContent {
+      background-color: $tab-highlight-bg;
+      color: $component-active-color;
+    }
+    .public_fixedDataTableCell_cellContent {
+      padding: 5px 8px;
+      cursor: pointer;
+    }
+  }
+}
