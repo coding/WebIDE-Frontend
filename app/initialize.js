@@ -16,11 +16,10 @@ async function initialize () {
 
   await step('[0] Get spaceKey from window.location', () => {
     let spaceKey = null
-    if (config.isPlatform) {
-      const wsPathPattern = /^\/ws\/([^\/]+)$/
-      const match = wsPathPattern.exec(urlPath)
-      if (match) spaceKey = match[1]
-    }
+    const wsPathPattern = /^\/ws\/([^\/]+)\/?$/
+    const match = wsPathPattern.exec(urlPath)
+    if (match) spaceKey = match[1]
+
     if (!spaceKey) spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
     if (spaceKey) config.spaceKey = spaceKey
     return true
