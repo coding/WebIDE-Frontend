@@ -27,7 +27,8 @@ export default class GitBranchWidget extends Component {
     const { current: currentBranch, local: localBranches, remote: remoteBranches } = this.props
     return (
       <div className='status-bar-menu-item'
-        onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}>
+        onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}
+      >
         <span>
           <span className='fa fa-code-fork' style={{ fontWeight: 800, marginRight: '5px' }} />
           {currentBranch}
@@ -73,11 +74,12 @@ export default class GitBranchWidget extends Component {
         command: () => { this.props.checkoutBranch(branch) }
       }, {
         name: 'Checkout as new branch',
-        command: () => dispatchCommand('git:checkout_new_branch', null, { fromBranch: branch })
-      }, {
-        name: 'Delete',
-        command: () => { this.props.gitDeleteBranch(branch) }
-      }]
+        command: () => dispatchCommand('git:checkout_new_branch', {
+          fromBranch: branch
+        }) }, {
+          name: 'Delete',
+          command: () => { this.props.gitDeleteBranch(branch) }
+        }]
     }))
 
     const remoteBranchItems = remoteBranches.map(remoteBranch => {
@@ -87,9 +89,10 @@ export default class GitBranchWidget extends Component {
         items: [{
           name: 'Checkout as new branch',
           // @todo: should prompt to input local branch name
-          command: () => dispatchCommand('git:checkout_new_branch',
-            null, { fromBranch: remoteBranch, toBranch: localBranch }
-          )
+          command: () => dispatchCommand('git:checkout_new_branch', {
+            fromBranch: remoteBranch,
+            toBranch: localBranch
+          })
         }, {
           name: 'Delete',
           command: () => { this.props.gitDeleteBranch(remoteBranch) }
