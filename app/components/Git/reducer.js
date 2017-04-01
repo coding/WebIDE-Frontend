@@ -20,6 +20,9 @@ import {
   GIT_REBASE_STATE,
   GIT_COMMIT_DIFF,
   GIT_TAGS,
+  GIT_HISTORY,
+  GIT_HISTORY_CONTEXT_MENU_CLOSE,
+  GIT_HISTORY_CONTEXT_MENU_OPEN,
 } from './actions'
 
 const _state = {
@@ -49,6 +52,17 @@ const _state = {
     oldRef: null,
     filesMap: Map(),
     files: []
+  },
+  history: {
+    data: [],
+    page: 0,
+    size: 4,
+    isEnd: false,
+    contextMenu: {
+      isActive: false,
+      pos: { x: 0, y: 0 },
+      contextNode: null,
+    }
   }
 }
 
@@ -268,4 +282,38 @@ export default handleActions({
     state.commitDiff.filesMap = treeifyFiles(action.payload.files)
     return state
   },
+  [GIT_HISTORY]: (state, action) => {
+    state = _.cloneDeep(state)
+    let data = null
+    if (action.payload.reset) {
+      data = action.payload.res
+    } else {
+      data = state.history.data.concat(action.payload.res)
+    }
+    state.history = {
+      ...state.history,
+      data,
+      isEnd: action.payload.res.length < state.history.size
+    }
+    return state
+  },
+  [GIT_HISTORY_CONTEXT_MENU_OPEN]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.history = {
+      ...state.history,
+      contextMenu: action.payload
+    }
+    return state
+  },
+  [GIT_HISTORY_CONTEXT_MENU_CLOSE]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.history = {
+      ...state.history,
+      contextMenu: {
+        ...state.history.contextMenu,
+        isActive: false
+      }
+    }
+    return state
+  }
 }, _state)

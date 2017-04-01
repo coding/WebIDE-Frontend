@@ -76,7 +76,9 @@ request.diff = function (url, params, options = {}) {
     params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/vnd.coding.v2.diff+json',
+      ...(config.isPlatform && {
+        Accept: 'application/vnd.coding.v2.diff+json'
+      })
     },
     ...options,
   })
@@ -88,7 +90,9 @@ request.diffFilesList = function (url, params, options = {}) {
     params,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/vnd.coding.v2.diff-files-list+json',
+      ...(config.isPlatform && {
+        Accept: 'application/vnd.coding.v2.diff-files-list+json'
+      })
     },
     ...options,
   })

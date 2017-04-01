@@ -5,6 +5,8 @@ import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { showModal, addModal, dismissModal, updateModal } from '../Modal/actions'
 import { createAction } from 'redux-actions'
 
+import Clipboard from 'clipboard'
+
 export const GIT_STATUS = 'GIT_STATUS'
 export const updateStatus = createAction(GIT_STATUS)
 
@@ -463,10 +465,30 @@ export function switchVersion () {
 
 export const GIT_HISTORY = 'GIT_HISTORY'
 export const updateHistory = createAction(GIT_HISTORY)
-export const fetchHistory = ({ path, page, size }) => {
+export const fetchHistory = ({ path, page, size, reset }) => {
   return (dispatch) => {
     api.gitHistory({ path, page, size }).then(res => {
-      dispatch(updateHistory(res))
+      dispatch(updateHistory({ reset, res }))
     })
   }
 }
+
+export const GIT_HISTORY_CONTEXT_MENU_OPEN = 'GIT_HISTORY_CONTEXT_MENU_OPEN'
+export const openContextMenu = createAction(GIT_HISTORY_CONTEXT_MENU_OPEN, (e, node) => {
+  e.stopPropagation()
+  e.preventDefault()
+  setTimeout(()=>{
+    new Clipboard('.clipboard', {
+      text: (trigger) => node.name
+    })
+  }, 0)
+
+  return {
+    isActive: true,
+    pos: { x: e.clientX, y: e.clientY },
+    contextNode: node,
+  }
+})
+
+export const GIT_HISTORY_CONTEXT_MENU_CLOSE = 'GIT_HISTORY_CONTEXT_MENU_CLOSE'
+export const closeContextMenu = createAction(GIT_HISTORY_CONTEXT_MENU_CLOSE)
