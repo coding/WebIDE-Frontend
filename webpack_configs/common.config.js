@@ -14,8 +14,6 @@ module.exports = function (options={}) {
     staticDir = 'rs',
   } = options
 
-let publicPath = path.join('/', staticDir)
-if (!publicPath.endsWith('/')) publicPath + '/'
 return {
   entry: {
     main: [path.join(rootDir, 'app')],
@@ -23,7 +21,7 @@ return {
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
-    publicPath,
+    publicPath: path.join('/', staticDir, '/'), // publicPath should end with '/'
     path: path.join(rootDir, 'build', staticDir),
     filename: '[name].[hash].js'
   },
