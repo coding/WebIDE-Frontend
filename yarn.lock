@@ -1979,15 +1979,15 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint-config-airbnb-base@^3.0.0:
-  version "3.0.1"
-  resolved "http://registry.npm.taobao.org/eslint-config-airbnb-base/download/eslint-config-airbnb-base-3.0.1.tgz#b777e01f65e946933442b499fc8518aa251a6530"
+eslint-config-airbnb-base@^11.1.0:
+  version "11.1.3"
+  resolved "http://registry.npm.taobao.org/eslint-config-airbnb-base/download/eslint-config-airbnb-base-11.1.3.tgz#0e8db71514fa36b977fbcf977c01edcf863e0cf0"
 
-eslint-config-airbnb@^9.0.1:
-  version "9.0.1"
-  resolved "http://registry.npm.taobao.org/eslint-config-airbnb/download/eslint-config-airbnb-9.0.1.tgz#6708170d5034b579d52913fe49dee2f7fec7d894"
+eslint-config-airbnb@^14.1.0:
+  version "14.1.0"
+  resolved "http://registry.npm.taobao.org/eslint-config-airbnb/download/eslint-config-airbnb-14.1.0.tgz#355d290040bbf8e00bf8b4b19f4b70cbe7c2317f"
   dependencies:
-    eslint-config-airbnb-base "^3.0.0"
+    eslint-config-airbnb-base "^11.1.0"
 
 eslint-import-resolver-node@^0.2.0:
   version "0.2.3"
@@ -4636,9 +4636,9 @@ sntp@1.x.x:
   dependencies:
     hoek "2.x.x"
 
-"socket.io-client-legacy@git+https://github.com/socketio/socket.io-client#0.9.17":
-  version "0.9.17"
-  resolved "git+https://github.com/socketio/socket.io-client#81089a2723770d5b32753485d1e5a160a72abab6"
+"socket.io-client-legacy@git+https://github.com/hackape/socket.io-client#0.9.18":
+  version "0.9.18"
+  resolved "git+https://github.com/hackape/socket.io-client#ad7183a052591baee0c8022fceaed9b371889224"
   dependencies:
     active-x-obfuscator "0.0.1"
     uglify-js "1.2.5"
