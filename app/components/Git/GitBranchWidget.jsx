@@ -76,10 +76,11 @@ export default class GitBranchWidget extends Component {
         name: 'Checkout as new branch',
         command: () => dispatchCommand('git:checkout_new_branch', {
           fromBranch: branch
-        }) }, {
-          name: 'Delete',
-          command: () => { this.props.gitDeleteBranch(branch) }
-        }]
+        }) 
+      }, {
+        name: 'Delete',
+        command: () => { this.props.gitDeleteBranch(branch) }
+      }]
     }))
 
     const remoteBranchItems = remoteBranches.map(remoteBranch => {
