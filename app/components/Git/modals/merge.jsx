@@ -33,7 +33,7 @@ class GitMergeView extends Component {
                   onChange={e => this.setState({ branchToMerge: e.target.value })}
                   value={this.state.branchToMerge}
                 >
-                  <option disabled selected value> -- select an branch -- </option>
+                  <option disabled selected value> -- select a branch -- </option>
                   {allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>)}
                 </select>
               </label>
