@@ -2,10 +2,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
+import { TablessCodeMirrorEditor } from '../CodeMirrorEditor'
 import { dragStart } from '../DragAndDrop/actions';
 import * as TabActions from './actions';
 
-const _TabContent = ({tabIds, defaultContentClass}) => {
+const _TabContent = ({tabIds, tabGroupId, defaultContentClass}) => {
   let tabContentItems = tabIds.map(tabId =>
     <TabContentItem key={tabId} tabId={tabId} defaultContentClass={defaultContentClass} />
   )
@@ -14,7 +15,11 @@ const _TabContent = ({tabIds, defaultContentClass}) => {
       <ul className='tab-content-container'>
       {tabContentItems.length
         ? tabContentItems
-        : <div className='tab-content-placeholder-monkey'></div>
+        : (
+          <div className='tab-content-item active'>
+            <TablessCodeMirrorEditor tabGroupId={tabGroupId} />
+          </div>
+        )
       }
       </ul>
     </div>

@@ -1,7 +1,7 @@
 /* @flow weak */
 import { handleActions } from 'redux-actions'
 import { OrderedMap } from 'immutable'
-import { changeTheme, changeCodeTheme } from '../../utils/themeManager'
+import { changeTheme } from '../../utils/themeManager'
 import {
   SETTING_ACTIVATE_TAB,
   SETTING_UPDATE_FIELD,
@@ -120,7 +120,6 @@ export default handleActions({
   [SETTING_UPDATE_FIELD]: (state, action) => {
     const { domain, fieldName, value } = action.payload
     if (fieldName === 'UI Theme') { changeTheme(value); }
-    if (fieldName === 'Syntax Theme') { changeCodeTheme(value); }
     return {
       ...state,
       views: { ...state.views,

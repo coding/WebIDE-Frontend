@@ -19,15 +19,5 @@ export const changeTheme = (next) => {
         window.themes[next].use()
     }
 }
-export const changeCodeTheme = (next) => {
-    const nextTheme = next.split('/').pop()
-    const currentThemeValue = getState().SettingState.views.tabs.THEME.items[1].value
-    const editors = window.ide.editors
-    if (Object.keys(editors).length && nextTheme !== currentThemeValue) {
-        Object.keys(editors).forEach(editor => {
-            editors[editor].setOption('theme', nextTheme)
-        });
-    }
-}
 
 export default initTheme

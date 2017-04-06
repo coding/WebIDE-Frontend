@@ -59,7 +59,11 @@ class _TabBar extends Component {
   render () {
     const { tabIds, tabGroupId, isRootPane, addTab, closePane, isDraggedOver } = this.props
     return (
-      <div className='tab-bar' id={`tab_bar_${tabGroupId}`} data-droppable='TABBAR'>
+      <div id={`tab_bar_${tabGroupId}`}
+        className='tab-bar'
+        data-droppable='TABBAR'
+        onDoubleClick={ addTab }
+      >
         <ul className='tab-labels'>
           { tabIds && tabIds.map(tabId =>
             <TabLabel tabId={tabId} key={tabId} />
