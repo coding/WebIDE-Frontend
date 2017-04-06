@@ -7,6 +7,12 @@ import * as PaneActions from '../Pane/actions'
 import * as TabActions from '../Tab/actions'
 import * as FileTreeActions from '../FileTree/actions'
 
+// Corner case: file dragging doesn't trigger 'dragend' natively
+// so need to patch for this behavior
+function isFileDragEnd (e) {
+  return (e.screenX === 0 && e.screenY === 0 && e.dataTransfer.files.length)
+}
+
 @connect(state => state.DragAndDrop)
 class DragAndDrop extends Component {
 
@@ -41,13 +47,13 @@ class DragAndDrop extends Component {
     window.ondragend = this.onDragEnd
     window.ondragleave = this.onDragLeave
   }
+
   onDragLeave = (e) => {
     e.preventDefault()
-    const {source = {}, dispatch} = this.props
-    if (source.type && source.type === 'EXTERNAL_FILE') {
-      setTimeout(() => dispatch(dragEnd()), 1000)
-    }
+    const { source = {}, dispatch } = this.props
+    if (isFileDragEnd(e)) dispatch(dragEnd())
   }
+
   onDragOver = (e) => {
     e.preventDefault()
     const {source, droppables = [], dispatch, meta} = this.props
@@ -69,9 +75,9 @@ class DragAndDrop extends Component {
       }
     }, null)
     if (!target) return
-    // if (!prevTarget || target.id !== prevTarget.id) {
+    if (!prevTarget || target.id !== prevTarget.id) {
       dispatch(updateDragOverTarget({id: target.id, type: target.type }))
-    // }
+    }
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
         return this.dragTabOverPane(e, target)

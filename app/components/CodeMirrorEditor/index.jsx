@@ -43,7 +43,7 @@ class CodeMirrorEditor extends Component {
     // 2. prevent default codemirror dragover handler, so the drag-to-split feature can work
     //    but the default handler that open a file on drop is actually pretty neat,
     //    should make our drag feature compatible with it later
-    editor.on('dragover', e => e.preventDefault())
+    editor.on('dragover', (a, e) => e.preventDefault())
 
     if (tab.content) {
       const body = tab.content.body;
