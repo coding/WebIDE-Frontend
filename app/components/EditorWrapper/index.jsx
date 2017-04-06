@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react'
-import MarkdownEditor from '../MarkdownEditor'
-import ImageEditor from '../ImageEditor'
 import CodeMirrorEditor from '../CodeMirrorEditor'
-import UnknownEditor from '../UnknownEditor'
+import MarkdownEditor from '../MarkdownEditor'
+import ImageEditor from './Editors/ImageEditor'
+import UnknownEditor from './Editors/UnknownEditor'
+import WelcomeEditor from './Editors/WelcomeEditor'
 import * as Tab from '../Tab'
 
 const editors = {

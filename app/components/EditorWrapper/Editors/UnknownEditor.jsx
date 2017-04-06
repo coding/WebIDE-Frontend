@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import filesize from 'filesize'
-import config from '../../config'
+import config from 'config'
 
 class UnknownEditor extends Component {
   constructor (props) {

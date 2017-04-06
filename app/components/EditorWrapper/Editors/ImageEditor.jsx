@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import config from '../../config'
+import config from 'config'
 import { request } from 'utils'
 
 const previewPic = 'https://dn-coding-net-production-static.qbox.me/static/5d487aa5c207cf1ca5a36524acb953f1.gif'
