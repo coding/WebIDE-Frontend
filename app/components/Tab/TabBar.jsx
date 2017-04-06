@@ -117,6 +117,7 @@ const _TabLabel = ({tab, isActive, isDraggedOver, removeTab, activateTab, dragSt
       onDragStart={e => dragStart({sourceType: 'TAB', sourceId: tab.id})}
     >
       {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
+      {tab.icon ? <div className={tab.icon}></div>: null}
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>
