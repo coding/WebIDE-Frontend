@@ -12,6 +12,12 @@ export const createTabInGroup = createAction(TAB_CREATE_IN_GROUP, (groupId, tab)
 export const TAB_REMOVE = 'TAB_REMOVE'
 export const removeTab = createAction(TAB_REMOVE, tabId => tabId)
 
+export const TAB_REMOVE_OTHER = 'TAB_REMOVE_OTHER'
+export const removeOtherTab = createAction(TAB_REMOVE_OTHER, tabId => tabId)
+
+export const TAB_REMOVE_ALL = 'TAB_REMOVE_ALL'
+export const removeAllTab = createAction(TAB_REMOVE_ALL, tabId => tabId)
+
 export const TAB_ACTIVATE = 'TAB_ACTIVATE'
 export const activateTab = createAction(TAB_ACTIVATE, tabId => tabId)
 
@@ -62,3 +68,18 @@ export const TAB_INSERT_AT = 'TAB_INSERT_AT'
 export const insertTabAt = createAction(TAB_INSERT_AT,
   (tabId, beforeTabId) => ({tabId, beforeTabId})
 )
+
+export const TAB_CONTEXT_MENU_OPEN = 'TAB_CONTEXT_MENU_OPEN'
+export const openContextMenu = createAction(TAB_CONTEXT_MENU_OPEN, (e, node) => {
+  e.stopPropagation()
+  e.preventDefault()
+
+  return {
+    isActive: true,
+    pos: { x: e.clientX, y: e.clientY },
+    contextNode: node,
+  }
+})
+
+export const TAB_CONTEXT_MENU_CLOSE = 'TAB_CONTEXT_MENU_CLOSE'
+export const closeContextMenu = createAction(TAB_CONTEXT_MENU_CLOSE)
