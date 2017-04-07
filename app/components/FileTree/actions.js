@@ -34,6 +34,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
               type: 'editor',
               title: node.name,
               path: node.path,
+              icon: 'fa fa-file-o',
               content: {
                 body: data.content,
                 // path: node.path,
@@ -48,6 +49,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
           type: 'editor',
           title: node.name,
           path: node.path,
+          icon: 'fa fa-file-o',
           contentType: node.contentType,
           size: node.size
         }))

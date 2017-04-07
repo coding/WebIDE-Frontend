@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import Menu from '../Menu'
-import {setContext} from '../../commands'
+import {setContext} from '../../commands/dispatchCommand'
 
 const ContextMenu = (props) => {
   const {items, context, isActive, pos, deactivate} = props
