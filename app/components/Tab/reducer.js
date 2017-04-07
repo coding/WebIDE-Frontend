@@ -14,7 +14,11 @@ import {
   TAB_UPDATE_BY_PATH,
   TAB_MOVE_TO_GROUP,
   TAB_MOVE_TO_PANE,
-  TAB_INSERT_AT
+  TAB_INSERT_AT,
+  TAB_CONTEXT_MENU_OPEN,
+  TAB_CONTEXT_MENU_CLOSE,
+  TAB_REMOVE_OTHER,
+  TAB_REMOVE_ALL
 } from './actions'
 
 import {
@@ -57,7 +61,12 @@ import {
 const defaultState = {
   tabGroups: {},
   tabs: {},
-  activeTabGroupId: ''
+  activeTabGroupId: '',
+  contextMenu: {
+    isActive: false,
+    pos: { x: 0, y: 0 },
+    contextNode: null,
+  }
 }
 
 const Tab = Model({
@@ -110,6 +119,36 @@ const _removeTab = (state, tab) => {
       }
     },
     tabs: {$delete: tab.id}
+  })
+}
+
+const _removeOtherTab = (state, tab) => {
+  let nextState = state
+  nextState = _activateTab(state, tab)
+  const tabGroup = state.tabGroups[tab.tabGroupId]
+  const tabIdsToBeDeleted = _.without(tabGroup.tabIds, tab.id)
+  const nextTabs = _.omit(state.tabs, tabIdsToBeDeleted)
+  return update(nextState, {
+    tabGroups: {
+      [tab.tabGroupId]: {
+        tabIds: { $set: [tab.id] }
+      }
+    },
+    tabs: { $set: nextTabs }
+  })
+}
+
+const _removeAllTab = (state, tab) => {
+  const tabGroup = state.tabGroups[tab.tabGroupId]
+  const tabIdsToBeDeleted = tabGroup.tabIds
+  const nextTabs = _.omit(state.tabs, tabIdsToBeDeleted)
+  return update(state, {
+    tabGroups: {
+      [tab.tabGroupId]: {
+        tabIds: { $set: [] }
+      }
+    },
+    tabs: { $set: nextTabs }
   })
 }
 
@@ -193,6 +232,16 @@ const TabReducer = handleActions({
     return _removeTab(state, tab)
   },
 
+  [TAB_REMOVE_OTHER]: (state, action) => {
+    const tab = state.tabs[action.payload]
+    return _removeOtherTab(state, tab)
+  },
+
+  [TAB_REMOVE_ALL]: (state, action) => {
+    const tab = state.tabs[action.payload]
+    return _removeAllTab(state, tab)
+  },
+
   [TAB_ACTIVATE]: (state, action) => {
     const tab = state.tabs[action.payload]
     let nextState = _activateTab(state, tab)
@@ -261,7 +310,21 @@ const TabReducer = handleActions({
     const { targetTabGroupId, sourceTabGroupId } = action.payload
     if (!targetTabGroupId) return update(state, {tabGroups: {$delete: sourceTabGroupId}})
     return _mergeTabGroups(state, targetTabGroupId, sourceTabGroupId)
-  }
+  },
+
+  [TAB_CONTEXT_MENU_OPEN]: (state, action) => (
+    update(state, {
+      contextMenu: { $merge: action.payload }
+    })
+  ),
+
+  [TAB_CONTEXT_MENU_CLOSE]: (state, action) => (
+    update(state, {
+      contextMenu: { $merge: {
+        isActive: false
+      } }
+    })
+  ),
 }, defaultState)
 
 

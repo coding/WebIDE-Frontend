@@ -51,18 +51,23 @@ $tab-control-width = $tab-height*0.5;
   }
 
   .tab-add-btn {
+    $tab-add-btn-size = 14px;
+    box-sizing: content-box;
     text-align: center;
     margin-left: 8px;
     flex-shrink: 0;
-    line-height: 1.2em;
-    width: 1.2em;
-    height: 1.2em;
-    font-weight: bold;
+    width: $tab-add-btn-size;
+    height: $tab-add-btn-size;
     cursor: pointer;
     color: $text-color-subtle;
     opacity: 0.5;
     &:hover {
       opacity: 1;
+    }
+    svg {
+      width: $tab-add-btn-size;
+      height: $tab-add-btn-size;
+      fill: currentColor;
     }
   }
 }
