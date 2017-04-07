@@ -19,7 +19,7 @@ const TextCell = ({rowIndex, data, columnKey, selectedRow, ...props}) => (
 const actionOptions = [
   'PICK',
   'EDIT',
-  // 'SKIP',
+  'SKIP',
   'SQUASH',
   'REWORD',
   'FIXUP',
@@ -179,7 +179,7 @@ class GitRebasePrepare extends Component {
           actionOptions.map((item, i) => {
             let name, value
             name = value = item
-            if (rowIndex === 0 && (i === 2 || i === 4)) {
+            if (rowIndex === 0 && (i === 3 || i === 5)) {
               return null
             }
             return (
@@ -224,6 +224,7 @@ class GitRebasePrepare extends Component {
     let rebaseTodoLines = this.state.rebaseTodoLines
     let todos = []
     rebaseTodoLines.map((item, i) => {
+      if (item.action === 'SKIP') return
       let todo = {}
       todo.action = item.action
       todo.commit = item.commit
