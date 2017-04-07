@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import _ from 'lodash'
+import ExtensionList from './extensionList.js';
+
 
 import * as SettingActions from './actions'
 
@@ -94,6 +96,7 @@ const EditorSettings = (props) => (
       )}
     </div>
   )
+
 const ThemeSettings = (props) => (
     <div>
       <h2 className='settings-content-header'>Theme Settings</h2>
@@ -106,6 +109,14 @@ const ThemeSettings = (props) => (
     </div>
   )
 
+const ExtensionSettings = () => (
+    <div>
+      <h2 className='settings-content-header'>Extension Settings</h2>
+      <ExtensionList />
+    </div>
+)
+
+
 const SettingsContent = ({ content }) => {
   switch (content.id) {
     case 'GENERAL':
@@ -115,6 +126,8 @@ const SettingsContent = ({ content }) => {
       return <EditorSettings {...content} />
     case 'THEME':
       return <ThemeSettings {...content} />
+    case 'EXTENSIONS':
+      return <ExtensionSettings />
   }
 }
 
