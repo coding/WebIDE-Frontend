@@ -225,7 +225,6 @@ class GitRebasePrepare extends Component {
     let todos = []
     rebaseTodoLines.map((item, i) => {
       if (item.action === 'SKIP') return
-      console.log('item.action', item.action)
       let todo = {}
       todo.action = item.action
       todo.commit = item.commit
