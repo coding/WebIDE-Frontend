@@ -4,8 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import _ from 'lodash'
-import ExtensionList from './extensionList.js';
-
+import ExtensionList from '../Package/extensionList.js';
 
 import * as SettingActions from './actions'
 

@@ -18,9 +18,6 @@ export default {
   'global:show_settings': c => {
     $d(Modal.showModal({type: 'Settings', position: 'center'}))
   },
-  'global:show_packages': c => {
-    $d(Modal.showModal({type: 'Packages', position: 'center'}))
-  },
   'global:show_branches': () => {
     getComponentByName('GitBranchWidget').openGitBranches()
   },
