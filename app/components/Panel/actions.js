@@ -29,3 +29,10 @@ export const activateSidePanelView = (payload) => (dispatch) => {
   emitter.emit(E.PANEL_RESIZED)
   dispatch(_activateSidePanelView(payload))
 }
+
+export const PANEL_TOGGLE_VIEW = 'PANEL_TOGGLE_VIEW'
+const _toggleSidePanelView = createAction(PANEL_TOGGLE_VIEW)
+export const toggleSidePanelView = (payload) => (dispatch) => {
+  emitter.emit(E.PANEL_RESIZED)
+  dispatch(_toggleSidePanelView(payload))
+}

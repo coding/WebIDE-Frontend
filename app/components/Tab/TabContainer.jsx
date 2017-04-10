@@ -37,7 +37,8 @@ class TabContainer extends Component {
       <div className='tab-container'>
         <TabBar tabIds={tabGroup.tabIds}
           tabGroupId={this.state.tabGroupId}
-          containingPaneId={this.props.containingPaneId} />
+          containingPaneId={this.props.containingPaneId}
+          defaultContentType={this.props.defaultContentType} />
         <TabContent tabIds={tabGroup.tabIds} {...this.props} />
       </div>
     )

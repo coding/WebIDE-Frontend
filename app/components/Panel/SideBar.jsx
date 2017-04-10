@@ -2,7 +2,7 @@
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import { activateExtenstion } from '../Package/actions'
-import { activateSidePanelView } from './actions'
+import { toggleSidePanelView } from './actions'
 
 /* shape of label
 label = {
@@ -59,5 +59,5 @@ export const SideBar2 = connect((state, { side }) => {
   const { labels, activeViewId } = sidePanelViews
   return { side, labels, activeViewId }
 }, dispatch => ({
-  activateView: viewId => dispatch(activateSidePanelView(viewId))
+  activateView: viewId => dispatch(toggleSidePanelView(viewId))
 }))(_SideBar)

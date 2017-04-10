@@ -51,7 +51,7 @@ const PanelContent = ({ panel }) => {
       return (
         <SidePanelContainer side='bottom'>
           <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>
-            <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
+            <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' tabGroupId='tab_group_terminal' />
           </SidePanelView>
 
           <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }} >

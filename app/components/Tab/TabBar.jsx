@@ -21,7 +21,10 @@ const items = [
     name: 'Close All',
     icon: '',
     command: 'tab:close_all'
-  }, dividItem,
+  }
+]
+const itemsSplit = [
+  dividItem,
   {
     name: 'Vertical Split',
     icon: '',
@@ -83,12 +86,18 @@ class _TabBar extends Component {
   }
 
   render () {
-    const { tabIds, tabGroupId, isRootPane, addTab, closePane, isDraggedOver, contextMenu, closeContextMenu } = this.props
+    const { tabIds, tabGroupId, isRootPane, addTab, closePane, isDraggedOver, contextMenu, closeContextMenu, defaultContentType } = this.props
+    let menuItems
+    if (defaultContentType === 'terminal') {
+      menuItems = items
+    } else {
+      menuItems = items.concat(itemsSplit)
+    }
     return (
       <div className='tab-bar' id={`tab_bar_${tabGroupId}`} data-droppable='TABBAR'>
         <ul className='tab-labels'>
           { tabIds && tabIds.map(tabId =>
-            <TabLabel tabId={tabId} key={tabId} />
+            <TabLabel tabId={tabId} key={tabId} tabGroupId={tabGroupId} />
           ) }
         </ul>
         {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
@@ -105,8 +114,8 @@ class _TabBar extends Component {
           {this.renderDropdownMenu()}
         </div>
         <ContextMenu
-          items={items}
-          isActive={contextMenu.isActive}
+          items={menuItems}
+          isActive={contextMenu.isActive && contextMenu.tabGroupId === tabGroupId}
           pos={contextMenu.pos}
           context={contextMenu.contextNode}
           deactivate={closeContextMenu}
@@ -127,13 +136,12 @@ const TabBar = connect((state, { tabIds, tabGroupId, containingPaneId }) => ({
   activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),
   addTab: () => dispatch(TabActions.createTabInGroup(tabGroupId)),
   closePane: () => dispatch(PaneActions.closePane(containingPaneId)),
-  openContextMenu: (e, node) => dispatch(TabActions.openContextMenu(e, node)),
   closeContextMenu: () => dispatch(TabActions.closeContextMenu())
 })
 )(_TabBar)
 
 
-const _TabLabel = ({tab, isActive, isDraggedOver, removeTab, activateTab, dragStart, openContextMenu}) => {
+const _TabLabel = ({tab, tabGroupId, isActive, isDraggedOver, removeTab, activateTab, dragStart, openContextMenu}) => {
   const possibleStatus = {
     'modified': '*',
     'warning': '!',
@@ -152,7 +160,7 @@ const _TabLabel = ({tab, isActive, isDraggedOver, removeTab, activateTab, dragSt
       onClick={e => activateTab(tab.id)}
       draggable='true'
       onDragStart={e => dragStart({sourceType: 'TAB', sourceId: tab.id})}
-      onContextMenu={e => openContextMenu(e, tab)}
+      onContextMenu={e => openContextMenu(e, tab, tabGroupId)}
     >
       {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
       {tab.icon ? <div className={tab.icon}></div>: null}
@@ -167,6 +175,7 @@ const _TabLabel = ({tab, isActive, isDraggedOver, removeTab, activateTab, dragSt
 
 _TabLabel.propTypes = {
   tab: PropTypes.object,
+  tabGroupId: PropTypes.string,
   isDraggedOver: PropTypes.bool,
   removeTab: PropTypes.func,
   activateTab: PropTypes.func,
@@ -186,8 +195,7 @@ const TabLabel = connect((state, { tabId }) => {
   removeTab: (tabId) => dispatch(TabActions.removeTab(tabId)),
   activateTab: (tabId) => dispatch(TabActions.activateTab(tabId)),
   dragStart: (dragEventObj) => dispatch(dragStart(dragEventObj)),
-  openContextMenu: (e, node) => dispatch(TabActions.openContextMenu(e, node)),
-  closeContextMenu: () => dispatch(TabActions.closeContextMenu())
+  openContextMenu: (e, node, tabGroupId) => dispatch(TabActions.openContextMenu(e, node, tabGroupId)),
 })
 )(_TabLabel)
 

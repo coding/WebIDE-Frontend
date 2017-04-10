@@ -70,7 +70,7 @@ export const insertTabAt = createAction(TAB_INSERT_AT,
 )
 
 export const TAB_CONTEXT_MENU_OPEN = 'TAB_CONTEXT_MENU_OPEN'
-export const openContextMenu = createAction(TAB_CONTEXT_MENU_OPEN, (e, node) => {
+export const openContextMenu = createAction(TAB_CONTEXT_MENU_OPEN, (e, node, tabGroupId) => {
   e.stopPropagation()
   e.preventDefault()
 
@@ -78,6 +78,7 @@ export const openContextMenu = createAction(TAB_CONTEXT_MENU_OPEN, (e, node) => 
     isActive: true,
     pos: { x: e.clientX, y: e.clientY },
     contextNode: node,
+    tabGroupId
   }
 })
 
