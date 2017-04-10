@@ -60,20 +60,37 @@ export function checkoutBranch (branch, remoteBranch) {
       } else if (data.status === 'CONFLICTS') {
         dispatch(notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: 'CONFLICTS detected',
+          message: 'Checkout has not completed because of checkout conflicts',
         }))
-        api.gitStatus().then(({files, clean}) => {
-          files =  _.filter(files, (file) => {
-            return file.status === 'CONFLICTION'
-          })
-          dispatch(updateStatus({files, isClean: clean}))
-        }).then(() =>
-          dispatch(showModal('GitResolveConflicts'))
-        )
+        // api.gitStatus().then(({files, clean}) => {
+        //   files =  _.filter(files, (file) => {
+        //     return file.status === 'CONFLICTION'
+        //   })
+        //   dispatch(updateStatus({files, isClean: clean}))
+        // }).then(() =>
+        //   dispatch(showModal('GitResolveConflicts'))
+        // )
+        const files = []
+        data.conflictList.map((file) => {
+          files.push({name: file, status: 'CONFLICTION'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal('GitResolveConflicts'))
+      } else if (data.status === 'NONDELETED') {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: 'Checkout has completed, but some files could not be deleted',
+        }))
+        const files = []
+        data.undeletedList.map((file) => {
+          files.push({name: file, status: 'ADDED'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal({type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true}))
       } else {
         dispatch(notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: `Checkout failed, status: ${data.status}`,
+          message: `An Exception occurred during checkout, status: ${data.status}`,
         }))
       }
     })
