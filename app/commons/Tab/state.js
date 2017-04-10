@@ -41,6 +41,10 @@ class Tab {
     return this.tabGroup.activeTab === this
   }
 
+  @action activate () {
+    this.tabGroup.activeTabId = this.id
+  }
+
   @action destroy () {
     entities.tabs.delete(this.id)
   }
@@ -75,6 +79,10 @@ class TabGroup {
     tab.index = this.tabs.length
     tab.tabGroupId = this.id
     entities.tabs.set(tab.id, tab)
+  }
+
+  @action activateTab (tab) {
+    this.activeTabId = tab.id
   }
 
   @action removeTab (tab) {

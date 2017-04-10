@@ -4,32 +4,6 @@ import TabLabel from './TabLabel'
 import Menu from 'components/Menu'
 import ContextMenu from 'components/ContextMenu'
 
-const divideItem = { name: '-' }
-const contextMenuItems = [
-  {
-    name: 'Close',
-    icon: '',
-    command: 'tab:close'
-  }, {
-    name: 'Close Others',
-    icon: '',
-    command: 'tab:close_other'
-  }, {
-    name: 'Close All',
-    icon: '',
-    command: 'tab:close_all'
-  }, divideItem,
-  {
-    name: 'Vertical Split',
-    icon: '',
-    command: 'tab:split_v'
-  }, {
-    name: 'Horizontal Split',
-    icon: '',
-    command: 'tab:split_h'
-  }
-]
-
 class TabBar extends Component {
   constructor (props) {
     super(props)
@@ -43,15 +17,16 @@ class TabBar extends Component {
 
   static propTypes = {
     tabGroup: PropTypes.object,
+    contextMenuItems: PropTypes.array.isRequired,
     isDraggedOver: PropTypes.bool,
     addTab: PropTypes.func,
-    activateTab: PropTypes.func,
     closePane: PropTypes.func,
   }
 
   render () {
     const {
       tabGroup,
+      contextMenuItems,
       addTab,
       closePane,
       isDraggedOver
@@ -122,7 +97,7 @@ class TabBar extends Component {
     const tabs = this.props.tabGroup.tabs
     const tabLabelsItem = tabs && tabs.map(tab => ({
       name: tab.title || 'untitled',
-      command: e => this.props.activateTab(tab.id)
+      command: e => tab.activate(),
     }))
 
     if (tabLabelsItem.length) {
