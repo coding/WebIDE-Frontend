@@ -28,12 +28,12 @@ class GitMergeView extends Component {
             </div>
             <div className='form-group'>
               <label className='col-sm-3 control-label'>Branch to merge</label>
-              <label className='col-sm-3'>
+              <label className='col-sm-5'>
                 <select className='form-control'
                   onChange={e => this.setState({ branchToMerge: e.target.value })}
                   value={this.state.branchToMerge}
                 >
-                  <option disabled selected value> -- select a branch -- </option>
+                  <option selected value=''> -- select a branch -- </option>
                   {allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>)}
                 </select>
               </label>
