@@ -16,7 +16,8 @@
     "start-platform": "RUN_MODE=platform webpack-dev-server --port=8060 --progress --colors",
     "start": "webpack-dev-server --progress --colors",
     "clean": "rm -rf build",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --colors",
+    "build": "npm run clean && cross-env NODE_ENV=production webpack --progress --colors && npm run after-build",
+    "after-build": "node cdn.js",
     "lint": "eslint app",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
@@ -75,6 +76,7 @@
     "markdown": "^0.5.0",
     "moment": "^2.18.1",
     "octicons": "^4.3.0",
+    "qiniu": "^6.1.13",
     "qs": "^6.4.0",
     "react": "^15.3.0",
     "react-dom": "^15.3.1",

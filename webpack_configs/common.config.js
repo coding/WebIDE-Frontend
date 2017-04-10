@@ -14,6 +14,8 @@ module.exports = function (options={}) {
     staticDir = 'rs',
   } = options
 
+  const publicPath = process.env.QINIU_BUCKET ? // publicPath should end with '/'
+    `${process.env.QINIU_SERVER}/` : path.join('/', staticDir, '/');
 return {
   entry: {
     main: [path.join(rootDir, 'app')],
@@ -21,7 +23,7 @@ return {
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
-    publicPath: path.join('/', staticDir, '/'), // publicPath should end with '/'
+    publicPath,
     path: path.join(rootDir, 'build', staticDir),
     filename: '[name].[hash].js'
   },
