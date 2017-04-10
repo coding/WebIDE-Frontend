@@ -28,8 +28,10 @@ return {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     alias: {
-      'utils': path.join(rootDir, 'app/utils/index.js'),
-      'config': path.join(rootDir, 'app/config.js')
+      'utils': path.join(rootDir, 'app/utils'),
+      'config': path.join(rootDir, 'app/config.js'),
+      'commons': path.join(rootDir, 'app/commons'),
+      'components': path.join(rootDir, 'app/components'),
     }
   },
   resolveLoader: {
