@@ -9,6 +9,7 @@ import {
   PANEL_TOGGLE_LAYOUT,
   PANEL_REGISTER_VIEW,
   PANEL_ACTIVATE_VIEW,
+  PANEL_TOGGLE_VIEW,
 } from './actions'
 
 import {
@@ -187,6 +188,23 @@ export default handleActions({
   [PANEL_ACTIVATE_VIEW]: (state, { payload: viewId }) => {
     const side = viewId.split('_')[0]
     const activeViewId = state.sidePanelViews[side].activeViewId
+    const targetPanel = getPanelByRef(state, `PANEL_${side.toUpperCase()}`)
+
+    return update(state, {
+      panels: {
+        [targetPanel.id]: { hide: { $set: false } }
+      },
+      sidePanelViews: {
+        [side]: {
+          activeViewId: { $set: viewId }
+        }
+      }
+    })
+  }, 
+
+  [PANEL_TOGGLE_VIEW]: (state, { payload: viewId }) => {
+    const side = viewId.split('_')[0]
+    const activeViewId = state.sidePanelViews[side].activeViewId
     if (activeViewId === viewId) viewId = ''
 
     const shouldHidePanel = viewId ? false : true
@@ -202,5 +220,5 @@ export default handleActions({
         }
       }
     })
-  }
+  }, 
 }, defaultState)
