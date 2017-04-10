@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { extendObservable, observable, computed, action, asMap } from 'mobx'
+import { mapEntityFactory } from 'utils/decorators'
 
 function TabScope () {
 
@@ -14,14 +15,7 @@ const entities = {
   },
 }
 
-const mapEntity = (entityName) => (fn) => {
-  return function (entityId) {
-    const entity = (typeof entityId === 'string')
-      ? entities[entityName].get(entityId)
-      : entityId
-    return fn(entity)
-  }
-}
+const mapEntity = mapEntityFactory(entities)
 
 class Tab {
   constructor (config) {
@@ -74,6 +68,7 @@ class TabGroup {
     return _.without(entities.tabGroups.values(), this)
   }
 
+  @mapEntity('tabs')
   @action addTab (tab) {
     if (tab.tabGroupId === this.id) return
     tab.index = this.tabs.length
@@ -81,10 +76,12 @@ class TabGroup {
     entities.tabs.set(tab.id, tab)
   }
 
+  @mapEntity('tabs')
   @action activateTab (tab) {
     this.activeTabId = tab.id
   }
 
+  @mapEntity('tabs')
   @action removeTab (tab) {
     tab.tabGroupId = null
   }
