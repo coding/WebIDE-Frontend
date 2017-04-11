@@ -1,0 +1,26 @@
+{   "moduleNameMapper": {
+        "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.jestfilemock.js",
+        "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+    },
+    "roots": [
+        "<rootDir>/app"
+    ],
+    "snapshotSerializers": ["<rootDir>/node_modules/enzyme-to-json/serializer"],
+    "collectCoverageFrom": ["app/*.js"],
+    "coveragePathIgnorePatterns": [],
+    "coverageThreshold": {
+        "global": {
+            "branches": 46.17,
+            "functions": 62.18,
+            "lines": 58.18,
+            "statements": 57.46
+        }
+    },
+    "globals": {
+        "__DEV__": true,
+        "__BACKEND_URL__": "",
+        "__PACKAGE_SERVER__": "",
+        "__WS_URL__": "",
+        "__RUN_MODE__": "mode"
+    }
+}
