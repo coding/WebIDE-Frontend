@@ -1,3 +1,10 @@
+safariHeightFix() {
+  // See: http://stackoverflow.com/questions/33636796
+  // in safari, `height: 100%` doesn't work in flexbox
+  // but `position: absolute` normalize it, dono why...
+  position: absolute;
+}
+
 .primary-panel-axis {
   flex-grow: 1;
   z-index: z(main-pane-view);
@@ -8,6 +15,22 @@
   width: 100%;
   display: flex;
   align-items: stretch;
+  safariHeightFix();
+}
+
+.panel, .pane {
+  height: 100%;
+  width: 100%;
+}
+
+.panel-container,
+.pane-container {
+  // not every .pane(l) need safariHeightFix, only children of .resizable do
+  &.resizable {
+    > .panel, > .pane {
+      safariHeightFix();
+    }
+  }
 }
 
 .panel-container, .pane-container {
@@ -34,11 +57,6 @@
     border-right: 0;
     border-left: 0;
   }
-}
-
-.panel, .pane {
-  height: 100%;
-  width: 100%;
 }
 
 .resize-bar {
