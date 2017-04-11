@@ -54,8 +54,37 @@ export const GIT_CHECKOUT = 'GIT_CHECKOUT'
 export function checkoutBranch (branch, remoteBranch) {
   return dispatch => {
     api.gitCheckout(branch, remoteBranch).then(data => {
-      dispatch(createAction(GIT_CHECKOUT)({ branch }))
-      dispatch(notify({message: `Check out ${branch}`}))
+      if (data.status === 'OK') {
+        dispatch(createAction(GIT_CHECKOUT)({ branch }))
+        dispatch(notify({message: `Check out ${branch}`}))
+      } else if (data.status === 'CONFLICTS') {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: 'Checkout has not completed because of checkout conflicts',
+        }))
+        const files = []
+        data.conflictList.map((file) => {
+          files.push({name: file, status: 'CONFLICTION'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal('GitResolveConflicts'))
+      } else if (data.status === 'NONDELETED') {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: 'Checkout has completed, but some files could not be deleted',
+        }))
+        const files = []
+        data.undeletedList.map((file) => {
+          files.push({name: file, status: 'ADDED'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal({type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true}))
+      } else {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: `An Exception occurred during checkout, status: ${data.status}`,
+        }))
+      }
     })
   }
 }
@@ -235,6 +264,9 @@ export function mergeBranch (branch) {
     if (res.status && res.status === 'CONFLICTING') {
       dispatch(dismissModal())
       api.gitStatus().then(({files, clean}) => {
+        files =  _.filter(files, (file) => {
+          return file.status == 'CONFLICTION'
+        })
         dispatch(updateStatus({files, isClean: clean}))
       }).then(() =>
         dispatch(showModal('GitResolveConflicts'))
