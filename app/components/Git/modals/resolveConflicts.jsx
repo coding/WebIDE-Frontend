@@ -39,7 +39,7 @@ class GitResolveConflictsView extends Component {
       <div>
         <div className='git-resolve-conflicts'>
           <h1 className='title'>
-            {this.props.title ? this.props.title : 'Conflicts List'}
+            {this.props.title || 'Conflicts List'}
           </h1>
           {gitContent}
           <div className='modal-ops'>
