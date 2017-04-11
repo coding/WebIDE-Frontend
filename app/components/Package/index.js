@@ -1,2 +1,2 @@
 /* @flow weak */
-export PackageControlView from './PackageControlView'
+export ExtensionList from './extensionList'
