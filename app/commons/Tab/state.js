@@ -69,11 +69,13 @@ class TabGroup {
   }
 
   @mapEntity('tabs')
-  @action addTab (tab) {
+  @action addTab (tab, dontActivate) {
+    if (!tab || !(tab instanceof Tab)) tab = new Tab()
     if (tab.tabGroupId === this.id) return
     tab.index = this.tabs.length
     tab.tabGroupId = this.id
-    entities.tabs.set(tab.id, tab)
+    if (!dontActivate) this.activeTabId = tab.id
+    return tab
   }
 
   @mapEntity('tabs')

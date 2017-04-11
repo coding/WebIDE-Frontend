@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
 import { observer } from 'mobx-react'
+import { defaultProps } from 'utils/decorators'
 
-const TabLabel = ({tab, isDraggedOver, removeTab, activateTab, dragStart, openContextMenu}) => {
+let TabLabel = ({tab, isDraggedOver, removeTab, activateTab, dragStart, openContextMenu}) => {
   return (
     <li className={cx('tab-label', {
       active: tab.isActive,
@@ -29,10 +30,21 @@ const TabLabel = ({tab, isDraggedOver, removeTab, activateTab, dragStart, openCo
 TabLabel.propTypes = {
   tab: PropTypes.object.isRequired,
   isDraggedOver: PropTypes.bool,
-  removeTab: PropTypes.func,
-  activateTab: PropTypes.func,
-  dragStart: PropTypes.func,
+  removeTab: PropTypes.func.isRequired,
+  activateTab: PropTypes.func.isRequired,
+  dragStart: PropTypes.func.isRequired,
   openContextMenu: PropTypes.func.isRequired,
 }
 
-export default observer(TabLabel)
+TabLabel = observer(TabLabel)
+
+TabLabel = defaultProps(props => ({
+  activateTab: function () {
+    props.tab.activate()
+  },
+  removeTab: function () {
+    props.tab.destroy()
+  },
+}))(TabLabel)
+
+export default TabLabel

@@ -3,8 +3,20 @@ import cx from 'classnames'
 import TabLabel from './TabLabel'
 import Menu from 'components/Menu'
 import ContextMenu from 'components/ContextMenu'
+import { defaultProps } from 'utils/decorators'
 
+@defaultProps(props => ({
+  addTab: () => props.tabGroup.addTab(),
+}))
 class TabBar extends Component {
+  static propTypes = {
+    tabGroup: PropTypes.object.isRequired,
+    contextMenuItems: PropTypes.array.isRequired,
+    isDraggedOver: PropTypes.bool,
+    addTab: PropTypes.func,
+    closePane: PropTypes.func,
+  };
+
   constructor (props) {
     super(props)
     this.state = {
@@ -15,22 +27,14 @@ class TabBar extends Component {
     }
   }
 
-  static propTypes = {
-    tabGroup: PropTypes.object,
-    contextMenuItems: PropTypes.array.isRequired,
-    isDraggedOver: PropTypes.bool,
-    addTab: PropTypes.func,
-    closePane: PropTypes.func,
-  }
-
   render () {
     const {
       tabGroup,
-      contextMenuItems,
       addTab,
-      closePane,
+      contextMenuItems,
       isDraggedOver
     } = this.props
+
     return (
       <div id={`tab_bar_${tabGroup.id}`}
         className='tab-bar'
