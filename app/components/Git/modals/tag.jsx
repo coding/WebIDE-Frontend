@@ -11,15 +11,24 @@ class GitTagView extends Component {
     this.state = {
       tagName: '',
       commit: 'HEAD',
-      message: ''
+      message: '',
+      force: false,
+      forceDisabled: true,
+      errMsg: ''
     }
+    this.handleForceChange = this.handleForceChange.bind(this)
+    this.handleTagNameChange = this.handleTagNameChange.bind(this)
   }
 
   render () {
-    const { branches: {current: currentBranch}, dispatch } = this.props
+    const { branches: {current: currentBranch}, dispatch, tags } = this.props
+    let checked = this.state.force
+    if (this.state.forceDisabled) {
+      checked = false
+    }
     return (
       <div>
-        <div className='git-reset-container'>
+        <div className='git-tag-container'>
           <h1>Tag</h1>
           <hr />
           <form className="form-horizontal">
@@ -33,12 +42,26 @@ class GitTagView extends Component {
                 <input type="text"
                   className="form-control"
                   value={this.state.tagName}
-                  onChange={e => this.setState({tagName: e.target.value})}
+                  onChange={this.handleTagNameChange}
                   onKeyDown={e => {if (e.keyCode === 13) {
                     e.preventDefault()
                     this.addTag()
                   }}}
                 />
+              </label>
+            </div>
+            <div className="form-group">
+              <label className="col-sm-3 control-label"></label>
+              <label className="col-sm-9">
+                <input type="checkbox"
+                  onChange={this.handleForceChange}
+                  checked={checked}
+                  disabled={this.state.forceDisabled}
+                />
+                Force
+                <span className='error-info'>
+                {this.state.errMsg}
+                </span>
               </label>
             </div>
             <div className="form-group">
@@ -71,7 +94,9 @@ class GitTagView extends Component {
             <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
             <button className='btn btn-primary'
               onClick={e => this.addTag()}
-              disabled={!this.state.commit || !this.state.tagName}>OK</button>
+              disabled={!this.state.commit || !this.state.tagName || !(
+                this.state.forceDisabled || (!this.state.forceDisabled && this.state.force)
+              )}>OK</button>
           </div>
         </div>
       </div>
@@ -84,7 +109,37 @@ class GitTagView extends Component {
       tagName: this.state.tagName,
       ref: this.state.commit,
       message: this.state.message,
+      force: this.state.force
     }))
+  }
+
+  handleTagNameChange (e) {
+    const tagName = e.target.value
+    let forceDisabled = true
+    let errMsg = ''
+    if (this.props.tags.indexOf(tagName) > -1) {
+      forceDisabled = false
+      errMsg = 'The tag with the same name exists.'
+    }
+    this.setState({
+      tagName,
+      forceDisabled,
+      errMsg
+    })
+  }
+
+  handleForceChange (e) {
+    e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
+    const force = e.target.checked
+    let errMsg = ''
+    if (!force) {
+      errMsg = 'The tag with the same name exists.'
+    }
+    this.setState({
+      force,
+      errMsg
+    })
   }
 }
 
