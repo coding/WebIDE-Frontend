@@ -6,8 +6,7 @@ import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
 import ExtensionPanelContent from './ExtensionPanelContent'
-import Terminal from '../Terminal'
-import TabContainer from '../Tab'
+import TerminalContainer from '../Terminal'
 import SideBar, { SideBar2 } from './SideBar'
 import { SidePanelContainer, SidePanelView } from './SidePanel'
 import GitHistoryView from '../Git/GitHistoryView'
@@ -51,7 +50,7 @@ const PanelContent = ({ panel }) => {
       return (
         <SidePanelContainer side='bottom'>
           <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>
-            <TabContainer defaultContentClass={Terminal} defaultContentType='terminal' />
+            <TerminalContainer />
           </SidePanelView>
 
           <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }} >
