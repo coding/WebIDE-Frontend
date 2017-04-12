@@ -6,3 +6,4 @@ build
 .env
 app/config.js
 *.bak
+coverage/
