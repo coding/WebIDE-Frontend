@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import { connect } from 'react-redux';
-import * as TabActions from './actions';
+import * as TabActions from 'commons/Tab/actions';
 import EditorWrapper from '../EditorWrapper'
 
 const contextMenuItems = [

@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import './addons';
 import dispatchCommand from '../../commands/dispatchCommand'
 import _ from 'lodash'
-import * as TabActions from '../Tab/actions';
+import * as TabActions from 'commons/Tab/actions';
 
 function initializeEditor (editorDOM, theme) {
   // @todo: add other setting item from config

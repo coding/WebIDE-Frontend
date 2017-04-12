@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import { updateDragOverTarget, updateDragOverMeta, dragEnd, dragStart } from './actions'
 import * as PaneActions from '../Pane/actions'
-import * as TabActions from '../Tab/actions'
+import * as TabActions from 'commons/Tab/actions'
 import * as FileTreeActions from '../FileTree/actions'
 
 // Corner case: file dragging doesn't trigger 'dragend' natively

@@ -2,7 +2,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import config from '../../config'
-import * as Tab from '../Tab'
 
 let Breadcrumbs = ({ fileNode }) => {
   const pathComps = fileNode.path.split('/')
@@ -24,7 +23,7 @@ let Breadcrumbs = ({ fileNode }) => {
   )
 }
 Breadcrumbs = connect(state => {
-  const activeTab = Tab.selectors.getActiveTab(state.TabState)
+  const activeTab = state.EditorTabState.activeTab
   const currentPath = activeTab ? activeTab.path : ''
   let fileNode = state.FileTreeState.nodes[currentPath]
   if (!fileNode) fileNode = state.FileTreeState.nodes[''] // fallback to rootNode

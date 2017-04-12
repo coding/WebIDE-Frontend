@@ -14,7 +14,9 @@ const entities = observable({
     return activeTabGroup
   },
   get activeTab () {
-    return this.activeTabGroup.activeTab
+    const activeTabGroup = this.activeTabGroup
+    if (!activeTabGroup) return this.tabs.values()[0]
+    return activeTabGroup.activeTab
   }
 })
 

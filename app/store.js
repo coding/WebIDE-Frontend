@@ -6,7 +6,8 @@ import thunkMiddleware from 'redux-thunk'
 import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
+// import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
+import EditorTabReducer from './components/Editor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
@@ -26,7 +27,8 @@ const combinedReducers = combineReducers({
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
-  TabState: TabReducer,
+  // TabState: TabReducer,
+  EditorTabState: EditorTabReducer,
   ModalState: ModalsReducer,
   TerminalState: TerminalReducer,
   GitState: GitReducer,
@@ -36,7 +38,7 @@ const combinedReducers = combineReducers({
   StatusBarState: StatusBarReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, PackageCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, PackageCrossReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,

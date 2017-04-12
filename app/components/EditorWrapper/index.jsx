@@ -4,7 +4,7 @@ import MarkdownEditor from '../MarkdownEditor'
 import ImageEditor from './Editors/ImageEditor'
 import UnknownEditor from './Editors/UnknownEditor'
 import WelcomeEditor from './Editors/WelcomeEditor'
-import * as Tab from '../Tab'
+import { getTabType } from 'utils'
 
 const editors = {
   CodeMirrorEditor,
@@ -43,9 +43,9 @@ const EditorWrapper = ({ tab }, { i18n }) => {
   const { path = '' } = tab
   let type = 'default'
   if (tab.contentType) {
-    if (Tab.types.getTabType(tab) === 'IMAGE') {
+    if (getTabType(tab) === 'IMAGE') {
       type = 'imageEditor'
-    } else if (Tab.types.getTabType(tab) === 'UNKNOWN') {
+    } else if (getTabType(tab) === 'UNKNOWN') {
       type = 'unknownEditor'
     }
   }

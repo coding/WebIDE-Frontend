@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
-import * as Tab from '../Tab'
+import * as TabActions from 'commons/Tab/actions'
+import { getTabType } from 'utils'
 import { updateUploadProgress } from '../StatusBar/actions'
 
 export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
@@ -23,13 +24,13 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
         dispatch(toggleNodeFold(node, shouldBeFolded, deep))
       }
     } else {
-      const tabType = Tab.types.getTabType(node)
+      const tabType = getTabType(node)
       if (
-        Tab.types.getTabType(node) === 'TEXT'
+        getTabType(node) === 'TEXT'
       ) {
         api.readFile(node.path)
           .then(data => {
-            dispatch(Tab.actions.createTab({
+            dispatch(TabActions.createTab({
               id: _.uniqueId('tab_'),
               type: 'editor',
               title: node.name,
@@ -44,7 +45,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
             }))
           })
       } else {
-        dispatch(Tab.actions.createTab({
+        dispatch(TabActions.createTab({
           id: _.uniqueId('tab_'),
           type: 'editor',
           title: node.name,

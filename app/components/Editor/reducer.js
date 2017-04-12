@@ -18,13 +18,15 @@ import {
   TAB_CONTEXT_MENU_CLOSE,
   TAB_REMOVE_OTHER,
   TAB_REMOVE_ALL
-} from './actions'
+} from 'commons/Tab/actions'
 
 const renew = createTransformer(state => {
   return {
     ...state,
     tabGroups: state.tabGroups.toJS(),
     tabs: state.tabs.toJS(),
+    activeTab: state.activeTab,
+    activeTabGroup: state.activeTabGroup,
   }
 })
 

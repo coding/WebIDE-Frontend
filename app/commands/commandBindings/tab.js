@@ -1,6 +1,6 @@
 /* @flow weak */
 import store, { dispatch as $d } from '../../store'
-import * as Tab from '../../components/Editor/actions'
+import * as Tab from 'commons/Tab/actions'
 import * as PaneActions from '../../components/Pane/actions'
 
 export default {
