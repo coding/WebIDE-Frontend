@@ -23,7 +23,7 @@ script:
 - set -e
 - yarn run build
 - docker build -f Dockerfile -t $REPO:$COMMIT .
-- docker tag $REPO:$COMMIT $REPO:latest
+- if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$COMMIT $REPO:latest; fi
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - docker push $REPO
 
