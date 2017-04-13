@@ -1,4 +1,4 @@
-import getCookie from 'utils/getCookie'
+import getCookie from './utils/getCookie'
 
 const config = {
   projectName: '',
