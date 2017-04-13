@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { dispatch } from '../../store'
+import { dispatch } from '../store'
 import { observer } from 'mobx-react'
 import { dnd } from 'utils'
-import * as PaneActions from '../Pane/actions'
+import * as PaneActions from './Pane/actions'
 import * as TabActions from 'commons/Tab/actions'
-import * as FileTreeActions from '../FileTree/actions'
+import * as FileTreeActions from './FileTree/actions'
 
 // Corner case: file dragging doesn't trigger 'dragend' natively
 // so need to patch for this behavior

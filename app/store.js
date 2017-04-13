@@ -13,7 +13,6 @@ import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
 import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
-import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
@@ -33,7 +32,6 @@ const combinedReducers = combineReducers({
   TerminalState: TerminalReducer,
   GitState: GitReducer,
   NotificationState: NotificationReducer,
-  DragAndDrop: DragAndDropReducer,
   SettingState: SettingReducer,
   StatusBarState: StatusBarReducer,
 })
