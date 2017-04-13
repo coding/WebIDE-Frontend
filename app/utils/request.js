@@ -34,12 +34,19 @@ const requestInterceptor = request.interceptors.request.use((options) => {
   return options
 })
 
-const responseInterceptor = request.interceptors.response.use((response) => {
+const responseRedirect = function (response) {
   if (config.isPlatform && response.headers['requests-auth'] === '1') {
     const authUrl = response.headers['requests-auth-url']
-    return location.href = authUrl
+    location.href = authUrl
   }
+}
+
+const responseInterceptor = request.interceptors.response.use((response) => {
+  responseRedirect(response)
   return response.data
+}, (error) => {
+  responseRedirect(error.response)
+  return Promise.reject(error);
 })
 
 request.get = function (url, params, options = {}) {
