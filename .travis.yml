@@ -23,8 +23,9 @@ script:
 - set -e
 - yarn run build
 - docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:latest
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
-- docker push $REPO:$COMMIT
+- docker push $REPO
 
 before_cache:
 - set -e
