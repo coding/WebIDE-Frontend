@@ -1,18 +1,20 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
+import { observer } from 'mobx-react'
+import { dnd } from 'utils'
+import { defaultProps } from 'utils/decorators'
 import TabLabel from './TabLabel'
 import Menu from 'components/Menu'
 import ContextMenu from 'components/ContextMenu'
-import { defaultProps } from 'utils/decorators'
 
 @defaultProps(props => ({
   addTab: () => props.tabGroup.addTab(),
 }))
+@observer
 class TabBar extends Component {
   static propTypes = {
     tabGroup: PropTypes.object.isRequired,
     contextMenuItems: PropTypes.array.isRequired,
-    isDraggedOver: PropTypes.bool,
     addTab: PropTypes.func,
     closePane: PropTypes.func,
   };
@@ -32,11 +34,11 @@ class TabBar extends Component {
       tabGroup,
       addTab,
       contextMenuItems,
-      isDraggedOver
     } = this.props
 
+    const tabBarId = `tab_bar_${tabGroup.id}`
     return (
-      <div id={`tab_bar_${tabGroup.id}`}
+      <div id={tabBarId}
         className='tab-bar'
         data-droppable='TABBAR'
         onDoubleClick={addTab}
@@ -46,7 +48,7 @@ class TabBar extends Component {
             <TabLabel tab={tab} key={tab.id} openContextMenu={this.openContextMenu} />
           )}
         </ul>
-        {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
+        {dnd.target.id === tabBarId ? <div className='tab-label-insert-pos'></div>: null}
         <div className='tab-add-btn' onClick={addTab} >
           <svg viewBox='0 0 12 16' version='1.1' aria-hidden='true'>
             <path fillRule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z'></path>
