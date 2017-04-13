@@ -25,7 +25,11 @@ const _Panel = (props) => {
   return (
     <div id={panel.id}
       style={style}
-      className={cx('panel-container', parentFlexDirection)}
+      className={cx(
+        'panel-container',
+        parentFlexDirection,
+        { resizable: style.flexGrow }
+      )}
     > { panel.views.length
         ? <PanelAxis panel={panel} />
         : <div className='panel'><PanelContent panel={panel} /></div>

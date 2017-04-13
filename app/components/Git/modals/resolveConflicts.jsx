@@ -39,7 +39,7 @@ class GitResolveConflictsView extends Component {
       <div>
         <div className='git-resolve-conflicts'>
           <h1 className='title'>
-            Conflicts List
+            {this.props.title || 'Conflicts List'}
           </h1>
           {gitContent}
           <div className='modal-ops'>
@@ -54,6 +54,7 @@ class GitResolveConflictsView extends Component {
   }
 
   handleFileClick (path) {
+    if (this.props.disableClick) return
     this.props.mergeFile(_.trimStart(path, '/'))
   }
 }

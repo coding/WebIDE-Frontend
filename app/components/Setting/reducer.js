@@ -39,7 +39,7 @@ export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'mate
 
 const SettingState = {
   activeTabId: 'GENERAL',
-  tabIds: ['GENERAL', 'THEME', 'EDITOR'],
+  tabIds: ['GENERAL', 'THEME', 'EDITOR', 'EXTENSIONS'],
   tabs: {
     THEME: {
       id: 'THEME',
@@ -52,6 +52,9 @@ const SettingState = {
         value: 'default',
         options: SyntaxThemeOptions
       }]
+    },
+    EXTENSIONS: {
+      id: 'EXTENSIONS'
     },
     GENERAL: {
       id: 'GENERAL',

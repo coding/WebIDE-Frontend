@@ -16,7 +16,11 @@ const _Pane = (props) => {
   return (
     <div id={pane.id}
       style={style}
-      className={cx('pane-container', parentFlexDirection)}
+      className={cx(
+        'pane-container',
+        parentFlexDirection,
+        { resizable: style.flexGrow }
+      )}
       data-droppable="PANE"
     > {pane.views.length // priortize `pane.views` over `pane.content`
       ? <PaneAxis pane={pane} />

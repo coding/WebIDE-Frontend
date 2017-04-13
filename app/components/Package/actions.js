@@ -42,7 +42,7 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
   })
 })
 
-export const fetchPackage = (pkgId, pkgVersion) => (dispatch) => {
+export const fetchPackage = (pkgId, pkgVersion, others) => (dispatch) => {
   const pkgInfo = api.fetchPackageInfo(pkgId, pkgVersion).then(pkg => pkg.codingIdePackage)
   const pkgScript = api.fetchPackageScript(pkgId, pkgVersion)
     .then(script => {
@@ -52,8 +52,10 @@ export const fetchPackage = (pkgId, pkgVersion) => (dispatch) => {
 
   if (window.extensions[pkgId]) dispatch(togglePackage(pkgId, false))
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
+    console.log('pkg', pkg);
     dispatch(updateLocalPackage({
       ...pkg,
+      ...others,
       enabled: Boolean(window.extensions[pkgId]),
       id
     }))
@@ -68,6 +70,6 @@ export const preloadRequirePackages = () => dispatch => {
   api.fetchPackageList()
     .then(list => list.filter(pkg => pkg.requirement === 'Required'))
     .then(list => list.forEach(pkg => {
-      dispatch(fetchPackage(pkg.name, pkg.version))
+      dispatch(fetchPackage(pkg.name, pkg.version, pkg))
     }))
 }

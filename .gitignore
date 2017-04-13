@@ -1,8 +1,8 @@
 node_modules
 build
-**/*.md
 .idea/
 .vscode/
 .env
 app/config.js
 *.bak
+coverage/

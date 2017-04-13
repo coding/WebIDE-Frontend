@@ -48,7 +48,7 @@ export function createWorkspace (url) {
       dispatch(fetchWorkspaceList())
       dispatch(toggleCreatingWorkspace(false))
     }).catch(e => {
-      dispatch(toggleCreatingWorkspaceErr(e.msg))
+      dispatch(toggleCreatingWorkspaceErr(e.response.data.msg))
     })
   }
 }
@@ -58,7 +58,7 @@ export function deleteWorkspace (spaceKey) {
     api.deleteWorkspace(spaceKey).then(res =>
       dispatch(fetchWorkspaceList())
     ).catch(e => {
-      dispatch(toggleCreatingWorkspaceErr(e.msg))
+      dispatch(toggleCreatingWorkspaceErr(e.response.data.msg))
     })
   }
 }

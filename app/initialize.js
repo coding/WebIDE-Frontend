@@ -41,7 +41,7 @@ async function initialize () {
       const queryEntryPathPattern = /^\/ws\/?$/
       const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
       if (isFromQueryEntryPath) {
-        const parsed = qs.parse(location.search)
+        const parsed = qs.parse(location.search.substring(1))
         config.openFile = parsed.openFile
         const options = {
           ownerName: parsed.ownerName,

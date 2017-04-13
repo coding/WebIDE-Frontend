@@ -8,7 +8,10 @@ import * as GitActions from '../actions'
 class GitMergeView extends Component {
   constructor (props) {
     super(props)
-    this.state = { branchToMerge: '' }
+    this.state = {
+      branchToMerge: '',
+      selectChanged: false,
+    }
   }
 
   render () {
@@ -28,12 +31,15 @@ class GitMergeView extends Component {
             </div>
             <div className='form-group'>
               <label className='col-sm-3 control-label'>Branch to merge</label>
-              <label className='col-sm-3'>
+              <label className='col-sm-5' style={{ width: 'auto' }}>
                 <select className='form-control'
-                  onChange={e => this.setState({ branchToMerge: e.target.value })}
+                  onChange={e => this.setState({ branchToMerge: e.target.value, selectChanged: true })}
                   value={this.state.branchToMerge}
+                  style={this.state.selectChanged ? null : { color: '#aaa' }}
                 >
-                  <option disabled selected value> -- select a branch -- </option>
+                  <option selected value='' disabled={this.state.selectChanged}>
+                    -- select a branch --
+                  </option>
                   {allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>)}
                 </select>
               </label>

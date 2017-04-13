@@ -36,7 +36,7 @@ class GitRebaseStart extends Component {
           Rebase branch
           </h1>
           <hr />
-          <form className="form-horizontal">
+          <div className="form-horizontal">
             <div className="form-group">
               <label className="col-sm-3 control-label">Branch</label>
               <label className="col-sm-9">
@@ -96,7 +96,7 @@ class GitRebaseStart extends Component {
                 </div>
               </div>
             </div>
-          </form>
+          </div>
           <hr />
           <div className='modal-ops'>
             <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>

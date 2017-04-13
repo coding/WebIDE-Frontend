@@ -46,7 +46,6 @@ const PanelContent = ({ panel }) => {
         </SidePanelContainer>
       )
     case 'PANEL_BOTTOM':
-      // return <GitHistoryView />
       return (
         <SidePanelContainer side='bottom'>
           <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>

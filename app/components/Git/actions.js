@@ -24,6 +24,11 @@ export function commit () {
     }).then(filetreeDelta => {
       dispatch(notify({message: 'Git commit success.'}))
       dispatch(dismissModal())
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
@@ -38,7 +43,13 @@ export function updateStagingArea (action, file) {
 export const GIT_FETCH = 'GIT_FETCH'
 export function getFetch() {
   return dispatch => api.gitFetch().then(
-      dispatch(notify({ message: 'Get Fetch Success'})))
+     dispatch(notify({ message: 'Get Fetch Success'}))
+  ).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: res.response.data.msg,
+    }))
+  })
 }
 
 export const GIT_BRANCH = 'GIT_BRANCH'
@@ -54,8 +65,42 @@ export const GIT_CHECKOUT = 'GIT_CHECKOUT'
 export function checkoutBranch (branch, remoteBranch) {
   return dispatch => {
     api.gitCheckout(branch, remoteBranch).then(data => {
-      dispatch(createAction(GIT_CHECKOUT)({ branch }))
-      dispatch(notify({message: `Check out ${branch}`}))
+      if (data.status === 'OK') {
+        dispatch(createAction(GIT_CHECKOUT)({ branch }))
+        dispatch(notify({message: `Check out ${branch}`}))
+      } else if (data.status === 'CONFLICTS') {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: 'Checkout has not completed because of checkout conflicts',
+        }))
+        const files = []
+        data.conflictList.map((file) => {
+          files.push({name: file, status: 'CONFLICTION'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal('GitResolveConflicts'))
+      } else if (data.status === 'NONDELETED') {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: 'Checkout has completed, but some files could not be deleted',
+        }))
+        const files = []
+        data.undeletedList.map((file) => {
+          files.push({name: file, status: 'ADDED'})
+        })
+        dispatch(updateStatus({files, isClean: false}))
+        dispatch(showModal({type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true}))
+      } else {
+        dispatch(notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: `An Exception occurred during checkout, status: ${data.status}`,
+        }))
+      }
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
@@ -78,6 +123,11 @@ export const GIT_TAGS = 'GIT_TAGS'
 export function getTags () {
   return (dispatch) => api.gitTags().then(data => {
     dispatch(createAction(GIT_TAGS)({ tags: data }))
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: res.response.data.msg,
+    }))
   })
 }
 
@@ -88,6 +138,11 @@ export function pull () {
         dispatch(notify({message: `Git pull fail: ${res.msg}` }))
       else
         dispatch(notify({message: 'Git pull success.'}))
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
@@ -99,6 +154,11 @@ export function push () {
         dispatch(notify({message: `Git push fail: ${res.msg}` }))
       else
         dispatch(notify({message: 'Git push success.'}))
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
@@ -139,6 +199,11 @@ export const updateUnstashBranchName = createAction(GIT_UPDATE_UNSTASH_BRANCH_NA
 export function getStashList () {
   return (dispatch) => api.gitStashList().then(({ stashes }) => {
     dispatch(updateStashList(stashes))
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: res.response.data.msg,
+    }))
   })
 }
 
@@ -220,7 +285,7 @@ export function addTag ({tagName, ref, message, force}) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Add tag error: ${res.msg}`,
+      message: `Add tag error: ${res.response.data.msg}`,
     }))
   })
 }
@@ -235,6 +300,9 @@ export function mergeBranch (branch) {
     if (res.status && res.status === 'CONFLICTING') {
       dispatch(dismissModal())
       api.gitStatus().then(({files, clean}) => {
+        files =  _.filter(files, (file) => {
+          return file.status == 'CONFLICTION'
+        })
         dispatch(updateStatus({files, isClean: clean}))
       }).then(() =>
         dispatch(showModal('GitResolveConflicts'))
@@ -243,7 +311,7 @@ export function mergeBranch (branch) {
   }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Merge error: ${res.msg}`,
+      message: `Merge error: ${res.response.data.msg}`,
     }))
   })
 }
@@ -255,7 +323,7 @@ export function newBranch (branch) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Create new branch error: ${res.msg}`,
+      message: `Create new branch error: ${res.response.data.msg}`,
     }))
   })
 }
@@ -323,7 +391,7 @@ export function cancelConflict ({path}) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Cancel conflict error: ' + res.msg,
+      message: 'Cancel conflict error: ' + res.response.data.msg,
     }))
   })
 }
@@ -342,7 +410,7 @@ export function rebase ({branch, upstream, interactive, preserve}) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Rebase error: ' + res.msg,
+      message: 'Rebase error: ' + res.response.data.msg,
     }))
   })
 }
@@ -389,14 +457,24 @@ export function gitGetStatus (status) {
         })
       }
       dispatch(updateStatus({files, isClean: clean}))
-    }
-  )}
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
+    })
+  }
 }
 
 export const GIT_REBASE_STATE = 'GIT_REBASE_STATE'
 export function getRebaseState () {
   return (dispatch) => api.gitRebaseState().then(data => {
     dispatch(createAction(GIT_REBASE_STATE)(data))
+  }).catch(res => {
+    dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: res.response.data.msg,
+    }))
   })
 }
 
@@ -412,7 +490,7 @@ export function gitRebaseOperate ({operation, message}) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Operate error: ' + res.msg,
+      message: 'Operate error: ' + res.response.data.msg,
     }))
   })
 }
@@ -431,7 +509,7 @@ export function gitRebaseUpdate (lines) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Rebase error: ' + res.msg,
+      message: 'Rebase error: ' + res.response.data.msg,
     }))
   })
 }
@@ -453,7 +531,7 @@ export function gitCommitDiff ({rev, title, oldRef}) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Get commit diff error: ' + res.msg,
+      message: 'Get commit diff error: ' + res.response.data.msg,
     }))
   })
 }
@@ -469,6 +547,11 @@ export const fetchHistory = ({ path, page, size, reset }) => {
   return (dispatch) => {
     api.gitHistory({ path, page, size }).then(res => {
       dispatch(updateHistory({ reset, res }))
+    }).catch(res => {
+      dispatch(notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: res.response.data.msg,
+      }))
     })
   }
 }
