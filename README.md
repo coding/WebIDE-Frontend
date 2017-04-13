@@ -1,4 +1,5 @@
 # Coding WebIDE Frontend
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/Coding/WebIDE/blob/master/LICENSE) [![Build Status](https://travis-ci.org/Coding/WebIDE-Frontend.svg?branch=master)](https://travis-ci.org/Coding/WebIDE-Frontend) [![Docker Stars](https://img.shields.io/docker/stars/webide/frontend.svg)](https://hub.docker.com/r/webide/frontend 'DockerHub') [![Docker Pulls](https://img.shields.io/docker/pulls/webide/frontend.svg)](https://hub.docker.com/r/webide/frontend 'DockerHub')
 
 This repo contains frontend code of the Coding WebIDE Community Edition. Please refer to the [WebIDE](https://github.com/Coding/WebIDE) repo for instruction on running the whole project.
 
