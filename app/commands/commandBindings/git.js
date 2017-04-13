@@ -46,7 +46,10 @@ export default {
   },
   'git:tag': c => {
     $d(Git.getCurrentBranch()).then(() =>
-      $d(Modal.showModal('GitTag'))
+      $d(Git.getTags())
+        .then(() =>
+          $d(Modal.showModal('GitTag'))
+        )
     )
   },
   'git:merge': c => {
