@@ -24,11 +24,6 @@ export function commit () {
     }).then(filetreeDelta => {
       dispatch(notify({message: 'Git commit success.'}))
       dispatch(dismissModal())
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -44,12 +39,7 @@ export const GIT_FETCH = 'GIT_FETCH'
 export function getFetch() {
   return dispatch => api.gitFetch().then(
      dispatch(notify({ message: 'Get Fetch Success'}))
-  ).catch(res => {
-    dispatch(notify({
-      notifyType: NOTIFY_TYPE.ERROR,
-      message: res.response.data.msg,
-    }))
-  })
+  )
 }
 
 export const GIT_BRANCH = 'GIT_BRANCH'
@@ -112,11 +102,6 @@ export function checkoutBranch (branch, remoteBranch) {
           message: `An Exception occurred during checkout, status: ${data.status}`,
         }))
       }
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -126,11 +111,6 @@ export function gitDeleteBranch (branch) {
   return dispatch => {
     api.gitDeleteBranch(branch).then(() => {
       dispatch(notify({message: `deleted branch ${branch} success`}))
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -139,11 +119,6 @@ export const GIT_TAGS = 'GIT_TAGS'
 export function getTags () {
   return (dispatch) => api.gitTags().then(data => {
     dispatch(createAction(GIT_TAGS)({ tags: data }))
-  }).catch(res => {
-    dispatch(notify({
-      notifyType: NOTIFY_TYPE.ERROR,
-      message: res.response.data.msg,
-    }))
   })
 }
 
@@ -154,11 +129,6 @@ export function pull () {
         dispatch(notify({message: `Git pull fail: ${res.msg}` }))
       else
         dispatch(notify({message: 'Git pull success.'}))
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -170,11 +140,6 @@ export function push () {
         dispatch(notify({message: `Git push fail: ${res.msg}` }))
       else
         dispatch(notify({message: 'Git push success.'}))
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -199,7 +164,7 @@ export function createStash (message) {
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: res.response.data.msg,
+      message: err.msg,
     }))
     dispatch(dismissModal())
   })
@@ -228,11 +193,6 @@ export const updateUnstashBranchName = createAction(GIT_UPDATE_UNSTASH_BRANCH_NA
 export function getStashList () {
   return (dispatch) => api.gitStashList().then(({ stashes }) => {
     dispatch(updateStashList(stashes))
-  }).catch(res => {
-    dispatch(notify({
-      notifyType: NOTIFY_TYPE.ERROR,
-      message: res.response.data.msg,
-    }))
   })
 }
 
@@ -245,7 +205,7 @@ export function dropStash (stashRef, all) {
       message: 'Drop stash success.',
     }))
     getStashList()(dispatch)
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Drop stash error.',
@@ -259,7 +219,7 @@ export function applyStash ({stashRef, pop, applyIndex}) {
       message: 'Apply stash success.',
     }))
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Apply stash error.',
@@ -273,7 +233,7 @@ export function checkoutStash ({stashRef, branch}) {
       message: 'Checkout stash success.',
     }))
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Checkout stash error.',
@@ -285,7 +245,7 @@ export function getCurrentBranch (showSuccess) {
   return dispatch => api.gitCurrentBranch().then(({ name }) => {
     dispatch(updateCurrentBranch({name}))
     if (showSuccess) dispatch(notify({ message: 'sync success '}))
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Get current branch error.',
@@ -299,7 +259,7 @@ export function resetHead ({ref, resetType}) {
       message: 'Reset success.',
     }))
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Reset error.',
@@ -311,10 +271,10 @@ export function addTag ({tagName, ref, message, force}) {
   return dispatch => api.gitAddTag({tagName, ref, message, force}).then(res => {
     dispatch(notify({message: 'Add tag success.'}))
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Add tag error: ${res.response.data.msg}`,
+      message: `Add tag error: ${err.msg}`,
     }))
   })
 }
@@ -340,7 +300,7 @@ export function mergeBranch (branch) {
   }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Merge error: ${res.response.data.msg}`,
+      message: `Merge error: ${err.msg}`,
     }))
   })
 }
@@ -349,10 +309,10 @@ export function newBranch (branch) {
   return dispatch => api.gitNewBranch(branch).then(res => {
     dispatch(notify({message: 'Create new branch success.'}))
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: `Create new branch error: ${res.response.data.msg}`,
+      message: `Create new branch error: ${err.msg}`,
     }))
   })
 }
@@ -406,7 +366,7 @@ export function resolveConflict ({path, content}) {
     }))
     dispatch(dismissModal())
     dispatch(updateModal({isInvalid: true}))
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Resolve conflict error.',
@@ -417,10 +377,10 @@ export function resolveConflict ({path, content}) {
 export function cancelConflict ({path}) {
   return dispatch => api.gitCancelConflict({path}).then(res => {
     dispatch(dismissModal())
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Cancel conflict error: ' + res.response.data.msg,
+      message: 'Cancel conflict error: ' + err.msg,
     }))
   })
 }
@@ -436,10 +396,10 @@ export function rebase ({branch, upstream, interactive, preserve}) {
       dispatch(dismissModal())
       resolveRebase(res, dispatch)
     }
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Rebase error: ' + res.response.data.msg,
+      message: 'Rebase error: ' + err.msg,
     }))
   })
 }
@@ -486,11 +446,6 @@ export function gitGetStatus (status) {
         })
       }
       dispatch(updateStatus({files, isClean: clean}))
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }
@@ -499,11 +454,6 @@ export const GIT_REBASE_STATE = 'GIT_REBASE_STATE'
 export function getRebaseState () {
   return (dispatch) => api.gitRebaseState().then(data => {
     dispatch(createAction(GIT_REBASE_STATE)(data))
-  }).catch(res => {
-    dispatch(notify({
-      notifyType: NOTIFY_TYPE.ERROR,
-      message: res.response.data.msg,
-    }))
   })
 }
 
@@ -516,10 +466,10 @@ export function gitRebaseOperate ({operation, message}) {
     } else {
       resolveRebase(res, dispatch)
     }
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Operate error: ' + res.response.data.msg,
+      message: 'Operate error: ' + err.msg,
     }))
   })
 }
@@ -535,10 +485,10 @@ export function gitRebaseUpdate (lines) {
       dispatch(dismissModal())
       resolveRebase(res, dispatch)
     }
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Rebase error: ' + res.response.data.msg,
+      message: 'Rebase error: ' + err.msg,
     }))
   })
 }
@@ -557,10 +507,10 @@ export function gitCommitDiff ({rev, title, oldRef}) {
     })
     dispatch(updateCommitDiff({files: files, ref: rev, title, oldRef}))
     dispatch(addModal('GitCommitDiff'))
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
-      message: 'Get commit diff error: ' + res.response.data.msg,
+      message: 'Get commit diff error: ' + err.msg,
     }))
   })
 }
@@ -576,11 +526,6 @@ export const fetchHistory = ({ path, page, size, reset }) => {
   return (dispatch) => {
     api.gitHistory({ path, page, size }).then(res => {
       dispatch(updateHistory({ reset, res }))
-    }).catch(res => {
-      dispatch(notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: res.response.data.msg,
-      }))
     })
   }
 }

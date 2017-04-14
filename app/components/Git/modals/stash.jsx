@@ -13,7 +13,7 @@ class GitStashView extends Component {
     this.state = {
     }
   }
-  
+
   render () {
     const { branches, updateStashMessage, createStash } = this.props
     const { current: currentBranch} = branches
@@ -25,7 +25,7 @@ class GitStashView extends Component {
           Stash Changes
           </h1>
           <hr />
-          <form className="form-horizontal">
+          <div className="form-horizontal">
             <div className="form-group">
               <label className="col-sm-3 control-label">Current Branch</label>
               <label className="col-sm-9 checkbox-inline">
@@ -44,10 +44,11 @@ class GitStashView extends Component {
                     e.preventDefault()
                     e.stopPropagation()
                   }}
+                  onKeyDown={e => {if (e.keyCode === 13) createStash(stashMessage)}}
                 />
               </div>
             </div>
-          </form>
+          </div>
           <hr />
           <div className='modal-ops'>
             <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>

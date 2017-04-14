@@ -1,9 +1,12 @@
 /* @flow weak */
 import axios from 'axios'
+import './promise.prototype.finalCatch'
 import { qs } from './url-helpers'
 import config from '../config'
+import { dispatch } from '../store'
+import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 
-const request = axios.create({
+const _request = axios.create({
   baseURL: config.baseURL,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -27,6 +30,24 @@ const request = axios.create({
   }]
 })
 
+const request = function (options) {
+  // I need to intercept the returned promise
+  // axios provides no way to do it, so I need this wrapper layer
+  return promiseInterceptor(_request(options))
+}
+
+Object.assign(request, _request)
+
+const promiseInterceptor = (promise) => {
+  promise.finalCatch(err => {
+    if (err.msg) dispatch(notify({
+      notifyType: NOTIFY_TYPE.ERROR,
+      message: err.response.data.msg,
+    }))
+  })
+  return promise
+}
+
 const requestInterceptor = request.interceptors.request.use((options) => {
   if (config.isPlatform && config.spaceKey) {
     options.headers['X-Space-Key'] = config.spaceKey
@@ -46,6 +67,7 @@ const responseInterceptor = request.interceptors.response.use((response) => {
   return response.data
 }, (error) => {
   responseRedirect(error.response)
+  if (error.response.data) Object.assign(error, error.response.data)
   return Promise.reject(error)
 })
 
