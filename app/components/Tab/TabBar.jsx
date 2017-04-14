@@ -103,7 +103,7 @@ class _TabBar extends Component {
         {isDraggedOver ? <div className='tab-label-insert-pos'></div>: null}
         <div className='tab-add-btn' onClick={addTab} >
           <svg viewBox='0 0 12 16' version='1.1' aria-hidden='true'>
-            <path fill-rule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z'></path>
+            <path fillRule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z'></path>
           </svg>
         </div>
         <div className='tab-show-list'

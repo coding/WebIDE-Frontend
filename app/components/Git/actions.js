@@ -62,6 +62,7 @@ export function getBranches () {
 }
 
 export const GIT_CHECKOUT = 'GIT_CHECKOUT'
+export const GIT_CHECKOUT_FAILED = 'GIT_CHECKOUT_FAILED'
 export function checkoutBranch (branch, remoteBranch) {
   return dispatch => {
     api.gitCheckout(branch, remoteBranch).then(data => {
@@ -69,16 +70,31 @@ export function checkoutBranch (branch, remoteBranch) {
         dispatch(createAction(GIT_CHECKOUT)({ branch }))
         dispatch(notify({message: `Check out ${branch}`}))
       } else if (data.status === 'CONFLICTS') {
+        dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch }))
         dispatch(notify({
           notifyType: NOTIFY_TYPE.ERROR,
           message: 'Checkout has not completed because of checkout conflicts',
         }))
-        const files = []
-        data.conflictList.map((file) => {
-          files.push({name: file, status: 'CONFLICTION'})
-        })
-        dispatch(updateStatus({files, isClean: false}))
-        dispatch(showModal('GitResolveConflicts'))
+
+        api.gitStatus().then(({ files, clean }) => {
+          files = files.map((file) => {
+            if (data.conflictList.find(f => (
+              f === file.name
+            ))) {
+              file.status = 'CONFLICTION'
+            }
+            return file
+          })
+          dispatch(updateStatus({ files, isClean: clean }))
+        }).then(() =>
+          dispatch(showModal({ type: 'GitCheckoutStash', title: 'Checkout failed' }))
+        )
+        // const files = []
+        // data.conflictList.map((file) => {
+        //   files.push({name: file, status: 'CONFLICTION'})
+        // })
+        // dispatch(updateStatus({files, isClean: false}))
+        // dispatch(showModal('GitResolveConflicts'))
       } else if (data.status === 'NONDELETED') {
         dispatch(notify({
           notifyType: NOTIFY_TYPE.ERROR,
@@ -170,11 +186,16 @@ export const GIT_UPDATE_STASH_MESSAGE = 'GIT_UPDATE_STASH_MESSAGE'
 export const updateStashMessage = createAction(GIT_UPDATE_STASH_MESSAGE)
 
 export function createStash (message) {
-  return dispatch => api.gitCreateStash(message).then(res => {
+  return (dispatch, getState) => api.gitCreateStash(message).then(res => {
     dispatch(notify({
       message: 'Git stash success.',
     }))
     dispatch(dismissModal())
+    const GitState = getState().GitState
+    if (GitState.branches.failed) {
+      dispatch(checkoutBranch(GitState.branches.failed))
+      dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch: '' }))
+    }
   }).catch(res => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
@@ -182,6 +203,14 @@ export function createStash (message) {
     }))
     dispatch(dismissModal())
   })
+}
+
+export function showStash () {
+  return dispatch => {
+    dispatch(getCurrentBranch()).then(() =>
+      dispatch(showModal('GitStash'))
+    )
+  }
 }
 
 export const GIT_UPDATE_STASH_LIST = 'GIT_UPDATE_STASH_LIST'
