@@ -9,6 +9,7 @@ import {
   GIT_STATUS_STAGE_NODE,
   GIT_BRANCH,
   GIT_CHECKOUT,
+  GIT_CHECKOUT_FAILED,
   GIT_UPDATE_COMMIT_MESSAGE,
   GIT_CURRENT_BRANCH,
   GIT_UPDATE_STASH_MESSAGE,
@@ -30,7 +31,8 @@ const _state = {
   statusFiles: Map(),
   commitMessage: '',
   branches: {
-    current: 'master'
+    current: 'master',
+    failed: '' //没有切换成功的
   },
   tags: [],
   stash: {
@@ -228,6 +230,13 @@ export default handleActions({
     state.branches.current = action.payload.branch
     return state
   },
+
+  [GIT_CHECKOUT_FAILED]: (state, action) => {
+    state = _.cloneDeep(state)
+    state.branches.failed = action.payload.branch
+    return state
+  },
+
   [GIT_CURRENT_BRANCH]: (state, action) => {
     state = _.cloneDeep(state)
     state.branches.current = action.payload.name

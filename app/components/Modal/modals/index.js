@@ -20,3 +20,4 @@ export GitRebasePrepare from '../../Git/modals/rebasePrepare';
 export GitRebaseInput from '../../Git/modals/rebaseInput';
 export GitCommitDiffView from '../../Git/modals/commitDiff';
 export GitCheckoutView from '../../Git/modals/checkout';
+export GitCheckoutStashView from '../../Git/modals/checkoutStash';
