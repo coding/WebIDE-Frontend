@@ -161,7 +161,7 @@ export function createStash (message) {
       dispatch(checkoutBranch(GitState.branches.failed))
       dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch: '' }))
     }
-  }).catch(res => {
+  }).catch(err => {
     dispatch(notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: err.msg,
