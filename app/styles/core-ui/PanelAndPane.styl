@@ -27,6 +27,8 @@ safariHeightFix() {
 .pane-container {
   // not every .pane(l) need safariHeightFix, only children of .resizable do
   &.resizable {
+    min-width: 30px;
+    min-height: 30px;
     > .panel, > .pane {
       safariHeightFix();
     }
