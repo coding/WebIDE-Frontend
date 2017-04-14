@@ -23,6 +23,7 @@ import {
   GitRebaseInput,
   GitCommitDiffView,
   GitCheckoutView,
+  GitCheckoutStashView,
 } from './modals'
 
 var ModalContainer = (props) => {
@@ -99,8 +100,13 @@ class Modal extends Component {
 
         case 'GitDiffFile':
           return <GitDiffFileView {...this.props} />
+
         case 'GitCheckout':
           return <GitCheckoutView {...this.props} />
+
+        case 'GitCheckoutStash':
+          return <GitCheckoutStashView {...this.props} />
+
         case 'Prompt':
           return <Prompt {...this.props} />
 

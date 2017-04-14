@@ -35,7 +35,7 @@ const requestInterceptor = request.interceptors.request.use((options) => {
 })
 
 const responseRedirect = function (response) {
-  if (config.isPlatform && response.headers['requests-auth'] === '1') {
+  if (config.isPlatform && response && response.headers['requests-auth'] === '1') {
     const authUrl = response.headers['requests-auth-url']
     location.href = authUrl
   }
@@ -46,7 +46,7 @@ const responseInterceptor = request.interceptors.response.use((response) => {
   return response.data
 }, (error) => {
   responseRedirect(error.response)
-  return Promise.reject(error);
+  return Promise.reject(error)
 })
 
 request.get = function (url, params, options = {}) {
