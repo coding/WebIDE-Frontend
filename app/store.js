@@ -59,6 +59,7 @@ const enhancer = compose(
 // enhancer = applyMiddleware(thunkMiddleware)
 const store = createStore(finalReducer, enhancer)
 window.getState = store.getState
+window.dispatch = store.dispatch
 
 
 window.addEventListener('storage', (e) => {
