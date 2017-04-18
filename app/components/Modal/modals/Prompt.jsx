@@ -21,6 +21,7 @@ class Prompt extends Component {
           <div className='message'>{content.message}</div>
         : null }
         <input type='text'
+          className='form-control'
           ref={r=>this.input=r}
           onChange={ e=>this.setState({value: e.target.value}) }
           onKeyDown={this.onKeyDown}

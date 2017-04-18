@@ -1,0 +1,52 @@
+// .status          { color: @text-color; }
+// .status-added    { color: @text-color-success; } // green
+// .status-ignored  { color: @text-color-subtle; }  // faded
+// .status-modified { color: @text-color-warning; } // orange
+// .status-removed  { color: @text-color-error; }   // red
+// .status-renamed  { color: @text-color-info; }    // blue
+
+.git-untracked {
+  color: $untracked-color;
+}
+.git-confliction {
+  color: $confliction-color;
+}
+.git-modified {
+  color: $modified-color;
+}
+.git-modify {
+  color: $modified-color;
+}
+.git-changed {
+  color: $modified-color;
+}
+.git-rename {
+  color: $modified-color;
+}
+.git-copy {
+  color: $modified-color;
+}
+
+.git-added {
+  color: $added-color;
+}
+.git-add {
+  color: $added-color;
+}
+.git-missing {
+  text-decoration: line-through;
+}
+
+.git-removed {
+  text-decoration: line-through;
+}
+.git-delete {
+  text-decoration: line-through;
+}
+
+.file-status-indicator {
+  &.modified, &.changed, &.modify {color: hsl(47,100%,50%)}
+  &.untracked, &.add {color: hsl(80,60%,40%)}
+  &.missing {color: hsl(10,80%,45%)}
+  &.confliction {color: hsl(10,80%,45%)}
+}

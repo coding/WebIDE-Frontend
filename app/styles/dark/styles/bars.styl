@@ -1,0 +1,38 @@
+.menu-bar {
+  background-color: $base-top-menu-bar-background;
+  border-color: $base-border-color;
+  color: $text-color;
+}
+
+.status-bar {
+  border-color: $base-border-color;
+  background-color: $base-top-menu-bar-background;
+  color: $text-color;
+
+  .git-branch-widget .widget-header {
+    background-color: $base-background-color;
+    color: $text-color;
+  }
+}
+
+.breadcrumbs {
+  background-color: $menu-background-color;
+  border-color: $base-border-color;
+  color: $text-color;
+  .crumb {
+    background-color: $menu-background-color;
+    &:before {
+      border-left-color: $base-border-color;
+    }
+    &:after {
+      border-left-color: $menu-background-color;
+    }
+  }
+}
+
+.side-bar {
+  color: $text-color;
+  .side-bar-label.active {
+    background-color: $tab-background-color-active;
+  }
+}
