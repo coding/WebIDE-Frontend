@@ -49,7 +49,7 @@ class ExtensionList extends Component {
                 <div>
                     <input
                         type="text"
-                        className="search"
+                        className="search form-control"
                         value={this.state.searchKey}
                         placeholder="filter extension by name"
                         onChange={(e) => {

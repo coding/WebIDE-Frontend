@@ -1,5 +1,6 @@
 import { UIThemeOptions } from '../components/Setting/reducer'
 import { getState } from '../store'
+import { emitter, E } from 'utils'
 
 export const changeTheme = (nextThemeId, force) => {
   const currentThemeId = getState().SettingState.views.tabs.THEME.items[0].value
@@ -15,6 +16,7 @@ export const changeTheme = (nextThemeId, force) => {
       })
     }
   }
+  emitter.emit(E.THEME_CHANGED, nextThemeId)
 }
 export const changeCodeTheme = (next) => {
   const nextTheme = next.split('/').pop()
