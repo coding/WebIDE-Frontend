@@ -30,6 +30,7 @@ return {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     alias: {
+      'app': path.join(rootDir, 'app'),
       'utils': path.join(rootDir, 'app/utils'),
       'config': path.join(rootDir, 'app/config.js'),
       'commons': path.join(rootDir, 'app/commons'),

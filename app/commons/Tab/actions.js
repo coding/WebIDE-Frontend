@@ -1,5 +1,5 @@
 /* @flow weak */
-import { createAction } from 'redux-actions'
+import { createAction } from 'utils/actions'
 
 export const TAB_DISSOLVE_GROUP = 'TAB_DISSOLVE_GROUP'
 

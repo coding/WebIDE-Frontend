@@ -1,24 +1,25 @@
 /* @flow weak */
-import store, { dispatch as $d } from '../../store'
+import { dispatch as $d } from '../../store'
+import store from 'app/mobxStore'
 import * as Tab from 'commons/Tab/actions'
-import * as PaneActions from '../../components/Pane/actions'
+import * as PaneActions from 'components/Pane/actions'
 
 export default {
   'tab:close': c => {
-    $d(Tab.removeTab(c.context.id))
+    Tab.removeTab(c.context.id)
   },
 
   'tab:close_other': c => {
-    $d(Tab.removeOtherTab(c.context.id))
+    Tab.removeOtherTab(c.context.id)
   },
 
   'tab:close_all': c => {
-    $d(Tab.removeAllTab(c.context.id))
+    Tab.removeAllTab(c.context.id)
   },
 
   'tab:split_v': c => {
-    const panes = store.getState().PaneState.panes
-    const pane = Object.values(panes).find((pane) => (
+    const panes = store.PaneState.panes
+    const pane = panes.values().find(pane => (
       pane.content && pane.content.type === 'tabGroup' && pane.content.id === c.context.tabGroupId
     ))
     $d(PaneActions.splitTo(pane.id, 'bottom'))

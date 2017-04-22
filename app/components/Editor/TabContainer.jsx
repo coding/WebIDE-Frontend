@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
-import { connect } from 'react-redux';
 import * as TabActions from 'commons/Tab/actions';
 import EditorWrapper from '../EditorWrapper'
 import { TablessCodeMirrorEditor } from '../CodeMirrorEditor'
@@ -36,15 +35,14 @@ const contextMenuItems = [
 
 @observer
 class TabContainer extends Component {
-  constructor (props) {
-    super(props)
-    this.tabGroupId = this.props.tabGroupId || _.uniqueId('tab_group_')
-    this.tabGroup = this.props.tabGroups[this.tabGroupId]
-    if (!this.tabGroup) this.props.createGroup(this.tabGroupId)
-  }
+  static propTypes = {
+    containingPaneId: PropTypes.string,
+    tabGroup: PropTypes.object,
+    createGroup: PropTypes.func,
+  };
 
   render () {
-    const tabGroup = this.props.tabGroups[this.tabGroupId]
+    const tabGroup = this.props.tabGroup
     if (!tabGroup) return null
     return (
       <div className='tab-container'>
@@ -65,12 +63,4 @@ class TabContainer extends Component {
   }
 }
 
-export default connect((state, { tabGroupId }) => {
-  const tabGroups = state.EditorTabState.tabGroups
-  return {
-    tabGroups: tabGroups,
-  }
-}, dispatch => ({
-  createGroup: (tabGroupId, defaultContentType) =>
-    dispatch(TabActions.createGroup(tabGroupId, defaultContentType)),
-}))(TabContainer)
+export default TabContainer

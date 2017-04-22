@@ -1,6 +1,7 @@
 /* @flow weak */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { composeReducers } from './utils'
+import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
 import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
@@ -45,7 +46,7 @@ const finalReducer = composeReducers(
 )
 
 const enhancer = compose(
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(thunkMiddleware, emitterMiddleware),
   window.devToolsExtension ? window.devToolsExtension({
     serialize: {
       replacer: (key, value) => {

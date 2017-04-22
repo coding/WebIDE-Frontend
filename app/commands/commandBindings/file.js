@@ -1,6 +1,7 @@
 /* @flow weak */
 import { bindActionCreators } from 'redux'
 import store, { getState, dispatch } from '../../store'
+import mobxStore from '../../mobxStore'
 import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
@@ -74,9 +75,9 @@ export default {
     }).then(createFolderAtPath)
   },
   'file:save': (c) => {
-    const { EditorTabState } = getState()
+    const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const content = activeTab ? ide.editors[activeTab.id].getValue() : ''
+    const content = activeTab ? activeTab.editor.getValue() : ''
 
     if (!activeTab.path) {
       const createFile = createFileWithContent(content)
