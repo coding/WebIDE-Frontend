@@ -1,7 +1,8 @@
 import _ from 'lodash'
-import { createTransformer } from 'mobx'
+import { createTransformer, aciton } from 'mobx'
 import { handleActions } from 'utils/actions'
 import entities, { Pane } from './state'
+import mobxStore from '../../mobxStore'
 import {
   PANE_UPDATE,
   PANE_SPLIT,
@@ -10,20 +11,27 @@ import {
   PANE_CONFIRM_RESIZE,
 } from './actions'
 
+const moveTabToPane = (tabId, paneId) => {
+  const pane = mobxStore.PaneState.panes.get(paneId)
+  const tab = mobxStore.EditorTabState.tabs.get(tabId)
+  tab.tabGroup.removeTab(tab)
+  pane.tabGroup.addTab(tab)
+}
+
 const actionHandlers = handleActions({
   [PANE_UPDATE]: (state, { id: paneId, tabGroupId }) => {
     const pane = state.panes.get(paneId)
     pane.contentId = tabGroupId
   },
 
-  [PANE_SPLIT]: (state, { paneId, splitDirection }, action) => {
-    console.log(PANE_SPLIT + ' start');
+  [PANE_SPLIT]: (state, { paneId, splitDirection, tabId }, action) => {
     const pane = state.panes.get(paneId)
     /* ----- */
     let flexDirection, newPane
     if (splitDirection === 'center') {
       // no pane arrangement changed, so no state change
       action.meta.resolve(pane.id)
+      moveTabToPane(tabId, pane.id)
       return state
     }
     switch (splitDirection) {
@@ -52,6 +60,7 @@ const actionHandlers = handleActions({
         newPane.index = pane.index - 0.5
       }
       action.meta.resolve(newPane.id)
+      moveTabToPane(tabId, newPane.id)
     // If flexDirection is NOT the same as parent's,
     // that means we should spawn a child pane
     } else {
@@ -65,22 +74,15 @@ const actionHandlers = handleActions({
       } else {
         spawnedChild.index = 1
         newPane.index = 0
-        console.log(newPane.index, spawnedChild.index);
       }
       action.meta.resolve(newPane.id)
+      moveTabToPane(tabId, newPane.id)
     }
   },
 
   [PANE_CLOSE]: (state, { paneId }) => {
     let pane = state.panes.get(paneId)
-    let parent = pane.parent
-
-    // the `mergeTabGroups` part of the action is handled inside `Tab/reducer.js`
-
-    // if parent is about to have only one child left
-    // we short-circut parent.content to the-pane-to-delete.content
-    if (parent.views.length === 2) parent.contentId = pane.contentId
-    entities.panes.delete(pane.id)
+    pane.destroy()
   },
 
   [PANE_CONFIRM_RESIZE]: (state, { leftView, rightView }) => {

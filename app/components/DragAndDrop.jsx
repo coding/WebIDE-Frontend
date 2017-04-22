@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { dispatch } from '../store'
+import mobxStore from '../mobxStore'
 import { observer } from 'mobx-react'
+import { action, runInAction } from 'mobx'
 import { dnd } from 'utils'
 import * as PaneActions from './Pane/actions'
+import PaneState from './Pane/state'
 import * as TabActions from 'commons/Tab/actions'
 import * as FileTreeActions from './FileTree/actions'
 
@@ -94,10 +97,7 @@ class DragAndDrop extends Component {
     if (!source || !target) return
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
-        dispatch(PaneActions.splitTo(target.id, meta.paneSplitDirection))
-          .then(newPaneId => {
-            dispatch(TabActions.moveTabToPane(source.id, newPaneId))
-          })
+        PaneActions.splitTo(target.id, meta.paneSplitDirection, source.id)
         break
       case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
         dispatch(FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id))
@@ -139,7 +139,7 @@ class DragAndDrop extends Component {
   }
   dragTabOverPane (e, target) {
     if (target.type !== 'PANE') return
-    const { meta } = dnd
+    const { source, meta } = dnd
     const [oX, oY] = [e.pageX, e.pageY]
 
     const {top, left, right, bottom, height, width} = target.rect
@@ -161,8 +161,18 @@ class DragAndDrop extends Component {
       overlayPos = 'center'
     }
 
+    if (mobxStore.PaneState.autoCloseEmptyPane) {
+      const sourceTab = mobxStore.EditorTabState.tabs.get(source.id)
+      const targetPane = mobxStore.PaneState.panes.get(target.id)
+      const isLonelyTab = sourceTab.tabGroup.tabs.length === 1
+      if (isLonelyTab && targetPane.tabGroup === sourceTab.tabGroup) {
+        overlayPos = 'center'
+      }
+    }
+
     // nothing changed, stop here
-    if (meta && meta.paneSplitDirection === overlayPos) return
+    if (meta && meta.paneSplitDirection === overlayPos &&
+        meta.targetId === target.id) return
 
     const heightTabBar = target.DOMNode.querySelector('.tab-bar').offsetHeight
     let overlay
@@ -210,7 +220,8 @@ class DragAndDrop extends Component {
 
     dnd.updateDragOverMeta({
       paneSplitDirection: overlayPos,
-      paneLayoutOverlay: overlay
+      paneLayoutOverlay: overlay,
+      targetId: target.id,
     })
   }
 }

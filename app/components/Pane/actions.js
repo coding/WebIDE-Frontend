@@ -27,7 +27,9 @@ export const split = createAction(PANE_SPLIT_WITH_KEY,
 )
 
 export const PANE_SPLIT = 'PANE_SPLIT'
-export const splitTo = createAction.promise(PANE_SPLIT, (paneId, splitDirection) => ({paneId, splitDirection}))
+export const splitTo = createAction.promise(PANE_SPLIT,
+  (paneId, splitDirection, tabId) => ({ paneId, splitDirection, tabId })
+)
 
 export const PANE_UPDATE = 'PANE_UPDATE'
 export const updatePane = createAction(PANE_UPDATE)

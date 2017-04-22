@@ -137,6 +137,22 @@ class TabGroup {
     tab.tabGroupId = null
   }
 
+  @mapEntity('tabGroups')
+  @action merge (tabGroup) {
+    if (!tabGroup) return
+    const baseIndex = this.tabs.length
+    tabGroup.tabs.forEach(tab => {
+      tab.tabGroupId = this.id
+      tab.index += baseIndex
+    })
+    this.activate()
+  }
+
+  @mapEntity('tabGroups')
+  @action mergeTo (tabGroup) {
+    tabGroup.merge(this)
+  }
+
   @action destroy () {
     entities.tabGroups.delete(this.id)
   }
