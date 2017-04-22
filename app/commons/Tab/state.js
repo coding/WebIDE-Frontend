@@ -41,33 +41,44 @@ class Tab {
     return this.tabGroup.activeTab === this
   }
 
+  @computed get siblings () {
+    return this.tabGroup.tabs
+  }
+
   @computed get next () {
-    const siblingTabs = this.tabGroup.tabs
-    return siblingTabs[this.index + 1]
+    return this.siblings[this.index + 1]
   }
 
   @computed get prev () {
-    const siblingTabs = this.tabGroup.tabs
-    return siblingTabs[this.index - 1]
+    return this.siblings[this.index - 1]
+  }
+
+  getAdjacent (checkNextFirst) {
+    let adjacent = checkNextFirst ?
+      (this.next || this.prev) : (this.prev || this.next)
+    return adjacent
   }
 
   @action activate () {
     this.tabGroup.activeTabId = this.id
-    entities.activeTabGroupId = this.tabGroup.id
+    this.tabGroup.activate()
   }
 
   @action destroy () {
+    this.tabGroup.removeTab(this)
     entities.tabs.delete(this.id)
   }
 }
 
 autorun(() => {
   entities.tabGroups.forEach(tabGroup => {
+    // correct tab index
     tabGroup.tabs.forEach((tab, tabIndex) => {
       if (tab.index !== tabIndex) tab.index = tabIndex
     })
   })
 })
+
 
 class TabGroup {
   constructor (config={}) {
@@ -85,12 +96,18 @@ class TabGroup {
 
   @computed get activeTab () {
     let activeTab = entities.tabs.get(this.activeTabId)
-    if (!activeTab) activeTab = this.tabs[0]
-    return activeTab
+    if (activeTab && activeTab.tabGroupId === this.id) {
+      return activeTab
+    }
+    return null
   }
 
   @computed get siblings () {
-    return _.without(entities.tabGroups.values(), this)
+    return entities.tabGroups.values()
+  }
+
+  @computed get isActive () {
+    return entities.activeTabGroup === this
   }
 
   @mapEntity('tabs')
@@ -98,7 +115,7 @@ class TabGroup {
     if (!tab) tab = new Tab()
     tab.index = insertIndex
     tab.tabGroupId = this.id
-    this.activeTabId = tab.id
+    tab.activate()
     return tab
   }
 
@@ -108,11 +125,15 @@ class TabGroup {
 
   @mapEntity('tabs')
   @action activateTab (tab) {
-    this.activeTabId = tab.id
+    tab.activate()
   }
 
   @mapEntity('tabs')
   @action removeTab (tab) {
+    if (tab.isActive) {
+      let adjacentTab = tab.getAdjacent()
+      if (adjacentTab) adjacentTab.activate()
+    }
     tab.tabGroupId = null
   }
 
