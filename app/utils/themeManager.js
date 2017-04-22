@@ -18,6 +18,7 @@ export const changeTheme = (nextThemeId, force) => {
   }
   emitter.emit(E.THEME_CHANGED, nextThemeId)
 }
+
 export const changeCodeTheme = (next) => {
   const nextTheme = next.split('/').pop()
   const currentThemeValue = getState().SettingState.views.tabs.THEME.items[1].value

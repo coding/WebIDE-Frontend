@@ -3,7 +3,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import api from '../../../backendAPI'
 import store, { dispatch as $d } from '../../../store'
-import * as Tab from '../../Tab'
+import * as TabActions from 'commons/Tab/actions'
 import cx from 'classnames'
 import { dispatchCommand } from '../../../commands/lib/keymapper'
 
@@ -70,7 +70,7 @@ class FilePalette extends Component {
 
     api.readFile(node.path)
     .then(data => {
-      $d(Tab.actions.createTab({
+      $d(TabActions.createTab({
         id: _.uniqueId('tab_'),
         type: 'editor',
         title: node.name || filename,

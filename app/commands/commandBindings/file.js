@@ -1,10 +1,11 @@
 /* @flow weak */
 import { bindActionCreators } from 'redux'
 import store, { getState, dispatch } from '../../store'
+import mobxStore from '../../mobxStore'
 import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
-import * as Tab from '../../components/Tab'
+import * as TabActions from 'commons/Tab/actions'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)
@@ -74,9 +75,9 @@ export default {
     }).then(createFolderAtPath)
   },
   'file:save': (c) => {
-    const { TabState } = getState()
-    const activeTab = Tab.selectors.getActiveTab(TabState)
-    const content = activeTab ? ide.editors[activeTab.id].getValue() : ''
+    const { EditorTabState } = mobxStore
+    const activeTab = EditorTabState.activeTab
+    const content = activeTab ? activeTab.editor.getValue() : ''
 
     if (!activeTab.path) {
       const createFile = createFileWithContent(content)
@@ -86,17 +87,17 @@ export default {
         selectionRange: [1, '/untitled'.length]
       })
         .then(createFile)
-        .then(path => dispatch(Tab.actions.updateTab({
+        .then(path => dispatch(TabActions.updateTab({
           id: activeTab.id,
           path,
           title: path.replace(/^.*\/([^\/]+$)/, '$1')
         })))
-        .then(() => dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false)))
+        .then(() => dispatch(TabActions.updateTabFlags(activeTab.id, 'modified', false)))
     } else {
       api.writeFile(activeTab.path, content)
         .then(() => {
-          dispatch(Tab.actions.updateTabFlags(activeTab.id, 'modified', false))
-          dispatch(Tab.actions.updateTab({
+          dispatch(TabActions.updateTabFlags(activeTab.id, 'modified', false))
+          dispatch(TabActions.updateTab({
             id: activeTab.id, content: { body: content }
           }))
         })

@@ -1,8 +1,10 @@
 /* @flow weak */
 import React, { Component, PropTypes } from 'react'
+import { observer } from 'mobx-react'
 import cx from 'classnames'
 import Pane from './Pane'
 
+@observer
 class PaneAxis extends Component {
   static propTypes = {
     id: PropTypes.string,
@@ -20,20 +22,20 @@ class PaneAxis extends Component {
   onResizing (listener) { if (typeof listener === 'function') { this.resizingListeners.push(listener) } }
 
   render () {
-    const { pane } = this.props
+    const selfPane = this.props.pane
     let Subviews
-    if (pane.views.length) {
-      Subviews = pane.views.map(paneId =>
-        <Pane key={paneId} paneId={paneId} parentFlexDirection={pane.flexDirection} />
+    if (selfPane.views.length) {
+      Subviews = selfPane.views.map(pane =>
+        <Pane key={pane.id} pane={pane} parentFlexDirection={selfPane.flexDirection} />
       )
     } else {
-      Subviews = <Pane paneId={pane.id} parentFlexDirection={pane.flexDirection} />
+      Subviews = <Pane pane={selfPane} parentFlexDirection={selfPane.flexDirection} />
     }
 
     return (
       <div id={this.props.id}
         className={cx('pane-axis', this.props.className)}
-        style={{ flexDirection: pane.flexDirection, ...this.props.style }}
+        style={{ flexDirection: selfPane.flexDirection, ...this.props.style }}
       >{Subviews}
       </div>
     )

@@ -3,11 +3,10 @@
 import React, { Component, PropTypes } from 'react';
 import Terminal from 'sh.js';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { emitter, E } from 'utils'
 
 import terms from './terminal-client';
-import * as TabActions from '../Tab/actions';
+import * as TabActions from 'commons/Tab/actions';
 terms.setActions(TabActions);
 
 class Term extends Component {
@@ -40,7 +39,7 @@ class Term extends Component {
       terms.getSocket().emit('term.input', {id: terminal.name, input: data})
     });
     terminal.on('title', _.debounce(title => {
-      _this.props.handleTabTitle(_this.props.tab.id, title) // change tab title.
+      _this.props.tab.title = title
     }, 300));
   }
 
@@ -83,12 +82,5 @@ class Term extends Component {
     terminal.refresh(0, terminal.rows - 1)
   }
 }
-
-
-Term = connect(null, dispatch => {
-  return {
-    handleTabTitle: (id, title) => dispatch(TabActions.updateTab({title, id}))
-  }
-})(Term)
 
 export default Term;

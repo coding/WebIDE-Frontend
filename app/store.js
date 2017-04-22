@@ -1,18 +1,19 @@
 /* @flow weak */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { composeReducers } from './utils'
+import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
 import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
+// import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
+import EditorTabReducer from './components/Editor/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
 import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
-import DragAndDropReducer from './components/DragAndDrop/reducer'
 import SettingReducer from './components/Setting/reducer'
 import RootReducer from './containers/Root/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
@@ -26,17 +27,17 @@ const combinedReducers = combineReducers({
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
-  TabState: TabReducer,
+  // TabState: TabReducer,
+  EditorTabState: EditorTabReducer,
   ModalState: ModalsReducer,
   TerminalState: TerminalReducer,
   GitState: GitReducer,
   NotificationState: NotificationReducer,
-  DragAndDrop: DragAndDropReducer,
   SettingState: SettingReducer,
   StatusBarState: StatusBarReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, TabCrossReducer, PackageCrossReducer)
+const crossReducers = composeReducers(RootReducer, PaneCrossReducer, PackageCrossReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,
@@ -45,7 +46,7 @@ const finalReducer = composeReducers(
 )
 
 const enhancer = compose(
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(thunkMiddleware, emitterMiddleware),
   window.devToolsExtension ? window.devToolsExtension({
     serialize: {
       replacer: (key, value) => {

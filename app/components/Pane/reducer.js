@@ -1,7 +1,7 @@
-/* @flow weak */
 import _ from 'lodash'
-import { update } from '../../utils'
-import { handleActions } from 'redux-actions'
+import { createTransformer } from 'mobx'
+import { handleActions } from 'utils/actions'
+import entities, { Pane } from './state'
 import {
   PANE_UPDATE,
   PANE_SPLIT,
@@ -9,113 +9,16 @@ import {
   PANE_CLOSE,
   PANE_CONFIRM_RESIZE,
 } from './actions'
-import {
-  getPaneById,
-  getParent,
-  getNextSibling,
-  getPrevSibling,
-  getPanesWithPosMap,
-} from './selectors'
-const debounced = _.debounce(func => func(), 50)
 
-/**
- *  The state shape:
- *
- *  PaneState = {
-      rootPaneId: PropTypes.string,
-      panes: {
-        [pane_id]: {
-          id: PropTypes.string,
-          flexDirection: PropTypes.string,
-          size: PropTypes.number,
-          parentId: PropTypes.string,
-          views: PropTypes.arrayOf(PropTypes.string),
-          content: PropTypes.shape({
-            type: PropTypes.string,
-            id: PropTypes.string,
-          })
-        }
-      }
-    }
-*/
-
-const Pane = (paneConfig) => {
-  const defaults = {
-    id: _.uniqueId('pane_view_'),
-    flexDirection: 'row',
-    size: 100,
-    views: [],
-    parentId: '',
-    content: undefined,
-  }
-
-  return { ...defaults, ...paneConfig }
-}
-
-const rootPane = Pane({
-  id: 'pane_view_1',
-  flexDirection: 'row',
-  size: 100,
-  views: [],
-  content: {
-    type: 'tabGroup',
-    id: ''
-  }
-})
-const defaultState = {
-  panes: {
-    [rootPane.id]: rootPane
-  },
-  rootPaneId: rootPane.id
-}
-
-const _addSiblingAfterPane = (state, pane, siblingPane) => _addSibling(state, pane, siblingPane, 1)
-const _addSiblingBeforePane = (state, pane, siblingPane) => _addSibling(state, pane, siblingPane, -1)
-const _addSibling = (state, pane, siblingPane, indexOffset) => {
-  let parent = getParent(state, pane)
-  let atIndex = parent.views.indexOf(pane.id) + indexOffset
-  parent.views.splice(atIndex, 0, siblingPane.id)
-
-  return update(state, {
-    panes: {
-      [parent.id]: {$set: {...parent}},
-      [siblingPane.id]: {$set: siblingPane}
-    }
-  })
-}
-
-function _hoistSingleChild (state, parent) {
-  if (parent.views.length != 1) return state
-  const singleChild = state.panes[parent.views[0]]
-  if (singleChild.views.length > 0) {
-    parent = update(parent, {
-      views: {$set: singleChild.views},
-      flexDirection: {$set: singleChild.flexDirection}
-    })
-  } else {
-    parent = update(parent, {
-      views: {$set: []},
-      content: {$set: singleChild.content}
-    })
-  }
-  let nextState = update(state, {panes: {[parent.id]: {$set: parent}}})
-  nextState = update(nextState, {panes: {$delete: singleChild.id}})
-  return _hoistSingleChild(nextState, parent)
-}
-
-export default handleActions({
-  [PANE_UPDATE]: (state, action) => {
-    const { id: paneId, tabGroupId } = action.payload
-    let pane = getPaneById(state, paneId)
-
-    return update(state, {
-      panes: {[pane.id]: {content: {id: {$set: tabGroupId}}}}
-    })
+const actionHandlers = handleActions({
+  [PANE_UPDATE]: (state, { id: paneId, tabGroupId }) => {
+    const pane = state.panes.get(paneId)
+    pane.contentId = tabGroupId
   },
 
-  [PANE_SPLIT]: (state, action) => {
-    const { paneId, splitDirection } = action.payload
-    let pane = getPaneById(state, paneId)
+  [PANE_SPLIT]: (state, { paneId, splitDirection }, action) => {
+    console.log(PANE_SPLIT + ' start');
+    const pane = state.panes.get(paneId)
     /* ----- */
     let flexDirection, newPane
     if (splitDirection === 'center') {
@@ -133,105 +36,69 @@ export default handleActions({
         flexDirection = 'column'
         break
       default:
-        throw 'Pane.splitToDirection method requires param "splitDirection"'
+        throw Error('Pane.splitToDirection method requires param "splitDirection"')
     }
 
-    let parent = getParent(state, pane)
+    const parent = pane.parent
     // If flexDirection is same as parent's,
     // then we can simply push the newly splitted view into parent's "views" array
+    // debugger
     if (parent && parent.flexDirection === flexDirection) {
-      newPane = Pane({ parentId: parent.id, content: {type: 'tabGroup'} })
-      action.meta.resolve(newPane.id)
+      newPane = new Pane({ parentId: parent.id })
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        return _addSiblingAfterPane(state, pane, newPane)
+        // return _addSiblingAfterPane(state, pane, newPane)
+        newPane.index = pane.index + 0.5
       } else {
-        return _addSiblingBeforePane(state, pane, newPane)
+        newPane.index = pane.index - 0.5
       }
-
+      action.meta.resolve(newPane.id)
     // If flexDirection is NOT the same as parent's,
     // that means we should spawn a child pane
     } else {
-      pane = {...pane, flexDirection}
-      let spawnedChild = Pane({parentId: pane.id, content: {...pane.content}})
-      delete pane.content
-      newPane = Pane({ parentId: pane.id, content: {type: 'tabGroup'} })
+      pane.flexDirection = flexDirection
+      const spawnedChild = new Pane({ parentId: pane.id, contentId: pane.contentId })
+      pane.contentId = null
+      newPane = new Pane({ parentId: pane.id })
       if (splitDirection === 'right' || splitDirection === 'bottom') {
-        pane.views = [spawnedChild.id, newPane.id]
+        spawnedChild.index = 0
+        newPane.index = 1
       } else {
-        pane.views = [newPane.id, spawnedChild.id]
+        spawnedChild.index = 1
+        newPane.index = 0
+        console.log(newPane.index, spawnedChild.index);
       }
       action.meta.resolve(newPane.id)
-
-      return update(state, {
-        panes: {
-          [newPane.id]: {$set: newPane},
-          [pane.id]: {$set: pane},
-          [spawnedChild.id]: {$set: spawnedChild},
-        }
-      })
     }
   },
 
-  [PANE_CLOSE]: (state, action) => {
-    const { paneId, targetTabGroupId, sourceTabGroupId } = action.payload
-    let parent = getParent(state, paneId)
-    let nextState = state
+  [PANE_CLOSE]: (state, { paneId }) => {
+    let pane = state.panes.get(paneId)
+    let parent = pane.parent
 
     // the `mergeTabGroups` part of the action is handled inside `Tab/reducer.js`
-    parent = update(parent, {views: {$without: paneId}})
-    nextState = update(nextState, {panes: {[parent.id]: {$set: parent}}})
-    nextState = _hoistSingleChild(nextState, parent)
-    parent = nextState.panes[parent.id]
 
-    nextState = update(nextState, {panes: {[parent.id]: {$set: parent}}})
-    nextState = update(nextState, {panes: {$delete: paneId}})
-    return nextState
+    // if parent is about to have only one child left
+    // we short-circut parent.content to the-pane-to-delete.content
+    if (parent.views.length === 2) parent.contentId = pane.contentId
+    entities.panes.delete(pane.id)
   },
 
-  [PANE_CONFIRM_RESIZE]: (state, { payload: { leftView, rightView } }) => {
-    return update(state, {
-      panes: {
-        [leftView.id]: { size: { $set: leftView.size } },
-        [rightView.id]: { size: { $set: rightView.size } },
-      }
-    })
-  }
-}, defaultState)
+  [PANE_CONFIRM_RESIZE]: (state, { leftView, rightView }) => {
+    state.panes[leftView.id].size = leftView.size
+    state.panes[rightView.id].size = rightView.size
+  },
+}, entities)
 
 
-export const PaneCrossReducer = handleActions({
-  [PANE_SPLIT_WITH_KEY]: (allStates, action) => {
-    return allStates
-    // const { PaneState, TabState } = allStates
-    // const { splitCount, flexDirection } = action.payload
-    // let rootPane = PaneState.panes[PaneState.rootPaneId]
-
-    // if (
-    //   (splitCount === rootPane.views.length && flexDirection === rootPane.flexDirection) ||
-    //   (splitCount === 1 && rootPane.views.length === 0 && rootPane.content)
-    // ) {
-    //   return allStates
-    // }
-
-    // // if rootPane has children
-    // if (rootPane.views.length) {
-
-    //   if (splitCount > rootPane.views.length) {
-    //     // this is the easier case where we simply increase panes
-    //     rootPane.views
-
-    //   } else {
-    //     // this is the harder case where we need to merge tabGroups
-
-    //   }
-    // }
+const transform = createTransformer(entities => {
+  return {
+    panes: entities.panes.toJS(),
+    rootPaneId: entities.rootPaneId,
   }
 })
 
+export default function (state, action) {
+  return transform(entities)
+}
 
-
-
-
-
-
-
+export const PaneCrossReducer = f => f

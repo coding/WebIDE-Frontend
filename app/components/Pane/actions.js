@@ -4,8 +4,8 @@ import {
   getPrevSibling,
 } from './selectors'
 
-import { createAction } from 'redux-actions'
-import { promiseActionMixin } from '../../utils'
+import { createAction } from 'utils/actions'
+import { promiseActionMixin } from 'utils'
 
 export const PANE_INITIALIZE = 'PANE_INITIALIZE'
 export const PANE_UNSET_COVER = 'PANE_UNSET_COVER'
@@ -27,9 +27,7 @@ export const split = createAction(PANE_SPLIT_WITH_KEY,
 )
 
 export const PANE_SPLIT = 'PANE_SPLIT'
-export const splitTo = promiseActionMixin(
-  createAction(PANE_SPLIT, (paneId, splitDirection) => ({paneId, splitDirection}))
-)
+export const splitTo = createAction.promise(PANE_SPLIT, (paneId, splitDirection) => ({paneId, splitDirection}))
 
 export const PANE_UPDATE = 'PANE_UPDATE'
 export const updatePane = createAction(PANE_UPDATE)

@@ -2,8 +2,9 @@
 import config from '../../config'
 import api from '../../backendAPI'
 import store, { dispatch } from '../../store'
+import mobxStore from '../../mobxStore'
 import * as FileTreeActions from './actions'
-import { actions as TabActions, selectors as TabSelectors } from '../Tab'
+import * as TabActions from 'commons/Tab/actions'
 
 export default function subscribeToFileChange () {
   return api.websocketConnectedPromise.then(client =>
@@ -16,7 +17,7 @@ export default function subscribeToFileChange () {
           break
         case 'modify':
           dispatch(FileTreeActions.loadNodeData([node]))
-          var tabsToUpdate = TabSelectors.getTabsByPath(store.getState().TabState, node.path)
+          var tabsToUpdate = mobxStore.EditorTabState.tabs.values().filter(tab => tab.path === node.path)
           if (tabsToUpdate.length) {
             api.readFile(node.path).then(({ content }) => {
               dispatch(TabActions.updateTabByPath({

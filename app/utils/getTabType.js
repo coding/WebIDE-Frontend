@@ -1,4 +1,4 @@
-export const getTabType = (node) => {
+export default function getTabType (node) {
   if (
     /^text\/[^/]+/.test(node.contentType) || (
       node.contentType === 'application/xml'

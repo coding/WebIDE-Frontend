@@ -1,13 +1,18 @@
-/* @flow weak */
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import _ from 'lodash'
-import { updateDragOverTarget, updateDragOverMeta, dragEnd, dragStart } from './actions'
-import * as PaneActions from '../Pane/actions'
-import * as TabActions from '../Tab/actions'
-import * as FileTreeActions from '../FileTree/actions'
+import { dispatch } from '../store'
+import { observer } from 'mobx-react'
+import { dnd } from 'utils'
+import * as PaneActions from './Pane/actions'
+import * as TabActions from 'commons/Tab/actions'
+import * as FileTreeActions from './FileTree/actions'
 
-@connect(state => state.DragAndDrop)
+// Corner case: file dragging doesn't trigger 'dragend' natively
+// so need to patch for this behavior
+function isFileDragEnd (e) {
+  return (e.screenX === 0 && e.screenY === 0 && e.dataTransfer.files.length)
+}
+
+@observer
 class DragAndDrop extends Component {
 
   constructor (props) {
@@ -15,7 +20,7 @@ class DragAndDrop extends Component {
   }
 
   render () {
-    const {isDragging, meta, target} = this.props
+    const { isDragging, meta, target } = dnd
     if (!isDragging) return null
 
     if (meta && meta.paneLayoutOverlay) {
@@ -41,22 +46,20 @@ class DragAndDrop extends Component {
     window.ondragend = this.onDragEnd
     window.ondragleave = this.onDragLeave
   }
+
   onDragLeave = (e) => {
     e.preventDefault()
-    const {source = {}, dispatch} = this.props
-    if (source.type && source.type === 'EXTERNAL_FILE') {
-      setTimeout(() => dispatch(dragEnd()), 1000)
-    }
+    if (isFileDragEnd(e)) dnd.dragEnd()
   }
+
   onDragOver = (e) => {
     e.preventDefault()
-    const {source, droppables = [], dispatch, meta} = this.props
-    const prevTarget = this.props.target
+    const { source, droppables = [], meta } = dnd
     if (!source) {
-      dispatch(dragStart({
-        sourceType: 'EXTERNAL_FILE',
-        sourceId: Date.now(),
-      }))
+      dnd.dragStart({
+        type: 'EXTERNAL_FILE',
+        id: Date.now(),
+      })
     }
     const [oX, oY] = [e.pageX, e.pageY]
     const target = droppables.reduce((result, droppable) => {
@@ -69,9 +72,9 @@ class DragAndDrop extends Component {
       }
     }, null)
     if (!target) return
-    // if (!prevTarget || target.id !== prevTarget.id) {
-      dispatch(updateDragOverTarget({id: target.id, type: target.type }))
-    // }
+
+    dnd.dragOver({ id: target.id, type: target.type })
+
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
         return this.dragTabOverPane(e, target)
@@ -87,7 +90,7 @@ class DragAndDrop extends Component {
 
   onDrop = (e) => {
     e.preventDefault()
-    const {source, target, meta, dispatch} = this.props
+    const { source, target, meta } = dnd
     if (!source || !target) return
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
@@ -110,22 +113,20 @@ class DragAndDrop extends Component {
       default:
 
     }
-    dispatch(dragEnd())
+    dnd.dragEnd()
   }
 
   onDragEnd = (e) => {
     e.preventDefault()
-    const {dispatch} = this.props
-    dispatch(dragEnd())
+    dnd.dragEnd()
   }
 
   dragTabOverTabBar (e, target) {
-    const {dispatch} = this.props
     if (target.type !== 'TABLABEL' && target.type !== 'TABBAR') return
     if (target.type === 'TABLABEL') {
-      dispatch(updateDragOverMeta({tabLabelTargetId: target.id}))
+      dnd.updateDragOverMeta({tabLabelTargetId: target.id})
     } else {
-      dispatch(updateDragOverMeta({tabBarTargetId: target.id}))
+      dnd.updateDragOverMeta({tabBarTargetId: target.id})
     }
   }
 
@@ -138,7 +139,7 @@ class DragAndDrop extends Component {
   }
   dragTabOverPane (e, target) {
     if (target.type !== 'PANE') return
-    const {meta, dispatch} = this.props
+    const { meta } = dnd
     const [oX, oY] = [e.pageX, e.pageY]
 
     const {top, left, right, bottom, height, width} = target.rect
@@ -207,10 +208,10 @@ class DragAndDrop extends Component {
         }
     }
 
-    dispatch(updateDragOverMeta({
+    dnd.updateDragOverMeta({
       paneSplitDirection: overlayPos,
       paneLayoutOverlay: overlay
-    }))
+    })
   }
 }
 
