@@ -6,6 +6,7 @@ import Root from './containers/Root'
 import './styles/main.styl'
 const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/base-theme/index.styl')
 baseTheme.use()
+window.themes = { '@current': baseTheme }
 
 import initialize from './initialize'
 

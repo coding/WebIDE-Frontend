@@ -3,7 +3,6 @@ import axios from 'axios'
 import './promise.prototype.finalCatch'
 import { qs } from './url-helpers'
 import config from '../config'
-import { dispatch } from '../store'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 
 const _request = axios.create({
@@ -40,10 +39,12 @@ Object.assign(request, _request)
 
 const promiseInterceptor = (promise) => {
   promise.finalCatch(err => {
-    if (err.msg) dispatch(notify({
-      notifyType: NOTIFY_TYPE.ERROR,
-      message: err.response.data.msg,
-    }))
+    if (err.msg && window.dispatch) window.dispatch(
+      notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: err.response.data.msg,
+      })
+    )
   })
   return promise
 }

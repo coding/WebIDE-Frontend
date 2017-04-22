@@ -34,7 +34,7 @@ const getDefaultLangCode = () => {
   }, '')
 }
 
-export const UIThemeOptions = ['Light', 'Dark']
+export const UIThemeOptions = ['base-theme', 'dark']
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
 const SettingState = {

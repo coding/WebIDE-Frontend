@@ -12,6 +12,7 @@ terms.setActions(TabActions);
 class Term extends Component {
   constructor(props) {
     super(props);
+    this.setTheme = this.setTheme.bind(this)
   }
 
   componentDidMount() {
@@ -31,6 +32,7 @@ class Term extends Component {
     });
     setTimeout(() => terminal.sizeToFit(), 0)
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
+    emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
 
     terms.add(terminal);
     terminal.on('data', data => {
@@ -43,6 +45,7 @@ class Term extends Component {
 
   componentWillUnmount() {
     emitter.removeListener(E.PANEL_RESIZED, this.onResize)
+    emitter.removeListener(E.THEME_CHANGED, this.onTheme)
   }
 
   render() {
@@ -60,12 +63,20 @@ class Term extends Component {
     this.terminal.sizeToFit()
   }
 
+  onTheme (nextThemeId) {
+    let themeName = 'terminal_basic'
+    if (nextThemeId === 'dark') {
+      themeName = 'default'
+    }
+    this.setTheme(themeName)
+  }
+
   setTheme(themeName) {
-    var theme = Terminal.themes.defaults['default'];
+    var theme = Terminal.themes.defaults[themeName];
     var terminal = this.terminal;
     terminal.colors = Terminal.themes.colors(theme);
 
-    if (themeName == 'terminal_basic') terminal.colors[256] = '#fffff7';
+    // if (themeName == 'terminal_basic') terminal.colors[256] = '#fffff7';
     terminal.element.style.backgroundColor = terminal.colors[256];
     terminal.element.style.color = terminal.colors[257];
     terminal.refresh(0, terminal.rows - 1)
