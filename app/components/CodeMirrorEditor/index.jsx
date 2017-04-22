@@ -7,8 +7,11 @@ import dispatchCommand from '../../commands/dispatchCommand'
 import _ from 'lodash'
 import * as TabActions from 'commons/Tab/actions';
 
-function initializeEditor (editorDOM, theme) {
+function initializeEditor (editorContainer, theme) {
   // @todo: add other setting item from config
+  const editorDOM = document.createElement('div')
+  Object.assign(editorDOM.style, { width: '100%', height: '100%' })
+  editorContainer.appendChild(editorDOM)
   const editor = CodeMirror(editorDOM, {
     theme,
     autofocus: true,
@@ -29,6 +32,10 @@ function initializeEditor (editorDOM, theme) {
   return editor
 }
 
+// Ref: codemirror/mode/meta.js
+function getMode (tab) {
+  return CodeMirror.findModeByMIME(tab.contentType) || CodeMirror.findModeByFileName(tab.path.split('/').pop())
+}
 
 const debounced = _.debounce(func => func(), 1000)
 
@@ -43,45 +50,52 @@ class CodeMirrorEditor extends Component {
     width: '100%',
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {};
+  constructor (props) {
+    super(props)
+    this.state = {}
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { themeSetting, tab } = this.props;
     const themeConfig = themeSetting.items[1].value
+    let editorInitialized = false
     // todo add other setting item from config
-    const editor = this.editor = initializeEditor(this.editorDOM, themeConfig)
-
+    if (tab.editor) {
+      this.editor = tab.editor
+      this.editorContainer.appendChild(this.editor.getWrapperElement())
+    } else {
+      this.editor = tab.editor = initializeEditor(this.editorContainer, themeConfig)
+      editorInitialized = true
+    }
+    const editor = this.editor
     // @fixme:
     // related counterparts:
     // 1. IdeEnvironment.js
     // 2. commandBindings/file.js
     window.ide.editors[tab.id] = editor
 
-    if (tab.path && tab.content) {
-      const body = tab.content.body;
-      const modeInfo = this.getMode(tab);
-      if (body) editor.setValue(body);
+    if (editorInitialized && tab.path && tab.content) {
+      const body = tab.content.body
+      const modeInfo = getMode(tab)
+      if (body) editor.setValue(body)
       if (modeInfo) {
-        let mode = modeInfo.mode;
+        let mode = modeInfo.mode
         if (mode === 'null') {
           editor.setOption('mode', mode)
         } else {
-          require([`codemirror/mode/${mode}/${mode}.js`], () => editor.setOption('mode', mode));
+          require([`codemirror/mode/${mode}/${mode}.js`], () => editor.setOption('mode', mode))
         }
       }
     }
 
-    editor.focus();
-    editor.on('change', this.onChange);
-    editor.on('focus', () => this.props.dispatch(TabActions.activateTab(tab.id)))
+    editor.focus()
+    editor.on('change', this.onChange)
+    editor.on('focus', this.onFocus)
   }
 
-  // Ref: codemirror/mode/meta.js
-  getMode (tab) {
-    return CodeMirror.findModeByMIME(tab.contentType) || CodeMirror.findModeByFileName(tab.path.split('/').pop())
+  componentWillUnmount () {
+    this.editor.off('change', this.onChange)
+    this.editor.off('focus', this.onFocus)
   }
 
   onChange = (e) => {
@@ -96,7 +110,11 @@ class CodeMirrorEditor extends Component {
       dispatchCommand('file:save')
       this.isChanging = false
     })
-  };
+  }
+
+  onFocus = () => {
+    this.props.dispatch(TabActions.activateTab(this.props.tab.id))
+  }
 
   componentWillReceiveProps ({ tab, themeSetting }) {
     if (tab.flags.modified || !this.editor || !tab.content) return
@@ -109,16 +127,16 @@ class CodeMirrorEditor extends Component {
     if (theme !== nextTheme) this.editor.setOption('theme', nextTheme)
   }
 
-  render() {
-    const {width, height} = this.props;
-    const name = this.state.name;
-    const divStyle = {width, height};
+  render () {
+    const {width, height} = this.props
+    const name = this.state.name
+    const divStyle = { width, height }
     return (
-      <div ref={ c => this.editorDOM = c }
+      <div ref={c => this.editorContainer = c}
         id={name}
         style={divStyle}
       />
-    );
+    )
   }
 
 }
@@ -138,9 +156,9 @@ class TablessCodeMirrorEditor extends Component {
     const { themeSetting, width, height } = this.props
     const theme = themeSetting.items[1].value
 
-    const editor = this.editor = initializeEditor(this.editorDOM, theme)
-    editor.focus()
-    editor.on('change', this.onChange)
+    this.editor = initializeEditor(this.editorContainer, theme)
+    this.editor.focus()
+    this.editor.on('change', this.onChange)
   }
 
   onChange = (e) => {
@@ -158,7 +176,7 @@ class TablessCodeMirrorEditor extends Component {
 
   render () {
     return (
-      <div ref={ c => this.editorDOM = c } style={{ height: '100%', width: '100%' }} />
+      <div ref={ c => this.editorContainer = c } style={{ height: '100%', width: '100%' }} />
     )
   }
 }
