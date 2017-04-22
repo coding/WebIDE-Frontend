@@ -6,6 +6,7 @@ import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import { connect } from 'react-redux';
 import * as TabActions from 'commons/Tab/actions';
 import EditorWrapper from '../EditorWrapper'
+import { TablessCodeMirrorEditor } from '../CodeMirrorEditor'
 
 const contextMenuItems = [
   {
@@ -49,11 +50,15 @@ class TabContainer extends Component {
       <div className='tab-container'>
         <TabBar tabGroup={tabGroup} contextMenuItems={contextMenuItems}/>
         <TabContent tabGroup={tabGroup} >
-          {tabGroup.tabs.map(tab =>
+          {tabGroup.tabs.length ? tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >
               <EditorWrapper tab={tab} />
             </TabContentItem>
-          )}
+          )
+          : <TabContentItem tab={{ isActive: true }}>
+              <TablessCodeMirrorEditor tabGroupId={tabGroup.id} />
+            </TabContentItem>
+          }
         </TabContent>
       </div>
     )
