@@ -1,16 +1,15 @@
 /* @flow weak */
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { inject } from 'mobx-react'
 import PaneAxis from './PaneAxis'
-import store from '../../store.js'
 
-var PrimaryPaneAxis = connect(state => {
-  let rootPane = state.PaneState.panes[state.PaneState.rootPaneId]
+var PrimaryPaneAxis = inject(state => {
+  let rootPane = state.PaneState.rootPane
   return { pane: rootPane }
 })(PaneAxis)
 
-var PanesContainer = (props) => {
-  return <PrimaryPaneAxis id='primary-pane-axis' {...props} />
+var PanesContainer = () => {
+  return <PrimaryPaneAxis id='primary-pane-axis'/>
 }
 
 export default PanesContainer

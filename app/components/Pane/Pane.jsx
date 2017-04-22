@@ -1,7 +1,6 @@
 /* @flow weak */
 import React, { PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { observer } from 'mobx-react'
 import cx from 'classnames'
 import { confirmResize } from './actions'
 import TabContainer from '../Editor'
@@ -9,10 +8,11 @@ import EditorWrapper from '../EditorWrapper'
 import PaneAxis from './PaneAxis'
 import ResizeBar from '../ResizeBar'
 
-const _Pane = (props) => {
-  const { pane, parentFlexDirection, confirmResize } = props
 
+const Pane = observer(props => {
+  const { pane, parentFlexDirection } = props
   const style = { flexGrow: pane.size, display: pane.display }
+
   return (
     <div id={pane.id}
       style={style}
@@ -25,9 +25,7 @@ const _Pane = (props) => {
     > {pane.views.length // priortize `pane.views` over `pane.content`
       ? <PaneAxis pane={pane} />
       : <div className="pane">
-          <TabContainer tabGroupId={pane.content.id} containingPaneId={pane.id}
-            defaultContentClass={EditorWrapper} defaultContentType="editor"
-          />
+          <TabContainer tabGroup={pane.tabGroup} containingPaneId={pane.id} />
         </div>
       }
       <ResizeBar viewId={pane.id}
@@ -35,16 +33,11 @@ const _Pane = (props) => {
         parentFlexDirection={parentFlexDirection} />
     </div>
   )
-}
+})
 
-_Pane.propTypes = {
+Pane.propTypes = {
   pane: PropTypes.object,
   parentFlexDirection: PropTypes.string,
 }
-
-const Pane = connect(
-  (state, { paneId }) => ({ pane: state.PaneState.panes[paneId] }),
-  dispatch => bindActionCreators({ confirmResize }, dispatch)
-)(_Pane)
 
 export default Pane
