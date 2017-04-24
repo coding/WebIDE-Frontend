@@ -27,6 +27,7 @@ Breadcrumbs = connect(state => {
   const currentPath = activeTab ? activeTab.path : ''
   let fileNode = state.FileTreeState.nodes[currentPath]
   if (!fileNode) fileNode = state.FileTreeState.nodes[''] // fallback to rootNode
+  if (!fileNode) fileNode = { path: '' }
   return { fileNode }
 })(Breadcrumbs)
 

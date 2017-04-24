@@ -1,7 +1,8 @@
 import _ from 'lodash'
-import { handleActions } from 'redux-actions'
-import config from '../../config'
-import { update } from '../../utils'
+import { autorun, extendObservable } from 'mobx'
+import { handleActions } from 'utils/actions'
+import config from 'config'
+import state, { Node } from './state'
 import {
   loadNodeData,
   toggleNodeFold,
@@ -12,248 +13,20 @@ import {
   closeContextMenu,
 } from './actions'
 
-
-// the @action decorator is just a hint to denote where the actual mutation happens
-// whereas @computed denotes where it's a getter that has no side effect
-// these syntaxes are taken from mobx
-function action () { return f => f }
-function computed () { return f => f }
-
-const nodeSorter = (a, b) => {
-  // node.isDir comes first
-  // then sort by node.path alphabetically
-  if (a.isDir && !b.isDir) return -1
-  if (a.path < b.path) return -1
-  if (a.path > b.path) return 1
-  return 0
-}
-
 const ROOT_PATH = ''
-class Node {
-  static nodes = {};
-  static get root () { return Node.nodes[ROOT_PATH] }
 
-  constructor (nodeInfo) {
-    const {
-      name,
-      path,
-      isDir,
-      gitStatus,
-      isFolded,
-      isFocused,
-      isHighlighted,
-      contentType,
-      size,
-    } = nodeInfo
-
-    this.name = name
-    this.path = path
-    this.isDir = isDir
-    this.gitStatus = gitStatus
-    this.isFolded = _.isBoolean(isFolded) ? isFolded : true
-    this.isFocused = _.isBoolean(isFocused) ? isFocused : false
-    this.isHighlighted = _.isBoolean(isHighlighted) ? isHighlighted : false
-    this.contentType = contentType
-    this.size = size
-  }
-
-  // this is solely for triggering re-render of a redux-connected component
-  // with mobx this won't be necessary
-  reconstruct () {
-    Node.nodes[this.path] = new Node(this)
-  }
-
-  @computed
-  get isRoot () {
-    return this.path === ROOT_PATH
-  }
-
-  @computed
-  get depth () {
-    var slashMatches = this.path.match(/\/(?=.)/g)
-    return slashMatches ? slashMatches.length : 0
-  }
-
-  @computed
-  get parent () {
-    const pathComps = this.path.split('/')
-    pathComps.pop()
-    const parentPath = pathComps.join('/')
-    return Node.nodes[parentPath]
-  }
-
-  @computed
-  get children () {
-    const depth = this.depth
-    return Object.values(Node.nodes)
-      .filter(node => node.path.startsWith(`${this.path}/`) && node.depth === depth + 1)
-      .sort(nodeSorter)
-  }
-
-  @computed
-  get siblings () {
-    return this.parent.children
-  }
-
-  @computed
-  get firstChild () {
-    return this.children[0]
-  }
-
-  @computed
-  get lastChild () {
-    return this.children.pop()
-  }
-
-  @computed
-  get lastVisibleDescendant () {
-    var lastChild = this.lastChild
-    if (!lastChild) return this
-    if (!lastChild.isDir) return lastChild
-    if (lastChild.isFolded) return lastChild
-    return lastChild.lastVisibleDescendant
-  }
-
-  prev (jump) {
-    if (this.isRoot) return this
-
-    const siblings = this.siblings
-    const prevNode = siblings[siblings.indexOf(this) - 1]
-
-    if (prevNode) {
-      if (!jump) return prevNode
-      if (!prevNode.isDir || prevNode.isFolded) return prevNode
-      if (prevNode.lastChild) {
-        return prevNode.lastVisibleDescendant
-      } else {
-        return prevNode
-      }
-    } else {
-      return this.parent
-    }
-  }
-
-  next (jump) {
-    if (jump && this.isDir && !this.isFolded) {
-      if (this.firstChild) return this.firstChild
-    } else if (this.isRoot) {
-      return this
-    }
-
-    const siblings = this.siblings
-    const nextNode = siblings[siblings.indexOf(this) + 1]
-
-    if (nextNode) {
-      return nextNode
-    } else {
-      if (this.parent.isRoot) return this
-      return this.parent.next()
-    }
-  }
-
-  @action
-  forEachDescendant (handler) {
-    if (!this.isDir) return
-    this.children.forEach(childNode => {
-      handler(childNode)
-      childNode.forEachDescendant(handler)
-    })
-  }
-
-  @action
-  focus () {
-    if (this.isFocused) return
-    this.isFocused = true
-    this.reconstruct()
-  }
-
-  @action
-  unfocus () {
-    if (!this.isFocused) return
-    this.isFocused = false
-    this.reconstruct()
-  }
-
-  @action
-  fold () {
-    if (!this.isDir || this.isFolded) return
-    this.isFolded = true
-    this.reconstruct()
-  }
-
-  @action
-  unfold () {
-    if (!this.isDir || !this.isFolded) return
-    this.isFolded = false
-    this.reconstruct()
-  }
-
-  @action
-  toggleFold (shouldBeFolded) {
-    if (shouldBeFolded) {
-      this.fold()
-    } else {
-      this.unfold()
-    }
-  }
-
-  @action
-  highlight () {
-    if (!this.isDir || this.isHighlighted) return
-    this.isHighlighted = true
-    this.reconstruct()
-  }
-
-  @action
-  unhighlight () {
-    if (!this.isDir || !this.isHighlighted) return
-    this.isHighlighted = false
-    this.reconstruct()
-  }
-}
-
-
-const initialState = {
-  nodes: Node.nodes,
-  contextMenuState: {
-    isActive: false,
-    pos: { x: 0, y: 0 },
-    contextNode: null,
-  }
-}
-
-const bootstrapRootNode = () => {
-  Node.nodes[ROOT_PATH] = new Node({
-    path: ROOT_PATH,
-    name: config.projectName,
-    isDir: true,
-    isFolded: false,
-  })
-}
-
-bootstrapRootNode()
-
-const focusedNodes = () =>
-  Object.values(Node.nodes).filter(node => node.isFocused).sort(nodeSorter)
-
-export default handleActions({
-  [loadNodeData]: (state, action) => {
-    if (!Node.nodes[ROOT_PATH]) bootstrapRootNode()
-    action.payload.forEach(nodeInfo => {
+handleActions({
+  [loadNodeData]: (state, payload) => {
+    payload.forEach(nodeInfo => {
       let nextNodeInfo = { ...nodeInfo, path: ROOT_PATH + nodeInfo.path }
-      const curNodeInfo = Node.nodes[nextNodeInfo.path]
+      const curNodeInfo = state.nodes.get(nextNodeInfo.path)
       if (curNodeInfo) nextNodeInfo = {...curNodeInfo, ...nextNodeInfo}
-      Node.nodes[nextNodeInfo.path] = new Node(nextNodeInfo)
-    })
-
-    Node.root.reconstruct()
-    return update(state, {
-      nodes: { $merge: Node.nodes }
+      state.nodes.set(nextNodeInfo.path, new Node(nextNodeInfo))
     })
   },
 
-  [selectNode]: (state, action) => {
-    const { node: nodeOrOffset, multiSelect } = action.payload
+  [selectNode]: (state, payload) => {
+    const { node: nodeOrOffset, multiSelect } = payload
     let offset, node
     if (typeof nodeOrOffset === 'number') {
       offset = nodeOrOffset
@@ -262,33 +35,26 @@ export default handleActions({
     }
 
     if (offset === 1) {
-      node = focusedNodes()[0].next(true)
+      node = state.focusedNodes[0].next(true)
     } else if (offset === -1) {
-      node = focusedNodes()[0].prev(true)
+      node = state.focusedNodes[0].prev(true)
     }
 
     if (!multiSelect) {
-      Node.root.unfocus()
-      Node.root.forEachDescendant(childNode => childNode.unfocus())
+      state.root.unfocus()
+      state.root.forEachDescendant(childNode => childNode.unfocus())
     }
 
     node.focus()
-
-    return update(state, {
-      nodes: { $merge: Node.nodes }
-    })
   },
 
-  [highlightDirNode]: (state, action) => {
-    node = action.payload
+  [highlightDirNode]: (state, payload) => {
+    node = payload
     if (node.isDir) node.highlight()
-    return update(state, {
-      nodes: { $merge: Node.nodes }
-    })
   },
 
-  [toggleNodeFold]: (state, action) => {
-    let { node, shouldBeFolded, deep } = action.payload
+  [toggleNodeFold]: (state, payload) => {
+    let { node, shouldBeFolded, deep } = payload
     if (!node.isDir) return state
     let isFolded
     if (typeof shouldBeFolded === 'boolean') {
@@ -302,28 +68,30 @@ export default handleActions({
         childNode.toggleFold(isFolded)
       })
     }
-    return update(state, {
-      nodes: { $merge: Node.nodes }
-    })
   },
 
-  [removeNode]: (state, action) => {
-    let node = action.payload
-    delete Node.nodes[node.path]
-    return update(state, {
-      nodes: { $set: {...Node.nodes} }
-    })
+  [removeNode]: (state, payload) => {
+    let node = payload
+    state.nodes.delete(node.path)
   },
 
-  [openContextMenu]: (state, action) => {
-    return update(state, {
-      contextMenuState: { $set: action.payload }
-    })
+  [openContextMenu]: (state, payload) => {
+    extendObservable(state.contextMenuState, payload)
   },
 
-  [closeContextMenu]: (state, action) => {
-    return update(state, {
-      contextMenuState: { isActive: { $set: false } }
-    })
+  [closeContextMenu]: (state, payload) => {
+    contextMenuState.isActive = false
   },
-}, initialState)
+}, state)
+
+
+let reduxState
+autorun(() => {
+  reduxState = state.toJS()
+})
+
+function reducer (prevState, action) {
+  return reduxState
+}
+
+export default reducer
