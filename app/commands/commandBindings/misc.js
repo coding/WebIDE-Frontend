@@ -4,7 +4,6 @@ const { getState, dispatch: $d } = store
 
 import * as Modal from '../../components/Modal/actions'
 import * as Panel from '../../components/Panel/actions'
-import * as Tab from '../../components/Tab/actions'
 
 const getComponentByName = name => window.refs[name].getWrappedInstance();
 export default {
@@ -37,6 +36,6 @@ export default {
   // 'tools:terminal:reset':
   'tools:terminal:new_terminal': c => {
     $d(Panel.activateSidePanelView('bottom_0'))
-    $d(Tab.createTabInGroup('tab_group_terminal'))
+    // $d(Tab.createTabInGroup('tab_group_terminal'))
   }
 }

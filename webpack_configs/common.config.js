@@ -1,9 +1,12 @@
 const path = require('path')
 const webpack = require('webpack')
-const { optimize: { CommonsChunkPlugin } } = webpack
+const str = JSON.stringify
+const { optimize: { CommonsChunkPlugin }, DefinePlugin } = webpack
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const merge = require('webpack-merge')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 const rootDir = path.resolve(__dirname, '..')
 
@@ -41,6 +44,10 @@ return {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
   },
   plugins: [
+    gitRevisionPlugin,
+    new DefinePlugin({
+      __VERSION__: str(gitRevisionPlugin.commithash() + '@' + gitRevisionPlugin.version()),
+    }),
     new CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.[chunkhash].js',
