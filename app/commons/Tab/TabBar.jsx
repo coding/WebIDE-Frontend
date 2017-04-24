@@ -95,23 +95,30 @@ class TabBar extends Component {
   }
 
   makeDropdownMenuItems = () => {
-    let baseItems = this.props.tabGroup.siblings.length === 0 ? []
-      : [{
+    let baseItems = this.props.closePane && this.props.tabGroup.siblings ?
+      [{
         name: 'Close Pane',
         command: this.props.closePane,
       }]
+    : []
     const tabs = this.props.tabGroup.tabs
     const tabLabelsItem = tabs && tabs.map(tab => ({
       name: tab.title || 'untitled',
       command: e => tab.activate(),
     }))
 
+    let dropdownMenuItems
     if (tabLabelsItem.length) {
       if (!baseItems.length) return tabLabelsItem
-      return baseItems.concat({ name: '-' }, tabLabelsItem)
+      dropdownMenuItems = baseItems.concat({ name: '-' }, tabLabelsItem)
     } else {
-      return baseItems
+      dropdownMenuItems = baseItems
     }
+
+    if (!dropdownMenuItems.length) {
+      dropdownMenuItems = [{ name: '<No Tabs>', isDisabled: true }]
+    }
+    return dropdownMenuItems
   }
 }
 
