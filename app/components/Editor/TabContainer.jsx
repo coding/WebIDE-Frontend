@@ -39,14 +39,18 @@ class TabContainer extends Component {
     containingPaneId: PropTypes.string,
     tabGroup: PropTypes.object,
     createGroup: PropTypes.func,
+    closePane: PropTypes.func,
   };
 
   render () {
-    const tabGroup = this.props.tabGroup
+    const { tabGroup, closePane } = this.props
     if (!tabGroup) return null
     return (
       <div className='tab-container'>
-        <TabBar tabGroup={tabGroup} contextMenuItems={contextMenuItems}/>
+        <TabBar tabGroup={tabGroup}
+          contextMenuItems={contextMenuItems}
+          closePane={closePane}
+        />
         <TabContent tabGroup={tabGroup} >
           {tabGroup.tabs.length ? tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >

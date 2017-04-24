@@ -12,6 +12,7 @@ import ResizeBar from '../ResizeBar'
 const Pane = observer(props => {
   const { pane, parentFlexDirection } = props
   const style = { flexGrow: pane.size, display: pane.display }
+  const closePane = pane.isRoot ? null : pane.destroy.bind(pane)
 
   return (
     <div id={pane.id}
@@ -21,12 +22,12 @@ const Pane = observer(props => {
         parentFlexDirection,
         { resizable: style.flexGrow }
       )}
-      data-droppable="PANE"
+      data-droppable='PANE'
     > {pane.views.length // priortize `pane.views` over `pane.content`
       ? <PaneAxis pane={pane} />
-      : <div className="pane">
-          <TabContainer tabGroup={pane.tabGroup} containingPaneId={pane.id} />
-        </div>
+      : <div className='pane'>
+        <TabContainer tabGroup={pane.tabGroup} containingPaneId={pane.id} closePane={closePane} />
+      </div>
       }
       <ResizeBar viewId={pane.id}
         confirmResize={confirmResize}
