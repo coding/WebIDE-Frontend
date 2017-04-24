@@ -35,5 +35,4 @@ const config = merge(
   stylesheet()
 )
 
-console.log(config)
 module.exports = config

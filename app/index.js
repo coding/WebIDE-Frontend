@@ -26,3 +26,5 @@ async function startApp (module) {
 }
 
 startApp(module)
+
+if (__VERSION__) console.log(`[VERSION] ${__VERSION__}`);
