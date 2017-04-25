@@ -95,7 +95,7 @@ class History extends Component {
       })
       this.fitHistoryTable()
     }
-    if (nextProps.focusedNode !== this.props.focusedNode) {
+    if (nextProps.focusedNode && nextProps.focusedNode.path !== this.state.path) {
       this.state.path = nextProps.focusedNode ? nextProps.focusedNode.path : '/'
       this.fetchHistory({ reset: true })
     }
@@ -257,7 +257,7 @@ class History extends Component {
         this.setState({
           page: this.state.page + 1
         })
-        this.fetchHistory()
+        this.fetchHistory({ reset: false })
       }
     }
   }

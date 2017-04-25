@@ -33,6 +33,9 @@ const state = observable({
   get root () {
     return this.nodes.get(ROOT_PATH)
   },
+  get gitStatus () {
+    return this.nodes.values().filter(node => !node.isDir && node.gitStatus !== 'CLEAN')
+  },
   toJS () {
     return stateToJS(this)
   }

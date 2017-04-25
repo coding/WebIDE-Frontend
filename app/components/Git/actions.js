@@ -57,7 +57,8 @@ export function checkoutBranch (branch, remoteBranch) {
   return dispatch => {
     api.gitCheckout(branch, remoteBranch).then(data => {
       if (data.status === 'OK') {
-        dispatch(createAction(GIT_CHECKOUT)({ branch }))
+        // 完全由 ws 里的 checkout 事件来改变显示
+        // dispatch(createAction(GIT_CHECKOUT)({ branch }))
         dispatch(notify({message: `Check out ${branch}`}))
       } else if (data.status === 'CONFLICTS') {
         dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch }))
