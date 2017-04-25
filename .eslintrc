@@ -24,11 +24,7 @@
     "react/jsx-first-prop-new-line": 0
   },
   "settings": {
-    "import/resolver": {
-      "webpack": {
-        "config": "webpack_configs/devServer.config.js"
-      }
-    }
+    "import/resolver": "webpack"
   },
   "globals": {
     "i18n": false,

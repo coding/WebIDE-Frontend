@@ -8,7 +8,7 @@ const merge = require('webpack-merge')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 
-const rootDir = path.resolve(__dirname, '..')
+const PROJECT_ROOT = path.resolve(__dirname, '..')
 
 module.exports = function (options={}) {
   const {
@@ -21,24 +21,18 @@ module.exports = function (options={}) {
     `${process.env.QINIU_SERVER}/` : path.join('/', staticDir, '/');
 return {
   entry: {
-    main: [path.join(rootDir, 'app')],
-    workspaces: [path.join(rootDir, 'app/workspaces_standalone')],
+    main: [path.join(PROJECT_ROOT, 'app')],
+    workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
     publicPath,
-    path: path.join(rootDir, 'build', staticDir),
+    path: path.join(PROJECT_ROOT, 'build', staticDir),
     filename: '[name].[hash].js'
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],
-    alias: {
-      'app': path.join(rootDir, 'app'),
-      'utils': path.join(rootDir, 'app/utils'),
-      'config': path.join(rootDir, 'app/config.js'),
-      'commons': path.join(rootDir, 'app/commons'),
-      'components': path.join(rootDir, 'app/components'),
-    }
+    modules: ['node_modules', path.join(PROJECT_ROOT, 'app')],
   },
   resolveLoader: {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
@@ -62,16 +56,16 @@ return {
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
-      template: path.join(rootDir, 'app/index.html')
+      template: path.join(PROJECT_ROOT, 'app/index.html')
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['main'],
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
-      template: path.join(rootDir, 'app/workspaces_standalone/index.html')
+      template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html')
     }),
     new CopyWebpackPlugin([{
-      from: path.join(rootDir, 'static/favicon.ico'),
+      from: path.join(PROJECT_ROOT, 'static/favicon.ico'),
       to: (staticDir ? '../' : './'),
     }])
   ],

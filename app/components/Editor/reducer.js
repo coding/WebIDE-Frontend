@@ -1,7 +1,7 @@
 import { extendObservable, createTransformer, action } from 'mobx'
 import { handleActions } from 'utils/actions'
 import EditorTabState, { Tab, TabGroup } from './state'
-import store from 'app/mobxStore'
+import store from 'mobxStore'
 import {
   TAB_CREATE,
   TAB_CREATE_IN_GROUP,
