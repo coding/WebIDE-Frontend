@@ -1,6 +1,6 @@
 /* @flow weak */
 import { dispatch as $d } from '../../store'
-import store from 'app/mobxStore'
+import store from 'mobxStore'
 import * as Tab from 'commons/Tab/actions'
 import * as PaneActions from 'components/Pane/actions'
 
