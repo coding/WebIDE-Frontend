@@ -1,9 +1,9 @@
 /* @flow weak */
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import config from '../../config'
+import React from 'react'
+import { observer, inject } from 'mobx-react'
+import config from 'config'
 
-let Breadcrumbs = ({ fileNode }) => {
+let Breadcrumbs = observer(({ fileNode }) => {
   const pathComps = fileNode.path.split('/')
   const rootCrumb = {path: '/', name: config.projectName, isDir: true}
   const crumbs = pathComps.map(( pathComp, idx, pathComps ) => {
@@ -21,13 +21,13 @@ let Breadcrumbs = ({ fileNode }) => {
       {crumbs.map(crumb => <Crumb node={crumb} key={crumb.path}/>)}
     </div>
   )
-}
-Breadcrumbs = connect(state => {
+})
+
+Breadcrumbs = inject(state => {
   const activeTab = state.EditorTabState.activeTab
   const currentPath = activeTab ? activeTab.path : ''
-  let fileNode = state.FileTreeState.nodes[currentPath]
-  if (!fileNode) fileNode = state.FileTreeState.nodes[''] // fallback to rootNode
-  if (!fileNode) fileNode = { path: '' }
+  let fileNode = state.FileTreeState.nodes.get(currentPath)
+  if (!fileNode) fileNode = state.FileTreeState.root // fallback to rootNode
   return { fileNode }
 })(Breadcrumbs)
 
