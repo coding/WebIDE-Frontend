@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { observer, inject } from 'mobx-react'
 import cx from 'classnames'
 import * as FileTreeActions from './actions'
 import FileTreeNode from './FileTreeNode'
@@ -22,6 +23,14 @@ const FileUploadInput = ({ node, handleUpload }) => {
   )
 }
 
+@inject(state => {
+  return {
+    focusedNode: state.FileTreeState.focusedNodes[0],
+    contextMenu: state.FileTreeState.contextMenuState,
+    rootNode: state.FileTreeState.root,
+  }
+})
+@observer
 class FileTree extends Component {
   componentDidMount () {
     subscribeToFileChange()
@@ -59,13 +68,14 @@ class FileTree extends Component {
     }
   }
   render () {
-    const { contextMenu, closeContextMenu, uploadFilesToPath } = this.props
+    const { rootNode, contextMenu, closeContextMenu, ...actionProps } = this.props
+    const { uploadFilesToPath } = actionProps
     return (
       <div className="filetree-container"
         tabIndex={1}
         onKeyDown={this.onKeyDown}
       >
-        <FileTreeNode path='' />
+        <FileTreeNode node={rootNode} {...actionProps} />
         <ContextMenu
           items={FileTreeContextMenuItems}
           isActive={contextMenu.isActive}
@@ -81,15 +91,7 @@ class FileTree extends Component {
   }
 }
 
-FileTree = connect(
-  state => {
-    const focusedNodes = Object.values(state.FileTreeState.nodes).filter(node => node.isFocused)
-    return {
-      focusedNode: focusedNodes[0],
-      contextMenu: state.FileTreeState.contextMenuState
-    }
-  },
+export default connect(null,
   dispatch => bindActionCreators(FileTreeActions, dispatch)
 )(FileTree)
 
-export default FileTree

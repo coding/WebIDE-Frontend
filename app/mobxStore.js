@@ -1,9 +1,11 @@
 import { autorun, createTransformer, toJS } from 'mobx'
 import PaneState from './components/Pane/state'
 import EditorTabState from './components/Editor/state'
+import FileTreeState from './components/FileTree/state'
 const store = {
   PaneState,
-  EditorTabState
+  EditorTabState,
+  FileTreeState,
 }
 
 const transform = createTransformer(store => {

@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { observer, inject } from 'mobx-react'
+import store from '../../store'
 import config from '../../config'
 import cx from 'classnames'
 import * as FileTreeActions from './actions'
 
 const hiddenFolders = ['.git', '.coding-ide']
+const actionProps = bindActionCreators(FileTreeActions, store.dispatch)
 
-class _FileTreeNode extends Component {
+@observer
+class FileTreeNode extends Component {
   constructor (props) {
     super(props)
   }
@@ -54,7 +58,7 @@ class _FileTreeNode extends Component {
           isFolded: node.isFolded
         })}>
           {node.children.map(childNode =>
-            <FileTreeNode key={childNode.path} path={childNode.path} />
+            <FileTreeNode key={childNode.path} node={childNode} {...actionProps}/>
           )}
         </div>}
       </div>
@@ -68,12 +72,7 @@ class _FileTreeNode extends Component {
   }
 }
 
-const FileTreeNode = connect(
-  (state, props) => {
-    const node = state.FileTreeState.nodes[props.path]
-    return { node: node }
-  },
+export default connect(
+  null,
   dispatch => bindActionCreators(FileTreeActions, dispatch)
-)(_FileTreeNode)
-
-export default FileTreeNode
+)(FileTreeNode)
