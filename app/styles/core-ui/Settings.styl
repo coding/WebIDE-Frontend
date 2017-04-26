@@ -9,18 +9,6 @@
   }
 }
 
-.settings-view {
-  .modal-ops {
-    position: relative;
-    margin-top: 10px;
-    padding-top: 10px;
-    padding-right: 8px;
-    border-top: 1px solid #eee;
-    margin-left: -10px;
-    margin-right: -10px;
-  }
-}
-
 .settings-header {
   border-right: 1px solid #ccc;
   width: 25%;
@@ -62,8 +50,19 @@
 
 .settings-content {
   width: 75%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  $padding-lr= 18px
   .settings-content-container {
-    padding: 0 24px;
+    padding: 0 $padding-lr 10px;
+    flex-grow: 1;
+    overflow: scroll;
+  }
+  .settings-content-controls {
+    flex-grow: 0;
+    padding: 10px $padding-lr - 2px;
+    border-top: 1px solid #eee;
   }
 }
 
