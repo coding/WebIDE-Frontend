@@ -1,38 +1,36 @@
 /* @flow weak */
-import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
+import React from 'react'
 import { inject, observer } from 'mobx-react'
 import cx from 'classnames'
-import _ from 'lodash'
-import ExtensionList from '../Package/extensionList.js'
+import ExtensionList from '../Package/extensionList'
 import SettingForm from './SettingForm'
 
-const GeneralSettings = ({ content }) => {
+const GeneralSetting = ({ content }) => {
   return (
     <div>
-      <h2 className='settings-content-header'>General Settings</h2>
-      <SettingForm domainSetting={content} />
+      <h2 className='settings-content-header'>General Setting</h2>
+      <SettingForm setting={content} />
     </div>
   )
 }
 
-const EditorSettings = ({ content }) => (
+const EditorSetting = ({ content }) => (
     <div>
-      <h2 className='settings-content-header'>Editor Settings</h2>
-      <SettingForm domainSetting={content} />
+      <h2 className='settings-content-header'>Editor Setting</h2>
+      <SettingForm setting={content} />
     </div>
   )
 
-const ThemeSettings = ({ content }) => (
+const ThemeSetting = ({ content }) => (
     <div>
-      <h2 className='settings-content-header'>Theme Settings</h2>
-      <SettingForm domainSetting={content} />
+      <h2 className='settings-content-header'>Theme Setting</h2>
+      <SettingForm setting={content} />
     </div>
   )
 
-const ExtensionSettings = () => (
+const ExtensionSetting = () => (
     <div>
-      <h2 className='settings-content-header'>Extension Settings</h2>
+      <h2 className='settings-content-header'>Extension Setting</h2>
       <ExtensionList />
     </div>
 )
@@ -42,13 +40,13 @@ const DomainSetting = ({ content, domainKey }) => {
   switch (domainKey) {
     case 'GENERAL':
     default:
-      return <GeneralSettings content={content} />
+      return <GeneralSetting content={content} />
     case 'EDITOR':
-      return <EditorSettings content={content} />
+      return <EditorSetting content={content} />
     case 'THEME':
-      return <ThemeSettings content={content} />
+      return <ThemeSetting content={content} />
     case 'EXTENSIONS':
-      return <ExtensionSettings />
+      return <ExtensionSetting />
   }
 }
 

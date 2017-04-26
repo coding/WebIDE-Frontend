@@ -12,7 +12,7 @@ class SettingForm extends Component {
 
   updateSettingItemBind = settingItem => {
     let update
-    if (this.props.domainSetting.requireConfirm) {
+    if (this.props.setting.requireConfirm) {
       update = value => settingItem.tempValue = value
     } else {
       update = value => settingItem.value = value
@@ -35,9 +35,9 @@ class SettingForm extends Component {
   }
 
   render () {
-    const { domainSetting } = this.props
+    const { setting } = this.props
     return <div>
-      {domainSetting.items.map(settingItem =>
+      {setting.items.map(settingItem =>
         <FormInputGroup
           key={settingItem.key}
           settingItem={settingItem}
