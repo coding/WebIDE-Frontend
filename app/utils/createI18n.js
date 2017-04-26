@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { connect } from 'react-redux'
+import settings from 'settings'
+import { inject } from 'mobx-react'
 import * as languageDicPool from '../i18n'
 
 const separator = ':='
@@ -32,8 +33,7 @@ const mapStateToProps = (state) => {
     English: 'en_US',
     Chinese: 'zh_CN'
   }
-  const languageSettings = state.SettingState.data.tabs.GENERAL.items
-  const languageSetting = languageSettings.find(e => e.name === 'Language')
+  const languageSetting = settings.general.language
   const language = languageToCode[languageSetting.value]
   return ({ language })
 }
@@ -46,5 +46,5 @@ export default (template = [], ...values) => {
   translateComponent.propTypes = {
     language: PropTypes.string
   }
-  return React.createElement(connect(mapStateToProps)(translateComponent))
+  return React.createElement(inject(mapStateToProps)(translateComponent))
 }

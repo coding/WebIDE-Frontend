@@ -1,8 +1,22 @@
 import isObject from 'lodash/isObject'
-import { observable, extendObservable, computed, action } from 'mobx'
+import emitter, { THEME_CHANGED } from 'utils/emitter'
+import { observable, extendObservable, computed, action, autorunAsync } from 'mobx'
 
 export const UIThemeOptions = ['base-theme', 'dark']
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
+
+const changeTheme = (nextThemeId, force) => {
+  if (!window.themes) window.themes = {}
+  if (UIThemeOptions.includes(nextThemeId)) {
+    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`).then(module => {
+      const currentTheme = window.themes['@current']
+      if (currentTheme && currentTheme.unuse) currentTheme.unuse()
+      window.themes['@current'] = window.themes[nextThemeId] = module
+      module.use()
+    })
+  }
+  emitter.emit(THEME_CHANGED, nextThemeId)
+}
 
 const localeToLangs = {
   en_US: 'English',
@@ -191,3 +205,7 @@ const settings = observable({
 })
 
 export default settings
+
+autorunAsync('changeTheme', () => {
+  changeTheme(settings.theme.ui_theme.value)
+})
