@@ -1,142 +1,62 @@
 /* @flow weak */
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { inject, observer } from 'mobx-react'
 import cx from 'classnames'
-import _ from 'lodash'
-import ExtensionList from '../Package/extensionList.js';
+import ExtensionList from '../Package/extensionList'
+import SettingForm from './SettingForm'
 
-import * as SettingActions from './actions'
-
-let FormGroupFactory = ({ domain, settingItem, dispatch }) => {
-  let formComponent
-  const updateSettingItem = e => {
-    const value = (() => {
-      switch (e.target.type) {
-        case 'checkbox':
-          return e.target.checked
-        case 'number':
-          return Number(e.target.value)
-        case 'text':
-          return e.target.value
-        case 'select-one':
-          return e.target.value
-      }
-    })()
-
-    return dispatch(
-      SettingActions.updateSettingItem(domain, settingItem.name, value)
-    )
-  }
-
-  if (settingItem.options && _.isArray(settingItem.options)) {
-    return (
-      <div className="form-group">
-        <label>{settingItem.name}</label>
-        <select className="form-control"
-          onChange={updateSettingItem}
-          value={settingItem.value}
-        >
-          {settingItem.options.map(option =>
-            _.isObject(option) ?
-              <option key={option.value} value={option.value}>{option.name}</option>
-            : <option key={option} value={option}>{option}</option>
-          )}
-        </select>
-      </div>)
-  } else if (_.isBoolean(settingItem.value)) {
-    return (
-      <div className="form-group">
-        <div className="checkbox">
-          <label>
-            <input type="checkbox"
-              onChange={updateSettingItem} checked={settingItem.value}
-            />
-            <strong>{settingItem.name}</strong>
-          </label>
-
-        </div>
-      </div>)
-  } else {
-    return (
-      <div className="form-group">
-        <label>{settingItem.name}</label>
-        <input className="form-control"
-          type={_.isNumber(settingItem.value) ? 'number' : 'text'}
-          min="1"
-          onChange={updateSettingItem}
-          value={settingItem.value}
-        />
-      </div>)
-  }
+const GeneralSetting = ({ content }) => {
+  return (
+    <div>
+      <h2 className='settings-content-header'>General Setting</h2>
+      <SettingForm setting={content} />
+    </div>
+  )
 }
-FormGroupFactory = connect(null)(FormGroupFactory)
 
-const GeneralSettings = (props) => (
+const EditorSetting = ({ content }) => (
     <div>
-      <h2 className='settings-content-header'>General Settings</h2>
-      {props.items.map(settingItem =>
-        <FormGroupFactory
-          key={settingItem.name}
-          domain='GENERAL'
-          settingItem={settingItem} />
-      )}
+      <h2 className='settings-content-header'>Editor Setting</h2>
+      <SettingForm setting={content} />
     </div>
   )
 
-const EditorSettings = (props) => (
+const ThemeSetting = ({ content }) => (
     <div>
-      <h2 className='settings-content-header'>Editor Settings</h2>
-      {props.items.map(settingItem =>
-        <FormGroupFactory
-          key={settingItem.name}
-          domain='EDITOR'
-          settingItem={settingItem} />
-      )}
+      <h2 className='settings-content-header'>Theme Setting</h2>
+      <SettingForm setting={content} />
     </div>
   )
 
-const ThemeSettings = (props) => (
+const ExtensionSetting = () => (
     <div>
-      <h2 className='settings-content-header'>Theme Settings</h2>
-      {props.items.map(settingItem =>
-        <FormGroupFactory
-          key={settingItem.name}
-          domain='THEME'
-          settingItem={settingItem} />
-      )}
-    </div>
-  )
-
-const ExtensionSettings = () => (
-    <div>
-      <h2 className='settings-content-header'>Extension Settings</h2>
+      <h2 className='settings-content-header'>Extension Setting</h2>
       <ExtensionList />
     </div>
 )
 
 
-const SettingsContent = ({ content }) => {
-  switch (content.id) {
+const DomainSetting = ({ content, domainKey }) => {
+  switch (domainKey) {
     case 'GENERAL':
     default:
-      return <GeneralSettings {...content} />
+      return <GeneralSetting content={content} />
     case 'EDITOR':
-      return <EditorSettings {...content} />
+      return <EditorSetting content={content} />
     case 'THEME':
-      return <ThemeSettings {...content} />
+      return <ThemeSetting content={content} />
     case 'EXTENSIONS':
-      return <ExtensionSettings />
+      return <ExtensionSetting />
   }
 }
 
-let SettingsView = (props) => {
+let SettingsView = observer(props => {
   const {
-  views: { activeTabId, tabIds, tabs },
-    activateSettingTab,
-    confirmSettingItem,
-    cancelSettingItem
-} = props
+    activeTabId, tabIds, activeTab, activateTab,
+  } = props
+
+  const onConfirm = () => activeTab.onConfirm && activeTab.onConfirm()
+  const onCancel = () => activeTab.onCancel && activeTab.onCancel()
 
   return (
     <div className="settings-view">
@@ -147,38 +67,30 @@ let SettingsView = (props) => {
             {tabIds.map(tabId =>
               <li key={tabId}
                 className={cx('tab-bar-item', { active: tabId === activeTabId })}
-                onClick={e => activateSettingTab(tabId)}
+                onClick={e => activateTab(tabId)}
               >{tabId}</li>
             )}
           </ul>
         </div>
-        <div className="settings-content" style={{ overflow: 'scroll' }}>
+        <div className="settings-content" >
           <div className="settings-content-container">
-            <SettingsContent content={tabs[activeTabId]} />
+            <DomainSetting content={activeTab} domainKey={activeTabId} />
           </div>
+          {activeTab.requireConfirm && <div className="modal-ops settings-content-controls">
+            <button className="btn btn-default" onClick={onCancel} >Cancel</button>
+            <button className="btn btn-primary"
+              onClick={onConfirm}
+              disabled={!activeTab.unsaved}
+            >Commit</button>
+          </div>}
         </div>
       </div>
-      <div className="modal-ops">
-        <button
-          className="btn btn-default"
-          onClick={() => { cancelSettingItem(); }
-       }>
-          Cancel
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => { confirmSettingItem(); }
-       }>
-        Commit
-        </button>
-      </div>
     </div>
-
   )
-}
-SettingsView = connect(
-  state => (state.SettingState),
-  dispatch => bindActionCreators(SettingActions, dispatch)
-)(SettingsView)
+})
 
+SettingsView = inject(state => {
+  const { activeTabId, tabIds, activeTab, activateTab } = state.SettingState
+  return { activeTabId, tabIds, activeTab, activateTab }
+})(SettingsView)
 export default SettingsView

@@ -1,7 +1,7 @@
-/*@flow weak*/
 import React, {Component} from 'react';
 import CodeMirror from 'codemirror';
-import {connect} from 'react-redux';
+import { inject, observer } from 'mobx-react'
+import { dispatch } from 'store'
 import './addons';
 import dispatchCommand from '../../commands/dispatchCommand'
 import _ from 'lodash'
@@ -39,10 +39,10 @@ function getMode (tab) {
 
 const debounced = _.debounce(func => func(), 1000)
 
-@connect(state => ({
-  setting: state.SettingState.views.tabs.EDITOR,
-  themeSetting: state.SettingState.views.tabs.THEME,
+@inject(state => ({
+  themeName: state.SettingState.settings.theme.syntax_theme.value,
 }))
+@observer
 class CodeMirrorEditor extends Component {
   static defaultProps = {
     theme: 'default',
@@ -56,15 +56,14 @@ class CodeMirrorEditor extends Component {
   }
 
   componentDidMount () {
-    const { themeSetting, tab } = this.props;
-    const themeConfig = themeSetting.items[1].value
+    const { themeName, tab } = this.props;
     let editorInitialized = false
     // todo add other setting item from config
     if (tab.editor) {
       this.editor = tab.editor
       this.editorContainer.appendChild(this.editor.getWrapperElement())
     } else {
-      this.editor = tab.editor = initializeEditor(this.editorContainer, themeConfig)
+      this.editor = tab.editor = initializeEditor(this.editorContainer, themeName)
       editorInitialized = true
     }
     const editor = this.editor
@@ -100,7 +99,7 @@ class CodeMirrorEditor extends Component {
 
   onChange = (e) => {
     if (!this.isChanging) this.isChanging = true
-    const {tab, dispatch} = this.props;
+    const { tab } = this.props;
     dispatch(TabActions.updateTab({
       id: tab.id,
       flags: { modified: true },
@@ -113,17 +112,17 @@ class CodeMirrorEditor extends Component {
   }
 
   onFocus = () => {
-    this.props.dispatch(TabActions.activateTab(this.props.tab.id))
+    dispatch(TabActions.activateTab(this.props.tab.id))
   }
 
-  componentWillReceiveProps ({ tab, themeSetting }) {
+  componentWillReceiveProps ({ tab, themeName }) {
     if (tab.flags.modified || !this.editor || !tab.content) return
     if (tab.content.body !== this.editor.getValue()) {
       this.editor.setValue(tab.content.body)
     }
 
-    const nextTheme = themeSetting.items[1].value
-    const theme = this.props.themeSetting.items[1].value
+    const nextTheme = themeName
+    const theme = this.props.themeName
     if (theme !== nextTheme) this.editor.setOption('theme', nextTheme)
   }
 
@@ -142,10 +141,10 @@ class CodeMirrorEditor extends Component {
 }
 
 
-@connect(state => ({
-  setting: state.SettingState.views.tabs.EDITOR,
-  themeSetting: state.SettingState.views.tabs.THEME,
+@inject(state => ({
+  themeName: state.SettingState.settings.theme.syntax_theme.value,
 }))
+@observer
 class TablessCodeMirrorEditor extends Component {
   constructor (props) {
     super(props)
@@ -153,24 +152,23 @@ class TablessCodeMirrorEditor extends Component {
   }
 
   componentDidMount() {
-    const { themeSetting, width, height } = this.props
-    const theme = themeSetting.items[1].value
+    const { themeName, width, height } = this.props
 
-    this.editor = initializeEditor(this.editorContainer, theme)
+    this.editor = initializeEditor(this.editorContainer, themeName)
     this.editor.focus()
     this.editor.on('change', this.onChange)
   }
 
   onChange = (e) => {
-    this.props.dispatch(TabActions.createTabInGroup(this.props.tabGroupId, {
+    dispatch(TabActions.createTabInGroup(this.props.tabGroupId, {
       flags: { modified: true },
       content: this.editor.getValue()
     }))
   }
 
-  componentWillReceiveProps ({ themeSetting }) {
-    const nextTheme = themeSetting.items[1].value
-    const theme = this.props.themeSetting.items[1].value
+  componentWillReceiveProps ({ themeName }) {
+    const nextTheme = themeName
+    const theme = this.props.themeName
     if (theme !== nextTheme) this.editor.setOption('theme', nextTheme)
   }
 
