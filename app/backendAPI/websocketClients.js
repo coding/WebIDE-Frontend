@@ -4,8 +4,8 @@ import getBackoff from 'utils/getBackoff'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
 
-const log = console.log || x => x
-const warn = console.warn || x => x
+const log = console.log || (x => x)
+const warn = console.warn || (x => x)
 
 const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
