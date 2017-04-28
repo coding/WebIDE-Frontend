@@ -1,5 +1,6 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
+import { extendObservable } from 'mobx'
 import config from './config'
 import api from './backendAPI'
 import { qs, stepFactory, createI18n, getExtensions, request } from './utils'
@@ -31,7 +32,7 @@ async function initialize () {
     )
     await step('[2] Setting up workspace...', () =>
       api.setupWorkspace().then(res => {
-        Object.assign(config, res)
+        extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
         return true
       })
@@ -51,7 +52,7 @@ async function initialize () {
         if (parsed.envId) options.envId = parsed.envId
         if (parsed.isTry) options.try = true
         return api.createWorkspace(options).then(res => {
-          Object.assign(config, res)
+          extendObservable(config, res)
           if (config.project && config.project.name) { config.projectName = config.project.name }
           if (history.pushState) {
             history.pushState(null, null,

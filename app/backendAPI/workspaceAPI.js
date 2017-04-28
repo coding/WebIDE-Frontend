@@ -1,10 +1,10 @@
 /* @flow weak */
 import config from '../config'
 import { request } from '../utils'
-import Client from './websocketClient'
+import { FsSocketClient } from './websocketClients'
 
 var connectedResolve
-export const websocketConnectedPromise = new Promise((rs, rj) => connectedResolve = rs)
+export const fsSocketConnectedPromise = new Promise((rs, rj) => connectedResolve = rs)
 
 export function isWorkspaceExist () {
   return request.get(`/workspaces/${config.spaceKey}`).catch(() => false).then(() => true)
@@ -22,9 +22,12 @@ export function createWorkspace (options) {
 
 export function connectWebsocketClient () {
   return new Promise(function (resolve, reject) {
-    Client.connect(function () {
+    const fsSocketClient = new FsSocketClient()
+    fsSocketClient.connect(function () {
       connectedResolve(this)
       resolve(true)
+    }, function (err) {
+      console.log('fsSocketDisconnected', err)
     })
   })
 }

@@ -46,7 +46,11 @@ function handleGitFiles (node) {
 }
 
 export default function subscribeToFileChange () {
-  return api.websocketConnectedPromise.then(client => {
+  return api.fsSocketConnectedPromise.then(client => {
+    client.subscribe('CONNECTED', (frame) => {
+      console.log('FS CONNECTED', frame);
+    })
+
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo
