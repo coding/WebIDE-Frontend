@@ -5,9 +5,9 @@ import Terminal from 'sh.js';
 import _ from 'lodash';
 import { emitter, E } from 'utils'
 
-import terms from './terminal-client';
+import TerminalManager from './terminal-client';
 import * as TabActions from 'commons/Tab/actions';
-terms.setActions(TabActions);
+
 
 class Term extends Component {
   constructor(props) {
@@ -17,26 +17,29 @@ class Term extends Component {
 
   componentDidMount() {
     var _this = this;
+    var terminalManager = new TerminalManager()
     var terminal = this.terminal = new Terminal({
       theme: 'terminal_basic',
       cols: 80,
       rows:24
     });
 
+    terminalManager.setActions(TabActions);
+
     terminal.tabId = this.props.tab.id;
     terminal.open(this.termDOM);
-    terminal.name = this.sessionId = _.uniqueId('term_');
+    terminal.id = this.sessionId = _.uniqueId('term_');
 
     terminal.on('resize', (cols, rows) => {
-      terms.resize(terminal, cols, rows);
+      terminalManager.resize(terminal, cols, rows);
     });
     setTimeout(() => terminal.sizeToFit(), 0)
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
     emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
 
-    terms.add(terminal);
+    terminalManager.add(terminal);
     terminal.on('data', data => {
-      terms.getSocket().emit('term.input', {id: terminal.name, input: data})
+      terminalManager.getSocket().emit('term.input', {id: terminal.id, input: data})
     });
     terminal.on('title', _.debounce(title => {
       _this.props.tab.title = title

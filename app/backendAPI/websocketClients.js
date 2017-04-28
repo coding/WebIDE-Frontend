@@ -1,9 +1,10 @@
-import { Stomp } from 'stompjs/lib/stomp.js'
+import { Stomp } from 'stompjs/lib/stomp'
 import SockJS from 'sockjs-client'
-const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 import getBackoff from 'utils/getBackoff'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
+
+const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 class FsSocketClient {
   constructor () {
@@ -11,35 +12,49 @@ class FsSocketClient {
     const url = config.isPlatform ?
       `${config.wsURL}/sockjs/${config.spaceKey}`
     : `${config.baseURL}/sockjs/`
-    const socket = new SockJS(url, {}, {server: `${config.spaceKey}`, transports: 'websocket'})
-    this.stompClient = Stomp.over(socket)
-    this.stompClient.debug = false // stop logging PING/PONG
-
+    // SockJS auto connects at initiation
+    this.sockJSConfigs = [url, {}, { server: `${config.spaceKey}`, transports: 'websocket' }]
     this.backoff = getBackoff({
       delayMin: 50,
       delayMax: 5000,
     })
-    this.maxAttempts = 5
-
+    this.maxAttempts = 7
     FsSocketClient.$$singleton = this
   }
 
   connect (connectCallback, errorCallback) {
     const self = this
+    if (!this.socket || !this.stompClient) {
+      this.socket = new SockJS(...this.sockJSConfigs)
+      this.stompClient = Stomp.over(this.socket)
+      this.stompClient.debug = false // stop logging PING/PONG
+    }
     self.stompClient.connect({}, function success () {
       runInAction(() => config.fsSocketConnected = true)
-      self.connected = true
       self.backoff.reset()
       connectCallback.call(this)
     }, function error () {
-      runInAction(() => config.fsSocketConnected = false)
+      switch (self.socket.readyState) {
+        case SockJS.CLOSING:
+        case SockJS.CLOSED:
+          runInAction(() => config.fsSocketConnected = false)
+          self.reconnect(connectCallback, errorCallback)
+          break
+        case SockJS.OPEN:
+          console.log('FRAME ERROR', arguments[0])
+          break
+        default:
+      }
       errorCallback(arguments)
-      self.reconnect()
     })
   }
 
   reconnect (connectCallback, errorCallback) {
-    if (this.backoff.attempts <= this.maxAttempts && !this.connected) {
+    if (config.fsSocketConnected) return
+    console.log(`try reconnect fsSocket ${this.backoff.attempts}`)
+    // unset this.socket
+    this.socket = undefined
+    if (this.backoff.attempts <= this.maxAttempts) {
       const retryDelay = this.backoff.duration()
       console.log(`Retry after ${retryDelay}ms`)
       const timer = setTimeout(
@@ -52,10 +67,6 @@ class FsSocketClient {
   }
 }
 
-
-
-const WORKSPACE_PATH = '/home/coding/workspace'
-const BASE_PATH = '~/workspace'
 
 class TtySocketClient {
   constructor () {
@@ -78,7 +89,6 @@ class TtySocketClient {
       this.socket = io.connect(config.baseURL, { 'resource': 'coding-ide-tty1' })
     }
 
-    this.connected = false
     this.backoff = getBackoff({
       delayMin: 1500,
       delayMax: 10000,
@@ -86,6 +96,7 @@ class TtySocketClient {
     this.maxAttempts = 5
 
     TtySocketClient.$$singleton = this
+    return this
   }
 
   // manually handle all connect/reconnect behavior
@@ -103,9 +114,12 @@ class TtySocketClient {
       // below is the actual working part of `connect()` method,
       // all logic above is just for ensuring `fsSocketConnected == true`
       this.socket.io.connect(err => {
-        if (err) return this.reconnect()
+        if (err) {
+          runInAction(() => config.ttySocketConnected = false)
+          return this.reconnect()
+        }
         // success!
-        this.connected = true
+        runInAction(() => config.ttySocketConnected = true)
         this.backoff.reset()
       })
       this.socket.connect()
@@ -113,7 +127,8 @@ class TtySocketClient {
   }
 
   reconnect () {
-    if (this.backoff.attempts <= this.maxAttempts && !this.connected) {
+    console.log(`try reconnect ttySocket ${this.backoff.attempts}`)
+    if (this.backoff.attempts <= this.maxAttempts && !this.socket.connected) {
       const timer = setTimeout(() => {
         this.connect()
       }, this.backoff.duration())
@@ -122,6 +137,7 @@ class TtySocketClient {
       this.backoff.reset()
     }
   }
+
 }
 
 export { FsSocketClient, TtySocketClient }
