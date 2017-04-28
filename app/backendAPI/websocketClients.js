@@ -4,6 +4,9 @@ import getBackoff from 'utils/getBackoff'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
 
+const log = console.log || x => x
+const warn = console.warn || x => x
+
 const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 class FsSocketClient {
@@ -34,6 +37,7 @@ class FsSocketClient {
       self.backoff.reset()
       connectCallback.call(this)
     }, function error () {
+      log('fsSocket error')
       switch (self.socket.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
@@ -41,7 +45,7 @@ class FsSocketClient {
           self.reconnect(connectCallback, errorCallback)
           break
         case SockJS.OPEN:
-          console.log('FRAME ERROR', arguments[0])
+          log('FRAME ERROR', arguments[0])
           break
         default:
       }
@@ -51,18 +55,18 @@ class FsSocketClient {
 
   reconnect (connectCallback, errorCallback) {
     if (config.fsSocketConnected) return
-    console.log(`try reconnect fsSocket ${this.backoff.attempts}`)
+    log(`try reconnect fsSocket ${this.backoff.attempts}`)
     // unset this.socket
     this.socket = undefined
     if (this.backoff.attempts <= this.maxAttempts) {
       const retryDelay = this.backoff.duration()
-      console.log(`Retry after ${retryDelay}ms`)
+      log(`Retry after ${retryDelay}ms`)
       const timer = setTimeout(
         this.connect.bind(this, connectCallback, errorCallback)
       , retryDelay)
     } else {
       this.backoff.reset()
-      console.warn('Sock connected failed, something may be broken, reload page and try again')
+      warn('Sock connected failed, something may be broken, reload page and try again')
     }
   }
 }
@@ -127,13 +131,13 @@ class TtySocketClient {
   }
 
   reconnect () {
-    console.log(`try reconnect ttySocket ${this.backoff.attempts}`)
+    log(`try reconnect ttySocket ${this.backoff.attempts}`)
     if (this.backoff.attempts <= this.maxAttempts && !this.socket.connected) {
       const timer = setTimeout(() => {
         this.connect()
       }, this.backoff.duration())
     } else {
-      console.warn(`TTY reconnection fail after ${this.backoff.attempts} attempts`)
+      warn(`TTY reconnection fail after ${this.backoff.attempts} attempts`)
       this.backoff.reset()
     }
   }
