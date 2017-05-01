@@ -1,4 +1,3 @@
-/* @flow weak */
 export path from './path'
 export request from './request'
 export setSelectionRange from './setSelectionRange'
@@ -17,3 +16,4 @@ export handleActions from './handleActions'
 export getTabType from './getTabType'
 export dnd from './dnd'
 export getCookie from './getCookie'
+export getBackoff from './getBackoff'

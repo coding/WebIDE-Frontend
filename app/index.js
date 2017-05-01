@@ -27,4 +27,5 @@ async function startApp (module) {
 
 startApp(module)
 
-if (__VERSION__) console.log(`[VERSION] ${__VERSION__}`);
+const log = console.log || (x => x)
+if (__VERSION__) log(`[VERSION] ${__VERSION__}`)

@@ -1,11 +1,13 @@
 /* @flow weak */
-import config from '../../config'
-import api from '../../backendAPI'
-import store, { getState, dispatch } from '../../store'
-import mobxStore from '../../mobxStore'
+import config from 'config'
+import api from 'backendAPI'
+import { autorun } from 'mobx'
+import { FsSocketClient } from 'backendAPI/websocketClients'
+import store, { getState, dispatch } from 'store'
+import mobxStore from 'mobxStore'
+import * as TabActions from 'commons/Tab/actions'
 import * as FileTreeActions from './actions'
 import * as GitActions from '../Git/actions'
-import * as TabActions from 'commons/Tab/actions'
 
 function handleGitFiles (node) {
   const path = node.path
@@ -46,7 +48,13 @@ function handleGitFiles (node) {
 }
 
 export default function subscribeToFileChange () {
-  return api.websocketConnectedPromise.then(client => {
+  autorun(() => {
+    if (!config.fsSocketConnected) return
+    const client = FsSocketClient.$$singleton.stompClient
+    client.subscribe('CONNECTED', (frame) => {
+      console.log('FS CONNECTED', frame);
+    })
+
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo

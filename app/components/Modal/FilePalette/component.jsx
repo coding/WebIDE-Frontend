@@ -5,7 +5,7 @@ import api from '../../../backendAPI'
 import store, { dispatch as $d } from '../../../store'
 import * as TabActions from 'commons/Tab/actions'
 import cx from 'classnames'
-import { dispatchCommand } from '../../../commands/lib/keymapper'
+import dispatchCommand from 'commands/dispatchCommand'
 
 const debounced = _.debounce(function (func) { func() }, 1000)
 

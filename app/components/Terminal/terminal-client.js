@@ -1,29 +1,27 @@
 /* @flow weak */
 import _ from 'lodash'
-import { bindActionCreators } from 'redux'
-import config from '../../config'
-import { request } from '../../utils'
-import { dispatch } from '../../store'
+import config from 'config'
+import { autorun, observalbe } from 'mobx'
+import { TtySocketClient } from 'backendAPI/websocketClients'
+
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
-var io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
-
-class Term {
-  constructor ({id, cols, rows}) {
-    this.id = id
-    this.cols = cols
-    this.rows = rows
-    this.cwd = WORKSPACE_PATH
-    this.spaceKey = config.spaceKey
+const getTermJSON = ({ id, cols, rows }) => {
+  return {
+    id, cols, rows,
+    cwd: WORKSPACE_PATH,
+    spaceKey: config.spaceKey,
   }
 }
 
-var terms = []
-var socket = null
-var online = false
+const terms = []
+let online = false
 
-class TerminalClient {
+class TerminalClient extends TtySocketClient {
+  constructor () {
+    super()
+  }
 
   setOnlineHandler (handler) {
     this.onlineHandler = handler
@@ -36,59 +34,32 @@ class TerminalClient {
   }
 
   setActions (actions) {
-    this.actions = bindActionCreators(actions, dispatch)
-  }
-
-  createSocket () {
-    if (config.isPlatform) {
-      const wsUrl = config.wsURL
-      const firstSlashIdx = wsUrl.indexOf('/', 8)
-      let host, path
-      if (firstSlashIdx !== -1) {
-        host = wsUrl.substring(0, firstSlashIdx)
-        path = wsUrl.substring(firstSlashIdx)
-      } else {
-        host = wsUrl
-        path = ''
-      }
-      socket = io.connect(host, {
-        'force new connection': true,
-        'reconnection': true,
-        'reconnectionDelay': 1500,
-        'reconnectionDelayMax': 10000,
-        'reconnectionAttempts': 5,
-        path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
-        transports: ['websocket']
-      })
-    } else {
-      socket = io.connect(config.baseURL, { 'resource': 'coding-ide-tty1' })
-    }
-    return this.bindSocketEvent()
+    this.actions = actions
   }
 
   bindSocketEvent () {
-    socket.on('shell.output', (data) => {
+    this.socket.on('shell.output', (data) => {
       var term
       this.setOnline(true)
       term = _.find(terms, function (term) {
-        return term.name === data.id
+        return term.id === data.id
       })
       if (term) {
         return term.write(data.output)
       }
     })
 
-    socket.on('shell.exit', (data) => {
+    this.socket.on('shell.exit', (data) => {
       var term;
       term = _.find(terms, function(term) {
-        return term.name === data.id;
+        return term.id === data.id;
       });
       if (term) {
         return this.actions.removeTab(term.tabId);
       }
     });
 
-    // socket.on('port.found', function(ports) {
+    // this.socket.on('port.found', function(ports) {
     //   var j, len, port, results;
     //   results = [];
     //   for (j = 0, len = ports.length; j < len; j++) {
@@ -100,30 +71,39 @@ class TerminalClient {
     //   return results;
     // });
 
-    socket.on('reconnect', (data) => {
+    this.socket.on('connect', (data) => {
       let i, j, len
       for (i = j = 0, len = terms.length; j < len; i = ++j) {
         this.openTerm(terms[i])
       }
     })
 
-    // socket.on('disconnect', (data) => {
-    //   return this.setOnline(false);
-    // });
+    this.socket.on('disconnect', (data) => {
+      console.log('terminal disconnect...');
+      this.reconnect()
+    });
 
-    // socket.on('connect', (data) => {
+    // this.socket.on('connect', (data) => {
     //   return this.setOnline(true);
     // });
+
+    this.unbindSocketEvent = () => {
+      this.socket.off('shell.output')
+      this.socket.off('shell.exit')
+      this.socket.off('reconnect')
+      this.socket.off('disconnect')
+      this.socket.off('connect')
+      this.socket.off('port.found')
+      this.socket.off('port.open')
+      delete this.unbindSocketEvent
+    }
+
+    return this.unbindSocketEvent
   }
 
-  unbindSocketEvent () {
-    socket.off('shell.output')
-    socket.off('shell.exit')
-    socket.off('reconnect')
-    socket.off('disconnect')
-    socket.off('connect')
-    socket.off('port.found')
-    socket.off('port.open')
+  connectSocket () {
+    this.connect()
+    if (!this.unbindSocketEvent) this.bindSocketEvent()
   }
 
   add (term) {
@@ -132,36 +112,36 @@ class TerminalClient {
   }
 
   openTerm (term) {
-    if (!socket) this.createSocket()
-    const termJSON = new Term({
-      id: term.name,
+    if (!config.ttySocketConnected) this.connectSocket()
+    const termJSON = getTermJSON({
+      id: term.id,
       cols: term.cols,
       rows: term.rows
     })
-    socket.emit('term.open', termJSON)
+    this.socket.emit('term.open', termJSON)
   }
 
   remove (removedTerm) {
-    _.remove(terms, {id: removedTerm.name})
-    socket.emit('term.close', {id: removedTerm.name})
+    _.remove(terms, { id: removedTerm.id })
+    this.socket.emit('term.close', {id: removedTerm.id})
     if (terms.length == 0) {
-      socket.disconnect()
-      this.unbindSocketEvent()
-      socket = null
+      this.socket.disconnect()
+      if (this.unbindSocketEvent) this.unbindSocketEvent()
+      this.socket = null
     }
   }
 
   resize (term, cols, rows) {
-    if (socket) {
-      socket.emit('term.resize', {id: term.name, rows, cols})
+    if (this.socket) {
+      this.socket.emit('term.resize', {id: term.id, rows, cols})
     }
   }
 
-  getSocket () { return socket }
+  getSocket () { return this.socket }
 
   clearBuffer (tabId) {
     var term = _.find(terms, term => term.tabId == tabId)
-    socket.emit('term.input', {id: term.name, input: "printf '\\033c'\r" })
+    this.socket.emit('term.input', {id: term.id, input: "printf '\\033c'\r" })
   }
 
   clearScrollBuffer (tabId) {
@@ -171,12 +151,12 @@ class TerminalClient {
 
   reset (tabId) {
     var term = _.find(terms, term => term.tabId == tabId)
-    socket.emit('term.input', {id: term.name, input: '\f'})
+    this.socket.emit('term.input', {id: term.id, input: '\f'})
   }
 
   input (tabId, inputString) {
     var term = _.find(terms, term => term.tabId == tabId)
-    socket.emit('term.input', {id: term.name, input: inputString})
+    this.socket.emit('term.input', {id: term.id, input: inputString})
   }
 
   inputFilePath (tabId, inputPath) {
@@ -184,4 +164,4 @@ class TerminalClient {
   }
 }
 
-export default new TerminalClient()
+export default TerminalClient
