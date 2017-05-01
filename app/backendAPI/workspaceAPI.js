@@ -27,7 +27,6 @@ export function connectWebsocketClient () {
       connectedResolve(this)
       resolve(true)
     }, function (err) {
-      console.log('fsSocketDisconnected', err)
     })
   })
 }

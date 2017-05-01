@@ -71,7 +71,7 @@ class TerminalClient extends TtySocketClient {
     //   return results;
     // });
 
-    this.socket.on('reconnect', (data) => {
+    this.socket.on('connect', (data) => {
       let i, j, len
       for (i = j = 0, len = terms.length; j < len; i = ++j) {
         this.openTerm(terms[i])
@@ -79,7 +79,7 @@ class TerminalClient extends TtySocketClient {
     })
 
     this.socket.on('disconnect', (data) => {
-      console.log('fs disconnect...');
+      console.log('terminal disconnect...');
       this.reconnect()
     });
 
