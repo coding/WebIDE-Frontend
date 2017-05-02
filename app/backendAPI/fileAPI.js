@@ -3,10 +3,10 @@ import { request, qs } from '../utils'
 import config from '../config'
 import axios from 'axios'
 
-export function fetchPath (path, other, group) {
+export function fetchPath (path, order, group) {
   return request.get(`/workspaces/${config.spaceKey}/files`, {
     path: path,
-    other: true,
+    order: true,
     group: true
   })
 }
