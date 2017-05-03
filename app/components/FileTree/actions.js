@@ -25,9 +25,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
       }
     } else {
       const tabType = getTabType(node)
-      if (
-        getTabType(node) === 'TEXT'
-      ) {
+      if (getTabType(node) === 'TEXT') {
         api.readFile(node.path)
           .then(data => {
             dispatch(TabActions.createTab({
