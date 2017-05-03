@@ -1,4 +1,4 @@
-/* @flow weak */
+import uniqueId from 'lodash/uniqueId'
 import { bindActionCreators } from 'redux'
 import store, { getState, dispatch } from '../../store'
 import mobxStore from '../../mobxStore'
@@ -50,6 +50,18 @@ function createFolderAtPath (path) {
   )
 }
 
+function openTabOfNewFile (path) {
+  TabActions.createTab({
+    id: uniqueId('tab_'),
+    type: 'editor',
+    title: path.split('/').pop(),
+    path: path,
+    content: {
+      body: '',
+    }
+  })
+}
+
 export default {
   'file:new_file': (c) => {
     const node = c.context
@@ -62,7 +74,9 @@ export default {
       message: 'Enter the path for the new file.',
       defaultValue,
       selectionRange: [path.length, defaultValue.length]
-    }).then(createFile)
+    })
+    .then(createFile)
+    .then(openTabOfNewFile)
   },
   'file:new_folder': (c) => {
     const node = c.context
