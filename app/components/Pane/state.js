@@ -1,9 +1,12 @@
 import uniqueId from 'lodash/uniqueId'
 import { extendObservable, observable, computed, action, autorun, autorunAsync } from 'mobx'
 import EditorTabState, { TabGroup } from 'components/Editor/state'
+import PaneScope from 'commons/Pane/state'
 
-const state = observable({
-  panes: observable.map({}),
+const { state, BasePane } = PaneScope()
+
+extendObservable(state, {
+  get panes () { return this.entities },
   activePaneId: null,
   autoCloseEmptyPane: true,
   get rootPane () {
@@ -16,56 +19,9 @@ const state = observable({
   },
 })
 
-class BasePane {
-  constructor (paneConfig) {
-    const defaults = {
-      id: uniqueId('pane_view_'),
-      flexDirection: 'row',
-      size: 100,
-      parentId: '',
-      index: 0,
-    }
-
-    paneConfig = Object.assign({}, defaults, paneConfig)
-    extendObservable(this, paneConfig)
-    state.panes.set(this.id, this)
-  }
-
-  @computed
-  get isRoot () {
-    return !Boolean(this.parentId)
-  }
-
-  @computed
-  get parent () {
-    return state.panes.get(this.parentId)
-  }
-
-  @computed
-  get views () {
-    return state.panes.values()
-      .filter(pane => pane.parentId === this.id)
-      .sort((a, b) => a.index - b.index)
-  }
-
-  @computed
-  get siblings () {
-    return this.parent.views
-  }
-
-  @computed
-  get prev () {
-    return this.siblings[this.index - 1]
-  }
-
-  @computed
-  get next () {
-    return this.siblings[this.index + 1]
-  }
-}
-
 class Pane extends BasePane {
   constructor (paneConfig) {
+    if (!paneConfig.id) paneConfig.id = uniqueId('pane_view_')
     super(paneConfig)
     this.contentType = 'tabGroup'
     const tabGroup = this.tabGroup || new TabGroup()
@@ -78,14 +34,6 @@ class Pane extends BasePane {
   get tabGroup () {
     if (this.views.length) return null
     return EditorTabState.tabGroups.get(this.contentId)
-  }
-
-  @computed
-  get leafChildren () {
-    if (!this.views.length) return [this]
-    return this.views.reduce((acc, pane) => {
-      return acc.concat(pane.leafChildren)
-    }, [])
   }
 
   @action
@@ -114,7 +62,6 @@ class Pane extends BasePane {
 }
 
 const rootPane = new Pane({
-  id: 'pane_view_1',
   flexDirection: 'row',
   size: 100,
 })
