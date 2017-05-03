@@ -5,10 +5,9 @@ import EditorTabState, { TabGroup } from 'components/Editor/state'
 const state = observable({
   panes: observable.map({}),
   activePaneId: null,
-  rootPaneId: null,
   autoCloseEmptyPane: true,
   get rootPane () {
-    const rootPane = this.panes.get(this.rootPaneId)
+    const rootPane = this.panes.values().find(pane => pane.isRoot)
     return rootPane || this.panes.values()[0]
   },
   get activePane () {
@@ -30,6 +29,11 @@ class BasePane {
     paneConfig = Object.assign({}, defaults, paneConfig)
     extendObservable(this, paneConfig)
     state.panes.set(this.id, this)
+  }
+
+  @computed
+  get isRoot () {
+    return !Boolean(this.parentId)
   }
 
   @computed
@@ -113,13 +117,11 @@ const rootPane = new Pane({
   id: 'pane_view_1',
   flexDirection: 'row',
   size: 100,
-  isRoot: true,
 })
 
 state.panes.set(rootPane.id, rootPane)
-state.rootPaneId = rootPane.id
 
-autorun(() => {
+autorun('normalize pane indexes', () => {
   state.panes.forEach(parentPane =>
     parentPane.views.forEach((pane, index) => {
       if (pane.index !== index) pane.index = index
@@ -127,12 +129,16 @@ autorun(() => {
   )
 })
 
-autorunAsync(() => {
+autorunAsync('short-circuit unnecessary internal pane node', () => {
+  // pane.parent -> pane -> lonelyChild
+  // => pane.panret -> lonelyChild
+  //    delete pane
   state.panes.forEach(pane => {
-    if (!pane || pane.isRoot) return
+    if (!pane) return
     if (pane.views.length === 1) {
-      pane.contentId = pane.views[0].contentId
-      state.panes.delete(pane.views[0].id)
+      const lonelyChild = pane.views[0]
+      lonelyChild.parentId = pane.parentId
+      state.panes.delete(pane.id)
     }
   })
 })
