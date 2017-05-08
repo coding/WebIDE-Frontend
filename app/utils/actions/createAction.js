@@ -17,18 +17,18 @@ const createAction = actionCreatorFactory(
   (eventName, payload) => ({ type: eventName, payload })
 )
 
-export default createAction
-
 createAction.promise = actionCreatorFactory((eventName, payload) => {
   let resolve, reject
   const promise = new Promise((rs, rj) => { resolve = rs; reject = rj })
   const meta = { promise, resolve, reject }
-  const actionData = {
-    type: eventName,
-    payload,
-    meta,
-    then: promise.then.bind(promise),
-    catch: promise.catch.bind(promise),
-  }
-  return actionData
+
+  promise.type = eventName
+  promise.payload = payload
+  promise.meta = meta
+  promise.resolve = resolve
+  promise.reject = reject
+
+  return promise
 })
+
+export default createAction
