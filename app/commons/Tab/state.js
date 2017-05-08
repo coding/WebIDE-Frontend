@@ -81,6 +81,8 @@ autorun(() => {
 
 
 class TabGroup {
+  static Tab = Tab;
+
   constructor (config={}) {
     this.id = config.id || _.uniqueId('tab_group_')
     entities.tabGroups.set(this.id, this)
@@ -112,7 +114,7 @@ class TabGroup {
 
   @mapEntity('tabs')
   @action addTab (tab, insertIndex = this.tabs.length) {
-    if (!tab) tab = new Tab()
+    if (!tab) tab = new this.constructor.Tab()
     tab.index = insertIndex
     tab.tabGroupId = this.id
     tab.activate()

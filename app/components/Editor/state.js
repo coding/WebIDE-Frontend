@@ -11,9 +11,14 @@ class Tab extends BaseTab {
 
   @observable path = ''
   @observable content = {}
+  @observable gitBlame = {
+    show: false,
+    data: observable.ref([]),
+  }
 }
 
 class TabGroup extends BaseTabGroup {
+  static Tab = Tab;
   constructor (config={}) {
     super(config)
     extendObservable(this, config)

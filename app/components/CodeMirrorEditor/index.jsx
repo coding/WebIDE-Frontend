@@ -1,11 +1,15 @@
-import React, {Component} from 'react';
-import CodeMirror from 'codemirror';
+import React, { Component } from 'react'
+import CodeMirror from 'codemirror'
+import cx from 'classnames'
+import moment from 'moment'
+import { autorun } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import { dispatch } from 'store'
+import mtln from 'utils/multiline'
 import './addons';
 import dispatchCommand from '../../commands/dispatchCommand'
 import _ from 'lodash'
-import * as TabActions from 'commons/Tab/actions';
+import * as TabActions from 'commons/Tab/actions'
 
 function initializeEditor (editorContainer, theme) {
   // @todo: add other setting item from config
@@ -13,6 +17,7 @@ function initializeEditor (editorContainer, theme) {
   Object.assign(editorDOM.style, { width: '100%', height: '100%' })
   editorContainer.appendChild(editorDOM)
   const editor = CodeMirror(editorDOM, {
+    gutters: ['CodeMirror-linenumbers'],
     theme,
     autofocus: true,
     lineNumbers: true,
@@ -90,11 +95,62 @@ class CodeMirrorEditor extends Component {
     editor.focus()
     editor.on('change', this.onChange)
     editor.on('focus', this.onFocus)
+
+    this.dispose = this.renderGitBlameGutter()
   }
 
   componentWillUnmount () {
     this.editor.off('change', this.onChange)
     this.editor.off('focus', this.onFocus)
+    this.dispose()
+  }
+
+  renderGitBlameGutter () {
+    return autorun('renderGitBlameGutter', () => {
+      // set gutter first
+      const gutterId = 'git-blame-gutter'
+      const gutters = this.editor.options.gutters
+
+      if (!this.props.tab.gitBlame.show) {
+        this.editor.clearGutter(gutterId)
+        this.editor.setOption('gutters', gutters.filter(id => id !== gutterId))
+        this.editor.refresh()
+        return null
+      }
+
+      let gitBlameData = this.props.tab.gitBlame.data
+      if (!gitBlameData.length) gitBlameData = this.props.tab.gitBlame.data = [{
+        author: {
+          name: "kevenyoung03",
+          emailAddress: "kevenyoung03@gmail.com",
+          when: 1493889449000
+        },
+        shortName: "db6c2bf"
+      }, {
+        author: {
+          name: "hackape",
+          emailAddress: "kevenyoung03@gmail.com",
+          when: 1493889449000
+        },
+        shortName: "db6c2bf"
+      }]
+
+      if (gutters.indexOf(gutterId) === -1) {
+        this.editor.setOption('gutters', [...gutters, gutterId])
+      }
+
+      gitBlameData.forEach(({ author, shortName: commitHash }, ln) => {
+        const fullMessage = mtln`
+          commit: ${commitHash}
+          time: ${moment(author.when).format('YYYY-MM-DD hh:mm:ss')}
+          author: ${author.name}<${author.emailAddress}>`
+        const blameText = document.createElement('div')
+        blameText.innerHTML = `<div title='${fullMessage}'>${commitHash} ${moment(author.when).format('YYYY-MM-DD')} ${author.name}</div>`
+        this.editor.setGutterMarker(ln, 'git-blame-gutter', blameText)
+      })
+
+      this.editor.refresh()
+    })
   }
 
   onChange = (e) => {
@@ -131,13 +187,11 @@ class CodeMirrorEditor extends Component {
     const name = this.state.name
     const divStyle = { width, height }
     return (
-      <div ref={c => this.editorContainer = c}
-        id={name}
-        style={divStyle}
+      <div ref={c => this.editorContainer = c} id={name} style={divStyle}
+        className={cx({ 'git-blame-show': this.props.tab.gitBlame.show })}
       />
     )
   }
-
 }
 
 
@@ -174,7 +228,7 @@ class TablessCodeMirrorEditor extends Component {
 
   render () {
     return (
-      <div ref={ c => this.editorContainer = c } style={{ height: '100%', width: '100%' }} />
+      <div ref={c => this.editorContainer = c} style={{ height: '100%', width: '100%' }} />
     )
   }
 }

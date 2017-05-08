@@ -99,6 +99,10 @@ const TabActionHandler = handleActions({
     const prev = anchorTab.prev
     const insertIndex = (prev) ? (anchorTab.index + prev.index) / 2 : -1
     tab.tabGroup.addTab(tab, insertIndex)
+  },
+
+  ['TAB_GIT_BLAME']: (state, { tabId }) => {
+
   }
 }, EditorTabState)
 

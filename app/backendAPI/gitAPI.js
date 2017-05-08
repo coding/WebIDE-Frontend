@@ -127,3 +127,7 @@ export function gitReadFile ({ref, path}) {
 export function gitHistory ({ path, page, size }) {
   return request.get(`/git/${config.spaceKey}/logs`, { path, page, size })
 }
+
+export function gitBlame (path) {
+  return request.get(`/git/${config.spaceKey}/blame`, { path })
+}
