@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import { extendObservable, observable, computed, action, autorun, autorunAsync } from 'mobx'
-import EditorTabState, { TabGroup } from 'components/Editor/state'
+import EditorTabState, { TabGroup } from 'components/Tab/state'
 import PaneScope from 'commons/Pane/state'
 
 const { state, BasePane } = PaneScope()
