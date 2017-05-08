@@ -4,7 +4,6 @@ import { composeReducers } from './utils'
 import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
-import MarkdownEditorReducer from './components/MarkdownEditor/reducer'
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 // import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
@@ -21,7 +20,6 @@ import StatusBarReducer from './components/StatusBar/reducer'
 import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
-  MarkdownEditorState: MarkdownEditorReducer,
   PackageState: PackageReducer,
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,

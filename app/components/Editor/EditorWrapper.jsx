@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
-import CodeMirrorEditor from '../CodeMirrorEditor'
-import MarkdownEditor from '../MarkdownEditor'
-import ImageEditor from './Editors/ImageEditor'
-import UnknownEditor from './Editors/UnknownEditor'
-import WelcomeEditor from './Editors/WelcomeEditor'
+import CodeMirrorEditor from './components/CodeMirrorEditor'
+import MarkdownEditor from './components/MarkdownEditor'
+import ImageEditor from './components/ImageEditor'
+import UnknownEditor from './components/UnknownEditor'
+import WelcomeEditor from './components/WelcomeEditor'
 import { getTabType } from 'utils'
 
 const editors = {

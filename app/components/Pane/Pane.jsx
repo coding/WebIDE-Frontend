@@ -4,7 +4,6 @@ import { observer } from 'mobx-react'
 import cx from 'classnames'
 import { confirmResize } from './actions'
 import TabContainer from 'components/Tab'
-import EditorWrapper from '../EditorWrapper'
 import PaneAxis from './PaneAxis'
 import ResizeBar from '../ResizeBar'
 

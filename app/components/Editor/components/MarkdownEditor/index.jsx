@@ -1,14 +1,11 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
+import cx from 'classnames'
+import { markdown } from 'markdown'
+import { observer } from 'mobx-react'
 import CodeMirrorEditor from '../CodeMirrorEditor'
-import { markdown } from 'markdown';
-import { connect } from 'react-redux';
-import cx from 'classnames';
-import { bindActionCreators } from 'redux';
-import * as ResizeActions from './actions';
+import state from './state'
+import * as actions from './actions'
 
-const styles = {
-
-}
 const PreviewEditor = (content) => {
   const makeHTMLComponent = (html) => React.DOM.div({ dangerouslySetInnerHTML: {__html: html} });
   return (
@@ -16,7 +13,6 @@ const PreviewEditor = (content) => {
     { makeHTMLComponent(markdown.toHTML(content)) }
     </div>);
 }
-
 
 const startResize = (sectionId, e, actions) => {
    if (e.button !== 0) return; // do nothing unless left button pressed
@@ -30,7 +26,7 @@ const startResize = (sectionId, e, actions) => {
         let dY = oY - e.pageY;
         oX = e.pageX; // reset x
         oY = e.pageY; // reset y
-        actions.editorResize(sectionId, dX, dY);  
+        actions.editorResize(sectionId, dX, dY);
       }
 
       const stopResize = () => {
@@ -49,29 +45,25 @@ const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions }) => 
     />)
 };
 
-const MarkdownEditor = ({
-  content,
-  leftGrow,
-  rightGrow,
-  showBigSize,
-  showPreview,
-  tab,
-  actions
-}) => {
-  return (
-    <div 
+@observer
+class MarkdownEditor extends Component {
+
+  render () {
+    const { leftGrow, rightGrow, showBigSize, showPreview } = state
+    const { tab, content } = this.props
+    return (<div
       name="markdown_editor_container"
       style={{
           display:'flex',
           width: '100%',
           height: '100%'
       }}>
-      <div name="toolbal_commands" style={{ 
+      <div name="toolbal_commands" style={{
        position: 'absolute',
-       top: '10px', 
+       top: '10px',
        right: '20px',
        zIndex: '3'
-      }}>      
+      }}>
         {(showPreview && !showBigSize) ? (<i className='fa fa-expand' style={{color: '#999'}}
            onClick={actions.togglePreviewSize}></i>) : ((showPreview) ? (
              <i className='fa fa-compress' style={{color: '#999'}} onClick={actions.togglePreviewSize}></i>
@@ -81,7 +73,7 @@ const MarkdownEditor = ({
         <i className='fa fa-eye-slash' style={{ marginLeft: '10px', color: '#999' }}onClick={actions.togglePreview}></i>
       }
       </div>
-      <div name="body" 
+      <div name="body"
         style={{
         display:'flex',
         width: '100%',
@@ -89,7 +81,7 @@ const MarkdownEditor = ({
       }}>
       {
         !showBigSize ?  (
-      <div 
+      <div
         name="editor"
         id="editor_preview_markdown_editor"
         style={{
@@ -101,7 +93,7 @@ const MarkdownEditor = ({
       </div>): null
     }
       { (showPreview && !showBigSize) ? (
-          <ResizeBar 
+          <ResizeBar
             sectionId={'editor_preview_markdown'}
             parentFlexDirection={'row'}
             startResize={startResize}
@@ -110,38 +102,27 @@ const MarkdownEditor = ({
       {
         showPreview ? (
         <div
-          name="preview" 
+          name="preview"
           id="editor_preview_preview"
           style={{
             flexGrow: rightGrow,
             flexShrink: 0,
-            flexBasis: 0,        
+            flexBasis: 0,
             backgroundColor: 'white',
           }}>
           {PreviewEditor(content)}
         </div>) : null
       }
+      </div>
     </div>
-  </div>
-  ); 
+    );
+
+  }
 }
 
 MarkdownEditor.PropTypes = {
-  name: PropTypes.string,
   tab: PropTypes.object,
-  actions: PropTypes.object,
+  content: PropTypes.string,
 }
 
-const mapStateToProps = (state) => ({
-    leftGrow: state.MarkdownEditorState.leftGrow,
-    rightGrow: state.MarkdownEditorState.rightGrow,
-    showBigSize: state.MarkdownEditorState.showBigSize,
-    showPreview: state.MarkdownEditorState.showPreview,
-});
-
-export default connect(
-  mapStateToProps,
-  dispatch => ({
-    actions: bindActionCreators(ResizeActions, dispatch)
-  })
-)(MarkdownEditor)
+export default MarkdownEditor

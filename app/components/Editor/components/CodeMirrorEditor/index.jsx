@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react'
 import { dispatch } from 'store'
 import mtln from 'utils/multiline'
 import './addons';
-import dispatchCommand from '../../commands/dispatchCommand'
+import dispatchCommand from 'commands/dispatchCommand'
 import _ from 'lodash'
 import * as TabActions from 'commons/Tab/actions'
 
