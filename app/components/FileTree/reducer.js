@@ -80,7 +80,7 @@ handleActions({
   },
 
   [closeContextMenu]: (state, payload) => {
-    contextMenuState.isActive = false
+    state.contextMenuState.isActive = false
   },
 }, state)
 
