@@ -9,7 +9,7 @@ import mtln from 'utils/multiline'
 import './addons';
 import dispatchCommand from 'commands/dispatchCommand'
 import _ from 'lodash'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 
 function initializeEditor (editorContainer, theme) {
   // @todo: add other setting item from config

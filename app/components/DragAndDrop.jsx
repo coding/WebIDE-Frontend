@@ -6,7 +6,7 @@ import { action, runInAction } from 'mobx'
 import { dnd } from 'utils'
 import * as PaneActions from './Pane/actions'
 import PaneState from './Pane/state'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 import * as FileTreeActions from './FileTree/actions'
 
 // Corner case: file dragging doesn't trigger 'dragend' natively

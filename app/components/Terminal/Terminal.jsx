@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { emitter, E } from 'utils'
 
 import TerminalManager from './terminal-client';
-import * as TabActions from 'commons/Tab/actions';
+import * as TabActions from 'components/Tab/actions';
 
 
 class Term extends Component {

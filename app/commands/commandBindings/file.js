@@ -5,7 +5,7 @@ import mobxStore from '../../mobxStore'
 import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)

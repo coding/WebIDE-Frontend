@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 import { getTabType } from 'utils'
 import { updateUploadProgress } from '../StatusBar/actions'
 

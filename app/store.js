@@ -6,16 +6,13 @@ import thunkMiddleware from 'redux-thunk'
 
 import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-// import TabReducer, { TabCrossReducer } from './components/Tab/reducer'
-import EditorTabReducer from './components/Tab/reducer'
 import FileTreeReducer from './components/FileTree/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
-import TerminalReducer from './components/Terminal/reducer'
 import GitReducer from './components/Git/reducer'
-import RootReducer from './containers/Root/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
 import StatusBarReducer from './components/StatusBar/reducer'
+import RootReducer from './containers/Root/reducer'
 
 import localStoreCache from './localStoreCache'
 
@@ -24,10 +21,7 @@ const combinedReducers = combineReducers({
   FileTreeState: FileTreeReducer,
   PanelState: PanelReducer,
   PaneState: PaneReducer,
-  // TabState: TabReducer,
-  EditorTabState: EditorTabReducer,
   ModalState: ModalsReducer,
-  TerminalState: TerminalReducer,
   GitState: GitReducer,
   NotificationState: NotificationReducer,
   StatusBarState: StatusBarReducer,

@@ -5,7 +5,7 @@ import { autorun } from 'mobx'
 import { FsSocketClient } from 'backendAPI/websocketClients'
 import store, { getState, dispatch } from 'store'
 import mobxStore from 'mobxStore'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 import * as FileTreeActions from './actions'
 import * as GitActions from '../Git/actions'
 
