@@ -34,11 +34,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
               title: node.name,
               path: node.path,
               icon: 'fa fa-file-o',
-              content: {
-                body: data.content,
-                // path: node.path,
-                // contentType: node.contentType
-              },
+              content: data.content,
               contentType: node.contentType,
             }))
           })

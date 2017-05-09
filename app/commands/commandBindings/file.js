@@ -56,9 +56,7 @@ function openTabOfNewFile (path) {
     type: 'editor',
     title: path.split('/').pop(),
     path: path,
-    content: {
-      body: '',
-    }
+    content: '',
   })
 }
 
@@ -112,7 +110,7 @@ export default {
         .then(() => {
           dispatch(TabActions.updateTabFlags(activeTab.id, 'modified', false))
           dispatch(TabActions.updateTab({
-            id: activeTab.id, content: { body: content }
+            id: activeTab.id, content
           }))
         })
     }

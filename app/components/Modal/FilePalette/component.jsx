@@ -75,11 +75,8 @@ class FilePalette extends Component {
         type: 'editor',
         title: node.name || filename,
         path: node.path,
-        content: {
-          body: data.content,
-          path: node.path,
-          contentType: node.contentType
-        }
+        content: data.content,
+        contentType: node.contentType
       }))
     })
     dispatchCommand('modal:dismiss')

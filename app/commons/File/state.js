@@ -13,9 +13,9 @@ const nodeSorter = (a, b) => {
 }
 
 const state = observable({
-  nodes: observable.map(),
+  entities: observable.map(),
   get root () {
-    return this.nodes.get(ROOT_PATH)
+    return this.entities.get(ROOT_PATH)
   },
 })
 
@@ -27,22 +27,29 @@ class FileNode {
       isDir,
       gitStatus,
       contentType,
+      content,
       size,
     } = nodeConfig
 
     extendObservable(this, {
-      name: name,
-      path: path,
-      isDir: isDir,
-      gitStatus: gitStatus,
-      contentType: contentType,
-      size: size,
+      name,
+      path,
+      isDir,
+      gitStatus,
+      contentType,
+      content,
+      size,
     })
 
-    state.nodes.set(this.path, this)
+    state.entities.set(this.path, this)
   }
 
   @observable tree = null
+
+  @computed
+  get id () {
+    return this.path
+  }
 
   @computed
   get isRoot () {
@@ -60,13 +67,13 @@ class FileNode {
     const pathComps = this.path.split('/')
     pathComps.pop()
     const parentPath = pathComps.join('/')
-    return state.nodes.get(parentPath)
+    return state.entities.get(parentPath)
   }
 
   @computed
   get children () {
     const depth = this.depth
-    return state.nodes.values()
+    return state.entities.values()
       .filter(node => {
         return node.path.startsWith(`${this.path}/`) && node.depth === depth + 1
       })
@@ -115,7 +122,7 @@ class FileNode {
   }
 }
 
-state.nodes.set(ROOT_PATH, new FileNode({
+state.entities.set(ROOT_PATH, new FileNode({
   path: ROOT_PATH,
   name: config.projectName,
   isDir: true,

@@ -75,7 +75,7 @@ export default function subscribeToFileChange () {
             api.readFile(node.path).then(({ content }) => {
               dispatch(TabActions.updateTabByPath({
                 path: node.path,
-                content: { body: content }
+                content,
               }))
             })
           }
