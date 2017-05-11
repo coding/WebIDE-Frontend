@@ -12,23 +12,26 @@ import { getTabType } from 'utils'
 export const initializeFileTree = registerAction('filetree:init', () => {
   FileStore.fetchProjectRoot()
   const FileState = FileStore.getState()
-  bindToFile(FileState, FileTreeNode)
+  bindToFile(state, FileState, FileTreeNode)
 })
 
 export const selectNode = registerAction('filetree:select_node',
   (node, multiSelect) => ({ node, multiSelect }),
   ({ node, multiSelect }) => {
-    const offset = typeof node === 'number' && node
+    const offset = node
+    if (typeof offset === 'number') {
+      node = undefined
 
-    if (offset === 1) {
-      const curNode = state.focusedNodes.pop()
-      if (curNode) node = curNode.getNext
-    } else if (offset === -1) {
-      const curNode = state.focusedNodes[0]
-      if (curNode) node = curNode.getPrev
+      if (offset === 1) {
+        const curNode = state.focusedNodes[state.focusedNodes.length - 1]
+        if (curNode) node = curNode.getNext
+      } else if (offset === -1) {
+        const curNode = state.focusedNodes[0]
+        if (curNode) node = curNode.getPrev
+      }
+
+      if (!node || node.isShadowRoot) node = state.root
     }
-
-    if (!node) node = state.root
 
     if (!multiSelect) {
       state.root.unfocus()

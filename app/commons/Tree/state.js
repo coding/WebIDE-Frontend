@@ -120,7 +120,7 @@ class TreeNode {
     const nextNode = this.next
     if (nextNode) return nextNode
     if (this.parent.isShadowRoot) return this
-    return this.parent.getNext
+    return this.parent.next
 
   }
 
@@ -133,6 +133,7 @@ class TreeNode {
   }
 
   @action focus () {
+    if (this.isShadowRoot) return
     this.isFocused = true
   }
 
