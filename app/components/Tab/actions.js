@@ -1,9 +1,7 @@
 import { extendObservable } from 'mobx'
 import { createAction, handleActions } from 'utils/actions'
-import EditorTabState, { Tab, TabGroup } from './state'
+import state, { Tab, TabGroup } from './state'
 import store from 'mobxStore'
-
-export const TAB_DISSOLVE_GROUP = 'TAB_DISSOLVE_GROUP'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const createTab = createAction(TAB_CREATE, tab => tab)
@@ -88,30 +86,30 @@ export const TAB_CONTEXT_MENU_CLOSE = 'TAB_CONTEXT_MENU_CLOSE'
 export const closeContextMenu = createAction(TAB_CONTEXT_MENU_CLOSE)
 
 const TabActionHandler = handleActions({
-  [TAB_CREATE]: (state, payload) => {
+  [TAB_CREATE]: (payload) => {
     const tabConfig = payload
     const tab = new Tab(tabConfig)
     const activeTabGroup = state.activeTabGroup
     activeTabGroup.addTab(tab)
   },
 
-  [TAB_CREATE_IN_GROUP]: (state, payload) => {
+  [TAB_CREATE_IN_GROUP]: (payload) => {
     const { groupId, tab: tabConfig } = payload
     const tab = new Tab(tabConfig)
     state.tabGroups.get(groupId).addTab(tab)
   },
 
-  [TAB_REMOVE]: (state, payload) => {
+  [TAB_REMOVE]: (payload) => {
     const tab = state.tabs.get(payload)
     tab.destroy()
   },
 
-  [TAB_ACTIVATE]: (state, payload) => {
+  [TAB_ACTIVATE]: (payload) => {
     const tab = state.tabs.get(payload)
     tab.activate()
   },
 
-  [TAB_REMOVE_OTHER]: (state, payload) => {
+  [TAB_REMOVE_OTHER]: (payload) => {
     const tab = state.tabs.get(payload)
     tab.activate()
     tab.tabGroup.tabs.forEach(eachTab => {
@@ -119,39 +117,39 @@ const TabActionHandler = handleActions({
     })
   },
 
-  [TAB_REMOVE_ALL]: (state, payload) => {
+  [TAB_REMOVE_ALL]: (payload) => {
     const tab = state.tabs.get(payload)
     tab.tabGroup.tabs.forEach(tab => tab.destroy())
   },
 
-  [TAB_CREATE_GROUP]: (state, payload) => {
+  [TAB_CREATE_GROUP]: (payload) => {
     const { groupId } = payload
     new TabGroup({ id: groupId })
   },
 
-  [TAB_REMOVE_GROUP]: (state, payload) => {
+  [TAB_REMOVE_GROUP]: (payload) => {
     const tab = state.tabs.get(payload)
   },
 
-  [TAB_UPDATE]: (state, payload) => {
+  [TAB_UPDATE]: (payload) => {
     const tabId = payload.id
     const tab = state.tabs.get(tabId)
     if (tab) extendObservable(tab, payload)
   },
 
-  [TAB_UPDATE_FLAGS]: (state, { tabId, flags }) => {
+  [TAB_UPDATE_FLAGS]: ({ tabId, flags }) => {
     const tab = state.tabs.get(tabId)
     tab.flags = flags
   },
 
-  [TAB_MOVE_TO_GROUP]: (state, { tabId, groupId }) => {
+  [TAB_MOVE_TO_GROUP]: ({ tabId, groupId }) => {
     const tab = state.tabs.get(tabId)
     const tabGroup = state.tabGroups.get(groupId)
     if (!tab || !tabGroup) return
     tabGroup.addTab(tab)
   },
 
-  [TAB_INSERT_AT]: (state, { tabId, beforeTabId }) => {
+  [TAB_INSERT_AT]: ({ tabId, beforeTabId }) => {
     const tab = state.tabs.get(tabId)
     const anchorTab = state.tabs.get(beforeTabId)
     const prev = anchorTab.prev
@@ -159,10 +157,10 @@ const TabActionHandler = handleActions({
     tab.tabGroup.addTab(tab, insertIndex)
   },
 
-  ['TAB_GIT_BLAME']: (state, { tabId }) => {
+  ['TAB_GIT_BLAME']: ({ tabId }) => {
 
   }
-}, EditorTabState)
+})
 
 const crossActionHandlers = handleActions({
   [TAB_MOVE_TO_PANE]: (allState, { tabId, paneId }) => {
