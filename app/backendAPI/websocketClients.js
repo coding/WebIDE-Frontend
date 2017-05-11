@@ -106,6 +106,7 @@ class TtySocketClient {
   // manually handle all connect/reconnect behavior
   connectingPromise = undefined
   connect () {
+    if (!config.isPlatform) return
     // Need to make sure EVERY ATTEMPT to connect has ensured `fsSocketConnected == true`
     if (this.socket.connected || this.connectingPromise) return this.connectingPromise
     let resolve, reject
