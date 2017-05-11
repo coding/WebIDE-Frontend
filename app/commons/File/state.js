@@ -44,30 +44,29 @@ class FileNode {
     state.entities.set(this.path, this)
   }
 
-  @observable tree = null
-
-  @computed
-  get id () {
+  @computed get id () {
     return this.path
   }
 
-  @computed
-  get isRoot () {
+  @computed get isRoot () {
     return this.path === ROOT_PATH
   }
 
-  @computed
-  get depth () {
+  @computed get depth () {
     var slashMatches = this.path.match(/\/(?=.)/g)
     return slashMatches ? slashMatches.length : 0
   }
 
   @computed
   get parent () {
+    if (this.isRoot) return null
     const pathComps = this.path.split('/')
     pathComps.pop()
     const parentPath = pathComps.join('/')
-    return state.entities.get(parentPath)
+    const parent = state.entities.get(parentPath)
+    // only rootFileNode has no parent, other case means something wrong
+    if (!parent) { throw Error(`Missing internal node of path '${parentPath}'`) }
+    return parent
   }
 
   @computed

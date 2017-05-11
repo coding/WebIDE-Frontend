@@ -1,7 +1,7 @@
 import { registerAction } from 'utils/actions'
 import { action } from 'mobx'
 import api from 'backendAPI'
-import state from './state'
+import state, { FileNode } from './state'
 
 export const loadNodeData = registerAction('fs:load_node_data',
   (nodeConfigs) => {
@@ -11,7 +11,7 @@ export const loadNodeData = registerAction('fs:load_node_data',
         curNode.update(nodeConfig)
         return curNode
       }
-      const newNode = new Node(nodeConfig)
+      const newNode = new FileNode(nodeConfig)
       state.entities.set(newNode.path, newNode)
       return newNode
     })
@@ -23,4 +23,6 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
   api.fetchPath('/').then(loadNodeData)
 )
 
-// export { loadNodeData, fetchProjectRoot }
+export const removeNode = registerAction('fs:remove_node', (node) => {
+  state.entities.delete(node.id)
+})

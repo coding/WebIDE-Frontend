@@ -1,16 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import { observer } from 'mobx-react'
-import { defaultProps } from 'utils/decorators'
 import config from 'config'
 import cx from 'classnames'
 
 const hiddenFolders = ['.git', '.coding-ide']
 
-@defaultProps(({ node }) => ({
-  openNode: node,
-  selectNode: node,
-  openContextMenu: node,
-}))
 @observer
 class TreeNode extends Component {
   constructor (props) {
@@ -59,7 +53,12 @@ class TreeNode extends Component {
           isFolded: node.isFolded
         })}>
           {node.children.map(childNode =>
-            <TreeNode key={childNode.id} node={childNode} />
+            <TreeNode key={childNode.id}
+              node={childNode}
+              openNode={openNode}
+              selectNode={selectNode}
+              openContextMenu={openContextMenu}
+            />
           )}
         </div>}
       </div>

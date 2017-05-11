@@ -6,8 +6,8 @@ import { FsSocketClient } from 'backendAPI/websocketClients'
 import store, { getState, dispatch } from 'store'
 import mobxStore from 'mobxStore'
 import * as TabActions from 'components/Tab/actions'
-import * as FileTreeActions from './actions'
-import * as GitActions from '../Git/actions'
+import * as GitActions from 'components/Git/actions'
+import * as FileActions from './actions'
 
 function handleGitFiles (node) {
   const path = node.path
@@ -18,7 +18,7 @@ function handleGitFiles (node) {
     const current = gitState.branches.current
     if (branchName === current) {
       const history = gitState.history
-      const focusedNodes = Object.values(getState().FileTreeState.nodes).filter(node => node.isFocused)
+      const focusedNodes = Object.values(mobxStore.FileTreeState.entities).filter(node => node.isFocused)
       const historyPath = focusedNodes[0] ? focusedNodes[0].path : '/'
       dispatch(GitActions.fetchHistory({
         path: historyPath,
@@ -36,7 +36,7 @@ function handleGitFiles (node) {
           }
         })
         dispatch(
-          FileTreeActions.loadNodeData(
+          FileActions.loadNodeData(
             result
           )
         )
@@ -63,13 +63,13 @@ export default function subscribeToFileChange () {
           if (handleGitFiles(node)) {
             break
           }
-          dispatch(FileTreeActions.loadNodeData([node]))
+          dispatch(FileActions.loadNodeData([node]))
           break
         case 'modify':
           if (handleGitFiles(node)) {
             break
           }
-          dispatch(FileTreeActions.loadNodeData([node]))
+          dispatch(FileActions.loadNodeData([node]))
           const tabsToUpdate = mobxStore.EditorTabState.tabs.values().filter(tab => tab.path === node.path)
           if (tabsToUpdate.length) {
             api.readFile(node.path).then(({ content }) => {
@@ -81,7 +81,7 @@ export default function subscribeToFileChange () {
           }
           break
         case 'delete':
-          dispatch(FileTreeActions.removeNode(node))
+          dispatch(FileActions.removeNode(node))
           break
       }
     })

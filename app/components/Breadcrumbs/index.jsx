@@ -26,7 +26,7 @@ let Breadcrumbs = observer(({ fileNode }) => {
 Breadcrumbs = inject(state => {
   const activeTab = state.EditorTabState.activeTab
   const currentPath = activeTab ? activeTab.path : ''
-  let fileNode = state.FileTreeState.nodes.get(currentPath)
+  let fileNode = state.FileTreeState.entities.get(currentPath)
   if (!fileNode) fileNode = state.FileTreeState.root // fallback to rootNode
   return { fileNode }
 })(Breadcrumbs)

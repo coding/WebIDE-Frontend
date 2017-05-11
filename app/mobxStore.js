@@ -14,6 +14,7 @@ const transform = createTransformer(store => {
   return {
     PaneState: toJS(store.PaneState),
     EditorTabState: toJS(store.EditorTabState),
+    FileTreeState: toJS(store.FileTreeState)
   }
 })
 autorun(_ => {
@@ -22,3 +23,4 @@ autorun(_ => {
 })
 
 export default store
+window.mobxStore = store

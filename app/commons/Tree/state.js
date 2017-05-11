@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { extendObservable, observable, computed, action } from 'mobx'
+import { observable, computed, action, autorun } from 'mobx'
 
 function TreeNodeScope () {
 
@@ -11,10 +11,7 @@ const state = observable({
 
 class TreeNode {
   constructor (props) {
-    this.id = props.id || _.uniqueId('tree_node_')
-
-    const filePlaceholder = {}
-    this.file = props.file || filePlaceholder
+    this.id = _.isUndefined(props.id) ? _.uniqueId('tree_node_') : props.id
 
     if (_.isBoolean(props.isDir)) this._isDir = props.isDir
     if (_.isString(props.name)) this._name = props.name
@@ -29,49 +26,38 @@ class TreeNode {
       this.parentId = props.parentId
     }
 
-    // bind treeNode to its fileNode
-    // this.file.tree = this
-    if (this.file === filePlaceholder) this.file = null
-
     state.entities.set(this.id, this)
   }
 
-  @observable _isDir = null
-  @observable _name = null
-  @observable file = null
+  @observable _isDir = false
+  @observable _name = ''
+  @computed get name () { return this._name }
+  set name (v) { return this._name = v }
+  @computed get isDir () { return this._isDir }
+  set isDir (v) { return this._isDir = v }
+
   @observable isFolded = true
   @observable isFocused = false
   @observable isHighlighted = false
-  @observable parentId = ''
+  @observable parentId = undefined
   @observable index = 0
 
-  @computed get name () {
-    if (this._name !== null) return this._name
-    if (this.file) return this.file.name
-    return ''
-  }
-
-  @computed get isDir () {
-    if (this._isDir !== null) return this._isDir
-    if (this.file) return this.file.isDir
-    return false
-  }
-
-  @computed get isRoot () {
+  @computed get isShadowRoot () {
     return this.id === SHADOW_ROOT_NODE
   }
 
   @computed get parent () {
-    if (this.parentId) return state.entities.get(this.parentId)
-    if (this.file && this.file.parent && this.file.parent.tree) {
-      return this.file.parent.tree
-    }
-    return state.entities.get(SHADOW_ROOT_NODE)
+    let parent
+    if (typeof this.parentId === 'string') parent = state.entities.get(this.parentId)
+    // don't allow recurse to self
+    if (this.id === SHADOW_ROOT_NODE) return null
+    if (parent === this) { throw Error(`Node ${this.id} is parent of itself...` ) }
+    return parent ? parent : state.shadowRoot
   }
   set parent (parent) { this.parentId = parent.id }
 
   @computed get depth () {
-    if (this.isRoot) return -1
+    if (this.isShadowRoot) return -1
     return this.parent.depth + 1
   }
 
@@ -110,7 +96,7 @@ class TreeNode {
   }
 
   @computed get getPrev () {
-    if (this.isRoot) return this
+    if (this.isShadowRoot) return this
     const prevNode = this.prev
     if (prevNode) {
       if (!prevNode.isDir || prevNode.isFolded) return prevNode
@@ -127,21 +113,21 @@ class TreeNode {
   @computed get getNext () {
     if (this.isDir && !this.isFolded) {
       if (this.firstChild) return this.firstChild
-    } else if (this.isRoot) {
+    } else if (this.isShadowRoot) {
       return this
     }
 
     const nextNode = this.next
     if (nextNode) return nextNode
-    if (this.parent.isRoot) return this
+    if (this.parent.isShadowRoot) return this
     return this.parent.getNext
 
   }
 
   @action forEachDescendant (handler) {
     if (!this.isDir) return
-    this.children.forEach((childNode) => {
-      handler(childNode)
+    this.children.forEach((childNode, i) => {
+      handler(childNode, i)
       childNode.forEachDescendant(handler)
     })
   }
@@ -186,8 +172,18 @@ class TreeNode {
 const shadowRootNode = new TreeNode({
   id: SHADOW_ROOT_NODE,
   isDir: true,
+  isFolded: false,
 })
 state.entities.set(SHADOW_ROOT_NODE, shadowRootNode)
+
+autorun(() => {
+  state.entities.forEach(parentNode => {
+    if (!parentNode) return
+    parentNode.children.forEach((node, i) => {
+      if (node.index !== i) node.index = i
+    })
+  })
+})
 
 return { state, TreeNode }
 
