@@ -89,7 +89,7 @@ export default {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const content = activeTab ? activeTab.editor.getValue() : ''
+    const content = activeTab ? activeTab.cm.getValue() : ''
 
     if (!activeTab.path) {
       const createFile = createFileWithContent(content)
