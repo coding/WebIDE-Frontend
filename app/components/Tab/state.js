@@ -9,22 +9,14 @@ const { Tab: BaseTab, TabGroup: BaseTabGroup, entities: state } = TabStateScope(
 class Tab extends BaseTab {
   constructor (config={}) {
     super(config)
-    extendObservable(this, config)
-    if (config.path) {
-      new Editor({ filePath: config.path, tabId: this.id })
-    } else if (config.content) {
-      new Editor({ content: config.content, tabId: this.id })
+    let editor
+    if (config.editor) {
+      editor = new Editor(config.editor)
+      editor.tabId = this.id
     }
-    return this
   }
 
-  @observable path = ''
-  @observable content = ''
-
-  @observable gitBlame = {
-    show: false,
-    data: observable.ref([]),
-  }
+  @observable flags = {}
 
   @computed
   get editor () {

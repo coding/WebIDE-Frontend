@@ -211,7 +211,10 @@ class TablessCodeMirrorEditor extends Component {
   }
 
   onChange = (e) => {
-    TabStore.createTabInGroup(this.props.tabGroupId, {
+    TabStore.createTab({
+      tabGroup: {
+        id: this.props.tabGroupId,
+      },
       flags: { modified: true },
       content: this.cm.getValue()
     })

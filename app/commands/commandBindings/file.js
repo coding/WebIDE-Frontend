@@ -52,11 +52,10 @@ function createFolderAtPath (path) {
 
 function openTabOfNewFile (path) {
   TabActions.createTab({
-    id: uniqueId('tab_'),
-    type: 'editor',
     title: path.split('/').pop(),
-    path: path,
-    content: '',
+    editor: {
+      filePath: path,
+    }
   })
 }
 

@@ -26,3 +26,9 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
 export const removeNode = registerAction('fs:remove_node', (node) => {
   state.entities.delete(node.id)
 })
+
+export const updateFile = registerAction('fs:update', (fileProps) => {
+  const path = fileProps.id || fileProps.path
+  const file = state.entities.get(path)
+  file.update(fileProps)
+})

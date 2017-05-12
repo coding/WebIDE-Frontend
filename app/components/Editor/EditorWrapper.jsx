@@ -21,7 +21,7 @@ const getEditorByName = ({
   size
 }) => {
   if (type === 'default') {
-    return React.createElement(editors.CodeMirrorEditor, { tab, editor: tab.editor });
+    return React.createElement(editors.CodeMirrorEditor, { tab });
   } else if (type === 'editorWithPreview') {
     return React.createElement(editors.MarkdownEditor, { content, tab })
   } else if (type === 'imageEditor') {

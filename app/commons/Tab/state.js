@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import uniqueId from 'lodash/uniqueId'
+import is from 'utils/is'
 import { observable, computed, action, autorun } from 'mobx'
 import { mapEntityFactory } from 'utils/decorators'
 
@@ -24,7 +25,8 @@ const mapEntity = mapEntityFactory(entities)
 
 class Tab {
   constructor (config={}) {
-    this.id = config.id || _.uniqueId('tab_')
+    this.id = is.undefined(config.id) ? uniqueId('tab_') : config.id
+    if (config.tabGroup) { this.tabGroupId = config.tabGroup.id }
     entities.tabs.set(this.id, this)
   }
 
@@ -84,7 +86,7 @@ class TabGroup {
   static Tab = Tab;
 
   constructor (config={}) {
-    this.id = config.id || _.uniqueId('tab_group_')
+    this.id = config.id || uniqueId('tab_group_')
     entities.tabGroups.set(this.id, this)
   }
 

@@ -53,7 +53,7 @@ export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
     const isFolded = _.isBoolean(shouldBeFolded) ? shouldBeFolded : !node.isFolded
     node.toggleFold(isFolded)
     if (deep) {
-      node.forEachDescendant(childNode => {
+      node.forEachDescendant((childNode) => {
         childNode.toggleFold(isFolded)
       })
     }
@@ -76,31 +76,27 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
     } else {
       toggleNodeFold(node, shouldBeFolded, deep)
     }
-  } else {
-    if (getTabType(node) === 'TEXT') {
+  } else if (getTabType(node) === 'TEXT') {
       api.readFile(node.path)
-        .then(data => {
-          TabActions.createTab({
-            id: _.uniqueId('tab_'),
-            type: 'editor',
-            title: node.name,
-            path: node.path,
-            icon: 'fa fa-file-o',
+      .then((data) => {
+        TabActions.createTab({
+          title: node.name,
+          icon: 'fa fa-file-o',
+          editor: {
+            filePath: node.path,
             content: data.content,
             contentType: node.contentType,
-          })
+          }
         })
-    } else {
-      TabActions.createTab({
-        id: _.uniqueId('tab_'),
-        type: 'editor',
-        title: node.name,
-        path: node.path,
-        icon: 'fa fa-file-o',
-        contentType: node.contentType,
-        size: node.size
       })
-    }
+  } else {
+    TabActions.createTab({
+      title: node.name,
+      icon: 'fa fa-file-o',
+      editor: {
+        filePath: node.path,
+      },
+    })
   }
 }
 
