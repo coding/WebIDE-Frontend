@@ -1,10 +1,12 @@
 import { registerAction } from 'utils/actions'
+import is from 'utils/is'
 import { action } from 'mobx'
 import api from 'backendAPI'
 import state, { FileNode } from './state'
 
 export const loadNodeData = registerAction('fs:load_node_data',
   (nodeConfigs) => {
+    if (!is.array(nodeConfigs)) nodeConfigs = [nodeConfigs]
     return nodeConfigs.map(nodeConfig => {
       const curNode = state.entities.get(nodeConfig.path)
       if (curNode) {

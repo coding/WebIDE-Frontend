@@ -78,17 +78,16 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
     }
   } else if (getTabType(node) === 'TEXT') {
       api.readFile(node.path)
-      .then((data) => {
-        TabActions.createTab({
-          title: node.name,
-          icon: 'fa fa-file-o',
-          editor: {
-            filePath: node.path,
-            content: data.content,
-            contentType: node.contentType,
-          }
+        .then(data => FileStore.loadNodeData(data))
+        .then(() => {
+          TabActions.createTab({
+            title: node.name,
+            icon: 'fa fa-file-o',
+            editor: {
+              filePath: node.path,
+            }
+          })
         })
-      })
   } else {
     TabActions.createTab({
       title: node.name,

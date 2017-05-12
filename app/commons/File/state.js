@@ -44,8 +44,19 @@ class FileNode {
     state.entities.set(this.path, this)
   }
 
+  @observable name
+  @observable path
+  @observable contentType
+  @observable content = ''
+  @observable isDir = false
+  @observable gitStatus = {}
+  @observable size = 0
+
   @computed get id () {
     return this.path
+  }
+  set id (v) {
+    this.path = v
   }
 
   @computed get isRoot () {
@@ -126,8 +137,6 @@ state.entities.set(ROOT_PATH, new FileNode({
   name: config.projectName,
   isDir: true,
 }))
-
-
 
 export default state
 export { state, FileNode }

@@ -28,6 +28,7 @@ class Tab {
     this.id = is.undefined(config.id) ? uniqueId('tab_') : config.id
     if (config.tabGroup) { this.tabGroupId = config.tabGroup.id }
     entities.tabs.set(this.id, this)
+    this.title = config.title
   }
 
   @observable title = 'untitled'

@@ -93,12 +93,6 @@ class CodeMirrorEditor extends Component {
     this.dispose = this.renderGitBlameGutter()
   }
 
-  componentWillUnmount () {
-    this.cm.off('change', this.onChange)
-    this.cm.off('focus', this.onFocus)
-    this.dispose()
-  }
-
   renderGitBlameGutter () {
     return autorun('renderGitBlameGutter', () => {
       // set gutter first
@@ -178,6 +172,12 @@ class CodeMirrorEditor extends Component {
     const nextTheme = themeName
     const theme = this.props.themeName
     if (theme !== nextTheme) this.cm.setOption('theme', nextTheme)
+  }
+
+  componentWillUnmount () {
+    this.cm.off('change', this.onChange)
+    this.cm.off('focus', this.onFocus)
+    this.dispose()
   }
 
   render () {
