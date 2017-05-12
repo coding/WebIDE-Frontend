@@ -1,4 +1,5 @@
 /* @flow weak */
+import { gitBlameNode } from './actions'
 var dividItem = { name: '-' }
 var items = [
   {
@@ -31,6 +32,12 @@ var items = [
       input.dispatchEvent(new MouseEvent('click'))
     },
     visible: ctx => Boolean(ctx.isDir)
+  }, {
+    name: 'Git Blame',
+    icon: '',
+    command: (c) => {
+      gitBlameNode(c)
+    },
   }
 ]
 

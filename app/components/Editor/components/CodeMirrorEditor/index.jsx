@@ -107,28 +107,14 @@ class CodeMirrorEditor extends Component {
         return null
       }
 
-      let gitBlameData = editor.gitBlame.data
-      if (!gitBlameData.length) gitBlameData = editor.gitBlame.data = [{
-        author: {
-          name: "kevenyoung03",
-          emailAddress: "kevenyoung03@gmail.com",
-          when: 1493889449000
-        },
-        shortName: "db6c2bf"
-      }, {
-        author: {
-          name: "hackape",
-          emailAddress: "kevenyoung03@gmail.com",
-          when: 1493889449000
-        },
-        shortName: "db6c2bf"
-      }]
+      const gitBlameData = editor.gitBlame.data || []
 
       if (gutters.indexOf(gutterId) === -1) {
         this.cm.setOption('gutters', [...gutters, gutterId])
       }
 
       gitBlameData.forEach(({ author, shortName: commitHash }, ln) => {
+        if (!commitHash) return
         const fullMessage = mtln`
           commit: ${commitHash}
           time: ${moment(author.when).format('YYYY-MM-DD hh:mm:ss')}

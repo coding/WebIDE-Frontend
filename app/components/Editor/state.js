@@ -7,12 +7,13 @@ const state = observable({
 })
 
 class Editor {
-  constructor (config={}) {
+  constructor (props={}) {
     this.id = uniqueId('editor_')
-    if (config.filePath) this.filePath = config.filePath
-    if (!this.file && config.content) {
-      this._content = config.content
+    if (props.filePath) this.filePath = props.filePath
+    if (!this.file && props.content) {
+      this._content = props.content
     }
+    if (props.gitBlame) this.gitBlame = props.gitBlame
     state.entities.set(this.id, this)
   }
 
@@ -32,6 +33,7 @@ class Editor {
 
   @action update (props={}) {
     if (props.filePath) this.filePath = props.filePath
+    if (props.gitBlame) this.gitBlame = props.gitBlame
   }
 }
 

@@ -67,9 +67,7 @@ export const removeNode = registerAction('filetree:remove_node',
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu
 
-export const openNode = registerAction('filetree:open_node',
-  (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
-  ({ node, shouldBeFolded=null, deep=false }) => {
+const openNodeCommonLogic = function (node, editor, shouldBeFolded=null, deep=false) {
   if (node.isDir) {
     if (!node.children.length) {
       api.fetchPath(node.path)
@@ -86,6 +84,7 @@ export const openNode = registerAction('filetree:open_node',
             title: node.name,
             icon: 'fa fa-file-o',
             editor: {
+              ...editor,
               filePath: node.path,
             }
           })
@@ -95,10 +94,23 @@ export const openNode = registerAction('filetree:open_node',
       title: node.name,
       icon: 'fa fa-file-o',
       editor: {
+        ...editor,
         filePath: node.path,
       },
     })
   }
+}
+export const openNode = registerAction('filetree:open_node',
+  (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
+  ({ node, shouldBeFolded=null, deep=false }) => {
+    openNodeCommonLogic(node, {}, shouldBeFolded, deep)
+  }
+)
+
+export const gitBlameNode = registerAction('filetree:git_blame', (node) => {
+  api.gitBlame(node.path).then(gitBlameData => {
+    openNodeCommonLogic(node, { gitBlame: { show: true, data: gitBlameData } })
+  })
 })
 
 export const uploadFilesToPath = (files, path) => {
