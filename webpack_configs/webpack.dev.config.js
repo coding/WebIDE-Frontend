@@ -20,7 +20,7 @@ const config = merge(
     }
   },
   commonConfig({ staticDir: '' }),
-  { devtool: 'cheap-module-eval-source-map' },
+  { devtool: 'eval' },
   { plugins: [
       new webpack.DefinePlugin({
         __DEV__: true,
