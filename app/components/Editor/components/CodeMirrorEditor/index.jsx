@@ -1,15 +1,16 @@
+import _ from 'lodash'
 import React, { Component } from 'react'
 import CodeMirror from 'codemirror'
 import cx from 'classnames'
 import moment from 'moment'
 import { autorun } from 'mobx'
 import { inject, observer } from 'mobx-react'
-import { dispatch } from 'store'
+import { defaultProps } from 'utils/decorators'
 import mtln from 'utils/multiline'
-import './addons';
 import dispatchCommand from 'commands/dispatchCommand'
-import _ from 'lodash'
-import * as TabActions from 'components/Tab/actions'
+import TabStore from 'components/Tab/store'
+import FileStore from 'commons/File/store'
+import './addons'
 
 function initializeEditor (cmContainer, theme) {
   // @todo: add other setting item from config
@@ -38,12 +39,16 @@ function initializeEditor (cmContainer, theme) {
 }
 
 // Ref: codemirror/mode/meta.js
-function getMode (tab) {
-  return CodeMirror.findModeByMIME(tab.contentType) || CodeMirror.findModeByFileName(tab.path.split('/').pop())
+function getMode (file) {
+  return CodeMirror.findModeByMIME(file.contentType) || CodeMirror.findModeByFileName(file.path.split('/').pop())
 }
 
 const debounced = _.debounce(func => func(), 1000)
 
+@defaultProps(({ tab }) => ({
+  editor: tab.editor || null,
+  file: tab.editor ? tab.editor.file : null,
+}))
 @inject(state => ({
   themeName: state.SettingState.settings.theme.syntax_theme.value,
 }))
@@ -55,28 +60,22 @@ class CodeMirrorEditor extends Component {
     width: '100%',
   };
 
-  constructor (props) {
-    super(props)
-    this.state = {}
-  }
-
   componentDidMount () {
-    const { themeName, tab } = this.props;
+    const { themeName, editor, file } = this.props
     let cmInitialized = false
     // todo add other setting item from config
-    if (tab.cm) {
-      this.cm = tab.cm
+    if (editor.cm) {
+      this.cm = editor.cm
       this.cmContainer.appendChild(this.cm.getWrapperElement())
     } else {
-      this.cm = tab.cm = initializeEditor(this.cmContainer, themeName)
+      this.cm = editor.cm = initializeEditor(this.cmContainer, themeName)
       cmInitialized = true
     }
     const cm = this.cm
 
-    if (cmInitialized && tab.path && tab.content) {
-      const content = tab.content
-      const modeInfo = getMode(tab)
-      if (content) cm.setValue(content)
+    if (cmInitialized && file) {
+      if (file.content) cm.setValue(file.content)
+      const modeInfo = getMode(file)
       if (modeInfo) {
         let mode = modeInfo.mode
         if (mode === 'null') {
@@ -105,16 +104,17 @@ class CodeMirrorEditor extends Component {
       // set gutter first
       const gutterId = 'git-blame-gutter'
       const gutters = this.cm.options.gutters
+      const editor = this.props.editor
 
-      if (!this.props.tab.gitBlame.show) {
+      if (!editor.gitBlame.show) {
         this.cm.clearGutter(gutterId)
         this.cm.setOption('gutters', gutters.filter(id => id !== gutterId))
         this.cm.refresh()
         return null
       }
 
-      let gitBlameData = this.props.tab.gitBlame.data
-      if (!gitBlameData.length) gitBlameData = this.props.tab.gitBlame.data = [{
+      let gitBlameData = editor.gitBlame.data
+      if (!gitBlameData.length) gitBlameData = editor.gitBlame.data = [{
         author: {
           name: "kevenyoung03",
           emailAddress: "kevenyoung03@gmail.com",
@@ -150,12 +150,15 @@ class CodeMirrorEditor extends Component {
 
   onChange = (e) => {
     if (!this.isChanging) this.isChanging = true
-    const { tab } = this.props;
-    dispatch(TabActions.updateTab({
+    const { tab, file } = this.props
+    FileStore.updateFile({
+      id: file.id,
+      content: this.cm.getValue(),
+    })
+    TabStore.updateTab({
       id: tab.id,
       flags: { modified: true },
-      content: this.cm.getValue()
-    }))
+    })
     if (tab.path) debounced(() => {
       dispatchCommand('file:save')
       this.isChanging = false
@@ -163,7 +166,7 @@ class CodeMirrorEditor extends Component {
   }
 
   onFocus = () => {
-    dispatch(TabActions.activateTab(this.props.tab.id))
+    TabStore.activateTab(this.props.tab.id)
   }
 
   componentWillReceiveProps ({ tab, themeName }) {
@@ -178,12 +181,11 @@ class CodeMirrorEditor extends Component {
   }
 
   render () {
-    const {width, height} = this.props
-    const name = this.state.name
+    const { width, height } = this.props
     const divStyle = { width, height }
     return (
-      <div ref={c => this.cmContainer = c} id={name} style={divStyle}
-        className={cx({ 'git-blame-show': this.props.tab.gitBlame.show })}
+      <div ref={c => this.cmContainer = c} style={divStyle}
+        className={cx({ 'git-blame-show': this.props.editor.gitBlame.show })}
       />
     )
   }
@@ -209,10 +211,10 @@ class TablessCodeMirrorEditor extends Component {
   }
 
   onChange = (e) => {
-    dispatch(TabActions.createTabInGroup(this.props.tabGroupId, {
+    TabStore.createTabInGroup(this.props.tabGroupId, {
       flags: { modified: true },
       content: this.cm.getValue()
-    }))
+    })
   }
 
   componentWillReceiveProps ({ themeName }) {
