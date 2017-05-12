@@ -6,6 +6,7 @@ import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
 import TabStore from 'components/Tab/store'
+import FileTreeStore from 'components/FileTree/store'
 import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 
@@ -159,9 +160,9 @@ export default {
     Modal.dismissModal()
   },
 
-
   'file:download': c => {
     api.downloadFile(c.context.path, c.context.isDir)
-  }
+  },
+
   // 'file:unsaved_files_list':
 }

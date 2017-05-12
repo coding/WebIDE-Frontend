@@ -19,9 +19,9 @@ const triangleIcon = (<div
 />)
 
 
-const handleMenuItemCommand = (command) => {
+const handleMenuItemCommand = (command, context) => {
   if (typeof command === 'function') {
-    command()
+    command(context)
     return true
   } else {
     // ↓ temporary measure to resolve a cyclic dependent conflict
@@ -46,7 +46,7 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
         onMouseEnter={e => toggleActive(index)}
         onClick={e => {
           if (disabled) return
-          handleMenuItemCommand(item.command)&&deactivateTopLevelMenu()
+          handleMenuItemCommand(item.command, context)&&deactivateTopLevelMenu()
         }}
       >
         <div className={item.icon}>{item.iconElement || <div style={{ marginLeft :'1em' }} />}</div>
