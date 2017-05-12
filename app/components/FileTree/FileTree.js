@@ -61,6 +61,7 @@ class FileTree extends Component {
   render () {
     const { uploadFilesToPath, selectNode, openNode, openContextMenu } = FileTreeActions
     const rootNode = FileTreeState.root
+    const curNode = FileTreeState.focusedNodes[0]
 
     return (
       <div className='filetree-container'
@@ -73,6 +74,7 @@ class FileTree extends Component {
           openContextMenu={openContextMenu}
         />
         <FileUploadInput
+          node={curNode}
           handleUpload={uploadFilesToPath}
         />
       </div>

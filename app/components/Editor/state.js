@@ -1,5 +1,5 @@
 import uniqueId from 'lodash/uniqueId'
-import { extendObservable, observable, computed } from 'mobx'
+import { extendObservable, observable, computed, action } from 'mobx'
 import FileStore from 'commons/File/store'
 
 const state = observable({
@@ -28,6 +28,10 @@ class Editor {
   @observable _content = ''
   @computed get content () {
     return this.file ? this.file.content : this._content
+  }
+
+  @action update (props={}) {
+    if (props.filePath) this.filePath = props.filePath
   }
 }
 

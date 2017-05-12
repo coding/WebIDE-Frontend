@@ -54,7 +54,7 @@ export const updateTab = registerAction('tab:update',
   (tabConfig={}) => {
     const tabId = tabConfig.id
     const tab = state.tabs.get(tabId)
-    if (tab) extendObservable(tab, tabConfig)
+    if (tab) tab.update(tabConfig)
   }
 )
 

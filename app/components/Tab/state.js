@@ -1,4 +1,4 @@
-import { extendObservable, observable, computed } from 'mobx'
+import { extendObservable, observable, computed, action } from 'mobx'
 import { TabStateScope } from 'commons/Tab'
 import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
@@ -7,28 +7,43 @@ import FileState, { FileNode } from 'commons/File/state'
 const { Tab: BaseTab, TabGroup: BaseTabGroup, entities: state } = TabStateScope()
 
 class Tab extends BaseTab {
-  constructor (config={}) {
-    super(config)
+  constructor (props={}) {
+    super(props)
     let editor
-    if (config.editor) {
-      editor = new Editor(config.editor)
+    if (props.editor) {
+      editor = new Editor(props.editor)
       editor.tabId = this.id
     }
   }
 
   @observable flags = {}
 
-  @computed
-  get editor () {
+  @computed get editor () {
     return EditorState.entities.values().find(editor => editor.tabId === this.id)
+  }
+
+  @computed get file () {
+    const editor = this.editor
+    return editor ? editor.file : null
+  }
+
+  @action update (props={}) {
+    if (props.title) this.title = props.title
+    if (props.flags) this.flags = props.flags
+    if (this.editor) {
+      this.editor.update(props.editor)
+    } else if (props.editor) {
+      editor = new Editor(props.editor)
+      editor.tabId = this.id
+    }
   }
 }
 
 class TabGroup extends BaseTabGroup {
   static Tab = Tab;
-  constructor (config={}) {
-    super(config)
-    extendObservable(this, config)
+  constructor (props={}) {
+    super(props)
+    extendObservable(this, props)
   }
 
   @computed get pane () {

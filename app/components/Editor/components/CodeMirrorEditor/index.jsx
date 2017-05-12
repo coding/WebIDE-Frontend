@@ -153,7 +153,7 @@ class CodeMirrorEditor extends Component {
       id: tab.id,
       flags: { modified: true },
     })
-    if (tab.path) debounced(() => {
+    if (file) debounced(() => {
       dispatchCommand('file:save')
       this.isChanging = false
     })

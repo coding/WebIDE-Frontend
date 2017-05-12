@@ -67,7 +67,9 @@ export const removeNode = registerAction('filetree:remove_node',
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu
 
-export function openNode (node, shouldBeFolded = null, deep = false) {
+export const openNode = registerAction('filetree:open_node',
+  (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
+  ({ node, shouldBeFolded=null, deep=false }) => {
   if (node.isDir) {
     if (!node.children.length) {
       api.fetchPath(node.path)
@@ -97,7 +99,7 @@ export function openNode (node, shouldBeFolded = null, deep = false) {
       },
     })
   }
-}
+})
 
 export const uploadFilesToPath = (files, path) => {
   if (!files.length) return
