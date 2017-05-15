@@ -9,13 +9,13 @@ export default function handleAction (eventName, handler, state) {
     let result
     let resolve = actionMsg.resolve || (actionMsg.meta && actionMsg.meta.resolve)
     let reject = actionMsg.reject || (actionMsg.meta && actionMsg.meta.reject)
-    try {
+    // try {
       result = _.isUndefined(state) ? handler(actionMsg.payload, actionMsg)
         : handler(state, actionMsg.payload, actionMsg)
       if (_.isFunction(resolve)) resolve(result)
-    } catch (err) {
-      if (_.isFunction(reject)) reject(err)
-      else throw err
-    }
+    // } catch (err) {
+    //   if (_.isFunction(reject)) reject(err)
+    //   else throw err
+    // }
   })
 }
