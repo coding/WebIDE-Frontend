@@ -321,10 +321,10 @@ History.propTypes = {
 
 History = connect(
   state => {
-    const focusedNodes = Object.values(state.FileTreeState.nodes).filter(node => node.isFocused)
+    // const focusedNodes = Object.values(state.FileTreeState.entities).filter(node => node.isFocused)
     const history = state.GitState.history
     return {
-      focusedNode: focusedNodes[0],
+      focusedNode: null, //focusedNodes[0],
       history,
     }
   },

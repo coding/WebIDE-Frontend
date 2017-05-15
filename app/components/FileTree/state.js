@@ -1,8 +1,10 @@
 import _ from 'lodash'
+import { TreeNodeScope } from 'commons/Tree'
+import { FileState } from 'commons/File'
 import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
 import config from 'config'
 
-const ROOT_PATH = ''
+const { state, TreeNode } = TreeNodeScope()
 const nodeSorter = (a, b) => {
   // node.isDir comes first
   // then sort by node.path alphabetically
@@ -14,219 +16,81 @@ const nodeSorter = (a, b) => {
 
 const stateToJS = createTransformer(state => {
   return {
-    nodes: state.nodes.values().map(node => toJS(node)),
-    contextMenuState: toJS(state.contextMenuState),
+    entities: state.entities.values().map(node => toJS(node)),
     focusedNodes: state.focusedNodes.map(node => toJS(node)),
   }
 })
 
-const state = observable({
-  nodes: observable.map(),
-  contextMenuState: {
-    isActive: false,
-    pos: { x: 0, y: 0 },
-    contextNode: null,
-  },
+const ROOT_PATH = ''
+extendObservable(state, {
   get focusedNodes () {
-    return this.nodes.values().filter(node => node.isFocused).sort(nodeSorter)
-  },
-  get root () {
-    return this.nodes.get(ROOT_PATH)
+    return this.entities.values().filter(node => node.isFocused).sort(nodeSorter)
   },
   get gitStatus () {
-    return this.nodes.values().filter(node => !node.isDir && node.gitStatus !== 'CLEAN')
+    return this.entities.values().filter(node => !node.isDir && node.gitStatus !== 'CLEAN')
+  },
+  get root () {
+    return this.entities.get(ROOT_PATH)
   },
   toJS () {
     return stateToJS(this)
   }
 })
 
-class Node {
-  constructor (nodeInfo) {
-    const {
-      name,
-      path,
-      isDir,
-      gitStatus,
-      isFolded,
-      isFocused,
-      isHighlighted,
-      contentType,
-      size,
-    } = nodeInfo
-
-    extendObservable(this, {
-      name: name,
-      path: path,
-      isDir: isDir,
-      gitStatus: gitStatus,
-      isFolded: _.isBoolean(isFolded) ? isFolded : true,
-      isFocused: _.isBoolean(isFocused) ? isFocused : false,
-      isHighlighted: _.isBoolean(isHighlighted) ? isHighlighted : false,
-      contentType: contentType,
-      size: size,
-    })
-
-    state.nodes.set(this.path, this)
+class FileTreeNode extends TreeNode {
+  constructor (props) {
+    const path = props.file ? props.file.path : props.path
+    super({ ...props, id: path })
+    this.path = path
+    if (this.path === ROOT_PATH) this.isFolded = false
   }
 
-  // this is solely for triggering re-render of a redux-connected component
-  // with mobx this won't be necessary
-  reconstruct () {
-    state.nodes.set(this.path, new Node(this))
+  @observable path = null
+
+  // override default name / isDir behavior
+  @computed get name () {
+    if (this.file) return this.file.name
+    return super.name
+  }
+  set name (v) { return super.name = v }
+  @computed get isDir () {
+    if (this.file) return this.file.isDir
+    return super.isDir
+  }
+  set isDir (v) { return super.isDir = v }
+
+  @computed get file () {
+    return FileState.entities.get(this.path)
   }
 
-  @computed
-  get isRoot () {
-    return this.path === ROOT_PATH
+  @computed get parent () {
+    // prioritize corresponding file's tree node
+    if (this.file) {
+      let parentFile = this.file && this.file.parent
+      if (parentFile === null) return state.shadowRoot
+      return state.entities.get(parentFile.path)
+    }
+    return null
   }
 
-  @computed
-  get depth () {
-    var slashMatches = this.path.match(/\/(?=.)/g)
-    return slashMatches ? slashMatches.length : 0
-  }
-
-  @computed
-  get parent () {
-    const pathComps = this.path.split('/')
-    pathComps.pop()
-    const parentPath = pathComps.join('/')
-    return state.nodes.get(parentPath)
-  }
-
-  @computed
-  get children () {
-    const depth = this.depth
-    return state.nodes.values()
-      .filter(node => {
-        return node.path.startsWith(`${this.path}/`) && node.depth === depth + 1
-      })
+  @computed get children () {
+    return state.entities.values()
+      .filter(node => node.parent === this)
       .sort(nodeSorter)
   }
 
-  @computed
-  get siblings () {
-    return this.parent.children
+  @computed get gitStatus () {
+    if (this.file) return this.file.gitStatus
   }
 
-  @computed
-  get firstChild () {
-    return this.children[0]
+  @computed get contentType () {
+    if (this.file) return this.file.contentType
   }
 
-  @computed
-  get lastChild () {
-    return this.children.pop()
-  }
-
-  @computed
-  get lastVisibleDescendant () {
-    var lastChild = this.lastChild
-    if (!lastChild) return this
-    if (!lastChild.isDir) return lastChild
-    if (lastChild.isFolded) return lastChild
-    return lastChild.lastVisibleDescendant
-  }
-
-  prev (jump) {
-    if (this.isRoot) return this
-
-    const siblings = this.siblings
-    const prevNode = siblings[siblings.indexOf(this) - 1]
-
-    if (prevNode) {
-      if (!jump) return prevNode
-      if (!prevNode.isDir || prevNode.isFolded) return prevNode
-      if (prevNode.lastChild) {
-        return prevNode.lastVisibleDescendant
-      } else {
-        return prevNode
-      }
-    } else {
-      return this.parent
-    }
-  }
-
-  next (jump) {
-    if (jump && this.isDir && !this.isFolded) {
-      if (this.firstChild) return this.firstChild
-    } else if (this.isRoot) {
-      return this
-    }
-
-    const siblings = this.siblings
-    const nextNode = siblings[siblings.indexOf(this) + 1]
-
-    if (nextNode) {
-      return nextNode
-    } else {
-      if (this.parent.isRoot) return this
-      return this.parent.next()
-    }
-  }
-
-  @action
-  forEachDescendant (handler) {
-    if (!this.isDir) return
-    this.children.forEach(childNode => {
-      handler(childNode)
-      childNode.forEachDescendant(handler)
-    })
-  }
-
-  @action
-  focus () {
-    if (this.isFocused) return
-    this.isFocused = true
-  }
-
-  @action
-  unfocus () {
-    if (!this.isFocused) return
-    this.isFocused = false
-  }
-
-  @action
-  fold () {
-    if (!this.isDir || this.isFolded) return
-    this.isFolded = true
-  }
-
-  @action
-  unfold () {
-    if (!this.isDir || !this.isFolded) return
-    this.isFolded = false
-  }
-
-  @action
-  toggleFold (shouldBeFolded) {
-    if (shouldBeFolded) {
-      this.fold()
-    } else {
-      this.unfold()
-    }
-  }
-
-  @action
-  highlight () {
-    if (!this.isDir || this.isHighlighted) return
-    this.isHighlighted = true
-  }
-
-  @action
-  unhighlight () {
-    if (!this.isDir || !this.isHighlighted) return
-    this.isHighlighted = false
+  @computed get size () {
+    if (this.file) return this.file.size
   }
 }
 
-state.nodes.set(ROOT_PATH, new Node({
-  path: ROOT_PATH,
-  name: config.projectName,
-  isDir: true,
-  isFolded: false,
-}))
-
 export default state
-export { Node }
+export { FileTreeNode }

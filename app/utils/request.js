@@ -39,12 +39,16 @@ Object.assign(request, _request)
 
 const promiseInterceptor = (promise) => {
   promise.finalCatch(err => {
-    if (err.msg && window.dispatch) window.dispatch(
-      notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: err.response.data.msg,
-      })
-    )
+    if (err.msg && window.dispatch) {
+      window.dispatch(
+        notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: err.response.data.msg,
+        })
+      )
+    } else {
+      throw err
+    }
   })
   return promise
 }

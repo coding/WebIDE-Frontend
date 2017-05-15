@@ -5,7 +5,9 @@ import mobxStore from '../../mobxStore'
 import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as _Modal from '../../components/Modal/actions'
-import * as TabActions from 'commons/Tab/actions'
+import TabStore from 'components/Tab/store'
+import FileTreeStore from 'components/FileTree/store'
+import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 
 const Modal = bindActionCreators(_Modal, dispatch)
@@ -51,13 +53,10 @@ function createFolderAtPath (path) {
 }
 
 function openTabOfNewFile (path) {
-  TabActions.createTab({
-    id: uniqueId('tab_'),
-    type: 'editor',
+  TabStore.createTab({
     title: path.split('/').pop(),
-    path: path,
-    content: {
-      body: '',
+    editor: {
+      filePath: path,
     }
   })
 }
@@ -91,9 +90,9 @@ export default {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const content = activeTab ? activeTab.editor.getValue() : ''
+    const content = activeTab ? activeTab.editor.cm.getValue() : ''
 
-    if (!activeTab.path) {
+    if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       Modal.showModal('Prompt', {
         message: 'Enter the path for the new file.',
@@ -101,19 +100,20 @@ export default {
         selectionRange: [1, '/untitled'.length]
       })
         .then(createFile)
-        .then(path => dispatch(TabActions.updateTab({
+        .then(path => TabStore.updateTab({
           id: activeTab.id,
-          path,
-          title: path.replace(/^.*\/([^\/]+$)/, '$1')
-        })))
-        .then(() => dispatch(TabActions.updateTabFlags(activeTab.id, 'modified', false)))
+          title: path.replace(/^.*\/([^\/]+$)/, '$1'),
+          editor: { filePath: path },
+        }))
+        .then(() => TabStore.updateTabFlags(activeTab.id, 'modified', false))
     } else {
-      api.writeFile(activeTab.path, content)
+      api.writeFile(activeTab.file.path, content)
         .then(() => {
-          dispatch(TabActions.updateTabFlags(activeTab.id, 'modified', false))
-          dispatch(TabActions.updateTab({
-            id: activeTab.id, content: { body: content }
-          }))
+          TabStore.updateTabFlags(activeTab.id, 'modified', false)
+          FileStore.updateFile({
+            path: activeTab.file.path,
+            content,
+          })
         })
     }
   },
@@ -160,9 +160,9 @@ export default {
     Modal.dismissModal()
   },
 
-
   'file:download': c => {
     api.downloadFile(c.context.path, c.context.isDir)
-  }
+  },
+
   // 'file:unsaved_files_list':
 }

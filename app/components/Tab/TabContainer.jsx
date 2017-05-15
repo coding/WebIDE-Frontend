@@ -3,9 +3,9 @@ import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
 import { observer, inject } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
-import * as TabActions from 'commons/Tab/actions';
-import EditorWrapper from '../EditorWrapper'
-import { TablessCodeMirrorEditor } from '../CodeMirrorEditor'
+import * as TabActions from 'components/Tab/actions';
+import Editor from 'components/Editor'
+import { TablessCodeMirrorEditor } from 'components/Editor'
 
 const contextMenuItems = [
   {
@@ -54,7 +54,7 @@ class TabContainer extends Component {
         <TabContent tabGroup={tabGroup} >
           {tabGroup.tabs.length ? tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >
-              <EditorWrapper tab={tab} />
+              <Editor tab={tab} />
             </TabContentItem>
           )
           : <TabContentItem tab={{ isActive: true }}>

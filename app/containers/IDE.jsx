@@ -16,7 +16,7 @@ class IDE extends Component {
   }
 
   componentWillMount () {  // initLifecycle_3: IDE specific init
-    this.props.dispatch(initializeFileTree()) // @fixme: this is related to the quirk in filetree state
+    initializeFileTree() // @fixme: this is related to the quirk in filetree state
     this.setState({ isReady: true })
   }
 

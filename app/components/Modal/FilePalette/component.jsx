@@ -3,7 +3,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import api from '../../../backendAPI'
 import store, { dispatch as $d } from '../../../store'
-import * as TabActions from 'commons/Tab/actions'
+import * as TabActions from 'components/Tab/actions'
 import cx from 'classnames'
 import dispatchCommand from 'commands/dispatchCommand'
 
@@ -68,19 +68,13 @@ class FilePalette extends Component {
 
     let filename = matches[2]
 
-    api.readFile(node.path)
-    .then(data => {
-      $d(TabActions.createTab({
-        id: _.uniqueId('tab_'),
-        type: 'editor',
+    api.readFile(node.path).then(data => {
+      TabActions.createTab({
         title: node.name || filename,
-        path: node.path,
-        content: {
-          body: data.content,
-          path: node.path,
-          contentType: node.contentType
+        editor: {
+          filePath: node.path,
         }
-      }))
+      })
     })
     dispatchCommand('modal:dismiss')
   }

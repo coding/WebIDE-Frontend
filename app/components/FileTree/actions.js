@@ -1,108 +1,131 @@
 import _ from 'lodash'
-import { createAction } from 'redux-actions'
-import api from '../../backendAPI'
-import * as TabActions from 'commons/Tab/actions'
+import api from 'backendAPI'
+import { registerAction } from 'utils/actions'
+import FileStore from 'commons/File/store'
+import * as TabActions from 'components/Tab/actions'
+import contextMenuStore from 'components/ContextMenu/store'
+import state, { FileTreeNode } from './state'
+import bindToFile from './fileTreeToFileBinding'
+import FileTreeContextMenuItems from './contextMenuItems'
 import { getTabType } from 'utils'
-import { updateUploadProgress } from '../StatusBar/actions'
 
-export const FILETREE_SELECT_NODE = 'FILETREE_SELECT_NODE'
-export const selectNode = createAction(FILETREE_SELECT_NODE,
-  (node, multiSelect = false) => ({ node, multiSelect })
-)
-
-export const FILETREE_HIGHLIGHT_DIR_NODE = 'FILETREE_HIGHLIGHT_DIR_NODE'
-export const highlightDirNode = createAction(FILETREE_HIGHLIGHT_DIR_NODE)
-
-export function openNode (node, shouldBeFolded = null, deep = false) {
-  return (dispatch, getState) => {
-    if (node.isDir) {
-      if (!node.children.length) {
-        api.fetchPath(node.path)
-          .then(data => dispatch(loadNodeData(data)))
-          .then(() => dispatch(toggleNodeFold(node, shouldBeFolded, deep)))
-      } else {
-        dispatch(toggleNodeFold(node, shouldBeFolded, deep))
-      }
-    } else {
-      const tabType = getTabType(node)
-      if (getTabType(node) === 'TEXT') {
-        api.readFile(node.path)
-          .then(data => {
-            dispatch(TabActions.createTab({
-              id: _.uniqueId('tab_'),
-              type: 'editor',
-              title: node.name,
-              path: node.path,
-              icon: 'fa fa-file-o',
-              content: {
-                body: data.content,
-                // path: node.path,
-                // contentType: node.contentType
-              },
-              contentType: node.contentType,
-            }))
-          })
-      } else {
-        dispatch(TabActions.createTab({
-          id: _.uniqueId('tab_'),
-          type: 'editor',
-          title: node.name,
-          path: node.path,
-          icon: 'fa fa-file-o',
-          contentType: node.contentType,
-          size: node.size
-        }))
-      }
-    }
-  }
-}
-
-export const FILETREE_FOLD_NODE = 'FILETREE_FOLD_NODE'
-export const toggleNodeFold = createAction(FILETREE_FOLD_NODE,
-  (node, shouldBeFolded = null, deep = false) => ({ node, shouldBeFolded, deep })
-)
-
-export const FILETREE_REMOVE_NODE = 'FILETREE_REMOVE_NODE'
-export const removeNode = createAction(FILETREE_REMOVE_NODE)
-
-export const FILETREE_LOAD_DATA = 'FILETREE_LOAD_DATA'
-export const loadNodeData = createAction(FILETREE_LOAD_DATA)
-
-export function initializeFileTree () {
-  return dispatch => api.fetchPath('/').then(data => dispatch(loadNodeData(data)))
-}
-
-export const FILETREE_CONTEXT_MENU_OPEN = 'FILETREE_CONTEXT_MENU_OPEN'
-export const openContextMenu = createAction(FILETREE_CONTEXT_MENU_OPEN, (e, node) => {
-  e.stopPropagation()
-  e.preventDefault()
-  return {
-    isActive: true,
-    pos: { x: e.clientX, y: e.clientY },
-    contextNode: node,
-  }
+export const initializeFileTree = registerAction('filetree:init', () => {
+  FileStore.fetchProjectRoot()
+  const FileState = FileStore.getState()
+  bindToFile(state, FileState, FileTreeNode)
 })
 
-export const FILETREE_CONTEXT_MENU_CLOSE = 'FILETREE_CONTEXT_MENU_CLOSE'
-export const closeContextMenu = createAction(FILETREE_CONTEXT_MENU_CLOSE)
+export const selectNode = registerAction('filetree:select_node',
+  (node, multiSelect) => ({ node, multiSelect }),
+  ({ node, multiSelect }) => {
+    const offset = node
+    if (typeof offset === 'number') {
+      node = undefined
 
-export const uploadFilesToPath = (files, path) => {
-  return (dispatch, getState) => {
-    if (!files.length) return
-    const node = getState().FileTreeState.nodes[path]
-    const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
-    _(files).forEach(file => {
-      api.uploadFile(targetDirPath, file, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          dispatch(updateUploadProgress(percentCompleted))
-          if (percentCompleted === 100) {
-            setTimeout(() => {
-              dispatch(updateUploadProgress(''))
-            }, 3000)
-          }
-        }
+      if (offset === 1) {
+        const curNode = state.focusedNodes[state.focusedNodes.length - 1]
+        if (curNode) node = curNode.getNext
+      } else if (offset === -1) {
+        const curNode = state.focusedNodes[0]
+        if (curNode) node = curNode.getPrev
+      }
+
+      if (!node || node.isShadowRoot) node = state.root
+    }
+
+    if (!multiSelect) {
+      state.root.unfocus()
+      state.root.forEachDescendant(childNode => childNode.unfocus())
+    }
+
+    node.focus()
+  }
+)
+
+export const highlightDirNode = registerAction('filetree:highlight_dir_node',
+  node => node.isDir && node.highlight()
+)
+
+export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
+  (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
+  ({ node, shouldBeFolded=null, deep=false }) => {
+    if (!node.isDir) return
+    const isFolded = _.isBoolean(shouldBeFolded) ? shouldBeFolded : !node.isFolded
+    node.toggleFold(isFolded)
+    if (deep) {
+      node.forEachDescendant((childNode) => {
+        childNode.toggleFold(isFolded)
       })
+    }
+  }
+)
+
+export const removeNode = registerAction('filetree:remove_node',
+  node => state.entities.delete(node.id)
+)
+
+export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
+export const closeContextMenu = contextMenuStore.closeContextMenu
+
+const openNodeCommonLogic = function (node, editor, shouldBeFolded=null, deep=false) {
+  if (node.isDir) {
+    if (!node.children.length) {
+      api.fetchPath(node.path)
+        .then(data => FileStore.loadNodeData(data))
+        .then(() => toggleNodeFold(node, shouldBeFolded, deep))
+    } else {
+      toggleNodeFold(node, shouldBeFolded, deep)
+    }
+  } else if (getTabType(node) === 'TEXT') {
+      api.readFile(node.path)
+        .then(data => FileStore.loadNodeData(data))
+        .then(() => {
+          TabActions.createTab({
+            title: node.name,
+            icon: 'fa fa-file-o',
+            editor: {
+              ...editor,
+              filePath: node.path,
+            }
+          })
+        })
+  } else {
+    TabActions.createTab({
+      title: node.name,
+      icon: 'fa fa-file-o',
+      editor: {
+        ...editor,
+        filePath: node.path,
+      },
     })
   }
+}
+export const openNode = registerAction('filetree:open_node',
+  (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
+  ({ node, shouldBeFolded=null, deep=false }) => {
+    openNodeCommonLogic(node, {}, shouldBeFolded, deep)
+  }
+)
+
+export const gitBlameNode = registerAction('filetree:git_blame', (node) => {
+  api.gitBlame(node.path).then(gitBlameData => {
+    openNodeCommonLogic(node, { gitBlame: { show: true, data: gitBlameData } })
+  })
+})
+
+export const uploadFilesToPath = (files, path) => {
+  if (!files.length) return
+  const node = state.entities.get(path)
+  const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
+  _(files).forEach(file => {
+    api.uploadFile(targetDirPath, file, {
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        // updateUploadProgress(percentCompleted)
+        // if (percentCompleted === 100) {
+        //   setTimeout(() => updateUploadProgress(''), 3000)
+        // }
+      }
+    })
+  })
 }

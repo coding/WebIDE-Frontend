@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
-import { TabBar, TabContent, TabContentItem, TabStateScope } from 'commons/Tab'
-import Terminal from './Terminal'
 import { observer } from 'mobx-react'
-
-const { Tab, TabGroup } = TabStateScope()
+import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
+import Terminal from './Terminal'
+import { Tab, TabGroup } from './state'
 
 const contextMenuItems = [
   {

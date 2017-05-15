@@ -1,10 +1,11 @@
-import _ from 'lodash'
+import uniqueId from 'lodash/uniqueId'
+import is from 'utils/is'
 import { observable, computed, action, autorun } from 'mobx'
 import { mapEntityFactory } from 'utils/decorators'
 
 function TabScope () {
 
-const entities = observable({
+const state = observable({
   tabs: observable.map({}),
   tabGroups: observable.map({}),
   activeTabGroupId: null,
@@ -20,21 +21,20 @@ const entities = observable({
   }
 })
 
-const mapEntity = mapEntityFactory(entities)
+const mapEntity = mapEntityFactory(state)
 
 class Tab {
-  constructor (config={}) {
-    this.id = config.id || _.uniqueId('tab_')
-    entities.tabs.set(this.id, this)
-  }
 
-  @observable title = 'untitled'
+  @observable _title = 'untitled'
+  @computed get title () { return this._title }
+  set title (v) { return this._title = v }
+
   @observable index = 0
   @observable tabGroupId = ''
   @observable flags = {}
 
   @computed get tabGroup () {
-    return entities.tabGroups.get(this.tabGroupId)
+    return state.tabGroups.get(this.tabGroupId)
   }
 
   @computed get isActive () {
@@ -66,12 +66,12 @@ class Tab {
 
   @action destroy () {
     this.tabGroup.removeTab(this)
-    entities.tabs.delete(this.id)
+    state.tabs.delete(this.id)
   }
 }
 
 autorun(() => {
-  entities.tabGroups.forEach(tabGroup => {
+  state.tabGroups.forEach(tabGroup => {
     // correct tab index
     tabGroup.tabs.forEach((tab, tabIndex) => {
       if (tab.index !== tabIndex) tab.index = tabIndex
@@ -81,21 +81,18 @@ autorun(() => {
 
 
 class TabGroup {
-  constructor (config={}) {
-    this.id = config.id || _.uniqueId('tab_group_')
-    entities.tabGroups.set(this.id, this)
-  }
+  static Tab = Tab;
 
   @observable activeTabId = null
 
   @computed get tabs () {
-    return entities.tabs.values()
+    return state.tabs.values()
       .filter(tab => tab.tabGroupId === this.id)
       .sort((a, b) => a.index - b.index)
   }
 
   @computed get activeTab () {
-    let activeTab = entities.tabs.get(this.activeTabId)
+    let activeTab = state.tabs.get(this.activeTabId)
     if (activeTab && activeTab.tabGroupId === this.id) {
       return activeTab
     }
@@ -103,16 +100,16 @@ class TabGroup {
   }
 
   @computed get siblings () {
-    return entities.tabGroups.values()
+    return state.tabGroups.values()
   }
 
   @computed get isActive () {
-    return entities.activeTabGroup === this
+    return state.activeTabGroup === this
   }
 
   @mapEntity('tabs')
   @action addTab (tab, insertIndex = this.tabs.length) {
-    if (!tab) tab = new Tab()
+    if (!tab) tab = new this.constructor.Tab()
     tab.index = insertIndex
     tab.tabGroupId = this.id
     tab.activate()
@@ -120,7 +117,7 @@ class TabGroup {
   }
 
   @action activate () {
-    entities.activeTabGroupId = this.id
+    state.activeTabGroupId = this.id
   }
 
   @mapEntity('tabs')
@@ -154,11 +151,11 @@ class TabGroup {
   }
 
   @action destroy () {
-    entities.tabGroups.delete(this.id)
+    state.tabGroups.delete(this.id)
   }
 }
 
-return { Tab, TabGroup, entities }
+return { Tab, TabGroup, state }
 
 }
 

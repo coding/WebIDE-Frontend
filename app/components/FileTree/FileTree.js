@@ -1,13 +1,9 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { observer, inject } from 'mobx-react'
-import cx from 'classnames'
+import React, { Component } from 'react'
+import { observer } from 'mobx-react'
+import { TreeNode as FileTreeNode } from 'commons/Tree'
+import subscribeToFileChange from 'commons/File/subscribeToFileChange'
 import * as FileTreeActions from './actions'
-import FileTreeNode from './FileTreeNode'
-import ContextMenu from '../ContextMenu'
-import FileTreeContextMenuItems from './contextMenuItems'
-import subscribeToFileChange from './subscribeToFileChange'
+import FileTreeState from './state'
 
 const FileUploadInput = ({ node, handleUpload }) => {
   return (
@@ -16,20 +12,13 @@ const FileUploadInput = ({ node, handleUpload }) => {
         id='filetree-hidden-input'
         type='file'
         name='files'
-        multiple={true}
-        onChange={e=>handleUpload(e.target.files, node.path)}
+        multiple
+        onChange={e => handleUpload(e.target.files, node.path)}
       />
     </form>
   )
 }
 
-@inject(state => {
-  return {
-    focusedNode: state.FileTreeState.focusedNodes[0],
-    contextMenu: state.FileTreeState.contextMenuState,
-    rootNode: state.FileTreeState.root,
-  }
-})
 @observer
 class FileTree extends Component {
   componentDidMount () {
@@ -37,8 +26,9 @@ class FileTree extends Component {
   }
 
   onKeyDown = (e) => {
-    const { focusedNode: curNode, selectNode, openNode } = this.props
-    if (e.keyCode === 13 || e.keyCode >= 37 && e.keyCode <= 40) e.preventDefault()
+    const curNode = FileTreeState.focusedNodes[0]
+    const { selectNode, openNode } = FileTreeActions
+    if (e.keyCode === 13 || (e.keyCode >= 37 && e.keyCode <= 40)) e.preventDefault()
     switch (e.key) {
       case 'ArrowDown':
         selectNode(1)
@@ -67,23 +57,24 @@ class FileTree extends Component {
       default:
     }
   }
+
   render () {
-    const { rootNode, contextMenu, closeContextMenu, ...actionProps } = this.props
-    const { uploadFilesToPath } = actionProps
+    const { uploadFilesToPath, selectNode, openNode, openContextMenu } = FileTreeActions
+    const rootNode = FileTreeState.root
+    const curNode = FileTreeState.focusedNodes[0]
+
     return (
-      <div className="filetree-container"
+      <div className='filetree-container'
         tabIndex={1}
         onKeyDown={this.onKeyDown}
       >
-        <FileTreeNode node={rootNode} {...actionProps} />
-        <ContextMenu
-          items={FileTreeContextMenuItems}
-          isActive={contextMenu.isActive}
-          pos={contextMenu.pos}
-          context={contextMenu.contextNode}
-          deactivate={closeContextMenu}
+        <FileTreeNode node={rootNode}
+          selectNode={selectNode}
+          openNode={openNode}
+          openContextMenu={openContextMenu}
         />
-        <FileUploadInput node={contextMenu.contextNode}
+        <FileUploadInput
+          node={curNode}
           handleUpload={uploadFilesToPath}
         />
       </div>
@@ -91,7 +82,4 @@ class FileTree extends Component {
   }
 }
 
-export default connect(null,
-  dispatch => bindActionCreators(FileTreeActions, dispatch)
-)(FileTree)
-
+export default FileTree

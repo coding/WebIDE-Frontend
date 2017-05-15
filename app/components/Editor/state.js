@@ -1,28 +1,46 @@
-import { extendObservable, observable, computed } from 'mobx'
-import { TabStateScope } from 'commons/Tab'
-const { Tab: BaseTab, TabGroup: BaseTabGroup, entities: state } = TabStateScope()
-import PaneState from 'components/Pane/state'
+import uniqueId from 'lodash/uniqueId'
+import is from 'utils/is'
+import { extendObservable, observable, computed, action } from 'mobx'
+import CodeMirror from 'codemirror'
+import FileStore from 'commons/File/store'
 
-class Tab extends BaseTab {
-  constructor (config={}) {
-    super(config)
-    extendObservable(this, config)
+const state = observable({
+  entities: observable.map({}),
+})
+
+class Editor {
+  constructor (props={}) {
+    this.id = uniqueId('editor_')
+    state.entities.set(this.id, this)
+    this.update(props)
   }
 
-  @observable path = ''
-  @observable content = {}
-}
-
-class TabGroup extends BaseTabGroup {
-  constructor (config={}) {
-    super(config)
-    extendObservable(this, config)
+  @observable tabId = ''
+  @observable gitBlame = {
+    show: false,
+    data: observable.ref([]),
   }
 
-  @computed get pane () {
-    return PaneState.panes.values().find(pane => pane.contentId === this.id)
+  @observable filePath = undefined
+  @computed get file () { return FileStore.get(this.filePath) }
+
+  @observable _content = ''
+  @computed get content () {
+    return this.file ? this.file.content : this._content
+  }
+  set content (v) { return this._content = v }
+
+  @action update (props={}) {
+    if (is.string(props.tabId)) this.tabId = props.tabId
+    if (is.string(props.filePath)) this.filePath = props.filePath
+    if (is.pojo(props.gitBlame)) this.gitBlame = props.gitBlame
+    // file
+    if (!this.file && props.content) {
+      this._content = props.content
+    }
+    if (props.cm instanceof CodeMirror) this.cm = props.cm
   }
 }
 
 export default state
-export { Tab, TabGroup }
+export { state, Editor }
