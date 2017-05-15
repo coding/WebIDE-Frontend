@@ -4,6 +4,7 @@ import isString from 'lodash/isString'
 import isBoolean from 'lodash/isBoolean'
 import isFunction from 'lodash/isFunction'
 import isArray from 'lodash/isArray'
+import isPlainObject from 'lodash/isPlainObject'
 
 export default {
   null: isNull,
@@ -12,6 +13,8 @@ export default {
   boolean: isBoolean,
   function: isFunction,
   array: isArray,
+  pojo: isPlainObject,
+  plainObject: isPlainObject,
 }
 
 export {
@@ -21,4 +24,5 @@ export {
   isBoolean,
   isFunction,
   isArray,
+  isPlainObject,
 }
