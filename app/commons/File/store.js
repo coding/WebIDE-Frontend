@@ -10,7 +10,6 @@ class FileStore {
 
   get (path) {
     let file = state.entities.get(path)
-    if (!file) throw Error(`File Not Found: ${path}`)
     return file
   }
 

@@ -35,11 +35,8 @@ function handleGitFiles (node) {
             gitStatus: file ? file.status : 'CLEAN',
           }
         })
-        dispatch(
-          FileActions.loadNodeData(
-            result
-          )
-        )
+
+        FileActions.loadNodeData(result)
       })
     }
     return true
@@ -63,13 +60,13 @@ export default function subscribeToFileChange () {
           if (handleGitFiles(node)) {
             break
           }
-          dispatch(FileActions.loadNodeData([node]))
+          FileActions.loadNodeData([node])
           break
         case 'modify':
           if (handleGitFiles(node)) {
             break
           }
-          dispatch(FileActions.loadNodeData([node]))
+          FileActions.loadNodeData([node])
           const tabsToUpdate = mobxStore.EditorTabState.tabs.values().filter(tab => tab.path === node.path)
           if (tabsToUpdate.length) {
             api.readFile(node.path).then(({ content }) => {
