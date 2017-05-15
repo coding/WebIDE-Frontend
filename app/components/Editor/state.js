@@ -1,5 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
+import is from 'utils/is'
 import { extendObservable, observable, computed, action } from 'mobx'
+import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 
 const state = observable({
@@ -9,12 +11,8 @@ const state = observable({
 class Editor {
   constructor (props={}) {
     this.id = uniqueId('editor_')
-    if (props.filePath) this.filePath = props.filePath
-    if (!this.file && props.content) {
-      this._content = props.content
-    }
-    if (props.gitBlame) this.gitBlame = props.gitBlame
     state.entities.set(this.id, this)
+    this.update(props)
   }
 
   @observable tabId = ''
@@ -30,10 +28,17 @@ class Editor {
   @computed get content () {
     return this.file ? this.file.content : this._content
   }
+  set content (v) { return this._content = v }
 
   @action update (props={}) {
-    if (props.filePath) this.filePath = props.filePath
-    if (props.gitBlame) this.gitBlame = props.gitBlame
+    if (is.string(props.tabId)) this.tabId = props.tabId
+    if (is.string(props.filePath)) this.filePath = props.filePath
+    if (is.pojo(props.gitBlame)) this.gitBlame = props.gitBlame
+    // file
+    if (!this.file && props.content) {
+      this._content = props.content
+    }
+    if (props.cm instanceof CodeMirror) this.cm = props.cm
   }
 }
 

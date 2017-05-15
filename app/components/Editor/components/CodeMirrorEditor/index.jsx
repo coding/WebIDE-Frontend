@@ -62,20 +62,22 @@ class CodeMirrorEditor extends Component {
 
   componentDidMount () {
     const { themeName, editor, file } = this.props
-    let cmInitialized = false
+
+    let isCmFreshlyInit = false
     // todo add other setting item from config
     if (editor.cm) {
       this.cm = editor.cm
       this.cmContainer.appendChild(this.cm.getWrapperElement())
     } else {
       this.cm = editor.cm = initializeEditor(this.cmContainer, themeName)
-      cmInitialized = true
+      isCmFreshlyInit = true
     }
-    const cm = this.cm
 
-    if (cmInitialized && file) {
-      if (file.content) cm.setValue(file.content)
-      const modeInfo = getMode(file)
+    const cm = this.cm
+    if (isCmFreshlyInit) {
+      cm.setValue(editor.content)
+      let modeInfo
+      if (file) modeInfo = getMode(file)
       if (modeInfo) {
         let mode = modeInfo.mode
         if (mode === 'null') {
@@ -131,15 +133,15 @@ class CodeMirrorEditor extends Component {
   onChange = (e) => {
     if (!this.isChanging) this.isChanging = true
     const { tab, file } = this.props
-    FileStore.updateFile({
-      id: file.id,
-      content: this.cm.getValue(),
-    })
     TabStore.updateTab({
       id: tab.id,
       flags: { modified: true },
     })
     if (file) debounced(() => {
+      FileStore.updateFile({
+        id: file.id,
+        content: this.cm.getValue(),
+      })
       dispatchCommand('file:save')
       this.isChanging = false
     })
@@ -196,13 +198,20 @@ class TablessCodeMirrorEditor extends Component {
     this.cm.on('change', this.onChange)
   }
 
+  componentWillUnmount () {
+    this.cm.off('change', this.onChange)
+  }
+
   onChange = (e) => {
     TabStore.createTab({
+      flags: { modified: true },
       tabGroup: {
         id: this.props.tabGroupId,
       },
-      flags: { modified: true },
-      content: this.cm.getValue()
+      editor: {
+        content: this.cm.getValue(),
+        cm: this.cm,
+      },
     })
   }
 

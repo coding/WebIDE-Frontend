@@ -5,12 +5,8 @@ import store from 'mobxStore'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const createTab = registerAction(TAB_CREATE,
-  (tabConfig) => {
-    const tab = new Tab(tabConfig)
-    if (!tab.tabGroup) {
-      const activeTabGroup = state.activeTabGroup
-      activeTabGroup.addTab(tab)
-    }
+  (tabProps) => {
+    const tab = new Tab(tabProps)
   },
 )
 
@@ -51,15 +47,15 @@ export const removeGroup = registerAction('tab:remove_tab_group',
 )
 
 export const updateTab = registerAction('tab:update',
-  (tabConfig={}) => {
-    const tabId = tabConfig.id
+  (tabProps={}) => {
+    const tabId = tabProps.id
     const tab = state.tabs.get(tabId)
-    if (tab) tab.update(tabConfig)
+    if (tab) tab.update(tabProps)
   }
 )
 
 export const TAB_UPDATE_BY_PATH = 'TAB_UPDATE_BY_PATH'
-export const updateTabByPath = registerAction(TAB_UPDATE_BY_PATH, (tabConfig = {}) => tabConfig)
+export const updateTabByPath = registerAction(TAB_UPDATE_BY_PATH, (tabProps = {}) => tabProps)
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
 export const updateTabFlags = registerAction('tab:update_flags', (tabId, flag, value=true) => {
