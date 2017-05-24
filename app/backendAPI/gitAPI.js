@@ -131,3 +131,20 @@ export function gitHistory ({ path, page, size }) {
 export function gitBlame (path) {
   return request.get(`/git/${config.spaceKey}/blame`, { path })
 }
+
+export function gitLogs (params={}) {
+  return request.get(`/git/${config.spaceKey}/logs`, params)
+    .then(commits => commits.map(c => {
+      return {
+        id: c.name,
+        author: c.authorIdent,
+        parentIds: c.parents,
+        message: c.shortMessage,
+        date: new Date(c.commitTime * 1000),
+      }
+    }))
+}
+
+export function gitRefs () {
+  return request.get(`/git/${config.spaceKey}/refs`)
+}

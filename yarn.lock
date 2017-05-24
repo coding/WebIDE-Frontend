@@ -1642,7 +1642,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2:
     create-hash "^1.1.0"
     inherits "^2.0.1"
 
-create-react-class@^15.5.1:
+create-react-class@^15.5.1, create-react-class@^15.5.2:
   version "15.5.2"
   resolved "http://registry.npm.taobao.org/create-react-class/download/create-react-class-15.5.2.tgz#6a8758348df660b88326a0e764d569f274aad681"
   dependencies:
@@ -2649,9 +2649,12 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-fixed-data-table@^0.6.3:
-  version "0.6.3"
-  resolved "http://registry.npm.taobao.org/fixed-data-table/download/fixed-data-table-0.6.3.tgz#e0bba85bc84a065dea71f0fb3a46d61441ad81e8"
+fixed-data-table-2@^0.7.17:
+  version "0.7.17"
+  resolved "http://registry.npm.taobao.org/fixed-data-table-2/download/fixed-data-table-2-0.7.17.tgz#327d172f865f71715c86d4979fdbf3c77ecf7d9a"
+  dependencies:
+    create-react-class "^15.5.2"
+    prop-types "^15.5.8"
 
 flat-cache@^1.2.1:
   version "1.2.2"

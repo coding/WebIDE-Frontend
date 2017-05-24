@@ -10,6 +10,8 @@ import TerminalContainer from '../Terminal'
 import SideBar, { SideBar2 } from './SideBar'
 import { SidePanelContainer, SidePanelView } from './SidePanel'
 import GitHistoryView from '../Git/GitHistoryView'
+import GitGraph from 'components/Git/GitGraph'
+
 
 const PanelContent = ({ panel }) => {
   switch (panel.contentType) {
@@ -40,19 +42,28 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
-          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }} active>
+          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }} active >
             <FileTree />
           </SidePanelView>
         </SidePanelContainer>
       )
     case 'PANEL_BOTTOM':
+      const labels = {
+        terminal: { text: 'Terminal', icon: 'octicon octicon-terminal' },
+        gitGraph: { text: 'Git Logs', icon: 'octicon octicon-git-commit' },
+        gitHistory: { text: 'History', icon: 'octicon octicon-history' },
+      }
       return (
         <SidePanelContainer side='bottom'>
-          <SidePanelView label={{ text: 'Terminal', icon: 'octicon octicon-terminal' }} active>
+          <SidePanelView label={labels.terminal} active >
             <TerminalContainer />
           </SidePanelView>
 
-          <SidePanelView label={{ text: 'History', icon: 'octicon octicon-history' }} >
+          <SidePanelView label={labels.gitGraph} >
+            <GitGraph />
+          </SidePanelView>
+
+          <SidePanelView label={labels.gitHistory} >
             <GitHistoryView />
           </SidePanelView>
 

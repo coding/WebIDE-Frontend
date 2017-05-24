@@ -10,6 +10,7 @@
     "no-param-reassign": 0,
     "new-cap": 0,
     "no-eval": 0,
+    "no-plusplus": 0,
     "no-return-assign": 0,
     "no-underscore-dangle": 0,
     "semi": ["error", "never"],
