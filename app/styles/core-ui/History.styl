@@ -40,3 +40,41 @@
     }
   }
 }
+
+
+.history-table {
+  display: flex;
+}
+
+#git-graph-column {
+  $header-height=27px
+
+  // absolute(left top bottom 0);
+  position: relative;
+  border-right: 1px solid rgb(235, 235, 235);
+
+  .column-header {
+    height: $header-height;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgb(235, 235, 235);
+  }
+
+  .column-content {
+    absolute(left right bottom 0 top $header-height);
+    overflow: scroll;
+  }
+}
+
+.git-graph-ref {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin-right: 2px;
+  margin-bottom: -2px;
+}
+
+#git-log-table, #git-graph-column {
+  flex-basis: 0;
+  overflow: scroll;
+}

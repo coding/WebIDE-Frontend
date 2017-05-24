@@ -15,18 +15,28 @@ const state = observable({
     }
   },
   maxCol: 0,
-  get commitList () {
+  livingBranchesAtIndex: observable.ref([]),
+  get commitsList () {
     return this.commits.values()
   }
 })
 
-function getCol () {
+// NOTE:
+/*
+  Simply track col availability is probably not enough,
+  we need to track lifecycle of lanes instead, that's much more assuring
+ */
+
+function getCol (commit) {
   let availableCol
   for (let i = 0; availableCol === undefined; i++) {
     const isColumnAvailable = !state.columnSlots.get(i)
-    if (isColumnAvailable) availableCol = i
+    if (isColumnAvailable) {
+      availableCol = i
+      break
+    }
   }
-  state.columnSlots.set(availableCol, 1)
+  state.columnSlots.set(availableCol, commit)
   return availableCol
 }
 
@@ -44,32 +54,90 @@ const makeChildrenIndexes = action('makeChildrenIndexes', (childId, parentId) =>
   if (!childrenIndex.includes(childId)) childrenIndex.push(childId)
 })
 
-const calculColumn = action((commit) => {
-  if (commit.isLeaf) {
-    const col = getCol(commit)
-    const newBranch = { col, start: commit.id, color: randColors.get() }
-    state.branches.set(commit.id, newBranch)
-  }
+const assignNewBranch = (commit) => {
+  const col = getCol(commit)
+  const newBranch = { col, id: commit.id, color: randColors.get() }
+  state.branches.set(newBranch.id, newBranch)
+  commit.branch = newBranch
+}
 
-  if (commit.isBranched) {
-    // we revoke some col since here the commit is branched
-    const children = commit.children.slice(1)
-    children.forEach(child => {
-      if (child.parentIds.length === 1) freeCol(child.col, commit, child)
-    })
-  }
+const calculColumnAndBranch = action((commit) => {
+  /* eslint-disable */
+  switch (commit.children.length) {
+    case 0:   // commit.isLeaf
+      assignNewBranch(commit)
+      break
 
-  if (commit.children.length === 1) {
-    const child = commit.children[0]
-    if (child.isMerged && child.parentIds.indexOf(commit.id)) {
-      const col = getCol(commit)
-      const newBranch = { col, start: commit.id, color: randColors.get() }
-      state.branches.set(commit.id, newBranch)
-    }
+    case 1:   // commit has one single child
+      const child = commit.children[0]
+
+      // ATTENTION: this condition is suspicious, need more research:
+      if (child.isMerged && !commit.isBaseOfMerge(child)) {
+        assignNewBranch(commit)
+      } else {
+        commit.branch = child.branch
+      }
+      break
+
+    default:   // commit has many children
+      // 1. find which branch the current commit belongs to
+
+      // sort children by col, from low to high
+      const children = commit.children.concat().sort(
+        (a, b) => a.branch.col - b.branch.col
+      )
+
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        if (!child.isMerged) {
+          commit.branch = child.branch
+          break
+        } else if (commit.isBaseOfMerge(child)) {
+          commit.branch = child.branch
+          break
+        }
+      }
+
+      if (!commit._branchId) assignNewBranch(commit)
+
+      // 2. revoke some col since here the commit is branched
+      let childColsToFree = []
+      commit.children.forEach(child => {
+        // if child has only 1 parent, surely it's dead
+        if (child.parentIds.length === 1) {
+          childColsToFree.push(child)
+        } else {
+        // if child has more than one parent,
+        // we need to check if the current commit is the eldest ancestor (not just direct parent),
+        // if so, child is probably dead too
+          function getEldestAncestorIndex (parents) {
+            return parents.reduce((acc, parent) => {
+              if (!parent) return Infinity
+              if (parent === commit) return Math.max(commit.index, acc)
+              return getEldestAncestorIndex(parent.parents)
+            }, 0)
+          }
+
+          const eldestAncestorIndex = getEldestAncestorIndex(child.parents)
+
+          // if it is the eldest ancestor, it has every right to revoke this col
+          if (eldestAncestorIndex === commit.index) {
+            childColsToFree.push(child)
+          }
+          // however, there's another case to consider
+          else if (commit.isBaseOfMerge(child)) {
+            childColsToFree.push(child)
+          }
+        }
+      })
+
+      childColsToFree = childColsToFree.filter(child => child.col !== commit.col)
+      childColsToFree.forEach(child => freeCol(child.col))
   }
+  /* eslint-enable */
 
   if (commit.isRoot) {
-    freeCol(commit.col, commit)
+    freeCol(commit.col)
   }
 })
 
@@ -84,7 +152,7 @@ state.commits.observe(change => {
       commit.parentIds.forEach(parentId => {
         makeChildrenIndexes(commit.id, parentId)
       })
-      calculColumn(commit)
+      calculColumnAndBranch(commit)
     case 'update':
 
     case 'delete':
@@ -109,20 +177,28 @@ class Commit {
   @observable date = 0
   @observable message = ''
   @observable color = ''
+  @observable _branchId = ''
 
   @computed get col () {
     return this.branch.col
   }
 
   @computed get branch () {
-    const branch = state.branches.get(this.id)
+    const branch = state.branches.get(this._branchId)
     if (branch) return branch
-    if (this.children.length === 0) return null
-    if (this.children.length >= 1) return this.children[0].branch
+    throw Error(`Branch calculation error, ${this.id} doesn't have a branch.`)
+  }
+
+  set branch (branch) {
+    this._branchId = branch.id
+  }
+
+  isBaseOfMerge (child) {
+    return child.parentIds.indexOf(this.id) === 0
   }
 
   @computed get shortId () {
-    return this.id.slice(0, 6)
+    return this.id.slice(0, 7)
   }
 
   @computed get parents () {
@@ -136,7 +212,7 @@ class Commit {
   }
 
   @computed get index () {
-    return state.commitList.indexOf(this)
+    return state.commitsList.indexOf(this)
   }
 
   @computed get isLeaf () {

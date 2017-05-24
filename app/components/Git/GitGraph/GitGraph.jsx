@@ -36,7 +36,7 @@ const GitGraph = (props) => {
     // draw path from current commit to its children
     const paths = commit.children.map((child) => {
       const childIndex = commits.indexOf(child)
-      const pathKey = `p_${commit.id.slice(0, 6)}_${child.id.slice(0, 6)}`
+      const pathKey = `p_${commit.id}_${child.id}`
 
       let d, strokeColor
       // case 1: child on the same col, draw a straight line
@@ -47,7 +47,7 @@ const GitGraph = (props) => {
           .value()
         strokeColor = child.branch.color
       }
-      // case 2-1: child has one parent, that's a branch out
+      // case 2: child has one parent, that's a branch out
       else if (child.parentIds.length === 1) {
         d = pathData()
           .moveTo(x, y)
@@ -56,14 +56,26 @@ const GitGraph = (props) => {
           .value()
         strokeColor = child.branch.color
       }
-      // case 2-2: child has more than one parent, that's a merge
+      // case 3: child has more than one parent
       else {
-        d = pathData()
-          .moveTo(x, y)
-          .lineTo(x, posY(childIndex) + rowHeight/2)
-          .lineTo(posX(child.col), posY(childIndex))
-          .value()
-        strokeColor = commit.branch.color
+        // case 3-1: if current commit is base of merge, that's a branch out, too
+        if (commit.isBaseOfMerge(child)) {
+          d = pathData()
+            .moveTo(x, y)
+            .lineTo(posX(child.col), y - rowHeight/2)
+            .lineTo(posX(child.col), posY(childIndex))
+            .value()
+          strokeColor = child.branch.color
+        }
+        // case 3-2: other than that, it's a merge
+        else {
+          d = pathData()
+            .moveTo(x, y)
+            .lineTo(x, posY(childIndex) + rowHeight/2)
+            .lineTo(posX(child.col), posY(childIndex))
+            .value()
+          strokeColor = commit.branch.color
+        }
       }
 
       return <path d={d} id={pathKey} key={pathKey} stroke={strokeColor} {...pathProps} />
@@ -71,7 +83,7 @@ const GitGraph = (props) => {
 
     const circle = (
       <circle
-        key={commit.id.slice(0, 6)}
+        key={`c_${commit.id}`}
         cx={x} cy={y} r={circleRadius}
         fill={commit.branch.color}
         strokeWidth='1'
@@ -82,8 +94,11 @@ const GitGraph = (props) => {
     circlesList = circlesList.concat(circle)
   })
 
+  const width = colWidth * (maxCol + 2)
+  if (typeof props.onWidthChange === 'function') props.onWidthChange(width)
+
   return (
-    <svg height={commits.length * rowHeight} width={colWidth * (maxCol + 2)}>
+    <svg height={commits.length * rowHeight} width={colWidth * (maxCol + 2)} >
       {[...pathsList, ...circlesList]}
     </svg>
   )

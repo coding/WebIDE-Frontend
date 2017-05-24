@@ -1,9 +1,17 @@
-/* @flow weak */
 import _ from 'lodash'
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 import cx from 'classnames'
 import { emitter, E } from 'utils'
+
+const debounced = _.debounce(func => func(), 50)
+function emitPanelResizedEvent () {
+  debounced(() => {
+    emitter.emit(E.PANEL_RESIZED)
+  })
+}
+
+// onloading this module, should make window resize event be heard by emitting `E.PANEL_RESIZED`
+window.onresize = emitPanelResizedEvent
 
 const getNextSiblingNode = (currentDOM) => {
   let sibling = currentDOM.nextSibling
@@ -45,7 +53,6 @@ const startResize = (e, viewId, confirmResize) => {
   window.document.addEventListener('mouseup', stopResize)
 }
 
-const debounced = _.debounce(func => func(), 50)
 const resize = (leftViewId, rightViewId, dX, dY) => {
   let leftViewDom = document.getElementById(leftViewId)
   let rightViewDom = document.getElementById(rightViewId)
@@ -69,9 +76,7 @@ const resize = (leftViewId, rightViewId, dX, dY) => {
   leftViewDom.style.flexGrow = leftSize
   rightViewDom.style.flexGrow = rightSize
 
-  debounced(() => {
-    emitter.emit(E.PANEL_RESIZED)
-  })
+  emitPanelResizedEvent()
 
   return [leftSize, rightSize]
 }

@@ -15,7 +15,7 @@ const COLORS = [
   '#85144B', // maroon
 ]
 
-class RandColors {
+export default class RandColors {
   constructor () {
     this.colors = COLORS.slice()
     this._index = 0
@@ -26,5 +26,3 @@ class RandColors {
     return this.colors[this._index++ % this._period]
   }
 }
-
-export { RandColors }
