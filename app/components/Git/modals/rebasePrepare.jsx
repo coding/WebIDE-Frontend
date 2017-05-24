@@ -1,12 +1,12 @@
 /* @flow weak */
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
-import { dispatchCommand } from '../../../commands'
+import { dispatchCommand } from 'commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import * as GitActions from '../actions'
-import {Table, Column, Cell} from 'fixed-data-table';
+import { Table, Column, Cell } from 'fixed-data-table-2';
 
 const TextCell = ({rowIndex, data, columnKey, selectedRow, ...props}) => (
   <Cell {...props}
