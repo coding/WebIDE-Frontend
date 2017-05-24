@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 const pathData = () => {
@@ -18,48 +18,55 @@ const pathData = () => {
   }
 }
 
-const GitGraph = (props) => {
-  const { commits, circleRadius, colWidth, rowHeight } = props
-  const posX = col => (col + 1) * colWidth
-  const posY = row => (row + 1) * rowHeight - rowHeight / 2
-  const pathProps = { strokeWidth: 2, fill: 'none' }
+class GitGraph extends Component {
+  constructor (props) {
+    super(props)
+    this.commitsCount = 0
+    if (props.commits && props.commits.length) {
+      this.commitsCount = props.commits.length
+    }
+  }
 
-  let pathsList = []
-  let circlesList = []
-  let maxCol = 0
-  commits.forEach((commit, commitIndex) => {
-    maxCol = Math.max(maxCol, commit.col)
+  shouldComponentUpdate () {
+    if (this.commitsCount === this.props.commits.length) {
+      return false
+    } else {
+      this.commitsCount = this.props.commits.length
+      return true
+    }
+  }
 
-    const x = posX(commit.col)
-    const y = posY(commitIndex)
+  render () {
+    const { commits, circleRadius, colWidth, rowHeight } = this.props
+    const posX = col => (col + 1) * colWidth
+    const posY = row => (row + 1) * rowHeight - rowHeight / 2
+    const pathProps = { strokeWidth: 2, fill: 'none' }
 
-    // draw path from current commit to its children
-    const paths = commit.children.map((child) => {
-      const childIndex = commits.indexOf(child)
-      const pathKey = `p_${commit.id}_${child.id}`
+    let pathsList = []
+    let circlesList = []
+    let maxCol = 0
+    commits.forEach((commit, commitIndex) => {
+      maxCol = Math.max(maxCol, commit.col)
 
-      let d, strokeColor
-      // case 1: child on the same col, draw a straight line
-      if (child.col === commit.col) {
-        d = pathData()
-          .moveTo(x, y)
-          .lineTo(posX(child.col), posY(childIndex))
-          .value()
-        strokeColor = child.branch.color
-      }
-      // case 2: child has one parent, that's a branch out
-      else if (child.parentIds.length === 1) {
-        d = pathData()
-          .moveTo(x, y)
-          .lineTo(posX(child.col), y - rowHeight/2)
-          .lineTo(posX(child.col), posY(childIndex))
-          .value()
-        strokeColor = child.branch.color
-      }
-      // case 3: child has more than one parent
-      else {
-        // case 3-1: if current commit is base of merge, that's a branch out, too
-        if (commit.isBaseOfMerge(child)) {
+      const x = posX(commit.col)
+      const y = posY(commitIndex)
+
+      // draw path from current commit to its children
+      const paths = commit.children.map((child) => {
+        const childIndex = commits.indexOf(child)
+        const pathKey = `p_${commit.id}_${child.id}`
+
+        let d, strokeColor
+        // case 1: child on the same col, draw a straight line
+        if (child.col === commit.col) {
+          d = pathData()
+            .moveTo(x, y)
+            .lineTo(posX(child.col), posY(childIndex))
+            .value()
+          strokeColor = child.branch.color
+        }
+        // case 2: child has one parent, that's a branch out
+        else if (child.parentIds.length === 1) {
           d = pathData()
             .moveTo(x, y)
             .lineTo(posX(child.col), y - rowHeight/2)
@@ -67,41 +74,53 @@ const GitGraph = (props) => {
             .value()
           strokeColor = child.branch.color
         }
-        // case 3-2: other than that, it's a merge
+        // case 3: child has more than one parent
         else {
-          d = pathData()
-            .moveTo(x, y)
-            .lineTo(x, posY(childIndex) + rowHeight/2)
-            .lineTo(posX(child.col), posY(childIndex))
-            .value()
-          strokeColor = commit.branch.color
+          // case 3-1: if current commit is base of merge, that's a branch out, too
+          if (commit.isBaseOfMerge(child)) {
+            d = pathData()
+              .moveTo(x, y)
+              .lineTo(posX(child.col), y - rowHeight/2)
+              .lineTo(posX(child.col), posY(childIndex))
+              .value()
+            strokeColor = child.branch.color
+          }
+          // case 3-2: other than that, it's a merge
+          else {
+            d = pathData()
+              .moveTo(x, y)
+              .lineTo(x, posY(childIndex) + rowHeight/2)
+              .lineTo(posX(child.col), posY(childIndex))
+              .value()
+            strokeColor = commit.branch.color
+          }
         }
-      }
 
-      return <path d={d} id={pathKey} key={pathKey} stroke={strokeColor} {...pathProps} />
+        return <path d={d} id={pathKey} key={pathKey} stroke={strokeColor} {...pathProps} />
+      })
+
+      const circle = (
+        <circle
+          key={`c_${commit.id}`}
+          cx={x} cy={y} r={circleRadius}
+          fill={commit.branch.color}
+          strokeWidth='1'
+          stroke='#fff'
+        />)
+
+      pathsList = paths.concat(pathsList)
+      circlesList = circlesList.concat(circle)
     })
 
-    const circle = (
-      <circle
-        key={`c_${commit.id}`}
-        cx={x} cy={y} r={circleRadius}
-        fill={commit.branch.color}
-        strokeWidth='1'
-        stroke='#fff'
-      />)
+    const width = colWidth * (maxCol + 2)
+    if (typeof this.props.onWidthChange === 'function') this.props.onWidthChange(width)
 
-    pathsList = paths.concat(pathsList)
-    circlesList = circlesList.concat(circle)
-  })
-
-  const width = colWidth * (maxCol + 2)
-  if (typeof props.onWidthChange === 'function') props.onWidthChange(width)
-
-  return (
-    <svg height={commits.length * rowHeight} width={colWidth * (maxCol + 2)} >
-      {[...pathsList, ...circlesList]}
-    </svg>
-  )
+    return (
+      <svg height={commits.length * rowHeight} width={colWidth * (maxCol + 2)} >
+        {[...pathsList, ...circlesList]}
+      </svg>
+    )
+  }
 }
 
 

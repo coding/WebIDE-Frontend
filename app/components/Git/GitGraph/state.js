@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, runInAction } from 'mobx'
+import { observable, computed, action, autorun, autorunAsync, runInAction } from 'mobx'
 import { RandColors } from './helpers'
 
 const randColors = new RandColors()
@@ -7,7 +7,6 @@ const state = observable({
   childrenIndexes: observable.map({}), // it goes with new data flowing into source
   refs: observable.map({}),
   columnSlots: observable.map({}),
-  branches: observable.map({}),
   get availCol () {
     for (let i = 0; ; i++) {
       const isColumnAvailable = !this.columnSlots.get(i)
@@ -16,11 +15,10 @@ const state = observable({
   },
   maxCol: 0,
   livingBranchesAtIndex: observable.ref([]),
-  get commitsList () {
-    return this.commits.values()
-  }
+  commitsList: observable.shallowArray([])
 })
 
+const branches = {}
 // NOTE:
 /*
   Simply track col availability is probably not enough,
@@ -57,7 +55,7 @@ const makeChildrenIndexes = action('makeChildrenIndexes', (childId, parentId) =>
 const assignNewBranch = (commit) => {
   const col = getCol(commit)
   const newBranch = { col, id: commit.id, color: randColors.get() }
-  state.branches.set(newBranch.id, newBranch)
+  branches[newBranch.id] = newBranch
   commit.branch = newBranch
 }
 
@@ -139,11 +137,15 @@ const calculColumnAndBranch = action((commit) => {
   if (commit.isRoot) {
     freeCol(commit.col)
   }
+
 })
 
 autorun('track max col', () => {
   if (state.maxCol < state.availCol) state.maxCol = state.availCol
 })
+autorunAsync('Sync commitsList with commits', () => {
+  state.commitsList.replace(state.commits.values())
+}, 0)
 
 state.commits.observe(change => {
   const { name: commitId, newValue: commit, oldValue: commitOldValue } = change
@@ -155,14 +157,17 @@ state.commits.observe(change => {
       calculColumnAndBranch(commit)
     case 'update':
 
+
     case 'delete':
 
   }
 })
 
-
 class Commit {
   constructor (props) {
+    // do not reconstruct! if found in commits, just return it.
+    const commit = state.commits.get(props.id)
+    if (commit) return commit
     this.id = props.id
     this.author = props.author
     this.date = props.date
@@ -183,11 +188,12 @@ class Commit {
     return this.branch.col
   }
 
-  @computed get branch () {
-    const branch = state.branches.get(this._branchId)
+  get branch () {
+    const branch = branches[this._branchId]
     if (branch) return branch
     throw Error(`Branch calculation error, ${this.id} doesn't have a branch.`)
   }
+
 
   set branch (branch) {
     this._branchId = branch.id
@@ -212,7 +218,7 @@ class Commit {
   }
 
   @computed get index () {
-    return state.commitsList.indexOf(this)
+    return state.commits.values().indexOf(this)
   }
 
   @computed get isLeaf () {

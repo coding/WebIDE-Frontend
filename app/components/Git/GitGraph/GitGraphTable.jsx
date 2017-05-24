@@ -9,10 +9,8 @@ import state from './state'
 import cx from 'classnames'
 import { hex2rgb } from './helpers'
 import { fetchRefs, fetchCommits } from './actions'
-import debounce from 'lodash/debounce'
 import ResizeBar from 'components/ResizeBar'
 
-const debounced = debounce(func => func(), 500)
 const RefTag = ({ value: refName, color }) => {
   let ref
   const regex = /(refs\/\w+\/|HEAD)(.*)/
@@ -125,12 +123,13 @@ class GitGraphTable extends Component {
     const commits = this.props.commits
     this.syncGitGraphScrollTop(scrollTop)
     const revealedOffset = scrollTop + this.containerDOM.clientHeight
-    if (revealedOffset > this.state.rowHeight * (commits.length - 10)) {
+    if (revealedOffset > this.state.rowHeight * (commits.length - 20)) {
       const size = 30
       const page = Math.floor(commits.length / size) + 1
-      debounced(() => {
-        fetchCommits({ size, page })
-      })
+      if (this.isFetching) return
+      this.isFetching = fetchCommits({ size, page }).then(() =>
+        this.isFetching = false
+      )
     }
   }
 
