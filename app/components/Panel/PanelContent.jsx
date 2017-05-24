@@ -50,7 +50,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_BOTTOM':
       const labels = {
         terminal: { text: 'Terminal', icon: 'octicon octicon-terminal' },
-        gitGraph: { text: 'Graph', icon: 'octicon octicon-git-commit' },
+        gitGraph: { text: 'Git Logs', icon: 'octicon octicon-git-commit' },
         gitHistory: { text: 'History', icon: 'octicon octicon-history' },
       }
       return (

@@ -159,7 +159,7 @@ class GitGraphTable extends Component {
     return (
       <div className='ide-history' ref={r => this.containerDOM = r} >
         <div className='history-container'>
-          <div className='history-title'>History</div>
+          <div className='history-title'>Git Logs</div>
           <div className='history-table' >
 
             <div id='git-graph-column' style={{ flexGrow: this.state.gitGraphColumnSize }} >
