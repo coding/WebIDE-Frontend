@@ -60,7 +60,7 @@ class GitGraphTable extends Component {
   constructor () {
     super()
     fetchRefs()
-    fetchCommits({ size: 30, page: 1 })
+    fetchCommits({ size: 30, page: 0 })
     this.state = {
       radius: 4,
       colWidth: 10,
