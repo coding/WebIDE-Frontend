@@ -127,7 +127,7 @@ class GitGraphTable extends Component {
     const revealedOffset = scrollTop + this.containerDOM.clientHeight
     if (revealedOffset > this.state.rowHeight * (commits.length - 20)) {
       const size = 30
-      const page = Math.floor(commits.length / size) + 1
+      const page = Math.floor(commits.length / size)
       this.isFetching = fetchCommits({ size, page })
         .catch(() => true) // don't care error, just let crash and retry
         .then(() => this.isFetching = false)
