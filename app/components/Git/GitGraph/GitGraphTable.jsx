@@ -68,8 +68,8 @@ class GitGraphTable extends Component {
       tableHeight: 0,
       tableWidth: 0,
       gitGraphWidth: 0,
-      gitGraphColumnSize: 10,
-      gitLogTableSize: 90,
+      gitGraphColumnSize: 5,
+      gitLogTableSize: 95,
       scrollTop: 0,
       columnWidths: {
         message: 600,
@@ -84,7 +84,7 @@ class GitGraphTable extends Component {
     this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
-        [columnKey]: newColumnWidth,
+        [columnKey]: newColumnWidth < 15 ? 15 : newColumnWidth,
       }
     }))
   }
@@ -162,7 +162,7 @@ class GitGraphTable extends Component {
           <div className='history-title'>Git Logs</div>
           <div className='history-table' >
 
-            <div id='git-graph-column' style={{ flexGrow: this.state.gitGraphColumnSize }} >
+            <div id='git-graph-column' style={{ minWidth: '20px', flexGrow: this.state.gitGraphColumnSize }} >
               <div className='column-header'>Graph</div>
               <div className='column-content' ref={r => this.gitGraphContainerDOM = r}
                 onScroll={e => this.onVerticalScroll(e.target.scrollTop)}
@@ -182,7 +182,7 @@ class GitGraphTable extends Component {
               />
             </div>
 
-            <div id='git-log-table' ref={r => this.gitLogTableContainerDOM = r} style={{ flexGrow: this.state.gitLogTableSize }} >
+            <div id='git-log-table' ref={r => this.gitLogTableContainerDOM = r} style={{ minWidth: '200px', flexGrow: this.state.gitLogTableSize }} >
               <Table
                 rowsCount={commits.length}
                 rowHeight={rowHeight}
