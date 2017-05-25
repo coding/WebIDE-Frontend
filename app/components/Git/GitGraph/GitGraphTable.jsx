@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
-import { observer, inject } from 'mobx-react'
-import { Table, Column, Cell } from 'fixed-data-table-2'
-import { emitter, E } from 'utils'
+import { inject, observer } from 'mobx-react'
+import { Cell, Column, Table } from 'fixed-data-table-2'
+import { E, emitter } from 'utils'
 import GitGraph from './GitGraph'
 import state from './state'
 import cx from 'classnames'
 import { hex2rgb } from './helpers'
-import { fetchRefs, fetchCommits } from './actions'
+import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
 import ResizeBar from 'components/ResizeBar'
 
 const RefTag = ({ value: refName, color }) => {
@@ -43,24 +42,23 @@ const RefTag = ({ value: refName, color }) => {
   )
 }
 
-const TextCell = ({ rowIndex, selectedRow, children, ...otherProps }) => {
-  return (
-    <Cell className={cx({selected: rowIndex == selectedRow})}
-      style={{ whiteSpace: 'nowrap' }}
-      {...otherProps}
-    >
-      {children}
-    </Cell>
+const TextCell = ({ rowIndex, selectedRow, children, ...otherProps }) => (
+  <Cell className={cx({ selected: rowIndex === selectedRow })}
+    style={{ whiteSpace: 'nowrap' }}
+    {...otherProps}
+  >
+    {children}
+  </Cell>
   )
-}
 
 @inject(() => ({ commits: state.commitsList }))
 @observer
 class GitGraphTable extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     fetchRefs()
-    fetchCommits({ size: 30, page: 0 })
+    const PAGE_SIZE = 30
+    fetchCommits({ size: PAGE_SIZE, page: 0 })
     this.state = {
       radius: 4,
       colWidth: 10,
@@ -78,6 +76,11 @@ class GitGraphTable extends Component {
         date: 200,
       }
     }
+
+    this.crawler = new CommitsCrawler({
+      commits: props.commits,
+      size: PAGE_SIZE,
+    })
   }
 
   onColumnResizeEndCallback = (newColumnWidth, columnKey) => {
@@ -123,18 +126,13 @@ class GitGraphTable extends Component {
     const commits = this.props.commits
     this.syncGitGraphScrollTop(scrollTop)
 
-    if (this.isFetching) return this.isFetching
     const revealedOffset = scrollTop + this.containerDOM.clientHeight
-    if (revealedOffset > this.state.rowHeight * (commits.length - 20)) {
-      const size = 30
-      const page = Math.floor(commits.length / size)
-      this.isFetching = fetchCommits({ size, page })
-        .catch(() => true) // don't care error, just let crash and retry
-        .then(() => this.isFetching = false)
+    if (revealedOffset > this.state.rowHeight * (commits.length - this.crawler.size / 2)) {
+      this.crawler.fetch()
     }
   }
 
-  onRowClick = (e, rowIndex/*, rowData*/) => {
+  onRowClick = (e, rowIndex/* , rowData*/) => {
     this.setState({ selectedRow: rowIndex })
   }
 
@@ -205,8 +203,8 @@ class GitGraphTable extends Component {
                       selectedRow={this.state.selectedRow}
                       {...otherProps}
                     >
-                      {commits[rowIndex].refs.map(
-                        ref => <RefTag value={ref} key={ref} color={commits[rowIndex].branch.color} />
+                      {commits[rowIndex].refs.map(ref =>
+                        <RefTag value={ref} key={ref} color={commits[rowIndex].branch.color} />
                       )}
                       {commits[rowIndex].message}
                     </TextCell>

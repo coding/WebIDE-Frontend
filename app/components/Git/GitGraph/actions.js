@@ -1,5 +1,6 @@
 import state, { Commit } from './state'
 import api from 'backendAPI'
+import getBackoff from 'utils/getBackoff'
 
 export function fetchRefs () {
   return api.gitRefs().then(refs =>
@@ -10,8 +11,48 @@ export function fetchRefs () {
 export function fetchCommits (params) {
   return api.gitLogs(params).then(allCommits => {
     allCommits.forEach(commitProps => {
-      const commit = new Commit(commitProps)
+      new Commit(commitProps)
     })
+    return allCommits
   })
 }
 
+
+export class CommitsCrawler {
+  constructor (opt) {
+    this.commits = opt.commits
+    this.size = opt.size
+
+    this.eldestCommitId = 'pristine'
+    this.isFetching = false
+    this.backoff = getBackoff({
+      delayMin: 1500,
+      delayMax: 10000,
+    })
+  }
+
+  reachTheEndCallback () {
+    const retryDelay = this.backoff.duration()
+    this.isFetching = true
+    setTimeout(() => this.isFetching = false, retryDelay)
+  }
+
+  fetch () {
+    if (this.isFetching) return
+    const page = Math.floor(this.commits.length / this.size)
+    this.isFetching = fetchCommits({ page, size: this.size })
+      .catch(() => false)
+      .then(allCommits => {
+        if (!allCommits) return this.isFetching = false
+        if (!allCommits.length) { return this.reachTheEndCallback() }
+
+        const eldestCommit = allCommits.pop()
+        if (this.eldestCommitId === eldestCommit.id) {
+          this.reachTheEndCallback()
+        } else {
+          setTimeout(() => this.isFetching = false, 100)
+          this.eldestCommitId = eldestCommit.id
+        }
+      })
+  }
+}

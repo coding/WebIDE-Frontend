@@ -7,7 +7,7 @@ const defaultConfig = {
 
 export default function getBackoff (config={}) {
   config = { ...defaultConfig, ...config }
-  let backoff = new Backoff({
+  const backoff = new Backoff({
     min: config.delayMin,
     max: config.delayMax,
     jitter: 0.5,
