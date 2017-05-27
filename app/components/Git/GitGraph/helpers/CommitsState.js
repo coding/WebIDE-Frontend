@@ -109,23 +109,23 @@ export default class CommitsState {
       start: commit.id,
       startTime: commit.date,
       color: this.randColors.get(),
-      // get col () {
-      //   if (typeof this._col === 'number') return this._col
-      //   const startCommit = self.commits.get(this.id)
-      //   const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
-      //   const livingLanes = livingLaneIds.map(laneId => self.lanes.get(laneId))
-      //   const columnSlots = livingLanes.reduce((acc, lane) => {
-      //     acc[lane.col] = true
-      //     return acc
-      //   }, [])
-      //   this._col = getAvailableCol(columnSlots)
-      //   return this._col
-      // }
       get col () {
+        if (typeof this._col === 'number') return this._col
         const startCommit = self.commits.get(this.id)
         const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
-        return livingLaneIds.length - 1
+        const livingLanes = livingLaneIds.map(laneId => self.lanes.get(laneId))
+        const columnSlots = livingLanes.reduce((acc, lane) => {
+          acc[lane.col] = true
+          return acc
+        }, [])
+        this._col = getAvailableCol(columnSlots)
+        return this._col
       }
+      // get col () {
+      //   const startCommit = self.commits.get(this.id)
+      //   const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
+      //   return livingLaneIds.length - 1
+      // }
     }
     this.lanes.set(newLane.id, newLane)
     commit.laneId = newLane.id

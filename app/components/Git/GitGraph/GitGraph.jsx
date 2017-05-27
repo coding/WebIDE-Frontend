@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import CommitsState from './helpers/CommitsState'
 
 const pathData = () => {
   return {
@@ -37,7 +38,10 @@ class GitGraph extends Component {
   }
 
   render () {
-    const { commits, circleRadius, colWidth, rowHeight } = this.props
+    let commits = this.props.commits
+    const state = new CommitsState(commits)
+    commits = Array.from(state.commits.values())
+    const { circleRadius, colWidth, rowHeight } = this.props
     const posX = col => (col + 1) * colWidth
     const posY = row => (row + 1) * rowHeight - rowHeight / 2
     const pathProps = { strokeWidth: 2, fill: 'none' }
@@ -63,7 +67,7 @@ class GitGraph extends Component {
             .moveTo(x, y)
             .lineTo(posX(child.col), posY(childIndex))
             .value()
-          strokeColor = child.branch.color
+          strokeColor = child.lane.color
         }
         // case 2: child has one parent, that's a branch out
         else if (child.parentIds.length === 1) {
@@ -72,7 +76,7 @@ class GitGraph extends Component {
             .lineTo(posX(child.col), y - rowHeight/2)
             .lineTo(posX(child.col), posY(childIndex))
             .value()
-          strokeColor = child.branch.color
+          strokeColor = child.lane.color
         }
         // case 3: child has more than one parent
         else {
@@ -83,7 +87,7 @@ class GitGraph extends Component {
               .lineTo(posX(child.col), y - rowHeight/2)
               .lineTo(posX(child.col), posY(childIndex))
               .value()
-            strokeColor = child.branch.color
+            strokeColor = child.lane.color
           }
           // case 3-2: other than that, it's a merge
           else {
@@ -92,7 +96,7 @@ class GitGraph extends Component {
               .lineTo(x, posY(childIndex) + rowHeight/2)
               .lineTo(posX(child.col), posY(childIndex))
               .value()
-            strokeColor = commit.branch.color
+            strokeColor = commit.lane.color
           }
         }
 
@@ -103,7 +107,7 @@ class GitGraph extends Component {
         <circle
           key={`c_${commit.id}`}
           cx={x} cy={y} r={circleRadius}
-          fill={commit.branch.color}
+          fill={commit.lane.color}
           strokeWidth='1'
           stroke='#fff'
         />)
@@ -125,12 +129,12 @@ class GitGraph extends Component {
 
 
 const { string, number, arrayOf, shape, } = PropTypes
-const branchType = shape({ color: string.isRequired })
+const laneType = shape({ color: string.isRequired })
 
 const commitShapeConfig = {
   id: string.isRequired,
   col: number.isRequired,
-  branch: branchType,
+  lane: laneType,
 }
 
 const commitType = shape({
