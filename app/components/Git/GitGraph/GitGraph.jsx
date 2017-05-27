@@ -91,46 +91,47 @@ class GitGraph extends Component {
         }
 
         const childIndex = commits.indexOf(child)
-        const pathKey = `p_${commit.id}_${child.id}`
+        const pathKey = `p_${commit.shortId}_${child.shortId}`
+
+        // SPOTLIGHT on each CHILD!!!
+        // we decide what type of connection this path is
+        let PATH_TYPE
+        // case 1: child and commit on same lane
+        if (child.laneId === commit.laneId) PATH_TYPE = 'normal'
+        // case 2: child has only one parent
+        else if (child.parentIds.length === 1) PATH_TYPE = 'diverged'
+        // case 3: child has multi-parents, but commit is base of merge
+        // this case almost always emerge only at a PR merge
+        else if (commit.isBaseOfMerge(child)) PATH_TYPE = 'diverged'
+        else PATH_TYPE = 'merged'
 
         let d, strokeColor
-        // case 1: child on the same col, draw a straight line
-        if (child.col === commit.col) {
-          d = pathData()
-            .moveTo(x, y)
-            .lineTo(posX(child.col), posY(childIndex))
-            .value()
-          strokeColor = child.lane.color
-        }
-        // case 2: child has one parent, that's a branch out
-        else if (child.parentIds.length === 1) {
-          d = pathData()
-            .moveTo(x, y)
-            .lineTo(posX(child.col), y - rowHeight/2)
-            .lineTo(posX(child.col), posY(childIndex))
-            .value()
-          strokeColor = child.lane.color
-        }
-        // case 3: child has more than one parent
-        else {
-          // case 3-1: if current commit is base of merge, that's a branch out, too
-          if (commit.isBaseOfMerge(child)) {
+        switch (PATH_TYPE) {
+          case 'normal':
+            strokeColor = child.lane.color
+            d = pathData()
+              .moveTo(x, y)
+              .lineTo(posX(child.col), posY(childIndex))
+              .value()
+            break
+          case 'diverged':
+            strokeColor = child.lane.color
+            // prefer switch lane first, then go straight
             d = pathData()
               .moveTo(x, y)
               .lineTo(posX(child.col), y - rowHeight/2)
               .lineTo(posX(child.col), posY(childIndex))
               .value()
-            strokeColor = child.lane.color
-          }
-          // case 3-2: other than that, it's a merge
-          else {
+            break
+          case 'merged':
+            strokeColor = commit.lane.color
+            // prefer go straight first, then switch lane
             d = pathData()
               .moveTo(x, y)
               .lineTo(x, posY(childIndex) + rowHeight/2)
               .lineTo(posX(child.col), posY(childIndex))
               .value()
-            strokeColor = commit.lane.color
-          }
+            break
         }
 
         return <path d={d} id={pathKey} key={pathKey} stroke={strokeColor} {...pathProps} />
