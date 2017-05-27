@@ -37,19 +37,43 @@ class GitGraph extends Component {
     }
   }
 
+  posX = (col) => (col + 1) * this.props.colWidth
+  posY = (row) => (row + 0.5) * this.props.rowHeight
+
+  renderOrphansPathes (orphans, lastIndex) {
+    const posX = this.posX
+    const posY = this.posY
+    const paths = orphans.map(orphan => {
+      const strokeColor = orphan.lane.color
+      const d = pathData()
+        .moveTo(posX(orphan.lane.col), posY(lastIndex))
+        .lineTo(posX(orphan.lane.col), posY(orphan.index))
+        .value()
+      const pathKey ='future_' + orphan.id
+      return <path id={pathKey} key={pathKey} d={d} stroke={strokeColor} strokeWidth='2' fill='none' />
+    })
+
+    return paths
+  }
+
   render () {
+    const orphanage = new Map() // a place to shelter children who haven't found their parents yet
     let commits = this.props.commits
     const state = new CommitsState(commits)
     commits = Array.from(state.commits.values())
     const { circleRadius, colWidth, rowHeight } = this.props
-    const posX = col => (col + 1) * colWidth
-    const posY = row => (row + 1) * rowHeight - rowHeight / 2
+    const posX = this.posX
+    const posY = this.posY
     const pathProps = { strokeWidth: 2, fill: 'none' }
 
     let pathsList = []
     let circlesList = []
     let maxCol = 0
     commits.forEach((commit, commitIndex) => {
+      if (!commit.isRoot) {
+        // register parent count of this commit
+        orphanage.set(commit.id, commit.parentIds.length)
+      }
       maxCol = Math.max(maxCol, commit.col)
 
       const x = posX(commit.col)
@@ -57,6 +81,15 @@ class GitGraph extends Component {
 
       // draw path from current commit to its children
       const paths = commit.children.map((child) => {
+        if (orphanage.has(child.id)) {
+          const parentCount = orphanage.get(child.id) - 1
+          if (parentCount <= 0) {
+            orphanage.delete(child.id)
+          } else {
+            orphanage.set(child.id, parentCount)
+          }
+        }
+
         const childIndex = commits.indexOf(child)
         const pathKey = `p_${commit.id}_${child.id}`
 
@@ -116,6 +149,8 @@ class GitGraph extends Component {
       circlesList = circlesList.concat(circle)
     })
 
+    const orphans = Array.from(orphanage.keys()).map(id => state.commits.get(id))
+    pathsList = pathsList.concat(this.renderOrphansPathes(orphans, commits.length))
     const width = colWidth * (maxCol + 2)
     if (typeof this.props.onWidthChange === 'function') this.props.onWidthChange(width)
 
