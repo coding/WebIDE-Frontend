@@ -112,13 +112,14 @@ export default class CommitsState {
       get col () {
         if (typeof this._col === 'number') return this._col
         const startCommit = self.commits.get(this.id)
-        const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
+        const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index].filter(id => id !== this.id)
         const livingLanes = livingLaneIds.map(laneId => self.lanes.get(laneId))
         const columnSlots = livingLanes.reduce((acc, lane) => {
           acc[lane.col] = true
           return acc
         }, [])
         this._col = getAvailableCol(columnSlots)
+
         return this._col
       }
       // get col () {
@@ -230,6 +231,7 @@ export default class CommitsState {
 
     if (commit.isRoot) this.markEndOfLane(commit)
 
+    // at the end of the day, report living lanes at the moment.
     const livingLaneIds = this.livingLaneIdsAtIndex[commit.index] = []
     this.lanes.forEach((lane, laneId) => {
       if (lane.end === undefined) livingLaneIds.push(laneId)
