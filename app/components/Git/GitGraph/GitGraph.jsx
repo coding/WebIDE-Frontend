@@ -2,21 +2,54 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import CommitsState from './helpers/CommitsState'
 
-const pathData = () => {
-  return {
+const pdFactory = halfRowHeight => () => {
+  const obj = {
     data: [],
-    moveTo (x, y) {
-      this.data.push(`M${x},${y}`)
+    push (x, y, isMerged) {
+      if (this.data.length === 0) {
+        this.data.push([x, y])
+        return this
+      }
+
+      const lastPos = this.data[this.data.length - 1]
+      if (lastPos[0] !== x) {
+        if (isMerged) { // prefer go straight first, then switch lane
+          this.data.push([lastPos[0], lastPos[1] - halfRowHeight])
+          this.data.push([x, y])
+        } else { // prefer switch lane first, then go straight
+          this.data.push([x, lastPos[1] - halfRowHeight])
+          this.data.push([x, y])
+        }
+      } else {
+        this.data.push([x, y])
+      }
+
+      const length = this.data.length
+
+      if (length >= 3 && this.data[length - 1][0] === this.data[length - 2][0] === this.data[length - 3][0]) {
+        const last = this.data.pop()
+        this.data.pop()  // pluck the second last pos, it's useless
+        this.data.push(last)
+      }
       return this
     },
-    lineTo (x, y) {
-      this.data.push(`L${x},${y}`)
-      return this
-    },
+
     value () {
-      return this.data.join('')
+      return this.data.reduce((acc, [x, y], index) => {
+        if (index === 0) {
+          acc += `M${x},${y}`
+        } else {
+          acc += `L${x},${y}`
+        }
+        return acc
+      }, '')
     }
   }
+  if (typeof startX === 'number' && typeof startY === 'number') {
+    obj.push(startX, startY)
+  }
+
+  return obj
 }
 
 class GitGraph extends Component {
@@ -40,36 +73,37 @@ class GitGraph extends Component {
   posX = (col) => (col + 1) * this.props.colWidth
   posY = (row) => (row + 0.5) * this.props.rowHeight
 
-  renderOrphansPathes (orphans, lastIndex) {
-    const posX = this.posX
-    const posY = this.posY
-    const paths = orphans.map(orphan => {
-      const strokeColor = orphan.lane.color
-      const d = pathData()
-        .moveTo(posX(orphan.lane.col), posY(lastIndex))
-        .lineTo(posX(orphan.lane.col), posY(orphan.index))
-        .value()
-      const pathKey ='future_' + orphan.id
-      return <path id={pathKey} key={pathKey} d={d} stroke={strokeColor} strokeWidth='2' fill='none' />
-    })
-
-    return paths
+  getColFactory = (livingLaneIdsAtIndex) => (commitOrIndex, laneId) => {
+    let index, commit
+    if (typeof commitOrIndex === 'object') {
+      commit = commitOrIndex
+      index = commit.index
+      laneId = commit.laneId
+    } else {
+      index = commitOrIndex
+    }
+    return livingLaneIdsAtIndex[index].indexOf(laneId)
   }
 
   render () {
     const orphanage = new Map() // a place to shelter children who haven't found their parents yet
-    let commits = this.props.commits
-    const state = new CommitsState(commits)
-    commits = Array.from(state.commits.values())
+    const laneColTracker = this.laneColTracker = []
+
+    const state = this.commitsState = new CommitsState(this.props.commits)
+    const getCol = this.getColFactory(state.livingLaneIdsAtIndex)
+
+    const commits = Array.from(state.commits.values())
     const { circleRadius, colWidth, rowHeight } = this.props
-    const posX = this.posX
-    const posY = this.posY
-    const pathProps = { strokeWidth: 2, fill: 'none' }
+    const { posX, posY } = this
+
+    const pd = pdFactory(rowHeight / 2)
 
     let pathsList = []
     let circlesList = []
     let maxCol = 0
+
     commits.forEach((commit, commitIndex) => {
+      commit.col = getCol(commit)
       if (!commit.isRoot) {
         // register parent count of this commit
         orphanage.set(commit.id, commit.parentIds.length)
@@ -105,36 +139,49 @@ class GitGraph extends Component {
         else if (commit.isBaseOfMerge(child)) PATH_TYPE = 'diverged'
         else PATH_TYPE = 'merged'
 
-        let d, strokeColor
+        let d, strokeColor, pathLaneId, isMerged = false
         switch (PATH_TYPE) {
           case 'normal':
             strokeColor = child.lane.color
-            d = pathData()
-              .moveTo(x, y)
-              .lineTo(posX(child.col), posY(childIndex))
-              .value()
+            pathLaneId = child.laneId
             break
           case 'diverged':
             strokeColor = child.lane.color
-            // prefer switch lane first, then go straight
-            d = pathData()
-              .moveTo(x, y)
-              .lineTo(posX(child.col), y - rowHeight/2)
-              .lineTo(posX(child.col), posY(childIndex))
-              .value()
+            pathLaneId = child.laneId
             break
           case 'merged':
             strokeColor = commit.lane.color
-            // prefer go straight first, then switch lane
-            d = pathData()
-              .moveTo(x, y)
-              .lineTo(x, posY(childIndex) + rowHeight/2)
-              .lineTo(posX(child.col), posY(childIndex))
-              .value()
+            pathLaneId = commit.laneId
+            isMerged = true
             break
         }
 
-        return <path d={d} id={pathKey} key={pathKey} stroke={strokeColor} {...pathProps} />
+        d = pd().push(x, y)
+
+        for (let i = commitIndex - 1; i >= childIndex; i--) {
+          let colAtIndex = getCol(i, pathLaneId)
+          if (colAtIndex === -1) {
+            colAtIndex = state.livingLaneIdsAtIndex[i].length
+            state.livingLaneIdsAtIndex[i].push(pathLaneId) // <-- this mutate the livingLaneIdsAtIndex record, but it needs to be done,
+          }
+          if (i > childIndex) {
+            d.push(posX(colAtIndex), posY(i))
+          } else {
+            d.push(posX(child.col), posY(childIndex), isMerged)
+          }
+        }
+
+        d = d.value()
+
+        return (
+          <path d={d}
+            stroke={strokeColor}
+            id={pathKey}
+            key={pathKey}
+            strokeWidth='2'
+            fill='none'
+          />
+        )
       })
 
       const circle = (
@@ -150,8 +197,27 @@ class GitGraph extends Component {
       circlesList = circlesList.concat(circle)
     })
 
+    // render orphan pathes
     const orphans = Array.from(orphanage.keys()).map(id => state.commits.get(id))
-    pathsList = pathsList.concat(this.renderOrphansPathes(orphans, commits.length))
+    const lastIndex = commits.length
+    const orphanPaths = orphans.map((orphan) => {
+      const strokeColor = orphan.lane.color
+      const pathLaneId = orphan.laneId
+      const orphanIndex = orphan.index
+
+      let d = pd()
+      d.push(posX(getCol(lastIndex - 1, pathLaneId)), posY(lastIndex))
+      for (let i = lastIndex - 1; i >= orphanIndex; i--) {
+        d.push(posX(getCol(i, pathLaneId)), posY(i))
+      }
+
+      d = d.value()
+      const pathKey = `future_${orphan.id}`
+      return <path id={pathKey} key={pathKey} d={d} stroke={strokeColor} strokeWidth='2' fill='none' />
+    })
+
+    // end render orphan pathes
+    pathsList = pathsList.concat(orphanPaths)
     const width = colWidth * (maxCol + 2)
     if (typeof this.props.onWidthChange === 'function') this.props.onWidthChange(width)
 

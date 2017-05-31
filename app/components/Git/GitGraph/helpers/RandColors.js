@@ -7,6 +7,7 @@ const COLORS = [
   '#3D9970', // olive
   '#B10DC9', // purple
   '#2ECC40', // green
+  '#54e8e2', // tifany
   '#01FF70', // lime
   '#001F3F', // navy
   '#F012BE', // fuchsia

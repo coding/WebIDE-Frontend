@@ -28,10 +28,6 @@ class Commit {
     return this.state.lanes.get(this.laneId)
   }
 
-  get col () {
-    return this.lane.col
-  }
-
   get shortId () {
     return this.id.slice(0, 7)
   }
@@ -71,20 +67,10 @@ class Commit {
   }
 
   get refs () {
-    return this.state.refs.entries().filter(([ref, id]) => id === this.id).map(([ref, id]) => ref)
+    return this.state.refs.entries().reduce((acc, [ref, id]) =>
+      (id === this.id ? acc.concat(ref) : acc)
+    , [])
   }
-}
-
-function getAvailableCol (columnSlots) {
-  let availableCol
-  for (let i = 0; availableCol === undefined; i++) {
-    const isColumnAvailable = !columnSlots[i]
-    if (isColumnAvailable) {
-      availableCol = i
-      break
-    }
-  }
-  return availableCol
 }
 
 export default class CommitsState {
@@ -96,7 +82,7 @@ export default class CommitsState {
     this.randColors = new RandColors()
     this.livingLaneIdsAtIndex = [[]]
 
-    rawCommits.forEach(rawCommit => {
+    rawCommits.forEach((rawCommit) => {
       const commit = new Commit(rawCommit, this)
       this.push(commit)
     })
@@ -112,21 +98,9 @@ export default class CommitsState {
       get col () {
         if (typeof this._col === 'number') return this._col
         const startCommit = self.commits.get(this.id)
-        const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index].filter(id => id !== this.id)
-        const livingLanes = livingLaneIds.map(laneId => self.lanes.get(laneId))
-        const columnSlots = livingLanes.reduce((acc, lane) => {
-          acc[lane.col] = true
-          return acc
-        }, [])
-        this._col = getAvailableCol(columnSlots)
-
-        return this._col
+        const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
+        return this._col = livingLaneIds.indexOf(this.id)
       }
-      // get col () {
-      //   const startCommit = self.commits.get(this.id)
-      //   const livingLaneIds = self.livingLaneIdsAtIndex[startCommit.index]
-      //   return livingLaneIds.length - 1
-      // }
     }
     this.lanes.set(newLane.id, newLane)
     commit.laneId = newLane.id
@@ -166,6 +140,10 @@ export default class CommitsState {
         // ATTENTION: this condition is suspicious, need more research:
         if (child.isMerged && !commit.isBaseOfMerge(child)) {
           this.assignNewLane(commit)
+          // const commitIndex = commit.index
+          // for (let i = child.index; i < commitIndex; i++) {
+          //   this.livingLaneIdsAtIndex[i].push(commit.laneId)
+          // }
         } else {
           commit.laneId = child.laneId
         }
@@ -177,7 +155,7 @@ export default class CommitsState {
         // sort children by col, from low to high
 
         // @fixme!!!
-        const children = commit.children.concat().sort(
+        const children = commit.children.sort(
           (a, b) => a.lane.col - b.lane.col
         )
 
@@ -229,12 +207,12 @@ export default class CommitsState {
         childColsToFree.forEach(child => this.markEndOfLane(child))
     }
 
-    if (commit.isRoot) this.markEndOfLane(commit)
-
     // at the end of the day, report living lanes at the moment.
     const livingLaneIds = this.livingLaneIdsAtIndex[commit.index] = []
     this.lanes.forEach((lane, laneId) => {
       if (lane.end === undefined) livingLaneIds.push(laneId)
     })
+
+    if (commit.isRoot) this.markEndOfLane(commit)
   }
 }
