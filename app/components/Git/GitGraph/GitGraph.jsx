@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import CommitsState from './helpers/CommitsState'
+import roundVertices from './helpers/roundVertices'
 
 const pdFactory = halfRowHeight => () => {
   const obj = {
@@ -35,18 +36,26 @@ const pdFactory = halfRowHeight => () => {
     },
 
     value () {
-      return this.data.reduce((acc, [x, y], index) => {
+      return roundVertices(this.data).reduce((acc, point, index) => {
         if (index === 0) {
-          acc += `M${x},${y}`
+          acc += `M${point[0]},${point[1]}`
+        } else if (point.length === 2) {
+          acc += `L${point[0]},${point[1]}`
         } else {
-          acc += `L${x},${y}`
+          const startPoint = point[0]
+          const ctrlPoint = point[1]
+          const endPoint = point[2]
+          const [x_s, y_s] = startPoint
+          const [x_c, y_c] = ctrlPoint
+          const [x_e, y_e] = endPoint
+
+          acc += `L${x_s},${y_s}`
+          acc += `C${x_c},${y_c},${x_e},${y_e},${x_e},${y_e}`
         }
+
         return acc
       }, '')
     }
-  }
-  if (typeof startX === 'number' && typeof startY === 'number') {
-    obj.push(startX, startY)
   }
 
   return obj
