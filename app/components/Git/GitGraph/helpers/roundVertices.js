@@ -1,12 +1,23 @@
 const getLength = (p1, p2) => Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2))
 
 export default function roundVertices (data) {
-  const DI = 3
-  const dataLength = data.length
-  if (dataLength >= 3) {
+  const DI = 4
+  const multiplier = 0.7
+  if (data.length >= 3) {
+    // mod first and last data point
+    data = data.slice()
+    const first = data.shift()
+    data.unshift([first[0], first[1] - DI])
+    first[1] += DI * multiplier
+    data.unshift(first)
+    const last = data.pop()
+    data.push([last[0], last[1] + DI])
+    last[1] -= DI * multiplier
+    data.push(last)
+    // end mod
     return data.reduce((acc, currentPoint, index, data) => {
       // first and last point, noop
-      if (index === 0 || dataLength - 1 === index) {
+      if (index === 0 || data.length - 1 === index) {
         acc.push(currentPoint)
       } else {
         const prevPoint = data[index - 1]
