@@ -50,7 +50,7 @@ const TextCell = ({ rowIndex, selectedRow, children, ...otherProps }) => (
   >
     {children}
   </Cell>
-  )
+)
 
 @inject(() => {
   return {
@@ -89,57 +89,21 @@ class GitGraphTable extends Component {
     })
   }
 
-  onColumnResizeEndCallback = (newColumnWidth, columnKey) => {
-    this.setState(({ columnWidths }) => ({
-      columnWidths: {
-        ...columnWidths,
-        [columnKey]: newColumnWidth < 15 ? 15 : newColumnWidth,
-      }
-    }))
-  }
-
   componentWillMount () {
-    emitter.on(E.PANEL_RESIZED, this.resizeView)
-  }
-
-  componentDidMount () {
-    this.resizeView()
+    emitter.on(E.PANEL_RESIZED, this.onVerticalScroll)
   }
 
   componentWillUnmount () {
-    emitter.removeListener(E.PANEL_RESIZED, this.resizeView)
+    emitter.removeListener(E.PANEL_RESIZED, this.onVerticalScroll)
   }
 
-  resizeView = () => {
-    setTimeout(() => {
-      if (this.containerDOM.clientWidth > 0) {
-        this.setState({
-          tableHeight: this.containerDOM.clientHeight - 22,
-          tableWidth: this.gitLogTableContainerDOM.clientWidth
-        })
-      }
-    }, 0)
-  }
-
-  syncGitGraphScrollTop = (scrollTop) => {
-    this.setState({ scrollTop })
-    if (this.gitGraphContainerDOM.scrollTop !== scrollTop) {
-      this.gitGraphContainerDOM.scrollTop = scrollTop
-    }
-  }
-
-  onVerticalScroll = (scrollTop) => {
-    const commits = this.props.commits
-    this.syncGitGraphScrollTop(scrollTop)
-
-    const revealedOffset = scrollTop + this.containerDOM.clientHeight
-    if (revealedOffset > this.state.rowHeight * (commits.length - this.crawler.size / 2)) {
+  onVerticalScroll = () => {
+    const elt = this.wrapperDOM
+    if (!elt) return
+    const distanceToScrollBottom = elt.scrollHeight - elt.offsetHeight - elt.scrollTop
+    if (distanceToScrollBottom < this.state.rowHeight * this.crawler.size / 2) {
       this.crawler.fetch()
     }
-  }
-
-  onRowClick = (e, rowIndex/* , rowData*/) => {
-    this.setState({ selectedRow: rowIndex })
   }
 
   onGitGraphWidthChange = (width) => {
@@ -161,113 +125,38 @@ class GitGraphTable extends Component {
     const { radius, colWidth, rowHeight } = this.state
     const commits = this.props.commits
     return (
-      <div className='ide-history' ref={r => this.containerDOM = r} >
-        <div className='history-container'>
-          <div className='history-title'>Git Logs</div>
-          <div className='history-table' >
-
-            <div id='git-graph-column' style={{ minWidth: '20px', flexGrow: this.state.gitGraphColumnSize }} >
-              <div className='column-header'>Graph</div>
-              <div className='column-content' ref={r => this.gitGraphContainerDOM = r}
-                onScroll={e => this.onVerticalScroll(e.target.scrollTop)}
-              >
-                <GitGraph
-                  commitsState={this.props.commitsState}
-                  circleRadius={radius}
-                  colWidth={colWidth}
-                  rowHeight={rowHeight}
-                  onWidthChange={this.onGitGraphWidthChange}
-                />
-              </div>
-              <ResizeBar
-                parentFlexDirection='row'
-                viewId='git-graph-column'
-                confirmResize={this.confirmResize}
-              />
-            </div>
-
-            <div id='git-log-table' ref={r => this.gitLogTableContainerDOM = r} style={{ minWidth: '200px', flexGrow: this.state.gitLogTableSize }} >
-              <Table
-                rowsCount={commits.length}
+      <div className='git-graph-wrapper'
+        ref={r => this.wrapperDOM = r}
+        onScroll={this.onVerticalScroll}
+      >
+        <table>
+          <tbody>
+          <tr>
+            <td rowSpan='999999' style={{ verticalAlign: 'top' }} >
+              <GitGraph
+                commitsState={this.props.commitsState}
+                circleRadius={radius}
+                colWidth={colWidth}
                 rowHeight={rowHeight}
-                headerHeight={rowHeight}
-                maxHeight={this.state.tableHeight}
-                width={this.state.tableWidth}
-                height={this.state.tableHeight}
-                onColumnResizeEndCallback={this.onColumnResizeEndCallback}
-                onVerticalScroll={this.onVerticalScroll}
-                onRowClick={this.onRowClick}
-                scrollTop={this.state.scrollTop}
-                isColumnResizing={false}
-              >
-
-                <Column
-                  columnKey='message'
-                  header='Message'
-                  width={this.state.columnWidths.message}
-                  cell={({ rowIndex, ...otherProps }) =>
-                    <TextCell rowIndex={rowIndex}
-                      selectedRow={this.state.selectedRow}
-                      {...otherProps}
-                    >
-                      {commits[rowIndex].refs.map(ref =>
-                        <RefTag value={ref} key={ref} color={commits[rowIndex].lane.color} />
-                      )}
-                      {commits[rowIndex].message}
-                    </TextCell>
-                  }
-                  isResizable
-                />
-
-                <Column
-                  columnKey='sha1'
-                  header='Commit'
-                  width={this.state.columnWidths.sha1}
-                  cell={({ rowIndex, ...otherProps }) =>
-                    <TextCell rowIndex={rowIndex}
-                      selectedRow={this.state.selectedRow}
-                      {...otherProps}
-                    >
-                      {commits[rowIndex].shortId}
-                    </TextCell>
-                  }
-                  isResizable
-                />
-
-                <Column
-                  columnKey='author'
-                  header='Author'
-                  width={this.state.columnWidths.author}
-                  cell={({ rowIndex, ...otherProps }) =>
-                    <TextCell rowIndex={rowIndex}
-                      selectedRow={this.state.selectedRow}
-                      {...otherProps}
-                    >
-                      {commits[rowIndex].author.name} &lt;{commits[rowIndex].author.emailAddress}&gt;
-                    </TextCell>
-                  }
-                  isResizable
-                />
-
-                <Column
-                  columnKey='date'
-                  header='Date'
-                  width={this.state.columnWidths.date}
-                  cell={({ rowIndex, ...otherProps }) =>
-                    <TextCell rowIndex={rowIndex}
-                      selectedRow={this.state.selectedRow}
-                      {...otherProps}
-                    >
-                      {moment(commits[rowIndex].date, 'X').format('YYYY-MM-DD HH:mm')}
-                    </TextCell>
-                  }
-                  isResizable
-                />
-              </Table>
-            </div>
-
-          </div>
-        </div>
+                onWidthChange={this.onGitGraphWidthChange}
+              />
+            </td>
+          </tr>
+          {commits.map(commit =>
+            <tr style={{ height: rowHeight }} key={commit.shortId} >
+              <td className='sha1' >{commit.shortId}</td>
+              <td className='message'>
+                {commit.refs.map(ref =>
+                  <RefTag value={ref} key={ref} color={commit.lane.color} />
+                )}
+                {commit.message}
+              </td>
+              <td className='author' >{commit.author.name}</td>
+              <td className='date' >{moment(commit.date, 'X').format('MM/DD/YYYY HH:mm:ss')}</td>
+            </tr>
+          )}
+          </tbody>
+        </table>
       </div>
     )
   }
