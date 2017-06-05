@@ -29,7 +29,7 @@ const pdFactory = halfRowHeight => () => {
 
       if (length >= 3 && this.data[length - 1][0] === this.data[length - 2][0] === this.data[length - 3][0]) {
         const last = this.data.pop()
-        this.data.pop()  // pluck the second last pos, it's useless
+        this.data.pop()  // pluck the second to last pos, it's useless
         this.data.push(last)
       }
       return this
@@ -42,12 +42,9 @@ const pdFactory = halfRowHeight => () => {
         } else if (point.length === 2) {
           acc += `L${point[0]},${point[1]}`
         } else {
-          const startPoint = point[0]
-          const ctrlPoint = point[1]
-          const endPoint = point[2]
-          const [x_s, y_s] = startPoint
-          const [x_c, y_c] = ctrlPoint
-          const [x_e, y_e] = endPoint
+          const [x_s, y_s] = point[0] // startPoint
+          const [x_c, y_c] = point[1] // ctrlPoint
+          const [x_e, y_e] = point[2] // endPoint
 
           acc += `L${x_s},${y_s}`
           acc += `C${x_c},${y_c},${x_e},${y_e},${x_e},${y_e}`
@@ -62,19 +59,10 @@ const pdFactory = halfRowHeight => () => {
 }
 
 class GitGraph extends Component {
-  constructor (props) {
-    super(props)
-    this.commitsCount = 0
-    if (props.commits && props.commits.length) {
-      this.commitsCount = props.commits.length
-    }
-  }
-
-  shouldComponentUpdate () {
-    if (this.commitsCount === this.props.commits.length) {
+  shouldComponentUpdate (nextProps) {
+    if (!!this.props.commitsState && this.props.commitsState === nextProps.commitsState) {
       return false
     } else {
-      this.commitsCount = this.props.commits.length
       return true
     }
   }
@@ -96,10 +84,9 @@ class GitGraph extends Component {
 
   render () {
     const orphanage = new Map() // a place to shelter children who haven't found their parents yet
-    const laneColTracker = this.laneColTracker = []
 
-    const state = this.commitsState = new CommitsState(this.props.commits)
-    const getCol = this.getColFactory(state.livingLaneIdsAtIndex)
+    const state = this.props.commitsState
+    const getCol = state.getCol
 
     const commits = Array.from(state.commits.values())
     const { circleRadius, colWidth, rowHeight } = this.props
@@ -239,12 +226,11 @@ class GitGraph extends Component {
 }
 
 
-const { string, number, arrayOf, shape, } = PropTypes
+const { string, number, arrayOf, shape, object } = PropTypes
 const laneType = shape({ color: string.isRequired })
 
 const commitShapeConfig = {
   id: string.isRequired,
-  col: number.isRequired,
   lane: laneType,
 }
 
@@ -254,7 +240,7 @@ const commitType = shape({
 })
 
 GitGraph.propTypes = {
-  commits: arrayOf(commitType).isRequired,
+  commitsState: object.isRequired,
   circleRadius: number.isRequired,
   colWidth: number.isRequired,
   rowHeight: number.isRequired,

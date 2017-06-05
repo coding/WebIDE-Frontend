@@ -67,20 +67,24 @@ class Commit {
   }
 
   get refs () {
-    return this.state.refs.entries().reduce((acc, [ref, id]) =>
+    return Array.from(this.state.refs.entries()).reduce((acc, [ref, id]) =>
       (id === this.id ? acc.concat(ref) : acc)
     , [])
   }
 }
 
 export default class CommitsState {
-  constructor (rawCommits) {
-    this.commits = new Map()
-    this.lanes = new Map()
-    this.refs = new Map()
-    this.childrenIndexes = new Map()
+  commits = new Map()
+  lanes = new Map()
+  refs = new Map()
+  childrenIndexes = new Map()
+
+  constructor (opts) {
     this.randColors = new RandColors()
     this.livingLaneIdsAtIndex = [[]]
+
+    const rawCommits = opts.rawCommits
+    if (opts.refs) this.refs = opts.refs
 
     rawCommits.forEach((rawCommit) => {
       const commit = new Commit(rawCommit, this)
@@ -121,7 +125,20 @@ export default class CommitsState {
     if (!childrenIndex.includes(childId)) childrenIndex.push(childId)
   }
 
+  getCol = (commitOrIndex, laneId) => {
+    let index, commit
+    if (typeof commitOrIndex === 'object') {
+      commit = commitOrIndex
+      index = commit.index
+      laneId = commit.laneId
+    } else {
+      index = commitOrIndex
+    }
+    return this.livingLaneIdsAtIndex[index].indexOf(laneId)
+  }
+
   push (commit) {
+    if (this.commits.has(commit.id)) return
     this.commits.set(commit.id, commit)
 
     commit.parentIds.forEach(parentId => {

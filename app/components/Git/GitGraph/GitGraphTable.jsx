@@ -6,9 +6,10 @@ import { E, emitter } from 'utils'
 import GitGraph from './GitGraph'
 import state from './state'
 import cx from 'classnames'
-import { hex2rgb } from './helpers'
-import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
 import ResizeBar from 'components/ResizeBar'
+import { hex2rgb } from './helpers'
+import CommitsState from './helpers/CommitsState'
+import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
 
 const RefTag = ({ value: refName, color }) => {
   let ref
@@ -51,7 +52,12 @@ const TextCell = ({ rowIndex, selectedRow, children, ...otherProps }) => (
   </Cell>
   )
 
-@inject(() => ({ commits: state.commitsList }))
+@inject(() => {
+  return {
+    commitsState: state.commitsState,
+    commits: Array.from(state.commitsState.commits.values()),
+  }
+})
 @observer
 class GitGraphTable extends Component {
   constructor (props) {
@@ -78,7 +84,7 @@ class GitGraphTable extends Component {
     }
 
     this.crawler = new CommitsCrawler({
-      commits: props.commits,
+      commits: state.rawCommits,
       size: PAGE_SIZE,
     })
   }
@@ -166,7 +172,7 @@ class GitGraphTable extends Component {
                 onScroll={e => this.onVerticalScroll(e.target.scrollTop)}
               >
                 <GitGraph
-                  commits={commits}
+                  commitsState={this.props.commitsState}
                   circleRadius={radius}
                   colWidth={colWidth}
                   rowHeight={rowHeight}
@@ -194,6 +200,7 @@ class GitGraphTable extends Component {
                 scrollTop={this.state.scrollTop}
                 isColumnResizing={false}
               >
+
                 <Column
                   columnKey='message'
                   header='Message'
@@ -204,7 +211,7 @@ class GitGraphTable extends Component {
                       {...otherProps}
                     >
                       {commits[rowIndex].refs.map(ref =>
-                        <RefTag value={ref} key={ref} color={commits[rowIndex].branch.color} />
+                        <RefTag value={ref} key={ref} color={commits[rowIndex].lane.color} />
                       )}
                       {commits[rowIndex].message}
                     </TextCell>

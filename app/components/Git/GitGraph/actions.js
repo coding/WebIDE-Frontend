@@ -1,20 +1,21 @@
-import state, { Commit } from './state'
+import { action } from 'mobx'
+import state from './state'
 import api from 'backendAPI'
 import getBackoff from 'utils/getBackoff'
 
 export function fetchRefs () {
-  return api.gitRefs().then(refs =>
+  return api.gitRefs().then(action(refs =>
     refs.forEach(ref => state.refs.set(ref.name, ref.id))
-  )
+  ))
 }
 
 export function fetchCommits (params) {
-  return api.gitLogs(params).then(allCommits => {
-    allCommits.forEach(commitProps => {
-      new Commit(commitProps)
-    })
+  return api.gitLogs(params).then(action(allCommits => {
+    allCommits.forEach(commit =>
+      state.rawCommits.set(commit.id, commit)
+    )
     return allCommits
-  })
+  }))
 }
 
 
@@ -39,7 +40,7 @@ export class CommitsCrawler {
 
   fetch () {
     if (this.isFetching) return
-    const page = Math.floor(this.commits.length / this.size)
+    const page = Math.floor((this.commits.size || this.commits.length) / this.size)
     this.isFetching = fetchCommits({ page, size: this.size })
       .catch(() => false)
       .then(allCommits => {
