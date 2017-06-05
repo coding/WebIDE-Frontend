@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CommitsState from './helpers/CommitsState'
 import roundVertices from './helpers/roundVertices'
 
 const pdFactory = halfRowHeight => () => {
