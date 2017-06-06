@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import { inject, observer } from 'mobx-react'
-import { Cell, Column, Table } from 'fixed-data-table-2'
-import { E, emitter } from 'utils'
+import cx from 'classnames'
 import GitGraph from './GitGraph'
 import state from './state'
-import cx from 'classnames'
-import ResizeBar from 'components/ResizeBar'
-import CommitsState from './helpers/CommitsState'
 import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
 
 const RefTag = ({ value: refName, backgroundColor, borderColor }) => {
@@ -55,19 +51,9 @@ class GitGraphTable extends Component {
     this.state = {
       radius: 4,
       colWidth: 10,
-      rowHeight: 27,
-      tableHeight: 0,
-      tableWidth: 0,
-      gitGraphWidth: 0,
-      gitGraphColumnSize: 5,
-      gitLogTableSize: 95,
-      scrollTop: 0,
-      columnWidths: {
-        message: 600,
-        sha1: 100,
-        author: 300,
-        date: 200,
-      }
+      rowHeight: 25,
+      selectedRowIndex: -1,
+      viewSize: 'small',
     }
 
     this.crawler = new CommitsCrawler({
@@ -76,22 +62,15 @@ class GitGraphTable extends Component {
     })
   }
 
-  componentWillMount () {
-    emitter.on(E.PANEL_RESIZED, this.onResize)
-  }
-
-  componentDidMount () {
-    setTimeout(this.onResize, 1000)
-  }
-
-  componentWillUnmount () {
-    emitter.removeListener(E.PANEL_RESIZED, this.onResize)
-  }
-
-  onResize = () => {
-    const elt = this.wrapperDOM
-    this.setState({ tableWidth: elt.clientWidth })
-    this.onVerticalScroll()
+  toggleViewSize = (smallOrLarge='small') => {
+    switch (smallOrLarge) {
+      case 'large':
+        this.setState({ viewSize: 'large', rowHeight: 50 })
+        break
+      case 'small':
+      default:
+        this.setState({ viewSize: 'small', rowHeight: 25 })
+    }
   }
 
   onVerticalScroll = () => {
@@ -103,55 +82,70 @@ class GitGraphTable extends Component {
     }
   }
 
-  onGitGraphWidthChange = (width) => {
-    if (this.state.gitGraphWidth !== width) {
-      setTimeout(() => {
-        this.setState({ gitGraphWidth: width })
-      })
-    }
-  }
-
-  confirmResize = (leftViewDomId, leftSize, rightViewDomId, rightSize) => {
-    this.setState({
-      gitGraphColumnSize: leftSize,
-      gitLogTableSize: rightSize,
-    })
-  }
-
   render () {
     const { radius, colWidth, rowHeight } = this.state
     const { commits, commitsState }  = this.props
     return (
-      <div className='git-graph-wrapper'
+      <div className='git-logs-view'
         ref={r => this.wrapperDOM = r}
         onScroll={this.onVerticalScroll}
       >
-        <table>
-          <tbody>
-          <tr>
-            <td rowSpan='999999' style={{ verticalAlign: 'top' }} >
-              <GitGraph
-                commitsState={commitsState}
-                circleRadius={radius}
-                colWidth={colWidth}
-                rowHeight={rowHeight}
-                onWidthChange={this.onGitGraphWidthChange}
-              />
-            </td>
-          </tr>
+        <div className='git-logs-table'>
+          <div className='git-graph-wrapper'>
+            <GitGraph
+              commitsState={commitsState}
+              circleRadius={radius}
+              colWidth={colWidth}
+              rowHeight={rowHeight}
+            />
+          </div>
+
           {commits.map((commit, commitIndex) =>
-            <tr key={commit.shortId}>
-            <td>
-              <div className={cx('flex-row', {
+            this.state.viewSize === 'large' ?
+              (<div className={cx('flex-row view-size-large', {
                   selected: this.state.selectedRowIndex === commitIndex
                 })}
                 style={{
                   height: rowHeight,
-                  maxWidth: this.state.tableWidth || 'initial',
-                  marginLeft: this.state.gitGraphWidth * -1,
                   paddingLeft: (commitsState.livingLaneIdsAtIndex[commitIndex].length + 2) * colWidth,
                 }}
+                onClick={() => this.setState({ selectedRowIndex: commitIndex })}
+              >
+                <div className='avatar'>
+                  <img className='avatar-img' src={
+                    `https://api.adorable.io/avatars/50/${commit.author.name}.png`
+                  } />
+                </div>
+                <div className='commit-data'>
+                  <div className='commit-data-row'>
+                    <div className='author' title={`${commit.author.name} <${commit.author.emailAddress}>`}>
+                      {commit.author.name}
+                    </div>
+                    {commit.refs.map(ref =>
+                      <RefTag key={ref}
+                        value={ref}
+                        backgroundColor={commit.lane.backgroundColor}
+                        borderColor={commit.lane.borderColor}
+                      />
+                    )}
+                    <div className='date' title={moment(commit.date, 'X').format('MM/DD/YYYY HH:mm:ss')}>
+                      {moment(commit.date, 'X').format('MM/DD/YYYY')}
+                    </div>
+                  </div>
+                  <div className='commit-data-row'>
+                    <div className='sha1'>{commit.shortId}</div>
+                    <div className='message'><span className='message-text'>{commit.message}</span></div>
+                  </div>
+                </div>
+              </div>)
 
+            : (<div className={cx('flex-row view-size-small', {
+                  selected: this.state.selectedRowIndex === commitIndex
+                })}
+                style={{
+                  height: rowHeight,
+                  paddingLeft: (commitsState.livingLaneIdsAtIndex[commitIndex].length + 2) * colWidth,
+                }}
                 onClick={() => this.setState({ selectedRowIndex: commitIndex })}
               >
                 <div className='sha1'>{commit.shortId}</div>
@@ -172,11 +166,9 @@ class GitGraphTable extends Component {
                   {moment(commit.date, 'X').format('MM/DD/YYYY')}
                 </div>
               </div>
-            </td>
-            </tr>
+            )
           )}
-          </tbody>
-        </table>
+        </div>
       </div>
     )
   }
