@@ -35,7 +35,7 @@ const RefTag = ({ value: refName, color }) => {
   if (!ref) return null
 
   const rgb = hex2rgb(color)
-  const rgbaColorStr = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.6)`
+  const rgbaColorStr = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},1)`
   return (
     <span className='git-graph-ref' style={{ backgroundColor: rgbaColorStr }} >
       <i className={'octicon octicon-' + ref.icon} />{ref.name}
@@ -90,11 +90,21 @@ class GitGraphTable extends Component {
   }
 
   componentWillMount () {
-    emitter.on(E.PANEL_RESIZED, this.onVerticalScroll)
+    emitter.on(E.PANEL_RESIZED, this.onResize)
+  }
+
+  componentDidMount () {
+    setTimeout(this.onResize, 1000)
   }
 
   componentWillUnmount () {
-    emitter.removeListener(E.PANEL_RESIZED, this.onVerticalScroll)
+    emitter.removeListener(E.PANEL_RESIZED, this.onResize)
+  }
+
+  onResize = () => {
+    const elt = this.wrapperDOM
+    this.setState({ tableWidth: elt.clientWidth })
+    this.onVerticalScroll()
   }
 
   onVerticalScroll = () => {
@@ -123,7 +133,7 @@ class GitGraphTable extends Component {
 
   render () {
     const { radius, colWidth, rowHeight } = this.state
-    const commits = this.props.commits
+    const { commits, commitsState }  = this.props
     return (
       <div className='git-graph-wrapper'
         ref={r => this.wrapperDOM = r}
@@ -134,7 +144,7 @@ class GitGraphTable extends Component {
           <tr>
             <td rowSpan='999999' style={{ verticalAlign: 'top' }} >
               <GitGraph
-                commitsState={this.props.commitsState}
+                commitsState={commitsState}
                 circleRadius={radius}
                 colWidth={colWidth}
                 rowHeight={rowHeight}
@@ -142,17 +152,36 @@ class GitGraphTable extends Component {
               />
             </td>
           </tr>
-          {commits.map(commit =>
-            <tr style={{ height: rowHeight }} key={commit.shortId} >
-              <td className='sha1' >{commit.shortId}</td>
-              <td className='message'>
-                {commit.refs.map(ref =>
-                  <RefTag value={ref} key={ref} color={commit.lane.color} />
-                )}
-                {commit.message}
-              </td>
-              <td className='author' >{commit.author.name}</td>
-              <td className='date' >{moment(commit.date, 'X').format('MM/DD/YYYY HH:mm:ss')}</td>
+          {commits.map((commit, commitIndex) =>
+            <tr key={commit.shortId}>
+            <td>
+              <div className={cx('flex-row', {
+                  selected: this.state.selectedRowIndex === commitIndex
+                })}
+                style={{
+                  height: rowHeight,
+                  maxWidth: this.state.tableWidth || 'initial',
+                  marginLeft: this.state.gitGraphWidth * -1,
+                  paddingLeft: (commitsState.livingLaneIdsAtIndex[commitIndex].length + 2) * colWidth,
+                }}
+
+                onClick={() => this.setState({ selectedRowIndex: commitIndex })}
+              >
+                <div className='sha1'>{commit.shortId}</div>
+                <div className='message' title={commit.message}>
+                  {commit.refs.map(ref =>
+                    <RefTag value={ref} key={ref} color={commit.lane.color} />
+                  )}
+                  {commit.message}
+                </div>
+                <div className='author' title={`${commit.author.name} <${commit.author.emailAddress}>`}>
+                  {commit.author.name}
+                </div>
+                <div className='date' title={moment(commit.date, 'X').format('MM/DD/YYYY HH:mm:ss')}>
+                  {moment(commit.date, 'X').format('MM/DD/YYYY')}
+                </div>
+              </div>
+            </td>
             </tr>
           )}
           </tbody>
