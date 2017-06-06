@@ -69,18 +69,6 @@ class GitGraph extends Component {
   posX = (col) => (col + 1) * this.props.colWidth
   posY = (row) => (row + 0.5) * this.props.rowHeight
 
-  getColFactory = (livingLaneIdsAtIndex) => (commitOrIndex, laneId) => {
-    let index, commit
-    if (typeof commitOrIndex === 'object') {
-      commit = commitOrIndex
-      index = commit.index
-      laneId = commit.laneId
-    } else {
-      index = commitOrIndex
-    }
-    return livingLaneIdsAtIndex[index].indexOf(laneId)
-  }
-
   render () {
     const orphanage = new Map() // a place to shelter children who haven't found their parents yet
 
@@ -98,7 +86,6 @@ class GitGraph extends Component {
     let maxCol = 0
 
     commits.forEach((commit, commitIndex) => {
-      commit.col = getCol(commit)
       if (!commit.isRoot) {
         // register parent count of this commit
         orphanage.set(commit.id, commit.parentIds.length)
@@ -122,29 +109,17 @@ class GitGraph extends Component {
         const childIndex = commits.indexOf(child)
         const pathKey = `p_${commit.shortId}_${child.shortId}`
 
-        // SPOTLIGHT on each CHILD!!!
-        // we decide what type of connection this path is
-        let PATH_TYPE
-        // case 1: child and commit on same lane
-        if (child.laneId === commit.laneId) PATH_TYPE = 'normal'
-        // case 2: child has only one parent
-        else if (child.parentIds.length === 1) PATH_TYPE = 'diverged'
-        // case 3: child has multi-parents, but commit is base of merge
-        // this case almost always emerge only at a PR merge
-        else if (commit.isBaseOfMerge(child)) PATH_TYPE = 'diverged'
-        else PATH_TYPE = 'merged'
-
         let d, strokeColor, pathLaneId, isMerged = false
-        switch (PATH_TYPE) {
-          case 'normal':
+        switch (commit.relationToChild(child)) {
+          case 'NORMAL':
             strokeColor = child.lane.color
             pathLaneId = child.laneId
             break
-          case 'diverged':
+          case 'DIVERGED':
             strokeColor = child.lane.color
             pathLaneId = child.laneId
             break
-          case 'merged':
+          case 'MERGED':
             strokeColor = commit.lane.color
             pathLaneId = commit.laneId
             isMerged = true
@@ -155,10 +130,6 @@ class GitGraph extends Component {
 
         for (let i = commitIndex - 1; i >= childIndex; i--) {
           let colAtIndex = getCol(i, pathLaneId)
-          if (colAtIndex === -1) {
-            colAtIndex = state.livingLaneIdsAtIndex[i].length
-            state.livingLaneIdsAtIndex[i].push(pathLaneId) // <-- this mutate the livingLaneIdsAtIndex record, but it needs to be done,
-          }
           if (i > childIndex) {
             d.push(posX(colAtIndex), posY(i))
           } else {

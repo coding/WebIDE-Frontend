@@ -24,6 +24,21 @@ class Commit {
     return child.parentIds.indexOf(this.id) === 0
   }
 
+  relationToChild (child) {
+    // we decide what type of relation it is from this commit to specific child
+    let relationType
+    // case 1: child and commit on same lane
+    if (child.laneId === this.laneId) relationType = 'NORMAL'
+    // case 2: child has only one parent
+    else if (child.parentIds.length === 1) relationType = 'DIVERGED'
+    // case 3: child has multi-parents, but commit is base of merge
+    // this case almost always emerge only at a PR merge
+    else if (this.isBaseOfMerge(child)) relationType = 'DIVERGED'
+    else relationType = 'MERGED'
+
+    return relationType
+  }
+
   get lane () {
     return this.state.lanes.get(this.laneId)
   }
@@ -108,6 +123,17 @@ export default class CommitsState {
     }
     this.lanes.set(newLane.id, newLane)
     commit.laneId = newLane.id
+
+    // fill in the missing records in livingLaneIdsAtIndex from current index to children
+    commit.children.forEach(child => {
+      const relationType = commit.relationToChild(child)
+      const laneId = relationType === 'MERGED' ? commit.laneId : child.laneId
+
+      const childIndex = child.index
+      for (let i = commit.index - 1; i >= childIndex; i--) {
+        if (self.getCol(i, laneId) === -1) self.livingLaneIdsAtIndex[i].push(laneId)
+      }
+    })
   }
 
   markEndOfLane (commit) {
@@ -170,8 +196,6 @@ export default class CommitsState {
         // 1. find which branch the current commit belongs to
 
         // sort children by col, from low to high
-
-        // @fixme!!!
         const children = commit.children.sort(
           (a, b) => a.lane.col - b.lane.col
         )
@@ -231,5 +255,6 @@ export default class CommitsState {
     })
 
     if (commit.isRoot) this.markEndOfLane(commit)
+    commit.col = this.getCol(commit)
   }
 }
