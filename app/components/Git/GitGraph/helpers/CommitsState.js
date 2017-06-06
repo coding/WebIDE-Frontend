@@ -1,4 +1,5 @@
 import RandColors from './RandColors'
+import chroma from './chroma'
 
 class Commit {
   constructor (props, state) {
@@ -109,11 +110,17 @@ export default class CommitsState {
 
   assignNewLane (commit) {
     const self = this
+    const color = this.randColors.get()
+    const hue = chroma.rgb2lch(...chroma.hex2rgb(color))[2]
+    const backgroundColor = chroma.rgb2hex(...chroma.lch2rgb(96, 15, hue))
+    const borderColor = chroma.rgb2hex(...chroma.lch2rgb(70, 50, hue))
     const newLane = {
       id: commit.id,
       start: commit.id,
       startTime: commit.date,
-      color: this.randColors.get(),
+      color,
+      backgroundColor,
+      borderColor,
       get col () {
         if (typeof this._col === 'number') return this._col
         const startCommit = self.commits.get(this.id)

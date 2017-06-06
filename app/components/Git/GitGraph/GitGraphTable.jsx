@@ -7,11 +7,10 @@ import GitGraph from './GitGraph'
 import state from './state'
 import cx from 'classnames'
 import ResizeBar from 'components/ResizeBar'
-import { hex2rgb } from './helpers'
 import CommitsState from './helpers/CommitsState'
 import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
 
-const RefTag = ({ value: refName, color }) => {
+const RefTag = ({ value: refName, backgroundColor, borderColor }) => {
   let ref
   const regex = /(refs\/\w+\/|HEAD)(.*)/
   const match = regex.exec(refName) || []
@@ -33,24 +32,12 @@ const RefTag = ({ value: refName, color }) => {
   }
 
   if (!ref) return null
-
-  const rgb = hex2rgb(color)
-  const rgbaColorStr = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},1)`
   return (
-    <span className='git-graph-ref' style={{ backgroundColor: rgbaColorStr }} >
+    <span className='git-graph-ref' style={{ backgroundColor, borderColor }} >
       <i className={'octicon octicon-' + ref.icon} />{ref.name}
     </span>
   )
 }
-
-const TextCell = ({ rowIndex, selectedRow, children, ...otherProps }) => (
-  <Cell className={cx({ selected: rowIndex === selectedRow })}
-    style={{ whiteSpace: 'nowrap' }}
-    {...otherProps}
-  >
-    {children}
-  </Cell>
-)
 
 @inject(() => {
   return {
@@ -170,9 +157,13 @@ class GitGraphTable extends Component {
                 <div className='sha1'>{commit.shortId}</div>
                 <div className='message' title={commit.message}>
                   {commit.refs.map(ref =>
-                    <RefTag value={ref} key={ref} color={commit.lane.color} />
+                    <RefTag key={ref}
+                      value={ref}
+                      backgroundColor={commit.lane.backgroundColor}
+                      borderColor={commit.lane.borderColor}
+                    />
                   )}
-                  {commit.message}
+                  <span className='message-text'>{commit.message}</span>
                 </div>
                 <div className='author' title={`${commit.author.name} <${commit.author.emailAddress}>`}>
                   {commit.author.name}

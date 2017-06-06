@@ -9,7 +9,7 @@ const COLORS = [
   '#fe7874', // red
   '#967acc', // purple
   '#ea75f3', // violet
-  '#d3d7ed', // maroon
+  '#d3d7ed', // light purplish gray
 ]
 
 export default class RandColors {

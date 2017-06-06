@@ -77,20 +77,14 @@
 .git-graph-wrapper {
   height: 100%;
   overflow-y: scroll;
-  table {
-    width: 100%;
-  }
-  .sha1, .date { color: gray(50%) }
-  .author { color: gray(85%) }
+
+  table { width: 100% }
 
   .flex-row {
     display: flex;
     align-items: center;
-    &.selected {
-      background-color: #0d67d6;
-      color: #fff;
-    }
     .sha1 {
+      color: gray(50%);
       margin-right: 10px;
     }
     .message {
@@ -100,13 +94,26 @@
       align-items: center;
     }
     .author {
+      color: gray(85%);
       white-space: nowrap;
       margin-right: 10px;
       margin-left: auto;
     }
     .date {
+      color: gray(50%);
       white-space: nowrap;
       margin-left: auto;
+      margin-right: 8px;
+    }
+  }
+
+  .flex-row.selected {
+    background-color: #0d67d6;
+    .message-text {
+      color: #fff;
+    }
+    .author, .sha1, .date {
+      color: rgba(255, 255, 255, 0.7);
     }
   }
 }
@@ -116,5 +123,8 @@
   align-items: center;
   border-radius: 3px;
   padding: 1px 3px;
-  margin-right: 2px;
+  margin-right: 4px;
+  font-size: 11px;
+  border-width: 1px
+  border-style: solid;
 }
