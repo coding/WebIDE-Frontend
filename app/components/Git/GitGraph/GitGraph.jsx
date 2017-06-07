@@ -59,11 +59,12 @@ const pdFactory = halfRowHeight => () => {
 
 class GitGraph extends Component {
   shouldComponentUpdate (nextProps) {
-    if (!!this.props.commitsState && this.props.commitsState === nextProps.commitsState) {
-      return false
-    } else {
-      return true
-    }
+    return (
+      !this.props.commitsState ||
+      this.props.commitsState !== nextProps.commitsState ||
+      this.props.rowHeight !== nextProps.rowHeight ||
+      this.props.colWidth !== nextProps.colWidth
+    )
   }
 
   posX = (col) => (col + 1) * this.props.colWidth
