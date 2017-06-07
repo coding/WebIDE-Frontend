@@ -29,9 +29,9 @@ const RefTag = ({ value: refName, backgroundColor, borderColor }) => {
 
   if (!ref) return null
   return (
-    <span className='git-graph-ref' style={{ backgroundColor, borderColor }} >
+    <div className='git-graph-ref' style={{ backgroundColor, borderColor }} >
       <i className={'octicon octicon-' + ref.icon} />{ref.name}
-    </span>
+    </div>
   )
 }
 
@@ -62,7 +62,8 @@ class GitGraphTable extends Component {
     })
   }
 
-  toggleViewSize = (smallOrLarge='small') => {
+  toggleViewSize = (smallOrLarge) => {
+    if (!smallOrLarge) smallOrLarge = this.state.viewSize === 'small' ? 'large' : 'small'
     switch (smallOrLarge) {
       case 'large':
         this.setState({ viewSize: 'large', rowHeight: 50 })
@@ -128,13 +129,13 @@ class GitGraphTable extends Component {
                         borderColor={commit.lane.borderColor}
                       />
                     )}
-                    <div className='date' title={moment(commit.date, 'X').format('MM/DD/YYYY HH:mm:ss')}>
-                      {moment(commit.date, 'X').format('MM/DD/YYYY')}
+                    <div className='date' title={moment(commit.date, 'X').format('YYYY/MM/DD HH:mm:ss')}>
+                      {moment(commit.date, 'X').format('YYYY/MM/DD')}
                     </div>
                   </div>
                   <div className='commit-data-row'>
                     <div className='sha1'>{commit.shortId}</div>
-                    <div className='message'><span className='message-text'>{commit.message}</span></div>
+                    <div className='message message-text'>{commit.message}</div>
                   </div>
                 </div>
               </div>)
@@ -157,7 +158,7 @@ class GitGraphTable extends Component {
                       borderColor={commit.lane.borderColor}
                     />
                   )}
-                  <span className='message-text'>{commit.message}</span>
+                  <div className='message-text'>{commit.message}</div>
                 </div>
                 <div className='author' title={`${commit.author.name} <${commit.author.emailAddress}>`}>
                   {commit.author.name}

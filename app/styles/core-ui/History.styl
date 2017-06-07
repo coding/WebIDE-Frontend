@@ -75,6 +75,7 @@
 
 
 .git-logs-view {
+  scrollBar();
   height: 100%;
   overflow-y: scroll;
 
@@ -89,6 +90,13 @@
   .flex-row {
     .sha1, .date, .author {
       color: gray(50%);
+    }
+
+    .message-text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 6px;
     }
 
     &.selected {
@@ -109,9 +117,9 @@
       }
       .message {
         flex-grow: 1;
-        text-overflow: ellipsis;
         display: flex;
         align-items: center;
+        overflow: hidden;
       }
       .author {
         white-space: nowrap;
@@ -151,9 +159,6 @@
       .sha1 {
         margin-right: 10px;
       }
-      .message {
-        text-overflow: ellipsis;
-      }
       .author {
         white-space: nowrap;
         margin-right: 10px;
@@ -174,6 +179,7 @@
 .git-graph-ref {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   border-radius: 3px;
   padding: 1px 3px;
   margin-right: 4px;
