@@ -1,4 +1,3 @@
-/* @flow weak */
 import React, { Component, PropTypes } from 'react'
 import { Provider, connect } from 'react-redux'
 import { Provider as MobxProvider } from 'mobx-react'

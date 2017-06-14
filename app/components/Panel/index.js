@@ -1,2 +1,3 @@
-/* @flow weak */
-export default from './PanelsContainer'
+import PanelsContainer from './PanelsContainer'
+
+export default PanelsContainer
