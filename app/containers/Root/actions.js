@@ -1,4 +1,3 @@
-/* @flow weak */
 // import { createAction } from 'redux-actions'
 import config from '../../config'
 import ide from '../../IDE'

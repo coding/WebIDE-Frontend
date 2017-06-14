@@ -1,4 +1,3 @@
-/* @flow weak */
 import { createAction } from 'redux-actions'
 import { promiseActionMixin } from '../../utils'
 import _ from 'lodash'

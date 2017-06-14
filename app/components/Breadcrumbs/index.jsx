@@ -1,4 +1,3 @@
-/* @flow weak */
 import React from 'react'
 import { observer, inject } from 'mobx-react'
 import config from 'config'

@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import React, { Component } from 'react'
 import api from '../../../backendAPI'

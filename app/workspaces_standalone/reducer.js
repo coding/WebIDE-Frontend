@@ -1,4 +1,3 @@
-/* @flow weak */
 import { handleActions } from 'redux-actions'
 import {
   WORKSPACE_FETCH_PUBLIC_KEY,

@@ -1,4 +1,3 @@
-/* @flow weak */
 // Unavailable shortcuts: shift / ctrl + (q|n|w|t|↹)
 export default {
   'alt+n': 'file:new_file',

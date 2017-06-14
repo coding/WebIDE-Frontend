@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import { Map, Record } from 'immutable'
 import { handleActions } from 'redux-actions'

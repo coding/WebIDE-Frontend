@@ -1,4 +1,3 @@
-/* @flow weak */
 import { createAction } from 'redux-actions'
 
 export const NOTIFICATION_ADD = 'NOTIFICATION_ADD'

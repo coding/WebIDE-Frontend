@@ -1,4 +1,3 @@
-/* @flow weak */
 import config from 'config'
 import api from 'backendAPI'
 import { autorun } from 'mobx'

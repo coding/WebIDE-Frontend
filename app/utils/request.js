@@ -1,4 +1,3 @@
-/* @flow weak */
 import axios from 'axios'
 import './promise.prototype.finalCatch'
 import { qs } from './url-helpers'

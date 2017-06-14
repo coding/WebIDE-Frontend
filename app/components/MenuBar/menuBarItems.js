@@ -1,4 +1,3 @@
-/* @flow weak */
 import store from '../../store.js'
 import * as GitActions from '../Git/actions'
 import React from 'react'

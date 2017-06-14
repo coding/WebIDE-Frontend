@@ -1,4 +1,3 @@
-/* @flow weak */
 import commandPaletteItems from './items'
 
 let queryCache = {}

@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import api from '../../backendAPI'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'

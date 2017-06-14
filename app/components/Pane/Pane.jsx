@@ -1,4 +1,3 @@
-/* @flow weak */
 import React, { PropTypes } from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'

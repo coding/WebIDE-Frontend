@@ -1,4 +1,3 @@
-/* @flow weak */
 import { handleActions } from 'redux-actions'
 import {
   MODAL_SHOW,

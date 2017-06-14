@@ -1,4 +1,3 @@
-/* @flow weak */
 const commands = {
   alertNotComplete () {}, // {console.log('alertNotComplete');},
   openTerminal () {}, // {console.log('openTerminal');},

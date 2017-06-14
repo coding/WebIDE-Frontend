@@ -1,4 +1,3 @@
-/* @flow weak */
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../commands'

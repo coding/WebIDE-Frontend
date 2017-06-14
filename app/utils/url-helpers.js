@@ -1,4 +1,3 @@
-/* @flow weak */
 import qs from 'qs'
 
 // source: https://github.com/jfromaniello/url-join

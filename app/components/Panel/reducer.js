@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import { update } from '../../utils'
 import { handleActions } from 'redux-actions'

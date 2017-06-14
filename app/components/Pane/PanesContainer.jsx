@@ -1,4 +1,3 @@
-/* @flow weak */
 import React, { Component } from 'react'
 import { inject } from 'mobx-react'
 import PaneAxis from './PaneAxis'

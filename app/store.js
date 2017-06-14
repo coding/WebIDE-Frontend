@@ -1,4 +1,3 @@
-/* @flow weak */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { composeReducers } from './utils'
 import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'

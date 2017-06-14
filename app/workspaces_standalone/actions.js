@@ -1,4 +1,3 @@
-/* @flow weak */
 import * as api from './backendAPI'
 import config from '../config'
 

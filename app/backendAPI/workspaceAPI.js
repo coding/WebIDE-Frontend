@@ -1,4 +1,3 @@
-/* @flow weak */
 import config from '../config'
 import { request } from '../utils'
 import { FsSocketClient } from './websocketClients'

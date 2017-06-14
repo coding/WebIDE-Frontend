@@ -1,4 +1,3 @@
-/* @flow weak */
 import { request, qs } from '../utils'
 import config from '../config'
 import axios from 'axios'

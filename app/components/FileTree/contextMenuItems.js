@@ -1,4 +1,3 @@
-/* @flow weak */
 import { gitBlameNode } from './actions'
 const dividItem = { name: '-' }
 const items = [

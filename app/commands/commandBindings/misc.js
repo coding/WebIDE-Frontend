@@ -1,4 +1,3 @@
-/* @flow weak */
 import store from '../../store'
 const { getState, dispatch: $d } = store
 

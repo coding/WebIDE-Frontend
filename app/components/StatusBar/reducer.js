@@ -1,4 +1,3 @@
-/* @flow weak */
 import { handleActions } from 'redux-actions'
 import { UPDATE_UPLOAD_PROGRESS } from './actions'
 

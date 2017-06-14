@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import config from 'config'
 import { autorun, observalbe } from 'mobx'

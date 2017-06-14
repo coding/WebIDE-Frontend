@@ -1,4 +1,3 @@
-/* @flow weak */
 import { request } from '../utils'
 import config from '../config'
 
