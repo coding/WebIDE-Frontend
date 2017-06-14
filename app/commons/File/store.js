@@ -9,7 +9,7 @@ class FileStore {
   getState () { return state }
 
   get (path) {
-    let file = state.entities.get(path)
+    const file = state.entities.get(path)
     return file
   }
 

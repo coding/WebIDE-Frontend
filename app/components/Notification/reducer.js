@@ -6,7 +6,7 @@ import {
   NOTIFICATION_REMOVE
 } from './actions'
 
-let _state = {notifications: []}
+const _state = { notifications: [] }
 
 export default handleActions({
   [NOTIFICATION_ADD]: (state, action) => {

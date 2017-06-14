@@ -24,7 +24,7 @@ const nodeToNearestDirPath = (node) => {
 }
 
 const nodeToParentDirPath = (node) => {
-  let pathSplitted = node.path.split('/')
+  const pathSplitted = node.path.split('/')
   if (pathSplitted.pop() == '') { pathSplitted.pop() }
   return `${pathSplitted.join('/')}/`
 }
@@ -120,8 +120,8 @@ export default {
 
 
   'file:rename': (c) => {
-    let node = c.context
-    let parentPath = nodeToParentDirPath(node)
+    const node = c.context
+    const parentPath = nodeToParentDirPath(node)
 
     const moveFile = (from, newPath, force) => {
       api.moveFile(node.path, newPath, force)
@@ -143,7 +143,7 @@ export default {
 
 
   'file:delete': async (c) => {
-    let confirmed = await Modal.showModal('Confirm', {
+    const confirmed = await Modal.showModal('Confirm', {
       header: 'Are you sure you want to delete this file?',
       message: `You're trying to delete ${c.context.path}`,
       okText: 'Delete'
@@ -160,7 +160,7 @@ export default {
     Modal.dismissModal()
   },
 
-  'file:download': c => {
+  'file:download': (c) => {
     api.downloadFile(c.context.path, c.context.isDir)
   },
 

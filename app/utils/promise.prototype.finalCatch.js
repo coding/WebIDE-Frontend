@@ -1,13 +1,13 @@
 if (typeof Promise !== 'function' && typeof Promise !== 'object') {
-  throw "Cannot polyfill Promise when it is " + JSON.stringify(Promise);
+  throw `Cannot polyfill Promise when it is ${JSON.stringify(Promise)}`
 }
 
 const protoThen = Promise.prototype.then
 const protoCatch = Promise.prototype.catch
 
 const wrappedCatch = function (onRejected) {
-  var original = this
-  var newPromise = protoCatch.call(this, onRejected)
+  const original = this
+  const newPromise = protoCatch.call(this, onRejected)
 
   if (original._finalCatchHandler) {
     original._isInherited = true
@@ -18,8 +18,8 @@ const wrappedCatch = function (onRejected) {
 }
 
 const wrappedThen = function () {
-  var original = this
-  var newPromise = protoThen.apply(this, arguments)
+  const original = this
+  const newPromise = protoThen.apply(this, arguments)
 
   if (original._finalCatchHandler) {
     original._isInherited = true
@@ -32,10 +32,10 @@ const wrappedThen = function () {
 Promise.prototype.finalCatch = function (onRejected) {
   _this = this
   this._finalCatchHandler = function () {
-    onRejected.apply(undefined, arguments)
-    _this._finalCatchHandler = (f => {})
+    onRejected(...arguments)
+    _this._finalCatchHandler = ((f) => {})
   }
-  protoThen.call(this, res => res, err => {
+  protoThen.call(this, res => res, (err) => {
     if (!this._isInherited) {
       this._finalCatchHandler(err)
     }

@@ -137,7 +137,6 @@ const calculColumnAndBranch = action((commit) => {
   if (commit.isRoot) {
     freeCol(commit.col)
   }
-
 })
 
 autorun('track max col', () => {
@@ -147,11 +146,11 @@ autorunAsync('Sync commitsList with commits', () => {
   state.commitsList.replace(state.commits.values())
 }, 0)
 
-state.commits.observe(change => {
+state.commits.observe((change) => {
   const { name: commitId, newValue: commit, oldValue: commitOldValue } = change
   switch (change.type) {
     case 'add':
-      commit.parentIds.forEach(parentId => {
+      commit.parentIds.forEach((parentId) => {
         makeChildrenIndexes(commit.id, parentId)
       })
       calculColumnAndBranch(commit)

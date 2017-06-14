@@ -4,7 +4,7 @@ import * as GitActions from '../Git/actions'
 import React from 'react'
 import mapShortcutToItems from './utils'
 
-var codingLogo = (
+const codingLogo = (
   <div className='menu-bar-item-logo'>
     <svg
       version='1.1'
@@ -39,8 +39,8 @@ var codingLogo = (
     </svg>
   </div>
 )
-var dividItem = { name: '-' }
-var menuBarItems = [
+const dividItem = { name: '-' }
+const menuBarItems = [
   {
     name: codingLogo,
     className: 'coding-logo',

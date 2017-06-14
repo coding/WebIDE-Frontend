@@ -8,7 +8,7 @@ import { emitter } from 'utils'
 const key = new Keymapper({ dispatchCommand })
 key.loadKeymaps(keymaps)
 
-Object.keys(commandBindings).map(commandType => {
+Object.keys(commandBindings).map((commandType) => {
   emitter.on(commandType, commandBindings[commandType])
 })
 

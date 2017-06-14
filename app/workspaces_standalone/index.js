@@ -1,5 +1,5 @@
 /* @flow weak */
-import { AppContainer } from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -25,7 +25,6 @@ if (__DEV__) {
 
   hotLoaderRender()
   if (module.hot) module.hot.accept('./WorkspaceList', hotLoaderRender)
-
 } else {
   render(<Provider store={store}><WorkspaceList /></Provider>, rootElement)
 }

@@ -7,7 +7,7 @@ import state, { FileNode } from './state'
 export const loadNodeData = registerAction('fs:load_node_data',
   (nodeConfigs) => {
     if (!is.array(nodeConfigs)) nodeConfigs = [nodeConfigs]
-    return nodeConfigs.map(nodeConfig => {
+    return nodeConfigs.map((nodeConfig) => {
       const curNode = state.entities.get(nodeConfig.path)
       if (curNode) {
         curNode.update(nodeConfig)
@@ -17,7 +17,6 @@ export const loadNodeData = registerAction('fs:load_node_data',
       state.entities.set(newNode.path, newNode)
       return newNode
     })
-
   }
 )
 

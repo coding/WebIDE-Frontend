@@ -23,7 +23,7 @@ export const confirmResize = createAction(PANE_CONFIRM_RESIZE,
 
 export const PANE_SPLIT_WITH_KEY = 'PANE_SPLIT_WITH_KEY'
 export const split = createAction(PANE_SPLIT_WITH_KEY,
-  (splitCount, flexDirection = 'row') => ({splitCount, flexDirection})
+  (splitCount, flexDirection = 'row') => ({ splitCount, flexDirection })
 )
 
 export const PANE_SPLIT = 'PANE_SPLIT'
@@ -35,24 +35,22 @@ export const PANE_UPDATE = 'PANE_UPDATE'
 export const updatePane = createAction(PANE_UPDATE)
 
 export const PANE_CLOSE = 'PANE_CLOSE'
-export const closePane = (paneId) => {
-  return (dispatch, getState) => {
-    const { PaneState, TabState } = getState()
-    const content = PaneState.panes[paneId].content
-    let tabIds = TabState.tabGroups[content.id].tabIds
-    let siblingPane
-    if (tabIds.length) {
-      siblingPane = getPrevSibling(PaneState, paneId, true, true)
-      if (!siblingPane) siblingPane = getNextSibling(PaneState, paneId, true, true)
-    }
-
-    dispatch({
-      type: PANE_CLOSE,
-      payload: {
-        paneId: paneId,
-        sourceTabGroupId: content.id,
-        targetTabGroupId: siblingPane ? siblingPane.content.id : null
-      }
-    })
+export const closePane = paneId => (dispatch, getState) => {
+  const { PaneState, TabState } = getState()
+  const content = PaneState.panes[paneId].content
+  const tabIds = TabState.tabGroups[content.id].tabIds
+  let siblingPane
+  if (tabIds.length) {
+    siblingPane = getPrevSibling(PaneState, paneId, true, true)
+    if (!siblingPane) siblingPane = getNextSibling(PaneState, paneId, true, true)
   }
+
+  dispatch({
+    type: PANE_CLOSE,
+    payload: {
+      paneId,
+      sourceTabGroupId: content.id,
+      targetTabGroupId: siblingPane ? siblingPane.content.id : null
+    }
+  })
 }

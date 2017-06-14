@@ -18,7 +18,6 @@ async function startApp (module) {
 
     hotLoaderRender()
     if (module.hot) module.hot.accept('./containers/Root', hotLoaderRender)
-
   } else {
     render(<Root />, rootElement)
   }

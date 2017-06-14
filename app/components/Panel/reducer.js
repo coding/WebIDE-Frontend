@@ -44,13 +44,13 @@ const BasePanelLayout = {
   ref: 'ROOT',
   direction: 'column',
   views: [
-    {ref: 'MENUBAR', contentType: 'MENUBAR', resizable: false, overflow: 'visible'},
-    {ref: 'BAR_TOP', contentType: 'BREADCRUMBS', resizable: false, overflow: 'visible'},
+    { ref: 'MENUBAR', contentType: 'MENUBAR', resizable: false, overflow: 'visible' },
+    { ref: 'BAR_TOP', contentType: 'BREADCRUMBS', resizable: false, overflow: 'visible' },
     {
       ref: 'PRIMARY_ROW',
       direction: 'row',
       views: [
-        {ref: 'BAR_LEFT', resizable: false},
+        { ref: 'BAR_LEFT', resizable: false },
         {
           ref: 'STAGE',
           direction: 'column',
@@ -58,20 +58,20 @@ const BasePanelLayout = {
             {
               direction: 'row',
               views: [
-                {ref: 'PANEL_LEFT', size: 20, contentType: 'PANEL_LEFT'},
-                {ref: 'PANEL_CENTER', size: 80, contentType: 'PANES'},
-                {ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true},
+                { ref: 'PANEL_LEFT', size: 20, contentType: 'PANEL_LEFT' },
+                { ref: 'PANEL_CENTER', size: 80, contentType: 'PANES' },
+                { ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true },
               ],
               size: 75
             },
-            {ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hide: false},
-            {ref: 'BAR_BOTTOM', resizable: false, hide: false},
+            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hide: false },
+            { ref: 'BAR_BOTTOM', resizable: false, hide: false },
           ]
         },
-        {ref: 'BAR_RIGHT', resizable: false, hide: false},
+        { ref: 'BAR_RIGHT', resizable: false, hide: false },
       ]
     },
-    {ref: 'STATUSBAR', contentType: 'STATUSBAR', resizable: false, overflow: 'visible'},
+    { ref: 'STATUSBAR', contentType: 'STATUSBAR', resizable: false, overflow: 'visible' },
   ]
 }
 
@@ -87,15 +87,15 @@ const Panel = (panelConfig) => {
     resizable: true,
   }
 
-  let panel = { ...defaults, ...panelConfig }
+  const panel = { ...defaults, ...panelConfig }
   if (!panel.resizable) panel.disableResizeBar = true
   return panel
 }
 
 const constructPanelState = (state, panelConfig, parent) => {
   let nextState = state
-  let views = panelConfig.views
-  let panel = Panel({...panelConfig, views: []})
+  const views = panelConfig.views
+  const panel = Panel({ ...panelConfig, views: [] })
 
   if (parent) {
     panel.parentId = parent.id
@@ -103,9 +103,9 @@ const constructPanelState = (state, panelConfig, parent) => {
   } else {
     nextState.rootPanelId = panel.id
   }
-  nextState = update(nextState, {panels: {
+  nextState = update(nextState, { panels: {
     [panel.id]: { $set: panel }
-  }})
+  } })
 
   if (panel.ref) {
     nextState = update(nextState, {
@@ -116,12 +116,12 @@ const constructPanelState = (state, panelConfig, parent) => {
   }
 
   if (!panel.resizable) {
-    let prevSibling = getPrevSibling(nextState, panel)
+    const prevSibling = getPrevSibling(nextState, panel)
     if (prevSibling) {
       prevSibling.disableResizeBar = true
-      nextState = update(nextState, {panels: {
+      nextState = update(nextState, { panels: {
         [prevSibling.id]: { $set: prevSibling },
-      }})
+      } })
     }
   }
 
@@ -150,7 +150,7 @@ export default handleActions({
   [PANEL_TOGGLE_LAYOUT]: (state, action) => {
     const { selectors: { refs, ids }, shouldShow } = action.payload
 
-    let selectedPanels = [].concat(
+    const selectedPanels = [].concat(
       refs ? refs.map(ref => getPanelByRef(state, ref)) : [],
       ids ? ids.map(id => getPanel(state, id)) : []
     )
@@ -162,28 +162,24 @@ export default handleActions({
     }, {})
     return update(state, { panels: {
       $merge: panels
-    }})
+    } })
   },
 
-  [PANEL_CONFIRM_RESIZE]: (state, { payload: { leftView, rightView } }) => {
-    return update(state, {
-      panels: {
-        [leftView.id]: { size: { $set: leftView.size } },
-        [rightView.id]: { size: { $set: rightView.size } },
-      }
-    })
-  },
+  [PANEL_CONFIRM_RESIZE]: (state, { payload: { leftView, rightView } }) => update(state, {
+    panels: {
+      [leftView.id]: { size: { $set: leftView.size } },
+      [rightView.id]: { size: { $set: rightView.size } },
+    }
+  }),
 
-  [PANEL_REGISTER_VIEW]: (state, { payload: { side, labels, activeViewId } }) => {
-    return update(state, {
-      sidePanelViews: {
-        [side]: {
-          labels: { $set: labels },
-          activeViewId: { $set: activeViewId },
-        }
+  [PANEL_REGISTER_VIEW]: (state, { payload: { side, labels, activeViewId } }) => update(state, {
+    sidePanelViews: {
+      [side]: {
+        labels: { $set: labels },
+        activeViewId: { $set: activeViewId },
       }
-    })
-  },
+    }
+  }),
 
   [PANEL_ACTIVATE_VIEW]: (state, { payload: viewId }) => {
     const side = viewId.split('_')[0]
@@ -200,14 +196,14 @@ export default handleActions({
         }
       }
     })
-  }, 
+  },
 
   [PANEL_TOGGLE_VIEW]: (state, { payload: viewId }) => {
     const side = viewId.split('_')[0]
     const activeViewId = state.sidePanelViews[side].activeViewId
     if (activeViewId === viewId) viewId = ''
 
-    const shouldHidePanel = viewId ? false : true
+    const shouldHidePanel = !viewId
     const targetPanel = getPanelByRef(state, `PANEL_${side.toUpperCase()}`)
 
     return update(state, {
@@ -220,5 +216,5 @@ export default handleActions({
         }
       }
     })
-  }, 
+  },
 }, defaultState)

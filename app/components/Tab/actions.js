@@ -18,7 +18,7 @@ export const removeTab = registerAction('tab:remove', (tabId) => {
 export const removeOtherTab = registerAction('tab:remove_other', (tabId) => {
   const tab = state.tabs.get(tabId)
   tab.activate()
-  tab.tabGroup.tabs.forEach(eachTab => {
+  tab.tabGroup.tabs.forEach((eachTab) => {
     if (eachTab !== tab) eachTab.destroy()
   })
 })
@@ -47,7 +47,7 @@ export const removeGroup = registerAction('tab:remove_tab_group',
 )
 
 export const updateTab = registerAction('tab:update',
-  (tabProps={}) => {
+  (tabProps = {}) => {
     const tabId = tabProps.id
     const tab = state.tabs.get(tabId)
     if (tab) tab.update(tabProps)
@@ -58,15 +58,15 @@ export const TAB_UPDATE_BY_PATH = 'TAB_UPDATE_BY_PATH'
 export const updateTabByPath = registerAction(TAB_UPDATE_BY_PATH, (tabProps = {}) => tabProps)
 
 export const TAB_UPDATE_FLAGS = 'TAB_UPDATE_FLAGS'
-export const updateTabFlags = registerAction('tab:update_flags', (tabId, flag, value=true) => {
-    let flags
-    if (typeof flag === 'string') {
-      flags = {[flag]: value}
-    } else if (typeof flag === 'object') {
-      flags = flag
-    }
-    return { tabId, flags }
-  },
+export const updateTabFlags = registerAction('tab:update_flags', (tabId, flag, value = true) => {
+  let flags
+  if (typeof flag === 'string') {
+    flags = { [flag]: value }
+  } else if (typeof flag === 'object') {
+    flags = flag
+  }
+  return { tabId, flags }
+},
   ({ tabId, flags }) => {
     const tab = state.tabs.get(tabId)
     if (!tab || !flags) return
@@ -115,7 +115,7 @@ export const closeContextMenu = createAction(TAB_CONTEXT_MENU_CLOSE)
 
 export const TAB_MOVE_TO_PANE = 'TAB_MOVE_TO_PANE'
 export const moveTabToPane = createAction(TAB_MOVE_TO_PANE,
-  (tabId, paneId) => ({tabId, paneId})
+  (tabId, paneId) => ({ tabId, paneId })
 )
 const crossActionHandlers = handleActions({
   [TAB_MOVE_TO_PANE]: (allState, { tabId, paneId }) => {

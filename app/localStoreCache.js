@@ -1,5 +1,5 @@
 import _ from 'lodash'
-let localStoreCache = {}
+const localStoreCache = {}
 
 const stateDomainsToCache = [
   // 'MarkdownEditorState',
@@ -18,7 +18,7 @@ const stateDomainsToCache = [
   // 'PackageState',
 ]
 
-const stateFilter = (state) => stateDomainsToCache.reduce((stateToCache, domain) => {
+const stateFilter = state => stateDomainsToCache.reduce((stateToCache, domain) => {
   if (!state) return ''
   stateToCache[domain] = state[domain]
   return stateToCache
@@ -34,7 +34,7 @@ localStoreCache.beforeReducer = (state, action) => {
 }
 
 localStoreCache.afterReducer = (state, action) => {
-  let nextCachedState = JSON.stringify(stateFilter(state))
+  const nextCachedState = JSON.stringify(stateFilter(state))
   if (nextCachedState !== cachedState) {
     localStorage.setItem('snapshot', nextCachedState)
     cachedState = nextCachedState

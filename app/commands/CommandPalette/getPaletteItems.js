@@ -1,7 +1,7 @@
 /* @flow weak */
 import commandPaletteItems from './items'
 
-var queryCache = {}
+let queryCache = {}
 const getFromCache = (query) => {
   if (Object.keys(queryCache).length > 10000) queryCache = {}
   if (queryCache.hasOwnProperty(query)) {
@@ -17,7 +17,7 @@ export default function getPaletteItems (query) {
   if (!query) return commandPaletteItems
   query = query.toLowerCase().replace(/\ /g, '')
 
-  var [cacheState, itemsToFilter] = getFromCache(query)
+  let [cacheState, itemsToFilter] = getFromCache(query)
   switch (cacheState) {
     case 'exact_match':
       return itemsToFilter
@@ -27,12 +27,12 @@ export default function getPaletteItems (query) {
       itemsToFilter = commandPaletteItems
   }
 
-  var filteredItems = itemsToFilter.reduce((filteredItems, item) => {
-    let itemNameChars = item.name.toLowerCase().split('')
-    let queryChars = query.split('')
+  const filteredItems = itemsToFilter.reduce((filteredItems, item) => {
+    const itemNameChars = item.name.toLowerCase().split('')
+    const queryChars = query.split('')
 
-    var missed = false
-    let charIndexes = queryChars.reduce((charIndexes, char) => {
+    let missed = false
+    const charIndexes = queryChars.reduce((charIndexes, char) => {
       let begin = (charIndexes.length)
       ? charIndexes[charIndexes.length - 1] + 1
       : begin = 0
@@ -48,7 +48,7 @@ export default function getPaletteItems (query) {
       return charIndexes
     }, [])
 
-    if (!missed) filteredItems.push({...item, em: charIndexes})
+    if (!missed) filteredItems.push({ ...item, em: charIndexes })
     return filteredItems
   }, [])
 

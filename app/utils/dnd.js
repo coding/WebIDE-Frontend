@@ -8,14 +8,12 @@ export const DND_UPDATE_DRAG_OVER_META = 'DND_UPDATE_DRAG_OVER_META'
 export const DND_DRAG_END = 'DND_DRAG_END'
 
 function getDroppables () {
-  var droppables = map(document.querySelectorAll('[data-droppable]'), (DOMNode) => {
-    return {
-      id: DOMNode.id,
-      DOMNode: DOMNode,
-      type: DOMNode.getAttribute('data-droppable'),
-      rect: DOMNode.getBoundingClientRect()
-    }
-  })
+  const droppables = map(document.querySelectorAll('[data-droppable]'), DOMNode => ({
+    id: DOMNode.id,
+    DOMNode,
+    type: DOMNode.getAttribute('data-droppable'),
+    rect: DOMNode.getBoundingClientRect()
+  }))
   return droppables
 }
 
@@ -33,13 +31,13 @@ dnd.updateDragOverMeta = meta => emitter.emit(DND_UPDATE_DRAG_OVER_META, meta)
 dnd.dragEnd = () => emitter.emit(DND_DRAG_END)
 
 
-emitter.on(DND_DRAG_START, (source={}) => {
+emitter.on(DND_DRAG_START, (source = {}) => {
   dnd.isDragging = true
   dnd.source = source
   dnd.droppables = observable.shallowArray(getDroppables())
 })
 
-emitter.on(DND_DRAG_OVER, (target={}) => {
+emitter.on(DND_DRAG_OVER, (target = {}) => {
   if (!dnd.target || dnd.target.id !== target.id) dnd.target = target
 })
 

@@ -1,7 +1,5 @@
 
-const IdeEnvironment = () => {
-  return {
-    editors: {}
-  }
-}
+const IdeEnvironment = () => ({
+  editors: {}
+})
 export default IdeEnvironment

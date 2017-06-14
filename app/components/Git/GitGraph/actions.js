@@ -8,8 +8,8 @@ export function fetchRefs () {
 }
 
 export function fetchCommits (params) {
-  return api.gitLogs(params).then(allCommits => {
-    allCommits.forEach(commitProps => {
+  return api.gitLogs(params).then((allCommits) => {
+    allCommits.forEach((commitProps) => {
       const commit = new Commit(commitProps)
     })
   })

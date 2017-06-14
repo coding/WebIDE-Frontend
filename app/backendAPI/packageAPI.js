@@ -14,9 +14,8 @@ export const fetchPackageList = () => {
   }
   if (config.isPlatform) {
     return request.get(`/users/${config.globalKey}/packages`)
-  } else {
-    return request.get(`/packages`)
   }
+  return request.get('/packages')
 }
 
 export const fetchPackageInfo = (pkgName, pkgVersion) =>

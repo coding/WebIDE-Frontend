@@ -38,7 +38,7 @@ const request = function (options) {
 Object.assign(request, _request)
 
 const promiseInterceptor = (promise) => {
-  promise.finalCatch(err => {
+  promise.finalCatch((err) => {
     if (err.msg && window.dispatch) {
       window.dispatch(
         notify({

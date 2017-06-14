@@ -8,9 +8,9 @@ const separator = ':='
 
 const getMappedDic = () => {
   const result = {}
-  Object.keys(languageDicPool).forEach(lan => {
+  Object.keys(languageDicPool).forEach((lan) => {
     const tmp = languageDicPool[lan]
-    Object.keys(tmp).forEach(key => {
+    Object.keys(tmp).forEach((key) => {
       if (!result[key]) result[key] = {}
       if (lan === 'en_US') result[key].template = tmp[key]
       result[key][lan] = tmp[key]

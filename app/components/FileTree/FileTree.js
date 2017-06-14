@@ -5,19 +5,17 @@ import subscribeToFileChange from 'commons/File/subscribeToFileChange'
 import * as FileTreeActions from './actions'
 import FileTreeState from './state'
 
-const FileUploadInput = ({ node, handleUpload }) => {
-  return (
-    <form id='filetree-hidden-input-form' style={{position: 'fixed',top: '-10000px'}}>
-      <input
-        id='filetree-hidden-input'
-        type='file'
-        name='files'
-        multiple
-        onChange={e => handleUpload(e.target.files, node.path)}
-      />
-    </form>
+const FileUploadInput = ({ node, handleUpload }) => (
+  <form id='filetree-hidden-input-form' style={{ position: 'fixed', top: '-10000px' }}>
+    <input
+      id='filetree-hidden-input'
+      type='file'
+      name='files'
+      multiple
+      onChange={e => handleUpload(e.target.files, node.path)}
+    />
+  </form>
   )
-}
 
 @observer
 class FileTree extends Component {

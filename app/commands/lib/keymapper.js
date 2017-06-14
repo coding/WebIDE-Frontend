@@ -93,7 +93,7 @@ class Keymapper {
   }
 
   unregisterKeys (keys) {
-    var keyComps = keys.split(this.delimiter)
+    const keyComps = keys.split(this.delimiter)
     delete this.keysRegistered[keyComps[0]]
   }
 
@@ -103,12 +103,11 @@ class Keymapper {
 
   loadKeymaps (keymaps) {
     if (typeof keymaps === 'string') {
-      try { keymaps = JSON.parse(keymaps) }
-      catch (e) { throw Error('Keymapper: Invalid keymaps description. Fail to parse JSON to object.') }
+      try { keymaps = JSON.parse(keymaps) } catch (e) { throw Error('Keymapper: Invalid keymaps description. Fail to parse JSON to object.') }
     }
-    if (!keymaps || typeof keymaps != 'object') return
+    if (!keymaps || typeof keymaps !== 'object') return
 
-    Object.keys(keymaps).forEach(keys => {
+    Object.keys(keymaps).forEach((keys) => {
       if (typeof keymaps[keys] === 'string') {
         this.map(keys, keymaps[keys])
       } else {

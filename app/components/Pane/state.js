@@ -80,7 +80,7 @@ autorunAsync('short-circuit unnecessary internal pane node', () => {
   // pane.parent -> pane -> lonelyChild
   // => pane.panret -> lonelyChild
   //    delete pane
-  state.panes.forEach(pane => {
+  state.panes.forEach((pane) => {
     if (!pane) return
     if (pane.views.length === 1) {
       const lonelyChild = pane.views[0]
@@ -92,7 +92,7 @@ autorunAsync('short-circuit unnecessary internal pane node', () => {
 
 autorun('auto delete pane without tabs', () => {
   if (state.autoCloseEmptyPane) {
-    state.panes.forEach(pane => {
+    state.panes.forEach((pane) => {
       if (!pane) return
       if (!pane.views.length && pane.tabGroup && pane.tabGroup.tabs.length === 0) {
         pane.destroy()

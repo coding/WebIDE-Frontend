@@ -32,7 +32,7 @@ const _state = {
   commitMessage: '',
   branches: {
     current: 'master',
-    failed: '' //没有切换成功的
+    failed: '' // 没有切换成功的
   },
   tags: [],
   stash: {
@@ -97,29 +97,31 @@ const treeifyFiles = (files) => {
   _nodes = _nodes.set(rootNode.path, rootNode)
 
   rootNode = files.reduce((rootNode, file) => {
-    let pathComps = file.name.split('/')
+    const pathComps = file.name.split('/')
 
     pathComps.reduce((parentNode, pathComp, idx) => {
-      let currentPath = parentNode.path
-        + (parentNode.path.endsWith('/')? '' : '/')
+      const currentPath = parentNode.path
+        + (parentNode.path.endsWith('/') ? '' : '/')
         + pathComp
 
       let node = _nodes.get(currentPath)
 
-      let commonNodeProps = {
+      const commonNodeProps = {
         name: pathComp,
         path: currentPath,
         parent: parentNode.path,
         depth: parentNode.depth + 1
       }
       if (idx === pathComps.length - 1) {
-        if (!node) node = new FileTreeNode({
-          ...commonNodeProps,
-          isDir: false,
-          status: file.status
-        })
-      } else {
-        if (!node) node = new FileTreeNode({
+        if (!node) {
+          node = new FileTreeNode({
+            ...commonNodeProps,
+            isDir: false,
+            status: file.status
+          })
+        }
+      } else if (!node) {
+        node = new FileTreeNode({
           ...commonNodeProps,
           isDir: true,
           children: [],
@@ -132,13 +134,12 @@ const treeifyFiles = (files) => {
         parentNode.children.push(node.path)
       }
       // also keep a record of leaf nodes at each internal dir nodes
-      if (parentNode.isDir && !parentNode.leafNodes.includes('/'+file.name)) {
-        parentNode.leafNodes.push('/'+file.name)
+      if (parentNode.isDir && !parentNode.leafNodes.includes(`/${file.name}`)) {
+        parentNode.leafNodes.push(`/${file.name}`)
       }
 
       _nodes = _nodes.set(node.path, node)
       return node
-
     }, rootNode)
 
     return rootNode
@@ -149,69 +150,66 @@ const treeifyFiles = (files) => {
 
 export default handleActions({
   [GIT_STATUS]: (state, action) => {
-    let statusFiles = treeifyFiles(action.payload.files)
-    let isWorkingDirClean = action.payload.isClean
-    return {...state, statusFiles, isWorkingDirClean}
+    const statusFiles = treeifyFiles(action.payload.files)
+    const isWorkingDirClean = action.payload.isClean
+    return { ...state, statusFiles, isWorkingDirClean }
   },
 
   [GIT_STATUS_FOLD_NODE]: (state, action) => {
-    let {node, isFolded, deep} = action.payload
+    const { node, isFolded, deep } = action.payload
     if (!node.isDir) return state
 
     state.statusFiles = state.statusFiles.set(node.path, node.set('isFolded', isFolded))
     if (deep) {
-      node.children.forEach(childNodePath => {
-        let childNode = state.statusFiles.get(childNodePath)
+      node.children.forEach((childNodePath) => {
+        const childNode = state.statusFiles.get(childNodePath)
         if (childNode.isDir) {
           state.statusFiles = state.statusFiles.set(childNodePath, childNode.set('isFolded', isFolded))
         }
       })
     }
-    return {...state}
+    return { ...state }
   },
 
   [GIT_STATUS_SELECT_NODE]: (state, action) => {
-    let node = action.payload
-    let statusFiles = state.statusFiles.map((_node) => {
+    const node = action.payload
+    const statusFiles = state.statusFiles.map((_node) => {
       if (_node.path === node.path) {
         return _node.set('isFocused', true)
       } else if (_node.isFocused) {
         return _node.set('isFocused', false)
-      } else {
-        return _node
       }
+      return _node
     })
-    return {...state, statusFiles}
+    return { ...state, statusFiles }
   },
 
   [GIT_STATUS_STAGE_NODE]: (state, action) => {
-    let node = action.payload
+    const node = action.payload
     let statusFiles = state.statusFiles
     if (!node.isDir) {
       statusFiles = state.statusFiles.set(node.path,
-        node.set('isStaged', node.isStaged ? false : true)
+        node.set('isStaged', !node.isStaged)
       )
     } else {
-      let stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
+      const stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
         state.statusFiles.get(leafNodePath).get('isStaged')
       )
-      let allLeafNodesStaged = (stagedLeafNodes.length === node.leafNodes.length)
+      const allLeafNodesStaged = (stagedLeafNodes.length === node.leafNodes.length)
 
-      statusFiles = state.statusFiles.withMutations(statusFiles => {
-        node.leafNodes.forEach(leafNodePath => {
-          let leafNode = statusFiles.get(leafNodePath)
-          statusFiles.set(leafNodePath, leafNode.set('isStaged', allLeafNodesStaged ? false : true))
+      statusFiles = state.statusFiles.withMutations((statusFiles) => {
+        node.leafNodes.forEach((leafNodePath) => {
+          const leafNode = statusFiles.get(leafNodePath)
+          statusFiles.set(leafNodePath, leafNode.set('isStaged', !allLeafNodesStaged))
         })
         return statusFiles
       })
     }
-    return {...state, statusFiles}
+    return { ...state, statusFiles }
   },
 
 
-  [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => {
-    return {...state, commitMessage: action.payload}
-  },
+  [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => ({ ...state, commitMessage: action.payload }),
 
   [GIT_BRANCH]: (state, action) => {
     state = _.cloneDeep(state)
@@ -267,7 +265,7 @@ export default handleActions({
     state.unstash.stashList = action.payload
     if (state.unstash.stashList.length == 0) {
       state.unstash.selectedStash = null
-    } else if(!state.unstash.selectedStash) {
+    } else if (!state.unstash.selectedStash) {
       state.unstash.selectedStash = state.unstash.stashList[0]
     }
     return state

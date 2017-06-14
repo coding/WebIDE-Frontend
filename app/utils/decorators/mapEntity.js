@@ -8,10 +8,10 @@ function mapEntityFactory (entities) {
   return function mapEntity (entityNames) {
     entityNames = Array.isArray(entityNames) ? entityNames : [...arguments]
     return function decorator (target, key, descriptor) {
-      let fn = descriptor.value
+      const fn = descriptor.value
       return {
         ...descriptor,
-        value: function () {
+        value () {
           let args = [...arguments]
           args = args.map((entityId, i) => {
             const entityName = entityNames[i]

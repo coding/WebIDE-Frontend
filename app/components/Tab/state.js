@@ -9,15 +9,15 @@ import FileState, { FileNode } from 'commons/File/state'
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 
 class Tab extends BaseTab {
-  constructor (props={}) {
+  constructor (props = {}) {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
-    console.log('the tab', this);
+    console.log('the tab', this)
     this.update(props)
   }
 
-  @action update (props={}) {
+  @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
     if (is.pojo(props.flags)) this.flags = props.flags
 
@@ -37,7 +37,6 @@ class Tab extends BaseTab {
     } else {
       new Editor(props.editor)
     }
-
   }
 
   @observable flags = {}
@@ -45,9 +44,8 @@ class Tab extends BaseTab {
   @computed get title () {
     if (this.file) {
       return this.file.name
-    } else {
-      return this._title
     }
+    return this._title
   }
 
   set title (v) { return this._title = v }
@@ -68,7 +66,7 @@ class Tab extends BaseTab {
 
 class TabGroup extends BaseTabGroup {
   static Tab = Tab;
-  constructor (props={}) {
+  constructor (props = {}) {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_group_') : props.id
     state.tabGroups.set(this.id, this)

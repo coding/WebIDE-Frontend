@@ -93,7 +93,7 @@ export const PackageCrossReducer = handleActions({
     const targetPanel = getPanelByRef(PanelState, `PANEL_${panelSide.toUpperCase()}`)
 
     if (activeExtenstionId === packageId) packageId = ''
-    const shouldHidePanel = packageId ? false : true
+    const shouldHidePanel = !packageId
     nextState = update(nextState, {
       PanelState: {
         panels: {

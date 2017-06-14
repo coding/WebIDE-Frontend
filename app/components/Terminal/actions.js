@@ -3,7 +3,7 @@ export const TERM_CLOSE = 'TERM_CLOSE'
 export function close (tabId) {
   return {
     type: TERM_CLOSE,
-    tabId: tabId
+    tabId
   }
 }
 
@@ -25,7 +25,7 @@ export const TERM_ACTIVE = 'TERM_ACTIVE'
 export function active (tabId) {
   return {
     type: TERM_ACTIVE,
-    tabId: tabId
+    tabId
   }
 }
 
@@ -33,8 +33,8 @@ export const TERM_TITLE = 'TERM_TITLE'
 export function setTitle (tabId, title) {
   return {
     type: TERM_TITLE,
-    tabId: tabId,
-    title: title
+    tabId,
+    title
   }
 }
 
@@ -49,7 +49,7 @@ export const TERM_ONLINE = 'TERM_ONLINE'
 export function setOnline (online) {
   return {
     type: TERM_ONLINE,
-    online: online
+    online
   }
 }
 
@@ -57,7 +57,7 @@ export const TERM_RECONNECT = 'TERM_RECONNECT'
 export function setReconnect (reconnect) {
   return {
     type: TERM_RECONNECT,
-    reconnect: reconnect
+    reconnect
   }
 }
 
@@ -86,7 +86,7 @@ export const TERM_INPUT = 'TERM_INPUT'
 export function input (inputString) {
   return {
     type: TERM_INPUT,
-    inputString: inputString
+    inputString
   }
 }
 
@@ -94,6 +94,6 @@ export const TERM_INPUT_PATH = 'TERM_INPUT_PATH'
 export function inputPath (inputPath) {
   return {
     type: TERM_INPUT_PATH,
-    inputPath: inputPath
+    inputPath
   }
 }

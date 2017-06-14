@@ -21,7 +21,7 @@ function PaneScope () {
 
     @computed
     get isRoot () {
-      return !Boolean(this.parentId)
+      return !this.parentId
     }
 
     @computed

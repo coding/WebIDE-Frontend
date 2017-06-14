@@ -328,7 +328,7 @@ import {
   TERM_INPUT_PATH
 } from './actions'
 
-var _state = {
+const _state = {
   activeTab: null,
   activeSection: null,
   tabs: [],

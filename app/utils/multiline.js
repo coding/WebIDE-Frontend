@@ -18,5 +18,5 @@ export default function multiline (strings, ...keys) {
     }
     acc.push(str)
     return acc
-  }, []).map(str => str.replace(RegExp('^'+minIndent), '')).join('\n')
+  }, []).map(str => str.replace(RegExp(`^${minIndent}`), '')).join('\n')
 }

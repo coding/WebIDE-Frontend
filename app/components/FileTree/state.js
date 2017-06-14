@@ -14,12 +14,10 @@ const nodeSorter = (a, b) => {
   return 0
 }
 
-const stateToJS = createTransformer(state => {
-  return {
-    entities: state.entities.values().map(node => toJS(node)),
-    focusedNodes: state.focusedNodes.map(node => toJS(node)),
-  }
-})
+const stateToJS = createTransformer(state => ({
+  entities: state.entities.values().map(node => toJS(node)),
+  focusedNodes: state.focusedNodes.map(node => toJS(node)),
+}))
 
 const ROOT_PATH = ''
 extendObservable(state, {
@@ -66,7 +64,7 @@ class FileTreeNode extends TreeNode {
   @computed get parent () {
     // prioritize corresponding file's tree node
     if (this.file) {
-      let parentFile = this.file && this.file.parent
+      const parentFile = this.file && this.file.parent
       if (parentFile === null) return state.shadowRoot
       return state.entities.get(parentFile.path)
     }

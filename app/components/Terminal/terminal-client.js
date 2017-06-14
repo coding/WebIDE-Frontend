@@ -7,13 +7,13 @@ import { TtySocketClient } from 'backendAPI/websocketClients'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
-const getTermJSON = ({ id, cols, rows }) => {
-  return {
-    id, cols, rows,
-    cwd: WORKSPACE_PATH,
-    spaceKey: config.spaceKey,
-  }
-}
+const getTermJSON = ({ id, cols, rows }) => ({
+  id,
+  cols,
+  rows,
+  cwd: WORKSPACE_PATH,
+  spaceKey: config.spaceKey,
+})
 
 const terms = []
 let online = false
@@ -39,25 +39,21 @@ class TerminalClient extends TtySocketClient {
 
   bindSocketEvent () {
     this.socket.on('shell.output', (data) => {
-      var term
+      let term
       this.setOnline(true)
-      term = _.find(terms, function (term) {
-        return term.id === data.id
-      })
+      term = _.find(terms, term => term.id === data.id)
       if (term) {
         return term.write(data.output)
       }
     })
 
     this.socket.on('shell.exit', (data) => {
-      var term;
-      term = _.find(terms, function(term) {
-        return term.id === data.id;
-      });
+      let term
+      term = _.find(terms, term => term.id === data.id)
       if (term) {
-        return this.actions.removeTab(term.tabId);
+        return this.actions.removeTab(term.tabId)
       }
-    });
+    })
 
     // this.socket.on('port.found', function(ports) {
     //   var j, len, port, results;
@@ -79,9 +75,9 @@ class TerminalClient extends TtySocketClient {
     })
 
     this.socket.on('disconnect', (data) => {
-      console.log('terminal disconnect...');
+      console.log('terminal disconnect...')
       this.reconnect()
-    });
+    })
 
     // this.socket.on('connect', (data) => {
     //   return this.setOnline(true);
@@ -123,7 +119,7 @@ class TerminalClient extends TtySocketClient {
 
   remove (removedTerm) {
     _.remove(terms, { id: removedTerm.id })
-    this.socket.emit('term.close', {id: removedTerm.id})
+    this.socket.emit('term.close', { id: removedTerm.id })
     if (terms.length == 0) {
       this.socket.disconnect()
       if (this.unbindSocketEvent) this.unbindSocketEvent()
@@ -133,30 +129,30 @@ class TerminalClient extends TtySocketClient {
 
   resize (term, cols, rows) {
     if (this.socket) {
-      this.socket.emit('term.resize', {id: term.id, rows, cols})
+      this.socket.emit('term.resize', { id: term.id, rows, cols })
     }
   }
 
   getSocket () { return this.socket }
 
   clearBuffer (tabId) {
-    var term = _.find(terms, term => term.tabId == tabId)
-    this.socket.emit('term.input', {id: term.id, input: "printf '\\033c'\r" })
+    const term = _.find(terms, term => term.tabId == tabId)
+    this.socket.emit('term.input', { id: term.id, input: "printf '\\033c'\r" })
   }
 
   clearScrollBuffer (tabId) {
-    var term = _.find(terms, term => term.tabId == tabId)
+    const term = _.find(terms, term => term.tabId == tabId)
     term.clearScrollbackBuffer()
   }
 
   reset (tabId) {
-    var term = _.find(terms, term => term.tabId == tabId)
-    this.socket.emit('term.input', {id: term.id, input: '\f'})
+    const term = _.find(terms, term => term.tabId == tabId)
+    this.socket.emit('term.input', { id: term.id, input: '\f' })
   }
 
   input (tabId, inputString) {
-    var term = _.find(terms, term => term.tabId == tabId)
-    this.socket.emit('term.input', {id: term.id, input: inputString})
+    const term = _.find(terms, term => term.tabId == tabId)
+    this.socket.emit('term.input', { id: term.id, input: inputString })
   }
 
   inputFilePath (tabId, inputPath) {

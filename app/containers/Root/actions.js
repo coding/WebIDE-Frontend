@@ -19,7 +19,7 @@ export const initState = () => (dispatch) => {
       config.spaceKey = spaceKey
     }
   } else {
-    const {spaceKey} = qs.parse(window.location.hash.slice(1))
+    const { spaceKey } = qs.parse(window.location.hash.slice(1))
     if (spaceKey) config.spaceKey = spaceKey
   }
   window.ide = ide
