@@ -65,16 +65,125 @@
   }
 }
 
-.git-graph-ref {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 3px;
-  padding: 1px 3px;
-  margin-right: 2px;
-  margin-bottom: -2px;
-}
 
 #git-log-table, #git-graph-column {
   flex-basis: 0;
   overflow: scroll;
+}
+
+
+
+
+.git-logs-view {
+  scrollBar();
+  height: 100%;
+  overflow-y: scroll;
+
+  .git-logs-table {
+    position: relative;
+    width: 100%;
+    .git-graph-wrapper {
+      absolute(top 0 left 0)
+    }
+  }
+
+  .flex-row {
+    .sha1, .date, .author {
+      color: gray(50%);
+    }
+
+    .message-text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 6px;
+    }
+
+    &.selected {
+      background-color: #0d67d6;
+      .message-text {
+        color: #fff;
+      }
+      .author, .sha1, .date {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+
+    &.view-size-small {
+      display: flex;
+      align-items: center;
+      .sha1 {
+        margin-right: 10px;
+      }
+      .message {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+      }
+      .author {
+        white-space: nowrap;
+        margin-right: 10px;
+        margin-left: auto;
+      }
+      .date {
+        white-space: nowrap;
+        margin-left: auto;
+        margin-right: 8px;
+      }
+    }
+
+    &.view-size-large {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid gray(96%);
+      border-top: 1px solid transparent;
+      .avatar {
+        .avatar-img {
+          background-color: gray(70%);
+          border-radius: 100%;
+          height: 40px;
+          width: 40px;
+        }
+        margin-right: 10px;
+      }
+      .commit-data {
+        flex-grow: 1;
+        overflow: hidden;
+      }
+      .commit-data-row {
+        display: flex;
+        align-items: center;
+        line-height: 1.5;
+      }
+      .sha1 {
+        margin-right: 10px;
+      }
+      .author {
+        white-space: nowrap;
+        margin-right: 10px;
+        // margin-left: auto;
+      }
+      .date {
+        white-space: nowrap;
+        margin-left: auto;
+        margin-right: 8px;
+      }
+    }
+
+
+  }
+
+}
+
+.git-graph-ref {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin-right: 4px;
+  font-size: 11px;
+  border-width: 1px
+  border-style: solid;
 }

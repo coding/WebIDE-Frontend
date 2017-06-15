@@ -1,4 +1,4 @@
-import hex2rgb from './hex2rgb'
+import chroma from './chroma'
 import RandColors from './RandColors'
 
-export { hex2rgb, RandColors }
+export { chroma, RandColors }
