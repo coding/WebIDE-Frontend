@@ -15,15 +15,35 @@ async function initialize () {
   const step = stepFactory()
   const urlPath = window.location.pathname
 
-  await step('[0] Get spaceKey from window.location', () => {
+  await step('[0] Get spaceKey from window.location', async () => {
+    // case 1: spaceKey in url
     let spaceKey = null
-    const wsPathPattern = /^\/ws\/([^\/]+)\/?$/
+    const wsPathPattern = /^\/ws\/([^/]+)\/?$/
     const match = wsPathPattern.exec(urlPath)
     if (match) spaceKey = match[1]
+    if (spaceKey) return config.spaceKey = spaceKey
 
-    if (!spaceKey) spaceKey = qs.parse(window.location.hash.slice(1)).spaceKey
-    if (spaceKey) config.spaceKey = spaceKey
-    return true
+    // case 2: spaceKey in querystring
+    const qsParsed = qs.parse(window.location.search.slice(1))
+    spaceKey = qsParsed.spaceKey
+    if (spaceKey) return config.spaceKey = spaceKey
+
+    // case 3: get spaceKey by ownerName and projectName
+    const { ownerName, projectName } = qsParsed
+    if (config.isPlatform && ownerName && projectName) {
+      spaceKey = await api.findSpaceKey({ ownerName, projectName })
+      if (spaceKey) {
+        config.spaceKey = spaceKey
+        const redirectUrl = `${location.origin}/ws/${config.spaceKey}`
+        if (window.history.pushState) {
+          window.history.pushState(null, null, redirectUrl)
+        } else {
+          window.location = redirectUrl
+        }
+        return true
+      }
+    }
+    return true // MISSING OF SPACEKEY SHOULD NOT BLOCK
   })
 
   if (config.spaceKey) {
@@ -42,20 +62,23 @@ async function initialize () {
       const queryEntryPathPattern = /^\/ws\/?$/
       const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
       if (isFromQueryEntryPath) {
-        const parsed = qs.parse(location.search.substring(1))
-        config.openFile = parsed.openFile
+        const qsParsed = qs.parse(location.search.substring(1))
+        config.openFile = qsParsed.openFile
         const options = {
-          ownerName: parsed.ownerName,
-          projectName: parsed.projectName,
-          host: parsed.host,
+          ownerName: qsParsed.ownerName,
+          projectName: qsParsed.projectName,
+          host: qsParsed.host,
+          cpuLimit: 1,
+          memory: 128,
+          storage: 1
         }
-        if (parsed.envId) options.envId = parsed.envId
-        if (parsed.isTry) options.try = true
+        if (qsParsed.envId) options.envId = qsParsed.envId
+        if (qsParsed.isTry) options.try = true
         return api.createWorkspace(options).then((res) => {
           extendObservable(config, res)
           if (config.project && config.project.name) { config.projectName = config.project.name }
-          if (history.pushState) {
-            history.pushState(null, null,
+          if (window.history.pushState) {
+            window.history.pushState(null, null,
               `${location.origin}/ws/${config.spaceKey}`)
           }
           return true
@@ -80,6 +103,9 @@ async function initialize () {
     )
   }
 
+  /* @TODO: websocket connection is not a must, shouldn't block
+   * also, terminal connection is optional, only connect when terminal panel is shown
+   * */
   await step('[4] Connect websocket', () =>
     api.connectWebsocketClient()
   )
