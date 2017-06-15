@@ -64,7 +64,7 @@ class FileNode {
   }
 
   @computed get depth () {
-    var slashMatches = this.path.match(/\/(?=.)/g)
+    const slashMatches = this.path.match(/\/(?=.)/g)
     return slashMatches ? slashMatches.length : 0
   }
 
@@ -84,9 +84,7 @@ class FileNode {
   get children () {
     const depth = this.depth
     return state.entities.values()
-      .filter(node => {
-        return node.path.startsWith(`${this.path}/`) && node.depth === depth + 1
-      })
+      .filter(node => node.path.startsWith(`${this.path}/`) && node.depth === depth + 1)
       .sort(nodeSorter)
   }
 
@@ -120,7 +118,7 @@ class FileNode {
   @action
   forEachDescendant (handler) {
     if (!this.isDir) return
-    this.children.forEach(childNode => {
+    this.children.forEach((childNode) => {
       handler(childNode)
       childNode.forEachDescendant(handler)
     })

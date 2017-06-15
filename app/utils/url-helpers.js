@@ -1,9 +1,8 @@
-/* @flow weak */
 import qs from 'qs'
 
 // source: https://github.com/jfromaniello/url-join
 export function urlJoin () {
-  var str = [].slice.call(arguments, 0).join('/')
+  let str = [].slice.call(arguments, 0).join('/')
 
   // make sure protocol is followed by two slashes
   str = str.replace(/:\//g, '://')

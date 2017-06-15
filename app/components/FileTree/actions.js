@@ -48,7 +48,7 @@ export const highlightDirNode = registerAction('filetree:highlight_dir_node',
 
 export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
-  ({ node, shouldBeFolded=null, deep=false }) => {
+  ({ node, shouldBeFolded = null, deep = false }) => {
     if (!node.isDir) return
     const isFolded = _.isBoolean(shouldBeFolded) ? shouldBeFolded : !node.isFolded
     node.toggleFold(isFolded)
@@ -67,7 +67,7 @@ export const removeNode = registerAction('filetree:remove_node',
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu
 
-const openNodeCommonLogic = function (node, editor, shouldBeFolded=null, deep=false) {
+const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep = false) {
   if (node.isDir) {
     if (!node.children.length) {
       api.fetchPath(node.path)
@@ -77,7 +77,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded=null, deep=fa
       toggleNodeFold(node, shouldBeFolded, deep)
     }
   } else if (getTabType(node) === 'TEXT') {
-      api.readFile(node.path)
+    api.readFile(node.path)
         .then(data => FileStore.loadNodeData(data))
         .then(() => {
           TabActions.createTab({
@@ -102,13 +102,13 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded=null, deep=fa
 }
 export const openNode = registerAction('filetree:open_node',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
-  ({ node, shouldBeFolded=null, deep=false }) => {
+  ({ node, shouldBeFolded = null, deep = false }) => {
     openNodeCommonLogic(node, {}, shouldBeFolded, deep)
   }
 )
 
 export const gitBlameNode = registerAction('filetree:git_blame', (node) => {
-  api.gitBlame(node.path).then(gitBlameData => {
+  api.gitBlame(node.path).then((gitBlameData) => {
     openNodeCommonLogic(node, { gitBlame: { show: true, data: gitBlameData } })
   })
 })
@@ -117,7 +117,7 @@ export const uploadFilesToPath = (files, path) => {
   if (!files.length) return
   const node = state.entities.get(path)
   const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
-  _(files).forEach(file => {
+  _(files).forEach((file) => {
     api.uploadFile(targetDirPath, file, {
       onUploadProgress: (progressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)

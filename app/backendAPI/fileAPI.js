@@ -1,11 +1,10 @@
-/* @flow weak */
 import { request, qs } from '../utils'
 import config from '../config'
 import axios from 'axios'
 
 export function fetchPath (path, order, group) {
   return request.get(`/workspaces/${config.spaceKey}/files`, {
-    path: path,
+    path,
     order: true,
     group: true
   })
@@ -14,10 +13,10 @@ export function fetchPath (path, order, group) {
 export function downloadFile (path, shouldPacked) {
   const packOrRaw = shouldPacked ? 'pack' : 'raw'
   let url = `${config.baseURL}/workspaces/${config.spaceKey}/${packOrRaw}`
-  url += '?' + qs.stringify({
-    path: path,
+  url += `?${qs.stringify({
+    path,
     inline: false
-  })
+  })}`
   window.open(url, '_blank')
 }
 
@@ -36,8 +35,8 @@ export function writeFile (path, content, base64) {
     method: 'PUT',
     url: `/workspaces/${config.spaceKey}/files`,
     data: {
-      path: path,
-      content: content,
+      path,
+      content,
       base64: base64 || false,
       override: true,
       createParent: true
@@ -51,7 +50,7 @@ export function readFile (path) {
   : `/workspaces/${config.spaceKey}/file/read`
 
   return request.get(url, {
-    path: path,
+    path,
     base64: false
   })
 }
@@ -61,7 +60,7 @@ export function createFile (path) {
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/files`,
     data: {
-      path: path
+      path
     }
   })
 }
@@ -81,9 +80,9 @@ export function moveFile (from, to, force = false) {
     method: 'POST',
     url: `/workspaces/${config.spaceKey}/move`,
     data: {
-      from: from,
-      to: to,
-      force: force
+      from,
+      to,
+      force
     }
   })
 }
@@ -93,7 +92,7 @@ export function deleteFile (path) {
     method: 'DELETE',
     url: `/workspaces/${config.spaceKey}/files`,
     params: {
-      path: path,
+      path,
       recursive: true
     }
   })
@@ -105,7 +104,7 @@ export function searchFile (value, includeNonProjectItems = false) {
     url: `/workspaces/${config.spaceKey}/search`,
     data: {
       keyword: value,
-      includeNonProjectItems: includeNonProjectItems
+      includeNonProjectItems
     }
   })
 }

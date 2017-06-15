@@ -9,7 +9,7 @@ const state = observable({
 })
 
 class Editor {
-  constructor (props={}) {
+  constructor (props = {}) {
     this.id = uniqueId('editor_')
     state.entities.set(this.id, this)
     this.update(props)
@@ -30,7 +30,7 @@ class Editor {
   }
   set content (v) { return this._content = v }
 
-  @action update (props={}) {
+  @action update (props = {}) {
     if (is.string(props.tabId)) this.tabId = props.tabId
     if (is.string(props.filePath)) this.filePath = props.filePath
     if (is.pojo(props.gitBlame)) this.gitBlame = props.gitBlame

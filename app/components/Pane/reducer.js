@@ -81,7 +81,7 @@ const actionHandlers = handleActions({
   },
 
   [PANE_CLOSE]: (state, { paneId }) => {
-    let pane = state.panes.get(paneId)
+    const pane = state.panes.get(paneId)
     pane.destroy()
   },
 
@@ -92,12 +92,10 @@ const actionHandlers = handleActions({
 }, entities)
 
 
-const transform = createTransformer(entities => {
-  return {
-    panes: entities.panes.toJS(),
-    rootPaneId: entities.rootPaneId,
-  }
-})
+const transform = createTransformer(entities => ({
+  panes: entities.panes.toJS(),
+  rootPaneId: entities.rootPaneId,
+}))
 
 export default function (state, action) {
   return transform(entities)

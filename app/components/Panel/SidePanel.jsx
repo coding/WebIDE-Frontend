@@ -1,4 +1,3 @@
-/* @flow weak */
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {
@@ -17,17 +16,15 @@ class SidePanelContainer extends Component {
     const { side, dispatch } = this.props
 
     dispatch(registerSidePanelView({
-      side: side,
-      labels: children.map((sidePanelView, idx) => {
-        return {
-          ...sidePanelView.props.label,
-          viewId: `${side}_${idx}`,
-        }
-      }),
-      activeViewId: `${side}_` + children.reduce((activeViewIndex, sidePanelView, idx) => {
+      side,
+      labels: children.map((sidePanelView, idx) => ({
+        ...sidePanelView.props.label,
+        viewId: `${side}_${idx}`,
+      })),
+      activeViewId: `${side}_${children.reduce((activeViewIndex, sidePanelView, idx) => {
         if (sidePanelView.props.active) activeViewIndex = idx
         return activeViewIndex
-      }, 0)
+      }, 0)}`
     }))
   }
 
@@ -45,9 +42,7 @@ class SidePanelContainer extends Component {
   }
 }
 
-const SidePanelViewContent = ({ isActive, view }) => {
-  return <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>{view}</div>
-}
+const SidePanelViewContent = ({ isActive, view }) => <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>{view}</div>
 
 class SidePanelView extends Component {
   constructor (props) {

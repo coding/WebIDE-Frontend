@@ -1,4 +1,3 @@
-/* @flow weak */
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import {
@@ -6,7 +5,7 @@ import {
   NOTIFICATION_REMOVE
 } from './actions'
 
-let _state = {notifications: []}
+const _state = { notifications: [] }
 
 export default handleActions({
   [NOTIFICATION_ADD]: (state, action) => {

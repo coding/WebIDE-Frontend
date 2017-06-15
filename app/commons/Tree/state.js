@@ -2,39 +2,38 @@ import _ from 'lodash'
 import { observable, computed, action, autorun } from 'mobx'
 
 function TreeNodeScope () {
+  const SHADOW_ROOT_NODE = 'SHADOW_ROOT_NODE'
+  const state = observable({
+    entities: observable.map({}),
+    get shadowRoot () { return this.entities.get(SHADOW_ROOT_NODE) },
+  })
 
-const SHADOW_ROOT_NODE = 'SHADOW_ROOT_NODE'
-const state = observable({
-  entities: observable.map({}),
-  get shadowRoot () { return this.entities.get(SHADOW_ROOT_NODE) },
-})
+  class TreeNode {
+    constructor (props) {
+      this.id = _.isUndefined(props.id) ? _.uniqueId('tree_node_') : props.id
 
-class TreeNode {
-  constructor (props) {
-    this.id = _.isUndefined(props.id) ? _.uniqueId('tree_node_') : props.id
+      if (_.isBoolean(props.isDir)) this._isDir = props.isDir
+      if (_.isString(props.name)) this._name = props.name
+      if (_.isBoolean(props.isFolded)) this.isFolded = props.isFolded
+      if (_.isBoolean(props.isFocused)) this.isFocused = props.isFocused
+      if (_.isBoolean(props.isHighlighted)) this.isHighlighted = props.isHighlighted
+      if (_.isNumber(props.index)) this.index = props.index
 
-    if (_.isBoolean(props.isDir)) this._isDir = props.isDir
-    if (_.isString(props.name)) this._name = props.name
-    if (_.isBoolean(props.isFolded)) this.isFolded = props.isFolded
-    if (_.isBoolean(props.isFocused)) this.isFocused = props.isFocused
-    if (_.isBoolean(props.isHighlighted)) this.isHighlighted = props.isHighlighted
-    if (_.isNumber(props.index)) this.index = props.index
+      if (props.parent) {
+        this.parent = props.parent
+      } else if (props.parentId) {
+        this.parentId = props.parentId
+      }
 
-    if (props.parent) {
-      this.parent = props.parent
-    } else if (props.parentId) {
-      this.parentId = props.parentId
+      state.entities.set(this.id, this)
     }
-
-    state.entities.set(this.id, this)
-  }
 
   @observable _isDir = false
   @observable _name = ''
   @computed get name () { return this._name }
-  set name (v) { return this._name = v }
+    set name (v) { return this._name = v }
   @computed get isDir () { return this._isDir }
-  set isDir (v) { return this._isDir = v }
+    set isDir (v) { return this._isDir = v }
 
   @observable isFolded = true
   @observable isFocused = false
@@ -51,10 +50,10 @@ class TreeNode {
     if (typeof this.parentId === 'string') parent = state.entities.get(this.parentId)
     // don't allow recurse to self
     if (this.id === SHADOW_ROOT_NODE) return null
-    if (parent === this) { throw Error(`Node ${this.id} is parent of itself...` ) }
-    return parent ? parent : state.shadowRoot
+    if (parent === this) { throw Error(`Node ${this.id} is parent of itself...`) }
+    return parent || state.shadowRoot
   }
-  set parent (parent) { this.parentId = parent.id }
+    set parent (parent) { this.parentId = parent.id }
 
   @computed get depth () {
     if (this.isShadowRoot) return -1
@@ -102,12 +101,10 @@ class TreeNode {
       if (!prevNode.isDir || prevNode.isFolded) return prevNode
       if (prevNode.lastChild) {
         return prevNode.lastVisibleDescendant
-      } else {
-        return prevNode
       }
-    } else {
-      return this.parent
+      return prevNode
     }
+    return this.parent
   }
 
   @computed get getNext () {
@@ -121,7 +118,6 @@ class TreeNode {
     if (nextNode) return nextNode
     if (this.parent.isShadowRoot) return this
     return this.parent.next
-
   }
 
   @action forEachDescendant (handler) {
@@ -170,24 +166,23 @@ class TreeNode {
   }
 }
 
-const shadowRootNode = new TreeNode({
-  id: SHADOW_ROOT_NODE,
-  isDir: true,
-  isFolded: false,
-})
-state.entities.set(SHADOW_ROOT_NODE, shadowRootNode)
+  const shadowRootNode = new TreeNode({
+    id: SHADOW_ROOT_NODE,
+    isDir: true,
+    isFolded: false,
+  })
+  state.entities.set(SHADOW_ROOT_NODE, shadowRootNode)
 
-autorun(() => {
-  state.entities.forEach(parentNode => {
-    if (!parentNode) return
-    parentNode.children.forEach((node, i) => {
-      if (node.index !== i) node.index = i
+  autorun(() => {
+    state.entities.forEach((parentNode) => {
+      if (!parentNode) return
+      parentNode.children.forEach((node, i) => {
+        if (node.index !== i) node.index = i
+      })
     })
   })
-})
 
-return { state, TreeNode }
-
+  return { state, TreeNode }
 }
 
 export default TreeNodeScope

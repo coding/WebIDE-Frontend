@@ -31,7 +31,7 @@ async function initialize () {
       api.isWorkspaceExist()
     )
     await step('[2] Setting up workspace...', () =>
-      api.setupWorkspace().then(res => {
+      api.setupWorkspace().then((res) => {
         extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
         return true
@@ -51,7 +51,7 @@ async function initialize () {
         }
         if (parsed.envId) options.envId = parsed.envId
         if (parsed.isTry) options.try = true
-        return api.createWorkspace(options).then(res => {
+        return api.createWorkspace(options).then((res) => {
           extendObservable(config, res)
           if (config.project && config.project.name) { config.projectName = config.project.name }
           if (history.pushState) {

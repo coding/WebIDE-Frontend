@@ -13,13 +13,13 @@ handleAction(OPEN_CONTEXT_MENU, ({ isActive, pos, contextNode, items }) => {
 
 function openContextMenuFactory (items) {
   if (!isFunction(items) && !isArray(items)) {
-    throw Error(`Invalid arg passed to 'openContextMenuFactory', require arg of Function or Array type`)
+    throw Error('Invalid arg passed to \'openContextMenuFactory\', require arg of Function or Array type')
   }
   const getContextMenuItems = isFunction(items) ? items : (() => items)
   return (e, context) => openContextMenu(e, context, getContextMenuItems(context))
 }
 
-const openContextMenu = createAction(OPEN_CONTEXT_MENU, (e, context, items=[]) => {
+const openContextMenu = createAction(OPEN_CONTEXT_MENU, (e, context, items = []) => {
   e.stopPropagation()
   e.preventDefault()
   return {

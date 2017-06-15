@@ -5,7 +5,7 @@ const defaultConfig = {
   delayMax: 10000,
 }
 
-export default function getBackoff (config={}) {
+export default function getBackoff (config = {}) {
   config = { ...defaultConfig, ...config }
   const backoff = new Backoff({
     min: config.delayMin,

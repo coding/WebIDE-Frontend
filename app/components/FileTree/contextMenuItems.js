@@ -1,7 +1,6 @@
-/* @flow weak */
 import { gitBlameNode } from './actions'
-var dividItem = { name: '-' }
-var items = [
+const dividItem = { name: '-' }
+const items = [
   {
     name: 'New File',
     icon: '',

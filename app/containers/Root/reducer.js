@@ -1,4 +1,3 @@
-/* @flow weak */
 import { handleActions } from 'redux-actions'
 import { qs } from 'utils'
 import config from '../../config'
@@ -10,7 +9,7 @@ import {
 
 export default handleActions({
   [INIT_STATE]: (state, action) => {
-    const {spaceKey} = qs.parse(window.location.hash.slice(1))
+    const { spaceKey } = qs.parse(window.location.hash.slice(1))
     if (spaceKey) config.spaceKey = spaceKey
     return ({
       ...state,

@@ -1,4 +1,3 @@
-/* @flow weak */
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import { activateExtenstion } from '../Package/actions'

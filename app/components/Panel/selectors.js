@@ -6,8 +6,8 @@ export const getParent = (state, panel) => state.panels[getPanel(state, panel).p
 
 export const getSibling = (state, panel, offset) => {
   panel = getPanel(state, panel)
-  let parent = getParent(state, panel)
-  let siblingId = parent.views[parent.views.indexOf(panel.id) + offset]
+  const parent = getParent(state, panel)
+  const siblingId = parent.views[parent.views.indexOf(panel.id) + offset]
   return state.panels[siblingId]
 }
 

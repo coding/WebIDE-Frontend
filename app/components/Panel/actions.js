@@ -1,4 +1,3 @@
-/* @flow weak */
 import { createAction } from 'redux-actions'
 import { emitter, E } from 'utils'
 
@@ -25,14 +24,14 @@ export const registerSidePanelView = createAction(PANEL_REGISTER_VIEW)
 
 export const PANEL_ACTIVATE_VIEW = 'PANEL_ACTIVATE_VIEW'
 const _activateSidePanelView = createAction(PANEL_ACTIVATE_VIEW)
-export const activateSidePanelView = (payload) => (dispatch) => {
+export const activateSidePanelView = payload => (dispatch) => {
   emitter.emit(E.PANEL_RESIZED)
   dispatch(_activateSidePanelView(payload))
 }
 
 export const PANEL_TOGGLE_VIEW = 'PANEL_TOGGLE_VIEW'
 const _toggleSidePanelView = createAction(PANEL_TOGGLE_VIEW)
-export const toggleSidePanelView = (payload) => (dispatch) => {
+export const toggleSidePanelView = payload => (dispatch) => {
   emitter.emit(E.PANEL_RESIZED)
   dispatch(_toggleSidePanelView(payload))
 }

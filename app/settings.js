@@ -8,7 +8,7 @@ export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'mate
 const changeTheme = (nextThemeId, force) => {
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.includes(nextThemeId)) {
-    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`).then(module => {
+    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`).then((module) => {
       const currentTheme = window.themes['@current']
       if (currentTheme && currentTheme.unuse) currentTheme.unuse()
       window.themes['@current'] = window.themes[nextThemeId] = module
@@ -76,7 +76,7 @@ class DomainSetting {
 
   @action.bound
   onConfirm () {
-    this.items.forEach(item => {
+    this.items.forEach((item) => {
       if (item.tempValue !== undefined) {
         item.value = item.tempValue
         item.tempValue = undefined
@@ -86,7 +86,7 @@ class DomainSetting {
 
   @action.bound
   onCancel () {
-    this.items.forEach(item => {
+    this.items.forEach((item) => {
       if (item.tempValue !== undefined) {
         item.tempValue = undefined
       }
@@ -171,9 +171,9 @@ const settings = observable({
       name: 'Charset',
       value: 'utf8',
       options: [
-        {name: 'Unicode (UTF-8)', value: 'utf8'},
-        {name: '中文简体 (GB18030)', value: 'gb18030'},
-        {name: '中文繁体 (Big5-HKSCS)', value: 'big5'},
+        { name: 'Unicode (UTF-8)', value: 'utf8' },
+        { name: '中文简体 (GB18030)', value: 'gb18030' },
+        { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
       ]
     },
     soft_tab: {
@@ -183,7 +183,7 @@ const settings = observable({
     tab_size: {
       name: 'Tab Size',
       value: 4,
-      options: [1,2,3,4,5,6,7,8],
+      options: [1, 2, 3, 4, 5, 6, 7, 8],
     },
     auto_save: {
       name: 'Auto Save',

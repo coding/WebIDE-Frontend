@@ -1,4 +1,3 @@
-/* @flow weak */
 /*
 var AppDispatcher, EventEmitter, GridActions, StatusBarActions, Store, TabActions, TermConstants, _, _state, clearStatusBar, dnd, focusTabDeb, getActiveSection, getAnotherInSection, getNthTab, getSectionTabsByTab, getTabsBySection, nextTab, prevTab, removeSection, showCopyInfo, terms;
 
@@ -328,7 +327,7 @@ import {
   TERM_INPUT_PATH
 } from './actions'
 
-var _state = {
+const _state = {
   activeTab: null,
   activeSection: null,
   tabs: [],

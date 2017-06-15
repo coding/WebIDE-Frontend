@@ -10,15 +10,13 @@ const store = {
   SettingState,
 }
 
-const transform = createTransformer(store => {
-  return {
-    PaneState: toJS(store.PaneState),
-    EditorTabState: toJS(store.EditorTabState),
-    FileTreeState: toJS(store.FileTreeState)
-  }
-})
-autorun(_ => {
-  let transformedStore = transform(store)
+const transform = createTransformer(store => ({
+  PaneState: toJS(store.PaneState),
+  EditorTabState: toJS(store.EditorTabState),
+  FileTreeState: toJS(store.FileTreeState)
+}))
+autorun((_) => {
+  const transformedStore = transform(store)
   console.log('[mobx store] ', transformedStore)
 })
 

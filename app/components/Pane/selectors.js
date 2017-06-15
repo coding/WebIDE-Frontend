@@ -8,8 +8,8 @@ export const getParent = (state, pane) => state.panes[getPane(state, pane).paren
 const getLeafChild = (state, pane, firstOrLast = 'first') => {
   pane = getPane(state, pane)
   while (pane.views.length) {
-    let childPaneId = _[firstOrLast](pane.views)
-    if (pane.id === childPaneId) {throw 'Weird we got a pane that has itself as child...'}
+    const childPaneId = _[firstOrLast](pane.views)
+    if (pane.id === childPaneId) { throw 'Weird we got a pane that has itself as child...' }
     pane = state.panes[childPaneId]
     if (!pane) break
   }
@@ -29,7 +29,7 @@ const getSibling = (state, pane, offset, traverse = false, lookAround = false) =
     siblingId = parent.views[parent.views.indexOf(pane.id) + offset]
     if (!siblingId && lookAround) {
       siblingId = parent.views[parent.views.indexOf(pane.id) - offset]
-      if (siblingId) {lookAroundWorks = true; console.log(siblingId)}
+      if (siblingId) { lookAroundWorks = true; console.log(siblingId) }
     }
     pane = parent
   }
@@ -52,12 +52,12 @@ const makePosPaneObj = (panes, pane, parent, accumulator) => {
   }
   if (!parent.children) parent.children = []
 
-  const paneWithPos = {...pane}
+  const paneWithPos = { ...pane }
 
   const dir = parent.flexDirection
-  const {top: pTop, left: pLeft, right: pRight, bottom: pBottom} = parent.pos
+  const { top: pTop, left: pLeft, right: pRight, bottom: pBottom } = parent.pos
   const prevPaneWithPos = parent.children[parent.children.length - 1]
-  const {bottom: prevBottom, right: prevRight} = prevPaneWithPos ? prevPaneWithPos.pos : {bottom: pTop, right: pLeft}
+  const { bottom: prevBottom, right: prevRight } = prevPaneWithPos ? prevPaneWithPos.pos : { bottom: pTop, right: pLeft }
 
   paneWithPos.pos = {
     top: dir === 'row' ? pTop : prevBottom,
@@ -70,9 +70,7 @@ const makePosPaneObj = (panes, pane, parent, accumulator) => {
   parent.children.push(paneWithPos)
 
   if (pane.views.length) {
-    pane.views.forEach((paneId) => {
-      return makePosPaneObj(panes, panes[paneId], paneWithPos, accumulator)
-    })
+    pane.views.forEach(paneId => makePosPaneObj(panes, panes[paneId], paneWithPos, accumulator))
   } else {
     accumulator.push(paneWithPos)
   }
@@ -82,17 +80,15 @@ const makePosPaneObj = (panes, pane, parent, accumulator) => {
 
 export const getPanesWithPosMap = (state) => {
   const rootPane = state.panes[state.rootPaneId]
-  const rootPaneWithPos = {...rootPane}
+  const rootPaneWithPos = { ...rootPane }
   rootPaneWithPos.pos = {
     left: 0,
     top: 0,
     right: 100,
     bottom: 100
   }
-  let panesMap = {...state.panes}
-  let accumulator = []
-  rootPaneWithPos.views.reduce((accumulator, paneId) => {
-    return makePosPaneObj(panesMap, panesMap[paneId], rootPaneWithPos, accumulator)
-  }, accumulator)
+  const panesMap = { ...state.panes }
+  const accumulator = []
+  rootPaneWithPos.views.reduce((accumulator, paneId) => makePosPaneObj(panesMap, panesMap[paneId], rootPaneWithPos, accumulator), accumulator)
   return accumulator
 }

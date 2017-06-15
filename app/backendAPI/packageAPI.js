@@ -1,4 +1,3 @@
-/* @flow weak */
 import { request } from '../utils'
 import axios from 'axios'
 import config from '../config'
@@ -14,9 +13,8 @@ export const fetchPackageList = () => {
   }
   if (config.isPlatform) {
     return request.get(`/users/${config.globalKey}/packages`)
-  } else {
-    return request.get(`/packages`)
   }
+  return request.get('/packages')
 }
 
 export const fetchPackageInfo = (pkgName, pkgVersion) =>

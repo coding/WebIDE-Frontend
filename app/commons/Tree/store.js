@@ -3,7 +3,7 @@ import api from 'backendAPI'
 
 const selectNode = registerAction('FILETREE_SELECT_NODE',
   (nodeOrOffset, multiSelect) => ({ nodeOrOffset, multiSelect }),
-  ({ nodeOrOffset, multiSelect=false }) => {
+  ({ nodeOrOffset, multiSelect = false }) => {
     let offset, node
     if (typeof nodeOrOffset === 'number') {
       offset = nodeOrOffset
@@ -28,7 +28,7 @@ const selectNode = registerAction('FILETREE_SELECT_NODE',
 
 const openNode = registerAction('open_node',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
-  ({ node, shouldBeFolded=null, deep=false }) => {
+  ({ node, shouldBeFolded = null, deep = false }) => {
 
   }
 )

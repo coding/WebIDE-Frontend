@@ -1,4 +1,3 @@
-/* @flow weak */
 import { handleActions } from 'redux-actions'
 import {
   MODAL_SHOW,
@@ -15,8 +14,8 @@ const baseModal = {
 }
 
 const ModalReducer = handleActions({
-  [MODAL_SHOW]: (state, {payload: modalConfig, meta}) => {
-    let newModal = {
+  [MODAL_SHOW]: (state, { payload: modalConfig, meta }) => {
+    const newModal = {
       ...baseModal,
       isActive: true,
       ...modalConfig,
@@ -28,8 +27,8 @@ const ModalReducer = handleActions({
     }
   },
 
-  [MODAL_ADD]: (state, {payload: modalConfig, meta}) => {
-    let newModal = {
+  [MODAL_ADD]: (state, { payload: modalConfig, meta }) => {
+    const newModal = {
       ...baseModal,
       isActive: true,
       ...modalConfig,
@@ -41,20 +40,20 @@ const ModalReducer = handleActions({
     }
   },
 
-  [MODAL_DISMISS]: (state, action) => {
-    return {
-      ...state,
-      stack: state.stack.slice(0, -1)
-    }
-  },
+  [MODAL_DISMISS]: (state, action) => ({
+    ...state,
+    stack: state.stack.slice(0, -1)
+  }),
 
   [MODAL_UPDATE]: (state, action) => {
     let lastModal = state.stack.pop()
-    if (lastModal) lastModal = {
-      ...lastModal,
-      content: {
-        ...lastModal.content,
-        ...action.payload.content
+    if (lastModal) {
+      lastModal = {
+        ...lastModal,
+        content: {
+          ...lastModal.content,
+          ...action.payload.content
+        }
       }
     }
     return {
@@ -63,6 +62,6 @@ const ModalReducer = handleActions({
     }
   }
 
-}, {stack: []})
+}, { stack: [] })
 
 export default ModalReducer

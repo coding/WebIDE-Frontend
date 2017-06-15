@@ -1,17 +1,15 @@
-const promiseActionMixin = (actionCreator) => {
-  return function decoratedActionCreator () {
-    const action = actionCreator.apply(null, arguments)
+const promiseActionMixin = actionCreator => function decoratedActionCreator () {
+  const action = actionCreator(...arguments)
 
-    let resolve, reject
-    let promise = new Promise((rs, rj) => { resolve = rs; reject = rj })
-    let meta = { promise, resolve, reject }
+  let resolve, reject
+  const promise = new Promise((rs, rj) => { resolve = rs; reject = rj })
+  const meta = { promise, resolve, reject }
 
-    return {
-      ...action,
-      meta: action.meta ? {...action.meta, ...meta} : meta,
-      then: promise.then.bind(promise),
-      catch: promise.catch.bind(promise)
-    }
+  return {
+    ...action,
+    meta: action.meta ? { ...action.meta, ...meta } : meta,
+    then: promise.then.bind(promise),
+    catch: promise.catch.bind(promise)
   }
 }
 

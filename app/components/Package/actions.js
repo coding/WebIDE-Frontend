@@ -3,7 +3,7 @@ import api from '../../backendAPI'
 export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 export const updatePackageList = createAction(PACKAGE_UPDATE_LIST, list => list)
 
-export const fetchPackageList = () => dispatch => {
+export const fetchPackageList = () => (dispatch) => {
   api.fetchPackageList().then(list => dispatch(updatePackageList(list)))
 }
 
@@ -45,14 +45,14 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
 export const fetchPackage = (pkgId, pkgVersion, others) => (dispatch) => {
   const pkgInfo = api.fetchPackageInfo(pkgId, pkgVersion).then(pkg => pkg.codingIdePackage)
   const pkgScript = api.fetchPackageScript(pkgId, pkgVersion)
-    .then(script => {
+    .then((script) => {
       localStorage.setItem(pkgId, script)
       return pkgId
     })
 
   if (window.extensions[pkgId]) dispatch(togglePackage(pkgId, false))
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
-    console.log('pkg', pkg);
+    console.log('pkg', pkg)
     dispatch(updateLocalPackage({
       ...pkg,
       ...others,
@@ -66,10 +66,10 @@ export const fetchPackage = (pkgId, pkgVersion, others) => (dispatch) => {
 export const PACKAGE_ACTIVATE_EXTENSION = 'PACKAGE_ACTIVATE_EXTENSION'
 export const activateExtenstion = createAction(PACKAGE_ACTIVATE_EXTENSION)
 
-export const preloadRequirePackages = () => dispatch => {
+export const preloadRequirePackages = () => (dispatch) => {
   api.fetchPackageList()
     .then(list => list.filter(pkg => pkg.requirement === 'Required'))
-    .then(list => list.forEach(pkg => {
+    .then(list => list.forEach((pkg) => {
       dispatch(fetchPackage(pkg.name, pkg.version, pkg))
     }))
 }

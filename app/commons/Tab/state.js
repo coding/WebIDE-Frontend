@@ -4,30 +4,29 @@ import { observable, computed, action, autorun } from 'mobx'
 import { mapEntityFactory } from 'utils/decorators'
 
 function TabScope () {
+  const state = observable({
+    tabs: observable.map({}),
+    tabGroups: observable.map({}),
+    activeTabGroupId: null,
+    get activeTabGroup () {
+      const activeTabGroup = this.tabGroups.get(this.activeTabGroupId)
+      if (!activeTabGroup) return this.tabGroups.values()[0]
+      return activeTabGroup
+    },
+    get activeTab () {
+      const activeTabGroup = this.activeTabGroup
+      if (!activeTabGroup) return this.tabs.values()[0]
+      return activeTabGroup.activeTab
+    }
+  })
 
-const state = observable({
-  tabs: observable.map({}),
-  tabGroups: observable.map({}),
-  activeTabGroupId: null,
-  get activeTabGroup () {
-    let activeTabGroup = this.tabGroups.get(this.activeTabGroupId)
-    if (!activeTabGroup) return this.tabGroups.values()[0]
-    return activeTabGroup
-  },
-  get activeTab () {
-    const activeTabGroup = this.activeTabGroup
-    if (!activeTabGroup) return this.tabs.values()[0]
-    return activeTabGroup.activeTab
-  }
-})
+  const mapEntity = mapEntityFactory(state)
 
-const mapEntity = mapEntityFactory(state)
-
-class Tab {
+  class Tab {
 
   @observable _title = 'untitled'
   @computed get title () { return this._title }
-  set title (v) { return this._title = v }
+    set title (v) { return this._title = v }
 
   @observable index = 0
   @observable tabGroupId = ''
@@ -53,11 +52,11 @@ class Tab {
     return this.siblings[this.index - 1]
   }
 
-  getAdjacent (checkNextFirst) {
-    let adjacent = checkNextFirst ?
+    getAdjacent (checkNextFirst) {
+      const adjacent = checkNextFirst ?
       (this.next || this.prev) : (this.prev || this.next)
-    return adjacent
-  }
+      return adjacent
+    }
 
   @action activate () {
     this.tabGroup.activeTabId = this.id
@@ -70,18 +69,18 @@ class Tab {
   }
 }
 
-autorun(() => {
-  state.tabGroups.forEach(tabGroup => {
+  autorun(() => {
+    state.tabGroups.forEach((tabGroup) => {
     // correct tab index
-    tabGroup.tabs.forEach((tab, tabIndex) => {
-      if (tab.index !== tabIndex) tab.index = tabIndex
+      tabGroup.tabs.forEach((tab, tabIndex) => {
+        if (tab.index !== tabIndex) tab.index = tabIndex
+      })
     })
   })
-})
 
 
-class TabGroup {
-  static Tab = Tab;
+  class TabGroup {
+    static Tab = Tab;
 
   @observable activeTabId = null
 
@@ -92,7 +91,7 @@ class TabGroup {
   }
 
   @computed get activeTab () {
-    let activeTab = state.tabs.get(this.activeTabId)
+    const activeTab = state.tabs.get(this.activeTabId)
     if (activeTab && activeTab.tabGroupId === this.id) {
       return activeTab
     }
@@ -128,7 +127,7 @@ class TabGroup {
   @mapEntity('tabs')
   @action removeTab (tab) {
     if (tab.isActive) {
-      let adjacentTab = tab.getAdjacent()
+      const adjacentTab = tab.getAdjacent()
       if (adjacentTab) adjacentTab.activate()
     }
     tab.tabGroupId = null
@@ -138,7 +137,7 @@ class TabGroup {
   @action merge (tabGroup) {
     if (!tabGroup) return
     const baseIndex = this.tabs.length
-    tabGroup.tabs.forEach(tab => {
+    tabGroup.tabs.forEach((tab) => {
       tab.tabGroupId = this.id
       tab.index += baseIndex
     })
@@ -155,8 +154,7 @@ class TabGroup {
   }
 }
 
-return { Tab, TabGroup, state }
-
+  return { Tab, TabGroup, state }
 }
 
 export default TabScope

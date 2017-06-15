@@ -5,10 +5,10 @@
  * @returns {function} step - step function, see below
  */
 function stepFactory ({
-  descriptionHandler=console.log,
-  successHandler=console.log,
-  errorHandler=console.error,
-}={}) {
+  descriptionHandler = console.log,
+  successHandler = console.log,
+  errorHandler = console.error,
+} = {}) {
   /**
    * step function has the syntax of
    * ```
@@ -32,17 +32,19 @@ function stepFactory ({
    */
   function step (description, fn) {
     let successCallback, errorCallback
-    if (!step.allSuccess) return ({
-      success () { return this },
-      error () { return this }
-    })
+    if (!step.allSuccess) {
+      return ({
+        success () { return this },
+        error () { return this }
+      })
+    }
     descriptionHandler(description)
-    let promise = Promise.resolve(fn())
-    .then(isSuccess => {
+    const promise = Promise.resolve(fn())
+    .then((isSuccess) => {
       if (!isSuccess) throw Error('error')
       successCallback && successHandler(successCallback())
     })
-    .catch(err => {
+    .catch((err) => {
       step.allSuccess = false
       errorCallback && errorHandler(errorCallback())
     })

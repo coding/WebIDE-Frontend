@@ -78,7 +78,7 @@ class TtySocketClient {
     if (config.isPlatform) {
       const wsUrl = config.wsURL
       const firstSlashIdx = wsUrl.indexOf('/', 8)
-      let [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
+      const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
       this.socket = io.connect(host, {
         forceNew: true,
         reconnection: false,
@@ -90,7 +90,7 @@ class TtySocketClient {
         transports: ['websocket']
       })
     } else {
-      this.socket = io.connect(config.baseURL, { 'resource': 'coding-ide-tty1' })
+      this.socket = io.connect(config.baseURL, { resource: 'coding-ide-tty1' })
     }
 
     this.backoff = getBackoff({
@@ -118,7 +118,7 @@ class TtySocketClient {
 
       // below is the actual working part of `connect()` method,
       // all logic above is just for ensuring `fsSocketConnected == true`
-      this.socket.io.connect(err => {
+      this.socket.io.connect((err) => {
         if (err) {
           runInAction(() => config.ttySocketConnected = false)
           return this.reconnect()

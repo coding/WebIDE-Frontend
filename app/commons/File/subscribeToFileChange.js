@@ -1,4 +1,3 @@
-/* @flow weak */
 import config from 'config'
 import api from 'backendAPI'
 import { autorun } from 'mobx'
@@ -28,8 +27,8 @@ function handleGitFiles (node) {
       }))
       api.gitStatus().then(({ files, clean }) => {
         const gitStatus = mobxStore.FileTreeState.gitStatus
-        const result = gitStatus.map(node => {
-          const file = files.find(file => ('/' + file.name) === node.path)
+        const result = gitStatus.map((node) => {
+          const file = files.find(file => (`/${file.name}`) === node.path)
           return {
             ...node,
             gitStatus: file ? file.status : 'CLEAN',
@@ -49,7 +48,7 @@ export default function subscribeToFileChange () {
     if (!config.fsSocketConnected) return
     const client = FsSocketClient.$$singleton.stompClient
     client.subscribe('CONNECTED', (frame) => {
-      console.log('FS CONNECTED', frame);
+      console.log('FS CONNECTED', frame)
     })
 
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {

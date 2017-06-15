@@ -1,28 +1,28 @@
-/* @flow weak */
 import { createAction } from 'redux-actions'
 
 export const NOTIFICATION_ADD = 'NOTIFICATION_ADD'
 export function addNotification (payload) {
-  return dispatch => {
-    var notification, defaultNotification
+  return (dispatch) => {
+    let notification, defaultNotification
 
     defaultNotification = {
       message: '',
       action: 'Dismiss',
       key: Date.now(),
       dismissAfter: 6000,
-      onClick: () => dispatch({type: NOTIFICATION_REMOVE, notification})
+      onClick: () => dispatch({ type: NOTIFICATION_REMOVE, notification })
     }
 
-    let { notifyType } = payload
+    const { notifyType } = payload
     if (notifyType === NOTIFY_TYPE.ERROR) {
-      defaultNotification = {...defaultNotification, ...{ 
-        barStyle: { backgroundColor:'red' },
-        actionStyle: { color:'white' }
-      }}
+      defaultNotification = { ...defaultNotification,
+        ...{
+          barStyle: { backgroundColor: 'red' },
+          actionStyle: { color: 'white' }
+        } }
     }
 
-    payload = {...defaultNotification, ...payload}
+    payload = { ...defaultNotification, ...payload }
 
     dispatch(createAction(NOTIFICATION_ADD)(payload))
   }

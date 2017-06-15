@@ -1,9 +1,7 @@
 import { handleActions } from 'redux-actions'
 
-const wrapHandler = (handler) => {
-  return function (state, action) {
-    return handler(state, action.payload, action)
-  }
+const wrapHandler = handler => function (state, action) {
+  return handler(state, action.payload, action)
 }
 
 export default function newHandleActions (handlers, defaultState) {
