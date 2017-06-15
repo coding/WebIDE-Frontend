@@ -1,18 +1,15 @@
 const COLORS = [
-  // credit: https://github.com/mrmrs/colors
-  '#2E8AE6', // blue
-  '#FFDC00', // yellow
-  '#FF4136', // red
-  '#FF851B', // orange
-  '#3D9970', // olive
-  '#B10DC9', // purple
-  '#2ECC40', // green
-  '#01FF70', // lime
-  '#001F3F', // navy
-  '#F012BE', // fuchsia
-  '#7FDBFF', // aqua
-  '#39CCCC', // teal
-  '#85144B', // maroon
+  // the git tower palettes [mod]
+  '#58c6f3', // blue
+  '#6de6e9', // aqua
+  '#ace09e', // grean
+  '#59b38a', // olive
+  '#f7d56b', // yellow
+  '#f5a95f', // orange
+  '#fe7874', // red
+  '#967acc', // purple
+  '#ea75f3', // violet
+  '#d3d7ed', // light purplish gray
 ]
 
 export default class RandColors {
