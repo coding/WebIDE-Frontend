@@ -62,10 +62,6 @@ const PanelContent = ({ panel }) => {
             <GitGraph />
           </SidePanelView>
 
-          <SidePanelView label={labels.gitHistory} >
-            <GitHistoryView />
-          </SidePanelView>
-
         </SidePanelContainer>
       )
     default:
