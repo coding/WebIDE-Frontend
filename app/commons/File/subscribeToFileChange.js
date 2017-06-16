@@ -47,9 +47,6 @@ export default function subscribeToFileChange () {
   autorun(() => {
     if (!config.fsSocketConnected) return
     const client = FsSocketClient.$$singleton.stompClient
-    client.subscribe('CONNECTED', (frame) => {
-      console.log('FS CONNECTED', frame)
-    })
 
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
