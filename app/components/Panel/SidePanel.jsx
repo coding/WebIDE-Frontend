@@ -1,21 +1,22 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
+import { inject } from 'mobx-react'
 import {
   registerSidePanelView
 } from './actions'
+import PanelState from './state'
 
-@connect((state, { side }) => {
-  let { activeViewId } = state.PanelState.sidePanelViews[side]
+@inject((__, { side }) => {
+  let { activeViewId } = PanelState.sidePanelViews[side]
   if (!activeViewId) activeViewId = ''
   return { activeViewId }
 })
 class SidePanelContainer extends Component {
   constructor (props) {
     super(props)
-    const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children]
-    const { side, dispatch } = this.props
+    const children = this.getChildren()
+    const { side } = this.props
 
-    dispatch(registerSidePanelView({
+    registerSidePanelView({
       side,
       labels: children.map((sidePanelView, idx) => ({
         ...sidePanelView.props.label,
@@ -25,11 +26,16 @@ class SidePanelContainer extends Component {
         if (sidePanelView.props.active) activeViewIndex = idx
         return activeViewIndex
       }, 0)}`
-    }))
+    })
+  }
+
+  getChildren () {
+    if (!this.props.children) return []
+    return Array.isArray(this.props.children) ? this.props.children : [this.props.children]
   }
 
   render () {
-    const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children]
+    const children = this.getChildren()
     const activeViewIndex = Number(this.props.activeViewId.split('_')[1])
     return (<div style={{ height: '100%' }}>
       {children.map((child, idx) =>

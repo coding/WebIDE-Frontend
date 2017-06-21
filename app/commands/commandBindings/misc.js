@@ -24,7 +24,7 @@ export default {
     $d(Modal.dismissModal())
   },
   'view:toggle_bars': (c) => {
-    $d(Panel.togglePanelLayout({ refs: ['BAR_LEFT', 'BAR_RIGHT', 'BAR_BOTTOM'] }))
+    $d(Panel.togglePanelLayout(['BAR_LEFT', 'BAR_RIGHT', 'BAR_BOTTOM']))
   },
   // 'view:close_tab':
   // 'view:toggle_statusbar':

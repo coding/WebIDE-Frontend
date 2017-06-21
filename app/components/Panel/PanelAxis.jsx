@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
 import Panel from './Panel'
-// import * as PanelActions from './actions'
 
 class PanelAxis extends Component {
   static propTypes = {
@@ -11,32 +10,15 @@ class PanelAxis extends Component {
     style: PropTypes.object,
   };
 
-  static childContextTypes = {
-    onResizing: PropTypes.func
-  };
-
-  constructor (props) {
-    super(props)
-    this.resizingListeners = []
-  }
-
-  getChildContext () {
-    return { onResizing: this.onResizing.bind(this) }
-  }
-
-  onResizing (listener) {
-    this.resizingListeners.push(listener)
-  }
-
   render () {
     const { panel, className, style } = this.props
     let subviews
     if (panel.views.length) {
-      subviews = panel.views.map(panelId =>
-        <Panel key={panelId} panelId={panelId} parentFlexDirection={panel.direction} />
+      subviews = panel.views.map(childPanel =>
+        <Panel key={childPanel.id} panel={childPanel} parentFlexDirection={panel.direction} />
       )
     } else {
-      subviews = <Panel panelId={panel.id} parentFlexDirection={panel.direction} />
+      subviews = <Panel panel={panel} parentFlexDirection={panel.direction} />
     }
 
     return (

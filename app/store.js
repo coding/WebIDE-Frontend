@@ -3,7 +3,6 @@ import { composeReducers } from './utils'
 import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
-import PanelReducer from './components/Panel/reducer'
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 import ModalsReducer from './components/Modal/reducer'
 import NotificationReducer from './components/Notification/reducer'
@@ -16,7 +15,6 @@ import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
   PackageState: PackageReducer,
-  PanelState: PanelReducer,
   PaneState: PaneReducer,
   ModalState: ModalsReducer,
   GitState: GitReducer,

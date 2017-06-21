@@ -1,14 +1,12 @@
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
 import MenuBar from '../MenuBar'
 import Breadcrumbs from '../Breadcrumbs'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
-import ExtensionPanelContent from './ExtensionPanelContent'
 import TerminalContainer from '../Terminal'
-import SideBar, { SideBar2 } from './SideBar'
+import SideBar from './SideBar'
 import { SidePanelContainer, SidePanelView } from './SidePanel'
-import GitHistoryView from '../Git/GitHistoryView'
 import GitGraph from 'components/Git/GitGraph'
 
 
@@ -28,16 +26,15 @@ const PanelContent = ({ panel }) => {
     default:
   }
 
-  switch (panel.ref) {
+  switch (panel.id) {
     case 'BAR_RIGHT':
-      return <SideBar side={panel.ref.toLowerCase().replace('bar_', '')} />
     case 'BAR_LEFT':
     case 'BAR_BOTTOM':
-      return <SideBar2 side={panel.ref.toLowerCase().replace('bar_', '')} />
-
+      return <SideBar side={panel.id.toLowerCase().replace('bar_', '')} />
 
     case 'PANEL_RIGHT':
-      return <ExtensionPanelContent side={panel.contentType.toLowerCase().replace('extension_', '')} />
+      return <SidePanelContainer side='right' />
+
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
