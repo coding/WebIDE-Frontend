@@ -6,19 +6,6 @@ function PaneScope () {
   })
 
   class BasePane {
-    constructor (paneConfig) {
-      const defaults = {
-        flexDirection: 'row',
-        size: 100,
-        parentId: '',
-        index: 0,
-      }
-
-      paneConfig = { ...defaults, ...paneConfig }
-      extendObservable(this, paneConfig)
-      state.entities.set(this.id, this)
-    }
-
     @computed
     get isRoot () {
       return !this.parentId

@@ -21,11 +21,20 @@ extendObservable(state, {
 
 class Pane extends BasePane {
   constructor (paneConfig) {
-    if (!paneConfig.id) paneConfig.id = uniqueId('pane_view_')
-    super(paneConfig)
+    super()
+
+    extendObservable(this, {
+      id: uniqueId('pane_view_'),
+      flexDirection: 'row',
+      size: 100,
+      parentId: '',
+      index: 0,
+    }, paneConfig)
+
     this.contentType = 'tabGroup'
     const tabGroup = this.tabGroup || new TabGroup()
     this.contentId = tabGroup.id
+    state.entities.set(this.id, this)
   }
 
   @observable contentId = ''

@@ -4,7 +4,6 @@ import {
 } from './selectors'
 
 import { createAction } from 'utils/actions'
-import { promiseActionMixin } from 'utils'
 
 export const PANE_INITIALIZE = 'PANE_INITIALIZE'
 export const PANE_UNSET_COVER = 'PANE_UNSET_COVER'
