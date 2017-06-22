@@ -151,9 +151,9 @@ export default {
 
     if (confirmed) {
       api.deleteFile(c.context.path)
-        .then(() => dispatch(notify({ message: 'Delete success!' })))
+        .then(() => notify({ message: 'Delete success!' }))
         .catch(err =>
-          dispatch(notify({ message: `Delete fail: ${err.msg}` }))
+          notify({ message: `Delete fail: ${err.msg}` })
         )
     }
 

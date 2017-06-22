@@ -5,7 +5,6 @@ import thunkMiddleware from 'redux-thunk'
 
 import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
 import ModalsReducer from './components/Modal/reducer'
-import NotificationReducer from './components/Notification/reducer'
 import GitReducer from './components/Git/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
 import StatusBarReducer from './components/StatusBar/reducer'
@@ -18,7 +17,6 @@ const combinedReducers = combineReducers({
   PaneState: PaneReducer,
   ModalState: ModalsReducer,
   GitState: GitReducer,
-  NotificationState: NotificationReducer,
   StatusBarState: StatusBarReducer,
 })
 
