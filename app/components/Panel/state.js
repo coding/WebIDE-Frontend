@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import assignObservable from 'utils/assignObservable'
+import extendObservableStrict from 'utils/extendObservableStrict'
 import PaneScope from 'commons/Pane/state'
 import { extendObservable, observable, computed, action, autorun, autorunAsync, runInAction } from 'mobx'
 
@@ -26,7 +26,7 @@ extendObservable(state, {
 class Panel extends BasePane {
   constructor (opt) {
     super()
-    assignObservable(this, {
+    extendObservableStrict(this, {
       id: opt.ref || _.uniqueId('panel_view_'),
       ref: '',
       direction: 'row',
