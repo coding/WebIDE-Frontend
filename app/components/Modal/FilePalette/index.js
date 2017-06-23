@@ -1,1 +1,3 @@
-export FilePalette from './component'
+import FilePalette from './component'
+
+export { FilePalette }

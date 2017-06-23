@@ -1,3 +1,5 @@
-export CommandPalette from './component'
-export commandPaletteItems from './items'
-export getPaletteItems from './getPaletteItems'
+import CommandPalette from './component'
+import commandPaletteItems from './items'
+import getPaletteItems from './getPaletteItems'
+
+export { CommandPalette, commandPaletteItems, getPaletteItems }
