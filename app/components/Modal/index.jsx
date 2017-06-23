@@ -138,7 +138,7 @@ class Modal extends Component {
 
   dismiss = e => {
     if (e.keyCode === 27) {
-      this.props.dispatch({ type: 'MODAL_DISMISS' })
+      dismissModal()
     }
   }
 

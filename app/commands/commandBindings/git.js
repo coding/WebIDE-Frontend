@@ -8,7 +8,7 @@ export default {
     api.gitStatus().then(({ files, clean }) => {
       $d(Git.updateStatus({ files, isClean: clean }))
     }).then(() =>
-      $d(Modal.showModal('GitCommit', 'HelloYo'))
+      Modal.showModal('GitCommit', 'HelloYo')
     )
   },
 
@@ -22,7 +22,7 @@ export default {
       files = _.filter(files, file => file.status == 'CONFLICTION')
       $d(Git.updateStatus({ files, isClean: clean }))
     }).then(() =>
-      $d(Modal.showModal('GitResolveConflicts'))
+      Modal.showModal('GitResolveConflicts')
     )
   },
 
@@ -30,14 +30,14 @@ export default {
   'git:checkout_new_branch': (c) => {
     $d(Git.getBranches()).then(() =>
       $d(Git.getCurrentBranch()).then(() =>
-        $d(Modal.showModal('GitCheckout', c.data))
+        Modal.showModal('GitCheckout', c.data)
       )
     )
   },
   'git:new_branch': (c) => {
     $d(Git.getBranches()).then(() =>
       $d(Git.getCurrentBranch()).then(() =>
-        $d(Modal.showModal('GitNewBranch'))
+        Modal.showModal('GitNewBranch')
       )
     )
   },
@@ -45,40 +45,40 @@ export default {
     $d(Git.getCurrentBranch()).then(() =>
       $d(Git.getTags())
         .then(() =>
-          $d(Modal.showModal('GitTag'))
+          Modal.showModal('GitTag')
         )
     )
   },
   'git:merge': (c) => {
     $d(Git.getBranches()).then(() =>
       $d(Git.getCurrentBranch()).then(() =>
-        $d(Modal.showModal('GitMerge'))
+        Modal.showModal('GitMerge')
       )
     )
   },
   'git:stash': (c) => {
     $d(Git.getCurrentBranch()).then(() =>
-      $d(Modal.showModal('GitStash'))
+      Modal.showModal('GitStash')
     )
   },
   'git:unstash': (c) => {
     $d(Git.getCurrentBranch()).then(() => {
       $d(Git.getStashList())
         .then(() =>
-          $d(Modal.showModal('GitUnstash'))
+          Modal.showModal('GitUnstash')
         )
     })
   },
   'git:reset_head': (c) => {
     $d(Git.getCurrentBranch()).then(() =>
-      $d(Modal.showModal('GitResetHead'))
+      Modal.showModal('GitResetHead')
     )
   },
   'git:rebase:start': (c) => {
     $d(Git.getBranches()).then(() => {
       $d(Git.getTags())
         .then(() =>
-          $d(Modal.showModal('GitRebaseStart'))
+          Modal.showModal('GitRebaseStart')
         )
     })
   },

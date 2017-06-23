@@ -58,9 +58,9 @@ class GitCheckout extends Component {
     if (!this.state.newBranch) return
     const { localBranches, dispatch, fromBranch } = this.props
     if (localBranches.includes(this.state.newBranch)) {
-      dispatch(ModalActions.updateModal({statusMessage: 'Branch ref already exists. Pick another name.'}))
+      ModalActions.updateModal({statusMessage: 'Branch ref already exists. Pick another name.'})
     } else {
-      dispatch(ModalActions.dismissModal())
+      ModalActions.dismissModal()
       dispatch(GitActions.checkoutBranch(this.state.newBranch, fromBranch))
     }
   }

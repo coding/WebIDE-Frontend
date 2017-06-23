@@ -21,8 +21,8 @@ export function commit () {
       files: stagedFilesPathList,
       message: GitState.commitMessage
     }).then((filetreeDelta) => {
-      dispatch(notify({ message: 'Git commit success.' }))
-      dispatch(dismissModal())
+      notify({ message: 'Git commit success.' })
+      dismissModal()
     })
   }
 }
@@ -36,7 +36,7 @@ export function updateStagingArea (action, file) {
 export const GIT_FETCH = 'GIT_FETCH'
 export function getFetch () {
   return dispatch => api.gitFetch().then(
-     dispatch(notify({ message: 'Get Fetch Success' }))
+     notify({ message: 'Get Fetch Success' })
   )
 }
 
@@ -57,13 +57,13 @@ export function checkoutBranch (branch, remoteBranch) {
       if (data.status === 'OK') {
         // 完全由 ws 里的 checkout 事件来改变显示
         // dispatch(createAction(GIT_CHECKOUT)({ branch }))
-        dispatch(notify({ message: `Check out ${branch}` }))
+        notify({ message: `Check out ${branch}` })
       } else if (data.status === 'CONFLICTS') {
         dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch }))
-        dispatch(notify({
+        notify({
           notifyType: NOTIFY_TYPE.ERROR,
           message: 'Checkout has not completed because of checkout conflicts',
-        }))
+        })
 
         api.gitStatus().then(({ files, clean }) => {
           files = files.map((file) => {
@@ -76,30 +76,30 @@ export function checkoutBranch (branch, remoteBranch) {
           })
           dispatch(updateStatus({ files, isClean: clean }))
         }).then(() =>
-          dispatch(showModal({ type: 'GitCheckoutStash', title: 'Checkout failed' }))
+          dispatchshowModal({ type: 'GitCheckoutStash', title: 'Checkout failed' })
         )
         // const files = []
         // data.conflictList.map((file) => {
         //   files.push({name: file, status: 'CONFLICTION'})
         // })
         // dispatch(updateStatus({files, isClean: false}))
-        // dispatch(showModal('GitResolveConflicts'))
+        // showModal('GitResolveConflicts')
       } else if (data.status === 'NONDELETED') {
-        dispatch(notify({
+        notify({
           notifyType: NOTIFY_TYPE.ERROR,
           message: 'Checkout has completed, but some files could not be deleted',
-        }))
+        })
         const files = []
         data.undeletedList.map((file) => {
           files.push({ name: file, status: 'ADDED' })
         })
         dispatch(updateStatus({ files, isClean: false }))
-        dispatch(showModal({ type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true }))
+        showModal({ type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true })
       } else {
-        dispatch(notify({
+        notify({
           notifyType: NOTIFY_TYPE.ERROR,
           message: `An Exception occurred during checkout, status: ${data.status}`,
-        }))
+        })
       }
     })
   }
@@ -109,7 +109,7 @@ export const GIT_DELETE_BRANCH = 'GIT_DELETE_BRANCH'
 export function gitDeleteBranch (branch) {
   return (dispatch) => {
     api.gitDeleteBranch(branch).then(() => {
-      dispatch(notify({ message: `deleted branch ${branch} success` }))
+      notify({ message: `deleted branch ${branch} success` })
     })
   }
 }
@@ -124,7 +124,7 @@ export function getTags () {
 export function pull () {
   return (dispatch) => {
     api.gitPull().then((res) => {
-      if (res.code && res.code !== 0) { dispatch(notify({ message: `Git pull fail: ${res.msg}` })) } else { dispatch(notify({ message: 'Git pull success.' })) }
+      if (res.code && res.code !== 0) { notify({ message: `Git pull fail: ${res.msg}` }) } else { notify({ message: 'Git pull success.' }) }
     })
   }
 }
@@ -132,7 +132,7 @@ export function pull () {
 export function push () {
   return (dispatch) => {
     api.gitPushAll().then((res) => {
-      if (res.code && res.code !== 0) { dispatch(notify({ message: `Git push fail: ${res.msg}` })) } else { dispatch(notify({ message: 'Git push success.' })) }
+      if (res.code && res.code !== 0) { notify({ message: `Git push fail: ${res.msg}` }) } else { notify({ message: 'Git push success.' }) }
     })
   }
 }
@@ -145,28 +145,26 @@ export const updateStashMessage = createAction(GIT_UPDATE_STASH_MESSAGE)
 
 export function createStash (message) {
   return (dispatch, getState) => api.gitCreateStash(message).then((res) => {
-    dispatch(notify({
-      message: 'Git stash success.',
-    }))
-    dispatch(dismissModal())
+    notify({ message: 'Git stash success.' })
+    dismissModal()
     const GitState = getState().GitState
     if (GitState.branches.failed) {
       dispatch(checkoutBranch(GitState.branches.failed))
       dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch: '' }))
     }
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: err.msg,
-    }))
-    dispatch(dismissModal())
+    })
+    dismissModal()
   })
 }
 
 export function showStash () {
   return (dispatch) => {
     dispatch(getCurrentBranch()).then(() =>
-      dispatch(showModal('GitStash'))
+      showModal('GitStash')
     )
   }
 }
@@ -194,81 +192,73 @@ export const selectStash = createAction(GIT_SELECT_STASH)
 
 export function dropStash (stashRef, all) {
   return dispatch => api.gitDropStash(stashRef, all).then((res) => {
-    dispatch(notify({
-      message: 'Drop stash success.',
-    }))
+    notify({ message: 'Drop stash success.' })
     getStashList()(dispatch)
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Drop stash error.',
-    }))
+    })
   })
 }
 
 export function applyStash ({ stashRef, pop, applyIndex }) {
   return dispatch => api.gitApplyStash({ stashRef, pop, applyIndex }).then((res) => {
-    dispatch(notify({
-      message: 'Apply stash success.',
-    }))
-    dispatch(dismissModal())
+    notify({ message: 'Apply stash success.' })
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Apply stash error.',
-    }))
+    })
   })
 }
 
 export function checkoutStash ({ stashRef, branch }) {
   return dispatch => api.gitCheckoutStash({ stashRef, branch }).then((res) => {
-    dispatch(notify({
-      message: 'Checkout stash success.',
-    }))
-    dispatch(dismissModal())
+    notify({ message: 'Checkout stash success.' })
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Checkout stash error.',
-    }))
+    })
   })
 }
 
 export function getCurrentBranch (showSuccess) {
   return dispatch => api.gitCurrentBranch().then(({ name }) => {
     dispatch(updateCurrentBranch({ name }))
-    if (showSuccess) dispatch(notify({ message: 'sync success ' }))
+    if (showSuccess) notify({ message: 'sync success' })
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Get current branch error.',
-    }))
+    })
   })
 }
 
 export function resetHead ({ ref, resetType }) {
   return dispatch => api.gitResetHead({ ref, resetType }).then((res) => {
-    dispatch(notify({
-      message: 'Reset success.',
-    }))
-    dispatch(dismissModal())
+    notify({ message: 'Reset success.' })
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Reset error.',
-    }))
+    })
   })
 }
 
 export function addTag ({ tagName, ref, message, force }) {
   return dispatch => api.gitAddTag({ tagName, ref, message, force }).then((res) => {
-    dispatch(notify({ message: 'Add tag success.' }))
-    dispatch(dismissModal())
+    notify({ message: 'Add tag success.' })
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Add tag error: ${err.msg}`,
-    }))
+    })
   })
 }
 
@@ -276,35 +266,35 @@ export function mergeBranch (branch) {
   return dispatch => api.gitMerge(branch).then((res) => {
     // Merge conflict 的情况也是 200 OK，但 sucecss:false
     if (!res.success) return res
-    dispatch(notify({ message: 'Merge success.' }))
-    dispatch(dismissModal())
+    notify({ message: 'Merge success.' })
+    dismissModal()
   }).then((res) => {
     if (res.status && res.status === 'CONFLICTING') {
-      dispatch(dismissModal())
+      dismissModal()
       api.gitStatus().then(({ files, clean }) => {
         files = _.filter(files, file => file.status == 'CONFLICTION')
         dispatch(updateStatus({ files, isClean: clean }))
       }).then(() =>
-        dispatch(showModal('GitResolveConflicts'))
+        showModal('GitResolveConflicts')
       )
     }
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Merge error: ${err.msg}`,
-    }))
+    })
   })
 }
 
 export function newBranch (branch) {
   return dispatch => api.gitNewBranch(branch).then((res) => {
-    dispatch(notify({ message: 'Create new branch success.' }))
-    dispatch(dismissModal())
+    notify({ message: 'Create new branch success.' })
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Create new branch error: ${err.msg}`,
-    }))
+    })
   })
 }
 
@@ -325,13 +315,13 @@ export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
 export function mergeFile (path) {
-  return dispatch => dispatch(addModal('GitMergeFile', { path }))
+  return addModal('GitMergeFile', { path })
 }
 
 export const GIT_DIFF = 'GIT_DIFF'
 export const gitDiff = createAction(GIT_DIFF)
 export function diffFile ({ path, newRef, oldRef }) {
-  return dispatch => dispatch(addModal('GitDiffFile', { path, newRef, oldRef }))
+  return addModal('GitDiffFile', { path, newRef, oldRef })
 }
 
 export function gitFileDiff ({ path, newRef, oldRef }) {
@@ -352,84 +342,82 @@ export function readFile ({ path }) {
 
 export function resolveConflict ({ path, content }) {
   return dispatch => api.gitResolveConflict({ path, content }).then((res) => {
-    dispatch(notify({
+    notify({
       message: 'Resolve conflict success.',
-    }))
-    dispatch(dismissModal())
-    dispatch(updateModal({ isInvalid: true }))
+    })
+    dismissModal()
+    updateModal({ isInvalid: true })
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Resolve conflict error.',
-    }))
+    })
   })
 }
 
 export function cancelConflict ({ path }) {
   return dispatch => api.gitCancelConflict({ path }).then((res) => {
-    dispatch(dismissModal())
+    dismissModal()
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Cancel conflict error: ${err.msg}`,
-    }))
+    })
   })
 }
 
 export function rebase ({ branch, upstream, interactive, preserve }) {
   return dispatch => api.gitRebase({ branch, upstream, interactive, preserve }).then((res) => {
     if (res.success) {
-      dispatch(notify({
-        message: 'Rebase success.',
-      }))
-      dispatch(dismissModal())
+      notify({ message: 'Rebase success.' })
+      dismissModal()
     } else {
-      dispatch(dismissModal())
+      dismissModal()
       resolveRebase(res, dispatch)
     }
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Rebase error: ${err.msg}`,
-    }))
+    })
   })
 }
 
 function resolveRebase (data, dispatch) {
   if (data.status === 'STOPPED') {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: 'Rebase STOPPED',
-    }))
+    })
     api.gitStatus().then(({ files, clean }) => {
       dispatch(updateStatus({ files, isClean: clean }))
     }).then(() =>
-      dispatch(showModal('GitResolveConflicts'))
+      showModal('GitResolveConflicts')
     )
   } else if (data.status === 'INTERACTIVE_EDIT') {
-    dispatch(showModal('GitRebaseInput', data.message))
+    showModal('GitRebaseInput', data.message)
   } else if (data.status === 'ABORTED') {
-    dispatch(notify({
+    notify({
       message: 'Rebase aborted.',
-    }))
+    })
   } else if (data.status === 'INTERACTIVE_PREPARED') {
     const rebaseTodoLines = data.rebaseTodoLines
-    dispatch(showModal('GitRebasePrepare', rebaseTodoLines))
+    showModal('GitRebasePrepare', rebaseTodoLines)
   } else if (data.status === 'UNCOMMITTED_CHANGES') {
-    dispatch(notify({
+    notify({
       message: 'Cannot rebase: Your index contains uncommitted changes. Please commit or stash them.',
-    }))
+    })
   } else if (data.status === 'EDIT') {
-    dispatch(notify({
+    notify({
       message: 'Current status is EDIT, we have stopped rebasing for you. \nPlease edit your files and then continue rebasing.',
-    }))
+    })
   }
 }
 
 // export const GIT_STATUS = 'GIT_STATUS'
 export function gitGetStatus (status) {
   return (dispatch) => {
-    dispatch(updateModal({ isInvalid: false }))
+    updateModal({ isInvalid: false })
     api.gitStatus().then(({ files, clean }) => {
       if (status) {
         files = _.filter(files, file => file.status == status)
@@ -449,36 +437,36 @@ export function getRebaseState () {
 export function gitRebaseOperate ({ operation, message }) {
   return dispatch => api.gitRebaseOperate({ operation, message }).then((res) => {
     if (res.success) {
-      dispatch(notify({
+      notify({
         message: 'Operate success.',
-      }))
+      })
     } else {
       resolveRebase(res, dispatch)
     }
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Operate error: ${err.msg}`,
-    }))
+    })
   })
 }
 
 export function gitRebaseUpdate (lines) {
   return dispatch => api.gitRebaseUpdate(lines).then((res) => {
     if (res.success) {
-      dispatch(notify({
+      notify({
         message: 'Rebase success.',
-      }))
-      dispatch(dismissModal())
+      })
+      dismissModal()
     } else {
-      dispatch(dismissModal())
+      dismissModal()
       resolveRebase(res, dispatch)
     }
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Rebase error: ${err.msg}`,
-    }))
+    })
   })
 }
 
@@ -495,12 +483,12 @@ export function gitCommitDiff ({ rev, title, oldRef }) {
       return file
     })
     dispatch(updateCommitDiff({ files, ref: rev, title, oldRef }))
-    dispatch(addModal('GitCommitDiff'))
+    addModal('GitCommitDiff')
   }).catch((err) => {
-    dispatch(notify({
+    notify({
       notifyType: NOTIFY_TYPE.ERROR,
       message: `Get commit diff error: ${err.msg}`,
-    }))
+    })
   })
 }
 

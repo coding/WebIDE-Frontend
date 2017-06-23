@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { setSelectionRange } from '../../../utils'
+import { setSelectionRange } from 'utils'
+import { dismissModal } from '../actions'
 
 class Prompt extends Component {
   constructor (props) {
     super(props)
-    this.state = {value: props.content.defaultValue || ''}
+    this.state = { value: props.content.defaultValue || '' }
   }
 
   componentDidMount () {
@@ -21,8 +21,8 @@ class Prompt extends Component {
         : null }
         <input type='text'
           className='form-control'
-          ref={r=>this.input=r}
-          onChange={ e=>this.setState({value: e.target.value}) }
+          ref={r=> this.input =r}
+          onChange={e => this.setState({ value: e.target.value })}
           onKeyDown={this.onKeyDown}
           value={this.state.value}
         />
@@ -41,21 +41,11 @@ class Prompt extends Component {
     this.props.meta.reject()
   }
 
-  dismiss = () => {
-    this.props.dispatch({type: 'MODAL_DISMISS'})
-  }
-
   onKeyDown = e => {
     if (e.keyCode === 13) {
       this.confirm(e.target.value)
     }
   }
 }
-
-
-Prompt = connect(
-  state => state.ModalState.stack[0]
-, null
-)(Prompt)
 
 export default Prompt

@@ -3,7 +3,6 @@ import { composeReducers } from './utils'
 import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
-import ModalsReducer from './components/Modal/reducer'
 import GitReducer from './components/Git/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
 import StatusBarReducer from './components/StatusBar/reducer'
@@ -13,7 +12,6 @@ import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
   PackageState: PackageReducer,
-  ModalState: ModalsReducer,
   GitState: GitReducer,
   StatusBarState: StatusBarReducer,
 })
