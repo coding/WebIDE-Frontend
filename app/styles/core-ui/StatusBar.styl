@@ -6,25 +6,38 @@ $bar-height = 30px;
   align-items: center;
   min-height: $bar-height;
   noSelect();
-}
 
-.status-widget-container {
-  display: flex
-  &.right {
-    margin-left: auto;
+  .status-widget-container {
+    display: flex
+    &.right {
+      margin-left: auto;
+    }
   }
-}
 
-.status-bar-menu-item {
-  padding: 0 8px;
-  cursor: pointer;
-  > .menu {
-    right: 6px;
-    bottom: $bar-height;
-    min-width: 200px;
+  .status-bar-menu-item {
+    padding: 0 8px;
+    cursor: pointer;
+    > .menu {
+      right: 6px;
+      bottom: $bar-height;
+      min-width: 200px;
+    }
   }
-}
 
-.toggle-layout {
-  padding: 0 8px;
+  .toggle-layout {
+    padding: 0 8px;
+  }
+
+  .status-messages {
+    display: flex;
+    .status-message {
+      margin-right: 0.5em;
+    }
+    .status-message + .status-message {
+      &:before {
+        content: '|';
+        margin-right: 0.5em;
+      }
+    }
+  }
 }

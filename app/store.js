@@ -5,7 +5,6 @@ import thunkMiddleware from 'redux-thunk'
 
 import GitReducer from './components/Git/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
-import StatusBarReducer from './components/StatusBar/reducer'
 import RootReducer from './containers/Root/reducer'
 
 import localStoreCache from './localStoreCache'
@@ -13,7 +12,6 @@ import localStoreCache from './localStoreCache'
 const combinedReducers = combineReducers({
   PackageState: PackageReducer,
   GitState: GitReducer,
-  StatusBarState: StatusBarReducer,
 })
 
 const crossReducers = composeReducers(RootReducer, PackageCrossReducer)
