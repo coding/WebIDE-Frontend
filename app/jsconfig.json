@@ -4,7 +4,10 @@
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "jsx": "react",
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "paths": {
+            "*": ["*", "*/index", "*/index.js", "*/index.jsx"]
+        }
     },
     "exclude": [
         "node_modules"
