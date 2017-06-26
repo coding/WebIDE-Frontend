@@ -87,22 +87,18 @@ const menuBarItems = [
       }, dividItem,
       {
         name: 'Resolve Conflicts...',
-        icon: 'fa',
         command: 'git:resolve_conflicts'
       }, dividItem,
       {
         name: 'Stash Changes...',
-        icon: 'fa',
         command: 'git:stash'
       },
       {
         name: 'Unstash Changes...',
-        icon: 'fa',
         command: 'git:unstash'
       },
       {
         name: 'Reset HEAD...',
-        icon: 'fa',
         command: 'git:reset_head'
       }, dividItem,
       {
@@ -117,29 +113,24 @@ const menuBarItems = [
       },
       {
         name: 'Tag...',
-        icon: 'fa',
         command: 'git:tag'
 	  }, dividItem,
       {
         name: 'Rebase...',
-        icon: 'fa',
         command: 'git:rebase:start'
       },
       {
         name: 'Abort Rebasing',
-        icon: 'fa',
         command: 'git:rebase:abort',
         checkDisable: checkGitRebasing
       },
       {
         name: 'Continue Rebasing',
-        icon: 'fa',
         command: 'git:rebase:continue',
         checkDisable: checkGitRebasing
       },
       {
         name: 'Skip Commit',
-        icon: 'fa',
         command: 'git:rebase:skip_commit',
         checkDisable: checkGitRebasing
       }

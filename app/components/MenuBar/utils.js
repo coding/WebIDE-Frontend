@@ -9,7 +9,7 @@ const findKeyByValue = value => Object
     }, {})[value] || ''
 
 const withModifierKeys = value => value.split('+')
-    .map(e => modifierKeysMap[e] || e.toUpperCase()).join(' ')
+    .map(e => modifierKeysMap[e] || e.toUpperCase()).join('')
 
 
 const mapShortcutToConfig = configs => configs.map(config => ({

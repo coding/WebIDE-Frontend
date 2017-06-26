@@ -1,22 +1,7 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import Menu from './Menu'
-
-const triangleIcon = (<div
-  style={{
-    marginLeft: 'auto',
-    marginRight: '-10px',
-    content: '',
-    marginTop: '6px',
-    width: 0,
-    height: 0,
-    borderTop: '4px solid transparent',
-    borderLeft: '8px solid #ccc',
-    borderBottom: '4px solid transparent'
-  }}
-/>)
-
 
 const handleMenuItemCommand = (command, context) => {
   if (typeof command === 'function') {
@@ -29,9 +14,10 @@ const handleMenuItemCommand = (command, context) => {
   }
 }
 
-const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, state, context}) => {
+function MenuItem (props) {
+  const { item, index, isActive, toggleActive, deactivateTopLevelMenu, state, context } = props
   if (item.visible && !item.visible(context)) return null
-  let itemElement = item.element ? React.createElement(item.element, { item }) : null
+  const itemElement = item.element ? React.createElement(item.element, { item }) : null
   if (item.name == '-') return <li><hr /></li>
   const disabled = item.checkDisable ? item.checkDisable(state) : item.isDisabled
   return (
@@ -39,30 +25,41 @@ const MenuItem = ({item, index, isActive, toggleActive, deactivateTopLevelMenu, 
       <div
         className={cx('menu-item-container', {
           active: isActive,
-          disabled: disabled,
-          padding: '4px 10px'
+          disabled,
         })}
-        onMouseEnter={e => toggleActive(index)}
-        onClick={e => {
-          if (disabled) return
-          handleMenuItemCommand(item.command, context)&&deactivateTopLevelMenu()
+        onMouseEnter={() => toggleActive(index)}
+        onClick={() => {
+          !disabled && handleMenuItemCommand(item.command, context) && deactivateTopLevelMenu()
         }}
       >
-        <div className={item.icon}>{item.iconElement || <div style={{ marginLeft :'1em' }} />}</div>
+        {(item.icon || item.iconElement) && (
+          <div className={cx('menu-item-icon', item.icon)}>
+            {item.iconElement}
+          </div>
+        )}
         <div className='menu-item-name'>{itemElement || item.displayName || item.name}</div>
         { item.shortcut
           ? <div className='menu-item-shortcut'>{item.shortcut}</div>
         : null }
-        { item.items && item.items.length
-          ? triangleIcon
-        : null }
+        { item.items && item.items.length ? <div className='menu-item-triangle'>▶</div> : null }
       </div>
       { isActive && item.items && item.items.length ?
-        <Menu items={item.items} className={cx({active: isActive})}
-          deactivateTopLevelMenu={deactivateTopLevelMenu} />
+        <Menu items={item.items} className='deferred-active'
+          deactivateTopLevelMenu={deactivateTopLevelMenu}
+        />
       : null }
     </li>
   )
+}
+
+MenuItem.propTypes = {
+  item: PropTypes.object,
+  index: PropTypes.number.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  toggleActive: PropTypes.func.isRequired,
+  deactivateTopLevelMenu: PropTypes.func.isRequired,
+  state: PropTypes.object,
+  context: PropTypes.object,
 }
 
 export default MenuItem
