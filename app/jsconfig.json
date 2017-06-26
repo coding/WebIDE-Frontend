@@ -2,7 +2,12 @@
     "compilerOptions": {
         "target": "ES6",
         "allowSyntheticDefaultImports": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "baseUrl": "./",
+        "paths": {
+            "*": ["*", "*/index", "*/index.js", "*/index.jsx"]
+        }
     },
     "exclude": [
         "node_modules"

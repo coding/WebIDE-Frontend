@@ -1,6 +1,6 @@
 import dispatch from './dispatch'
 
-const actionCreatorFactory = genActionData => function createAction (eventName, actionPayloadCreator) {
+const actionCreatorFactory = genActionData => function createAction (eventName, actionPayloadCreator = (x => x)) {
   function action (...args) {
     const payload = actionPayloadCreator(...args)
     const actionData = genActionData(eventName, payload)

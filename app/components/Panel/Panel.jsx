@@ -1,16 +1,14 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
+import React, { PropTypes } from 'react'
+import { observer } from 'mobx-react'
 import cx from 'classnames'
 import PanelAxis from './PanelAxis'
 import PanelContent from './PanelContent'
 import { confirmResize } from './actions'
 import ResizeBar from '../ResizeBar'
 
-const _Panel = (props) => {
-  const { panel, parentFlexDirection, confirmResize } = props
-  let style = {}
+const Panel = observer((props) => {
+  const { panel, parentFlexDirection } = props
+  const style = {}
   if (panel.resizable) {
     style.flexGrow = panel.size
   } else {
@@ -41,21 +39,11 @@ const _Panel = (props) => {
       }
     </div>
   )
-}
-
-_Panel.propTypes = {
-  panel: PropTypes.object,
-  parentFlexDirection: PropTypes.string,
-}
-
-const Panel = connect(
-  (state, { panelId }) => ({ panel: state.PanelState.panels[panelId] }),
-  dispatch => bindActionCreators({ confirmResize }, dispatch)
-)(_Panel)
+})
 
 Panel.propTypes = {
-  panelId: PropTypes.string,
-  parentFlexDirection: PropTypes.string,
+  panel: PropTypes.object.isRequired,
+  parentFlexDirection: PropTypes.string.isRequired,
 }
 
 export default Panel

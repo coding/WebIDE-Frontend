@@ -2,7 +2,7 @@ import _ from 'lodash'
 import createAction from './createAction'
 import handleAction from './handleAction'
 
-export default function registerAction (...args) {
+function _registerAction (_createAction, ...args) {
   let [eventName, actionPayloadCreator, handler] = args
   if (!_.isString(eventName) || !_.isFunction(actionPayloadCreator)) throw Error('registerAction syntax error')
 
@@ -14,6 +14,20 @@ export default function registerAction (...args) {
   handleAction(eventName, handler)
 
   // by default we promisify the actionMsg
-  const actionCreator = createAction.promise(eventName, actionPayloadCreator)
+  const actionCreator = _createAction(eventName, actionPayloadCreator)
   return actionCreator
 }
+
+function registerActionPromise (...args) {
+  return _registerAction(createAction.promise, ...args)
+}
+
+function registerActionNormal (...args) {
+  return _registerAction(createAction, ...args)
+}
+
+const registerAction = registerActionPromise
+registerAction.promise = registerActionPromise
+registerAction.normal = registerActionNormal
+
+export default registerAction

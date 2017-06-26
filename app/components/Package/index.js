@@ -1,1 +1,3 @@
-export ExtensionList from './extensionList'
+import ExtensionList from './extensionList'
+
+export default ExtensionList

@@ -3,28 +3,18 @@ import { composeReducers } from './utils'
 import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
-import PanelReducer from './components/Panel/reducer'
-import PaneReducer, { PaneCrossReducer } from './components/Pane/reducer'
-import ModalsReducer from './components/Modal/reducer'
-import NotificationReducer from './components/Notification/reducer'
 import GitReducer from './components/Git/reducer'
 import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
-import StatusBarReducer from './components/StatusBar/reducer'
 import RootReducer from './containers/Root/reducer'
 
 import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
   PackageState: PackageReducer,
-  PanelState: PanelReducer,
-  PaneState: PaneReducer,
-  ModalState: ModalsReducer,
   GitState: GitReducer,
-  NotificationState: NotificationReducer,
-  StatusBarState: StatusBarReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PaneCrossReducer, PackageCrossReducer)
+const crossReducers = composeReducers(RootReducer, PackageCrossReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,

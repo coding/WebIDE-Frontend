@@ -1,1 +1,3 @@
-export default from './TerminalContainer'
+import TerminalContainer from './TerminalContainer'
+
+export default TerminalContainer

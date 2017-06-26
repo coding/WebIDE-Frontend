@@ -21,7 +21,7 @@ export default {
     const pane = panes.values().find(pane => (
       pane.content && pane.content.type === 'tabGroup' && pane.content.id === c.context.tabGroupId
     ))
-    $d(PaneActions.splitTo(pane.id, 'bottom'))
+    PaneActions.splitTo(pane.id, 'bottom')
       .then((newPaneId) => {
         $d(Tab.moveTabToPane(c.context.id, newPaneId))
       })
@@ -32,7 +32,7 @@ export default {
     const pane = Object.values(panes).find(pane => (
       pane.content && pane.content.type === 'tabGroup' && pane.content.id === c.context.tabGroupId
     ))
-    $d(PaneActions.splitTo(pane.id, 'right'))
+    PaneActions.splitTo(pane.id, 'right')
       .then((newPaneId) => {
         $d(Tab.moveTabToPane(c.context.id, newPaneId))
       })

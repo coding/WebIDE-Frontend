@@ -58,7 +58,7 @@ class GitNewBranchView extends Component {
   confirmCreateNewBranch = () => {
     const {branches: {local: localBranches}, dispatch} = this.props
     if (localBranches.includes(this.state.newBranch)) {
-      dispatch(ModalActions.updateModal({statusMessage: 'Branch ref already exists. Pick another name.'}))
+      ModalActions.updateModal({ statusMessage: 'Branch ref already exists. Pick another name.' })
     } else {
       dispatch(GitActions.newBranch(this.state.newBranch))
     }

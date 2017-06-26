@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import React from 'react'
+import { inject } from 'mobx-react'
 import { NotificationStack } from 'react-notification'
-import * as NotificationActions from './actions'
+import { removeNotification } from './actions'
+import state from './state'
 
 const barStyleFactory = (index, style) => {
   return Object.assign({}, style, {
@@ -22,20 +22,18 @@ const activeBarStyleFactory = (index, style) => {
   })
 }
 
-var Notification = ({notifications, removeNotification, addNotification}) => {
+const Notification = ({ notifications }) => {
   return (
     <NotificationStack
       notifications={notifications}
-      onDismiss={notification => removeNotification(notification)}
+      onDismiss={notification => removeNotification(notification.key)}
       barStyleFactory={barStyleFactory}
       activeBarStyleFactory={activeBarStyleFactory}
     />
   )
 }
 
-Notification = connect(
-  state => state.NotificationState,
-  dispatch => bindActionCreators(NotificationActions, dispatch)
-)(Notification)
-
-export default Notification
+export default inject(() => {
+  const notifications = state.notifications.toJS()
+  return { notifications }
+})(Notification)
