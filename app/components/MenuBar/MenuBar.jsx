@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import cx from 'classnames'
 import Menu from '../Menu'
 import menuBarItems from './menuBarItems'
-import * as GitActions from '../Git/actions'
+import api from 'backendAPI'
 import config from '../../config'
 
-@connect(
-  state => state,
-  dispatch => bindActionCreators(GitActions, dispatch)
-)
 class MenuBar extends Component {
   static defaultProps = {
     items: menuBarItems
@@ -30,7 +24,7 @@ class MenuBar extends Component {
   }
 
   handleSwitch = () => {
-    this.props.switchVersion()
+    api.switchVersion()
   }
 
   activatePrevMenuItem = () => {

@@ -492,11 +492,6 @@ export function gitCommitDiff ({ rev, title, oldRef }) {
   })
 }
 
-export const SWITCH_VERSION = 'SWITCH_VERSION'
-export function switchVersion () {
-  return dispatch => api.switchVersion()
-}
-
 export const GIT_HISTORY = 'GIT_HISTORY'
 export const updateHistory = createAction(GIT_HISTORY)
 export const fetchHistory = ({ path, page, size, reset }) => (dispatch) => {
