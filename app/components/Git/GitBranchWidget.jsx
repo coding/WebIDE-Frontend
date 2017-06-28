@@ -45,7 +45,7 @@ export default class GitBranchWidget extends Component {
                 borderTopLeftRadius: 0,
               }}
               items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
-              deactivate={this.toggleActive.bind(this, false)}
+              deactivateTopLevelMenu={this.toggleActive.bind(this, false)}
             />
           </div>
         : null}
@@ -75,7 +75,7 @@ export default class GitBranchWidget extends Component {
         name: 'Checkout as new branch',
         command: () => dispatchCommand('git:checkout_new_branch', {
           fromBranch: branch
-        }) 
+        })
       }, {
         name: 'Delete',
         command: () => { this.props.gitDeleteBranch(branch) }

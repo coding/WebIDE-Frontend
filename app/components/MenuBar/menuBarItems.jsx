@@ -148,6 +148,23 @@ const menuBarItems = [
             command: 'tools:terminal:new_terminal'
           }
         ]
+      },
+      {
+        name: 'Test',
+        items: [
+          {
+            name: 'Foo',
+            command: 'tools:terminal:new_terminal'
+          },
+          {
+            name: 'Bar',
+            command: 'tools:terminal:new_terminal'
+          },
+          {
+            name: 'Zak',
+            command: 'tools:terminal:new_terminal'
+          }
+        ]
       }
     ]
   }
