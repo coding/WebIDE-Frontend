@@ -22,7 +22,6 @@ class MenuItem extends Component {
     }
     this.submenuShowTimeout = null
     const { item, state } = props
-    if (item.checkDisable) item.isDisabled = item.checkDisable(state)
   }
 
   componentWillReceiveProps (nextProps) {

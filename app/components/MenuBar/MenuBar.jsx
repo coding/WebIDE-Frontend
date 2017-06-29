@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import Menu from '../Menu'
 import menuBarItems from './menuBarItems'
@@ -6,8 +7,8 @@ import api from 'backendAPI'
 import config from '../../config'
 
 class MenuBar extends Component {
-  static defaultProps = {
-    items: menuBarItems
+  static propTypes = {
+    items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
   }
 
   constructor (props) {
@@ -78,7 +79,7 @@ const MenuBarItem = (props) => {
           toggleActive(index, true)
           if (menuBarItem.onOpen) {
             if (!isActive) {
-              menuBarItem.onOpen()
+              menuBarItem.onOpen(item)
             }
           }
         }}
@@ -86,15 +87,15 @@ const MenuBarItem = (props) => {
       >
         {menuBarItem.name}
       </div>
-      { isActive ?
-          <Menu
-            items={menuBarItem.items}
-            className={cx('top-down to-right', { active: isActive })}
-            deactivateTopLevelMenu={toggleActive.bind(null, -1)}
-            activatePrevTopLevelMenuItem={props.activatePrevTopLevelMenuItem}
-            activateNextTopLevelMenuItem={props.activateNextTopLevelMenuItem}
-            state={props.state}
-          />
+      {isActive ?
+        <Menu
+          items={menuBarItem.items}
+          className={cx('top-down to-right', { active: isActive })}
+          deactivateTopLevelMenu={toggleActive.bind(null, -1)}
+          activatePrevTopLevelMenuItem={props.activatePrevTopLevelMenuItem}
+          activateNextTopLevelMenuItem={props.activateNextTopLevelMenuItem}
+          state={props.state}
+        />
       : null}
     </li>
   )

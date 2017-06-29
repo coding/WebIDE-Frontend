@@ -5,7 +5,6 @@ import MenuContainer from './MenuContainer'
 import MenuItem from './MenuItem'
 import noop from 'lodash/noop'
 
-
 function getNearestSelectableItemIndex (items, index, direction='next') {
   const item = items[index]
   if (!item) return -1
@@ -22,9 +21,10 @@ function getNearestSelectableItemIndex (items, index, direction='next') {
 }
 
 function buildFilterIndex (items=[]) {
-  return items.map(item => item.name.toLowerCase())
+  return items.filter(item => !item.isDivider).map(item => item.name.toLowerCase())
 }
 
+const MenuItemDivider = () => (<li><hr /></li>)
 class Menu extends Component {
   constructor (props) {
     super(props)
@@ -121,6 +121,29 @@ class Menu extends Component {
     this.setState({ activeItemIndex: index })
   }
 
+  renderMenuItems (items) {
+    let dividerCount = 0
+    return items.map((item, i) => {
+      if (item.isDivider) {
+        dividerCount += 1
+        return <MenuItemDivider />
+      }
+      return (
+        <MenuItem item={item}
+          index={i - dividerCount}
+          ref={r => this.menuItemInstances[i - dividerCount] = r}
+          isActive={this.state.activeItemIndex === i - dividerCount}
+          currentActiveItemIndex={this.state.activeItemIndex}
+          toggleActive={this.activateItemAtIndex}
+          deactivateTopLevelMenu={this.props.deactivateTopLevelMenu}
+          key={`menu-item-${item.name}-${i - dividerCount}`}
+          state={this.props.state}
+          context={this.props.context}
+        />
+      )
+    })
+  }
+
   render () {
     const { items, className, style, deactivateTopLevelMenu, onMouseEnter } = this.props
     return (
@@ -131,19 +154,7 @@ class Menu extends Component {
         onMouseLeave={() => this.setState({ activeItemIndex: -2 })}
         onKeyEvent={this.onKeyEvent}
       >
-        {items.map((item, i) =>
-          <MenuItem item={item}
-            index={i}
-            ref={r => this.menuItemInstances[i] = r}
-            isActive={this.state.activeItemIndex === i}
-            currentActiveItemIndex={this.state.activeItemIndex}
-            toggleActive={this.activateItemAtIndex}
-            deactivateTopLevelMenu={deactivateTopLevelMenu}
-            key={`menu-item-${item.name}-${i}`}
-            state={this.props.state}
-            context={this.props.context}
-          />
-        )}
+        {this.renderMenuItems(items)}
       </MenuContainer>
     )
   }
