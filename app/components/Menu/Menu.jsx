@@ -25,6 +25,7 @@ function buildFilterIndex (items=[]) {
 }
 
 const MenuItemDivider = () => (<li><hr /></li>)
+
 class Menu extends Component {
   constructor (props) {
     super(props)
@@ -45,9 +46,10 @@ class Menu extends Component {
   }
 
   onFilterInputChange = (filterValue) => {
-    const targetItemName = this.itemNames2Index.find(itemName => itemName.startsWith(filterValue.toLowerCase()))
+    const targetItemName = this.itemNames2Index
+      .find(itemName => itemName.startsWith(filterValue.toLowerCase()))
     const targetIndex = this.itemNames2Index.indexOf(targetItemName)
-    if (targetIndex !== -1) this.activateItemAtIndex(targetIndex)
+    this.activateItemAtIndex(targetIndex)
   }
 
   onKeyEvent = (customEvent) => {
@@ -78,7 +80,6 @@ class Menu extends Component {
         break
 
       case 'LEFT':
-        console.log('issub?', this.props.isSubmenu)
         if (this.props.isSubmenu) {
           this.props.deactivate()
         } else {
@@ -114,11 +115,11 @@ class Menu extends Component {
 
       default:
     }
-    if (nextIndex !== -1) this.activateItemAtIndex(nextIndex)
+    this.activateItemAtIndex(nextIndex)
   }
 
   activateItemAtIndex = (index) => {
-    this.setState({ activeItemIndex: index })
+    if (index >= 0) this.setState({ activeItemIndex: index })
   }
 
   renderMenuItems (items) {
