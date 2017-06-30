@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Menu from './Menu'
+import MenuSheet from './MenuSheet'
 import MenuContextTypes from './MenuContextTypes'
 import { isFunction, isBoolean } from 'utils/is'
 
@@ -85,7 +85,7 @@ class MenuItem extends Component {
     const { item, isActive } = this.props
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
 
-    // when submenu is focused, onMouseLeave from parent <Menu> won't trigger lost of <MenuItem> activity (which normally will)
+    // when submenu is focused, onMouseLeave from parent <MenuSheet> won't trigger lost of <MenuItem> activity (which normally will)
     const submenuIsFocused = this.submenu && this.context.getFocus() === this.submenu
     const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
       : isFunction(item.getIsDisabled) && item.getIsDisabled(this.context.menuContext)
@@ -111,7 +111,7 @@ class MenuItem extends Component {
           {item.items && <div className='menu-item-triangle'>▶</div>}
         </div>
         {item.items && ((isActive && this.state.isSubmenuShown) || submenuIsFocused) &&
-          <Menu isSubmenu
+          <MenuSheet isSubmenu
             ref={this.onSubmenuMount}
             items={item.items}
             deactivate={() => {
