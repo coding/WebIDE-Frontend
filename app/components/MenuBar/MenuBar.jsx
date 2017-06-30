@@ -67,7 +67,7 @@ class MenuBar extends Component {
 
 const MenuBarItem = (props) => {
   const { item, isActive, shouldHoverToggleActive,
-          toggleActive, index } = props
+          toggleActive, index, activatePrevTopLevelMenuItem, activateNextTopLevelMenuItem } = props
   const menuBarItem = item
   return (
     <li className={cx('menu-bar-item', menuBarItem.className)}>
@@ -91,10 +91,9 @@ const MenuBarItem = (props) => {
         <Menu
           items={menuBarItem.items}
           className={cx('top-down to-right', { active: isActive })}
-          deactivateTopLevelMenu={toggleActive.bind(null, -1)}
-          activatePrevTopLevelMenuItem={props.activatePrevTopLevelMenuItem}
-          activateNextTopLevelMenuItem={props.activateNextTopLevelMenuItem}
-          state={props.state}
+          deactivate={toggleActive.bind(null, -1)}
+          activatePrevTopLevelMenuItem={activatePrevTopLevelMenuItem}
+          activateNextTopLevelMenuItem={activateNextTopLevelMenuItem}
         />
       : null}
     </li>

@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
 import PropTypes from 'prop-types'
-import MenuContainer from './MenuContainer'
 import MenuItem from './MenuItem'
+import MenuContextTypes from './MenuContextTypes'
 import noop from 'lodash/noop'
 
 function getNearestSelectableItemIndex (items, index, direction='next') {
   const item = items[index]
   if (!item) return -1
-  if (item.isDisabled || item.name === '-') {
+  if (item.isDisabled || item.isDivider) {
     if (direction === 'next') {
       return getNearestSelectableItemIndex(items, index + 1, direction)
     } else if (direction === 'prev') {
@@ -21,28 +21,28 @@ function getNearestSelectableItemIndex (items, index, direction='next') {
 }
 
 function buildFilterIndex (items=[]) {
-  return items.filter(item => !item.isDivider).map(item => item.name.toLowerCase())
+  return items.map(({ name='' }) => name.toLowerCase())
 }
 
 const MenuItemDivider = () => (<li><hr /></li>)
 
 class Menu extends Component {
-  constructor (props) {
+  constructor (props, context) {
     super(props)
     this.state = {
-      activeItemIndex: getNearestSelectableItemIndex(props.items, props.defaultActiveItemIndex)
+      activeItemIndex: getNearestSelectableItemIndex(props.items, props.activeItemIndex)
     }
     this.itemNames2Index = buildFilterIndex(this.props.items)
     this.menuItemInstances = []
   }
 
   componentWillMount () {
-    this.deactivateTopLevelMenu = () => { this.props.deactivateTopLevelMenu() }
-    if (this.deactivateTopLevelMenu) window.addEventListener('click', this.deactivateTopLevelMenu)
+    this.context.setFocus(this) // <- auto setFocus on mount
+    this.unsubscribe = this.context.subscribe('keyEvent', this.onKeyEvent)
   }
 
   componentWillUnmount () {
-    if (this.deactivateTopLevelMenu) window.removeEventListener('click', this.deactivateTopLevelMenu)
+    if (this.unsubscribe) this.unsubscribe()
   }
 
   onFilterInputChange = (filterValue) => {
@@ -52,13 +52,15 @@ class Menu extends Component {
     this.activateItemAtIndex(targetIndex)
   }
 
-  onKeyEvent = (customEvent) => {
+  onKeyEvent = (keyEvent) => {
+    // do not response if self is not the target
+    if (keyEvent.target !== this) return undefined
     const currentIndex = this.state.activeItemIndex
     const itemsLength = this.props.items.length
     const activeItem = this.props.items[currentIndex]
     const activeMenuItemInstance = this.menuItemInstances[currentIndex]
     let nextIndex = -1
-    switch (customEvent.type) {
+    switch (keyEvent.type) {
       case 'UP':
         if (currentIndex < 0) {
           nextIndex = itemsLength - 1
@@ -83,26 +85,16 @@ class Menu extends Component {
         if (this.props.isSubmenu) {
           this.props.deactivate()
         } else {
-          this.props.activatePrevTopLevelMenuItem()
+          this.context.activatePrevTopLevelMenuItem()
         }
-        break
-      case 'SHIFT_TAB':
-        this.props.activatePrevTopLevelMenuItem()
         break
 
       case 'RIGHT':
         if (activeItem && activeItem.items) {
           if (activeMenuItemInstance) activeMenuItemInstance.showSubmenu()
         } else {
-          this.props.activateNextTopLevelMenuItem()
+          this.context.activateNextTopLevelMenuItem()
         }
-        break
-      case 'TAB':
-        this.props.activateNextTopLevelMenuItem()
-        break
-
-      case 'ESC':
-        this.props.deactivateTopLevelMenu()
         break
 
       case 'ENTER':
@@ -110,7 +102,7 @@ class Menu extends Component {
         break
 
       case 'INPUT':
-        this.onFilterInputChange(customEvent.value)
+        this.onFilterInputChange(keyEvent.value)
         break
 
       default:
@@ -123,22 +115,22 @@ class Menu extends Component {
   }
 
   renderMenuItems (items) {
-    let dividerCount = 0
     return items.map((item, i) => {
+      const key = `menu-item-${item.name}-${i}`
+
       if (item.isDivider) {
-        dividerCount += 1
-        return <MenuItemDivider />
+        return <MenuItemDivider key={key} />
       }
+
       return (
         <MenuItem item={item}
-          index={i - dividerCount}
-          ref={r => this.menuItemInstances[i - dividerCount] = r}
-          isActive={this.state.activeItemIndex === i - dividerCount}
+          index={i}
+          key={key}
+          ref={r => this.menuItemInstances[i] = r}
+          isActive={this.state.activeItemIndex === i}
           currentActiveItemIndex={this.state.activeItemIndex}
           toggleActive={this.activateItemAtIndex}
-          deactivateTopLevelMenu={this.props.deactivateTopLevelMenu}
-          key={`menu-item-${item.name}-${i - dividerCount}`}
-          state={this.props.state}
+          parentMenu={this}
           context={this.props.context}
         />
       )
@@ -146,30 +138,35 @@ class Menu extends Component {
   }
 
   render () {
-    const { items, className, style, deactivateTopLevelMenu, onMouseEnter } = this.props
+    const { items, className, style } = this.props
+
     return (
-      <MenuContainer
-        className={cx('menu', className)}
+      <ul className={cx('menu', className)}
         style={style}
-        onMouseEnter={onMouseEnter || (e => e) }
-        onMouseLeave={() => this.setState({ activeItemIndex: -2 })}
-        onKeyEvent={this.onKeyEvent}
+        onClick={e => e.stopPropagation()}
+        onMouseEnter={() => this.context.setFocus(this) }
+        onMouseLeave={() => this.context.getFocus() === this && this.setState({ activeItemIndex: -2 })}
       >
         {this.renderMenuItems(items)}
-      </MenuContainer>
+      </ul>
     )
   }
 }
 
 Menu.propTypes = {
-  deactivateTopLevelMenu: PropTypes.func.isRequired,
+  isSubmenu: PropTypes.bool.isRequired,
   items: PropTypes.array.isRequired,
+  deactivate: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  activeItemIndex: PropTypes.number,
 }
 
 Menu.defaultProps = {
-  defaultActiveItemIndex: -1,
-  activateNextTopLevelMenuItem: noop,
-  activatePrevTopLevelMenuItem: noop,
+  isSubmenu: false,
+  activeItemIndex: -1,
 }
+
+Menu.contextTypes = MenuContextTypes
 
 export default Menu

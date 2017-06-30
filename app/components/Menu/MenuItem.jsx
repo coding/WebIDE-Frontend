@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import Menu from './Menu'
+import MenuContextTypes from './MenuContextTypes'
 
 const handleMenuItemCommand = (command, context) => {
   if (typeof command === 'function') {
@@ -18,7 +19,7 @@ class MenuItem extends Component {
   constructor (props) {
     super()
     this.state = {
-      defaultActiveItemIndex: -1
+      submenuActiveItemIndex: -1
     }
     this.submenuShowTimeout = null
     const { item, state } = props
@@ -33,10 +34,6 @@ class MenuItem extends Component {
       clearTimeout(this.submenuShowTimeout)
       if (this.state.isSubmenuShown) this.setState({ isSubmenuShown: false })
     }
-
-    if (nextProps.currentActiveItemIndex !== -2) {
-      this.setState({ isSubmenuVisited: false })
-    }
   }
 
   componentWillUnmount () {
@@ -46,16 +43,20 @@ class MenuItem extends Component {
   onMouseEnter = () => {
     this.props.toggleActive(this.props.index)
     this.submenuShowTimeout = setTimeout(
-      () => this.setState({ isSubmenuShown: true })
+      () => {
+        this.setState({ isSubmenuShown: true })
+        this.context.setFocus(this.props.parentMenu)
+      }
     , 200)
   }
 
-  onMouseEnterSubmenu = () => {
-    this.setState({ isSubmenuVisited: true })
+  onSubmenuMount = (ref) => {
+    this.submenu = ref
+    //ref.parent = this.props.parentMenu
   }
 
   showSubmenu = () => {
-    this.setState({ isSubmenuShown: true, defaultActiveItemIndex: 0 })
+    this.setState({ isSubmenuShown: true, submenuActiveItemIndex: 0 })
   }
 
   execCommand = () => {
@@ -76,24 +77,23 @@ class MenuItem extends Component {
       execCommandSuccess = true
     }
 
-    if (execCommandSuccess) this.props.deactivateTopLevelMenu()
+    if (execCommandSuccess) this.context.deactivateTopLevelMenu()
   }
 
+
   render () {
-    const { item, isActive, deactivateTopLevelMenu, state, context } = this.props
+    const { item, isActive, state, context } = this.props
     if (item.visible && !item.visible(context)) return null
 
-    // when hasSubmenu and submenu is visited, onMouseLeave from parent <Menu> won't trigger lost of <MenuItem> activity (which normally will)
-    const shouldStayActive = item.items && this.state.isSubmenuVisited && (this.props.currentActiveItemIndex === -2)
-
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
-    if (item.name == '-') return <li><hr /></li>
 
+    // when submenu is focused, onMouseLeave from parent <Menu> won't trigger lost of <MenuItem> activity (which normally will)
+    const submenuIsFocused = this.submenu && this.context.getFocus() === this.submenu
     return (
       <li className='menu-item'>
         <div
           className={cx('menu-item-container', {
-            active: isActive || shouldStayActive,
+            active: isActive || submenuIsFocused,
             disabled: item.isDisabled,
           })}
           onMouseEnter={this.onMouseEnter}
@@ -110,13 +110,15 @@ class MenuItem extends Component {
           : null }
           {item.items && <div className='menu-item-triangle'>▶</div>}
         </div>
-        {item.items && ((isActive && this.state.isSubmenuShown) || shouldStayActive) &&
-          <Menu items={item.items}
-            deactivate={() => this.setState({ isSubmenuShown: false })}
-            deactivateTopLevelMenu={deactivateTopLevelMenu}
-            onMouseEnter={this.onMouseEnterSubmenu}
-            defaultActiveItemIndex={this.state.defaultActiveItemIndex}
-            isSubmenu={true}
+        {item.items && ((isActive && this.state.isSubmenuShown) || submenuIsFocused) &&
+          <Menu isSubmenu
+            ref={this.onSubmenuMount}
+            items={item.items}
+            deactivate={() => {
+              this.context.setFocus(this.props.parentMenu)
+              this.setState({ isSubmenuShown: false })
+            }}
+            activeItemIndex={this.state.submenuActiveItemIndex}
           />
         }
       </li>
@@ -129,9 +131,11 @@ MenuItem.propTypes = {
   index: PropTypes.number.isRequired,
   isActive: PropTypes.bool.isRequired,
   toggleActive: PropTypes.func.isRequired,
-  deactivateTopLevelMenu: PropTypes.func.isRequired,
   state: PropTypes.object,
   context: PropTypes.object,
+  parentMenu: PropTypes.any.isRequired,
 }
+
+MenuItem.contextTypes = MenuContextTypes
 
 export default MenuItem
