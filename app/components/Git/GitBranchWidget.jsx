@@ -45,7 +45,7 @@ export default class GitBranchWidget extends Component {
                 borderTopLeftRadius: 0,
               }}
               items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
-              deactivateTopLevelMenu={this.toggleActive.bind(this, false)}
+              deactivate={this.toggleActive.bind(this, false)}
             />
           </div>
         : null}

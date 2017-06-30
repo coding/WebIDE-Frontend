@@ -45,6 +45,16 @@ class Menu extends Component {
     if (this.unsubscribe) this.unsubscribe()
   }
 
+  onMouseEnter = () => {
+    this.context.setFocus(this)
+  }
+
+  onMouseLeave = () => {
+    if (this.context.getFocus() === this) {
+      this.setState({ activeItemIndex: -2 })
+    }
+  }
+
   onFilterInputChange = (filterValue) => {
     const targetItemName = this.itemNames2Index
       .find(itemName => itemName.startsWith(filterValue.toLowerCase()))
@@ -128,7 +138,6 @@ class Menu extends Component {
           key={key}
           ref={r => this.menuItemInstances[i] = r}
           isActive={this.state.activeItemIndex === i}
-          currentActiveItemIndex={this.state.activeItemIndex}
           toggleActive={this.activateItemAtIndex}
           parentMenu={this}
           context={this.props.context}
@@ -144,8 +153,8 @@ class Menu extends Component {
       <ul className={cx('menu', className)}
         style={style}
         onClick={e => e.stopPropagation()}
-        onMouseEnter={() => this.context.setFocus(this) }
-        onMouseLeave={() => this.context.getFocus() === this && this.setState({ activeItemIndex: -2 })}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       >
         {this.renderMenuItems(items)}
       </ul>
@@ -160,11 +169,14 @@ Menu.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   activeItemIndex: PropTypes.number,
+  context: PropTypes.any.isRequired,
 }
 
 Menu.defaultProps = {
   isSubmenu: false,
   activeItemIndex: -1,
+  className: '',
+  style: {},
 }
 
 Menu.contextTypes = MenuContextTypes

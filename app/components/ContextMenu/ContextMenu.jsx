@@ -15,7 +15,7 @@ const ContextMenu = (props) => {
     <div className='context-menu' style={{left: pos.x, top: pos.y}} >
       <Menu key={`cm-${pos.x}-${pos.y}`}
         items={items}
-        deactivateTopLevelMenu={deactivate}
+        deactivate={deactivate}
         context={context}
       />
     </div>

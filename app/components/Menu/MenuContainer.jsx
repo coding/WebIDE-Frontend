@@ -111,38 +111,41 @@ class MenuContainer extends Component {
   }
 
   render () {
-    const { items, className, style, onMouseEnter, onMouseLeave,
-      deactivate  } = this.props
+    const { items, className, style, deactivate, context } = this.props
     return (
       <div tabIndex='1'
         ref={r => this.containerDOM = r}
-        className={className}
-        style={style}
         onClick={e => e.stopPropagation()}
-        onMouseEnter={onMouseEnter || (e => e) }
-        onMouseLeave={onMouseLeave}
         onKeyDown={this.onKeyDown}
         onKeyPress={this.onKeyPress}
       >
         <Menu items={items}
           className={className}
+          style={style}
           deactivate={deactivate}
+          context={context}
         />
       </div>
     )
   }
 }
 
-MenuContainer.defaultProps = {
-  defaultActiveItemIndex: -1,
-  activateNextTopLevelMenuItem: noop,
-  activatePrevTopLevelMenuItem: noop,
-}
-
 MenuContainer.propTypes = {
+  items: PropTypes.array.isRequired,
   deactivate: PropTypes.func.isRequired,
   activateNextTopLevelMenuItem: PropTypes.func.isRequired,
   activatePrevTopLevelMenuItem: PropTypes.func.isRequired,
+  context: PropTypes.any.isRequired,
+  className: PropTypes.string,
+  style: PropTypes.object,
+}
+
+MenuContainer.defaultProps = {
+  className: '',
+  style: {},
+  context: {},
+  activateNextTopLevelMenuItem: noop,
+  activatePrevTopLevelMenuItem: noop,
 }
 
 MenuContainer.childContextTypes = MenuContextTypes

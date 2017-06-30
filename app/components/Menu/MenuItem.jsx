@@ -52,7 +52,6 @@ class MenuItem extends Component {
 
   onSubmenuMount = (ref) => {
     this.submenu = ref
-    //ref.parent = this.props.parentMenu
   }
 
   showSubmenu = () => {
@@ -82,7 +81,7 @@ class MenuItem extends Component {
 
 
   render () {
-    const { item, isActive, state, context } = this.props
+    const { item, isActive, context } = this.props
     if (item.visible && !item.visible(context)) return null
 
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
@@ -118,6 +117,7 @@ class MenuItem extends Component {
               this.context.setFocus(this.props.parentMenu)
               this.setState({ isSubmenuShown: false })
             }}
+            context={this.props.context}
             activeItemIndex={this.state.submenuActiveItemIndex}
           />
         }
@@ -127,13 +127,12 @@ class MenuItem extends Component {
 }
 
 MenuItem.propTypes = {
-  item: PropTypes.object,
+  item: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   isActive: PropTypes.bool.isRequired,
   toggleActive: PropTypes.func.isRequired,
-  state: PropTypes.object,
-  context: PropTypes.object,
   parentMenu: PropTypes.any.isRequired,
+  context: PropTypes.any.isRequired,
 }
 
 MenuItem.contextTypes = MenuContextTypes
