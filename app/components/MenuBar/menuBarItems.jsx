@@ -41,7 +41,7 @@ const menuBarItems = [
   }, {
     key: 'git',
     name: 'Git',
-    onOpen: handleGitOnOpen,
+    onOpen: onGitMenuOpen,
     items: [
       {
         key: 'commit',
@@ -110,18 +110,20 @@ const menuBarItems = [
         key: 'abort',
         name: 'Abort Rebasing',
         command: 'git:rebase:abort',
+        getIsDisabled,
       },
       {
         key: 'continue',
         name: 'Continue Rebasing',
         command: 'git:rebase:continue',
+        getIsDisabled,
       },
       {
         key: 'skipCommit',
         name: 'Skip Commit',
         command: 'git:rebase:skip_commit',
+        getIsDisabled,
       }
-
     ]
   }, {
     key: 'tools',
@@ -146,12 +148,12 @@ const menuBarItems = [
 const isRebasing = ['REBASING', 'REBASING_REBASING',
   'REBASING_MERGE', 'REBASING_INTERACTIVE']
 
-function handleGitOnOpen (parentItem) {
-  api.gitRebaseState().then(rebaseState => {
-    if (isRebasing.indexOf(rebaseState) === -1) {
-      // parentItem
-    }
-  })
+function onGitMenuOpen () {
+  return api.gitRebaseState().then(rebaseState => ({ rebaseState }))
+}
+
+function getIsDisabled (menuContext) {
+  return (isRebasing.indexOf(menuContext.rebaseState) === -1)
 }
 
 export default mapShortcutToItems(menuBarItems)

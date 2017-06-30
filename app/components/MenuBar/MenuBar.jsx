@@ -4,6 +4,7 @@ import cx from 'classnames'
 import Menu from '../Menu'
 import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
+import { isFunction } from 'utils/is'
 import config from '../../config'
 
 class MenuBar extends Component {
@@ -52,7 +53,7 @@ class MenuBar extends Component {
               toggleActive={this.activateItemAtIndex}
               key={`menu-bar-${menuBarItem.name}`}
               index={i}
-              state={this.props}
+              onOpen={menuBarItem.onOpen}
               activatePrevTopLevelMenuItem={this.activatePrevMenuItem}
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
@@ -65,39 +66,58 @@ class MenuBar extends Component {
   }
 }
 
-const MenuBarItem = (props) => {
-  const { item, isActive, shouldHoverToggleActive,
-          toggleActive, index, activatePrevTopLevelMenuItem, activateNextTopLevelMenuItem } = props
-  const menuBarItem = item
-  return (
-    <li className={cx('menu-bar-item', menuBarItem.className)}>
-      <div className={cx('menu-bar-item-container',
-          { active: isActive }
-        )}
-        onClick={(e) => {
-          e.stopPropagation()
-          toggleActive(index, true)
-          if (menuBarItem.onOpen) {
-            if (!isActive) {
-              menuBarItem.onOpen(item)
-            }
-          }
-        }}
-        onMouseEnter={(e) => { if (shouldHoverToggleActive) toggleActive(index) }}
-      >
-        {menuBarItem.name}
-      </div>
-      {isActive ?
-        <Menu
-          items={menuBarItem.items}
-          className={cx('top-down to-right', { active: isActive })}
-          deactivate={toggleActive.bind(null, -1)}
-          activatePrevTopLevelMenuItem={activatePrevTopLevelMenuItem}
-          activateNextTopLevelMenuItem={activateNextTopLevelMenuItem}
-        />
-      : null}
-    </li>
-  )
+class MenuBarItem extends Component {
+  constructor (props) {
+    super(props)
+    this.state = { menuContext: {} }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.isActive && nextProps.isActive) {
+      const onOpen = isFunction(nextProps.onOpen) ? nextProps.onOpen : () => null
+      const onOpenPromise = onOpen()
+      if (onOpenPromise && isFunction(onOpenPromise.then)) {
+        onOpenPromise.then(menuContext => this.setState({ menuContext }))
+      }
+    }
+  }
+
+
+  render () {
+    const {
+      item: menuBarItem,
+      isActive, shouldHoverToggleActive,
+      toggleActive, index,
+      activatePrevTopLevelMenuItem,
+      activateNextTopLevelMenuItem,
+    } = this.props
+
+    return (
+      <li className={cx('menu-bar-item', menuBarItem.className)}>
+        <div className={cx('menu-bar-item-container',
+            { active: isActive }
+          )}
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleActive(index, true)
+          }}
+          onMouseEnter={(e) => { if (shouldHoverToggleActive) toggleActive(index) }}
+        >
+          {menuBarItem.name}
+        </div>
+        {isActive ?
+          <Menu
+            items={menuBarItem.items}
+            className={cx('top-down to-right', { active: isActive })}
+            deactivate={toggleActive.bind(null, -1)}
+            activatePrevTopLevelMenuItem={activatePrevTopLevelMenuItem}
+            activateNextTopLevelMenuItem={activateNextTopLevelMenuItem}
+            context={this.state.menuContext}
+          />
+        : null}
+      </li>
+    )
+  }
 }
 
 export default MenuBar

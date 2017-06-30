@@ -3,22 +3,8 @@ import cx from 'classnames'
 import PropTypes from 'prop-types'
 import MenuItem from './MenuItem'
 import MenuContextTypes from './MenuContextTypes'
-import noop from 'lodash/noop'
+import { isFunction, isBoolean } from 'utils/is'
 
-function getNearestSelectableItemIndex (items, index, direction='next') {
-  const item = items[index]
-  if (!item) return -1
-  if (item.isDisabled || item.isDivider) {
-    if (direction === 'next') {
-      return getNearestSelectableItemIndex(items, index + 1, direction)
-    } else if (direction === 'prev') {
-      return getNearestSelectableItemIndex(items, index - 1, direction)
-    }
-  } else {
-    return index
-  }
-  return -1
-}
 
 function buildFilterIndex (items=[]) {
   return items.map(({ name='' }) => name.toLowerCase())
@@ -30,7 +16,7 @@ class Menu extends Component {
   constructor (props, context) {
     super(props)
     this.state = {
-      activeItemIndex: getNearestSelectableItemIndex(props.items, props.activeItemIndex)
+      activeItemIndex: this.getValidItemIndex(props.activeItemIndex, 'next', context)
     }
     this.itemNames2Index = buildFilterIndex(this.props.items)
     this.menuItemInstances = []
@@ -43,6 +29,27 @@ class Menu extends Component {
 
   componentWillUnmount () {
     if (this.unsubscribe) this.unsubscribe()
+  }
+
+  getValidItemIndex = (index, direction='next', context) => {
+    const { menuContext } = this.context || context
+    const { items } = this.props
+    const item = items[index]
+    if (!item) return -1
+    const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
+      : isFunction(item.getIsDisabled) && item.getIsDisabled(menuContext)
+    const isHidden = isBoolean(item.isHidden) ? item.isHidden
+      : isFunction(item.getIsHidden) && item.getIsHidden(menuContext)
+    if (item.isDivider || isDisabled || isHidden) {
+      if (direction === 'next') {
+        return this.getValidItemIndex(index + 1, direction)
+      } else if (direction === 'prev') {
+        return this.getValidItemIndex(index - 1, direction)
+      }
+    } else {
+      return index
+    }
+    return -1
   }
 
   onMouseEnter = () => {
@@ -78,7 +85,7 @@ class Menu extends Component {
           nextIndex = currentIndex - 1
         }
         if (nextIndex < 0) nextIndex = 0
-        nextIndex = getNearestSelectableItemIndex(this.props.items, nextIndex, 'prev')
+        nextIndex = this.getValidItemIndex(nextIndex, 'prev')
         break
 
       case 'DOWN':
@@ -88,7 +95,7 @@ class Menu extends Component {
           nextIndex = currentIndex + 1
         }
         if (nextIndex >= itemsLength) nextIndex = itemsLength - 1
-        nextIndex = getNearestSelectableItemIndex(this.props.items, nextIndex, 'next')
+        nextIndex = this.getValidItemIndex(nextIndex, 'next')
         break
 
       case 'LEFT':
@@ -132,6 +139,10 @@ class Menu extends Component {
         return <MenuItemDivider key={key} />
       }
 
+      if (isFunction(item.getIsHidden) && item.getIsHidden(this.context.menuContext)) {
+        return null
+      }
+
       return (
         <MenuItem item={item}
           index={i}
@@ -140,7 +151,6 @@ class Menu extends Component {
           isActive={this.state.activeItemIndex === i}
           toggleActive={this.activateItemAtIndex}
           parentMenu={this}
-          context={this.props.context}
         />
       )
     })
@@ -169,7 +179,6 @@ Menu.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   activeItemIndex: PropTypes.number,
-  context: PropTypes.any.isRequired,
 }
 
 Menu.defaultProps = {

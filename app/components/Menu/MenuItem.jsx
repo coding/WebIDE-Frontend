@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import Menu from './Menu'
 import MenuContextTypes from './MenuContextTypes'
+import { isFunction, isBoolean } from 'utils/is'
 
-const handleMenuItemCommand = (command, context) => {
+const handleMenuItemCommand = (command, menuContext) => {
   if (typeof command === 'function') {
-    command(context)
+    command(menuContext)
     return true
   } else {
     // ↓ temporary measure to resolve a cyclic dependent conflict
@@ -59,7 +60,7 @@ class MenuItem extends Component {
   }
 
   execCommand = () => {
-    const { item, context } = this.props
+    const { item } = this.props
     const command = item.command
 
     if (item.isDisabled) return null // no-op
@@ -68,7 +69,7 @@ class MenuItem extends Component {
 
     let execCommandSuccess = false
     if (typeof command === 'function') {
-      command(context)
+      command(this.context.menuContext)
       execCommandSuccess = true
     } else {
       // @fixme: ↓ temporary measure to resolve a cyclic dependent conflict
@@ -81,19 +82,19 @@ class MenuItem extends Component {
 
 
   render () {
-    const { item, isActive, context } = this.props
-    if (item.visible && !item.visible(context)) return null
-
+    const { item, isActive } = this.props
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
 
     // when submenu is focused, onMouseLeave from parent <Menu> won't trigger lost of <MenuItem> activity (which normally will)
     const submenuIsFocused = this.submenu && this.context.getFocus() === this.submenu
+    const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
+      : isFunction(item.getIsDisabled) && item.getIsDisabled(this.context.menuContext)
     return (
       <li className='menu-item'>
         <div
           className={cx('menu-item-container', {
             active: isActive || submenuIsFocused,
-            disabled: item.isDisabled,
+            disabled: isDisabled,
           })}
           onMouseEnter={this.onMouseEnter}
           onClick={this.execCommand}
@@ -117,7 +118,6 @@ class MenuItem extends Component {
               this.context.setFocus(this.props.parentMenu)
               this.setState({ isSubmenuShown: false })
             }}
-            context={this.props.context}
             activeItemIndex={this.state.submenuActiveItemIndex}
           />
         }
@@ -132,7 +132,6 @@ MenuItem.propTypes = {
   isActive: PropTypes.bool.isRequired,
   toggleActive: PropTypes.func.isRequired,
   parentMenu: PropTypes.any.isRequired,
-  context: PropTypes.any.isRequired,
 }
 
 MenuItem.contextTypes = MenuContextTypes

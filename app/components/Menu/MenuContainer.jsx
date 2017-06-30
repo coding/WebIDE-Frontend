@@ -39,6 +39,7 @@ class MenuContainer extends Component {
       getFocus () {
         return self.state.currentFocus
       },
+      menuContext: this.props.context,
       deactivateTopLevelMenu: this.props.deactivate,
       activatePrevTopLevelMenuItem: this.props.activatePrevTopLevelMenuItem,
       activateNextTopLevelMenuItem: this.props.activateNextTopLevelMenuItem,
@@ -111,7 +112,7 @@ class MenuContainer extends Component {
   }
 
   render () {
-    const { items, className, style, deactivate, context } = this.props
+    const { items, className, style, deactivate } = this.props
     return (
       <div tabIndex='1'
         ref={r => this.containerDOM = r}
@@ -123,7 +124,6 @@ class MenuContainer extends Component {
           className={className}
           style={style}
           deactivate={deactivate}
-          context={context}
         />
       </div>
     )
