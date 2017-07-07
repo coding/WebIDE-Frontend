@@ -15,10 +15,10 @@ const transform = createTransformer(store => ({
   EditorTabState: toJS(store.EditorTabState),
   FileTreeState: toJS(store.FileTreeState)
 }))
-autorun((_) => {
-  const transformedStore = transform(store)
-  console.log('[mobx store] ', transformedStore)
-})
+// autorun((_) => {
+//   const transformedStore = transform(store)
+//   console.log('[mobx store] ', transformedStore)
+// })
 
 export default store
 window.mobxStore = store

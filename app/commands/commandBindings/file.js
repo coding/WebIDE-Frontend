@@ -105,7 +105,11 @@ export default {
         }))
         .then(() => TabStore.updateTabFlags(activeTab.id, 'modified', false))
     } else {
-      api.writeFile(activeTab.file.path, content)
+      // when ot is activated:
+      if (activeTab.editor.otClient) {
+        activeTab.editor.otClient.save()
+      } else {
+        api.writeFile(activeTab.file.path, content)
         .then(() => {
           TabStore.updateTabFlags(activeTab.id, 'modified', false)
           FileStore.updateFile({
@@ -113,6 +117,7 @@ export default {
             content,
           })
         })
+      }
     }
   },
 

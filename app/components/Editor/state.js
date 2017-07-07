@@ -34,6 +34,7 @@ class Editor {
     if (is.string(props.tabId)) this.tabId = props.tabId
     if (is.string(props.filePath)) this.filePath = props.filePath
     if (is.pojo(props.gitBlame)) this.gitBlame = props.gitBlame
+    if (props.revision) this.revision = props.revision
     // file
     if (!this.file && props.content) {
       this._content = props.content

@@ -32,4 +32,3 @@ const openNode = registerAction('open_node',
 
   }
 )
-

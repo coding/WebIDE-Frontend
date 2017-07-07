@@ -78,13 +78,18 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
     }
   } else if (getTabType(node) === 'TEXT') {
     api.readFile(node.path)
-        .then(data => FileStore.loadNodeData(data))
-        .then(() => {
+        .then(data => {
+          FileStore.loadNodeData(data)
+          return data
+        })
+        .then(data => {
+          console.log('opend node see data', data)
           TabActions.createTab({
             title: node.name,
             icon: 'fa fa-file-o',
             editor: {
               ...editor,
+              revision: data.hashedVersion,
               filePath: node.path,
             }
           })
