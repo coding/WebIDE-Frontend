@@ -7,16 +7,16 @@ class WrappedOperation {
     this.meta = meta
   }
 
-  apply (...args) {
-    return this.wrapped.apply(...args)
+  apply (str) {
+    return this.wrapped.apply(str)
   }
 
-  invert (...args) {
-    let inverseMeta = meta
-    if (this.meta && typeof meta.invert === 'function') {
-      inverseMeta = meta.invert(...args)
+  invert (str) {
+    let inverseMeta = this.meta
+    if (this.meta && typeof this.meta.invert === 'function') {
+      inverseMeta = this.meta.invert(str)
     }
-    return new WrappedOperation(this.wrapped.invert(...args), inverseMeta)
+    return new WrappedOperation(this.wrapped.invert(str), inverseMeta)
   }
 
   compose (other) {
@@ -27,12 +27,12 @@ class WrappedOperation {
   }
 
   static transform (a, b) {
+    const transformMeta = (meta, textOperation) =>
+      meta && typeof meta.transform === 'function' ? meta.transform(textOperation) : meta
     const pair = xform(a.wrapped, b.wrapped)
     return [
-      new WrappedOperation(pair[0]),
-      typeof a.meta.transform === 'function' ? a.meta.transform(b.wrapped) : a.meta,
-      new WrappedOperation(pair[1]),
-      typeof b.meta.transform === 'function' ? b.meta.transform(a.wrapped) : b.meta,
+      new WrappedOperation(pair[0], transformMeta(a.meta, b.wrapped)),
+      new WrappedOperation(pair[1], transformMeta(b.meta, a.wrapped)),
     ]
   }
 }

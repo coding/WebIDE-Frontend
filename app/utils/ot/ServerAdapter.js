@@ -1,8 +1,8 @@
-import { Stomp } from 'stompjs/lib/stomp'
-import SockJS from 'sockjs-client'
-import getBackoff from 'utils/getBackoff'
+import WebSocketClient from './WebSocketClient'
+import EventEmitter from 'eventemitter3'
 import config from 'config'
-import uuid from 'uuid/v4'
+import { adaptServerOperationData, adaptClientOperationData } from './helpers'
+import EventBuffer from './EventBuffer'
 
 /* A Stomp Client has the following interface:
  *
@@ -16,159 +16,84 @@ import uuid from 'uuid/v4'
  */
 
 class ServerAdapter {
-  constructor () {
-    if (this.constructor.$$singleton) return this.constructor.$$singleton
-    // SockJS auto connects at initiation
-    this.backoff = getBackoff({ delayMin: 50, delayMax: 5000 })
-    this.maxAttempts = 7
-    this.constructor.$$singleton = this
-    this.id = uuid().split('-')[0]
+  constructor (filePath, revision) {
+    console.log('ServerAdapter init for ', filePath)
+    if (!filePath) throw Error('Required param "filePath" is missing at "new ServerAdapter()"')
+    this.filePath = filePath
+    this.client = new WebSocketClient()
+    this.clientId = this.client.id
 
-    this.connect(this.connectSuccess.bind(this))
-  }
+    // this.emitter = new EventEmitter()
+    this.version = revision.version
 
-  connectSuccess (client) {
-    const updatedChannel = `/topic/collaboration/${config.spaceKey}/file/updated`
-    client.subscribe(updatedChannel, (frame) => {
-      const data = JSON.parse(frame.body)
-      if (this.id === data.clientId) {
-        this.trigger('ack', data)
-      } else {
-        this.trigger('operation', data)
-      }
+    this.otEventBuffer = new EventBuffer()
+    this.client.emitter.on('ot', this.otSubscription)
+    this.client.emitter.on('private', privateMessage => {
+      this.privateMessageChannel = Promise.resolve(privateMessage)
     })
-
-    const committedChannel = `/topic/collaboration/${config.spaceKey}/file/committed`
-    client.subscribe(committedChannel, (frame) => {
-      console.log('ot committed', frame)
+    this.otEventBuffer.subscribe((evt) => {
+      this.version = evt.data.revision.version
+      const callback = this.callbacks[evt.type]
+      if (callback) callback(evt.data)
     })
   }
 
-  connect (connectCallback, errorCallback) {
-    if (!this.ws || !this.client) {
-      this.ws = new SockJS(`${config.wsURL}/ot/sockjs/${config.spaceKey}`, {},
-        { server: `${config.spaceKey}`, transports: 'websocket' }
-      )
-      this.client = Stomp.over(this.ws)
-      this.client.debug = false // stop console.logging PING/PONG
-    }
-
-    const success = () => {
-      this.backoff.reset()
-      connectCallback(this.client)
-    }
-    const error = (...args) => {
-      switch (this.ws.readyState) {
-        case SockJS.CLOSING:
-        case SockJS.CLOSED:
-          this.reconnect(connectCallback, errorCallback)
-          break
-        case SockJS.OPEN:
-          console.log('FRAME ERROR', args[0])
-          break
-        default:
-      }
-      errorCallback(args)
-    }
-
-    this.client.connect({ id: this.id }, success, error)
+  fetchMissingOperations (start, end) {
+    this.client.send(`/app/collaboration/${config.spaceKey}/history`, {
+      path: this.filePath, start, end
+    })
+    this.privateMessageChannel.then(missingOperations => {
+      // 1. push missing operations into otEventBuffer
+      missingOperations.forEach(operationData => {
+        const type = this.clientId === operationData.clientId ? 'ack' : 'operation'
+        const evt = { type, data: adaptServerOperationData(operationData) }
+        this.otEventBuffer.push(evt)
+      })
+      // 1. sort otEventBuffer by version number in ascending order
+      this.otEventBuffer.sort((a, b) => a.revision.version - b.revision.version)
+      this.otEventBuffer.stopBuffer()
+    })
   }
 
-  reconnect (connectCallback, errorCallback) {
-    // unset this.ws
-    this.ws = undefined
-    if (this.backoff.attempts <= this.maxAttempts) {
-      const retryDelay = this.backoff.duration()
-      setTimeout(
-        this.connect.bind(this, connectCallback, errorCallback)
-      , retryDelay)
-    } else { // exceed maxAttempts
-      this.backoff.reset()
-      // todo: insert here notify or other Call-To-Action
-      console.warn('Sock connected failed, something may be broken, reload page and try again')
+  otSubscription = (evt) => {
+    // local emitter emits only when filePath matches
+    if (evt.data.path !== this.filePath) return
+    console.log(evt.data)
+    const incomingVersion = evt.data.resultingVersion.version
+    const testVersion = window.location.hash.slice(9)
+    if (testVersion) {
+      if (Number(testVersion) == incomingVersion) return
     }
+    // version number must be consecutive integers
+    // if incomingVersion is not greater than current version exactly by 1
+    // then something is wrong.
+
+    if (this.version + 1 !== incomingVersion) {
+      console.error('otEventBuffer start buffer!')
+      this.otEventBuffer.startBuffer()
+      this.fetchMissingOperations(this.version, incomingVersion)
+    }
+    evt.data = adaptServerOperationData(evt.data)
+    console.log('push into this.otEventBuffer', evt)
+    this.otEventBuffer.push(evt)
   }
 
-  // ot specifics
   registerCallbacks (callbacks) {
     this.callbacks = callbacks
   }
 
-  trigger (event, ...args) {
-    const callback = this.callbacks && this.callbacks[event]
-    if (callback) { callback.apply(this, args) }
-  }
-
   sendSaveSignal (revision, path) {
-    const message = JSON.stringify({ version: revision, path })
-    this.client.send(`/app/collaboration/${config.spaceKey}/save`, { id: this.id }, message)
+    this.client.send(`/app/collaboration/${config.spaceKey}/save`, { version: revision, path })
   }
 
   sendOperation (revision, operation, selection) {
-    console.log('sendOperation revision', revision)
-    this.client.send(`/app/collaboration/${config.spaceKey}/write`, { id: this.id }, operation)
+    const operationMessage = adaptClientOperationData(operation)
+    this.client.send(`/app/collaboration/${config.spaceKey}/write`, operationMessage)
   }
 
   sendSelection (selection) {
-    console.log('sending selection')
+    // console.log('sending selection')
   }
 }
-
-function encodeOperationForServer (clientId, filePath, targetVersion, textOperation) {
-  const ops = textOperation.ops.map(op => {
-    if (isRetain(op)) {
-      return {
-        type: 'RETAIN',
-        content: String(op),
-      }
-    } else if (isInsert(op)) {
-      return {
-        type: 'CHARACTERS',
-        content: op,
-      }
-    } else if (isDelete(op)) {
-      let nonsenseString = ''
-      while (op < 0) {
-        nonsenseString += '_'
-        op++
-      }
-      return {
-        type: 'DELETE_CHARACTERS',
-        content: nonsenseString,
-      }
-    }
-  })
-
-  return {
-    path: filePath,
-    author: config.globalKey || 'foobar',
-    clientId,
-    targetVersion,
-    ops,
-  }
-}
-
-function decodeOperationFromServer (operationMessage) {
-  const {
-    spaceKey,
-    path,
-    author,
-    resultingVersion,
-    clientId,
-  } = operationMessage
-
-  const ops = operationMessage.ops.map(op => {
-    switch (op.type) {
-      case 'RETAIN':
-        return Number(op.content)
-      case 'CHARACTERS':
-        return op.content
-      case 'DELETE_CHARACTERS':
-        return op.content.length * -1
-    }
-  })
-  return { clientId, ops, path }
-}
-
 
 export default ServerAdapter

@@ -137,7 +137,6 @@ class Client {
   static AwaitingWithBuffer = AwaitingWithBuffer
 
   constructor (revision) {
-    console.log('Client ....revision', revision)
     this.revision = revision
     this.state = new Synchronized()
   }
@@ -146,12 +145,13 @@ class Client {
     this.state = state
   }
 
-  // invoke when user makes local change
+  // @invoked by EditorClient
   applyClient (operation) {
     this.setState(this.state.applyClient(this, operation))
   }
 
-  // invoke when receive new operation from server
+  // @registered by EditorClient
+  // @invoked by serverAdapter event callbacks
   applyServer (revision, operation) {
     this.revision = revision // @fixme: probably should use another way to gen revision
     this.setState(this.state.applyServer(this, operation))

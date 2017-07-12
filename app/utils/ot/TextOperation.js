@@ -10,6 +10,25 @@ export function isDelete (op) {
   return typeof op === 'number' && op < 0
 }
 
+function getSimpleOp (operation, fn) {
+  var ops = operation.ops;
+  var isRetain = TextOperation.isRetain;
+  switch (ops.length) {
+  case 1:
+    return ops[0];
+  case 2:
+    return isRetain(ops[0]) ? ops[1] : (isRetain(ops[1]) ? ops[0] : null);
+  case 3:
+    if (isRetain(ops[0]) && isRetain(ops[2])) { return ops[1]; }
+  }
+  return null;
+}
+
+function getStartIndex (operation) {
+  if (isRetain(operation.ops[0])) { return operation.ops[0]; }
+  return 0;
+}
+
 // Transform takes two operations A and B that happened concurrently and
 // produces two operations A' and B' (in an array) such that
 // `apply(apply(S, A), B') = apply(apply(S, B), A')`. This function is the
@@ -222,7 +241,7 @@ class TextOperation {
     if (n === 0) return this
     const ops = this.ops
     if (n > 0) n = -n
-    this.baseLength = -n
+    this.baseLength -= n
     if (isDelete(ops[ops.length - 1])) {
       ops[ops.length - 1] += n
     } else {
@@ -236,7 +255,7 @@ class TextOperation {
   }
 
   toString () {
-    this.ops.map(op => {
+    return this.ops.map(op => {
       if (isRetain(op)) {
         return `retain ${op}`
       } else if (isInsert(op)) {

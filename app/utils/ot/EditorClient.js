@@ -4,39 +4,8 @@ import UndoManager from './UndoManager'
 import WrappedOperation from './WrappedOperation'
 import CodeMirrorAdapter from './CodeMirrorAdapter'
 import ServerAdapter from './ServerAdapter'
-import { isRetain, isInsert, isDelete } from './TextOperation'
-
-function rgb2hex (r, g, b) {
-  function digits (n) {
-    var m = Math.round(255*n).toString(16);
-    return m.length === 1 ? '0'+m : m;
-  }
-  return '#' + digits(r) + digits(g) + digits(b);
-}
-
-function hsl2hex (h, s, l) {
-  if (s === 0) { return rgb2hex(l, l, l); }
-  var var2 = l < 0.5 ? l * (1+s) : (l+s) - (s*l);
-  var var1 = 2 * l - var2;
-  var hue2rgb = function (hue) {
-    if (hue < 0) { hue += 1; }
-    if (hue > 1) { hue -= 1; }
-    if (6*hue < 1) { return var1 + (var2-var1)*6*hue; }
-    if (2*hue < 1) { return var2; }
-    if (3*hue < 2) { return var1 + (var2-var1)*6*(2/3 - hue); }
-    return var1;
-  };
-  return rgb2hex(hue2rgb(h+1/3), hue2rgb(h), hue2rgb(h-1/3));
-}
-
-function hueFromName (name) {
-  var a = 1;
-  for (var i = 0; i < name.length; i++) {
-    a = 17 * (a+name.charCodeAt(i)) % 360;
-  }
-  return a/360;
-}
-
+import config from 'config'
+import { hueFromName, hsl2hex } from './helpers'
 
 class SelfMeta {
   constructor (selectionBefore, selectionAfter) {
@@ -80,7 +49,6 @@ class OtherMeta {
     )
   }
 }
-
 
 // this dude is managing other client's indicators: name, selection, color.
 class OtherClient {
@@ -128,36 +96,22 @@ class OtherClient {
   }
 }
 
-
-function decodeOperationFromServer (_ops) {
-  const ops = _ops.map(op => {
-    switch (op.type) {
-      case 'RETAIN':
-        return Number(op.content)
-      case 'CHARACTERS':
-        return op.content
-      case 'DELETE_CHARACTERS':
-        return op.content.length * -1
-    }
-  })
-  return ops
-}
-
 class EditorClient extends Client {
   constructor (editor) {
     const { revision, cm, filePath } = editor
     super(revision)
-    this.editorAdapter = new CodeMirrorAdapter(cm)
-    this.serverAdapter = new ServerAdapter()
-    editor.otClient = this
-    this.clientId = this.serverAdapter.id
     this.filePath = filePath
+    this.editorAdapter = new CodeMirrorAdapter(cm)
+    this.serverAdapter = new ServerAdapter(filePath, revision)
+    editor.otClient = this
+    this.clientId = this.serverAdapter.clientId
     this.undoManager = new UndoManager()
     this.clients = {}
 
+    window.editorClient = this
+
     this.editorAdapter.registerCallbacks({
       change: (operation, inverse) => {
-        console.log('this.editorAdapter.onchange')
         this.onChange(operation, inverse)
       },
       selectionChange: () => { this.onSelectionChange() },
@@ -167,13 +121,15 @@ class EditorClient extends Client {
     this.editorAdapter.registerRedo(() => this.redo())
 
     this.serverAdapter.registerCallbacks({
-      operation: function (data) {
-        console.log('operation from server', data)
-        this.applyServer(data.resultingVersion, decodeOperationFromServer(data.ops))
+      operation: (data) => {
+        if (data.path !== this.filePath) return
+        console.log('[ops]', data)
+        this.applyServer(data.revision, data.textOperation)
       },
-      ack: function (data) {
-        console.log('ackownledge from server', data)
-        this.serverAck(data.resultingVersion)
+      ack: (data) => {
+        if (data.path !== this.filePath) return
+        console.log('[ack]', data)
+        this.serverAck(data.revision)
       }
     })
   }
@@ -188,7 +144,7 @@ class EditorClient extends Client {
   }
 
   save () {
-    this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
+    // this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
   }
 
   initializeClients (clients) { /**/ }
@@ -235,12 +191,14 @@ class EditorClient extends Client {
     this.updateSelection()
     const selectionAfter = this.selection
     const meta = new SelfMeta(selectionBefore, selectionAfter)
-    const operation = new WrappedOperation(textOperation, meta)
+    // const operation = new WrappedOperation(textOperation, meta)
     const undoStackLength = this.undoManager.undoStack.length
     const lastUndoOperation = this.undoManager.undoStack[undoStackLength - 1]
-    const compose = undoStackLength > 0 &&
+    const shouldCompose = undoStackLength > 0 &&
       inverse.shouldBeComposedWithInverted(lastUndoOperation.wrapped)
     const inverseMeta = new SelfMeta(selectionAfter, selectionBefore)
+    const wrappedInverse = new WrappedOperation(inverse, inverseMeta)
+    this.undoManager.add(wrappedInverse, shouldCompose)
     this.applyClient(textOperation)
   }
 
@@ -265,74 +223,24 @@ class EditorClient extends Client {
     this.serverAdapter.sendSelection(selection)
   }
 
+  // @invoked by Client
   sendOperation (revision, operation) {
-    const operationMessage = encodeOperationForServer(this.clientId, this.filePath, revision, operation)
-    console.log('EditorClient.sendOperation', operationMessage)
-    this.serverAdapter.sendOperation(revision, JSON.stringify(operationMessage), this.selection)
+    const operationData = {
+      author: config.globalKey,
+      clientId: this.clientId,
+      filePath: this.filePath,
+      targetVersion: revision,
+      textOperation: operation,
+    }
+    this.serverAdapter.sendOperation(revision, operationData, this.selection)
   }
 
+  // @invoked by Client
   applyOperation (operation) {
     this.editorAdapter.applyOperation(operation)
     this.updateSelection()
     this.undoManager.transform(new WrappedOperation(operation, null))
   }
-
-}
-
-function encodeOperationForServer (clientId, filePath, targetVersion, textOperation) {
-  const ops = textOperation.ops.map(op => {
-    if (isRetain(op)) {
-      return {
-        type: 'RETAIN',
-        content: String(op),
-      }
-    } else if (isInsert(op)) {
-      return {
-        type: 'CHARACTERS',
-        content: op,
-      }
-    } else if (isDelete(op)) {
-      let nonsenseString = ''
-      while (op < 0) {
-        nonsenseString += '_'
-        op++
-      }
-      return {
-        type: 'DELETE_CHARACTERS',
-        content: nonsenseString,
-      }
-    }
-  })
-
-  return {
-    path: filePath,
-    author: config.globalKey || 'foobar',
-    clientId,
-    targetVersion,
-    ops,
-  }
-}
-
-function decodeOperationFromServer (operationMessage) {
-  const {
-    spaceKey,
-    path,
-    author,
-    resultingVersion,
-    clientId,
-  } = operationMessage
-
-  const ops = operationMessage.ops.map(op => {
-    switch (op.type) {
-      case 'RETAIN':
-        return Number(op.content)
-      case 'CHARACTERS':
-        return op.content
-      case 'DELETE_CHARACTERS':
-        return op.content.length * -1
-    }
-  })
-  return { clientId, ops, path }
 }
 
 export default EditorClient

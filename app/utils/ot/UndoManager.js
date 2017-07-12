@@ -1,17 +1,36 @@
-import { xform } from './TextOperation'
-
 const NORMAL_STATE = 'NORMAL_STATE'
 const UNDOING_STATE = 'UNDOING_STATE'
 const REDOING_STATE = 'REDOING_STATE'
 
+function transformStack0 (stack, operation) {
+  // try {
+    const newStack = []
+    stack = stack.slice() // duplica of original stack
+    const xform = operation.constructor.transform
+    while (stack.length) {
+      const [stackedPrime, operationPrime] = xform(stack.pop(), operation)
+      if (!stackedPrime.isNoop || !stackedPrime.isNoop()) newStack.push(stackedPrime)
+      operation = operationPrime
+    }
+    return newStack.reverse()  // more performant than unshift
+  // } catch (err) {
+  //   console.trace(err)
+  //   return []
+  // }
+}
+
 function transformStack (stack, operation) {
   const newStack = []
   stack = stack.slice() // duplica of original stack
-  while (stack.length) {
-    const [stackedPrime, operationPrime] = xform(stack.pop(), operation)
-    if (!stackedPrime.isNoop()) newStack.push(stackedPrime)
+  const xform = operation.constructor.transform
+  for (let i = stack.length - 1; i >= 0; i--) {
+    const [stackedPrime, operationPrime] = xform(stack[i], operation)
+    if (!stackedPrime.isNoop || !stackedPrime.isNoop()) {
+      newStack.push(stackedPrime)
+    }
     operation = operationPrime
   }
+
   return newStack.reverse()  // more performant than unshift
 }
 
@@ -29,6 +48,12 @@ class UndoManager {
   // When `shouldCompose` is true, compose the operation with the last operation,
   // unless the last operation was already pushed on the redo stack, or was
   // hidden by a newer operation on the undo stack
+
+  // fixme:
+  // It's crucial that one condition be met here.
+  // incoming operation's targetLength MUST be equal to
+  // previous operation's baseLength, BECAUSE undo ops are consumed in reverse order
+  // if newer op's targetLength doesn't meet older's baseLength, it couldn't be applied anyway.
   add (operation, shouldCompose) {
     const undoStack = this.undoStack
     switch (this.state) {
@@ -42,6 +67,8 @@ class UndoManager {
         break
       case NORMAL_STATE:
       default:
+        // operation.wrapped.targetLength
+
         if (!this.dontCompose && shouldCompose && undoStack.length > 0) {
           undoStack.push(operation.compose(undoStack.pop()))
         } else {
@@ -64,7 +91,7 @@ class UndoManager {
   // of the operation, which pushes the inverse on the redo stack.
   performUndo (fn) {
     this.state = UNDOING_STATE
-    if (this.undoStack.length === 0) { /* noop */ }
+    if (this.undoStack.length === 0) return /* noop */
     const inverseOp = fn(this.undoStack.pop())
     this.add(inverseOp)
     this.state = NORMAL_STATE
@@ -73,7 +100,7 @@ class UndoManager {
   // The inverse of `performUndo`.
   performRedo (fn) {
     this.state = REDOING_STATE
-    if (this.redoStack.length === 0) { /* noop */ }
+    if (this.redoStack.length === 0) return /* noop */
     const inverseOp = fn(this.redoStack.pop())
     this.add(inverseOp)
     this.state = NORMAL_STATE

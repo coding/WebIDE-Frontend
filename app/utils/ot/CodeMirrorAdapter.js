@@ -85,7 +85,8 @@ class CodeMirrorAdapter {
 
     let docEndLength = codemirrorDocLength(doc)
     let operation = new TextOperation().retain(docEndLength)
-    // let inverse = new TextOperation().retain(docEndLength)
+    let inverse = new TextOperation().retain(docEndLength)
+
     for (let i = changes.length - 1; i >= 0; i--) {
       const change = changes[i]
       indexFromPos = updateIndexFromPos(indexFromPos, change)
@@ -100,17 +101,15 @@ class CodeMirrorAdapter {
         .retain(restLength)
         .compose(operation)
 
-      // inverse = inverse.compose(new TextOperation()
-      //   .retain(fromIndex)
-      //   ['delete'](sumLengths(change.text))
-      //   .insert(change.removed.join('\n'))
-      //   .retain(restLength)
-      // )
+      inverse = inverse.compose(new TextOperation()
+        .retain(fromIndex)
+        ['delete'](sumLengths(change.text))
+        .insert(change.removed.join('\n'))
+        .retain(restLength)
+      )
 
       docEndLength += sumLengths(change.removed) - sumLengths(change.text)
     }
-
-    const inverse = operation.invert(doc.getValue())
 
     return [operation, inverse]
   }
@@ -294,6 +293,7 @@ class CodeMirrorAdapter {
     if (action) action.apply(this, args)
   }
 
+  // @invoked by EditorClient
   applyOperation (operation) {
     this.ignoreNextChange = true
     this.constructor.applyOperationToCodeMirror(operation, this.cm)
