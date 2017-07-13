@@ -58,12 +58,12 @@ class WebSocketClient extends BaseWebSocketClient {
       console.log(COLLAB_ONLINE_CHANNEL, frame)
     })
 
-    const PRIVATE_MESSAGE_CHANNEL = `/topic/collaboration/${config.spaceKey}/stompClients/${this.id}`
-    stompClient.subscribe(PRIVATE_MESSAGE_CHANNEL, (frame) => {
-      this.emitter.emit('private', JSON.parse(frame.body))
+    const HISTORY_CHANNEL = `/user/${this.id}/topic/collaboration/${config.spaceKey}/history`
+    stompClient.subscribe(HISTORY_CHANNEL, (frame) => {
+      this.emitter.emit('history', JSON.parse(frame.body))
     })
 
-    const CHAT_CHANNEL = `/topic/collaboration/${config.spaceKey}/messages`
+    const CHAT_CHANNEL = `/topic/collaboration/${config.spaceKey}/chat`
     stompClient.subscribe(CHAT_CHANNEL, (frame) => {
       const data = JSON.parse(frame.body)
       this.emitter.emit('chat', data)

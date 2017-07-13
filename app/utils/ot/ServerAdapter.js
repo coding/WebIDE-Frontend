@@ -28,11 +28,16 @@ class ServerAdapter {
 
     this.otEventBuffer = new EventBuffer()
     this.client.emitter.on('ot', this.otSubscription)
-    this.client.emitter.on('private', privateMessage => {
-      this.privateMessageChannel = Promise.resolve(privateMessage)
+    this.client.emitter.on('history', (historyOperations) => {
+      this.client.emitter.emit('history_once', historyOperations)
     })
+    this.histories = new Map()
     this.otEventBuffer.subscribe((evt) => {
+      const hash = evt.data.revision.historyHash.join('.')
+      // check is this revision has been applied.
+      if (this.histories.has(hash)) return undefined
       this.version = evt.data.revision.version
+      this.histories.set(hash, evt)
       const callback = this.callbacks[evt.type]
       if (callback) callback(evt.data)
     })
@@ -42,7 +47,8 @@ class ServerAdapter {
     this.client.send(`/app/collaboration/${config.spaceKey}/history`, {
       path: this.filePath, start, end
     })
-    this.privateMessageChannel.then(missingOperations => {
+
+    this.client.emitter.once('history_once', missingOperations => {
       // 1. push missing operations into otEventBuffer
       missingOperations.forEach(operationData => {
         const type = this.clientId === operationData.clientId ? 'ack' : 'operation'
@@ -50,7 +56,7 @@ class ServerAdapter {
         this.otEventBuffer.push(evt)
       })
       // 1. sort otEventBuffer by version number in ascending order
-      this.otEventBuffer.sort((a, b) => a.revision.version - b.revision.version)
+      this.otEventBuffer.sort((a, b) => a.data.revision.version - b.data.revision.version)
       this.otEventBuffer.stopBuffer()
     })
   }
@@ -71,7 +77,7 @@ class ServerAdapter {
     if (this.version + 1 !== incomingVersion) {
       console.error('otEventBuffer start buffer!')
       this.otEventBuffer.startBuffer()
-      this.fetchMissingOperations(this.version, incomingVersion)
+      this.fetchMissingOperations(this.version, incomingVersion - 1)
     }
     evt.data = adaptServerOperationData(evt.data)
     console.log('push into this.otEventBuffer', evt)
@@ -86,9 +92,11 @@ class ServerAdapter {
     this.client.send(`/app/collaboration/${config.spaceKey}/save`, { version: revision, path })
   }
 
-  sendOperation (revision, operation, selection) {
+  sendOperation (revision, operation) {
     const operationMessage = adaptClientOperationData(operation)
     this.client.send(`/app/collaboration/${config.spaceKey}/write`, operationMessage)
+    // once send, we wait for [ack] from server
+    // if we don't receive ack, we fetchMissingOperations
   }
 
   sendSelection (selection) {
