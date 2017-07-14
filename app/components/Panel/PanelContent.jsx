@@ -8,6 +8,7 @@ import TerminalContainer from '../Terminal'
 import SideBar from './SideBar'
 import { SidePanelContainer, SidePanelView } from './SidePanel'
 import GitGraph from 'components/Git/GitGraph'
+import Collaboration from 'components/Collaboration'
 
 
 const PanelContent = ({ panel }) => {
@@ -33,7 +34,11 @@ const PanelContent = ({ panel }) => {
       return <SideBar side={panel.id.toLowerCase().replace('bar_', '')} />
 
     case 'PANEL_RIGHT':
-      return <SidePanelContainer side='right' />
+      return (
+        <SidePanelContainer side='right'>
+          <Collaboration label={{ text: 'Collaborate', icon: 'fa fa-users' }} active />
+        </SidePanelContainer>
+      )
 
     case 'PANEL_LEFT':
       return (

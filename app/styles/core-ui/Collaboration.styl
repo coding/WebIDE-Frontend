@@ -1,0 +1,180 @@
+.collaborators {
+  padding: 4px 0;
+  color: #333333;
+  .collaborator {
+    display: flex;
+    padding: 6px 8px;
+    .dot {
+      background: #B6B6B6;
+      width: 6px;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 3px;
+      margin-top: 12px;
+      margin-right: 6px;
+      &.online {
+        background: #99C87B;
+      }
+    }
+    .avatar {
+      width: 28px;
+      height: 28px;
+      overflow: hidden;
+      margin-right: 8px;
+      img {
+        width: 28px;
+        height: 28px;
+        border-radius: 14px;
+        border: 2px solid #666;
+      }
+    }
+    .username {
+      line-height: 28px;
+      font-size: 13px;
+      flex: 1;
+    }
+    .info {
+      line-height: 28px;
+      .info-owner {
+        padding-right: 22px;
+        cursor: default;
+      }
+      .info-delete {
+        padding-right: 22px;
+        color: #CC423D;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.collaboration-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  .chat-content {
+    flex: 1;
+    overflow: auto;
+    scrollBar();
+  }
+  .chat-item {
+    border-left: 2px solid #666;
+    padding: 10px 6px;
+    .chat-item-header {
+      display: flex;
+      img {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        margin-right: 4px;
+      }
+      .chat-item-username {
+        font-size: 13px;
+        flex: 1;
+        line-height: 20px;
+        font-weight: 700;
+      }
+      .chat-item-time {
+        color: #555;
+        padding-right: 4px;
+      }
+    }
+    .chat-item-body {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #333;
+      line-height: 18px;
+      white-space: pre-wrap;
+    }
+  }
+  .chat-editor {
+    border-top: 1px solid #EBEBEB;
+    height: 60px;
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      resize: none;
+      padding: 5px 10px;
+      font-size: 13px;
+      line-height: 18px;
+      
+    }
+    ::-webkit-input-placeholder {
+      color: #B2B2B2;
+    }
+    ::-moz-placeholder {
+      color: #B2B2B2;
+    }
+    :-ms-input-placeholder {
+      color: #B2B2B2;
+    }
+    :-moz-placeholder { /* Firefox 18- */
+      color: #B2B2B2;
+    }
+  }
+}
+
+.invite-container {
+  .form-line {
+    display: flex;
+    .btn {
+      margin-left: 10px;
+      width: 90px;
+    }
+    ::-webkit-input-placeholder {
+      color: #B2B2B2;
+    }
+    ::-moz-placeholder {
+      color: #B2B2B2;
+    }
+    :-ms-input-placeholder {
+      color: #B2B2B2;
+    }
+    :-moz-placeholder { /* Firefox 18- */
+      color: #B2B2B2;
+    }
+    .error-info {
+      color: #CC423D;
+      margin-top: 10px;
+    }
+  }
+  .user-list {
+    margin-top: 10px;
+    .user-item {
+      font-size: 13px;
+      display: flex;
+      line-height: 28px;
+      margin-bottom: 13px;
+      .avatar {
+        width: 28px;
+        height: 28px;
+        overflow: hidden;
+        margin-right: 10px;
+        img {
+          width: 28px;
+          height: 28px;
+          border-radius: 14px;
+          vertical-align: top;
+        }
+      }
+      .username {
+        flex: 1;
+      }
+      .invite-btn, .remove-btn {
+        visibility: hidden;
+        color: #367AB5;
+        cursor: pointer;
+        width: 80px;
+        text-align: center;
+      }
+      .remove-btn {
+        color: #CC423D;
+      }
+      &:hover .invite-btn, &:hover .remove-btn {
+        visibility: visible;
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+.resizeBar {
+  $size = 6px
+  z-index: z(pane-resize-bar);
+  &.col-resize {
+    cursor: col-resize;
+    height: 100%;
+    width: $size;
+    margin-lr: $size * -0.5;
+  }
+  &.row-resize {
+    cursor: row-resize;
+    width: 100%;
+    height: $size;
+    margin-tb: $size * -0.5;
+  }
+}
+
+.accordion-group {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.accordion {
+  flex-basis: 0;
+  min-height: $tab-height;
+  position: relative;
+  // transition: flex-grow 1s ease;
+  .accordion-topbar {
+    display: flex;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid $base-border-color;
+    height: $tab-height;
+
+    .indicator {
+      margin-lr: 5px;
+    }
+    .accordion-header {
+      cursor: pointer;
+      flex: 1;
+    }
+    .accordion-actions {
+      cursor: pointer;
+      margin-right: 6px;
+    }
+  }
+  .accordion-body {
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    scrollBar();
+    &.hidden {
+      display: none;
+    }
+  }
+}
