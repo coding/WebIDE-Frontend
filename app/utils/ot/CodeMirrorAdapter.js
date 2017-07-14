@@ -1,6 +1,8 @@
 import TextOperation from './TextOperation'
 import Selection from './Selection'
 import last from 'lodash/last'
+import { chroma } from 'utils/colors'
+import cx from 'classnames'
 
 // helpers:
 const addStyleRule = (function () {
@@ -12,7 +14,8 @@ const addStyleRule = (function () {
   return function (css) {
     if (added[css]) { return; }
     added[css] = true;
-    styleSheet.insertRule(css, (styleSheet.cssRules || styleSheet.rules).length);
+    // styleSheet.insertRule(css, (styleSheet.cssRules || styleSheet.rules).length);
+    styleElement.innerText = css
   };
 }())
 
@@ -231,51 +234,104 @@ class CodeMirrorAdapter {
   // using `cm.setBookmark()` and `cm.markText()`
 
   // 1. set collaborator's cursor
-  setOtherCursor (position, color, clientId) {
+  setOtherCursor (position, hue, clientId) {
+    const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
     const cursorPos = this.cm.posFromIndex(position)
-    const cursorCoords = this.cm.cursorCoords(cursorPos)
+
+    const cursorWrapper = document.createElement('span')
     const cursorEl = document.createElement('span')
-    cursorEl.setAttribute('data-clientid', clientId)
-    cursorEl.className = 'other-client';
+    const cursorTag = document.createElement('div')
+    cursorTag.innerText = clientId
+    cursorWrapper.appendChild(cursorEl)
+    cursorWrapper.appendChild(cursorTag)
+
+    cursorWrapper.style.position = 'relative'
     Object.assign(cursorEl.style, {
-      display: 'inline-block',
-      padding: '0',
-      marginLeft: '-1px',
-      marginRight: '-1px',
-      borderLeftWidth: '2px',
-      borderLeftStyle: 'solid',
-      borderLeftColor: color,
-      height: (cursorCoords.bottom - cursorCoords.top) * 0.9 + 'px',
-      zIndex: 0,
+      position: 'absolute',
+      top: '-5px',
+      bottom: '0px',
+      right: '1px',
+      width: '2px',
+      backgroundColor: `rgb(${r},${g},${b})`,
     })
-    return this.cm.setBookmark(cursorPos, { widget: cursorEl, insertLeft: true })
+    Object.assign(cursorTag.style, {
+      position: 'absolute',
+      fontSize: '1em',
+      top: '-1.2em',
+      left: '-5px',
+      padding: '2px 5px',
+      color: 'white',
+      backgroundColor: `rgba(${r},${g},${b},1)`,
+    })
+
+    return this.cm.setBookmark(cursorPos, { widget: cursorWrapper, insertLeft: true })
   }
 
   // 2. set collaborator's range
-  setOtherSelectionRange (range, color, clientId) {
-    const selectionClassName = 'selection-' + color
-    const rule = '.' + selectionClassName + ' { background: ' + color + '; }'
-    addStyleRule(rule)
-
+  setOtherSelectionRange (range, hue, clientId) {
+    const [r0, g0, b0] = chroma.hsv2rgb(hue, 0.4, 1)
+    const color = `rgb(${r0},${g0},${b0})`
+    const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
+    const selectionClassName = 'selection-' + hue
+    // const rule = '.' + selectionClassName + ' { background: ' + color + '; }'
     const anchorPos = this.cm.posFromIndex(range.anchor)
     const headPos = this.cm.posFromIndex(range.head)
 
+    addStyleRule(
+`.${selectionClassName} {
+  background-color: ${color};
+}
+
+.${selectionClassName}.selection-last-span {
+  position: relative;
+}
+
+.${selectionClassName}.selection-last-span::before {
+  position: absolute;
+  top: -5px;
+  bottom: 0px;
+  right: 1px;
+  width: 2px;
+  content: '';
+  background-color: rgb(${r},${g},${b});
+}
+
+.${selectionClassName}.selection-last-span::after {
+  position: absolute;
+  font-size: 1em;
+  top: -1.2em;
+  left: 100%;
+  margin-left: -5px;
+  padding: 2px 5px;
+  color: white;
+  content: "${clientId}";
+  background-color: rgba(${r},${g},${b},1);
+}
+
+.${selectionClassName}.selection-first-line.selection-last-span::after {
+  top: initial;
+  bottom: -1.2em;
+}
+`)
+
+    const className = cx(selectionClassName, { 'selection-first-line': headPos.line === 0 })
     return this.cm.markText(
       minPos(anchorPos, headPos),
       maxPos(anchorPos, headPos),
-      { className: selectionClassName }
+      { className, endStyle: 'selection-last-span' }
     )
   }
 
   // 3. proxy to aforementioned two fellows
-  setOtherSelection (selection, color, clientId) {
+  setOtherSelection (selection, hue, clientId) {
     const selectionObjects = []
+    console.log('[setOtherSelection range length]', selection.ranges[0])
     for (let i = 0; i < selection.ranges.length; i++) {
       const range = selection.ranges[i]
       if (range.isEmpty()) {
-        selectionObject[i] = this.setOtherCursor(range.head, color, client)
+        selectionObjects[i] = this.setOtherCursor(range.head, hue, clientId)
       } else {
-        selectionObjects[i] = this.setOtherSelectionRange(range, color, clientId)
+        selectionObjects[i] = this.setOtherSelectionRange(range, hue, clientId)
       }
     }
 

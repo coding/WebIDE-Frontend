@@ -161,6 +161,16 @@ class Client {
     this.revision = revision
     this.setState(this.state.serverAck(this))
   }
+
+  // Transforms a selection from the latest known server state to the current
+  // client state. For example, if we get from the server the information that
+  // another user's cursor is at position 3, but the server hasn't yet received
+  // our newest operation, an insertion of 5 characters at the beginning of the
+  // document, the correct position of the other user's cursor in our current
+  // document is 8.
+  transformSelection (selection) {
+    return this.state.transformSelection(selection)
+  }
 }
 
 export default Client

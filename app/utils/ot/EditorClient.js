@@ -6,6 +6,7 @@ import CodeMirrorAdapter from './CodeMirrorAdapter'
 import ServerAdapter from './ServerAdapter'
 import config from 'config'
 import { hueFromName, hsl2hex } from './helpers'
+import { hueFromString } from 'utils/colors'
 
 class SelfMeta {
   constructor (selectionBefore, selectionAfter) {
@@ -57,20 +58,14 @@ class OtherClient {
     this.name = name
     this.editorAdapter = editorAdapter
 
-    this.setColor(name ? hueFromName(name) : Math.random())
+    this.hue = name ? hueFromString(name) : Math.random() * 360
     if (selection) this.updateSelection(selection)
-  }
-
-  setColor (hue) {
-    this.hue = hue
-    this.color = hsl2hex(hue, 0.75, 0.5)
-    this.lightColor = hsl2hex(hue, 0.5, 0.9)
   }
 
   setName (name) {
     if (this.name === name) return
     this.name = name
-    this.setColor(hueFromName(name))
+    this.hue = hueFromString(name)
   }
 
   updateSelection (selection) {
@@ -78,7 +73,7 @@ class OtherClient {
     this.selection = selection
     this.mark = this.editorAdapter.setOtherSelection(
       selection,
-      selection.position === selection.selectionEnd ? this.color : this.lightColor,
+      this.hue,
       this.id
     )
   }
@@ -102,7 +97,7 @@ class EditorClient extends Client {
     super(revision)
     this.filePath = filePath
     this.editorAdapter = new CodeMirrorAdapter(cm)
-    this.serverAdapter = new ServerAdapter(filePath, revision)
+    this.serverAdapter = new ServerAdapter(filePath, { version: 0 })
     editor.otClient = this
     this.clientId = this.serverAdapter.clientId
     this.undoManager = new UndoManager()
@@ -122,14 +117,21 @@ class EditorClient extends Client {
 
     this.serverAdapter.registerCallbacks({
       operation: (data) => {
-        if (data.path !== this.filePath) return
         console.log('[ops]', data)
         this.applyServer(data.revision, data.textOperation)
       },
       ack: (data) => {
-        if (data.path !== this.filePath) return
         console.log('[ack]', data)
         this.serverAck(data.revision)
+      },
+      selections: ({ clientId, selections: ranges }) => {
+        if (ranges) {
+          this.getClientObject(clientId).updateSelection(
+            this.transformSelection(Selection.fromJSON(ranges))
+          )
+        } else {
+          this.getClientObject(clientId).removeSelection()
+        }
       }
     })
   }
@@ -145,6 +147,7 @@ class EditorClient extends Client {
 
   save () {
     // this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
+    // Promise
   }
 
   initializeClients (clients) { /**/ }

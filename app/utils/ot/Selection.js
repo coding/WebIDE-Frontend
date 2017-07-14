@@ -1,4 +1,4 @@
-import TextOperation from './TextOperation'
+import { isRetain, isInsert } from './TextOperation'
 
 class Range {
   // Range has `anchor` and `head` properties, which are zero-based indices into
@@ -8,6 +8,10 @@ class Range {
   constructor (anchor, head) {
     this.anchor = anchor
     this.head = head
+  }
+
+  static fromJSON (obj) {
+    return new Range(obj.anchor, obj.head)
   }
 
   equals (other) {
@@ -24,9 +28,9 @@ class Range {
       const ops = other.ops
       for (let i = 0, l = other.ops.length; i < l; i++) {
         const op = ops[i]
-        if (TextOperation.isRetain(op)) {
+        if (isRetain(op)) {
           index -= op
-        } else if (TextOperation.isInsert(op)) {
+        } else if (isInsert(op)) {
           newIndex += op.length
         } else {
           newIndex -= Math.min(index, -op)
@@ -54,8 +58,14 @@ class Selection {
     this.ranges = ranges || []
   }
 
-  createCursor (position) {
+  static createCursor (position) {
     return new Selection([new Range(position, position)])
+  }
+
+  static fromJSON (obj) {
+    const objRanges = obj.ranges || obj;
+    const ranges = objRanges.map(Range.fromJSON)
+    return new Selection(ranges)
   }
 
   equals (other) {

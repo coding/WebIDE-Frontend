@@ -11,7 +11,6 @@ import uuid from 'uuid/v4'
  * internally it'll call `this._transimit('SUBSCRIBE', headers)`
  * and add callback to this.subscriptions[id]
  *
- * 2.
  */
 
 class WebSocketClient extends BaseWebSocketClient {
@@ -36,6 +35,10 @@ class WebSocketClient extends BaseWebSocketClient {
 
   successCallback = (stompClient) => {
     // stompClient is instanceof StompClient
+    const SELECTION_CHANNEL = `/topic/collaboration/${config.spaceKey}/selections`
+    stompClient.subscribe(SELECTION_CHANNEL, (frame) => {
+      this.emitter.emit('selections', JSON.parse(frame.body))
+    })
 
     const UPDATED_CHANNEL = `/topic/collaboration/${config.spaceKey}/file/updated`
     stompClient.subscribe(UPDATED_CHANNEL, (frame) => {
@@ -49,13 +52,13 @@ class WebSocketClient extends BaseWebSocketClient {
 
     const COMMITTED_CHANNEL = `/topic/collaboration/${config.spaceKey}/file/committed`
     stompClient.subscribe(COMMITTED_CHANNEL, (frame) => {
-      /* committed, file change has been persisted to disk,
-        * can safely reload/discard local changes */
+      // committed, file change has been persisted to disk,
+      // can safely reload/discard local changes
+      this.emitter.emit('committed', JSON.parse(frame.body))
     })
 
     const COLLAB_ONLINE_CHANNEL= `/topic/collaboration/${config.spaceKey}/collaborators`
     stompClient.subscribe(COLLAB_ONLINE_CHANNEL, (frame) => {
-      console.log(COLLAB_ONLINE_CHANNEL, frame)
     })
 
     const HISTORY_CHANNEL = `/user/${this.id}/topic/collaboration/${config.spaceKey}/history`
@@ -68,6 +71,7 @@ class WebSocketClient extends BaseWebSocketClient {
       const data = JSON.parse(frame.body)
       this.emitter.emit('chat', data)
     })
+
   }
 
   errorCallback (errArgs) { /* noop */ }
