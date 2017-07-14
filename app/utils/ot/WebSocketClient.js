@@ -57,13 +57,21 @@ class WebSocketClient extends BaseWebSocketClient {
       this.emitter.emit('committed', JSON.parse(frame.body))
     })
 
-    const COLLAB_ONLINE_CHANNEL= `/topic/collaboration/${config.spaceKey}/collaborators`
-    stompClient.subscribe(COLLAB_ONLINE_CHANNEL, (frame) => {
-    })
-
     const HISTORY_CHANNEL = `/user/${this.id}/topic/collaboration/${config.spaceKey}/history`
     stompClient.subscribe(HISTORY_CHANNEL, (frame) => {
       this.emitter.emit('history', JSON.parse(frame.body))
+    })
+
+    const COLLAB_ONLINE_CHANNEL = `/topic/collaboration/${config.spaceKey}/collaborators`
+    stompClient.subscribe(COLLAB_ONLINE_CHANNEL, (frame) => {
+      const data = JSON.parse(frame.body)
+      this.emitter.emit('collaborators', data)
+    })
+
+    const COLLAB_STATUS_CHANNEL = `/user/${this.id}/topic/collaboration/${config.spaceKey}/collaborators`
+    stompClient.subscribe(COLLAB_STATUS_CHANNEL, (frame) => {
+      const data = JSON.parse(frame.body)
+      this.emitter.emit('status', data)
     })
 
     const CHAT_CHANNEL = `/topic/collaboration/${config.spaceKey}/chat`
@@ -72,6 +80,7 @@ class WebSocketClient extends BaseWebSocketClient {
       this.emitter.emit('chat', data)
     })
 
+    this.emitter.emit('connected')
   }
 
   errorCallback (errArgs) { /* noop */ }
