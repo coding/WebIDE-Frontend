@@ -6,6 +6,7 @@ import Menu from '../Menu';
 import menuBarItems from './menuBarItems';
 import * as GitActions from '../Git/actions'
 import config from '../../config'
+import * as Modal from 'components/Modal/actions'
 
 class MenuBar extends Component {
   static defaultProps = {
@@ -34,9 +35,14 @@ class MenuBar extends Component {
               state={this.props}
             />) }
         </ul>
-        {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-          Switch to v1
-        </div>)}
+        {config.isPlatform && (
+        <div className='menu-bar-right'>
+          <div className='share-btn' onClick={e => Modal.showModal('CollaborationInvite')}>Share</div>
+          <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+            Switch to v1
+          </div>
+        </div>
+        )}
       </div>
     );
   }

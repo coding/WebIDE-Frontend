@@ -65,7 +65,7 @@ class Invite extends Component {
       dispatchCommand('modal:dismiss')
     }).catch((res) => {
       this.state.loading = false
-      this.state.error = 'User not found.'
+      this.state.error = res.msg
     })
   }
 
