@@ -5,6 +5,7 @@ import state from './state'
 import cx from 'classnames'
 import config from 'config'
 import * as Modal from 'components/Modal/actions'
+import { hueFromString, chroma } from 'utils/colors'
 
 const Collaborator = observer(({ item, handleDelete }) => {
   const { collaborator, id } = item
@@ -18,6 +19,10 @@ const Collaborator = observer(({ item, handleDelete }) => {
       <div className='info-delete' onClick={e => handleDelete(id)}>Delete</div>
     )
   }
+
+  const hue = hueFromString(collaborator.name)
+  const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
+  const color = `rgb(${r},${g},${b})`
   return (
     <div className='collaborator'>
       <div className={cx(
@@ -29,7 +34,7 @@ const Collaborator = observer(({ item, handleDelete }) => {
       />
       <div className='avatar'>
         <img src={collaborator.avatar} style={{
-          borderColor: 'blue'
+          borderColor: color
         }}
         />
       </div>

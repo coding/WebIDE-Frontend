@@ -7,6 +7,8 @@ import ServerAdapter from './ServerAdapter'
 import config from 'config'
 import { hueFromString } from 'utils/colors'
 import state from '../state'
+import { autorun } from 'mobx'
+import { isFunction } from 'utils/is'
 
 class SelfMeta {
   constructor (selectionBefore, selectionAfter) {
@@ -99,26 +101,25 @@ class EditorClient extends Client {
     super(revision)
     this.filePath = filePath
     this.editorAdapter = new CodeMirrorAdapter(cm)
-    this.serverAdapter = new ServerAdapter(filePath, { version: 0 })
+    this.serverAdapter = new ServerAdapter(filePath, { version: revision.version })
     editor.otClient = this
     this.clientId = this.serverAdapter.clientId
     this.undoManager = new UndoManager()
     this.clients = {}
 
-    this.initializeClients(state.collaborators.reduce((acc, { clientIds, collaborator }) => {
-      console.log('collaborator', collaborator)
-      clientIds.forEach(clientId => {
-        console.log('[collab] clientId', clientId, collaborator, collaborator.name)
-        acc[clientId] = {
-          clientId,
-          name: collaborator.name,
-          avatar: collaborator.avatar,
-        }
-      })
-      return acc
-    }, {}))
-
-    window.editorClient = this
+    this.disposers = []
+    this.disposers.push(autorun(() => {
+      this.initializeClients(state.collaborators.reduce((acc, { clientIds, collaborator }) => {
+        clientIds.forEach((clientId) => {
+          acc[clientId] = {
+            clientId,
+            name: collaborator.name,
+            avatar: collaborator.avatar,
+          }
+        })
+        return acc
+      }, {}))
+    }))
 
     this.editorAdapter.registerCallbacks({
       change: (operation, inverse) => {
@@ -130,7 +131,7 @@ class EditorClient extends Client {
     this.editorAdapter.registerUndo(() => this.undo())
     this.editorAdapter.registerRedo(() => this.redo())
 
-    this.serverAdapter.registerCallbacks({
+    this.disposers.push(this.serverAdapter.registerCallbacks({
       operation: (data) => {
         console.log('[ops]', data)
         this.applyServer(data.revision, data.textOperation)
@@ -148,10 +149,15 @@ class EditorClient extends Client {
           this.getClientObject(clientId).removeSelection()
         }
       }
-    })
+    }))
+  }
+
+  destroy () {
+    this.disposers.forEach(disposer => isFunction(disposer) && disposer())
   }
 
   addClient ({ clientId, name, selection, avatar }) {
+    if (this.clients[clientId]) return
     this.clients[clientId] = new OtherClient({
       editorAdapter: this.editorAdapter,
       id: clientId,
@@ -196,8 +202,7 @@ class EditorClient extends Client {
   }
 
   save () {
-    // this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
-    // Promise
+    this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
   }
 
   undo () {

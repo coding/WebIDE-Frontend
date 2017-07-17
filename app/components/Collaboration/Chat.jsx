@@ -5,14 +5,18 @@ import config from 'config'
 import moment from 'moment'
 import ChatManager from './ot/chat'
 import state from './state'
+import { hueFromString, chroma } from 'utils/colors'
 
 const getTime = (time) => moment(new Date(time)).fromNow()
 
 const ChatItem = observer(({ chat }) => {
   const { collaborator, timestamp, message } = chat
+  const hue = hueFromString(collaborator.collaborator.name)
+  const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
+  const color = `rgb(${r},${g},${b})`
   return (
     <div className='chat-item' style={{
-      borderColor: '#FF00FF',
+      borderColor: color,
     }}>
       <div className='chat-item-header'>
         <img src={collaborator.collaborator.avatar} />
@@ -83,7 +87,7 @@ ${message}`
     const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
     if (collaborator) {
       if (!collaborator.clientIds) collaborator.clientIds = []
-      if (action === 'Online') {
+      if (action === 'Online' || 'Connect') {
         if (collaborator.clientIds.indexOf(clientId) === -1) {
           collaborator.clientIds.push(clientId)
         }

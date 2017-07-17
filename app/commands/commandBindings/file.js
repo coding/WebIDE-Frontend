@@ -108,6 +108,7 @@ export default {
       // when ot is activated:
       if (activeTab.editor.otClient) {
         activeTab.editor.otClient.save()
+        TabStore.updateTabFlags(activeTab.id, 'modified', false)
       } else {
         api.writeFile(activeTab.file.path, content)
         .then(() => {

@@ -63,6 +63,10 @@ class ServerAdapter {
 
   registerCallbacks (callbacks) {
     this.callbacks = callbacks
+    return () => {
+      this.client.emitter.removeListener('ot', this.receiveOperation)
+      this.client.emitter.removeListener('selections', this.receiveSelection)
+    }
   }
 
   fetchMissingOperations (start, end) {
@@ -86,7 +90,8 @@ class ServerAdapter {
   receiveOperation = (evt) => {
     // local emitter emits only when filePath matches
     if (evt.data.path !== this.filePath) return
-    const incomingVersion = evt.data.resultingVersion.version
+    const revision = evt.data.revision || evt.data.resultingVersion
+    const incomingVersion = revision.version
     const testVersion = window.location.hash.slice(9)
     if (testVersion) {
       if (Number(testVersion) === incomingVersion) return
@@ -99,8 +104,8 @@ class ServerAdapter {
       this.otEventBuffer.startBuffer()
       this.fetchMissingOperations(this.version, incomingVersion - 1)
     }
-    evt.data = adaptServerOperationData(evt.data)
-    this.otEventBuffer.push(evt)
+    const eventData = adaptServerOperationData(evt.data)
+    this.otEventBuffer.push({ type: evt.type, data: eventData })
   }
 
   receiveSelection = (data) => {
@@ -114,10 +119,10 @@ class ServerAdapter {
     this.client.send(`/app/collaboration/${config.spaceKey}/write`, operationMessage)
     // once send, we wait for [ack] from server
     // if we don't receive ack, we fetchMissingOperations
-    this.ackTimeout = setTimeout(() => {
-      const version = operation.targetVersion.version
-      this.fetchMissingOperations(version, version + 1)
-    }, 1000)
+    // this.ackTimeout = setTimeout(() => {
+    //   const version = operation.targetVersion.version
+    //   this.fetchMissingOperations(version, version + 1)
+    // }, 1000)
   }
 
   sendSelection = debounce((selection) => {
@@ -125,7 +130,7 @@ class ServerAdapter {
     this.client.send(`/app/collaboration/${config.spaceKey}/selections`,
       { path: this.filePath, selections: selection.ranges }
     )
-  }, 10)
+  }, 500)
 
   sendSaveSignal (revision, path) {
     this.client.send(`/app/collaboration/${config.spaceKey}/save`, { version: revision, path })
