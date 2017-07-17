@@ -64,7 +64,7 @@ class Collaborators extends Component {
       okText: 'Delete'
     })
     if (confirmed) {
-      CollaborationActions.deleteCollaborators(globalKey).then((res) => {
+      CollaborationActions.deleteCollaborators(id).then((res) => {
         CollaborationActions.fetchCollaborators()
       })
     }
