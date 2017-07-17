@@ -1,7 +1,6 @@
 import api from 'backendAPI'
 import state from './state'
 
-
 export const fetchCollaborators = () => {
   return api.fetchCollaborators().then((res) => {
     state.collaborators = res.map((item) => {
@@ -9,6 +8,7 @@ export const fetchCollaborators = () => {
         item.collaborator.avatar = `https://coding.net${item.collaborator.avatar}`
       }
       item.online = false
+      item.clientIds = []
       return item
     })
   })

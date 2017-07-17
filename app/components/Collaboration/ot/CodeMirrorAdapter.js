@@ -1,8 +1,9 @@
+import last from 'lodash/last'
+import cx from 'classnames'
+import { chroma } from 'utils/colors'
+import mtln from 'utils/multiline'
 import TextOperation from './TextOperation'
 import Selection from './Selection'
-import last from 'lodash/last'
-import { chroma } from 'utils/colors'
-import cx from 'classnames'
 
 // helpers:
 const addStyleRule = (function () {
@@ -234,14 +235,14 @@ class CodeMirrorAdapter {
   // using `cm.setBookmark()` and `cm.markText()`
 
   // 1. set collaborator's cursor
-  setOtherCursor (position, hue, clientId) {
+  setOtherCursor (position, hue, name) {
     const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
     const cursorPos = this.cm.posFromIndex(position)
 
     const cursorWrapper = document.createElement('span')
     const cursorEl = document.createElement('span')
     const cursorTag = document.createElement('div')
-    cursorTag.innerText = clientId
+    cursorTag.innerText = name
     cursorWrapper.appendChild(cursorEl)
     cursorWrapper.appendChild(cursorTag)
 
@@ -268,7 +269,7 @@ class CodeMirrorAdapter {
   }
 
   // 2. set collaborator's range
-  setOtherSelectionRange (range, hue, clientId) {
+  setOtherSelectionRange (range, hue, name) {
     const [r0, g0, b0] = chroma.hsv2rgb(hue, 0.4, 1)
     const color = `rgb(${r0},${g0},${b0})`
     const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
@@ -278,41 +279,41 @@ class CodeMirrorAdapter {
     const headPos = this.cm.posFromIndex(range.head)
 
     addStyleRule(
-`.${selectionClassName} {
-  background-color: ${color};
-}
+      mtln`.${selectionClassName} {
+        background-color: ${color};
+      }
 
-.${selectionClassName}.selection-last-span {
-  position: relative;
-}
+      .${selectionClassName}.selection-last-span {
+        position: relative;
+      }
 
-.${selectionClassName}.selection-last-span::before {
-  position: absolute;
-  top: -5px;
-  bottom: 0px;
-  right: 1px;
-  width: 2px;
-  content: '';
-  background-color: rgb(${r},${g},${b});
-}
+      .${selectionClassName}.selection-last-span::before {
+        position: absolute;
+        top: -5px;
+        bottom: 0px;
+        right: 1px;
+        width: 2px;
+        content: '';
+        background-color: rgb(${r},${g},${b});
+      }
 
-.${selectionClassName}.selection-last-span::after {
-  position: absolute;
-  font-size: 1em;
-  top: -1.2em;
-  left: 100%;
-  margin-left: -5px;
-  padding: 2px 5px;
-  color: white;
-  content: "${clientId}";
-  background-color: rgba(${r},${g},${b},1);
-}
+      .${selectionClassName}.selection-last-span::after {
+        position: absolute;
+        font-size: 1em;
+        top: -1.2em;
+        left: 100%;
+        margin-left: -5px;
+        padding: 2px 5px;
+        color: white;
+        content: "${name}";
+        background-color: rgba(${r},${g},${b},1);
+      }
 
-.${selectionClassName}.selection-first-line.selection-last-span::after {
-  top: initial;
-  bottom: -1.2em;
-}
-`)
+      .${selectionClassName}.selection-first-line.selection-last-span::after {
+        top: initial;
+        bottom: -1.2em;
+      }
+    `)
 
     const className = cx(selectionClassName, { 'selection-first-line': headPos.line === 0 })
     return this.cm.markText(
@@ -323,15 +324,14 @@ class CodeMirrorAdapter {
   }
 
   // 3. proxy to aforementioned two fellows
-  setOtherSelection (selection, hue, clientId) {
+  setOtherSelection (selection, hue, name) {
     const selectionObjects = []
-    console.log('[setOtherSelection range length]', selection.ranges[0])
     for (let i = 0; i < selection.ranges.length; i++) {
       const range = selection.ranges[i]
       if (range.isEmpty()) {
-        selectionObjects[i] = this.setOtherCursor(range.head, hue, clientId)
+        selectionObjects[i] = this.setOtherCursor(range.head, hue, name)
       } else {
-        selectionObjects[i] = this.setOtherSelectionRange(range, hue, clientId)
+        selectionObjects[i] = this.setOtherSelectionRange(range, hue, name)
       }
     }
 

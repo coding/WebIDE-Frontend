@@ -5,8 +5,8 @@ import WrappedOperation from './WrappedOperation'
 import CodeMirrorAdapter from './CodeMirrorAdapter'
 import ServerAdapter from './ServerAdapter'
 import config from 'config'
-import { hueFromName, hsl2hex } from './helpers'
 import { hueFromString } from 'utils/colors'
+import state from '../state'
 
 class SelfMeta {
   constructor (selectionBefore, selectionAfter) {
@@ -53,9 +53,10 @@ class OtherMeta {
 
 // this dude is managing other client's indicators: name, selection, color.
 class OtherClient {
-  constructor ({ id, name, editorAdapter, selection }) {
+  constructor ({ id, name, editorAdapter, selection, avatar }) {
     this.id = id
     this.name = name
+    this.avatar = avatar
     this.editorAdapter = editorAdapter
 
     this.hue = name ? hueFromString(name) : Math.random() * 360
@@ -74,7 +75,7 @@ class OtherClient {
     this.mark = this.editorAdapter.setOtherSelection(
       selection,
       this.hue,
-      this.id
+      this.name
     )
   }
 
@@ -91,6 +92,7 @@ class OtherClient {
   }
 }
 
+
 class EditorClient extends Client {
   constructor (editor) {
     const { revision, cm, filePath } = editor
@@ -102,6 +104,19 @@ class EditorClient extends Client {
     this.clientId = this.serverAdapter.clientId
     this.undoManager = new UndoManager()
     this.clients = {}
+
+    this.initializeClients(state.collaborators.reduce((acc, { clientIds, collaborator }) => {
+      console.log('collaborator', collaborator)
+      clientIds.forEach(clientId => {
+        console.log('[collab] clientId', clientId, collaborator, collaborator.name)
+        acc[clientId] = {
+          clientId,
+          name: collaborator.name,
+          avatar: collaborator.avatar,
+        }
+      })
+      return acc
+    }, {}))
 
     window.editorClient = this
 
@@ -136,21 +151,22 @@ class EditorClient extends Client {
     })
   }
 
-  addClient (clientId, { name, selection }) {
+  addClient ({ clientId, name, selection, avatar }) {
     this.clients[clientId] = new OtherClient({
-      id: clientId,
       editorAdapter: this.editorAdapter,
+      id: clientId,
+      avatar,
       name: name || clientId,
       selection: selection ? Selection.fromJSON(selection) : null
     })
   }
 
-  save () {
-    // this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
-    // Promise
+  initializeClients (clients) {
+    if (!this.clients) this.clients = {}
+    Object.values(clients).forEach(clientConfig =>
+      this.addClient(clientConfig)
+    )
   }
-
-  initializeClients (clients) { /**/ }
 
   getClientObject (clientId) {
     const client = this.clients[clientId]
@@ -163,13 +179,11 @@ class EditorClient extends Client {
   }
 
   onClientLeft (clientId) {
-    const client = this.clients[clientId];
+    const client = this.clients[clientId]
     if (!client) return
     client.destroy()
     delete this.clients[clientId]
   }
-
-  initializeClientList () { /**/ }
 
   // by protocol of UndoManager, this method is required to return an inverse operation
   applyUndoOrRedo (operation) {
@@ -179,6 +193,11 @@ class EditorClient extends Client {
     this.editorAdapter.setSelection(this.selection)
     this.applyClient(operation.wrapped)
     return inverse
+  }
+
+  save () {
+    // this.serverAdapter.sendSaveSignal(this.revision, this.filePath)
+    // Promise
   }
 
   undo () {

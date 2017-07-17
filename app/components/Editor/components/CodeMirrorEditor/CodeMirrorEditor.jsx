@@ -7,7 +7,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 import debounce from 'lodash/debounce'
 import { defaultProps } from 'utils/decorators'
 import { observer } from 'mobx-react'
-import EditorClient from 'utils/ot/EditorClient'
+import EditorClient from 'components/Collaboration/ot/EditorClient'
 
 const debounced = debounce(func => func(), 1000)
 // Ref: codemirror/mode/meta.js

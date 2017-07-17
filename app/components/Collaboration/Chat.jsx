@@ -3,9 +3,10 @@ import { observer } from 'mobx-react'
 import { observable, computed } from 'mobx'
 import config from 'config'
 import moment from 'moment'
-const getTime = (time) => moment(new Date(time)).fromNow()
-import ChatManager from '../../utils/ot/chat'
+import ChatManager from './ot/chat'
 import state from './state'
+
+const getTime = (time) => moment(new Date(time)).fromNow()
 
 const ChatItem = observer(({ chat }) => {
   const { collaborator, timestamp, message } = chat
@@ -78,12 +79,17 @@ ${message}`
   }
 
   setOnline = (data) => {
-    const { globalKey, action } = data
+    const { globalKey, action, id: clientId } = data
     const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
     if (collaborator) {
+      if (!collaborator.clientIds) collaborator.clientIds = []
       if (action === 'Online') {
+        if (collaborator.clientIds.indexOf(clientId) === -1) {
+          collaborator.clientIds.push(clientId)
+        }
         collaborator.online = true
       } else if (action === 'Offline') {
+        collaborator.clientIds.remove(clientId)
         collaborator.online = false
       }
     }
