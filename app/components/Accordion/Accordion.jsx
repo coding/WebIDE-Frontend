@@ -23,7 +23,9 @@ class Accordion extends Component {
             <i className={cx('indicator fa', {
               'fa-angle-down': this.state.showSection,
               'fa-angle-right': !this.state.showSection,
-            })} />{this.props.header}
+            })} />
+            {this.props.icon && <i className={`icon ${this.props.icon}`} />}
+            {this.props.header}
           </div>
           {this.props.actions}
         </div>

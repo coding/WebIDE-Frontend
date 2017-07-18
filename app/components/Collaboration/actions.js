@@ -1,5 +1,6 @@
 import api from 'backendAPI'
 import state from './state'
+import ChatManager from './ot/chat'
 
 export const fetchCollaborators = () => {
   return api.fetchCollaborators().then((res) => {
@@ -11,6 +12,7 @@ export const fetchCollaborators = () => {
       item.clientIds = []
       return item
     })
+    return res
   })
 }
 
@@ -21,9 +23,15 @@ export const fetchInvitedCollaborators = () => {
 }
 
 export const postCollaborators = (inviteKey) => {
-  return api.postCollaborators(inviteKey)
+  return api.postCollaborators(inviteKey).then(res => {
+    const chatManager = new ChatManager()
+    chatManager.sendAction({ action: 'Add' })
+  })
 }
 
 export const deleteCollaborators = (globalKey) => {
-  return api.deleteCollaborators(globalKey)
+  return api.deleteCollaborators(globalKey).then(res => {
+    const chatManager = new ChatManager()
+    chatManager.sendAction({ action: 'Remove' })
+  })
 }

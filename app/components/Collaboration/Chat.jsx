@@ -3,9 +3,14 @@ import { observer } from 'mobx-react'
 import { observable, computed } from 'mobx'
 import config from 'config'
 import moment from 'moment'
+import { Picker } from 'emoji-mart'
+import * as CollaborationActions from './actions'
 import ChatManager from './ot/chat'
 import state from './state'
+import ScrollToBottom from './ScrollToBottom'
 import { hueFromString, chroma } from 'utils/colors'
+const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
+const isMac = (os === 'mac')
 
 const getTime = (time) => moment(new Date(time)).fromNow()
 
@@ -43,7 +48,9 @@ class Chat extends Component {
     super(props)
     this.state = observable({
       value: '',
-      chatList: []
+      chatList: [],
+      chatCount: 0,
+      showEmoji: false,
     })
   }
 
@@ -53,6 +60,7 @@ class Chat extends Component {
       const { globalKey, message, timestamp } = data
       const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
       if (collaborator) {
+        this.state.chatCount ++
         if (this.state.chatList.length > 0) {
           const lastChat = this.state.chatList[this.state.chatList.length - 1]
           if (lastChat.collaborator.collaborator.globalKey === collaborator.collaborator.globalKey) {
@@ -84,10 +92,15 @@ ${message}`
 
   setOnline = (data) => {
     const { globalKey, action, id: clientId } = data
+
+    if (action === 'Add' || action === 'Remove') {
+      this.fetchCollaborators()
+    }
+
     const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
     if (collaborator) {
       if (!collaborator.clientIds) collaborator.clientIds = []
-      if (action === 'Online' || 'Connect') {
+      if (action === 'Online' || action === 'Connect') {
         if (collaborator.clientIds.indexOf(clientId) === -1) {
           collaborator.clientIds.push(clientId)
         }
@@ -96,7 +109,19 @@ ${message}`
         collaborator.clientIds.remove(clientId)
         collaborator.online = false
       }
+    } else {
+      this.fetchCollaborators()
     }
+  }
+
+  fetchCollaborators = () => {
+    CollaborationActions.fetchCollaborators().then((res) => {
+      this.chatManager.fetchStatus((userlist) => {
+        userlist.forEach((data) => {
+          this.setOnline(data)
+        })
+      })
+    })
   }
 
   handleChange = (e) => {
@@ -108,22 +133,73 @@ ${message}`
     this.state.value = ''
   }
 
+  handleEmojiClick = (emoji, e) => {
+    const text = emoji.native
+    if (document.selection) {
+      // IE
+      this.textarea.focus()
+      const sel = document.selection.createRange()
+      sel.text = text
+    } else if (this.textarea.selectionStart || this.textarea.selectionStart === 0) {
+      // Others
+      const startPos = this.textarea.selectionStart
+      const endPos = this.textarea.selectionEnd
+      this.textarea.value = this.textarea.value.substring(0, startPos) +
+        text +
+        this.textarea.value.substring(endPos, this.textarea.value.length)
+      this.textarea.selectionStart = startPos + text.length
+      this.textarea.selectionEnd = startPos + text.length
+    } else {
+      this.textarea.value += text
+    }
+    this.state.value = this.textarea.value
+    this.state.showEmoji = false
+  }
+
+  handlePicker = (e) => {
+    this.state.showEmoji = !this.state.showEmoji
+  }
+
+  handleHidePicker = (e) => {
+    this.state.showEmoji = false
+  }
+
   render () {
+    let placeholder = ''
+    if (isMac) {
+      placeholder = 'Enter your message here (Cmd + Enter)'
+    } else {
+      placeholder = 'Enter your message here (Ctrl + Enter)'
+    }
+    const settings = {
+      imageType: 'png',
+      sprites: true
+    }
     return (
       <div className='collaboration-chat'>
-        <div className='chat-content'>
+        <ScrollToBottom className='chat-content' chatCount={this.state.chatCount}>
           {
             this.state.chatList.map(chat => <ChatItem chat={chat} key={chat.timestamp} />)
           }
-        </div>
+        </ScrollToBottom>
         <div className='chat-editor'>
           <textarea
-            placeholder='Enter your message here'
+            ref={dom => this.textarea = dom}
+            onClick={this.handleHidePicker}
+            placeholder={placeholder}
             onChange={this.handleChange}
             value={this.state.value}
             onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) this.handleCommit()}}
           />
+          <div className='chat-icons'>
+            <div className='right'>
+              <i className='fa fa-smile-o' onClick={this.handlePicker} />
+            </div>
+          </div>
         </div>
+        {
+          this.state.showEmoji && <Picker set='emojione' native onClick={this.handleEmojiClick} title='Coding IDE' />
+        }
       </div>
     )
   }

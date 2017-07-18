@@ -61,7 +61,7 @@ class Invite extends Component {
   handleInvite = (name) => {
     this.state.loading = true
     CollaborationActions.postCollaborators(name).then((res) => {
-      CollaborationActions.fetchCollaborators()
+      // CollaborationActions.fetchCollaborators()
       dispatchCommand('modal:dismiss')
     }).catch((res) => {
       this.state.loading = false

@@ -7,16 +7,16 @@ import config from 'config'
 import * as Modal from 'components/Modal/actions'
 import { hueFromString, chroma } from 'utils/colors'
 
-const Collaborator = observer(({ item, handleDelete }) => {
+const Collaborator = observer(({ item, handleDelete, isOwner }) => {
   const { collaborator, id } = item
   let info = ''
   if (item.inviteBy === 'Owner') {
     info = (
       <div className='info-owner'>Owner</div>
     )
-  } else {
+  } else if (isOwner) {
     info = (
-      <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Delete</div>
+      <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Remove</div>
     )
   }
 
@@ -34,7 +34,8 @@ const Collaborator = observer(({ item, handleDelete }) => {
       />
       <div className='avatar'>
         <img src={collaborator.avatar} style={{
-          borderColor: color
+          borderColor: color,
+          boxShadow: `0px 0px 8px 0px ${color}`
         }}
         />
       </div>
@@ -64,19 +65,21 @@ class Collaborators extends Component {
       okText: 'Delete'
     })
     if (confirmed) {
-      CollaborationActions.deleteCollaborators(id).then((res) => {
-        CollaborationActions.fetchCollaborators()
-      })
+      CollaborationActions.deleteCollaborators(id)
+      // .then((res) => {
+      //   CollaborationActions.fetchCollaborators()
+      // })
     }
     Modal.dismissModal()
   }
 
   render () {
     const { collaborators } = state
+    const isOwner = state.isOwner
     return (
       <div className='collaborators'>
         { collaborators.map((item, i) => {
-          return <Collaborator item={item} key={item.collaborator.globalKey} handleDelete={this.handleDelete} />
+          return <Collaborator item={item} key={item.collaborator.globalKey} handleDelete={this.handleDelete} isOwner={isOwner} />
         })}
       </div>
     )

@@ -38,4 +38,16 @@ export default class ChatManager {
     )
     this.client.emitter.once('status', fn)
   }
+
+  sendAction ({ action }) {
+    const messageString = JSON.stringify({
+      // globalKey: config.globalKey,
+      action,
+      id: this.client.id,
+    })
+    this.client.send(`/app/collaboration/${config.spaceKey}/collaborator/actions`,
+      {},
+      messageString
+    )
+  }
 }
