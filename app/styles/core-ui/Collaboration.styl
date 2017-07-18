@@ -13,13 +13,13 @@
       margin-top: 12px;
       margin-right: 6px;
       &.online {
-        background: #99C87B;
+        background: #0eaf15;
       }
     }
     .avatar {
       width: 28px;
       height: 28px;
-      overflow: hidden;
+      // overflow: hidden;
       margin-right: 8px;
       img {
         width: 28px;
@@ -43,7 +43,12 @@
         padding-right: 22px;
         color: #CC423D;
         cursor: pointer;
+        visibility: hidden;
       }
+    }
+
+    &:hover .info-delete {
+      visibility: visible;
     }
   }
 }
@@ -55,8 +60,27 @@
   overflow: hidden;
   .chat-content {
     flex: 1;
-    overflow: auto;
-    scrollBar();
+    // overflow: auto;
+    // scrollBar();
+    position: relative;
+    display: flex;
+    .scroll-container {
+      flex: 1;
+      overflow: auto;
+      scrollBar();
+    }
+
+    .unread-hint {
+      position: absolute;
+      bottom: 6px;
+      right: 12px;
+      color: #fff;
+      background-color: #5bc0de;
+      border-color: #46b8da;
+      padding: 2px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   }
   .chat-item {
     border-left: 2px solid #666;
@@ -91,14 +115,16 @@
   .chat-editor {
     border-top: 1px solid #EBEBEB;
     height: 60px;
+    position: relative;
     textarea {
       width: 100%;
       height: 100%;
       border: none;
       resize: none;
-      padding: 5px 10px;
+      padding: 5px 24px 5px 10px;
       font-size: 13px;
       line-height: 18px;
+      outline: none;
 
     }
     ::-webkit-input-placeholder {
@@ -112,6 +138,26 @@
     }
     :-moz-placeholder { /* Firefox 18- */
       color: #B2B2B2;
+    }
+    .chat-icons {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      .right {
+        float: right;
+        .fa {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .emoji-mart {
+    position: fixed;
+    right: 26px;
+    bottom: 82px;
+    .emoji-mart-bar {
+      display: none;
     }
   }
 }

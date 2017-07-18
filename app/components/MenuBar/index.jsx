@@ -7,6 +7,7 @@ import menuBarItems from './menuBarItems';
 import * as GitActions from '../Git/actions'
 import config from '../../config'
 import * as Modal from 'components/Modal/actions'
+import collaborationState from '../Collaboration/state'
 
 class MenuBar extends Component {
   static defaultProps = {
@@ -21,7 +22,8 @@ class MenuBar extends Component {
   }
 
   render() {
-    const {items} = this.props;
+    const {items} = this.props
+    const isOwner = collaborationState.isOwner
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -37,7 +39,7 @@ class MenuBar extends Component {
         </ul>
         {config.isPlatform && (
         <div className='menu-bar-right'>
-          <div className='share-btn' onClick={e => Modal.showModal('CollaborationInvite')}>Share</div>
+          {isOwner && <div className='share-btn' onClick={e => Modal.showModal('CollaborationInvite')}>Share</div>}
           <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
             Switch to v1
           </div>
