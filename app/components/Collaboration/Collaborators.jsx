@@ -16,7 +16,7 @@ const Collaborator = observer(({ item, handleDelete }) => {
     )
   } else {
     info = (
-      <div className='info-delete' onClick={e => handleDelete(id)}>Delete</div>
+      <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Delete</div>
     )
   }
 
@@ -57,14 +57,14 @@ class Collaborators extends Component {
     CollaborationActions.fetchCollaborators()
   }
 
-  handleDelete = async (globalKey) => {
+  handleDelete = async (id, globalKey) => {
     const confirmed = await Modal.showModal('Confirm', {
       header: 'Are you sure you want to remove this collaborator?',
       message: `You're trying to remove ${globalKey}`,
       okText: 'Delete'
     })
     if (confirmed) {
-      CollaborationActions.deleteCollaborators(globalKey).then((res) => {
+      CollaborationActions.deleteCollaborators(id).then((res) => {
         CollaborationActions.fetchCollaborators()
       })
     }
