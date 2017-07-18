@@ -57,11 +57,11 @@ const PanelContent = ({ panel }) => {
       return (
         <SidePanelContainer side='bottom'>
           <SidePanelView label={labels.terminal} active >
-            <div>Terminal</div>
+            <TerminalContainer />
           </SidePanelView>
 
           <SidePanelView label={labels.gitGraph} >
-            <div>GitGraph</div>
+            <GitGraph />
           </SidePanelView>
 
         </SidePanelContainer>
