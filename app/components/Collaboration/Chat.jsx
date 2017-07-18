@@ -154,6 +154,7 @@ ${message}`
     }
     this.state.value = this.textarea.value
     this.state.showEmoji = false
+    this.textarea.focus()
   }
 
   handlePicker = (e) => {
