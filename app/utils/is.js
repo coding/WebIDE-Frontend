@@ -1,3 +1,4 @@
+import isNumber from 'lodash/isNumber'
 import isNull from 'lodash/isNull'
 import isUndefined from 'lodash/isUndefined'
 import isString from 'lodash/isString'
@@ -7,6 +8,7 @@ import isArray from 'lodash/isArray'
 import isPlainObject from 'lodash/isPlainObject'
 
 export default {
+  number: isNumber,
   null: isNull,
   undefined: isUndefined,
   string: isString,
@@ -18,6 +20,7 @@ export default {
 }
 
 export {
+  isNumber,
   isNull,
   isUndefined,
   isString,

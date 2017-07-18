@@ -2,8 +2,10 @@ import last from 'lodash/last'
 import cx from 'classnames'
 import { chroma } from 'utils/colors'
 import mtln from 'utils/multiline'
+import { isNumber } from 'utils/is'
 import TextOperation from './TextOperation'
 import Selection from './Selection'
+import CodeMirror from 'codemirror'
 
 // helpers:
 const addStyleRule = (function () {
@@ -16,9 +18,50 @@ const addStyleRule = (function () {
     if (added[css]) { return; }
     added[css] = true;
     // styleSheet.insertRule(css, (styleSheet.cssRules || styleSheet.rules).length);
-    styleElement.innerText = css
+    styleElement.innerText += css
   };
 }())
+
+addStyleRule(mtln`
+  div.CodeMirror-cursors {
+    z-index: 10 !important;
+  }
+  .line-with-cursor {
+    z-index: 4;
+  }
+
+  .other-cursor-blinker {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: -1px;
+    width: 0.5em;
+    border-right: 2px solid transparent;
+  }
+
+  @keyframes cursor-tag-fade {
+    0% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .other-cursor-tag {
+    position: absolute;
+    font-size: 1em;
+    transition: opacity 0.25s;
+    opacity: 0;
+    left: -5px;
+    padding: 2px 5px;
+    color: white;
+    animation: cursor-tag-fade 2s;
+    animation-timing-function: ease-out;
+  }
+
+  .other-cursor-blinker:hover .other-cursor-tag,
+  .other-cursor-blinker.hover .other-cursor-tag {
+    opacity: 1;
+  }
+`)
 
 function cmpPos (a, b) {
   if (a.line < b.line) { return -1; }
@@ -237,90 +280,77 @@ class CodeMirrorAdapter {
   // 1. set collaborator's cursor
   setOtherCursor (position, hue, name) {
     const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
-    const cursorPos = this.cm.posFromIndex(position)
+    const cursorPos = isNumber(position) ? this.cm.posFromIndex(position) : position
 
     const cursorWrapper = document.createElement('span')
-    const cursorEl = document.createElement('span')
+    const cursorBlinker = document.createElement('span')
     const cursorTag = document.createElement('div')
+    cursorBlinker.className = 'other-cursor-blinker'
+    cursorTag.className = 'other-cursor-tag'
     cursorTag.innerText = name
-    cursorWrapper.appendChild(cursorEl)
-    cursorWrapper.appendChild(cursorTag)
+    cursorBlinker.appendChild(cursorTag)
+    cursorWrapper.appendChild(cursorBlinker)
 
     cursorWrapper.style.position = 'relative'
-    Object.assign(cursorEl.style, {
-      position: 'absolute',
-      top: '-5px',
-      bottom: '0px',
-      right: '1px',
-      width: '2px',
-      backgroundColor: `rgb(${r},${g},${b})`,
+    Object.assign(cursorBlinker.style, {
+      borderColor: `rgb(${r},${g},${b})`,
     })
     Object.assign(cursorTag.style, {
-      position: 'absolute',
-      fontSize: '1em',
-      top: '-1.2em',
-      left: '-5px',
-      padding: '2px 5px',
-      color: 'white',
-      backgroundColor: `rgba(${r},${g},${b},1)`,
+      [cursorPos.line > 0 ? 'top' : 'bottom']: '-1.2em',
+      backgroundColor: `rgb(${r},${g},${b})`,
     })
 
-    return this.cm.setBookmark(cursorPos, { widget: cursorWrapper, insertLeft: true })
+    this.cm.doc.addLineClass(cursorPos.line, 'wrap', 'line-with-cursor')
+    const clearLineClass = () => this.cm.doc.removeLineClass(cursorPos.line, 'wrap', 'line-with-cursor')
+    const cursor = this.cm.setBookmark(cursorPos, { widget: cursorWrapper, insertLeft: true })
+    const clearCursor = cursor.clear.bind(cursor)
+    cursor.clear = () => {
+      clearLineClass()
+      clearCursor()
+    }
+    return cursor
   }
 
   // 2. set collaborator's range
   setOtherSelectionRange (range, hue, name) {
-    const [r0, g0, b0] = chroma.hsv2rgb(hue, 0.4, 1)
-    const color = `rgb(${r0},${g0},${b0})`
-    const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
-    const selectionClassName = 'selection-' + hue
+    const [r, g, b] = chroma.hsv2rgb(hue, 0.4, 1)
+    const color = `rgb(${r},${g},${b})`
+    const selectionClassName = 'other-selection-' + hue
     // const rule = '.' + selectionClassName + ' { background: ' + color + '; }'
     const anchorPos = this.cm.posFromIndex(range.anchor)
     const headPos = this.cm.posFromIndex(range.head)
+    const rangeClassName = `range-${range.anchor}-${range.head}`
 
-    addStyleRule(
-      mtln`.${selectionClassName} {
-        background-color: ${color};
-      }
+    addStyleRule(`.${selectionClassName} {background-color: ${color};}`)
 
-      .${selectionClassName}.selection-last-span {
-        position: relative;
-      }
-
-      .${selectionClassName}.selection-last-span::before {
-        position: absolute;
-        top: -5px;
-        bottom: 0px;
-        right: 1px;
-        width: 2px;
-        content: '';
-        background-color: rgb(${r},${g},${b});
-      }
-
-      .${selectionClassName}.selection-last-span::after {
-        position: absolute;
-        font-size: 1em;
-        top: -1.2em;
-        left: 100%;
-        margin-left: -5px;
-        padding: 2px 5px;
-        color: white;
-        content: "${name}";
-        background-color: rgba(${r},${g},${b},1);
-      }
-
-      .${selectionClassName}.selection-first-line.selection-last-span::after {
-        top: initial;
-        bottom: -1.2em;
-      }
-    `)
-
-    const className = cx(selectionClassName, { 'selection-first-line': headPos.line === 0 })
-    return this.cm.markText(
+    const marker = this.cm.markText(
       minPos(anchorPos, headPos),
       maxPos(anchorPos, headPos),
-      { className, endStyle: 'selection-last-span' }
+      {
+        className: `${selectionClassName} ${rangeClassName}`,
+        inclusiveLeft: false,
+        readOnly: true,
+      }
     )
+    const endPos = maxPos(anchorPos, headPos)
+    const cursor = this.setOtherCursor(endPos, hue, name)
+    const cursorBlinker = cursor.widgetNode.getElementsByClassName('other-cursor-blinker')[0];
+
+    ([...document.querySelectorAll(`.${selectionClassName}.${rangeClassName}`)]).forEach((elt) => {
+      elt.addEventListener('mouseenter', () => {
+        cursorBlinker.classList.add('hover')
+      })
+      elt.addEventListener('mouseleave', () => {
+        cursorBlinker.classList.remove('hover')
+      })
+    })
+
+    return {
+      clear () {
+        marker.clear()
+        cursor.clear()
+      }
+    }
   }
 
   // 3. proxy to aforementioned two fellows

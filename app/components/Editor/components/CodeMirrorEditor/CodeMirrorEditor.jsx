@@ -102,14 +102,14 @@ class CodeMirrorEditor extends Component {
       id: tab.id,
       flags: { modified: true },
     })
-    // if (file) debounced(() => {
-    //   FileStore.updateFile({
-    //     id: file.id,
-    //     content: this.cm.getValue(),
-    //   })
-    //   dispatchCommand('file:save')
-    //   this.isChanging = false
-    // })
+    if (file) debounced(() => {
+      FileStore.updateFile({
+        id: file.id,
+        content: this.cm.getValue(),
+      })
+      dispatchCommand('file:save')
+      this.isChanging = false
+    })
   }
 
   onFocus = (cm, e) => {
