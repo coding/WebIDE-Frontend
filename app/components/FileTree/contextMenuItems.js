@@ -1,5 +1,4 @@
 import { gitBlameNode } from './actions'
-const dividItem = { name: '-' }
 const items = [
   {
     name: 'New File',
