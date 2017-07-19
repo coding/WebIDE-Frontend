@@ -9,9 +9,9 @@ import PanelState from './state'
 
 
 @inject((__, { side }) => {
-  let { activeViewId, views } = PanelState.sidePanelViews[side]
+  let { activeViewId, labels } = PanelState.sidePanelViews[side]
   if (!activeViewId) activeViewId = ''
-  return { activeViewId, views }
+  return { activeViewId, labels }
 })
 class SidePanelContainer extends Component {
   constructor (props) {
@@ -38,11 +38,10 @@ class SidePanelContainer extends Component {
   }
 
   render () {
-    const { views = [] } = this.props
+    const { labels = [] } = this.props
     const children = this.getChildren()
     const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
-    const viewsMapping = views
-    // .filter(view => _.isObject(view))
+    const viewsMapping = labels.map(label => PanelState.views[label.key])
     const childrenWithView = children.concat(viewsMapping);
     return (<div style={{ height: '100%' }}>
       {childrenWithView.map((child, idx) =>
