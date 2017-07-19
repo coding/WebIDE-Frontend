@@ -22,6 +22,7 @@ extendObservable(state, {
     bottom: {},
   },
 })
+state.views = {}
 
 class Panel extends BasePane {
   constructor (opt) {

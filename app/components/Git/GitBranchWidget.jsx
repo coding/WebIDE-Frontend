@@ -103,10 +103,10 @@ export default class GitBranchWidget extends Component {
       { name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
         iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
       { name: 'Synchronize', command: () => this.props.getFetch() },
-      { name: '-', isDivider: true },
+      { isDivider: true },
       { name: 'Local Branches', isDisabled: true },
       ...localBranchItems,
-      { name: '-', isDivider: true },
+      { isDivider: true },
       { name: 'Remote Branches', isDisabled: true },
       ...remoteBranchItems
     ]

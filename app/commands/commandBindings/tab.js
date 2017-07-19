@@ -18,23 +18,21 @@ export default {
 
   'tab:split_v': (c) => {
     const panes = store.PaneState.panes
-    const pane = panes.values().find(pane => (
-      pane.content && pane.content.type === 'tabGroup' && pane.content.id === c.context.tabGroupId
-    ))
-    PaneActions.splitTo(pane.id, 'bottom')
-      .then((newPaneId) => {
-        $d(Tab.moveTabToPane(c.context.id, newPaneId))
-      })
+    const pane = panes.values().find(pane =>
+      pane.contentId === c.context.tabGroupId
+    )
+    PaneActions.splitTo(pane.id, 'bottom').then(newPaneId =>
+      Tab.moveTabToPane(c.context.id, newPaneId)
+    )
   },
 
   'tab:split_h': (c) => {
-    const panes = store.getState().PaneState.panes
-    const pane = Object.values(panes).find(pane => (
-      pane.content && pane.content.type === 'tabGroup' && pane.content.id === c.context.tabGroupId
-    ))
-    PaneActions.splitTo(pane.id, 'right')
-      .then((newPaneId) => {
-        $d(Tab.moveTabToPane(c.context.id, newPaneId))
-      })
+    const panes = store.PaneState.panes
+    const pane = panes.values().find(pane =>
+      pane.contentId === c.context.tabGroupId
+    )
+    PaneActions.splitTo(pane.id, 'right').then(newPaneId =>
+      Tab.moveTabToPane(c.context.id, newPaneId)
+    )
   },
 }

@@ -53,12 +53,13 @@ update.extend('$mergeByViewId', (array, original) => {
   .value()
 })
 export const registerSidePanelView = registerAction(PANEL_REGISTER_VIEW,
-  ({ side, labels, activeViewId, views }) => {
+  ({ side, labels, activeViewId, views = {} }) => {
+    state.sidePanelViews[side].views = state.sidePanelViews[side].views || {}
     state.sidePanelViews[side] = update(state.sidePanelViews[side], {
       labels: { $mergeByViewId: labels },
       activeViewId: { $set: activeViewId },
-      views: { $concat: views },
     })
+    state.views = { ...state.views, ...views }
   }
 )
 
@@ -74,7 +75,7 @@ export const addComToSideBar = (side, label, getComponent) => {
   return registerSidePanelView({
     side,
     labels: [labelWithViewid],
-    views: [component]
+    views: label.key ? { [label.key]: component } : {}
   })
 }
 
