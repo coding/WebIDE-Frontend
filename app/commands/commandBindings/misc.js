@@ -15,7 +15,7 @@ export default {
     Modal.showModal({ type: 'Settings', position: 'center' })
   },
   'global:show_branches': () => {
-    getComponentByName('GitBranchWidget').openGitBranches()
+    getComponentByName('GitBranchWidget').toggleActive(true)
   },
   'modal:dismiss': (c) => {
     Modal.dismissModal()
