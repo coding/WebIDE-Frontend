@@ -3,12 +3,12 @@ import axios from 'axios'
 import config from '../config'
 import store from '../store'
 import { fetchPackage } from '../components/Package/actions'
-const { packageServer } = config
+const { packageServer, packageDev } = config
 
 const io = require('socket.io-client/dist/socket.io.min.js')
 
 export const fetchPackageList = () => {
-  if (__DEV__) {
+  if (packageDev) {
     return request.get(`${packageServer}/packages/`)
   }
   if (config.isPlatform) {

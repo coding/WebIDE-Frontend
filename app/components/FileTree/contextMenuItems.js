@@ -30,7 +30,7 @@ const items = [
       const input = document.getElementById('filetree-hidden-input')
       input.dispatchEvent(new MouseEvent('click'))
     },
-    visible: ctx => Boolean(ctx.isDir)
+    getIsHidden: ctx => !ctx.isDir
   }, {
     name: 'Git Blame',
     icon: '',
