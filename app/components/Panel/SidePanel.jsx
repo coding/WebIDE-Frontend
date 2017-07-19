@@ -42,8 +42,7 @@ class SidePanelContainer extends Component {
     const children = this.getChildren()
     const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
     const viewsMapping = views
-    .filter(getView => _.isFunction(getView) || _.isObject(getView))
-    .map(getView => _.isFunction(getView) ? getView() : getView)
+    // .filter(view => _.isObject(view))
     const childrenWithView = children.concat(viewsMapping);
     return (<div style={{ height: '100%' }}>
       {childrenWithView.map((child, idx) =>

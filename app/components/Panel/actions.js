@@ -70,10 +70,11 @@ export const addComToSideBar = (side, label, getComponent) => {
   const dupLabelIndex = dupLabel.viewId && dupLabel.viewId.split('_')[1]
   const viewId = `${side}_${dupLabelIndex || currentMaxIndex}`
   const labelWithViewid = { ...label, viewId }
+  const component = label.key && window.extensions[label.key] && getComponent(window.extensions[label.key])
   return registerSidePanelView({
     side,
     labels: [labelWithViewid],
-    views: [() => label.key && window.extensions[label.key] && getComponent(window.extensions[label.key])]
+    views: [component]
   })
 }
 

@@ -27,11 +27,11 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
     try {
       eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
-      const { Manager = '' } = plugin
+      const { Manager = (() => null) } = plugin
       const manager = new Manager()
+      window.extensions[pkgId] = plugin
       manager.pluginWillMount()
       plugin.manager = manager
-      window.extensions[pkgId] = plugin
     } catch (err) {
       throw err
     }
