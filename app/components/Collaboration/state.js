@@ -7,9 +7,8 @@ const state = observable({
   collaborators: [],
   invited: [],
   get isOwner () {
-    const owner = _.find(this.collaborators, item => (item.inviteBy === 'Owner'
-    ))
-    return owner && owner.collaborator.globalKey === config.globalKey
+    const owner = config.owner
+    return owner && owner.globalKey === config.globalKey
   }
 })
 
