@@ -12,7 +12,7 @@ import { hueFromString, chroma } from 'utils/colors'
 const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
 const isMac = (os === 'mac')
 
-const getTime = (time) => moment(new Date(time)).fromNow()
+const getTime = (time) => moment(new Date(time)).calendar()//.fromNow()
 
 const ChatItem = observer(({ chat }) => {
   const { collaborator, timestamp, message } = chat
@@ -79,6 +79,10 @@ ${message}`
     })
     this.chatManager.subscribeStatus((data) => {
       this.setOnline(data)
+      const { globalKey, action, id: clientId } = data
+      if (action === 'Add' || action === 'Remove') {
+        this.fetchCollaborators()
+      }
     })
 
     this.chatManager.onConnected(() => {
@@ -92,11 +96,6 @@ ${message}`
 
   setOnline = (data) => {
     const { globalKey, action, id: clientId } = data
-
-    if (action === 'Add' || action === 'Remove') {
-      this.fetchCollaborators()
-    }
-
     const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
     if (collaborator) {
       if (!collaborator.clientIds) collaborator.clientIds = []
@@ -109,8 +108,6 @@ ${message}`
         collaborator.clientIds.remove(clientId)
         collaborator.online = false
       }
-    } else {
-      this.fetchCollaborators()
     }
   }
 

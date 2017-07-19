@@ -3,6 +3,7 @@ import config from 'config'
 import _ from 'lodash'
 
 const state = observable({
+  loading: false,
   collaborators: [],
   invited: [],
   get isOwner () {

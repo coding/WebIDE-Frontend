@@ -3,6 +3,8 @@ import state from './state'
 import ChatManager from './ot/chat'
 
 export const fetchCollaborators = () => {
+  if (state.loading) return
+  state.loading = true
   return api.fetchCollaborators().then((res) => {
     state.collaborators = res.map((item) => {
       if (!/^(http|https):\/\/[^ "]+$/.test(item.collaborator.avatar)) {
@@ -12,6 +14,7 @@ export const fetchCollaborators = () => {
       item.clientIds = []
       return item
     })
+    state.loading = false
     return res
   })
 }
