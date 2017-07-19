@@ -99,7 +99,7 @@ autorunAsync('short-circuit unnecessary internal pane node', () => {
   })
 })
 
-autorun('auto delete pane without tabs', () => {
+autorunAsync('auto delete pane without tabs', () => {
   if (state.autoCloseEmptyPane) {
     state.panes.forEach((pane) => {
       if (!pane) return
