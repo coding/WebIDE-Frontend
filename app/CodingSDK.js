@@ -29,7 +29,7 @@ export default class {
     })
   }
 
-  get injectComponnet () {
+  get injectComponent () {
     return ({
       addComToSideBar
     })
