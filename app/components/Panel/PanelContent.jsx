@@ -36,7 +36,9 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_RIGHT':
       return (
         <SidePanelContainer side='right'>
-          <Collaboration label={{ text: 'Collaborate', icon: 'fa fa-users' }} active />
+          <SidePanelView label={{ text: 'Collaborate', icon: 'fa fa-users'}} active >
+            <Collaboration  />
+          </SidePanelView>
         </SidePanelContainer>
       )
 
