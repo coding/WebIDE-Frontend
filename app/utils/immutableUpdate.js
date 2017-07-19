@@ -30,13 +30,6 @@ const removeKey = (keysToRemove, original) => {
 update.extend('$removeKey', removeKey)
 update.extend('$delete', removeKey)
 
-update.extend('$concat', (array, original) => {
-  const isArray = _.isArray(array) ? array : [array]
-  if (!original) return isArray
-  return original.concat(isArray)
-})
-
-
 update.extend('$map', (fn, original) => {
   if (_.isArray(original)) return _.map(original, fn)
   if (_.isObject(original)) return _.mapValues(original, fn)
