@@ -53,7 +53,7 @@ class GitRebaseStart extends Component {
                      />
                      Interactive
                   </label>
-                  
+
                   <label>
                     <input type="checkbox"
                       onChange={this.handlePreserveMergesChange}
@@ -84,7 +84,7 @@ class GitRebaseStart extends Component {
                      />
                      Show Tags
                   </label>
-                  
+
                   <label>
                     <input type="checkbox"
                       onChange={this.handleShowRemoteChagne}
@@ -155,13 +155,16 @@ class GitRebaseStart extends Component {
         return ('refs/tags/' + item)
       }))
     }
-    branches = [''].concat(branches)
+
     return (
       <select
         className='form-control'
         onChange={this.handleOntoChange}
         value={this.state.selectedOnto}
       >
+      <option selected value='' disabled>
+        -- select a branch --
+      </option>
       {
         branches.map((item, i) => {
           let name, value
