@@ -62,7 +62,7 @@ export const registerSidePanelView = registerAction(PANEL_REGISTER_VIEW,
   }
 )
 
-export const addComToSideBar = (side, label, getComponnet) => {
+export const addComToSideBar = (side, label, getComponent) => {
   const current = state.sidePanelViews[side]
   const currentMaxIndex = current.labels && (current.labels.length ? current.labels.length : 0)
   // 如有相同key，则viewid不变，key 为插件唯一变识
@@ -73,8 +73,7 @@ export const addComToSideBar = (side, label, getComponnet) => {
   return registerSidePanelView({
     side,
     labels: [labelWithViewid],
-    // activeViewId:
-    views: [() => window.extensions.env && getComponnet(window.extensions.env)]
+    views: [() => label.key && window.extensions[label.key] && getComponent(window.extensions[label.key])]
   })
 }
 
