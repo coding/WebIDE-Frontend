@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Menu from '../Menu'
-import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
+import * as Modal from 'components/Modal/actions'
+import Menu from '../Menu'
 import config from '../../config'
+import collaborationState from '../Collaboration/state'
 
 class MenuBar extends Component {
   static propTypes = {
@@ -18,7 +19,7 @@ class MenuBar extends Component {
   }
 
   activateItemAtIndex = (index, isTogglingEnabled) => {
-    if (isTogglingEnabled && this.state.activeItemIndex == index) {
+    if (isTogglingEnabled && this.state.activeItemIndex === index) {
       this.setState({ activeItemIndex: -1 })
     } else {
       this.setState({ activeItemIndex: index })
@@ -43,6 +44,7 @@ class MenuBar extends Component {
 
   render () {
     const { items } = this.props
+    const isOwner = collaborationState.isOwner
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -58,9 +60,14 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-          Switch to v1
-        </div>)}
+        {config.isPlatform && (
+        <div className='menu-bar-right'>
+          {isOwner && <div className='share-btn' onClick={() => Modal.showModal('CollaborationInvite')}>Share</div>}
+          <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+            Switch to v1
+          </div>
+        </div>
+        )}
       </div>
     )
   }
@@ -101,7 +108,7 @@ class MenuBarItem extends Component {
             e.stopPropagation()
             toggleActive(index, true)
           }}
-          onMouseEnter={(e) => { if (shouldHoverToggleActive) toggleActive(index) }}
+          onMouseEnter={() => { if (shouldHoverToggleActive) toggleActive(index) }}
         >
           {menuBarItem.name}
         </div>
