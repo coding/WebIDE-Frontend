@@ -52,7 +52,6 @@ export const fetchPackage = (pkgId, pkgVersion, others) => (dispatch) => {
 
   if (window.extensions[pkgId]) dispatch(togglePackage(pkgId, false))
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
-    console.log('pkg', pkg)
     dispatch(updateLocalPackage({
       ...pkg,
       ...others,

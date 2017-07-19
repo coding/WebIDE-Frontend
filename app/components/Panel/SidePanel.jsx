@@ -1,14 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { inject } from 'mobx-react'
+import _ from 'lodash'
+
 import {
   registerSidePanelView
 } from './actions'
 import PanelState from './state'
 
+
 @inject((__, { side }) => {
-  let { activeViewId } = PanelState.sidePanelViews[side]
+  let { activeViewId, views } = PanelState.sidePanelViews[side]
   if (!activeViewId) activeViewId = ''
-  return { activeViewId }
+  return { activeViewId, views }
 })
 class SidePanelContainer extends Component {
   constructor (props) {
@@ -35,10 +38,15 @@ class SidePanelContainer extends Component {
   }
 
   render () {
+    const { views = [] } = this.props
     const children = this.getChildren()
-    const activeViewIndex = Number(this.props.activeViewId.split('_')[1])
+    const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
+    const viewsMapping = views
+    .filter(getView => _.isFunction(getView) || _.isObject(getView))
+    .map(getView => _.isFunction(getView) ? getView() : getView)
+    const childrenWithView = children.concat(viewsMapping);
     return (<div style={{ height: '100%' }}>
-      {children.map((child, idx) =>
+      {childrenWithView.map((child, idx) =>
         <SidePanelViewContent key={idx}
           view={child}
           isActive={activeViewIndex ? activeViewIndex === idx : idx === 0}
@@ -48,7 +56,10 @@ class SidePanelContainer extends Component {
   }
 }
 
-const SidePanelViewContent = ({ isActive, view }) => <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>{view}</div>
+const SidePanelViewContent = ({ isActive, view }) =>
+<div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
+  {view}
+</div>
 
 class SidePanelView extends Component {
   constructor (props) {

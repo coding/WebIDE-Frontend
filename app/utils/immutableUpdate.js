@@ -1,6 +1,7 @@
 import update from 'immutability-helper'
 import _ from 'lodash'
 
+// global update extends
 const removeValue = (valueToRemove, original) => {
   if (_.isArray(original)) {
     return _.without(original, valueToRemove)
@@ -28,6 +29,13 @@ const removeKey = (keysToRemove, original) => {
 
 update.extend('$removeKey', removeKey)
 update.extend('$delete', removeKey)
+
+update.extend('$concat', (array, original) => {
+  const isArray = _.isArray(array) ? array : [array]
+  if (!original) return isArray
+  return original.concat(isArray)
+})
+
 
 update.extend('$map', (fn, original) => {
   if (_.isArray(original)) return _.map(original, fn)

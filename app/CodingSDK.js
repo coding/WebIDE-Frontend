@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import config from './config'
 import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
+import { addComToSideBar } from './components/Panel/actions'
 
 export default class {
   // app data
@@ -25,6 +26,12 @@ export default class {
   get utils () {
     return ({
       request,
+    })
+  }
+
+  get injectComponnet () {
+    return ({
+      addComToSideBar
     })
   }
   get config () {
