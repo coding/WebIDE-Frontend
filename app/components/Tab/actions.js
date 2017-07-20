@@ -85,7 +85,7 @@ export const moveTabToGroup = registerAction('tab:move_to_tab_group',
 )
 
 export const TAB_INSERT_AT = 'TAB_INSERT_AT'
-export const insertTabAt = registerAction(TAB_INSERT_AT,
+export const insertTabBefore = registerAction(TAB_INSERT_AT,
   (tabId, beforeTabId) => ({ tabId, beforeTabId }),
   ({ tabId, beforeTabId }) => {
     const tab = state.tabs.get(tabId)

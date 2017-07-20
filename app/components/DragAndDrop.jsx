@@ -99,15 +99,17 @@ class DragAndDrop extends Component {
       case 'TAB_on_PANE':
         PaneActions.splitTo(target.id, meta.paneSplitDirection, source.id)
         break
+
       case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
-        dispatch(FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id))
-        break;
+        FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id)
+        break
+
       case 'TAB_on_TABBAR':
-        dispatch(TabActions.moveTabToGroup(source.id, target.id.replace('tab_bar_', '')))
+        TabActions.moveTabToGroup(source.id, target.id.replace('tab_bar_', ''))
         break
 
       case 'TAB_on_TABLABEL':
-        dispatch(TabActions.insertTabAt(source.id, target.id.replace('tab_label_', '')))
+        TabActions.insertTabBefore(source.id, target.id.replace('tab_label_', ''))
         break
 
       default:
