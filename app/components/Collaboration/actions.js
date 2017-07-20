@@ -42,6 +42,7 @@ export const deleteCollaborators = (id, globalKey) => {
   })
 }
 
+// fixme: openFile function should be move to commandBinding/file.js
 export const openFile = ({ path }) => {
   api.readFile(path)
   .then(data => {

@@ -23,6 +23,9 @@ export default class ChatManager {
     return this.client.subscribe('chat', fn)
   }
 
+  // fixme: chat.js is obviously doing much more than what its name indicates
+  // another module should be added to handle all these complication
+  // `CollaborationManager.js` maybe
   subscribeStatus (fn) {
     return this.client.subscribe('collaborators', fn)
   }
