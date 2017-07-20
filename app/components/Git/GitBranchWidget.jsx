@@ -75,7 +75,7 @@ export default class GitBranchWidget extends Component {
         name: 'Checkout as new branch',
         command: () => dispatchCommand('git:checkout_new_branch', {
           fromBranch: branch
-        }) 
+        })
       }, {
         name: 'Delete',
         command: () => { this.props.gitDeleteBranch(branch) }
@@ -103,10 +103,10 @@ export default class GitBranchWidget extends Component {
       { name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
         iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
       { name: 'Synchronize', command: () => this.props.getFetch() },
-      { name: '-', isDisabled: true },
+      { isDivider: true },
       { name: 'Local Branches', isDisabled: true },
       ...localBranchItems,
-      { name: '-', isDisabled: true },
+      { isDivider: true },
       { name: 'Remote Branches', isDisabled: true },
       ...remoteBranchItems
     ]

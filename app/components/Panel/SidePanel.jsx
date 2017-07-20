@@ -1,14 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { inject } from 'mobx-react'
+import _ from 'lodash'
+
 import {
   registerSidePanelView
 } from './actions'
 import PanelState from './state'
 
+
 @inject((__, { side }) => {
-  let { activeViewId } = PanelState.sidePanelViews[side]
+  let { activeViewId, labels } = PanelState.sidePanelViews[side]
   if (!activeViewId) activeViewId = ''
-  return { activeViewId }
+  return { activeViewId, labels }
 })
 class SidePanelContainer extends Component {
   componentWillMount () {
@@ -20,6 +23,7 @@ class SidePanelContainer extends Component {
       labels: children.map((sidePanelView, idx) => ({
         ...sidePanelView.props.label,
         viewId: `${side}_${idx}`,
+        key: sidePanelView.key || idx
       })),
       activeViewId: `${side}_${children.reduce((activeViewIndex, sidePanelView, idx) => {
         if (sidePanelView.props.active) activeViewIndex = idx
@@ -34,10 +38,16 @@ class SidePanelContainer extends Component {
   }
 
   render () {
+    const { labels = [] } = this.props
     const children = this.getChildren()
-    const activeViewIndex = Number(this.props.activeViewId.split('_')[1])
+    const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
+    const viewsMapping = labels
+    .filter(label => label.key && PanelState.views[label.key])
+    .map(label => PanelState.views[label.key])
+    // .sort((a, b) => a.weight || 1 - b.weight || 1)
+    const childrenWithView = children.concat(viewsMapping);
     return (<div style={{ height: '100%' }}>
-      {children.map((child, idx) =>
+      {childrenWithView.map((child, idx) =>
         <SidePanelViewContent key={idx}
           view={child}
           isActive={activeViewIndex ? activeViewIndex === idx : idx === 0}
@@ -47,7 +57,10 @@ class SidePanelContainer extends Component {
   }
 }
 
-const SidePanelViewContent = ({ isActive, view }) => <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>{view}</div>
+const SidePanelViewContent = ({ isActive, view }) =>
+<div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
+  {view}
+</div>
 
 class SidePanelView extends Component {
   constructor (props) {

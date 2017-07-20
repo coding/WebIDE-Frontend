@@ -51,7 +51,6 @@ let ModalContainer = observer(props => {
 })
 
 ModalContainer = inject(() => {
-  console.log('updateing')
   return { stack: ModalState.stack }
 })(ModalContainer)
 

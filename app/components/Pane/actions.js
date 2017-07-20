@@ -1,13 +1,5 @@
 import { registerAction } from 'utils/actions'
 import state, { Pane } from './state'
-import mobxStore from '../../mobxStore'
-
-const moveTabToPane = (tabId, paneId) => {
-  const pane = mobxStore.PaneState.panes.get(paneId)
-  const tab = mobxStore.EditorTabState.tabs.get(tabId)
-  tab.tabGroup.removeTab(tab)
-  pane.tabGroup.addTab(tab)
-}
 
 export const PANE_CONFIRM_RESIZE = 'PANE_CONFIRM_RESIZE'
 export const confirmResize = registerAction(PANE_CONFIRM_RESIZE,
@@ -23,15 +15,14 @@ export const confirmResize = registerAction(PANE_CONFIRM_RESIZE,
 
 export const PANE_SPLIT = 'PANE_SPLIT'
 export const splitTo = registerAction(PANE_SPLIT,
-  (paneId, splitDirection, tabId) => ({ paneId, splitDirection, tabId }),
-  ({ paneId, splitDirection, tabId }, action) => {
+  (paneId, splitDirection) => ({ paneId, splitDirection }),
+  ({ paneId, splitDirection }, action) => {
     const pane = state.panes.get(paneId)
     /* ----- */
     let flexDirection, newPane
     if (splitDirection === 'center') {
       // no pane arrangement changed, so no state change
       action.meta.resolve(pane.id)
-      moveTabToPane(tabId, pane.id)
       return state
     }
     switch (splitDirection) {
@@ -60,7 +51,6 @@ export const splitTo = registerAction(PANE_SPLIT,
         newPane.index = pane.index - 0.5
       }
       action.meta.resolve(newPane.id)
-      moveTabToPane(tabId, newPane.id)
     // If flexDirection is NOT the same as parent's,
     // that means we should spawn a child pane
     } else {
@@ -76,7 +66,6 @@ export const splitTo = registerAction(PANE_SPLIT,
         newPane.index = 0
       }
       action.meta.resolve(newPane.id)
-      moveTabToPane(tabId, newPane.id)
     }
   }
 )

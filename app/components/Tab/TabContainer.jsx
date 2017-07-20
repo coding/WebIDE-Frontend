@@ -20,7 +20,7 @@ const contextMenuItems = [
     icon: '',
     command: 'tab:close_all'
   },
-  { name: '-' },
+  { isDivider: true },
   {
     name: 'Vertical Split',
     icon: '',

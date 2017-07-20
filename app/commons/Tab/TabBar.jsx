@@ -110,7 +110,7 @@ class TabBar extends Component {
     let dropdownMenuItems
     if (tabLabelsItem.length) {
       if (!baseItems.length) return tabLabelsItem
-      dropdownMenuItems = baseItems.concat({ name: '-' }, tabLabelsItem)
+      dropdownMenuItems = baseItems.concat({ isDivider: true }, tabLabelsItem)
     } else {
       dropdownMenuItems = baseItems
     }

@@ -1,6 +1,7 @@
 import update from 'immutability-helper'
 import _ from 'lodash'
 
+// global update extends
 const removeValue = (valueToRemove, original) => {
   if (_.isArray(original)) {
     return _.without(original, valueToRemove)

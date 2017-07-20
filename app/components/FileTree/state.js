@@ -2,7 +2,6 @@ import _ from 'lodash'
 import { TreeNodeScope } from 'commons/Tree'
 import { FileState } from 'commons/File'
 import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
-import config from 'config'
 
 const { state, TreeNode } = TreeNodeScope()
 const nodeSorter = (a, b) => {
@@ -47,15 +46,12 @@ class FileTreeNode extends TreeNode {
 
   // override default name / isDir behavior
   @computed get name () {
-    if (this.file) return this.file.name
-    return super.name
+    return this.file.name
   }
-  set name (v) { return super.name = v }
+
   @computed get isDir () {
-    if (this.file) return this.file.isDir
-    return super.isDir
+    return this.file.isDir
   }
-  set isDir (v) { return super.isDir = v }
 
   @computed get file () {
     return FileState.entities.get(this.path)
