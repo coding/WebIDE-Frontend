@@ -20,7 +20,24 @@ const config = merge(
     }
   },
   commonConfig({ staticDir: '' }),
-  { devtool: 'eval' },
+  /*
+   * See: https://webpack.js.org/configuration/devtool/#devtool
+   * devtool                       | build | rebuild | quality                       | production
+   * --------------------------------------------------------------------------------------------
+   * eval                          | +++   | +++     | generated code                | no
+   * cheap-eval-source-map         | +     | ++      | transformed code (lines only) | no
+   * cheap-source-map              | +     | o       | transformed code (lines only) | yes
+   * cheap-module-eval-source-map  | o     | ++      | original source (lines only)  | no
+   * cheap-module-source-map       | o     | -       | original source (lines only)  | yes
+   * eval-source-map               | --    | +       | original source               | no
+   * source-map                    | --    | --      | original source               | yes
+   * inline-source-map             | --    | --      | original source               | no
+   * hidden-source-map             | --    | --      | original source               | yes
+   * nosource-source-map           | --    | --      | without source content        | yes
+   *
+   * + means faster, - slower and o about the same time
+   */
+  { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
     new webpack.DefinePlugin({
       __DEV__: true,
