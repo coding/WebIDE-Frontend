@@ -9,7 +9,24 @@ const state = observable({
   get isOwner () {
     const owner = config.owner
     return owner && owner.globalKey === config.globalKey
-  }
+  },
+  get sortedList () {
+    const sortedList = this.collaborators.sort((a, b) => {
+      if (a.inviteBy === 'Owner') {
+        return -1
+      } else if (b.inviteBy === 'Owner') {
+        return 1
+      } else {
+        if (a.online && !b.online) {
+          return -1
+        } else if (!a.online && b.online) {
+          return 1
+        }
+        return 0
+      }
+    })
+    return sortedList
+  },
 })
 
 export default state

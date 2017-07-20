@@ -8,7 +8,7 @@ const stylesheet = require('./stylesheet.config')
 
 const reactHotLoaderPrependEntries = [
   'react-hot-loader/patch',
-  'webpack-dev-server/client?http://localhost:8060',
+  'webpack-dev-server/client?http://0.0.0.0:8060',
   'webpack/hot/only-dev-server',
 ]
 

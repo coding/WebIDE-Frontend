@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { observable, computed } from 'mobx'
+import { observable, computed, extendObservable } from 'mobx'
 import config from 'config'
 import moment from 'moment'
 import { Picker } from 'emoji-mart'
@@ -8,9 +8,11 @@ import * as CollaborationActions from './actions'
 import ChatManager from './ot/chat'
 import state from './state'
 import ScrollToBottom from './ScrollToBottom'
+import * as Modal from 'components/Modal/actions'
 import { hueFromString, chroma } from 'utils/colors'
 const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
 const isMac = (os === 'mac')
+import indexOf from 'lodash/indexOf'
 
 const getTime = (time) => moment(new Date(time)).calendar()//.fromNow()
 
@@ -80,7 +82,10 @@ ${message}`
     this.chatManager.subscribeStatus((data) => {
       this.setOnline(data)
       const { globalKey, action, id: clientId } = data
-      if (action === 'Add' || action === 'Remove') {
+      // 被删除的是自己
+      if (action === 'Remove' && globalKey === config.globalKey) {
+        this.closePage()
+      } else if (action === 'Add' || action === 'Remove') {
         this.fetchCollaborators()
       }
     })
@@ -92,6 +97,28 @@ ${message}`
         })
       })
     })
+
+    this.chatManager.subscribeSelect(this.receiveSelection)
+  }
+
+  receiveSelection = (data) => {
+    const { clientId, path } = data
+    const collaborator = state.collaborators.find((item) => item.clientIds.indexOf(clientId) >= 0)
+    if (collaborator) {
+      collaborator.path = path
+    }
+  }
+
+  closePage = async () => {
+    const confirmed = await Modal.showModal('Alert', {
+      header: 'Warning',
+      message: `You're not in this collaboration now.`,
+      okText: 'Quit'
+    })
+    if (confirmed) {
+      location = '/dashboard'
+    }
+    Modal.dismissModal()
   }
 
   setOnline = (data) => {
@@ -126,8 +153,10 @@ ${message}`
   }
 
   handleCommit = () => {
-    this.chatManager.send(this.state.value)
-    this.state.value = ''
+    if (this.state.value) {
+      this.chatManager.send(this.state.value)
+      this.state.value = ''
+    }
   }
 
   handleEmojiClick = (emoji, e) => {
@@ -196,7 +225,7 @@ ${message}`
           </div>
         </div>
         {
-          this.state.showEmoji && <Picker set='emojione' native onClick={this.handleEmojiClick} title='Coding IDE' />
+          this.state.showEmoji && <Picker autoFocus set='emojione' emojiSize={16} native onClick={this.handleEmojiClick} title='Coding IDE' />
         }
       </div>
     )

@@ -23,6 +23,9 @@ export default class ChatManager {
     return this.client.subscribe('chat', fn)
   }
 
+  // fixme: chat.js is obviously doing much more than what its name indicates
+  // another module should be added to handle all these complication
+  // `CollaborationManager.js` maybe
   subscribeStatus (fn) {
     return this.client.subscribe('collaborators', fn)
   }
@@ -39,9 +42,13 @@ export default class ChatManager {
     this.client.emitter.once('status', fn)
   }
 
-  sendAction ({ action }) {
+  subscribeSelect (fn) {
+    this.client.subscribe('selections', fn)
+  }
+
+  sendAction ({ action, globalKey }) {
     const messageString = JSON.stringify({
-      // globalKey: config.globalKey,
+      globalKey,
       action,
       id: this.client.id,
     })

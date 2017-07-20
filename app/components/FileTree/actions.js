@@ -77,6 +77,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
       toggleNodeFold(node, shouldBeFolded, deep)
     }
   } else if (getTabType(node) === 'TEXT') {
+    // fixme: openFile function should be move to commandBinding/file.js
     api.readFile(node.path)
         .then(data => {
           FileStore.loadNodeData(data)
