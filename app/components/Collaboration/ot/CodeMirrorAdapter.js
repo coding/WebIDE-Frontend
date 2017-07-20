@@ -329,7 +329,6 @@ class CodeMirrorAdapter {
       {
         className: `${selectionClassName} ${rangeClassName}`,
         inclusiveLeft: false,
-        readOnly: true,
       }
     )
     const endPos = maxPos(anchorPos, headPos)
