@@ -14,8 +14,9 @@ import CodingSDK from './CodingSDK'
 async function initialize () {
   const step = stepFactory()
   const urlPath = window.location.pathname
+  let stepNum = 0
 
-  await step('[0] Get spaceKey from window.location', async () => {
+  await step(`[${stepNum++}] Get spaceKey from window.location`, async () => {
     // case 1: spaceKey in url
     let spaceKey = null
     const wsPathPattern = /^\/ws\/([^/]+)\/?$/
@@ -45,12 +46,14 @@ async function initialize () {
     }
     return true // MISSING OF SPACEKEY SHOULD NOT BLOCK
   })
-
+  
   if (config.spaceKey) {
-    await step('[1] Check if workspace exist', () =>
-      api.isWorkspaceExist()
-    )
-    await step('[2] Setting up workspace...', () =>
+    if (!config.isPlatform) {
+      await step(`[${stepNum++}] Check if workspace exist`, () =>
+        api.isWorkspaceExist()
+      )
+    }
+    await step(`[${stepNum++}] Setting up workspace...`, () =>
       api.setupWorkspace().then((res) => {
         extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
@@ -58,7 +61,7 @@ async function initialize () {
       })
     )
   } else {
-    await step('[1] Try create workspace', () => {
+    await step(`[${stepNum++}] Try create workspace`, () => {
       const queryEntryPathPattern = /^\/ws\/?$/
       const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
       if (isFromQueryEntryPath) {
@@ -89,13 +92,13 @@ async function initialize () {
   }
 
   if (!config.isPlatform) {
-    await step('[3] Get workspace settings', () =>
+    await step(`[${stepNum++}] Get workspace settings`, () =>
       api.getSettings().then(settings => config.settings = settings)
     )
   }
 
   if (config.isPlatform) {
-    await step('[3] Get user globalKey', () =>
+    await step(`[${stepNum++}] Get user globalKey`, () =>
       api.getUserProfile().then(({ global_key }) => {
         config.globalKey = global_key
         return true
@@ -106,11 +109,11 @@ async function initialize () {
   /* @TODO: websocket connection is not a must, shouldn't block
    * also, terminal connection is optional, only connect when terminal panel is shown
    * */
-  await step('[4] Connect websocket', () =>
+  await step(`[${stepNum++}] Connect websocket`, () =>
     api.connectWebsocketClient()
   )
 
-  await step('[5] Expose essential APIs into window object', () => {
+  await step(`[${stepNum++}] Expose essential APIs into window object`, () => {
     window.CodingSDK = CodingSDK
     window.store = store
     window.React = React
@@ -124,13 +127,13 @@ async function initialize () {
 
 
   if (__DEV__ && __PACKAGE_SERVER__) {
-    await step('[6] enable package server hotreload', () => {
+    await step(`[${stepNum++}] enable package server hotreload`, () => {
       api.enablePackageHotReload()
       return true
     })
   }
 
-  await step('[7] load required packages', () => {
+  await step(`[${stepNum++}] load required packages`, () => {
     dispatch(preloadRequirePackages())
   })
 }

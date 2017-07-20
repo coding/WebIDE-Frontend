@@ -39,9 +39,13 @@ export default class ChatManager {
     this.client.emitter.once('status', fn)
   }
 
-  sendAction ({ action }) {
+  subscribeSelect (fn) {
+    this.client.subscribe('selections', fn)
+  }
+
+  sendAction ({ action, globalKey }) {
     const messageString = JSON.stringify({
-      // globalKey: config.globalKey,
+      globalKey,
       action,
       id: this.client.id,
     })

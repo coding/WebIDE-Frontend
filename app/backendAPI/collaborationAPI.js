@@ -11,6 +11,6 @@ export function postCollaborators (inviteKey) {
   })
 }
 
-export function deleteCollaborators (globalKey) {
-  return request.delete(`/workspaces/${config.spaceKey}/collaborators/${globalKey}`)
+export function deleteCollaborators (id) {
+  return request.delete(`/workspaces/${config.spaceKey}/collaborators/${id}`)
 }

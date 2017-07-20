@@ -1,4 +1,6 @@
 import api from 'backendAPI'
+import FileStore from 'commons/File/store'
+import * as TabActions from 'components/Tab/actions'
 import state from './state'
 import ChatManager from './ot/chat'
 
@@ -12,6 +14,7 @@ export const fetchCollaborators = () => {
       }
       item.online = false
       item.clientIds = []
+      item.path = ''
       return item
     })
     state.loading = false
@@ -32,9 +35,28 @@ export const postCollaborators = (inviteKey) => {
   })
 }
 
-export const deleteCollaborators = (globalKey) => {
-  return api.deleteCollaborators(globalKey).then(res => {
+export const deleteCollaborators = (id, globalKey) => {
+  return api.deleteCollaborators(id).then(res => {
     const chatManager = new ChatManager()
-    chatManager.sendAction({ action: 'Remove' })
+    chatManager.sendAction({ action: 'Remove', globalKey })
   })
 }
+
+export const openFile = ({ path }) => {
+  api.readFile(path)
+  .then(data => {
+    FileStore.loadNodeData(data)
+    return data
+  })
+  .then((data) => {
+    TabActions.createTab({
+      title: path.split('/').pop(),
+      icon: 'fa fa-file-o',
+      editor: {
+        revision: data.hashedVersion,
+        filePath: path,
+      }
+    })
+  })
+}
+
