@@ -1,16 +1,32 @@
-import { autorun } from 'mobx'
-
 const hiddenFolders = ['/.git', '/.coding-ide']
+
 export default function bindToFile (FileTreeState, FileState, FileTreeNode) {
-  autorun('bind File to FileTree', () => {
-    FileState.entities.forEach((fileNode) => {
-      if (!fileNode) return
-      const isFileTreeNodeExist = FileTreeState.entities.has(fileNode.path)
-      const isHiddenFile = hiddenFolders.includes(fileNode.path)
-      if (!isFileTreeNodeExist && !isHiddenFile) {
-        return new FileTreeNode({ file: fileNode })
-      }
-    })
+  function addFileTreeNode (file) {
+    if (FileTreeState.entities.has(file.path) || hiddenFolders.includes(file.path)) return null
+    return new FileTreeNode({ file })
+  }
+
+  function deleteFileTreeNode (file) {
+    FileTreeState.entities.delete(file.path)
+  }
+
+  FileState.entities.forEach((file) => {
+    addFileTreeNode(file)
   })
+
+  const dispose = FileState.entities.observe((change) => {
+    const { type, newValue, oldValue } = change
+    switch (type) {
+      case 'add':
+        addFileTreeNode(newValue)
+        break
+      case 'delete':
+        deleteFileTreeNode(oldValue)
+        break
+      default:
+    }
+  })
+
+  return dispose
 }
 
