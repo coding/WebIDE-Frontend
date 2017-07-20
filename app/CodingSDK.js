@@ -38,11 +38,11 @@ export default class {
     return config
   }
   get Modal () {
-    return bindActionCreators(Modal, store.dispatch)
+    return Modal
   }
   get Notify () {
     return ({
-      notify: bindActionCreators(notify, store.dispatch),
+      notify,
       NOTIFY_TYPE
     })
   }

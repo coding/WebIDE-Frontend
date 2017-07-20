@@ -9,7 +9,7 @@ $bar-size= 25px
     width: $bar-size;
     flex-direction: column;
     .side-bar-label {
-      padding-tb: 5px;
+      padding: 5px 3px;
       text-align right;
     }
   }
@@ -25,6 +25,9 @@ $bar-size= 25px
   .side-bar-label {
     cursor: pointer;
     overflow: hidden;
+    &:hover {
+      background-color: gray(95%);
+    }
     &.active {
       background-color: gray(90%);
     }
