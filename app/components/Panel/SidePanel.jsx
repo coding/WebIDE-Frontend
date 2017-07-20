@@ -24,6 +24,7 @@ class SidePanelContainer extends Component {
       labels: children.map((sidePanelView, idx) => ({
         ...sidePanelView.props.label,
         viewId: `${side}_${idx}`,
+        key: sidePanelView.key || idx
       })),
       activeViewId: `${side}_${children.reduce((activeViewIndex, sidePanelView, idx) => {
         if (sidePanelView.props.active) activeViewIndex = idx
@@ -41,7 +42,10 @@ class SidePanelContainer extends Component {
     const { labels = [] } = this.props
     const children = this.getChildren()
     const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
-    const viewsMapping = labels.map(label => PanelState.views[label.key])
+    const viewsMapping = labels
+    .filter(label => label.key && PanelState.views[label.key])
+    .map(label => PanelState.views[label.key])
+    // .sort((a, b) => a.weight || 1 - b.weight || 1)
     const childrenWithView = children.concat(viewsMapping);
     return (<div style={{ height: '100%' }}>
       {childrenWithView.map((child, idx) =>
