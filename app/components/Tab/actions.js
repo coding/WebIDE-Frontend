@@ -1,7 +1,7 @@
 import { extendObservable } from 'mobx'
 import { createAction, handleActions, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
-import store from 'mobxStore'
+import mobxStore from 'mobxStore'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const createTab = registerAction(TAB_CREATE,
@@ -114,16 +114,13 @@ export const closeContextMenu = createAction(TAB_CONTEXT_MENU_CLOSE)
 
 
 export const TAB_MOVE_TO_PANE = 'TAB_MOVE_TO_PANE'
-export const moveTabToPane = createAction(TAB_MOVE_TO_PANE,
-  (tabId, paneId) => ({ tabId, paneId })
-)
-const crossActionHandlers = handleActions({
-  [TAB_MOVE_TO_PANE]: (allState, { tabId, paneId }) => {
-    const pane = allState.PaneState.panes.get(paneId)
-    const tab = allState.EditorTabState.tabs.get(tabId)
+export const moveTabToPane = registerAction(TAB_MOVE_TO_PANE,
+  (tabId, paneId) => ({ tabId, paneId }),
+  ({ tabId, paneId }) => {
+    const pane = mobxStore.PaneState.panes.get(paneId)
+    const tab = mobxStore.EditorTabState.tabs.get(tabId)
     tab.tabGroup.removeTab(tab)
     pane.tabGroup.addTab(tab)
-    return allState
+    return mobxStore
   }
-}, store)
-
+)
