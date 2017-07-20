@@ -13,6 +13,7 @@ const config = observable({
   isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
+  fileExcludePatterns: ['/.git', '/.coding-ide'],
 })
 
 window.config = config

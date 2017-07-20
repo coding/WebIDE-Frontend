@@ -97,17 +97,21 @@ class DragAndDrop extends Component {
     if (!source || !target) return
     switch (`${source.type}_on_${target.type}`) {
       case 'TAB_on_PANE':
-        PaneActions.splitTo(target.id, meta.paneSplitDirection, source.id)
+        PaneActions.splitTo(target.id, meta.paneSplitDirection).then(newPaneId =>
+          TabActions.moveTabToPane(source.id, newPaneId)
+        )
         break
+
       case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
-        dispatch(FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id))
-        break;
+        FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id)
+        break
+
       case 'TAB_on_TABBAR':
-        dispatch(TabActions.moveTabToGroup(source.id, target.id.replace('tab_bar_', '')))
+        TabActions.moveTabToGroup(source.id, target.id.replace('tab_bar_', ''))
         break
 
       case 'TAB_on_TABLABEL':
-        dispatch(TabActions.insertTabAt(source.id, target.id.replace('tab_label_', '')))
+        TabActions.insertTabBefore(source.id, target.id.replace('tab_label_', ''))
         break
 
       default:
