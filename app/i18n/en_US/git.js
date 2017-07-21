@@ -40,5 +40,16 @@ export default {
     checkoutFailed: 'Checkout failed',
     checkoutConfilcts: 'Checkout has not completed because of checkout conflicts, do you want to stash first?',
     stashAndCheckout: 'Stash and Checkout'
+  },
+  action: {
+    commitSuccess: 'Git commit success.',
+    fetchSuccess: 'Get Fetch Success',
+    checkoutBranch: 'Check out {branch}',
+    checkoutConflictsWarning: 'Checkout has not completed because of checkout conflicts',
+    checkoutFailed: 'Checkout failed',
+    checkoutFailedWithoutDeleted: 'Checkout has completed, but some files could not be deleted',
+    checkoutNotDeleted: 'Nondeleted Files',
+    checkoutFailedError: 'An Exception occurred during checkout, status: {status}'
+
   }
 }

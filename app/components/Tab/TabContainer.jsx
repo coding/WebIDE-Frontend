@@ -5,28 +5,29 @@ import { observer, inject } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import Editor from 'components/Editor'
 import { TablessCodeMirrorEditor } from 'components/Editor'
+import i18n from 'utils/createI18n'
 
 const contextMenuItems = [
   {
-    name: 'Close',
+    name: i18n`tab.contextMenu.close`,
     icon: '',
     command: 'tab:close'
   }, {
-    name: 'Close Others',
+    name: i18n`tab.contextMenu.closeOthers`,
     icon: '',
     command: 'tab:close_other'
   }, {
-    name: 'Close All',
+    name: i18n`tab.contextMenu.closeAll`,
     icon: '',
     command: 'tab:close_all'
   },
   { isDivider: true },
   {
-    name: 'Vertical Split',
+    name: i18n`tab.contextMenu.verticalSplit`,
     icon: '',
     command: 'tab:split_v'
   }, {
-    name: 'Horizontal Split',
+    name: i18n`tab.contextMenu.horizontalSplit`,
     icon: '',
     command: 'tab:split_h'
   }

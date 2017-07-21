@@ -2,6 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import { observable, computed, action, autorun } from 'mobx'
 import { mapEntityFactory } from 'utils/decorators'
+import i18n from 'utils/createI18n'
 
 function TabScope () {
   const state = observable({
@@ -24,7 +25,7 @@ function TabScope () {
 
   class Tab {
 
-  @observable _title = 'untitled'
+  @observable _title = i18n.get('tab.makeDropdownMenuItems.untitledTab')
   @computed get title () { return this._title }
     set title (v) { return this._title = v }
 
