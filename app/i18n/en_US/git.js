@@ -49,7 +49,9 @@ export default {
     checkoutFailed: 'Checkout failed',
     checkoutFailedWithoutDeleted: 'Checkout has completed, but some files could not be deleted',
     checkoutNotDeleted: 'Nondeleted Files',
-    checkoutFailedError: 'An Exception occurred during checkout, status: {status}'
+    checkoutFailedError: 'An Exception occurred during checkout, status: {status}',
+    deletedSuccess: 'deleted branch {branch} success'
+
 
   }
 }
