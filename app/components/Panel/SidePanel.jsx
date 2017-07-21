@@ -29,7 +29,7 @@ class SidePanelContainer extends Component {
       activeViewId: `${side}_${children.reduce((activeViewIndex, sidePanelView, idx) => {
         if (sidePanelView.props.active) activeViewIndex = idx
         return activeViewIndex
-      }, 0)}`
+      }, undefined)}`
     })
   }
 
@@ -41,7 +41,7 @@ class SidePanelContainer extends Component {
   render () {
     const { labels = [] } = this.props
     const children = this.getChildren()
-    const activeViewIndex = Number(this.props.activeViewId.split('_')[1]) || 0
+    const activeViewIndex = Number(this.props.activeViewId.split('_')[1])
     const viewsMapping = labels
     .filter(label => label.key && PanelState.views[label.key])
     .map(label => PanelState.views[label.key])
@@ -51,7 +51,7 @@ class SidePanelContainer extends Component {
       {childrenWithView.map((child, idx) =>
         <SidePanelViewContent key={idx}
           view={child}
-          isActive={activeViewIndex ? activeViewIndex === idx : idx === 0}
+          isActive={activeViewIndex === idx}
         />
       )}
     </div>)
