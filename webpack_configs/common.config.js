@@ -64,9 +64,9 @@ return {
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html')
     }),
+    // https://github.com/kevlened/copy-webpack-plugin
     new CopyWebpackPlugin([{
-      from: path.join(PROJECT_ROOT, 'static/favicon.ico'),
-      to: (staticDir ? '../' : './'),
+      from: path.join(PROJECT_ROOT, 'static'),
     }])
   ],
   module: {
