@@ -40,5 +40,16 @@ export default {
     checkoutFailed: '签出失败',
     checkoutConfilcts: '由于发生冲突签出失败，是否先储藏代码',
     stashAndCheckout: '储藏并签出'
+  },
+  action: {
+    commitSuccess: '成功提交',
+    fetchSuccess: '成功抓取',
+    checkoutBranch: '{branch} 签出成功',
+    checkoutConflictsWarning: '因为有冲突，签出未成功',
+    checkoutFailed: '签出失败',
+    checkoutFailedWithoutDeleted: '签出成功，但仍有一部分文件未被删除',
+    checkoutNotDeleted: '未删除的文件',
+    checkoutFailedError: '出现意外，当前状态 {status}',
+    deletedSuccess: '删除分支 {branch} 成功'
   }
 }

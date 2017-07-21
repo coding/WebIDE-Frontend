@@ -1,20 +1,22 @@
 import React, { Component, PropTypes } from 'react'
 import { observer } from 'mobx-react'
-import state from './state'
 import config from 'config'
+import {i18n} from 'utils'
+import state from './state'
+
 
 @observer
 class Initialize extends Component {
   render () {
     let info = (
       <div className='loading-info'>
-        Loading workspace...
+        {i18n`global.loadingWorkspace`}
       </div>
     )
     if (state.errorInfo) {
       info = (
         <div className='loading-info error'>
-          Load workspace failed.
+        {i18n`global.loadingWorkspaceFailed`}
         </div>
       )
     }

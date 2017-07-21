@@ -4,7 +4,7 @@ import { observable, extendObservable, computed, action, autorunAsync } from 'mo
 
 export const UIThemeOptions = [
   { name: 'settings.theme.uiThemeOption.baseTheme', value: 'base-theme' },
-  { name: 'settings.theme.uiThemeOption.dark', value: 'Dark' },
+  { name: 'settings.theme.uiThemeOption.dark', value: 'dark' },
 ]
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 

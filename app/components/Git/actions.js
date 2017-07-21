@@ -5,6 +5,7 @@ import { showModal, addModal, dismissModal, updateModal } from '../Modal/actions
 import { createAction } from 'redux-actions'
 
 import Clipboard from 'clipboard'
+import i18n from 'utils/createI18n'
 
 export const GIT_STATUS = 'GIT_STATUS'
 export const updateStatus = createAction(GIT_STATUS)
@@ -21,7 +22,7 @@ export function commit () {
       files: stagedFilesPathList,
       message: GitState.commitMessage
     }).then((filetreeDelta) => {
-      notify({ message: 'Git commit success.' })
+      notify({ message: i18n`git.action.commitSuccess` })
       dismissModal()
     })
   }
@@ -36,7 +37,7 @@ export function updateStagingArea (action, file) {
 export const GIT_FETCH = 'GIT_FETCH'
 export function getFetch () {
   return dispatch => api.gitFetch().then(
-     notify({ message: 'Get Fetch Success' })
+     notify({ message: i18n`git.action.fetchSuccess` })
   )
 }
 
@@ -57,12 +58,12 @@ export function checkoutBranch (branch, remoteBranch) {
       if (data.status === 'OK') {
         // 完全由 ws 里的 checkout 事件来改变显示
         // dispatch(createAction(GIT_CHECKOUT)({ branch }))
-        notify({ message: `Check out ${branch}` })
+        notify({ message: i18n`git.action.checkoutBranch${branch}` })
       } else if (data.status === 'CONFLICTS') {
         dispatch(createAction(GIT_CHECKOUT_FAILED)({ branch }))
         notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: 'Checkout has not completed because of checkout conflicts',
+          message: i18n`git.action.checkoutConflictsWarning`,
         })
 
         api.gitStatus().then(({ files, clean }) => {
@@ -76,7 +77,10 @@ export function checkoutBranch (branch, remoteBranch) {
           })
           dispatch(updateStatus({ files, isClean: clean }))
         }).then(() =>
-          dispatchshowModal({ type: 'GitCheckoutStash', title: 'Checkout failed' })
+          dispatch(showModal({
+            type: 'GitCheckoutStash',
+            title: i18n`git.action.checkoutFailed`
+          }))
         )
         // const files = []
         // data.conflictList.map((file) => {
@@ -87,18 +91,18 @@ export function checkoutBranch (branch, remoteBranch) {
       } else if (data.status === 'NONDELETED') {
         notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: 'Checkout has completed, but some files could not be deleted',
+          message: i18n`git.action.checkoutFailedWithoutDeleted`,
         })
         const files = []
         data.undeletedList.map((file) => {
           files.push({ name: file, status: 'ADDED' })
         })
         dispatch(updateStatus({ files, isClean: false }))
-        showModal({ type: 'GitResolveConflicts', title: 'Nondeleted Files', disableClick: true })
+        showModal({ type: 'GitResolveConflicts', title: i18n`git.action.checkoutNotDeleted`, disableClick: true })
       } else {
         notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: `An Exception occurred during checkout, status: ${data.status}`,
+          message: i18n`An Exception occurred during checkout, status: ${{ status: data.status }}`,
         })
       }
     })
@@ -109,7 +113,7 @@ export const GIT_DELETE_BRANCH = 'GIT_DELETE_BRANCH'
 export function gitDeleteBranch (branch) {
   return (dispatch) => {
     api.gitDeleteBranch(branch).then(() => {
-      notify({ message: `deleted branch ${branch} success` })
+      notify({ message: i18n`git.action.deletedSuccess${branch}` })
     })
   }
 }
@@ -124,7 +128,8 @@ export function getTags () {
 export function pull () {
   return (dispatch) => {
     api.gitPull().then((res) => {
-      if (res.code && res.code !== 0) { notify({ message: `Git pull fail: ${res.msg}` }) } else { notify({ message: 'Git pull success.' }) }
+      if (res.code && res.code !== 0) { notify({ message: `Git pull fail: ${res.msg}` }) }
+      else { notify({ message: 'Git pull success.' }) }
     })
   }
 }

@@ -1,27 +1,29 @@
 import { gitBlameNode } from './actions'
+import { i18n } from 'utils'
+
 const items = [
   {
-    name: 'New File',
+    name: i18n`fileTree.contextMenu.newFile`,
     icon: '',
     command: 'file:new_file'
   }, {
-    name: 'New Folder',
+    name: i18n`fileTree.contextMenu.newFolder`,
     icon: '',
     command: 'file:new_folder'
   }, {
-    name: 'Delete...',
+    name: i18n`fileTree.contextMenu.delete`,
     icon: '',
     command: 'file:delete'
   }, {
-    name: 'Rename...',
+    name: i18n`fileTree.contextMenu.rename`,
     icon: '',
     command: 'file:rename'
   }, {
-    name: 'Download',
+    name: i18n`fileTree.contextMenu.delete`,
     icon: '',
     command: 'file:download'
   }, {
-    name: 'Upload',
+    name: i18n`fileTree.contextMenu.upload`,
     icon: '',
     command: () => {
       // reset the files selected from last round
@@ -31,7 +33,7 @@ const items = [
     },
     getIsHidden: ctx => !ctx.isDir
   }, {
-    name: 'Git Blame',
+    name: i18n`fileTree.contextMenu.gitBlame`,
     icon: '',
     command: (c) => {
       gitBlameNode(c)
