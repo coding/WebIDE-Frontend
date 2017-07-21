@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { observer } from 'mobx-react'
 import state from './state'
+import config from 'config'
 
 @observer
 class Initialize extends Component {
@@ -20,7 +21,7 @@ class Initialize extends Component {
 
     return (
       <div className='initialize-container'>
-        <div className='coding-loading'></div>
+        {config.isPlatform && <div className='coding-loading'></div>}
         {/* <div className='monkey splash-logo'></div> */}
         {info}
         {state.errorInfo && <div className='loading-error'>
