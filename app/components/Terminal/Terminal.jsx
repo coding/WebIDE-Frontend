@@ -1,6 +1,6 @@
 // Hence the naming: http://askubuntu.com/questions/111144/are-terminal-and-shell-the-same
-import React, { Component, PropTypes } from 'react';
-import Terminal from 'sh.js';
+import React, { Component, PropTypes } from 'react'
+import Terminal from 'sh.js'
 import _ from 'lodash';
 import { emitter, E } from 'utils'
 
@@ -21,9 +21,10 @@ class Term extends Component {
       theme: 'terminal_basic',
       cols: 80,
       rows:24
-    });
+    })
 
-    terminalManager.setActions(TabActions);
+    // fixme: this `TabActions` is for edtor tabs, not for terminal tabs
+    terminalManager.setActions(TabActions)
 
     terminal.tabId = this.props.tab.id;
     terminal.open(this.termDOM);
