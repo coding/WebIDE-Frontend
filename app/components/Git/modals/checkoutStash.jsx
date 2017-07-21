@@ -7,6 +7,8 @@ import { connect } from 'react-redux'
 
 import * as GitActions from '../actions'
 import GitFileTree from '../GitFileTree'
+import { i18n } from 'utils'
+
 
 class GitCheckoutStashView extends Component {
   constructor (props) {
@@ -16,29 +18,28 @@ class GitCheckoutStashView extends Component {
   }
 
   render () {
-    console.log(this.props)
-    const {title, diffFile, showStash} = this.props
+    const { title, diffFile, showStash } = this.props
     return (
       <div>
         <div className='git-resolve-conflicts'>
           <h1>
-          {title || 'Checkout failed'}
+            {title || i18n`git.checkoutStashModal.checkoutFailed`}
           </h1>
-          <div>Checkout has not completed because of checkout conflicts, do you want to stash first?</div>
+          <div>{i18n`git.checkoutStashModal.checkoutConfilcts`}</div>
           <GitFileTree
             statusFiles={this.props.statusFiles}
-            displayOnly={true}
-            hideTitle={true}
+            displayOnly
+            hideTitle
             handleClick={(path) => {
               diffFile({
                 path, newRef: 'HEAD', oldRef: '~~unstaged~~'
               })
             }}
           />
-          
+
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-            <button className='btn btn-primary' onClick={e => showStash()}>Stash and Checkout</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
+            <button className='btn btn-primary' onClick={e => showStash()}>{i18n`git.checkoutStashModal.stashAndCheckout`}</button>
           </div>
         </div>
       </div>

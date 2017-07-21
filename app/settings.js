@@ -2,13 +2,17 @@ import isObject from 'lodash/isObject'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import { observable, extendObservable, computed, action, autorunAsync } from 'mobx'
 
-export const UIThemeOptions = ['base-theme', 'dark']
+export const UIThemeOptions = [
+  { name: 'settings.theme.uiThemeOption.baseTheme', value: 'base-theme' },
+  { name: 'settings.theme.uiThemeOption.dark', value: 'Dark' },
+]
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
-const changeTheme = (nextThemeId, force) => {
+const changeTheme = (nextThemeId) => {
   if (!window.themes) window.themes = {}
-  if (UIThemeOptions.includes(nextThemeId)) {
-    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`).then((module) => {
+  if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
+    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
+    .then((module) => {
       const currentTheme = window.themes['@current']
       if (currentTheme && currentTheme.unuse) currentTheme.unuse()
       window.themes['@current'] = window.themes[nextThemeId] = module
@@ -112,12 +116,12 @@ const settings = observable({
   theme: new DomainSetting({
     _keys: ['ui_theme', 'syntax_theme'],
     ui_theme: {
-      name: 'UI Theme',
-      value: 'Light',
+      name: 'settings.theme.uiTheme',
+      value: 'base-theme',
       options: UIThemeOptions
     },
     syntax_theme: {
-      name: 'Syntax Theme',
+      name: 'settings.theme.syntaxTheme',
       value: 'default',
       options: SyntaxThemeOptions
     }
@@ -129,12 +133,15 @@ const settings = observable({
     _keys: ['language', 'hide_files'],
     requireConfirm: true,
     language: {
-      name: 'Language',
+      name: 'settings.general.language',
       value: localeToLangs[getDefaultLangCode()],
-      options: ['English', 'Chinese']
+      options: [
+      { name: 'settings.general.languageOption.english', value: 'English' },
+      { name: 'settings.general.languageOption.chinese', value: 'Chinese' },
+      ]
     },
     hide_files: {
-      name: 'Hide Files',
+      name: 'settings.general.hideFiles',
       value: '/.git,/.coding-ide'
     }
   }),
@@ -154,21 +161,21 @@ const settings = observable({
     ],
 
     keyboard_mode: {
-      name: 'Keyboard Mode',
+      name: 'settings.editor.keyboardMode',
       value: 'Default',
-      options: ['Default', 'Vim', 'Emacs']
+      options: [{ name: 'settings.default', value: 'Default' }, 'Vim', 'Emacs']
     },
     font_size: {
-      name: 'Font Size',
+      name: 'settings.editor.fontSize',
       value: 14
     },
     font_family: {
-      name: 'Font Family',
+      name: 'settings.editor.fontFamily',
       value: 'Consolas',
       options: ['Consolas', 'Courier', 'Courier New', 'Menlo']
     },
     charset: {
-      name: 'Charset',
+      name: 'settings.editor.charset',
       value: 'utf8',
       options: [
         { name: 'Unicode (UTF-8)', value: 'utf8' },
@@ -177,34 +184,36 @@ const settings = observable({
       ]
     },
     soft_tab: {
-      name: 'Soft Tab',
+      name: 'settings.editor.softTab',
       value: true
     },
     tab_size: {
-      name: 'Tab Size',
+      name: 'settings.editor.tabSize',
       value: 4,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
     },
     auto_save: {
-      name: 'Auto Save',
+      name: 'settings.editor.autoSave',
       value: true
     },
     auto_wrap: {
-      name: 'Auto Wrap',
+      name: 'settings.editor.autoWrap',
       value: false
     },
     live_auto_completion: {
-      name: 'Live Auto Completion',
+      name: 'settings.editor.autoCompletion',
       value: true
     },
     snippets: {
-      name: 'Snippets',
+      name: 'settings.editor.snippets',
       value: false
     }
   })
 })
 
 export default settings
+
+
 
 autorunAsync('changeTheme', () => {
   changeTheme(settings.theme.ui_theme.value)

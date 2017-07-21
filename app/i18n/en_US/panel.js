@@ -1,0 +1,10 @@
+export default {
+  bottom: {
+    terminal: 'Terminal',
+    gitGraph: 'Git Logs',
+    history: 'History'
+  },
+  left: {
+    project: 'Project'
+  }
+}

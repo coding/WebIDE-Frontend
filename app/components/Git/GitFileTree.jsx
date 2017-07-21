@@ -72,9 +72,9 @@ class _GitFileTreeNode extends Component {
               </span>
             }
             { hideTitle ? ''
-              : <span className='filetree-node-label'>File Status
-                { displayOnly ? <span> ({node.leafNodes.length} changed) </span>
-                : <span> ({this.getStagedLeafNodes().length} staged / {node.leafNodes.length} changed) </span>
+              : <span className='filetree-node-label'>{i18n`git.fileTree.fileStatus`}
+                { displayOnly ? <span> ({node.leafNodes.length} {i18n`git.fileTree.changed`}) </span>
+                : <span> ({this.getStagedLeafNodes().length} {i18n`git.fileTree.staged`} / {node.leafNodes.length} {i18n`git.fileTree.changed`}) </span>
                 }
               </span>
             }

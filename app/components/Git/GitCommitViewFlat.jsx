@@ -3,13 +3,14 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
+import i18n from 'utils/createI18n'
 
 import * as GitActions from './actions'
 
 var GitCommitView = ({workingDir, stagingArea, ...actionProps}) => {
   const {isClean, files} = workingDir
   const {updateCommitMessage, updateStagingArea, commit} = actionProps
-  if (isClean) return <h1 className=''>Your working directory is clean. Nothing to commit.</h1>
+  if (isClean) return <h1 className=''>{i18n`git.commitView.nothingCommit`}</h1>
   return (
     <div>
       <div className='git-status-files-container'>
@@ -37,8 +38,8 @@ var GitCommitView = ({workingDir, stagingArea, ...actionProps}) => {
       </div>
       <hr />
       <div className='modal-ops'>
-        <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-        <button className='btn btn-primary' onClick={e => commit(stagingArea)}>Commit</button>
+        <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
+        <button className='btn btn-primary' onClick={e => commit(stagingArea)}>{i18n`git.commit`}</button>
       </div>
     </div>
   )

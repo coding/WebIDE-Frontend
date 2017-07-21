@@ -6,7 +6,10 @@ import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
 import config from '../../config'
+import { inject, observer } from 'mobx-react'
 
+
+@observer
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
@@ -51,7 +54,7 @@ class MenuBar extends Component {
               isActive={this.state.activeItemIndex == i}
               shouldHoverToggleActive={this.state.activeItemIndex > -1}
               toggleActive={this.activateItemAtIndex}
-              key={`menu-bar-${menuBarItem.name}`}
+              key={`menu-bar-${menuBarItem.key}`}
               index={i}
               onOpen={menuBarItem.onOpen}
               activatePrevTopLevelMenuItem={this.activatePrevMenuItem}

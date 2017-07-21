@@ -2,6 +2,8 @@ import React from 'react'
 import api from 'backendAPI'
 import CodingLogo from 'components/CodingLogo'
 import mapShortcutToItems from './utils'
+import i18n from '../../utils/createI18n'
+
 
 const divider = { isDivider: true }
 const menuBarItems = [
@@ -12,50 +14,50 @@ const menuBarItems = [
     items: [
       {
         key: 'settings',
-        name: 'Settings',
+        name: i18n`menuBarItems.meta.main`,
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
       }
     ]
   }, {
     key: 'file',
-    name: 'File',
+    name: i18n`menuBarItems.file.main`,
     items: [
       {
         key: 'newFile',
-        name: 'New File',
+        name: i18n`menuBarItems.file.newFile`,
         icon: 'fa fa-file-o',
         command: 'file:new_file',
       }, {
         key: 'newFolder',
-        name: 'New Folder',
+        name: i18n`menuBarItems.file.newFolder`,
         icon: '',
         command: 'file:new_folder'
       }, {
         key: 'save',
-        name: 'Save',
+        name: i18n`menuBarItems.file.save`,
         icon: 'fa fa-floppy-o',
         command: 'file:save'
       }
     ]
   }, {
     key: 'git',
-    name: 'Git',
+    name: i18n`menuBarItems.git.main`,
     onOpen: onGitMenuOpen,
     items: [
       {
         key: 'commit',
-        name: 'Commit',
+        name: i18n`menuBarItems.git.commit`,
         icon: 'octicon octicon-git-commit',
         command: 'git:commit'
       }, {
         key: 'pull',
-        name: 'Pull',
+        name: i18n`menuBarItems.git.pull`,
         icon: 'octicon octicon-repo-pull',
         command: 'git:pull'
       }, {
         key: 'push',
-        name: 'Push',
+        name: i18n`menuBarItems.git.push`,
         icon: 'octicon octicon-repo-push',
         command: 'git:push'
       },
@@ -63,79 +65,80 @@ const menuBarItems = [
       {
         key: 'resolveConflicts',
         group: 'conflicts',
-        name: 'Resolve Conflicts...',
+        name: i18n`menuBarItems.git.resolveConflicts`,
         command: 'git:resolve_conflicts'
       },
       divider,
       {
         key: 'stash',
-        name: 'Stash Changes...',
+        name: i18n`menuBarItems.git.stashChanges`,
         command: 'git:stash'
       },
       {
         key: 'unstash',
-        name: 'Unstash Changes...',
+        name: i18n`menuBarItems.git.unstashChanges`,
         command: 'git:unstash'
       },
       {
         key: 'reset',
-        name: 'Reset HEAD...',
+        name: i18n`menuBarItems.git.resetHead`,
         command: 'git:reset_head'
       },
       divider,
       {
         key: 'branches',
-        name: 'Branches...',
+        name: i18n`menuBarItems.git.branches`,
         icon: 'octicon octicon-git-branch',
         command: 'global:show_branches'
       },
       {
         key: 'merge',
-        name: 'Merge Branch...',
+        name: i18n`menuBarItems.git.mergeBranch`,
         icon: 'octicon octicon-git-merge',
         command: 'git:merge'
       },
       {
         key: 'tag',
-        name: 'Tag...',
+        name: i18n`menuBarItems.git.tag`,
         command: 'git:tag'
       },
       divider,
       {
         key: 'rebase',
-        name: 'Rebase...',
+        name: i18n`menuBarItems.git.rebase`,
         command: 'git:rebase:start'
       },
       {
         key: 'abort',
-        name: 'Abort Rebasing',
+        name: i18n`menuBarItems.git.abortRebase`,
         command: 'git:rebase:abort',
         getIsDisabled,
       },
       {
         key: 'continue',
-        name: 'Continue Rebasing',
+        name: i18n`menuBarItems.git.continueRebase`,
         command: 'git:rebase:continue',
         getIsDisabled,
       },
       {
         key: 'skipCommit',
-        name: 'Skip Commit',
+        name: i18n`menuBarItems.git.skipCommit`,
         command: 'git:rebase:skip_commit',
         getIsDisabled,
       }
     ]
   }, {
     key: 'tools',
-    name: 'Tools',
+    name: i18n`menuBarItems.tools.main`,
     items: [
       {
         key: 'terminal',
-        name: 'Terminal',
+        name: i18n`menuBarItems.tools.terminal`,
+
         icon: 'octicon octicon-terminal',
         items: [
           {
-            name: 'New Terminal',
+            name: i18n`menuBarItems.tools.newTerminal`,
             icon: 'octicon octicon-terminal',
             command: 'tools:terminal:new_terminal'
           }
