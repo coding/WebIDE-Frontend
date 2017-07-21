@@ -4,6 +4,8 @@ import { dispatchCommand } from '../../commands'
 import { connect } from 'react-redux'
 import cx from 'classnames'
 import _ from 'lodash'
+import i18n from 'utils/createI18n'
+
 
 import * as GitActions from './actions'
 import GitFileTree from './GitFileTree'
@@ -11,7 +13,7 @@ import GitFileTree from './GitFileTree'
 var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
   const {updateCommitMessage, commit, statusFiles, diffFile} = actionProps
   return isWorkingDirClean ?
-    <h1 className=''>Your working directory is clean. Nothing to commit.</h1>
+    <h1 className=''>{i18n`git.commitView.nothingCommit`}</h1>
   : (<div>
       <GitFileTree
         statusFiles={statusFiles}
@@ -30,8 +32,8 @@ var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
       </div>
       <hr />
       <div className='modal-ops'>
-        <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-        <button className='btn btn-primary' onClick={e => commit()}>Commit</button>
+        <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
+        <button className='btn btn-primary' onClick={e => commit()}>{i18n`git.commit`}</button>
       </div>
     </div>
   )

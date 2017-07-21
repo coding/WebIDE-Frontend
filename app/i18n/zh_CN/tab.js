@@ -1,0 +1,14 @@
+export default {
+  makeDropdownMenuItems: {
+    close: '关闭面板',
+    untitledTab: '未命名',
+    noTabs: '<没有标签>'
+  },
+  contextMenu: {
+    close: '关闭标签',
+    closeOthers: '关闭其他标签',
+    closeAll: '关闭全部标签',
+    verticalSplit: '垂直切分',
+    horizontalSplit: '水平切分'
+  }
+}

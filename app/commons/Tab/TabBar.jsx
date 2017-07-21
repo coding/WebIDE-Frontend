@@ -6,6 +6,8 @@ import { defaultProps } from 'utils/decorators'
 import TabLabel from './TabLabel'
 import Menu from 'components/Menu'
 import ContextMenu from 'components/ContextMenu'
+import i18n from 'utils/createI18n'
+
 
 @defaultProps(props => ({
   addTab: () => props.tabGroup.addTab(),
@@ -48,14 +50,14 @@ class TabBar extends Component {
             <TabLabel tab={tab} key={tab.id} openContextMenu={this.openContextMenu} />
           )}
         </ul>
-        {dnd.target.id === tabBarId ? <div className='tab-label-insert-pos'></div>: null}
+        {dnd.target.id === tabBarId ? <div className='tab-label-insert-pos' /> : null}
         <div className='tab-add-btn' onClick={addTab} >
           <svg viewBox='0 0 12 16' version='1.1' aria-hidden='true'>
-            <path fillRule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z'></path>
+            <path fillRule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z' />
           </svg>
         </div>
         <div className='tab-show-list'
-          onClick={e => { e.stopPropagation(); this.setState({ showDropdownMenu: true }) }}
+          onClick={(e) => { e.stopPropagation(); this.setState({ showDropdownMenu: true }) }}
         >
           <i className='fa fa-sort-desc' />
           {this.renderDropdownMenu()}
@@ -86,24 +88,23 @@ class TabBar extends Component {
     if (!this.state.showDropdownMenu) return null
     const dropdownMenuItems = this.makeDropdownMenuItems()
     if (!dropdownMenuItems.length) return null
-    return <Menu className='top-down to-left'
+    return (<Menu className='top-down to-left'
       items={dropdownMenuItems}
       style={{ right: '2px' }}
-      deactivate={e=>this.setState({ showDropdownMenu: false })}
-    />
-
+      deactivate={e => this.setState({ showDropdownMenu: false })}
+    />)
   }
 
   makeDropdownMenuItems = () => {
-    let baseItems = this.props.closePane && this.props.tabGroup.siblings ?
-      [{
-        name: 'Close Pane',
-        command: this.props.closePane,
-      }]
+    const baseItems = this.props.closePane && this.props.tabGroup.siblings ?
+    [{
+      name: i18n`tab.makeDropdownMenuItems.close`,
+      command: this.props.closePane,
+    }]
     : []
     const tabs = this.props.tabGroup.tabs
     const tabLabelsItem = tabs && tabs.map(tab => ({
-      name: tab.title || 'untitled',
+      name: tab.title || i18n`tab.makeDropdownMenuItems.untitledTab`,
       command: e => tab.activate(),
     }))
 
@@ -116,7 +117,7 @@ class TabBar extends Component {
     }
 
     if (!dropdownMenuItems.length) {
-      dropdownMenuItems = [{ name: '<No Tabs>', isDisabled: true }]
+      dropdownMenuItems = [{ name: i18n`tab.makeDropdownMenuItems.noTabs`, isDisabled: true }]
     }
     return dropdownMenuItems
   }

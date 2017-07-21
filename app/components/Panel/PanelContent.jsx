@@ -45,20 +45,20 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
-          <SidePanelView label={{ text: 'Project', icon: 'octicon octicon-code' }} active >
+          <SidePanelView label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-code' }} active >
             <FileTree />
           </SidePanelView>
         </SidePanelContainer>
       )
     case 'PANEL_BOTTOM':
       const labels = {
-        terminal: { text: 'Terminal', icon: 'octicon octicon-terminal' },
-        gitGraph: { text: 'Git Logs', icon: 'octicon octicon-git-commit' },
-        gitHistory: { text: 'History', icon: 'octicon octicon-history' },
+        terminal: { text: i18n`panel.bottom.terminal`, icon: 'octicon octicon-terminal' },
+        gitGraph: { text: i18n`panel.bottom.gitGraph`, icon: 'octicon octicon-git-commit' },
+        gitHistory: { text: i18n`panel.bottom.history`, icon: 'octicon octicon-history' },
       }
       return (
         <SidePanelContainer side='bottom'>
-          <SidePanelView label={labels.terminal} active >
+          <SidePanelView label={labels.terminal} >
             <TerminalContainer />
           </SidePanelView>
 

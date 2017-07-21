@@ -7,7 +7,9 @@ import * as Modal from 'components/Modal/actions'
 import Menu from '../Menu'
 import config from '../../config'
 import collaborationState from '../Collaboration/state'
+import { inject, observer } from 'mobx-react'
 
+@observer
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
@@ -53,7 +55,7 @@ class MenuBar extends Component {
               isActive={this.state.activeItemIndex == i}
               shouldHoverToggleActive={this.state.activeItemIndex > -1}
               toggleActive={this.activateItemAtIndex}
-              key={`menu-bar-${menuBarItem.name}`}
+              key={`menu-bar-${menuBarItem.key}`}
               index={i}
               onOpen={menuBarItem.onOpen}
               activatePrevTopLevelMenuItem={this.activatePrevMenuItem}

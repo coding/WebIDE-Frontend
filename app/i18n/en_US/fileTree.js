@@ -1,0 +1,11 @@
+export default {
+  contextMenu: {
+    newFile: 'New File',
+    newFolder: 'New Folder',
+    delete: 'Delete...',
+    rename: 'Rename...',
+    download: 'Download',
+    upload: 'Upload',
+    gitBlame: 'Git Blame'
+  }
+}

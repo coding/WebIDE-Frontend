@@ -9,6 +9,8 @@ import TabStore from 'components/Tab/store'
 import FileTreeStore from 'components/FileTree/store'
 import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
+import i18n from 'utils/createI18n'
+
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -68,7 +70,7 @@ export default {
     const createFile = createFileWithContent(null)
 
     Modal.showModal('Prompt', {
-      message: 'Enter the path for the new file.',
+      message: i18n`file.newFilePath`,
       defaultValue,
       selectionRange: [path.length, defaultValue.length]
     })
@@ -80,7 +82,7 @@ export default {
     const path = nodeToNearestDirPath(node)
     const defaultValue = pathUtil.join(path, 'untitled')
     Modal.showModal('Prompt', {
-      message: 'Enter the path for the new folder.',
+      message: i18n`file.newFileFolderPath`,
       defaultValue,
       selectionRange: [path.length, defaultValue.length],
     }).then(createFolderAtPath)
@@ -93,7 +95,7 @@ export default {
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       Modal.showModal('Prompt', {
-        message: 'Enter the path for the new file.',
+        message: i18n`file.newFilePath`,
         defaultValue: '/untitled',
         selectionRange: [1, '/untitled'.length]
       })
@@ -139,7 +141,7 @@ export default {
     }
 
     Modal.showModal('Prompt', {
-      message: 'Enter the new name (or new path) for this file.',
+      message: i18n`file.newFileName`,
       defaultValue: node.path,
       selectionRange: [parentPath.length, node.path.length]
     }).then(newPath => moveFile(node.path, newPath))
@@ -148,16 +150,16 @@ export default {
 
   'file:delete': async (c) => {
     const confirmed = await Modal.showModal('Confirm', {
-      header: 'Are you sure you want to delete this file?',
-      message: `You're trying to delete ${c.context.path}`,
-      okText: 'Delete'
+      header: i18n`file.deleteHeader`,
+      message: i18n`file.deleteMessage${{ file: c.context.path }}`,
+      okText: i18n`file.deleteButton`
     })
 
     if (confirmed) {
       api.deleteFile(c.context.path)
-        .then(() => notify({ message: 'Delete success!' }))
+        .then(() => notify({ message: i18n`file.deleteNotifySuccess` }))
         .catch(err =>
-          notify({ message: `Delete fail: ${err.msg}` })
+          notify({ message: i18n`file.deleteNotifyFailed${err.msg}` })
         )
     }
 

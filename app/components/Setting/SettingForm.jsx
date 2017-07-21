@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react'
 import { runInAction } from 'mobx'
 import cx from 'classnames'
 import _ from 'lodash'
+import i18n from 'utils/createI18n'
+
 
 @observer
 class SettingForm extends Component {
@@ -10,7 +12,7 @@ class SettingForm extends Component {
     super(props)
   }
 
-  updateSettingItemBind = settingItem => {
+  updateSettingItemBind = (settingItem) => {
     let update
     if (this.props.setting.requireConfirm) {
       update = value => settingItem.tempValue = value
@@ -36,7 +38,7 @@ class SettingForm extends Component {
 
   render () {
     const { setting } = this.props
-    return <div>
+    return (<div>
       {setting.items.map(settingItem =>
         <FormInputGroup
           key={settingItem.key}
@@ -44,51 +46,50 @@ class SettingForm extends Component {
           updateSettingItem={this.updateSettingItemBind(settingItem)}
         />
       )}
-    </div>
+    </div>)
   }
 }
 
 const FormInputGroup = observer(({ settingItem, updateSettingItem }) => {
   if (settingItem.options && _.isArray(settingItem.options)) {
     return (
-      <div className="form-group">
-        <label>{settingItem.name}</label>
-        <select className="form-control"
+      <div className='form-group'>
+        <label>{i18n([settingItem.name])}</label>
+        <select className='form-control'
           onChange={updateSettingItem}
-          value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue }
+          value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
         >
           {settingItem.options.map(option =>
             _.isObject(option) ?
-              <option key={option.value} value={option.value}>{option.name}</option>
+              <option key={option.value} value={option.value}>{i18n([option.name])}</option>
             : <option key={option} value={option}>{option}</option>
           )}
         </select>
       </div>)
   } else if (_.isBoolean(settingItem.value)) {
     return (
-      <div className="form-group">
-        <div className="checkbox">
+      <div className='form-group'>
+        <div className='checkbox'>
           <label>
-            <input type="checkbox"
-              onChange={updateSettingItem} checked={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue }
+            <input type='checkbox'
+              onChange={updateSettingItem} checked={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
             />
-            <strong>{settingItem.name}</strong>
+            <strong>{i18n([settingItem.name])}</strong>
           </label>
 
         </div>
       </div>)
-  } else {
-    return (
-      <div className="form-group">
-        <label>{settingItem.name}</label>
-        <input className="form-control"
-          type={_.isNumber(settingItem.value) ? 'number' : 'text'}
-          min="1"
-          onChange={updateSettingItem}
-          value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue }
-        />
-      </div>)
   }
+  return (
+    <div className='form-group'>
+      <label>{i18n([settingItem.name])}</label>
+      <input className='form-control'
+        type={_.isNumber(settingItem.value) ? 'number' : 'text'}
+        min='1'
+        onChange={updateSettingItem}
+        value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
+      />
+    </div>)
 })
 
 export default SettingForm

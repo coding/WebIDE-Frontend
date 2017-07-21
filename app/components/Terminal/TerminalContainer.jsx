@@ -33,7 +33,9 @@ class TerminalContainer extends Component {
   render () {
     return (
       <div className='tab-container'>
-        <TabBar tabGroup={this.tabGroup} contextMenuItems={contextMenuItems}/>
+        <TabBar tabGroup={this.tabGroup}
+          addTab={() => this.tabGroup.addTab(new Tab())}
+          contextMenuItems={contextMenuItems}/>
         <TabContent tabGroup={this.tabGroup} >
           {this.tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >

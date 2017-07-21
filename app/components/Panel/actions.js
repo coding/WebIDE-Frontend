@@ -81,7 +81,7 @@ export const addComToSideBar = (side, label, getComponent) => {
 
 
 const _toggleSidePanelView = (viewId, shouldShow) => {
-  emitter.emit(E.PANEL_RESIZED)
+  setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
   const side = viewId.split('_')[0]
   const activeViewId = state.sidePanelViews[side].activeViewId
   const labels = state.sidePanelViews[side].labels

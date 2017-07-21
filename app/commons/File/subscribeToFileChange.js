@@ -17,7 +17,7 @@ function handleGitFiles (node) {
     const current = gitState.branches.current
     if (branchName === current) {
       const history = gitState.history
-      const focusedNodes = Object.values(mobxStore.FileTreeState.entities).filter(node => node.isFocused)
+      const focusedNodes = mobxStore.FileTreeState.entities.values().filter(node => node.isFocused)
       const historyPath = focusedNodes[0] ? focusedNodes[0].path : '/'
       dispatch(GitActions.fetchHistory({
         path: historyPath,
@@ -66,15 +66,15 @@ export default function subscribeToFileChange () {
           const tabsToUpdate = mobxStore.EditorTabState.tabs.values().filter(tab => tab.path === node.path)
           if (tabsToUpdate.length) {
             api.readFile(node.path).then(({ content }) => {
-              dispatch(TabActions.updateTabByPath({
+              TabActions.updateTabByPath({
                 path: node.path,
                 content,
-              }))
+              })
             })
           }
           break
         case 'delete':
-          dispatch(FileActions.removeNode(node))
+          FileActions.removeNode(node)
           break
       }
     })

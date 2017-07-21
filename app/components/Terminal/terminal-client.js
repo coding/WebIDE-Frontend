@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import config from 'config'
-import { autorun, observalbe } from 'mobx'
+import { autorun, observalbe, runInAction } from 'mobx'
 import { TtySocketClient } from 'backendAPI/websocketClients'
 
 const WORKSPACE_PATH = '/home/coding/workspace'
@@ -67,6 +67,7 @@ class TerminalClient extends TtySocketClient {
     // });
 
     this.socket.on('connect', (data) => {
+      if (!config.ttySocketConnected) runInAction(() => config.ttySocketConnected = true)
       let i, j, len
       for (i = j = 0, len = terms.length; j < len; i = ++j) {
         this.openTerm(terms[i])
@@ -75,6 +76,7 @@ class TerminalClient extends TtySocketClient {
 
     this.socket.on('disconnect', (data) => {
       console.log('terminal disconnect...')
+      if (config.ttySocketConnected) runInAction(() => config.ttySocketConnected = false)
       this.reconnect()
     })
 
@@ -107,13 +109,16 @@ class TerminalClient extends TtySocketClient {
   }
 
   openTerm (term) {
-    if (!config.ttySocketConnected) this.connectSocket()
-    const termJSON = getTermJSON({
-      id: term.id,
-      cols: term.cols,
-      rows: term.rows
-    })
-    this.socket.emit('term.open', termJSON)
+    if (!config.ttySocketConnected) {
+      this.connectSocket()
+    } else {
+      const termJSON = getTermJSON({
+        id: term.id,
+        cols: term.cols,
+        rows: term.rows
+      })
+      this.socket.emit('term.open', termJSON)
+    }
   }
 
   remove (removedTerm) {
