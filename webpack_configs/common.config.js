@@ -33,6 +33,9 @@ return {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     modules: ['node_modules', path.join(PROJECT_ROOT, 'app')],
+    alias: {
+      static: path.join(PROJECT_ROOT, 'static'),
+    }
   },
   resolveLoader: {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
@@ -41,6 +44,7 @@ return {
     gitRevisionPlugin,
     new DefinePlugin({
       __VERSION__: str(gitRevisionPlugin.commithash() + '@' + gitRevisionPlugin.version()),
+      __PUBLIC_PATH__: str(publicPath),
     }),
     new CommonsChunkPlugin({
       name: 'vendor',
@@ -56,17 +60,19 @@ return {
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/index.html')
+      template: path.join(PROJECT_ROOT, 'app/index.html'),
+      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['main'],
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html')
+      template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
+      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
+    // https://github.com/kevlened/copy-webpack-plugin
     new CopyWebpackPlugin([{
-      from: path.join(PROJECT_ROOT, 'static/favicon.ico'),
-      to: (staticDir ? '../' : './'),
+      from: path.join(PROJECT_ROOT, 'static'),
     }])
   ],
   module: {

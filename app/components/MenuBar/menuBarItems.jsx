@@ -1,13 +1,13 @@
 import React from 'react'
 import api from 'backendAPI'
-import CodingLogo from 'components/CodingLogo'
+import logoUrl from 'static/logo.svg'
 import mapShortcutToItems from './utils'
 
 const divider = { isDivider: true }
 const menuBarItems = [
   {
     key: 'meta',
-    name: (<div className='menu-bar-item-logo'><CodingLogo /></div>),
+    name: (<div className='menu-bar-item-logo'><embed className='logo' src={logoUrl} /></div>),
     className: 'coding-logo',
     items: [
       {

@@ -1,6 +1,5 @@
 import React from 'react'
 import { observable, extendShallowObservable } from 'mobx'
-import CodingLogo from 'components/CodingLogo'
 
 function MenuScope (defaultMenuItems=[]) {
 
