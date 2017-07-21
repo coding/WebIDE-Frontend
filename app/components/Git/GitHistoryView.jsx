@@ -6,24 +6,25 @@ import moment from 'moment'
 import { Table, Column, Cell } from 'fixed-data-table-2'
 import cx from 'classnames'
 import ContextMenu from '../ContextMenu'
-import { emitter, E } from 'utils'
+import { emitter, E, i18n } from 'utils'
+
 
 const items = [
   {
-    name: 'Compare',
+    name: i18n`git.historyView.compare`,
     icon: '',
     command: 'git:history:compare'
   }, {
-    name: 'Compare with Local',
+    name: i18n`git.historyView.compareWithLocal`,
     icon: '',
     command: 'git:history:compare_local'
   }, {
-    name: 'Show All Effected Files',
+    name: i18n`git.historyView.listChanges`,
     // icon: 'fa fa-files-o',
     icon: '',
     command: 'git:history:all_effected'
   }, {
-    name: <span className='clipboard'>Copy Revision Number</span>,
+    name: <span className='clipboard'>{i18n`git.historyView.copyRevision`}</span>,
     // icon: 'fa fa-clipboard',
     icon: '',
   }
@@ -136,7 +137,7 @@ class History extends Component {
             >
               <Column
                 columnKey="shortName"
-                header={<Cell>Version</Cell>}
+                header={<Cell>{i18n`git.historyView.version`}</Cell>}
                 cell={
                   <TextCell
                     data={this.state.historyRows}
@@ -150,7 +151,7 @@ class History extends Component {
               </Column>
               <Column
                 columnKey="commitTime"
-                header={<Cell>Date</Cell>}
+                header={<Cell>{i18n`git.historyView.date`}</Cell>}
                 // cell={this.renderCell}
                 cell={
                   <TextCell
@@ -165,7 +166,7 @@ class History extends Component {
               </Column>
               <Column
                 columnKey="author"
-                header={<Cell>Author</Cell>}
+                header={<Cell>{i18n`git.historyView.author`}</Cell>}
                 // cell={this.renderCell}
                 cell={
                   <TextCell
@@ -180,7 +181,7 @@ class History extends Component {
               </Column>
               <Column
                 columnKey="shortMessage"
-                header={<Cell>Message</Cell>}
+                header={<Cell>{i18n`git.historyView.message`}</Cell>}
                 // cell={this.renderCell}
                 cell={
                   <TextCell
@@ -225,7 +226,7 @@ class History extends Component {
     if (!this.props.focusedNode || this.props.focusedNode.isDir) {
       this.props.gitCommitDiff({
         rev: data.shortName,
-        title: 'Show Commit',
+        title: i18n`git.historyView.showCommit`,
         oldRef: `${data.shortName}^`
       })
     } else {

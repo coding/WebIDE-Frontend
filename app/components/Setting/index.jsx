@@ -3,35 +3,43 @@ import { inject, observer } from 'mobx-react'
 import cx from 'classnames'
 import ExtensionList from '../Package/extensionList'
 import SettingForm from './SettingForm'
+import i18n from 'utils/createI18n'
 
-const GeneralSetting = ({ content }) => {
-  return (
-    <div>
-      <h2 className='settings-content-header'>General Setting</h2>
-      <SettingForm setting={content} />
-    </div>
-  )
+
+
+const tabNames = {
+  GENERAL: i18n`settings.tabs.general`,
+  THEME: i18n`settings.tabs.theme`,
+  EDITOR: i18n`settings.tabs.editor`,
+  EXTENSIONS: i18n`settings.tabs.extensions`,
 }
 
+const GeneralSetting = ({ content }) => (
+  <div>
+    <h2 className='settings-content-header'>{i18n`settings.general.main`}</h2>
+    <SettingForm setting={content} />
+  </div>
+  )
+
 const EditorSetting = ({ content }) => (
-    <div>
-      <h2 className='settings-content-header'>Editor Setting</h2>
-      <SettingForm setting={content} />
-    </div>
+  <div>
+    <h2 className='settings-content-header'>{i18n`settings.editor.main`}</h2>
+    <SettingForm setting={content} />
+  </div>
   )
 
 const ThemeSetting = ({ content }) => (
-    <div>
-      <h2 className='settings-content-header'>Theme Setting</h2>
-      <SettingForm setting={content} />
-    </div>
+  <div>
+    <h2 className='settings-content-header'>{i18n`settings.theme.main`}</h2>
+    <SettingForm setting={content} />
+  </div>
   )
 
 const ExtensionSetting = () => (
-    <div>
-      <h2 className='settings-content-header'>Extension Setting</h2>
-      <ExtensionList />
-    </div>
+  <div>
+    <h2 className='settings-content-header'>{i18n`settings.extension.main`}</h2>
+    <ExtensionList />
+  </div>
 )
 
 
@@ -49,38 +57,38 @@ const DomainSetting = ({ content, domainKey }) => {
   }
 }
 
-let SettingsView = observer(props => {
+let SettingsView = observer((props) => {
   const {
-    activeTabId, tabIds, activeTab, activateTab,
+    activeTabId, tabIds, activeTab, activateTab
   } = props
 
   const onConfirm = () => activeTab.onConfirm && activeTab.onConfirm()
   const onCancel = () => activeTab.onCancel && activeTab.onCancel()
 
   return (
-    <div className="settings-view">
-      <div className="settings-container">
-        <div className="settings-header">
-          <div className="tab-bar-header">Settings</div>
-          <ul className="tab-bar-tabs">
+    <div className='settings-view'>
+      <div className='settings-container'>
+        <div className='settings-header'>
+          <div className='tab-bar-header'>Settings</div>
+          <ul className='tab-bar-tabs'>
             {tabIds.map(tabId =>
               <li key={tabId}
                 className={cx('tab-bar-item', { active: tabId === activeTabId })}
                 onClick={e => activateTab(tabId)}
-              >{tabId}</li>
+              >{tabNames[tabId]}</li>
             )}
           </ul>
         </div>
-        <div className="settings-content" >
-          <div className="settings-content-container">
+        <div className='settings-content' >
+          <div className='settings-content-container'>
             <DomainSetting content={activeTab} domainKey={activeTabId} />
           </div>
-          {activeTab.requireConfirm && <div className="modal-ops settings-content-controls">
-            <button className="btn btn-default" onClick={onCancel} >Cancel</button>
-            <button className="btn btn-primary"
+          {activeTab.requireConfirm && <div className='modal-ops settings-content-controls'>
+            <button className='btn btn-default' onClick={onCancel} >{i18n`settings.reset`}</button>
+            <button className='btn btn-primary'
               onClick={onConfirm}
               disabled={!activeTab.unsaved}
-            >Commit</button>
+            >{i18n`settings.commit`}</button>
           </div>}
         </div>
       </div>
@@ -88,7 +96,7 @@ let SettingsView = observer(props => {
   )
 })
 
-SettingsView = inject(state => {
+SettingsView = inject((state) => {
   const { activeTabId, tabIds, activeTab, activateTab } = state.SettingState
   return { activeTabId, tabIds, activeTab, activateTab }
 })(SettingsView)

@@ -7,7 +7,7 @@ import { isFunction, isBoolean } from 'utils/is'
 
 
 function buildFilterIndex (items=[]) {
-  return items.map(({ name='' }) => name.toLowerCase())
+  return items.map(({ key='' }) => key.toLowerCase())
 }
 
 const MenuItemDivider = () => (<li><hr /></li>)

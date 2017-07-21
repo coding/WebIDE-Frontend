@@ -50,7 +50,7 @@ class ExtensionList extends Component {
             type='text'
             className='search form-control'
             value={this.state.searchKey}
-            placeholder='filter extension by name'
+            placeholder={i18n.get('settings.extension.searchPlaceholder')}
             onChange={(e) => {
               this.setState({ searchKey: e.target.value })
             }}
@@ -58,17 +58,17 @@ class ExtensionList extends Component {
         </div>
         <div className='lists'>
           {data
-                    .filter((card) => {
-                      if (this.state.searchKey) {
-                        if (card.name.includes(this.state.searchKey)) {
-                          return true
-                        }
-                        return false
-                      }
-                      return true
-                    })
-                    .map((card, idx) => (<Card {...card} dispatch={dispatch} />))
-}
+              .filter((card) => {
+                if (this.state.searchKey) {
+                  if (card.name.includes(this.state.searchKey)) {
+                    return true
+                  }
+                  return false
+                }
+                return true
+              })
+              .map((card, idx) => (<Card {...card} dispatch={dispatch} />))
+          }
         </div>
       </div>
     )

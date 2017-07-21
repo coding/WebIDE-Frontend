@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 
 import * as GitActions from './actions'
 import Menu from '../Menu'
+import i18n from 'utils/createI18n'
+
 
 // add withRef to deliver ref to the wrapperedcomponent
 @connect(state => state.GitState.branches,
@@ -63,21 +65,21 @@ export default class GitBranchWidget extends Component {
 
   makeBrancheMenuItems (localBranches, remoteBranches) {
     if (!localBranches && !remoteBranches) {
-      return [{ name: 'Fetching Branches...', isDisabled: true }]
+      return [{ name: i18n`git.branchWidget.fetchingBranches`, isDisabled: true }]
     }
 
     const localBranchItems = localBranches.map(branch => ({
       name: branch,
       items: [{
-        name: 'Checkout',
+        name: i18n`git.branchWidget.checkout`,
         command: () => { this.props.checkoutBranch(branch) }
       }, {
-        name: 'Checkout as new branch',
+        name: i18n`git.branchWidget.checkoutAsNew`,
         command: () => dispatchCommand('git:checkout_new_branch', {
           fromBranch: branch
         })
       }, {
-        name: 'Delete',
+        name: i18n`git.branchWidget.delete`,
         command: () => { this.props.gitDeleteBranch(branch) }
       }]
     }))
@@ -87,27 +89,27 @@ export default class GitBranchWidget extends Component {
       return {
         name: remoteBranch,
         items: [{
-          name: 'Checkout as new branch',
+          name: i18n`git.branchWidget.checkout`,
           // @todo: should prompt to input local branch name
           command: () => dispatchCommand('git:checkout_new_branch', {
             fromBranch: remoteBranch,
             toBranch: localBranch
           })
         }, {
-          name: 'Delete',
+          name: i18n`git.branchWidget.delete`,
           command: () => { this.props.gitDeleteBranch(remoteBranch) }
         }]
       }
     })
     return [
-      { name: 'New Branch', command: () => dispatchCommand('git:new_branch'),
+      { name: i18n`git.branchWidget.newBranch`, command: () => dispatchCommand('git:new_branch'),
         iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
-      { name: 'Synchronize', command: () => this.props.getFetch() },
+      { name: i18n`git.branchWidget.synchronize`, command: () => this.props.getFetch() },
       { isDivider: true },
-      { name: 'Local Branches', isDisabled: true },
+      { name: i18n`git.branchWidget.localBranches`, isDisabled: true },
       ...localBranchItems,
       { isDivider: true },
-      { name: 'Remote Branches', isDisabled: true },
+      { name: i18n`git.branchWidget.remoteBranches`, isDisabled: true },
       ...remoteBranchItems
     ]
   }
