@@ -9,6 +9,7 @@ import store, { dispatch } from './store'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import { preloadRequirePackages } from './components/Package/actions'
 import CodingSDK from './CodingSDK'
+import initializeState from './containers/Initialize/state'
 
 
 async function initialize () {
@@ -52,11 +53,24 @@ async function initialize () {
     )
     await step('[2] Setting up workspace...', () =>
       api.setupWorkspace().then((res) => {
+        if (res.code) {
+          initializeState.errorInfo = res.msg
+          return false
+        }
         extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
         return true
+      }).catch((res) => {
+        if (res.msg) {
+          initializeState.errorInfo = res.msg
+        }
+        return false
       })
     )
+    // .error(() => {
+    //   initializeState.errorInfo = 'An error was encountered'
+    //   return false
+    // })
   } else {
     await step('[1] Try create workspace', () => {
       const queryEntryPathPattern = /^\/ws\/?$/
@@ -132,7 +146,10 @@ async function initialize () {
 
   await step('[7] load required packages', () => {
     dispatch(preloadRequirePackages())
+    return true
   })
+
+  return step
 }
 
 export default initialize

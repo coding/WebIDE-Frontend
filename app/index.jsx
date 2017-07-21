@@ -4,14 +4,20 @@ import { render } from 'react-dom'
 import Root from './containers/Root'
 import './styles/main.styl'
 import initialize from './initialize'
+import InitializeContainer from './containers/Initialize'  
 
 const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/base-theme/index.styl')
 baseTheme.use()
 window.themes = { '@current': baseTheme }
 
+const rootElement = document.getElementById('root')
+render(<InitializeContainer />, rootElement)
+
 async function startApp (module) {
-  await initialize()
-  const rootElement = document.getElementById('root')
+  const step = await initialize()
+  if (!step.allSuccess) {
+    return
+  }
   if (__DEV__) {
     const hotLoaderRender = () =>
       render(<AppContainer><Root /></AppContainer>, rootElement)
