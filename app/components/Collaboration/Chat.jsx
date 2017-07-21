@@ -106,6 +106,7 @@ ${message}`
     const collaborator = state.collaborators.find((item) => item.clientIds.indexOf(clientId) >= 0)
     if (collaborator) {
       collaborator.path = path
+      state.paths[collaborator.collaborator.globalKey] = path
     }
   }
 
@@ -198,9 +199,11 @@ ${message}`
     } else {
       placeholder = 'Enter your message here (Ctrl + Enter)'
     }
-    const settings = {
-      imageType: 'png',
-      sprites: true
+    const pickStyle = {
+      visibility: 'hidden'
+    }
+    if (this.state.showEmoji) {
+      pickStyle.visibility = 'visible'
     }
     return (
       <div className='collaboration-chat'>
@@ -225,7 +228,7 @@ ${message}`
           </div>
         </div>
         {
-          this.state.showEmoji && <Picker autoFocus set='emojione' emojiSize={16} native onClick={this.handleEmojiClick} title='Coding IDE' />
+          <Picker style={pickStyle} autoFocus set='emojione' emojiSize={16} native onClick={this.handleEmojiClick} title='Coding IDE' />
         }
       </div>
     )

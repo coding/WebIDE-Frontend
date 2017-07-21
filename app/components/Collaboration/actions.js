@@ -12,9 +12,18 @@ export const fetchCollaborators = () => {
       if (!/^(http|https):\/\/[^ "]+$/.test(item.collaborator.avatar)) {
         item.collaborator.avatar = `https://coding.net${item.collaborator.avatar}`
       }
-      item.online = false
+      const oldItem = state.collaborators.find((c) => c.collaborator.globalKey === item.collaborator.globalKey)
+      if (oldItem) {
+        item.online = oldItem.online
+      } else {
+        item.online = false
+      }
       item.clientIds = []
       item.path = ''
+      const pathItem = state.paths[item.collaborator.globalKey]
+      if (pathItem) {
+        item.path = pathItem
+      }
       return item
     })
     state.loading = false
