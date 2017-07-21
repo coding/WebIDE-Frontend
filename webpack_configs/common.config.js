@@ -33,6 +33,9 @@ return {
   resolve: {
     extensions: ['*', '.js', '.jsx'],
     modules: ['node_modules', path.join(PROJECT_ROOT, 'app')],
+    alias: {
+      static: path.join(PROJECT_ROOT, 'static'),
+    }
   },
   resolveLoader: {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
