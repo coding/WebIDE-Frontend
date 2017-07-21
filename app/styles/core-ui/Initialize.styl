@@ -1,0 +1,40 @@
+.monkey.splash-logo {
+  vertical-align: top;
+  margin-top: -8px;
+  height: 195px;
+  opacity: .618;
+  font-size: 226px;
+  background: url('~static/logo.svg') no-repeat center;
+}
+
+.coding-loading {
+  width: 556px;
+  height: 180px;
+  background: url('~static/loading-logo.svg') -16px -40px no-repeat;
+}
+
+.initialize-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+
+  .loading-info {
+    margin-top: 20px;
+    font-size: 16px;
+    &.error {
+      color: red;
+    }
+  }
+  .loading-error {
+    margin-top: 20px;
+    color: red;
+    .fa-exclamation-triangle {
+      color: red;
+      margin-right: 6px;
+    }
+  }
+}
