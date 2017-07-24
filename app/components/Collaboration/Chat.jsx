@@ -13,6 +13,7 @@ import { hueFromString, chroma } from 'utils/colors'
 const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
 const isMac = (os === 'mac')
 import indexOf from 'lodash/indexOf'
+import calculateNodeHeight from './calculateNodeHeight'
 
 const getTime = (time) => moment(new Date(time)).calendar()//.fromNow()
 
@@ -182,14 +183,24 @@ ${message}`
     })
   }
 
-  handleChange = (e) => {
-    this.state.value = e.target.value
+  resizeTextarea = () => {
+    const minRows = 1
+    const maxRows = 3
+    const textareaStyles = calculateNodeHeight(this.textarea, false, minRows, maxRows)
+    this.state.textareaStyles = textareaStyles
   }
 
-  handleCommit = () => {
+  handleChange = (e) => {
+    this.state.value = e.target.value
+    this.resizeTextarea()
+  }
+
+  handleCommit = (e) => {
+    e.preventDefault()
     if (this.state.value) {
       this.chatManager.send(this.state.value)
       this.state.value = ''
+      setTimeout(e => this.resizeTextarea(), 0)
     }
   }
 
@@ -226,12 +237,7 @@ ${message}`
   }
 
   render () {
-    let placeholder = ''
-    if (isMac) {
-      placeholder = 'Enter your message here (Cmd + Enter)'
-    } else {
-      placeholder = 'Enter your message here (Ctrl + Enter)'
-    }
+    const placeholder = 'Your message here (Shift + Enter to return)'
     const pickStyle = {
       visibility: 'hidden'
     }
@@ -252,7 +258,14 @@ ${message}`
             placeholder={placeholder}
             onChange={this.handleChange}
             value={this.state.value}
-            onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) this.handleCommit()}}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                if (!e.shiftKey) {
+                  this.handleCommit(e)
+                }
+              }
+            }}
+            style={this.state.textareaStyles}
           />
           <div className='chat-icons'>
             <div className='right'>
