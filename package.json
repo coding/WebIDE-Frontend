@@ -22,7 +22,8 @@
     "lint": "eslint app",
     "lintf": "eslint app --fix",
     "test": "./node_modules/.bin/jest --config app/js.config.json --coverage",
-    "testw": "./node_modules/.bin/jest --config app/js.config.json --watch"
+    "testw": "./node_modules/.bin/jest --config app/js.config.json --watch",
+    "i18n": "node .i18nGenerator.js"
   },
   "keywords": [
     "coding",
