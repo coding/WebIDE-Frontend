@@ -28,13 +28,14 @@ export class CreateI18n {
   }
   translate (origin = '', language, variableObj) {
     const dic = this.languageDicPool[language]
+    const reserveDic = this.languageDicPool.en_US
     const key = origin.split(separator)[0]
     if (!origin) {
       return origin
     }
     // 当字典里找不到先看是否是开发模式下的:=，如果是就先暂时显示它，不是则原样返回
     if (!_.get(dic, key)) {
-      return origin.split(separator)[1] || origin
+      return _.get(reserveDic, key) || origin.split(separator)[1] || origin
     }
     return this.replaceVariable(_.get(dic, key) || '', variableObj)
   }
