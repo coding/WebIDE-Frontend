@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { observable, computed, extendObservable } from 'mobx'
+import { observable, autorun, toJS } from 'mobx'
 import config from 'config'
 import moment from 'moment'
 import { Picker } from 'emoji-mart'
@@ -13,6 +13,7 @@ import { hueFromString, chroma } from 'utils/colors'
 const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
 const isMac = (os === 'mac')
 import indexOf from 'lodash/indexOf'
+import calculateNodeHeight from './calculateNodeHeight'
 
 const getTime = (time) => moment(new Date(time)).calendar()//.fromNow()
 
@@ -57,6 +58,7 @@ class Chat extends Component {
   }
 
   componentDidMount () {
+    this.loadChat()
     this.chatManager = new ChatManager()
     this.chatManager.subscribe((data) => {
       const { globalKey, message, timestamp } = data
@@ -68,6 +70,7 @@ class Chat extends Component {
           if (lastChat.collaborator.collaborator.globalKey === collaborator.collaborator.globalKey) {
             lastChat.message += `
 ${message}`
+            this.saveChat()
             return
           }
         }
@@ -78,7 +81,9 @@ ${message}`
         }
         this.state.chatList.push(chat)
       }
+      this.saveChat()
     })
+
     this.chatManager.subscribeStatus((data) => {
       this.setOnline(data)
       const { globalKey, action, id: clientId } = data
@@ -99,6 +104,35 @@ ${message}`
     })
 
     this.chatManager.subscribeSelect(this.receiveSelection)
+  }
+
+  saveChat = () => {
+    const currentChatList = (toJS(this.state.chatList))
+    let chatStorage = localStorage.getItem('chat')
+    if (!chatStorage) {
+      chatStorage = {}
+      chatStorage[config.spaceKey] = {}
+    } else {
+      chatStorage = JSON.parse(chatStorage)
+    }
+    chatStorage[config.spaceKey][config.globalKey] = currentChatList
+    localStorage.setItem('chat', JSON.stringify(chatStorage))
+  }
+
+  loadChat = () => {
+    let chatStorage = localStorage.getItem('chat')
+    if (!chatStorage) {
+      chatStorage = {}
+    } else {
+      chatStorage = JSON.parse(chatStorage)
+    }
+    if (!chatStorage[config.spaceKey]) {
+      chatStorage[config.spaceKey] = {}
+    }
+    if (!chatStorage[config.spaceKey][config.globalKey]) {
+      chatStorage[config.spaceKey][config.globalKey] = []
+    }
+    this.state.chatList = chatStorage[config.spaceKey][config.globalKey]
   }
 
   receiveSelection = (data) => {
@@ -149,14 +183,24 @@ ${message}`
     })
   }
 
-  handleChange = (e) => {
-    this.state.value = e.target.value
+  resizeTextarea = () => {
+    const minRows = 1
+    const maxRows = 3
+    const textareaStyles = calculateNodeHeight(this.textarea, false, minRows, maxRows)
+    this.state.textareaStyles = textareaStyles
   }
 
-  handleCommit = () => {
+  handleChange = (e) => {
+    this.state.value = e.target.value
+    this.resizeTextarea()
+  }
+
+  handleCommit = (e) => {
+    e.preventDefault()
     if (this.state.value) {
       this.chatManager.send(this.state.value)
       this.state.value = ''
+      setTimeout(e => this.resizeTextarea(), 0)
     }
   }
 
@@ -193,12 +237,7 @@ ${message}`
   }
 
   render () {
-    let placeholder = ''
-    if (isMac) {
-      placeholder = 'Enter your message here (Cmd + Enter)'
-    } else {
-      placeholder = 'Enter your message here (Ctrl + Enter)'
-    }
+    const placeholder = 'Your message here (Shift + Enter to return)'
     const pickStyle = {
       visibility: 'hidden'
     }
@@ -219,7 +258,14 @@ ${message}`
             placeholder={placeholder}
             onChange={this.handleChange}
             value={this.state.value}
-            onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) this.handleCommit()}}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                if (!e.shiftKey) {
+                  this.handleCommit(e)
+                }
+              }
+            }}
+            style={this.state.textareaStyles}
           />
           <div className='chat-icons'>
             <div className='right'>

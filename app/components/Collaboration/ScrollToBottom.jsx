@@ -22,12 +22,13 @@ class ScrollToBottom extends Component {
   componentDidUpdate () {
     if (this.shouldScrollBottom) {
       const node = this.scrollContainer
-      const intervalId = setInterval(() => {
-        node.scrollTop = node.scrollTop + 10
-        if ((node.scrollTop + node.offsetHeight) >= node.scrollHeight) {
-          clearInterval(intervalId)
-        }
-      }, 50)
+      // const intervalId = setInterval(() => {
+      //   node.scrollTop = node.scrollTop + 10
+      //   if ((node.scrollTop + node.offsetHeight) >= node.scrollHeight) {
+      //     clearInterval(intervalId)
+      //   }
+      // }, 50)
+      setTimeout(() => node.scrollTop = node.scrollHeight - node.offsetHeight, 0)
       this.state.unreadCount = 0
     } else if (this.props.chatCount > this.state.lastChatCount) {
       this.state.unreadCount += (this.props.chatCount - this.state.lastChatCount)
