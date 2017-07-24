@@ -31,18 +31,17 @@ class BaseWebSocketClient {
       this.backoff.reset()
       this.successCallback(this.client)
     }
-    const error = (...args) => {
+    const error = (frame) => {
       switch (this.ws.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
           this.reconnect()
           break
         case SockJS.OPEN:
-          console.log('FRAME ERROR', args[0])
-          break
         default:
+          console.log('FRAME ERROR', frame)
+          this.errorCallback(frame)
       }
-      this.errorCallback(args)
     }
 
     const headers = this.headers || {}

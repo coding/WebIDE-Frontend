@@ -83,7 +83,7 @@ class WebSocketClient extends BaseWebSocketClient {
     this.emitter.emit('connected')
   }
 
-  errorCallback (errArgs) { /* noop */ }
+  errorCallback (frame) { /* noop */ }
 
   subscribe (event, listener) {
     this.emitter.on(event, listener)
