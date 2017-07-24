@@ -15,7 +15,7 @@ export default {
     pull: 'Pull',
     push: 'Push',
     resolveConflicts: 'Resolve Conflicts...',
-    stashChanges: 'Resolve Conflicts...',
+    stashChanges: 'Stash Changes...',
     unstashChanges: 'Unstash Changes...',
     resetHead: 'Reset HEAD...',
     branches: 'Branches...',

@@ -28,15 +28,15 @@ class GitTagView extends Component {
     return (
       <div>
         <div className='git-tag-container'>
-          <h1>Tag</h1>
+          <h1>{i18n`git.tag.title`}</h1>
           <hr />
           <form className="form-horizontal">
             <div className="form-group">
-              <label className="col-sm-3 control-label">Current Branch</label>
+              <label className="col-sm-3 control-label">{i18n`git.tag.currentBranch`}</label>
               <label className="col-sm-9 checkbox-inline">{currentBranch}</label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">Tag Name</label>
+              <label className="col-sm-3 control-label">{i18n`git.tag.tagName`}</label>
               <label className="col-sm-9">
                 <input type="text"
                   className="form-control"
@@ -57,14 +57,14 @@ class GitTagView extends Component {
                   checked={checked}
                   disabled={this.state.forceDisabled}
                 />
-                Force
+                {i18n`git.tag.force`}
                 <span className='error-info'>
                 {this.state.errMsg}
                 </span>
               </label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">Commit</label>
+              <label className="col-sm-3 control-label">{i18n`git.tag.commit`}</label>
               <label className="col-sm-9">
                 <input type="text"
                   className="form-control"
@@ -73,12 +73,12 @@ class GitTagView extends Component {
               </label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">Message</label>
+              <label className="col-sm-3 control-label">{i18n`git.tag.message`}</label>
               <label className="col-sm-9">
                 <textarea type="text"
                   className="form-control"
                   value={this.state.message}
-                  placeholder='optional'
+                  placeholder={i18n.get('git.tag.optional')}
                   onChange={e => this.setState({message: e.target.value})}
                   onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) {
                     e.preventDefault()
@@ -90,12 +90,12 @@ class GitTagView extends Component {
           </form>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
             <button className='btn btn-primary'
               onClick={e => this.addTag()}
               disabled={!this.state.commit || !this.state.tagName || !(
                 this.state.forceDisabled || (!this.state.forceDisabled && this.state.force)
-              )}>OK</button>
+              )}>{i18n`git.commit`}</button>
           </div>
         </div>
       </div>
@@ -118,7 +118,7 @@ class GitTagView extends Component {
     let errMsg = ''
     if (this.props.tags.indexOf(tagName) > -1) {
       forceDisabled = false
-      errMsg = 'The tag with the same name exists.'
+      errMsg = i18n.get('git.tag.errMsg')
     }
     this.setState({
       tagName,
@@ -133,7 +133,7 @@ class GitTagView extends Component {
     const force = e.target.checked
     let errMsg = ''
     if (!force) {
-      errMsg = 'The tag with the same name exists.'
+      errMsg = i18n.get('git.tag.errMsg')
     }
     this.setState({
       force,

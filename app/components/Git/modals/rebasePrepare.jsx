@@ -5,15 +5,17 @@ import cx from 'classnames'
 import { connect } from 'react-redux'
 
 import * as GitActions from '../actions'
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, Cell } from 'fixed-data-table-2'
+import i18n from 'utils/createI18n'
 
-const TextCell = ({rowIndex, data, columnKey, selectedRow, ...props}) => (
+
+const TextCell = ({ rowIndex, data, columnKey, selectedRow, ...props }) => (
   <Cell {...props}
-    className={cx({selected: rowIndex == selectedRow})}
+    className={cx({ selected: rowIndex == selectedRow })}
   >
     {data[rowIndex][columnKey]}
   </Cell>
-);
+)
 
 const actionOptions = [
   'PICK',
@@ -52,54 +54,56 @@ class GitRebasePrepare extends Component {
       <div>
         <div className='git-rebase-start-container'>
           <h1>
-          Rebasing Commits
+            {i18n`git.rebasePrepare.title`}
           </h1>
           <hr />
-          <form className="form-horizontal">
-            <div className="form-group">
-              <div className="col-sm-12">
-                Reorder and edit rebase commits
+          <form className='form-horizontal'>
+            <div className='form-group'>
+              <div className='col-sm-12'>
+                {i18n`git.rebasePrepare.editRebase`}
               </div>
             </div>
-            <div className="form-group">
-              <div className="col-sm-10">
+            <div className='form-group'>
+              <div className='col-sm-10'>
                 {this.renderCommitsList()}
               </div>
-              <div className="col-sm-2 btn-list">
-                <button className="btn btn-default"
-                  type="button"
+              <div className='col-sm-2 btn-list'>
+                <button className='btn btn-default'
+                  type='button'
                   onClick={this.handleView}
                 >
-                  View
+                  {i18n`git.rebasePrepare.view`}
                 </button>
-                <button className="btn btn-default"
-                  type="button"
+                <button className='btn btn-default'
+                  type='button'
                   onClick={this.handleUp}
                 >
-                  Up
+                  {i18n`git.rebasePrepare.up`}
                 </button>
-                <button className="btn btn-default"
-                  type="button"
+                <button className='btn btn-default'
+                  type='down'
                   onClick={this.handleDown}
                 >
-                  Down
+                  {i18n`git.rebasePrepare.down`}
                 </button>
               </div>
             </div>
           </form>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => {
+            <button className='btn btn-default' onClick={(e) => {
               e.stopPropagation()
               e.nativeEvent.stopImmediatePropagation()
               dispatchCommand('modal:dismiss')
               dispatchCommand('git:rebase:abort')
-            }}>
-              Cancel
+            }}
+            >
+              {i18n`git.cancel`}
             </button>
             <button className='btn btn-primary'
-              onClick={this.handleOk}>
-              OK
+              onClick={this.handleOk}
+            >
+              {i18n`git.commit`}
             </button>
           </div>
         </div>
@@ -108,9 +112,9 @@ class GitRebasePrepare extends Component {
   }
 
   renderCommitsList () {
-    let dataList = this.state.rebaseTodoLines
+    const dataList = this.state.rebaseTodoLines
     return (
-      <div className="commits-list">
+      <div className='commits-list'>
         <Table
           rowHeight={34}
           onColumnResizeEndCallback={this._onColumnResizeEndCallback}
@@ -123,54 +127,51 @@ class GitRebasePrepare extends Component {
           headerHeight={34}
         >
           <Column
-            columnKey="action"
+            columnKey='action'
             header={<Cell>Action</Cell>}
             cell={this.renderOptions}
-            isResizable={true}
+            isResizable
             width={this.state.columnWidths.action}
-          >
-          </Column>
+           />
           <Column
-            columnKey="commit"
+            columnKey='commit'
             header={<Cell>Commit</Cell>}
             // cell={this.renderCell}
             cell={<TextCell data={dataList} selectedRow={this.state.selectedRow} />}
-            isResizable={true}
+            isResizable
             width={this.state.columnWidths.commit}
-          >
-          </Column>
+           />
           <Column
-            columnKey="comment"
+            columnKey='comment'
             header={<Cell>Comment</Cell>}
             // cell={this.renderCell}
             cell={<TextCell data={dataList} selectedRow={this.state.selectedRow} />}
-            isResizable={true}
+            isResizable
             width={this.state.columnWidths.comment}
-          >
-          </Column>
+           />
         </Table>
       </div>
     )
   }
 
   _onColumnResizeEndCallback (newColumnWidth, columnKey) {
-    this.setState(({columnWidths}) => ({
+    this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
         [columnKey]: newColumnWidth,
       }
-    }));
+    }))
   }
 
   _onRowClick (e, rowIndex, rowData) {
-    this.setState({selectedRow: rowIndex})
+    this.setState({ selectedRow: rowIndex })
   }
 
-  renderOptions ({rowIndex, width, height}) {
-    let selectedRow = this.state.selectedRow
-    let cellData = this.state.rebaseTodoLines[rowIndex].action
+  renderOptions ({ rowIndex, width, height }) {
+    const selectedRow = this.state.selectedRow
+    const cellData = this.state.rebaseTodoLines[rowIndex].action
     return (
-      <select className="form-control"
+      <select className='form-control'
         onChange={this.handleOptionChange}
         value={cellData}
       >
@@ -194,37 +195,37 @@ class GitRebasePrepare extends Component {
     )
   }
 
-  renderCell ({rowIndex, width, height}) {
-    let selectedRow = this.state.selectedRow
-    let cellData = this.state.rebaseTodoLines[rowIndex][1]
+  renderCell ({ rowIndex, width, height }) {
+    const selectedRow = this.state.selectedRow
+    const cellData = this.state.rebaseTodoLines[rowIndex][1]
     return (
       <cell
-        className={cx({selected: rowIndex == selectedRow})}
+        className={cx({ selected: rowIndex == selectedRow })}
         width={width}
         height={height}
       >
         <div>
-        {cellData}
+          {cellData}
         </div>
       </cell>
     )
   }
 
   parseRows (todoList) {
-    let rows = []
+    const rows = []
     todoList.map((item, i) => {
-      let row = {action: item.action, commit: item.commit, comment: item.shortMessage}
+      const row = { action: item.action, commit: item.commit, comment: item.shortMessage }
       rows.push(row)
     })
     return rows
   }
 
   getTodo () {
-    let rebaseTodoLines = this.state.rebaseTodoLines
-    let todos = []
+    const rebaseTodoLines = this.state.rebaseTodoLines
+    const todos = []
     rebaseTodoLines.map((item, i) => {
       if (item.action === 'SKIP') return
-      let todo = {}
+      const todo = {}
       todo.action = item.action
       todo.commit = item.commit
       todo.shortMessage = item.comment
@@ -240,22 +241,22 @@ class GitRebasePrepare extends Component {
   handleOk (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    let lines = this.getTodo()
+    const lines = this.getTodo()
     this.props.gitRebaseUpdate(lines)
   }
 
   handleOptionChange (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    let rebaseTodoLines = this.state.rebaseTodoLines
-    let selectedRow = this.state.selectedRow
+    const rebaseTodoLines = this.state.rebaseTodoLines
+    const selectedRow = this.state.selectedRow
     rebaseTodoLines[selectedRow].action = e.target.value
-    this.setState({rebaseTodoLines:rebaseTodoLines})
+    this.setState({ rebaseTodoLines })
   }
 
   handleView () {
-    let commit = this.state.rebaseTodoLines[this.state.selectedRow].commit
-    let oldRef = commit + '^'
+    const commit = this.state.rebaseTodoLines[this.state.selectedRow].commit
+    const oldRef = `${commit  }^`
     this.props.gitCommitDiff({
       title: 'View Changes',
       rev: commit,
@@ -265,21 +266,21 @@ class GitRebasePrepare extends Component {
   }
 
   handleDown () {
-    let rebaseTodoLines = this.state.rebaseTodoLines
+    const rebaseTodoLines = this.state.rebaseTodoLines
     if (this.state.selectedRow == (rebaseTodoLines.length - 1))
-      return
-    let moveLine = rebaseTodoLines.splice(this.state.selectedRow, 1)
+      {return}
+    const moveLine = rebaseTodoLines.splice(this.state.selectedRow, 1)
     rebaseTodoLines.splice(this.state.selectedRow + 1, 0, moveLine[0])
-    this.setState({selectedRow: (this.state.selectedRow + 1)})
+    this.setState({ selectedRow: (this.state.selectedRow + 1) })
   }
 
   handleUp () {
-    let rebaseTodoLines = this.state.rebaseTodoLines
+    const rebaseTodoLines = this.state.rebaseTodoLines
     if (this.state.selectedRow == 0)
-      return
-    let moveLine = rebaseTodoLines.splice(this.state.selectedRow, 1)
+      {return}
+    const moveLine = rebaseTodoLines.splice(this.state.selectedRow, 1)
     rebaseTodoLines.splice(this.state.selectedRow - 1, 0, moveLine[0])
-    this.setState({selectedRow: (this.state.selectedRow - 1)})
+    this.setState({ selectedRow: (this.state.selectedRow - 1) })
   }
 }
 

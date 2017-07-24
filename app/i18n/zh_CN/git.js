@@ -2,6 +2,7 @@ export default {
   cancel: '取消',
   commit: '确认',
   branchWidget: {
+    branches: 'Git 分支',
     fetchingBranches: '正在抓取分支...',
     checkout: '签出',
     checkoutAsNew: '作为新分支签出',
@@ -40,6 +41,90 @@ export default {
     checkoutFailed: '签出失败',
     checkoutConfilcts: '由于发生冲突签出失败，是否先储藏代码',
     stashAndCheckout: '储藏并签出'
+  },
+  resolveConflictModal: {
+    noConflictMessege: '没有发现冲突',
+    title: '冲突列表'
+  },
+  diffFileModal: {
+    title: '查看 {path} 的差异',
+    titleWithOldRef: '查看文件 {path} - {newRef} 与 {oldRef} 的差异'
+  },
+  mergeModal: {
+    title: '合并分支',
+    currentBranch: '当前分支',
+    destBranch: '目标分支',
+    selectBranch: '选择一个分支'
+  },
+  mergeFile: {
+    title: '合并文件',
+    local: '本地',
+    remote: '远程',
+    base: '基础'
+  },
+  newBranchModal: {
+    title: '创建新的分支',
+    current: '当前分支',
+    newBranch: '新分支',
+    confirmMessage: '已经存在该分支，请选择其他分支'
+  },
+  rebaseInput: {
+    title: '增加rebase',
+    resumeRebase: '恢复 rebase'
+  },
+  rebasePrepare: {
+    title: '变基',
+    editRebase: '编辑提交',
+    view: '视图',
+    up: '向上',
+    down: '向下'
+  },
+  rebaseStart: {
+    title: '变基',
+    branch: '分支',
+    interactive: '交互模式',
+    preserveMerge: '保护合并',
+    onto: '应用于',
+    validate: '验证',
+    showTags: '显示标签',
+    showRemoteTags: '显示远程标签',
+    selectBranch: '选择一个分支'
+  },
+  reset: {
+    title: '重置代码',
+    currentBranch: '当前分支',
+    type: '重置方式',
+    toCommit: '指定提交'
+  },
+  stash: {
+    title: '储藏代码',
+    currentBranch: '当前分支',
+    commitMessage: '提交记录',
+    placeholder: '请输入详细描述'
+  },
+  tag: {
+    title: '标签',
+    currentBranch: '当前分支',
+    tagName: '标签名',
+    commit: '提交',
+    message: '描述',
+    force: '强制',
+    optional: '可选',
+    errMsg: '此 tag 已存在'
+  },
+  unStash: {
+    title: '恢复代码',
+    currentBranch: '当前分支',
+    stashes: '储藏列表',
+    view: '查看',
+    drop: '删除',
+    clear: '清除',
+    popStash: '应用后删除',
+    reinstateIndex: '保留索引',
+    asNewBranch: '作为新分支',
+    placeholder: '请输入分支名称',
+    apply: '应用',
+    branch: '新建分支并应用'
   },
   action: {
     commitSuccess: '成功提交',

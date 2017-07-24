@@ -12,7 +12,7 @@ const languageToCode = {
 }
 
 // support shape
-// name: i18n`menuBarItems.file.main:=file${{ file: 1 }}`
+// name: i18n`menuBarItems.file.main\${{ file: 1 }}:=f`
 
 const replaceVariable = (translated, variables, formatFunc) => {
   return translated.replace(/{(.+?)}/g, (variable) => {
