@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { observable, computed, extendObservable } from 'mobx'
+import { observable, autorun, toJS } from 'mobx'
 import config from 'config'
 import moment from 'moment'
 import { Picker } from 'emoji-mart'
@@ -57,6 +57,7 @@ class Chat extends Component {
   }
 
   componentDidMount () {
+    this.loadChat()
     this.chatManager = new ChatManager()
     this.chatManager.subscribe((data) => {
       const { globalKey, message, timestamp } = data
@@ -68,6 +69,7 @@ class Chat extends Component {
           if (lastChat.collaborator.collaborator.globalKey === collaborator.collaborator.globalKey) {
             lastChat.message += `
 ${message}`
+            this.saveChat()
             return
           }
         }
@@ -78,7 +80,9 @@ ${message}`
         }
         this.state.chatList.push(chat)
       }
+      this.saveChat()
     })
+
     this.chatManager.subscribeStatus((data) => {
       this.setOnline(data)
       const { globalKey, action, id: clientId } = data
@@ -99,6 +103,35 @@ ${message}`
     })
 
     this.chatManager.subscribeSelect(this.receiveSelection)
+  }
+
+  saveChat = () => {
+    const currentChatList = (toJS(this.state.chatList))
+    let chatStorage = localStorage.getItem('chat')
+    if (!chatStorage) {
+      chatStorage = {}
+      chatStorage[config.spaceKey] = {}
+    } else {
+      chatStorage = JSON.parse(chatStorage)
+    }
+    chatStorage[config.spaceKey][config.globalKey] = currentChatList
+    localStorage.setItem('chat', JSON.stringify(chatStorage))
+  }
+
+  loadChat = () => {
+    let chatStorage = localStorage.getItem('chat')
+    if (!chatStorage) {
+      chatStorage = {}
+    } else {
+      chatStorage = JSON.parse(chatStorage)
+    }
+    if (!chatStorage[config.spaceKey]) {
+      chatStorage[config.spaceKey] = {}
+    }
+    if (!chatStorage[config.spaceKey][config.globalKey]) {
+      chatStorage[config.spaceKey][config.globalKey] = []
+    }
+    this.state.chatList = chatStorage[config.spaceKey][config.globalKey]
   }
 
   receiveSelection = (data) => {
