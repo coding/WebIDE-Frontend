@@ -74,7 +74,7 @@
    },
    "rebasePrepare": {
       "title": "变基",
-      "editRebase": "编辑提交",
+      "editCommit": "编辑提交",
       "view": "视图",
       "up": "向上",
       "down": "向下"
