@@ -7,6 +7,7 @@ const state = observable({
   collaborators: [],
   invited: [],
   paths: {},
+  chatList: [],
   get isOwner () {
     const owner = config.owner
     return owner && owner.globalKey === config.globalKey

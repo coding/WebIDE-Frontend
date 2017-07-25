@@ -4,6 +4,7 @@
   height: 100%;
   overflow: auto;
   scrollBar();
+  noSelect();
 
   .collaborator {
     display: flex;
@@ -110,10 +111,17 @@
         flex: 1;
         line-height: 20px;
         font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .chat-item-time {
         color: #555;
         padding-right: 4px;
+        line-height: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .chat-item-body {
@@ -239,5 +247,12 @@
         visibility: visible;
       }
     }
+  }
+}
+
+.chatSetting {
+  .fa-sort-desc {
+    font-size: 12px;
+    vertical-align: top;
   }
 }

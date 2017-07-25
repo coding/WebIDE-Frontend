@@ -1,15 +1,51 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
+import { observable } from 'mobx'
 import { AccordionGroup, Accordion } from '../Accordion/Accordion'
 import Collaborators from './Collaborators'
 import Chat from './Chat'
-import * as Modal from '../../components/Modal/actions'
+import * as Modal from 'components/Modal/actions'
 import state from './state'
+import Menu from 'components/Menu'
+import * as Actions from './actions'
 
 @observer
 class Collaboration extends Component {
+  constructor (props) {
+    super(props)
+    this.state = observable({
+      showDropdownMenu: false,
+    })
+  }
   handleInvite = () => {
     Modal.showModal('CollaborationInvite')
+  }
+
+  handleDropdown = (e) => {
+    // e.preventDefault()
+    e.stopPropagation()
+    this.setState({ showDropdownMenu: true })
+  }
+
+  clearChat = () => {
+    state.chatList = []
+    Actions.saveChat()
+  }
+
+  renderDropdownMenu = () => {
+    if (!this.state.showDropdownMenu) return null
+    return (
+      <Menu className='top-down to-left'
+        items={[
+          {
+            name: 'Clear',
+            command: this.clearChat
+          }
+        ]}
+        style={{ right: '2px' }}
+        deactivate={e => this.setState({ showDropdownMenu: false })}
+      />
+    )
   }
 
   render () {
@@ -19,6 +55,12 @@ class Collaboration extends Component {
         <div className='accordion-actions' onClick={this.handleInvite}><i className='fa fa-user-plus' /> Invite</div>
       )
     }
+    const chatSetting = (
+      <div className='accordion-actions chatSetting' onClick={this.handleDropdown}>
+        <i className='fa fa-cog' /> <i className='fa fa-sort-desc' />
+        {this.renderDropdownMenu()}
+      </div>
+    )
     return (
       <AccordionGroup flexDirection='column'>
         <Accordion
@@ -35,6 +77,7 @@ class Collaboration extends Component {
           icon='fa fa-comments'
           size='40'
           id='d2'
+          actions={chatSetting}
         >
           <Chat />
         </Accordion>
