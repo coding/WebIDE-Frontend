@@ -70,7 +70,7 @@
    },
    "rebasePrepare": {
       "title": "Rebase Commits",
-      "editRebase": "编辑提交",
+      "editCommit": "Edit Commit",
       "view": "View",
       "up": "Up",
       "down": "Down"
