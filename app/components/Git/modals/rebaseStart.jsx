@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
+import i18n from 'utils/createI18n'
 
 import * as GitActions from '../actions'
 
@@ -32,65 +33,65 @@ class GitRebaseStart extends Component {
       <div>
         <div className='git-rebase-start-container'>
           <h1>
-          Rebase branch
+            {i18n`git.rebaseStart.title`}
           </h1>
           <hr />
-          <div className="form-horizontal">
-            <div className="form-group">
-              <label className="col-sm-3 control-label">Branch</label>
-              <label className="col-sm-9">
+          <div className='form-horizontal'>
+            <div className='form-group'>
+              <label className='col-sm-3 control-label'>{i18n`git.rebaseStart.branch`}</label>
+              <label className='col-sm-9'>
                 {this.renderLocalOptions()}
               </label>
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label"></label>
-              <div className="col-sm-9">
-                <div className="checkbox">
+            <div className='form-group'>
+              <label className='col-sm-3 control-label' />
+              <div className='col-sm-9'>
+                <div className='checkbox'>
                   <label>
-                    <input type="checkbox"
+                    <input type='checkbox'
                       onChange={this.handleInteractiveChange}
                       checked={this.state.interactive}
-                     />
-                     Interactive
+                    />
+                    {i18n`git.rebaseStart.interactive`}
                   </label>
 
                   <label>
-                    <input type="checkbox"
+                    <input type='checkbox'
                       onChange={this.handlePreserveMergesChange}
                       checked={this.state.preserveMerges}
-                     />
-                     Preserve Merges
+                    />
+                    {i18n`git.rebaseStart.preserveMerge`}
                   </label>
                 </div>
               </div>
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label">Onto</label>
-              <label className="col-sm-7">
+            <div className='form-group'>
+              <label className='col-sm-3 control-label'>{i18n`git.rebaseStart.onto`}</label>
+              <label className='col-sm-7'>
                 {this.renderOptions()}
               </label>
-              <label className="col-sm-2">
-                <button className='btn btn-default' onClick={this.handleValidate}>Validate</button>
+              <label className='col-sm-2'>
+                <button className='btn btn-default' onClick={this.handleValidate}>{i18n`git.rebaseStart.validate`}</button>
               </label>
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label"></label>
-              <div className="col-sm-9">
-                <div className="checkbox">
+            <div className='form-group'>
+              <label className='col-sm-3 control-label' />
+              <div className='col-sm-9'>
+                <div className='checkbox'>
                   <label>
-                    <input type="checkbox"
+                    <input type='checkbox'
                       onChange={this.handleShowTagChange}
                       checked={this.state.showTag}
-                     />
-                     Show Tags
+                    />
+                    {i18n`git.rebaseStart.showTags`}
                   </label>
 
                   <label>
-                    <input type="checkbox"
+                    <input type='checkbox'
                       onChange={this.handleShowRemoteChagne}
                       checked={this.state.showRemote}
-                     />
-                     Show Remote Branches
+                    />
+                    {i18n`git.rebaseStart.showRemoteTags`}
                   </label>
                 </div>
               </div>
@@ -98,11 +99,12 @@ class GitRebaseStart extends Component {
           </div>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
             <button className='btn btn-primary'
               onClick={this.handleConfirm}
-              disabled={!this.state.selectedOnto || !this.state.selectedFrom}>
-              Rebase
+              disabled={!this.state.selectedOnto || !this.state.selectedFrom}
+            >
+              {i18n`git.rebaseStart.title`}
             </button>
           </div>
         </div>
@@ -111,25 +113,23 @@ class GitRebaseStart extends Component {
   }
 
   renderLocalOptions () {
-    let branches = this.props.branches.local
+    const branches = this.props.branches.local
     return (
       <select
         className='form-control'
         onChange={this.handleLocalBranchChange}
         value={this.state.selectedFrom}
       >
-      {
+        {
         branches.map((item, i) => {
           let name, value
-          if(typeof item === 'string')
-            name = value = item
-          else
-            name = item.name
-            value = item.value || name
+          if (typeof item === 'string') { name = value = item } else { name = item.name }
+          value = item.value || name
 
           return (
             <option key={i}
-              value={value}>
+              value={value}
+            >
               {name}
             </option>
           )
@@ -140,20 +140,14 @@ class GitRebaseStart extends Component {
   }
 
   renderOptions () {
-    let branches = this.props.branches.local.map((item, i) => {
-      return ('refs/heads/' + item)
-    })
+    let branches = this.props.branches.local.map((item, i) => (`refs/heads/${item}`))
     if (this.state.showRemote) {
       branches = branches.concat(
-        this.props.branches.remote.map((item, i) => {
-        return ('refs/remotes/' + item)
-      }))
+        this.props.branches.remote.map((item, i) => (`refs/remotes/${item}`)))
     }
     if (this.state.showTag) {
       branches = branches.concat(
-        this.props.tags.map((item, i) => {
-        return ('refs/tags/' + item)
-      }))
+        this.props.tags.map((item, i) => (`refs/tags/${item}`)))
     }
 
     return (
@@ -162,21 +156,19 @@ class GitRebaseStart extends Component {
         onChange={this.handleOntoChange}
         value={this.state.selectedOnto}
       >
-      <option selected value='' disabled>
-        -- select a branch --
+        <option selected value='' disabled>
+        -- {i18n.get('git.rebaseStart.selectBranch')} --
       </option>
-      {
+        {
         branches.map((item, i) => {
           let name, value
-          if(typeof item === 'string')
-            name = value = item
-          else
-            name = item.name
-            value = item.value || name
+          if (typeof item === 'string') { name = value = item } else { name = item.name }
+          value = item.value || name
 
           return (
             <option key={i}
-              value={value}>
+              value={value}
+            >
               {name}
             </option>
           )
@@ -189,35 +181,35 @@ class GitRebaseStart extends Component {
   handleInteractiveChange (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    this.setState({interactive: !this.state.interactive})
+    this.setState({ interactive: !this.state.interactive })
   }
 
   handlePreserveMergesChange (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    this.setState({preserveMerges: !this.state.preserveMerges})
+    this.setState({ preserveMerges: !this.state.preserveMerges })
   }
 
   handleShowRemoteChagne (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    this.setState({showRemote: !this.state.showRemote})
+    this.setState({ showRemote: !this.state.showRemote })
   }
 
   handleShowTagChange (e) {
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    this.setState({showTag: !this.state.showTag})
+    this.setState({ showTag: !this.state.showTag })
   }
 
   handleLocalBranchChange (e) {
-    this.setState({selectedFrom: e.target.value})
+    this.setState({ selectedFrom: e.target.value })
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
   }
 
   handleOntoChange (e) {
-    this.setState({selectedOnto: e.target.value})
+    this.setState({ selectedOnto: e.target.value })
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
   }

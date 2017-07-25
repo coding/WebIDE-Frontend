@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
+import i18n from 'utils/createI18n'
 
 import * as GitActions from '../actions'
 
@@ -29,24 +30,24 @@ class GitResetView extends Component {
       <div>
         <div className='git-reset-container'>
           <h1>
-          Reset Head
+          {i18n`git.reset.title`}
           </h1>
           <hr />
           <form className="form-horizontal">
             <div className="form-group">
-              <label className="col-sm-3 control-label">Current Branch</label>
+              <label className="col-sm-3 control-label">{i18n`git.reset.currentBranch`}</label>
               <label className="col-sm-9 checkbox-inline">
                 {currentBranch}
               </label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">Reset Type</label>
+              <label className="col-sm-3 control-label">{i18n`git.reset.type`}</label>
               <label className="col-sm-3">
                 {this.renderOptions()}
               </label>
             </div>
             <div className="form-group">
-              <label className="col-sm-3 control-label">To Commit</label>
+              <label className="col-sm-3 control-label">{i18n`git.reset.toCommit`}</label>
               <label className="col-sm-9">
                 <input type="text"
                   className="form-control"
@@ -57,8 +58,8 @@ class GitResetView extends Component {
           </form>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-            <button className='btn btn-primary' onClick={this.handleConfirm} disabled={!this.state.commit}>OK</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
+            <button className='btn btn-primary' onClick={this.handleConfirm} disabled={!this.state.commit}>{i18n`git.commit`}</button>
           </div>
         </div>
       </div>

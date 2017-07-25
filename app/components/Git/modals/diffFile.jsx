@@ -9,7 +9,7 @@ const jsdiff = require('diff')
 // CodeMirror
 import CodeMirror from 'codemirror'
 require(['diff_match_patch'], (lib) => {
-  Object.assign(window, lib)  //@fixme: diff_match_patch is now exposed into the global ns
+  Object.assign(window, lib)  // @fixme: diff_match_patch is now exposed into the global ns
   require(['codemirror/addon/merge/merge.js'])
 })
 import 'codemirror/addon/merge/merge.css'
@@ -29,49 +29,49 @@ class GitDiffView extends Component {
   }
 
   componentWillMount () {
-    const {path, oldRef, newRef} = this.props.content
+    const { path, oldRef, newRef } = this.props.content
     if (oldRef !== '') {
       this.props.gitFileDiff({
-        path: path,
-        oldRef: oldRef,
-        newRef: newRef
-      }).then(res => {
+        path,
+        oldRef,
+        newRef
+      }).then((res) => {
         this.setState({
           isLoading: false,
         })
         const diffPatch = res.diff
         if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
-          this.props.gitReadFile({ref: newRef, path: path})
-            .then(res => {
+          this.props.gitReadFile({ ref: newRef, path })
+            .then((res) => {
               this.initDiff('', res.content)
             })
-        } else if (oldRef && oldRef !== '~~unstaged~~'){
-          this.props.gitReadFile({ref: oldRef, path: path})
-            .then(res => {
-              let content = res.content
-              let newContent = jsdiff.applyPatch(content, diffPatch)
+        } else if (oldRef && oldRef !== '~~unstaged~~') {
+          this.props.gitReadFile({ ref: oldRef, path })
+            .then((res) => {
+              const content = res.content
+              const newContent = jsdiff.applyPatch(content, diffPatch)
               this.initDiff(newContent, content)
             })
         } else {
-          this.props.readFile({ path: path })
-            .then(res => {
-              let content = res.content
-              let newContent = jsdiff.applyPatch(content, diffPatch)
+          this.props.readFile({ path })
+            .then((res) => {
+              const content = res.content
+              const newContent = jsdiff.applyPatch(content, diffPatch)
               this.initDiff(newContent, content)
             })
         }
       })
     } else {
-      this.props.gitReadFile({ref: newRef, path: path})
-        .then(res => {
+      this.props.gitReadFile({ ref: newRef, path })
+        .then((res) => {
           this.initDiff('', res.content)
         })
     }
   }
 
   render () {
-    const {theme, content} = this.props
-    const {path, oldRef, newRef} = this.props.content
+    const { theme, content } = this.props
+    const { path, oldRef, newRef } = this.props.content
     let loadDiv = ''
     if (this.state.isLoading) {
       loadDiv = (
@@ -84,28 +84,29 @@ class GitDiffView extends Component {
     }
     let title = ''
     if (oldRef !== '') {
-      title = `Diff File: ${path} - ${newRef} vs ${oldRef}`
+      title = i18n`git.diffFileModal.titleWithOldRef${{ path, newRef, oldRef }}`
     } else {
-      title = `Diff File: ${path}`
+      title = i18n`git.diffFileModal.title${{ path }}`
     }
     return (
       <div>
         <div className='git-merge'>
           <h1>
-          {title}
+            {title}
           </h1>
           <hr />
           <div className='diffModal'>
             <div
               id='flex-container'
-              className='diffContainer'>
-              <div id='cm-merge-view-wrapper' ref={r=>this.editorDOM=r} ></div>
+              className='diffContainer'
+            >
+              <div id='cm-merge-view-wrapper' ref={r => this.editorDOM = r} />
             </div>
             { loadDiv }
           </div>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
           </div>
         </div>
       </div>

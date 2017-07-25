@@ -1,0 +1,35 @@
+{
+   "meta": {
+      "main": "Settings"
+   },
+   "file": {
+      "main": "File",
+      "newFile": "New File",
+      "newFolder": "New Folder",
+      "save": "Save",
+      "commit": "commit"
+   },
+   "git": {
+      "rebase": "Rebase...",
+      "pull": "Pull",
+      "unstashChanges": "Unstash Changes...",
+      "continueRebase": "Continue Rebasing",
+      "stashChanges": "Stash Changes...",
+      "resetHead": "Reset HEAD...",
+      "branches": "Branches...",
+      "abortRebase": "Abort Rebasing",
+      "resolveConflicts": "Resolve Conflicts...",
+      "skipCommit": "Skip Commit",
+      "commit": "Commit",
+      "main": "Git",
+      "push": "Push",
+      "tag": "Tag...",
+      "mergeBranch": "Merge Branch..."
+   },
+   "tools": {
+      "main": "Tools",
+      "terminal": "Terminal",
+      "newTerminal": "New Terminal"
+   },
+   "switch": "Switch to v1"
+}

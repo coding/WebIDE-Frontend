@@ -21,15 +21,15 @@ class GitMergeView extends Component {
     return (
       <div>
         <div className='git-reset-container'>
-          <h1>Merge Branch</h1>
+          <h1>{i18n`git.mergeModal.title`}</h1>
           <hr />
           <form className='form-horizontal'>
             <div className='form-group'>
-              <label className='col-sm-3 control-label'>Current Branch</label>
+              <label className='col-sm-3 control-label'>{i18n`git.mergeModal.currentBranch`}</label>
               <label className='col-sm-9 checkbox-inline'>{currentBranch}</label>
             </div>
             <div className='form-group'>
-              <label className='col-sm-3 control-label'>Branch to merge</label>
+              <label className='col-sm-3 control-label'>{i18n`git.mergeModal.destBranch`}</label>
               <label className='col-sm-5' style={{ width: 'auto' }}>
                 <select className='form-control'
                   onChange={e => this.setState({ branchToMerge: e.target.value, selectChanged: true })}
@@ -37,7 +37,7 @@ class GitMergeView extends Component {
                   style={this.state.selectChanged ? null : { color: '#aaa' }}
                 >
                   <option selected value='' disabled={this.state.selectChanged}>
-                    -- select a branch --
+                    -- {i18n.get('git.mergeModal.selectBranch')} --
                   </option>
                   {allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>)}
                 </select>
@@ -46,7 +46,7 @@ class GitMergeView extends Component {
           </form>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
             <button className='btn btn-primary'
               onClick={e => dispatch(GitActions.mergeBranch(this.state.branchToMerge))}
               disabled={!this.state.branchToMerge}
