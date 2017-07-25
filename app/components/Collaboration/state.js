@@ -6,6 +6,7 @@ const state = observable({
   loading: false,
   collaborators: [],
   invited: [],
+  paths: {},
   get isOwner () {
     const owner = config.owner
     return owner && owner.globalKey === config.globalKey
@@ -26,7 +27,7 @@ const state = observable({
       }
     })
     return sortedList
-  },
+  }
 })
 
 export default state

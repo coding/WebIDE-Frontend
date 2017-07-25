@@ -113,8 +113,12 @@ async function initialize () {
 
   if (config.isPlatform) {
     await step(`[${stepNum++}] Get user globalKey`, () =>
-      api.getUserProfile().then(({ global_key }) => {
-        config.globalKey = global_key
+      api.getUserProfile().then((data) => {
+        config.globalKey = data.global_key
+        if (!/^(http|https):\/\/[^ "]+$/.test(data.avatar)) {
+          data.avatar = `https://coding.net${data.avatar}`
+        }
+        config.userProfile = data
         return true
       })
     )

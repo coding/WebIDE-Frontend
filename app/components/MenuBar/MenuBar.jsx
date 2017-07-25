@@ -47,6 +47,7 @@ class MenuBar extends Component {
   render () {
     const { items } = this.props
     const isOwner = collaborationState.isOwner
+    const { userProfile } = config
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -67,6 +68,10 @@ class MenuBar extends Component {
           {isOwner && <div className='share-btn' onClick={() => Modal.showModal('CollaborationInvite')}>Share</div>}
           <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
             Switch to v1
+          </div>
+          <div className='currentUser'>
+            <img className='avatar' src={userProfile.avatar} />
+            <a target='_blank' rel='noopener noreferrer' href={`https://coding.net${userProfile.path}`}>{userProfile.name}</a>
           </div>
         </div>
         )}
