@@ -10,25 +10,26 @@
       "commit": "commit"
    },
    "git": {
-      "main": "Git",
-      "commit": "Commit",
+      "rebase": "Rebase...",
       "pull": "Pull",
-      "push": "Push",
-      "resolveConflicts": "Resolve Conflicts...",
-      "stashChanges": "Stash Changes...",
       "unstashChanges": "Unstash Changes...",
+      "continueRebase": "Continue Rebasing",
+      "stashChanges": "Stash Changes...",
       "resetHead": "Reset HEAD...",
       "branches": "Branches...",
-      "mergeBranch": "Merge Branch...",
-      "tag": "Tag...",
-      "rebase": "Rebase...",
       "abortRebase": "Abort Rebasing",
-      "continueRebase": "Continue Rebasing",
-      "skipCommit": "Skip Commit"
+      "resolveConflicts": "Resolve Conflicts...",
+      "skipCommit": "Skip Commit",
+      "commit": "Commit",
+      "main": "Git",
+      "push": "Push",
+      "tag": "Tag...",
+      "mergeBranch": "Merge Branch..."
    },
    "tools": {
       "main": "Tools",
       "terminal": "Terminal",
       "newTerminal": "New Terminal"
-   }
+   },
+   "switch": "Switch to v1"
 }

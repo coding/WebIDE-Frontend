@@ -10,25 +10,26 @@
       "commit": "commit"
    },
    "git": {
-      "main": "版本",
-      "commit": "提交",
+      "rebase": "变基...",
       "pull": "拉取",
-      "push": "推送",
-      "resolveConflicts": "解决冲突",
-      "stashChanges": "储藏代码...",
       "unstashChanges": "恢复代码...",
+      "continueRebase": "继续变基",
+      "stashChanges": "储藏代码...",
       "resetHead": "重置代码...",
       "branches": "分支...",
-      "mergeBranch": "合并分支...",
-      "tag": "标签...",
-      "rebase": "变基...",
       "abortRebase": "终止变基",
-      "continueRebase": "继续变基",
-      "skipCommit": "跳过提交"
+      "resolveConflicts": "解决冲突",
+      "skipCommit": "跳过提交",
+      "commit": "提交",
+      "main": "版本",
+      "push": "推送",
+      "tag": "标签...",
+      "mergeBranch": "合并分支..."
    },
    "tools": {
       "main": "工具",
       "terminal": "终端",
       "newTerminal": "新建"
-   }
+   },
+   "switch": "切换到 v1 版本"
 }

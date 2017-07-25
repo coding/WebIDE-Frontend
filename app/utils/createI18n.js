@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import settings from 'settings'
 import _ from 'lodash'
 import { inject } from 'mobx-react'
-import languageDicPool from '../i18n'
 
 const separator = ':='
 // const transferredMeaning = '\\'
@@ -10,6 +9,11 @@ const languageToCode = {
   English: 'en_US',
   Chinese: 'zh_CN'
 }
+const languageDicPool = require('../i18n/index.json').reduce((p, v) => {
+  p[v] = require(`../i18n/${v}/index`).default
+  return p
+}, {})
+
 
 // support shape
 const mapStateToProps = () => {
@@ -28,14 +32,13 @@ export class CreateI18n {
   }
   translate (origin = '', language, variableObj) {
     const dic = this.languageDicPool[language]
-    const reserveDic = this.languageDicPool.en_US
     const key = origin.split(separator)[0]
     if (!origin) {
       return origin
     }
     // 当字典里找不到先看是否是开发模式下的:=，如果是就先暂时显示它，不是则原样返回
     if (!_.get(dic, key)) {
-      return _.get(reserveDic, key) || origin.split(separator)[1] || origin
+      return origin.split(separator)[1] || origin
     }
     return this.replaceVariable(_.get(dic, key) || '', variableObj)
   }

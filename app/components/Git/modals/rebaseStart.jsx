@@ -104,7 +104,7 @@ class GitRebaseStart extends Component {
               onClick={this.handleConfirm}
               disabled={!this.state.selectedOnto || !this.state.selectedFrom}
             >
-              {i18n`git.rebaseStart.title:=title`}
+              {i18n`git.rebaseStart.title`}
             </button>
           </div>
         </div>

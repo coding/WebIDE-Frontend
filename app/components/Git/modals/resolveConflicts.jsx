@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
-import i18n from 'utils/createi18n'
+import i18n from 'utils/createI18n'
 
 import * as GitActions from '../actions'
 import GitFileTree from '../GitFileTree'

@@ -7,6 +7,8 @@ import api from 'backendAPI'
 import { isFunction } from 'utils/is'
 import config from '../../config'
 import { inject, observer } from 'mobx-react'
+import i18n from 'utils/createI18n'
+
 
 
 @observer
@@ -62,7 +64,7 @@ class MenuBar extends Component {
             />) }
         </ul>
         {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-          Switch to v1
+          {i18n`menuBarItems.switch`}
         </div>)}
       </div>
     )
