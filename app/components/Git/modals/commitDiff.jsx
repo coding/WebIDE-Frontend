@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
+import i18n from 'utils/createI18n'
+
 
 import * as GitActions from '../actions'
 import GitFileTree from '../GitFileTree'
@@ -31,9 +33,9 @@ class GitCommitDiffView extends Component {
             handleClick={(path) => {
               this.handleFileClick(path)
           }} />
-          
+
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
           </div>
         </div>
       </div>

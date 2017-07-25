@@ -4,11 +4,13 @@ import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
 import * as GitActions from '../actions'
+import i18n from 'utils/createI18n'
+
 
 // CodeMirror
 import CodeMirror from 'codemirror'
 require(['diff_match_patch'], (lib) => {
-  Object.assign(window, lib)  //@fixme: diff_match_patch is now exposed into the global ns
+  Object.assign(window, lib)  // @fixme: diff_match_patch is now exposed into the global ns
   require(['codemirror/addon/merge/merge.js'])
 })
 import 'codemirror/addon/merge/merge.css'
@@ -20,7 +22,7 @@ class GitMergeView extends Component {
     width: '100%',
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       isLoading: true
@@ -28,7 +30,7 @@ class GitMergeView extends Component {
   }
 
   componentWillMount () {
-    this.props.getConflicts({path: this.props.content.path}).then(res => {
+    this.props.getConflicts({ path: this.props.content.path }).then((res) => {
       this.setState({
         isLoading: false,
       })
@@ -37,7 +39,7 @@ class GitMergeView extends Component {
   }
 
   render () {
-    const {theme, content} = this.props;
+    const { theme, content } = this.props
     let loadDiv = ''
     if (this.state.isLoading) {
       loadDiv = (
@@ -52,34 +54,35 @@ class GitMergeView extends Component {
       <div>
         <div className='git-merge'>
           <h1>
-          Merge File: {this.props.content.path}
+            {i18n`git.mergeFile.title`} : {this.props.content.path}
           </h1>
           <hr />
           <div className='diffModal'>
             <div className='mergeTitle'>
               <div>
-                LOCAL
+                {i18n`git.mergeFile.local`}
               </div>
-              <div className='gutterTitle'></div>
+              <div className='gutterTitle' />
               <div>
-                BASE
+                {i18n`git.mergeFile.base`}
               </div>
-              <div className='gutterTitle'></div>
+              <div className='gutterTitle' />
               <div>
-                REMOTE
+                {i18n`git.mergeFile.remote`}
               </div>
             </div>
             <div
               id='flex-container'
-              className='mergeContainer'>
-              <div id='cm-merge-view-wrapper' ref={r=>this.editorDOM=r} ></div>
+              className='mergeContainer'
+            >
+              <div id='cm-merge-view-wrapper' ref={r => this.editorDOM = r}  />
             </div>
             { loadDiv }
           </div>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={this.handleCancel}>Cancel</button>
-            <button className='btn btn-primary' onClick={this.handleConfirm}>Confirm</button>
+            <button className='btn btn-default' onClick={this.handleCancel}>{i18n`git.cancel`}</button>
+            <button className='btn btn-primary' onClick={this.handleConfirm}>{i18n`git.commit`}</button>
           </div>
         </div>
       </div>

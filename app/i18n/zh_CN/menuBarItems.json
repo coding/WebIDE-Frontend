@@ -1,0 +1,35 @@
+{
+   "meta": {
+      "main": "设置"
+   },
+   "file": {
+      "main": "文件",
+      "newFile": "新建文件",
+      "newFolder": "新建文件夹",
+      "save": "保存",
+      "commit": "commit"
+   },
+   "git": {
+      "rebase": "变基...",
+      "pull": "拉取",
+      "unstashChanges": "恢复代码...",
+      "continueRebase": "继续变基",
+      "stashChanges": "储藏代码...",
+      "resetHead": "重置代码...",
+      "branches": "分支...",
+      "abortRebase": "终止变基",
+      "resolveConflicts": "解决冲突",
+      "skipCommit": "跳过提交",
+      "commit": "提交",
+      "main": "版本",
+      "push": "推送",
+      "tag": "标签...",
+      "mergeBranch": "合并分支..."
+   },
+   "tools": {
+      "main": "工具",
+      "terminal": "终端",
+      "newTerminal": "新建"
+   },
+   "switch": "切换到 v1 版本"
+}

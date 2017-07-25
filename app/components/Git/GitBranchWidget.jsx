@@ -37,7 +37,7 @@ export default class GitBranchWidget extends Component {
         {this.state.isActive ?
           <div className='git-branch-widget'>
             <div className='widget-header'>
-              <h2>Git Branches</h2>
+              <h2>{i18n`git.branchWidget.branches`}</h2>
             </div>
             <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}
               style={{

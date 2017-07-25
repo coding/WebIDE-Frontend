@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
-
+import i18n from 'utils/createI18n'
 import * as GitActions from '../actions'
 
 class GitRebaseInput extends Component {
@@ -20,24 +20,25 @@ class GitRebaseInput extends Component {
       <div>
         <div className='git-rebase-input-container'>
           <h1>
-          Additional Rebase Input
+            {i18n`git.rebaseInput.title`}
           </h1>
           <hr />
-          <form className="form-horizontal">
-            <div className="form-group">
-              <div className="col-sm-12">
+          <form className='form-horizontal'>
+            <div className='form-group'>
+              <div className='col-sm-12'>
                 <textarea name='git-commit-message' id='git-commit-message' rows='12'
-          onChange={e => this.updateMessage(e.target.value)} value={this.state.message} />
+                  onChange={e => this.updateMessage(e.target.value)} value={this.state.message}
+                />
               </div>
             </div>
           </form>
           <hr />
           <div className='modal-ops'>
-            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
+            <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`git.cancel`}</button>
             <button className='btn btn-primary'
               onClick={this.handleConfirm}
             >
-              Resume Rebasing
+              {i18n`git.rebaseInput.resumeRebase`}
             </button>
           </div>
         </div>
@@ -46,7 +47,7 @@ class GitRebaseInput extends Component {
   }
 
   updateMessage (value) {
-    this.setState({message: value})
+    this.setState({ message: value })
   }
 
   handleConfirm () {
