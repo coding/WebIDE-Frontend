@@ -60,7 +60,7 @@ class GitRebasePrepare extends Component {
           <form className='form-horizontal'>
             <div className='form-group'>
               <div className='col-sm-12'>
-                {i18n`git.rebasePrepare.editRebase`}
+                {i18n`git.rebasePrepare.editCommit`}
               </div>
             </div>
             <div className='form-group'>
