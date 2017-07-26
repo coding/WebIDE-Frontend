@@ -13,6 +13,11 @@
     "no-plusplus": 0,
     "no-return-assign": 0,
     "no-underscore-dangle": 0,
+<<<<<<< Updated upstream
+=======
+    "react/require-default-props": 0,
+    "no-multi-assign": 0,
+>>>>>>> Stashed changes
     "semi": ["error", "never"],
     "one-var": 0,
     "one-var-declaration-per-line": 0,

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import extendObservableStrict from 'utils/extendObservableStrict'
 import PaneScope from 'commons/Pane/state'
-import { extendObservable, observable, computed, action, autorun, autorunAsync, runInAction } from 'mobx'
+import { extendObservable, computed, action } from 'mobx'
 
 const { state, BasePane } = PaneScope()
 
@@ -15,11 +15,6 @@ extendObservable(state, {
   get activePanel () {
     const activePanel = this.panels.get(this.activePanelId)
     return activePanel || this.rootPanel
-  },
-  sidePanelViews: {
-    left: {},
-    right: {},
-    bottom: {},
   },
 })
 state.views = {}
