@@ -1,8 +1,10 @@
 import api from 'backendAPI'
+import { toJS } from 'mobx'
 import FileStore from 'commons/File/store'
 import * as TabActions from 'components/Tab/actions'
 import state from './state'
 import ChatManager from './ot/chat'
+import config from 'config'
 
 export const fetchCollaborators = () => {
   if (state.loading) return
@@ -70,3 +72,31 @@ export const openFile = ({ path }) => {
   })
 }
 
+export const saveChat = () => {
+  const currentChatList = (toJS(state.chatList))
+  let chatStorage = localStorage.getItem('chat')
+  if (!chatStorage) {
+    chatStorage = {}
+    chatStorage[config.spaceKey] = {}
+  } else {
+    chatStorage = JSON.parse(chatStorage)
+  }
+  chatStorage[config.spaceKey][config.globalKey] = currentChatList
+  localStorage.setItem('chat', JSON.stringify(chatStorage))
+}
+
+export const loadChat = () => {
+  let chatStorage = localStorage.getItem('chat')
+  if (!chatStorage) {
+    chatStorage = {}
+  } else {
+    chatStorage = JSON.parse(chatStorage)
+  }
+  if (!chatStorage[config.spaceKey]) {
+    chatStorage[config.spaceKey] = {}
+  }
+  if (!chatStorage[config.spaceKey][config.globalKey]) {
+    chatStorage[config.spaceKey][config.globalKey] = []
+  }
+  state.chatList = chatStorage[config.spaceKey][config.globalKey]
+}

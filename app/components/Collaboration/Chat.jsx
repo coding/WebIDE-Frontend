@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { observable, autorun, toJS } from 'mobx'
+import { observable } from 'mobx'
 import config from 'config'
 import moment from 'moment'
 import { Picker } from 'emoji-mart'
@@ -51,26 +51,26 @@ class Chat extends Component {
     super(props)
     this.state = observable({
       value: '',
-      chatList: [],
+      // chatList: [],
       chatCount: 0,
       showEmoji: false,
     })
   }
 
   componentDidMount () {
-    this.loadChat()
+    CollaborationActions.loadChat()
     this.chatManager = new ChatManager()
     this.chatManager.subscribe((data) => {
       const { globalKey, message, timestamp } = data
       const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)
       if (collaborator) {
         this.state.chatCount ++
-        if (this.state.chatList.length > 0) {
-          const lastChat = this.state.chatList[this.state.chatList.length - 1]
+        if (state.chatList.length > 0) {
+          const lastChat = state.chatList[state.chatList.length - 1]
           if (lastChat.collaborator.collaborator.globalKey === collaborator.collaborator.globalKey) {
             lastChat.message += `
 ${message}`
-            this.saveChat()
+            CollaborationActions.saveChat()
             return
           }
         }
@@ -79,9 +79,9 @@ ${message}`
           message,
           timestamp,
         }
-        this.state.chatList.push(chat)
+        state.chatList.push(chat)
       }
-      this.saveChat()
+      CollaborationActions.saveChat()
     })
 
     this.chatManager.subscribeStatus((data) => {
@@ -104,35 +104,6 @@ ${message}`
     })
 
     this.chatManager.subscribeSelect(this.receiveSelection)
-  }
-
-  saveChat = () => {
-    const currentChatList = (toJS(this.state.chatList))
-    let chatStorage = localStorage.getItem('chat')
-    if (!chatStorage) {
-      chatStorage = {}
-      chatStorage[config.spaceKey] = {}
-    } else {
-      chatStorage = JSON.parse(chatStorage)
-    }
-    chatStorage[config.spaceKey][config.globalKey] = currentChatList
-    localStorage.setItem('chat', JSON.stringify(chatStorage))
-  }
-
-  loadChat = () => {
-    let chatStorage = localStorage.getItem('chat')
-    if (!chatStorage) {
-      chatStorage = {}
-    } else {
-      chatStorage = JSON.parse(chatStorage)
-    }
-    if (!chatStorage[config.spaceKey]) {
-      chatStorage[config.spaceKey] = {}
-    }
-    if (!chatStorage[config.spaceKey][config.globalKey]) {
-      chatStorage[config.spaceKey][config.globalKey] = []
-    }
-    this.state.chatList = chatStorage[config.spaceKey][config.globalKey]
   }
 
   receiveSelection = (data) => {
@@ -248,7 +219,7 @@ ${message}`
       <div className='collaboration-chat'>
         <ScrollToBottom className='chat-content' chatCount={this.state.chatCount}>
           {
-            this.state.chatList.map(chat => <ChatItem chat={chat} key={chat.timestamp} />)
+            state.chatList.map(chat => <ChatItem chat={chat} key={chat.timestamp} />)
           }
         </ScrollToBottom>
         <div className='chat-editor'>
