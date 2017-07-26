@@ -8,8 +8,7 @@ const { state } = PaneScope()
 /*
 side bar api
 * side bar state shape
-  labels: {
-    [side]: { // map格式，observable
+  labels: { // map格式，observable
           //  sideBar label
           [viewId]:
             key, // 业务名 required
@@ -21,8 +20,7 @@ side bar api
             onSidebarDeactive: func, // side bar 隐藏通知
             weight: number // control the view order // 排序序号 optional
             isActive: bool // 是否默认开启
-           },
-        }
+        },
   },
   activeStatus: { observable，普通object
     left: '', // 不同 side 当前激活情况
@@ -47,11 +45,7 @@ export const labelsShape = PropTypes.shape(({
 
 extendObservable(state, {
   get panels () { return this.entities },
-  labels: {
-    left: observable.map({}),
-    right: observable.map({}),
-    bottom: observable.map({})
-  },
+  labels: observable.map({}),
   activeStatus: observable.map({
     left: '',
     right: '',

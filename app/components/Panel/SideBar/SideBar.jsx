@@ -40,7 +40,7 @@ const _SideBar = observer(({ labels, side, activeViewId, activateView }) => {
   return (
     <div className={`bar side-bar ${side}`}>
       {
-      labels.values()
+      labels
       .map(label =>
         <SideBarLabel
           key={label.viewId}
@@ -60,7 +60,8 @@ _SideBar.propTypes = {
 }
 
 const SideBar = inject((__, { side }) => {
-  const labels = state.labels[side]
+  const labels = state.labels.values().filter(label => label.side === side)
+
   const activeViewId = state.activeStatus.get(side)
   return {
     side,

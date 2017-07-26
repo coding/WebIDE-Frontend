@@ -53,7 +53,7 @@ export const registerSideBarView = registerAction(SIDEBAR_REGISTER_VIEW,
       if (isActive) {
         state.activeStatus.set(side, generateViewId)
       }
-      state.labels[side].set(generateViewId, {
+      state.labels.set(generateViewId, {
         viewId: generateViewId,
         side,
         key,
@@ -89,7 +89,7 @@ export const addComToSideBar = (side, label, getComponent) => {
 const _toggleSidePanelView = (viewId, shouldShow) => {
   setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
   const side = viewId.split('_')[0]
-  const currentLabel = state.labels[side].get(viewId)
+  const currentLabel = state.labels.get(viewId)
   const targetPanel = panelState.panels.get(`PANEL_${side.toUpperCase()}`)
   shouldShow = Boolean(shouldShow) || state.activeStatus.get(side) === viewId
 //   需要隐藏
