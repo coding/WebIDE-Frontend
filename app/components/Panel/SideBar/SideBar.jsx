@@ -39,8 +39,8 @@ SideBarLabel.propTypes = {
 const _SideBar = observer(({ labels, side, activeViewId, activateView }) => {
   return (
     <div className={`bar side-bar ${side}`}>
-      {labels.values()
-      .filter(label => label.viewId.startsWith(side))
+      {
+      labels.values()
       .map(label =>
         <SideBarLabel
           key={label.viewId}
@@ -60,7 +60,7 @@ _SideBar.propTypes = {
 }
 
 const SideBar = inject((__, { side }) => {
-  const labels = state.labels
+  const labels = state.labels[side]
   const activeViewId = state.activeStatus.get(side)
   return {
     side,

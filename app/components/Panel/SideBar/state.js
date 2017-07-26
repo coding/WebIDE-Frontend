@@ -1,32 +1,37 @@
 import { PropTypes } from 'react'
 import _ from 'lodash'
 import PaneScope from 'commons/Pane/state'
-import { extendObservable, observable, computed, action, autorun, autorunAsync, runInAction } from 'mobx'
+import { extendObservable, observable } from 'mobx'
 
-const { state, BasePane } = PaneScope()
+const { state } = PaneScope()
 
 /*
+side bar api
 * side bar state shape
-  sidePanelViews: {
-      left: {
+  labels: {
+    [side]: { // map格式，observable
           //  sideBar label
-          [key]: {
-            key,
-            viewId,  current viewid, the view
-            text,    current text
-            icon,
-            onSidebarActive: func,
-            onSidebarDeactive: func,
-            weight: number // the order
+          [viewId]:
+            key, // 业务名 required
+            viewId, // 视图名 optional defatult: {side_key_instanceId}
+            text,   // 标签元素 optional
+            icon, // 标签图标 optional
+            instanceId, // component 的 实例名 optional
+            onSidebarActive: func, // side bar 激活通知
+            onSidebarDeactive: func, // side bar 隐藏通知
+            weight: number // control the view order // 排序序号 optional
+            isActive: bool // 是否默认开启
            },
-      },
-      right: {},
-      bottom: {}
-  }
-  views {
-      [key]: {view} componnet
+        }
+  },
+  activeStatus: { observable，普通object
+    left: '', // 不同 side 当前激活情况
+  },
+  views: { // component cache，根据 viewid 去查
+      [viewId]: {view} component
   }
 */
+
 // shapes
 export const labelShape = {
   text: PropTypes.string,
@@ -42,7 +47,11 @@ export const labelsShape = PropTypes.shape(({
 
 extendObservable(state, {
   get panels () { return this.entities },
-  labels: observable.map({}),
+  labels: {
+    left: observable.map({}),
+    right: observable.map({}),
+    bottom: observable.map({})
+  },
   activeStatus: observable.map({
     left: '',
     right: '',

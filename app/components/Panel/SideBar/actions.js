@@ -12,10 +12,12 @@ export const SIDEBAR_TOGGLE_VIEW = 'SIDEBAR_TOGGLE_VIEW'
 /*
 side bar api
 * side bar state shape
-  labels: { // map格式，observable
+  labels: {
+    [side]: { // map格式，observable
           //  sideBar label
           [viewId]:
             key, // 业务名 required
+            side: // 侧边
             viewId, // 视图名 optional defatult: {side_key_instanceId}
             text,   // 标签元素 optional
             icon, // 标签图标 optional
@@ -25,6 +27,7 @@ side bar api
             weight: number // control the view order // 排序序号 optional
             isActive: bool // 是否默认开启
            },
+        }
   },
   activeStatus: { observable，普通object
     left: '', // 不同 side 当前激活情况
@@ -45,13 +48,14 @@ export const registerSideBarView = registerAction(SIDEBAR_REGISTER_VIEW,
     // 可支持数组批量注册，或单个孩子
     const childrenArray = Array.isArray(children) ? children : [children]
     childrenArray.forEach((child) => {
-      const { side, key, label, viewId, view, isActive, instanceId } = child
-      const generateViewId = viewId || `${side}_${key}${instanceId ? `_${instanceId}` : ''}`
+      const { side, key, label, view, isActive, instanceId } = child
+      const generateViewId = `${side}_${key}${instanceId ? `_${instanceId}` : ''}`
       if (isActive) {
         state.activeStatus.set(side, generateViewId)
       }
-      state.labels.set(generateViewId, {
+      state.labels[side].set(generateViewId, {
         viewId: generateViewId,
+        side,
         key,
         ...label
       })
@@ -85,7 +89,7 @@ export const addComToSideBar = (side, label, getComponent) => {
 const _toggleSidePanelView = (viewId, shouldShow) => {
   setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
   const side = viewId.split('_')[0]
-  const currentLabel = state.labels.get(viewId)
+  const currentLabel = state.labels[side].get(viewId)
   const targetPanel = panelState.panels.get(`PANEL_${side.toUpperCase()}`)
   shouldShow = Boolean(shouldShow) || state.activeStatus.get(side) === viewId
 //   需要隐藏

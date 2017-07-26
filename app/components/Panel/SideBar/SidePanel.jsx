@@ -9,7 +9,7 @@ import state, { labelsShape } from './state'
 
 
 @inject((__, { side }) => {
-  const labels = state.labels
+  const labels = state.labels[side]
   const activeViewId = state.activeStatus.get(side)
   return { activeViewId, labels, side }
 })
@@ -31,10 +31,9 @@ class SidePanelContainer extends Component {
     return Array.isArray(this.props.children) ? this.props.children : [this.props.children]
   }
   render () {
-    const { labels = {}, activeViewId, side } = this.props
+    const { labels = {}, activeViewId } = this.props
     return (<div style={{ height: '100%' }}>
       {labels.values()
-      .filter(label => label.viewId.startsWith(side))
       .sort((a, b) => a.weight || 1 - b.weight || 1)
       .map(label =>
         <SidePanelViewContent key={label.viewId}
@@ -47,6 +46,7 @@ class SidePanelContainer extends Component {
 }
 SidePanelContainer.propTypes = {
   labels: labelsShape,
+  children: PropTypes.node,
   activeViewId: PropTypes.string,
   side: PropTypes.string
 }
