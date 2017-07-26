@@ -111,6 +111,7 @@
     "socket.io-client-legacy": "git+https://github.com/hackape/socket.io-client#0.9.18",
     "sockjs-client": "^1.1.1",
     "stompjs": "^2.3.3",
+    "svg-inline-loader": "^0.8.0",
     "uuid": "^3.1.0"
   }
 }
