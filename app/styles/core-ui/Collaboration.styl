@@ -146,7 +146,9 @@
       font-size: 13px;
       line-height: 18px;
       outline: none;
-
+      &:focus {
+        box-shadow: none;
+      }
     }
     ::-webkit-input-placeholder {
       color: #B2B2B2;
@@ -183,6 +185,11 @@
     }
     .emoji-mart-search input {
       font-size: 12px;
+    }
+    .emoji-mart-emoji {
+      padding: 6px 4px;
+      width: 28px;
+      height: 28px;
     }
   }
 }

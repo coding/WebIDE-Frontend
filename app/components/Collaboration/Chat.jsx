@@ -224,6 +224,7 @@ ${message}`
         </ScrollToBottom>
         <div className='chat-editor'>
           <textarea
+            className='form-control'
             ref={dom => this.textarea = dom}
             onClick={this.handleHidePicker}
             placeholder={placeholder}
