@@ -39,7 +39,8 @@ class Collaboration extends Component {
         items={[
           {
             name: 'Clear',
-            command: this.clearChat
+            command: this.clearChat,
+            icon: 'fa fa-trash-o'
           }
         ]}
         style={{ right: '2px' }}

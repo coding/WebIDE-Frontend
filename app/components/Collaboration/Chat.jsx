@@ -208,7 +208,7 @@ ${message}`
   }
 
   render () {
-    const placeholder = 'Your message here (Shift + Enter to return)'
+    const placeholder = 'Your message here (Shift + Enter for new line)'
     const pickStyle = {
       visibility: 'hidden'
     }
