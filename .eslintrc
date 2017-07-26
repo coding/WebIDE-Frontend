@@ -13,6 +13,7 @@
     "no-plusplus": 0,
     "no-return-assign": 0,
     "no-underscore-dangle": 0,
+    "react/require-default-props": 0,
     "no-multi-assign": 0,
     "semi": ["error", "never"],
     "one-var": 0,
