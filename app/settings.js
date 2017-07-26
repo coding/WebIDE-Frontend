@@ -29,8 +29,8 @@ const localeToLangs = {
 
 const getDefaultLangCode = () => {
   const langProps = [
-    'languages',
     'language',
+    'languages',
     'browserLanguage',
     'systemLanguage',
     'userLanguage',
