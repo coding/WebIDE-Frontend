@@ -9,6 +9,7 @@ import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
 import GitGraph from 'components/Git/GitGraph'
 import Collaboration from 'components/Collaboration'
+import i18n from 'utils/createI18n'
 
 
 const PanelContent = ({ panel }) => {
@@ -36,7 +37,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_RIGHT':
       return (
         <SidePanelContainer side='right'>
-          <SidePanelView key='collaborate' label={{ text: 'Collaborate', icon: 'fa fa-users' }} active >
+          <SidePanelView key='collaborate' label={{ text: 'Collaborate', icon: 'fa fa-users', weight: 1000 }} active >
             <Collaboration />
           </SidePanelView>
         </SidePanelContainer>
