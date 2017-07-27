@@ -1,4 +1,5 @@
 import React from 'react'
+import { ExtensionsCache } from 'utils/extensions'
 import { bindActionCreators } from 'redux'
 import { extendObservable } from 'mobx'
 import config from './config'
@@ -47,7 +48,7 @@ async function initialize () {
     }
     return true // MISSING OF SPACEKEY SHOULD NOT BLOCK
   })
-  
+
   if (config.spaceKey) {
     if (!config.isPlatform) {
       await step(`[${stepNum++}] Check if workspace exist`, () =>
@@ -123,26 +124,26 @@ async function initialize () {
       })
     )
   }
-
+  await step(`[${stepNum++}] Expose essential APIs into window object`, () => {
+    window.CodingSDK = CodingSDK
+    window.store = store
+    window.React = React
+    window.i18n = i18n
+    window.extension = f => getExtensions
+    window.refs = {}
+    window.config = config
+    return true
+  })
+  await step(`[${stepNum++}] load required packages`, () => {
+    dispatch(preloadRequirePackages())
+    return true
+  })
   /* @TODO: websocket connection is not a must, shouldn't block
    * also, terminal connection is optional, only connect when terminal panel is shown
    * */
   await step(`[${stepNum++}] Connect websocket`, () =>
     api.connectWebsocketClient()
   )
-
-  await step(`[${stepNum++}] Expose essential APIs into window object`, () => {
-    window.CodingSDK = CodingSDK
-    window.store = store
-    window.React = React
-    window.i18n = i18n
-    window.extensions = {}
-    window.extension = f => getExtensions
-    window.refs = {}
-    window.config = config
-    return true
-  })
-
 
   if (config.packageDev) {
     await step(`[${stepNum++}] enable package server hotreload`, () => {
@@ -151,10 +152,6 @@ async function initialize () {
     })
   }
 
-  await step(`[${stepNum++}] load required packages`, () => {
-    dispatch(preloadRequirePackages())
-    return true
-  })
 
   return step
 }
