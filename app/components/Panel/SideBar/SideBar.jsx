@@ -36,11 +36,13 @@ SideBarLabel.propTypes = {
   onClick: PropTypes.func
 }
 
-const _SideBar = observer(({ labels, side, activeViewId, activateView }) => {
+const _SideBar = observer(({ labels, side, activeViewId, activateView, hiddenStatus }) => {
   return (
     <div className={`bar side-bar ${side}`}>
       {
       labels
+      .filter(label => !hiddenStatus.includes(label.viewId))
+      .sort((labelA, labelB) => labelB.weight || 1 - labelA.weight || 1)
       .map(label =>
         <SideBarLabel
           key={label.viewId}
@@ -67,6 +69,7 @@ const SideBar = inject((__, { side }) => {
     side,
     labels,
     activeViewId,
+    hiddenStatus: state.hiddenStatus,
     activateView: toggleSidePanelView // toggle action
   }
 })(_SideBar)

@@ -34,7 +34,6 @@ class SidePanelContainer extends Component {
     const { labels = {}, activeViewId } = this.props
     return (<div style={{ height: '100%' }}>
       {labels
-      .sort((a, b) => a.weight || 1 - b.weight || 1)
       .map(label =>
         <SidePanelViewContent key={label.viewId}
           view={state.views[label.viewId]}

@@ -25,6 +25,7 @@ side bar api
   activeStatus: { observable，普通object
     left: '', // 不同 side 当前激活情况
   },
+  hiddenStatus: []
   views: { // component cache，根据 viewid 去查
       [viewId]: {view} component
   }
@@ -50,7 +51,8 @@ extendObservable(state, {
     left: '',
     right: '',
     bottom: ''
-  })
+  }),
+  hiddenStatus: observable([])
 })
 
 state.views = {}

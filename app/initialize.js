@@ -129,7 +129,6 @@ async function initialize () {
     window.store = store
     window.React = React
     window.i18n = i18n
-    window.extensions = {}
     window.extension = f => getExtensions
     window.refs = {}
     window.config = config
