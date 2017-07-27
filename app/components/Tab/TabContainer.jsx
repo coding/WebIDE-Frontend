@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { observer, inject } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import Editor from 'components/Editor'
-import { TablessCodeMirrorEditor } from 'components/Editor'
+import { TablessCodeEditor } from 'components/Editor/components/CodeEditor'
 import i18n from 'utils/createI18n'
 
 const contextMenuItems = [
@@ -58,7 +58,7 @@ class TabContainer extends Component {
             </TabContentItem>
           )
           : <TabContentItem tab={{ isActive: true }}>
-              <TablessCodeMirrorEditor tabGroupId={tabGroup.id} />
+              <TablessCodeEditor tabGroupId={tabGroup.id} />
             </TabContentItem>
           }
         </TabContent>

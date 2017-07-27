@@ -1,17 +1,7 @@
 import TabStore from 'components/Tab/store'
 import BaseCodeEditor from './BaseCodeEditor'
-import addMixinMechanism from './addMixinMechanism'
 
 class TablessCodeEditor extends BaseCodeEditor {
-  constructor (props, context) {
-    super(props, context)
-  }
-}
-addMixinMechanism(TablessCodeEditor, BaseCodeEditor)
-
-
-TablessCodeEditor.use({
-  key: 'tabless',
   getEventListeners () {
     return {
       change: (cm) => {
@@ -26,6 +16,24 @@ TablessCodeEditor.use({
       }
     }
   }
-})
+
+  componentDidMount () {
+    super.componentDidMount()
+    const eventListeners = this.getEventListeners()
+    const disposers = Object.keys(eventListeners).reduce((acc, eventType) => {
+      this.cm.on(eventType, eventListeners[eventType])
+      return acc.concat(() => this.cm.off(eventType, eventListeners[eventType]))
+    }, [])
+
+    this.cmRemoveEventListeners = function cmRemoveEventListeners () {
+      disposers.forEach(disposer => disposer())
+    }
+  }
+
+  componentWillUnmount () {
+    this.cmRemoveEventListeners()
+    this.editor.destroy()
+  }
+}
 
 export default TablessCodeEditor
