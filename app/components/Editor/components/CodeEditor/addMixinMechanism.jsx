@@ -26,7 +26,7 @@ function addEventListeners (self) {
     return acc.concat(() => self.cm.off(eventType, eventListeners[eventType]))
   }, [])
 
-  return function removeEventListeners () {
+  return function cmRemoveEventListeners () {
     disposers.forEach(disposer => disposer())
   }
 }
@@ -38,16 +38,15 @@ function preprocessMixin (mixin) {
   if (is.function(mixin.getEventListeners)) {
     const oComponentDidMount = mixin.componentDidMount || noop
     const oComponentWillUnmount = mixin.componentWillUnmount || noop
-    let removeEventListeners = noop
 
     newMixin = {
       ...mixin,
       componentDidMount () {
         oComponentDidMount.call(this)
-        removeEventListeners = addEventListeners(this)
+        this.cmRemoveEventListeners = addEventListeners(this) || noop
       },
       componentWillUnmount () {
-        removeEventListeners()
+        this.cmRemoveEventListeners()
         oComponentWillUnmount.call(this)
       },
     }

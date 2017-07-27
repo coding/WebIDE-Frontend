@@ -13,7 +13,6 @@ class Tab extends BaseTab {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
-    console.log('the tab', this)
     this.update(props)
   }
 
@@ -35,7 +34,7 @@ class Tab extends BaseTab {
     if (this.editor) {
       this.editor.update(props.editor)
     } else {
-      new Editor(props.editor)
+      this.editor = new Editor(props.editor)
     }
   }
 
@@ -47,14 +46,18 @@ class Tab extends BaseTab {
     }
     return this._title
   }
-
   set title (v) { return this._title = v }
 
+  @observable editorId = null
   @computed get editor () {
-    return EditorState.entities.values().find(editor => editor.tabId === this.id)
+    // return EditorState.entities.get() values().find(editor => editor.tabId === this.id)
+    return EditorState.entities.get(this.editorId)
   }
   set editor (editor) {
-    if (editor) editor.tabId = this.id
+    if (editor) {
+      editor.tabId = this.id
+      this.editorId = editor.id
+    }
     return editor
   }
 
