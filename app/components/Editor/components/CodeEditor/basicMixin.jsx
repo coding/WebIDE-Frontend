@@ -11,9 +11,9 @@ export default {
     return {
       change: (cm) => {
         if (!this.isChanging) this.isChanging = true
-        const { tab, editor } = this.props
+        const { editor } = this.props
         TabStore.updateTab({
-          id: tab.id,
+          id: editor.tab.id,
           flags: { modified: true },
         })
 
@@ -28,7 +28,8 @@ export default {
       },
 
       focus: () => {
-        TabStore.activateTab(this.props.tab.id)
+        const { editor } = this.props
+        TabStore.activateTab(editor.tab.id)
       },
     }
   },
