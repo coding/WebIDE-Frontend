@@ -1,6 +1,7 @@
 import { registerAction } from 'utils/actions'
 import { emitter, E } from 'utils'
-
+import { ExtensionsCache } from 'utils/extensions'
+import { extendObservable, observable } from 'mobx'
 
 import state from './state'
 import panelState from '../state'
@@ -8,12 +9,12 @@ import panelState from '../state'
 export const SIDEBAR_REGISTER_VIEW = 'SIDEBAR_REGISTER_VIEW'
 export const SIDEBAR_ACTIVATE_VIEW = 'SIDEBAR_ACTIVATE_VIEW'
 export const SIDEBAR_TOGGLE_VIEW = 'SIDEBAR_TOGGLE_VIEW'
+export const SIDEBAR_SHOW_VIEW = 'SIDEBAR_SHOW_VIEW'
 
 /*
 side bar api
 * side bar state shape
   labels: {
-    [side]: { // map格式，observable
           //  sideBar label
           [viewId]:
             key, // 业务名 required
@@ -25,11 +26,10 @@ side bar api
             onSidebarActive: func, // side bar 激活通知
             onSidebarDeactive: func, // side bar 隐藏通知
             weight: number // control the view order // 排序序号 optional
-            isActive: bool // 是否默认开启
+            isActive: bool // 是否默认开启,
            },
-        }
   },
-  activeStatus: { observable，普通object
+  labelStatus: { observable，普通object
     left: '', // 不同 side 当前激活情况
   },
   views: { // component cache，根据 viewid 去查
@@ -76,7 +76,8 @@ export const registerSideBarView = registerAction(SIDEBAR_REGISTER_VIEW,
  */
 export const addComToSideBar = (side, label, getComponent) => {
   const key = label.key
-  const view = label.key && window.extensions[label.key] && getComponent(window.extensions[label.key])
+  const extension = ExtensionsCache.get(label.key)
+  const view = label.key && extension && getComponent(extension)
   return registerSideBarView({
     side,
     key,
@@ -113,6 +114,16 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
 export const activateSidePanelView = registerAction(SIDEBAR_ACTIVATE_VIEW, (viewId) => {
   _toggleSidePanelView(viewId, true)
 })
+
+export const showSidePanelView = registerAction(SIDEBAR_SHOW_VIEW, ({ viewId, shouldShow }) => {
+  if (shouldShow) {
+    state.hiddenStatus.remove(viewId)
+  }
+  if (!shouldShow) {
+    state.hiddenStatus.push(viewId)
+  }
+})
+
 
 export const toggleSidePanelView = registerAction(SIDEBAR_TOGGLE_VIEW, (viewId) => {
   _toggleSidePanelView(viewId)

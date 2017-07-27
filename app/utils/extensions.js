@@ -1,16 +1,32 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-
 const mapStateToProps = state => ({
   ExtensionState: state.ExtensionState,
 })
 
+export const ExtensionsCache = {
+  _plugins: {},
+  get packages () {
+    return this._plugins
+  },
+  delete (key) {
+    delete this._plugins[key]
+  },
+  get (key) {
+    return this._plugins[key]
+  },
+  set (key, plugin) {
+    this._plugins[key] = plugin
+  }
+}
+
+window.ExtensionsCache = ExtensionsCache
 export const getExtensions = (template = [], ...values) => {
   const addonInsertComponent = ({ ExtensionState, ...others }) => {
     const placeHolder = template[0]
     const addonName = Object.keys(ExtensionState.localExtensions).find(e => ExtensionState.localExtensions[e].config.placeHolder === placeHolder)
-    const packages = window.extensions
+    const packages = ExtensionsCache.packages
     if (!addonName || !packages[addonName] || !ExtensionState.localExtensions[addonName]) return null
     return React.createElement(packages[addonName], others)
   }
@@ -23,3 +39,4 @@ export const getLocalExtensionByName = (name) => {
   if (extensionScript) return extensionScript
   return ''
 }
+
