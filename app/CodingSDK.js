@@ -1,10 +1,10 @@
+import { CreateI18n } from 'utils/createI18n'
 import { request } from './utils'
 import store from './store'
 import config from './config'
 import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
-import { addComToSideBar } from './components/Panel/actions'
-import { CreateI18n } from 'utils/createI18n'
+import { addComToSideBar } from './components/Panel/SideBar/actions'
 
 
 export default class {

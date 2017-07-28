@@ -2,7 +2,7 @@ import { createAction } from 'redux-actions'
 import api from '../../backendAPI'
 export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 export const updatePackageList = createAction(PACKAGE_UPDATE_LIST, list => list)
-
+import { ExtensionsCache } from 'utils/extensions'
 export const fetchPackageList = () => (dispatch) => {
   api.fetchPackageList().then(list => dispatch(updatePackageList(list)))
 }
@@ -19,8 +19,11 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
   const script = localStorage.getItem(pkgId)
   if (!shouldEnable) {
     // plugin will unmount
-    window.extensions[pkgId].manager.pluginOnUnmount()
-    delete window.extensions[pkgId]
+    const extension = ExtensionsCache.get(pkgId)
+    // window.extensions[pkgId].manager.pluginOnUnmount()
+    extension.manager.pluginOnUnmount()
+    ExtensionsCache.delete(pkgId)
+    // delete window.extensions[pkgId]
   } else {
     // plugin will mount
     // @fixme @hackape consider theme situation
@@ -29,7 +32,8 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
       const { Manager = (() => null) } = plugin
       const manager = new Manager()
-      window.extensions[pkgId] = plugin
+      ExtensionsCache.set(pkgId, plugin)
+      // window.extensions[pkgId] = plugin
       manager.pluginWillMount()
       plugin.manager = manager
     } catch (err) {
@@ -50,12 +54,12 @@ export const fetchPackage = (pkgId, pkgVersion, others) => (dispatch) => {
       return pkgId
     })
 
-  if (window.extensions[pkgId]) dispatch(togglePackage(pkgId, false))
+  if (ExtensionsCache.get(pkgId)) dispatch(togglePackage(pkgId, false))
   Promise.all([pkgInfo, pkgScript]).then(([pkg, id]) => {
     dispatch(updateLocalPackage({
       ...pkg,
       ...others,
-      enabled: Boolean(window.extensions[pkgId]),
+      enabled: Boolean(ExtensionsCache.get(pkgId)),
       id
     }))
     dispatch(togglePackage(pkgId, true))
