@@ -13,7 +13,7 @@ const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
 const state = observable({
   entities: observable.map({}),
-  options: defaultOptions,
+  options: observable.shallow(defaultOptions),
 })
 
 state.entities.observe((change) => {

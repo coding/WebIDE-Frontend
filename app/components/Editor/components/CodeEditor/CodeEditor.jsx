@@ -1,6 +1,7 @@
 import BaseCodeEditor from './BaseCodeEditor'
 import addMixinMechanism from './addMixinMechanism'
-import basicMixin from './basicMixin'
+import basicMixin from './mixins/basicMixin'
+import gitBlameMixin from './mixins/gitBlameMixin'
 
 class CodeEditor extends BaseCodeEditor {
   constructor (props, context) {
@@ -9,7 +10,7 @@ class CodeEditor extends BaseCodeEditor {
 }
 addMixinMechanism(CodeEditor, BaseCodeEditor)
 
-
 CodeEditor.use(basicMixin)
+CodeEditor.use(gitBlameMixin)
 
 export default CodeEditor
