@@ -18,7 +18,7 @@ module.exports = function (options={}) {
   } = options
 
   const publicPath = process.env.QINIU_BUCKET ? // publicPath should end with '/'
-    `${process.env.QINIU_SERVER}/` : path.join('/', staticDir, '/');
+    `${process.env.QINIU_SERVER}/` : path.join('/', staticDir, '/')
 return {
   entry: {
     main: [path.join(PROJECT_ROOT, 'app')],
@@ -28,7 +28,8 @@ return {
   output: {
     publicPath,
     path: path.join(PROJECT_ROOT, 'build', staticDir),
-    filename: '[name].[hash].js'
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].chunk.js',
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],

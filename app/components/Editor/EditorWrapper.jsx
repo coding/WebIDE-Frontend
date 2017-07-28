@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import CodeMirrorEditor from './components/CodeMirrorEditor'
+import CodeEditor from './components/CodeEditor'
 import MarkdownEditor from './components/MarkdownEditor'
 import ImageEditor from './components/ImageEditor'
 import UnknownEditor from './components/UnknownEditor'
@@ -7,7 +7,7 @@ import WelcomeEditor from './components/WelcomeEditor'
 import { getTabType } from 'utils'
 
 const editors = {
-  CodeMirrorEditor,
+  CodeEditor,
   MarkdownEditor,
   ImageEditor,
   UnknownEditor,
@@ -21,7 +21,7 @@ const getEditorByName = ({
   size
 }) => {
   if (type === 'default') {
-    return React.createElement(editors.CodeMirrorEditor, { tab });
+    return React.createElement(editors.CodeEditor, { editor: tab.editor })
   } else if (type === 'editorWithPreview') {
     return React.createElement(editors.MarkdownEditor, { content, tab })
   } else if (type === 'imageEditor') {

@@ -77,37 +77,37 @@ const rootPane = new Pane({
 
 state.panes.set(rootPane.id, rootPane)
 
-autorun('normalize pane indexes', () => {
-  state.panes.forEach(parentPane =>
-    parentPane.views.forEach((pane, index) => {
-      if (pane.index !== index) pane.index = index
-    })
-  )
-})
+function noramlizePaneIndexes (parentPane) {
+  parentPane.views.forEach((pane, index) => {
+    if (pane.index !== index) pane.index = index
+  })
+}
 
-autorunAsync('short-circuit unnecessary internal pane node', () => {
+function removeUnnecessaryInternalPaneNode (pane) {
   // pane.parent -> pane -> lonelyChild
   // => pane.panret -> lonelyChild
   //    delete pane
+  if (pane.views.length === 1) {
+    const lonelyChild = pane.views[0]
+    lonelyChild.parentId = pane.parentId
+    state.panes.delete(pane.id)
+  }
+}
+
+function autoRemovePaneWithoutTabs (pane) {
+  if (!state.autoCloseEmptyPane) return
+  if (!pane.views.length && pane.tabGroup && pane.tabGroup.tabs.length === 0) {
+    pane.destroy()
+  }
+}
+
+autorunAsync(() => {
   state.panes.forEach((pane) => {
     if (!pane) return
-    if (pane.views.length === 1) {
-      const lonelyChild = pane.views[0]
-      lonelyChild.parentId = pane.parentId
-      state.panes.delete(pane.id)
-    }
+    noramlizePaneIndexes(pane)
+    removeUnnecessaryInternalPaneNode(pane)
+    autoRemovePaneWithoutTabs(pane)
   })
-})
-
-autorunAsync('auto delete pane without tabs', () => {
-  if (state.autoCloseEmptyPane) {
-    state.panes.forEach((pane) => {
-      if (!pane) return
-      if (!pane.views.length && pane.tabGroup && pane.tabGroup.tabs.length === 0) {
-        pane.destroy()
-      }
-    })
-  }
 })
 
 export default state
