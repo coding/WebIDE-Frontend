@@ -94,6 +94,9 @@ export const saveChat = () => {
     chatStorage[config.spaceKey] = {}
   } else {
     chatStorage = JSON.parse(chatStorage)
+    if (!chatStorage[config.spaceKey]) {
+      chatStorage[config.spaceKey] = {}
+    }
   }
   chatStorage[config.spaceKey][config.globalKey] = currentChatList
   localStorage.setItem('chat', JSON.stringify(chatStorage))

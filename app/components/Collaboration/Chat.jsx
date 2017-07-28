@@ -14,14 +14,17 @@ const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerC
 const isMac = (os === 'mac')
 import indexOf from 'lodash/indexOf'
 import calculateNodeHeight from './calculateNodeHeight'
-
+import { i18n } from 'utils'
+import settings from 'settings'
+const language = settings.general.language
 const getTime = (time) => moment(new Date(time)).calendar()//.fromNow()
 
-const ChatItem = observer(({ chat }) => {
+const ChatItem = observer(({ chat, language }) => {
   const { collaborator, timestamp, message } = chat
   const hue = hueFromString(collaborator.collaborator.name)
   const [r, g, b] = chroma.hsv2rgb(hue, 1, 0.8)
   const color = `rgb(${r},${g},${b})`
+  const languageValue = language.value
   return (
     <div className='chat-item' style={{
       borderColor: color,
@@ -215,7 +218,7 @@ ${message}`
   }
 
   render () {
-    const placeholder = 'Your message here (Shift + Enter for new line)'
+    const placeholder = i18n.get('ot.chatPlaceHolder')
     const pickStyle = {
       visibility: 'hidden'
     }
@@ -226,10 +229,10 @@ ${message}`
       <div className='collaboration-chat'>
         <ScrollToBottom className='chat-content' chatCount={this.state.chatCount}>
           {
-            state.chatList.map(chat => <ChatItem chat={chat} key={chat.timestamp} />)
+            state.chatList.map(chat => <ChatItem chat={chat} key={chat.timestamp} language={language} />)
           }
         </ScrollToBottom>
-        <div className='chat-editor'>
+        {state.collaborators.length > 0 && <div className='chat-editor'>
           <textarea
             className='form-control'
             ref={dom => this.textarea = dom}
@@ -252,6 +255,7 @@ ${message}`
             </div>
           </div>
         </div>
+        }
         {
           <Picker style={pickStyle} autoFocus set='emojione' emojiSize={16} native onClick={this.handleEmojiClick} title='Coding IDE' />
         }

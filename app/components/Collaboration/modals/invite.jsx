@@ -9,6 +9,7 @@ import * as Modal from '../../Modal/actions'
 import trim from 'lodash/trim'
 import * as CollaborationActions from '../actions'
 import state from '../state'
+import { i18n } from 'utils'
 
 const UserItem = observer(({ item, handleInvite, handleRemove }) => {
   const { inviteKey, id } = item
@@ -23,12 +24,12 @@ const UserItem = observer(({ item, handleInvite, handleRemove }) => {
       <div className='remove-btn' onClick={() => {
         handleRemove(id)
       }}>
-        remove
+        {i18n`ot.removeInvite`}
       </div>
       <div className='invite-btn' onClick={() => {
         handleInvite(inviteKey)
       }}>
-        resend
+        {i18n`ot.resendInvite`}
       </div>
     </div>
   )
@@ -80,20 +81,20 @@ class Invite extends Component {
     return (
       <div className='invite-container'>
         <h2>
-          Share this workspace
+          {i18n`ot.shareWS`}
         </h2>
         <div className='form-group'>
-          <label>Invite People</label>
+          <label>{i18n`ot.inviteTitle`}</label>
           <div className='form-line'>
             <input className='form-control'
               type='text'
-              placeholder='username or email'
+              placeholder={i18n.get('ot.sharePlaceHolder')}
               onChange={this.handleChange}
               value={this.state.value}
               ref={dom => this.input = dom}
               onKeyDown={e => {if (e.keyCode === 13) this.handleInvite(this.state.value)}}
             />
-            <button disabled={this.state.loading || (!this.state.value)} className="btn btn-default" onClick={e => this.handleInvite(this.state.value)} >Invite</button>
+            <button disabled={this.state.loading || (!this.state.value)} className="btn btn-default" onClick={e => this.handleInvite(this.state.value)} >{i18n`ot.inviteBtn`}</button>
           </div>
           {this.state.error && (
             <div className='form-line'>
@@ -104,7 +105,7 @@ class Invite extends Component {
           )}
         </div>
         {invited.length > 0 && <div className='form-group'>
-          <label>Wait for Verify</label>
+          <label>{i18n`ot.waitVerify`}</label>
           <div className='user-list'>
             {
               invited.map((item, i) => {

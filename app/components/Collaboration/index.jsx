@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import { observable } from 'mobx'
+import { i18n } from 'utils'
 import { AccordionGroup, Accordion } from '../Accordion/Accordion'
 import Collaborators from './Collaborators'
 import Chat from './Chat'
@@ -38,7 +39,7 @@ class Collaboration extends Component {
       <Menu className='top-down to-left'
         items={[
           {
-            name: 'Clear',
+            name: i18n`ot.clear`,
             command: this.clearChat,
             icon: 'fa fa-trash-o'
           }
@@ -53,7 +54,7 @@ class Collaboration extends Component {
     let action = null
     if (state.isOwner) {
       action = (
-        <div className='accordion-actions' onClick={this.handleInvite}><i className='fa fa-user-plus' /> Invite</div>
+        <div className='accordion-actions' onClick={this.handleInvite}><i className='fa fa-user-plus' /> {i18n`ot.invite`}</div>
       )
     }
     const chatSetting = (
@@ -65,7 +66,7 @@ class Collaboration extends Component {
     return (
       <AccordionGroup flexDirection='column'>
         <Accordion
-          header='Collaborators'
+          header={i18n`ot.collaborators`}
           icon='fa fa-users'
           size='40'
           id='d1'
@@ -74,7 +75,7 @@ class Collaboration extends Component {
           <Collaborators />
         </Accordion>
         <Accordion
-          header='Group Chat'
+          header={i18n`ot.groupChat`}
           icon='fa fa-comments'
           size='40'
           id='d2'
