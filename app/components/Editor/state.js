@@ -6,8 +6,8 @@ import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
 import overrideDefaultOptions from './codemirrorDefaultOptions'
-import { findModeByFile, loadMode } from './components/CodeEditor/addons/mode'
-
+import { loadMode } from './components/CodeEditor/addons/mode'
+import { findModeByFile, findModeByMIME, findModeByName } from './components/CodeEditor/addons/mode/findMode'
 
 const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
@@ -49,11 +49,40 @@ class Editor {
     // 1. set value
     cm.setValue(this.content)
     cm.setCursor(cm.posFromIndex(this.content.length))
-    // // 2. set mode
+    // 2. set mode
     const modeInfo = findModeByFile(this.file)
     if (modeInfo) {
       loadMode(modeInfo.mode).then(() => this.options.mode = modeInfo.mime)
     }
+    // 3. sync cursor state to corresponding editor properties
+    cm.on('cursorActivity', () => {
+      this.selections = cm.getSelections()
+      this.cursorPos = cm.getCursor()
+    })
+  }
+
+  @observable selections = []
+  @observable cursorPos = { line: 0, ch: 0 }
+
+  setCursor (...args) {
+    if (!args[0]) return
+    const lineColExp = args[0]
+    if (is.string(lineColExp) && lineColExp.startsWith(':')) {
+      const [line = 0, ch = 0] = lineColExp.slice(1).split(':')
+      args = [line, ch]
+    }
+    this.cm.setCursor(...args)
+  }
+
+  @computed get mode () {
+    if (!this.options.mode) return 'Null'
+    const modeInfo = findModeByMIME(this.options.mode)
+    return modeInfo.name
+  }
+
+  setMode (mode) {
+    const modeInfo = is.string(mode) ? findModeByName(mode) : mode
+    this.options.mode = modeInfo.mime
   }
 
   @action update (props = {}) {

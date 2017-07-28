@@ -57,7 +57,7 @@ export function findModeByName (name) {
   return null
 }
 
-export default function findModeByFile (file = {}) {
+export function findModeByFile (file = {}) {
   const info = (
     file.contentType && findModeByMIME(file.contentType)
   ) || (
