@@ -8,6 +8,15 @@ import api from '../../backendAPI'
 @observer
 class Initialize extends Component {
   render () {
+    let errorInfo = null
+    if (state.errorInfo) {
+      errorInfo = (
+        <div className='loading-error'>
+          <i className='fa fa-exclamation-triangle' />
+          {state.errorInfo}
+        </div>
+      )
+    }
     let info = (
       <div className='loading-info'>
         {i18n`global.loadingWorkspace`}
@@ -16,6 +25,7 @@ class Initialize extends Component {
     let requestInfo = null
     if (state.errorCode) {
       if (state.errorCode === 404) {
+        errorInfo = null
         info = (
           <div className='loading-info error'>
             {i18n`global.loadingWorkspaceDenied`}
@@ -39,6 +49,7 @@ class Initialize extends Component {
             </div>
           )
         } else if (state.status === 'Request') {
+          errorInfo = null
           info = (
             <div className='loading-info error'>
               {i18n`global.loadingWorkspaceDenied`}
@@ -70,10 +81,7 @@ class Initialize extends Component {
         {config.isPlatform && <div className='coding-loading'></div>}
         {/* <div className='monkey splash-logo'></div> */}
         {info}
-        {state.errorInfo && <div className='loading-error'>
-          <i className='fa fa-exclamation-triangle' />
-          {state.errorInfo}
-        </div>}
+        {errorInfo}
         {requestInfo}
       </div>
     )

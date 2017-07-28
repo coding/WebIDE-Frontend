@@ -61,19 +61,25 @@ async function initialize () {
       api.setupWorkspace().then((res) => {
         if (res.code) {
           if (res.code === 403) {
-            return api.fetchRqeuestState().then((stateRes) => {
-              initializeState.errorCode = res.code
-              initializeState.status = stateRes.status
-              return false
-            }).catch((catchRes) => {
-              if (catchRes.code === 404) {
-                initializeState.errorCode = catchRes.code
-                initializeState.errorInfo = res.msg
-              } else {
-                initializeState.errorCode = res.code
-                initializeState.errorInfo = res.msg
+            return api.getUserProfile().then((userRes) => {
+              if (userRes.code === 1000) {
+                location.href = `/login?return_url=${location.href}`
+              } else if (userRes.code === 0) {
+                return api.fetchRqeuestState().then((stateRes) => {
+                  initializeState.errorCode = res.code
+                  initializeState.status = stateRes.status
+                  return false
+                }).catch((catchRes) => {
+                  if (catchRes.code === 404) {
+                    initializeState.errorCode = catchRes.code
+                    initializeState.errorInfo = res.msg
+                  } else {
+                    initializeState.errorCode = res.code
+                    initializeState.errorInfo = res.msg
+                  }
+                  return false
+                })
               }
-              return false
             })
           } else {
             initializeState.errorCode = res.code
@@ -137,7 +143,8 @@ async function initialize () {
 
   if (config.isPlatform) {
     await step(`[${stepNum++}] Get user globalKey`, () =>
-      api.getUserProfile().then((data) => {
+      api.getUserProfile().then((res) => {
+        const data = res.data
         if (data) {
           config.globalKey = data.global_key
           if (!/^(http|https):\/\/[^ "]+$/.test(data.avatar)) {
