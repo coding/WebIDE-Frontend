@@ -53,7 +53,7 @@ const PanelContent = ({ panel }) => {
       )
     case 'PANEL_BOTTOM':
       const labels = {
-        terminal: { text: i18n`panel.bottom.terminal`, icon: 'octicon octicon-terminal' },
+        terminal: { text: i18n`panel.bottom.terminal`, icon: 'octicon octicon-terminal', weight: 2 },
         gitGraph: { text: i18n`panel.bottom.gitGraph`, icon: 'octicon octicon-git-commit' },
         gitHistory: { text: i18n`panel.bottom.history`, icon: 'octicon octicon-history' },
       }

@@ -6,6 +6,7 @@ import state from './state'
 import ChatManager from './ot/chat'
 import config from 'config'
 import remove from 'lodash/remove'
+import dispatchCommand from 'commands/dispatchCommand'
 
 export const fetchCollaborators = () => {
   if (state.loading) return
@@ -67,23 +68,8 @@ export const deleteCollaborators = (id, globalKey) => {
   })
 }
 
-// fixme: openFile function should be move to commandBinding/file.js
 export const openFile = ({ path }) => {
-  api.readFile(path)
-  .then(data => {
-    FileStore.loadNodeData(data)
-    return data
-  })
-  .then((data) => {
-    TabActions.createTab({
-      title: path.split('/').pop(),
-      icon: 'fa fa-file-o',
-      editor: {
-        revision: data.hashedVersion,
-        filePath: path,
-      }
-    })
-  })
+  dispatchCommand('file:open_file', path)
 }
 
 export const saveChat = () => {

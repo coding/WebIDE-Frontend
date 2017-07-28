@@ -7,6 +7,7 @@ import contextMenuStore from 'components/ContextMenu/store'
 import state, { FileTreeNode } from './state'
 import bindToFile from './fileTreeToFileBinding'
 import FileTreeContextMenuItems from './contextMenuItems'
+import dispatchCommand from 'commands/dispatchCommand'
 import { getTabType } from 'utils'
 
 export const initializeFileTree = registerAction('filetree:init', () => {
@@ -77,24 +78,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
       toggleNodeFold(node, shouldBeFolded, deep)
     }
   } else if (getTabType(node) === 'TEXT') {
-    // fixme: openFile function should be move to commandBinding/file.js
-    api.readFile(node.path)
-        .then(data => {
-          FileStore.loadNodeData(data)
-          return data
-        })
-        .then(data => {
-          console.log('opend node see data', data)
-          TabActions.createTab({
-            title: node.name,
-            icon: 'fa fa-file-o',
-            editor: {
-              ...editor,
-              revision: data.hashedVersion,
-              filePath: node.path,
-            }
-          })
-        })
+    dispatchCommand('file:open_file', { path: node.path, editor })
   } else {
     TabActions.createTab({
       title: node.name,
