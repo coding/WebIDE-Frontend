@@ -7,7 +7,7 @@ import config from 'config'
 import * as Modal from 'components/Modal/actions'
 import { hueFromString, chroma } from 'utils/colors'
 
-const Collaborator = observer(({ item, handleDelete, handleQuit, isOwner, handleOpenFile }) => {
+const Collaborator = observer(({ item, handleDelete, handleQuit, isOwner, handleOpenFile, handleReject, handleAdd }) => {
   const { collaborator, id } = item
   let info = ''
   if (item.inviteBy === 'Owner') {
@@ -15,9 +15,20 @@ const Collaborator = observer(({ item, handleDelete, handleQuit, isOwner, handle
       <div className='info-owner'>Owner</div>
     )
   } else if (isOwner) {
-    info = (
-      <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Remove</div>
-    )
+    if (item.status === 'Request') {
+      info = (
+        <div className='info-action'>
+          <button className='btn btn-default btn-xs' onClick={e => handleAdd(collaborator.globalKey)} >
+            Accept
+          </button>
+          <div className='info-request' onClick={e => handleReject(id, collaborator.globalKey)}>Reject</div>
+        </div>
+      )
+    } else {
+      info = (
+        <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Remove</div>
+      )
+    }
   } else if (config.globalKey === collaborator.globalKey) {
     info = (
       <div className='info-delete' onClick={e => handleQuit(id, collaborator.globalKey)}>Quit</div>
@@ -73,6 +84,14 @@ class Collaborators extends Component {
     CollaborationActions.fetchCollaborators()
   }
 
+  handleAdd = (globalKey) => {
+    CollaborationActions.postCollaborators(globalKey)
+  }
+
+  handleReject = (id) => {
+    CollaborationActions.rejectCollaborator(id)
+  }
+
   handleDelete = async (id, globalKey) => {
     const confirmed = await Modal.showModal('Confirm', {
       header: 'Are you sure you want to remove this collaborator?',
@@ -118,6 +137,8 @@ class Collaborators extends Component {
               handleQuit={this.handleQuit}
               isOwner={isOwner}
               handleOpenFile={this.handleOpenFile}
+              handleAdd={this.handleAdd}
+              handleReject={this.handleReject}
             />
           )
         })}

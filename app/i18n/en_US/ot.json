@@ -1,0 +1,14 @@
+{
+   "resendInvite": "resend",
+   "invite": "Invite",
+   "removeInvite": "remove",
+   "collaborators": "Collaborators",
+   "clear": "Clear",
+   "waitVerify": "Wait for Verify",
+   "inviteTitle": "Invite People",
+   "inviteBtn": "Invite",
+   "sharePlaceHolder": "username or email",
+   "groupChat": "Group Chat",
+   "shareWS": "Share this workspace",
+   "chatPlaceHolder": "Your message here (Shift + Enter for new line)"
+}

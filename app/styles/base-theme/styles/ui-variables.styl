@@ -51,11 +51,11 @@ $button-background-color-hover= lighten($button-background-color, 5%);
 $button-background-color-selected= $button-background-color-hover;
 $button-border-color= #aaa;
 
-$tab-bar-background-color    = darken($base-background-color, 2%);
+$tab-bar-background-color    = darken($base-background-color, 8%);
 $tab-bar-border-color        = $base-border-color;
-$tab-background-color        = $tab-bar-background-color;
+$tab-background-color        = darken($base-background-color, 5%);
 $tab-background-color-active = lighten($tab-bar-background-color, 100%);
-$tab-border-color            = $base-border-color;
+$tab-border-color            = darken($base-border-color, 5%);
 
 $tree-view-background-color= $tool-panel-background-color;
 $tree-view-background-color-highlight= darken($tree-view-background-color, 5%);

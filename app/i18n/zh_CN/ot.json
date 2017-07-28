@@ -1,0 +1,14 @@
+{
+   "resendInvite": "重新邀请",
+   "invite": "邀请",
+   "removeInvite": "取消邀请",
+   "collaborators": "协作者",
+   "clear": "清除",
+   "waitVerify": "等待验证",
+   "inviteTitle": "邀请协作者",
+   "inviteBtn": "邀请",
+   "sharePlaceHolder": "用户名或邮箱",
+   "groupChat": "聊天",
+   "shareWS": "分享工作区",
+   "chatPlaceHolder": "请输入消息 (Shift + Enter 换行)"
+}

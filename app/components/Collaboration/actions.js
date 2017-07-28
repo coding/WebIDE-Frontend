@@ -5,11 +5,16 @@ import * as TabActions from 'components/Tab/actions'
 import state from './state'
 import ChatManager from './ot/chat'
 import config from 'config'
+import remove from 'lodash/remove'
 
 export const fetchCollaborators = () => {
   if (state.loading) return
   state.loading = true
-  return api.fetchCollaborators().then((res) => {
+  const collaboratorsList = api.fetchCollaborators()
+  const requestList = api.fetchCollaborators('Request')
+  return Promise.all([collaboratorsList, requestList]).then(([collaboratorsRes, requestRes]) => {
+    const res = collaboratorsRes.concat(requestRes)
+  // return api.fetchCollaborators().then((res) => {
     state.collaborators = res.map((item) => {
       if (!/^(http|https):\/\/[^ "]+$/.test(item.collaborator.avatar)) {
         item.collaborator.avatar = `https://coding.net${item.collaborator.avatar}`
@@ -17,10 +22,11 @@ export const fetchCollaborators = () => {
       const oldItem = state.collaborators.find((c) => c.collaborator.globalKey === item.collaborator.globalKey)
       if (oldItem) {
         item.online = oldItem.online
+        item.clientIds = oldItem.clientIds
       } else {
         item.online = false
+        item.clientIds = []
       }
-      item.clientIds = []
       item.path = ''
       const pathItem = state.paths[item.collaborator.globalKey]
       if (pathItem) {
@@ -36,6 +42,14 @@ export const fetchCollaborators = () => {
 export const fetchInvitedCollaborators = () => {
   return api.fetchCollaborators('Invited').then((res) => {
     state.invited = res
+  })
+}
+
+export const rejectCollaborator = (id) => {
+  return api.rejectCollaborator(id).then((res) => {
+    remove(state.collaborators, (n) => {
+      return n.id === id
+    })
   })
 }
 
@@ -80,6 +94,9 @@ export const saveChat = () => {
     chatStorage[config.spaceKey] = {}
   } else {
     chatStorage = JSON.parse(chatStorage)
+    if (!chatStorage[config.spaceKey]) {
+      chatStorage[config.spaceKey] = {}
+    }
   }
   chatStorage[config.spaceKey][config.globalKey] = currentChatList
   localStorage.setItem('chat', JSON.stringify(chatStorage))

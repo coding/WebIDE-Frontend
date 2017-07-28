@@ -58,6 +58,19 @@
         cursor: pointer;
         visibility: hidden;
       }
+      .info-request {
+        padding-right: 22px;
+        color: #CC423D;
+        cursor: pointer;
+      }
+      .info-action {
+        display: flex;
+        .btn {
+          margin-right: 10px;
+          padding: 0px 10px;
+          line-height: 1.2;
+        }
+      }
     }
 
     &:hover .info-delete {
@@ -146,7 +159,9 @@
       font-size: 13px;
       line-height: 18px;
       outline: none;
-
+      &:focus {
+        box-shadow: none;
+      }
     }
     ::-webkit-input-placeholder {
       color: #B2B2B2;
@@ -183,6 +198,11 @@
     }
     .emoji-mart-search input {
       font-size: 12px;
+    }
+    .emoji-mart-emoji {
+      padding: 6px 4px;
+      width: 28px;
+      height: 28px;
     }
   }
 }
@@ -253,6 +273,6 @@
 .chatSetting {
   .fa-sort-desc {
     font-size: 12px;
-    vertical-align: top;
+    transform: translateY(-2px);
   }
 }

@@ -18,6 +18,10 @@ const state = observable({
         return -1
       } else if (b.inviteBy === 'Owner') {
         return 1
+      } else if (a.status === 'Request') {
+        return -1
+      } else if (b.status === 'Request') {
+        return 1
       } else {
         if (a.online && !b.online) {
           return -1
