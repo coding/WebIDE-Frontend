@@ -6,11 +6,8 @@ import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
 import defaultOptions from './codemirrorDefaultOptions'
+import { findModeByFile, loadMode } from './components/CodeEditor/addons/mode'
 
-// Ref: codemirror/mode/meta.js
-function getMode (file) {
-  return (file.contentType && CodeMirror.findModeByMIME(file.contentType)) || CodeMirror.findModeByFileName(file.path.split('/').pop())
-}
 
 const state = observable({
   entities: observable.map({}),
@@ -45,6 +42,7 @@ class Editor {
     this.dispose = autorun(() => {
       const options = Object.entries(this.options)
       options.forEach(([option, value]) => {
+        if (this.cm.options[option] === value) return
         this.cm.setOption(option, value)
       })
     })
@@ -53,17 +51,9 @@ class Editor {
     cm.setValue(this.content)
     cm.setCursor(cm.posFromIndex(this.content.length))
     // // 2. set mode
-    const modeInfo = this.file ? getMode(this.file) : undefined
+    const modeInfo = findModeByFile(this.file)
     if (modeInfo) {
-      if (modeInfo.mode === 'null') {
-        this.options.mode = null
-      } else {
-        import(/* webpackMode: "lazy" */
-          `codemirror/mode/${modeInfo.mode}/${modeInfo.mode}.js`
-        ).then(() => {
-          this.options.mode = modeInfo.mime
-        })
-      }
+      loadMode(modeInfo.mode).then(() => this.options.mode = modeInfo.mime)
     }
   }
 
