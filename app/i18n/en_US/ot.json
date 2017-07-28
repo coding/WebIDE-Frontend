@@ -9,6 +9,7 @@
    "inviteBtn": "Invite",
    "sharePlaceHolder": "username or email",
    "groupChat": "Group Chat",
+   "sidebarLabel": "Collaborate",
    "shareWS": "Share this workspace",
    "chatPlaceHolder": "Your message here (Shift + Enter for new line)"
 }
