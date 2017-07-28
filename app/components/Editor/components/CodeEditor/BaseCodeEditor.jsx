@@ -1,12 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CodeMirror from 'codemirror'
 import { Editor } from 'components/Editor/state'
-
-// Ref: codemirror/mode/meta.js
-function getMode (file) {
-  return (file.contentType && CodeMirror.findModeByMIME(file.contentType)) || CodeMirror.findModeByFileName(file.path.split('/').pop())
-}
 
 class BaseCodeEditor extends Component {
   constructor (props) {

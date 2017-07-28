@@ -5,22 +5,21 @@ import { observable, computed, action, autorun, toJS } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
-import defaultOptions from './codemirrorDefaultOptions'
+import overrideDefaultOptions from './codemirrorDefaultOptions'
 import { findModeByFile, loadMode } from './components/CodeEditor/addons/mode'
 
 
+const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
+
 const state = observable({
   entities: observable.map({}),
-  options: {
-    ...CodeMirror.defaults,
-    ...defaultOptions,
-  },
+  options: defaultOptions,
 })
 
 state.entities.observe((change) => {
   if (change.type === 'delete') {
     const editor = change.oldValue
-    editor.dispose && editor.dispose()
+    if (editor.dispose) editor.dispose()
   }
 })
 
