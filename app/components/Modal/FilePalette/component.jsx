@@ -67,14 +67,7 @@ class FilePalette extends Component {
 
     let filename = matches[2]
 
-    api.readFile(node.path).then(data => {
-      TabActions.createTab({
-        title: node.name || filename,
-        editor: {
-          filePath: node.path,
-        }
-      })
-    })
+    dispatchCommand('file:open_file', node.path)
     dispatchCommand('modal:dismiss')
   }
 

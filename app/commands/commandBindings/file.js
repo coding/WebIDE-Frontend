@@ -52,16 +52,33 @@ function createFolderAtPath (path) {
   )
 }
 
-function openTabOfNewFile (path) {
-  TabStore.createTab({
-    title: path.split('/').pop(),
-    editor: {
-      filePath: path,
-    }
-  })
+function openFile ({ path, editor={} }) {
+  api.readFile(path)
+    .then((data) => {
+      FileStore.loadNodeData(data)
+      return data
+    })
+    .then((data) => {
+      TabStore.createTab({
+        title: path.split('/').pop(),
+        icon: 'fa fa-file-o',
+        editor: {
+          ...editor,
+          revision: data.hashedVersion,
+          filePath: path,
+        }
+      })
+    })
 }
 
 export default {
+  'file:open_file': (c) => {
+    if (typeof c.data === 'string') {
+      openFile({ path: c.data })
+    } else {
+      openFile(c.data)
+    }
+  },
   'file:new_file': (c) => {
     const node = c.context
     const path = nodeToNearestDirPath(node)
@@ -75,7 +92,7 @@ export default {
       selectionRange: [path.length, defaultValue.length]
     })
     .then(createFile)
-    .then(openTabOfNewFile)
+    .then((path) => openFile({ path }))
   },
   'file:new_folder': (c) => {
     const node = c.context
