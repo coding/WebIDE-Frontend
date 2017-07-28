@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { observer } from 'mobx-react'
 import config from 'config'
-import {i18n} from 'utils'
+import { i18n } from 'utils'
 import state from './state'
-
+import api from '../../backendAPI'
 
 @observer
 class Initialize extends Component {
@@ -13,12 +13,56 @@ class Initialize extends Component {
         {i18n`global.loadingWorkspace`}
       </div>
     )
-    if (state.errorInfo) {
-      info = (
-        <div className='loading-info error'>
-        {i18n`global.loadingWorkspaceFailed`}
-        </div>
-      )
+    let requestInfo = null
+    if (state.errorCode) {
+      if (state.errorCode === 404) {
+        info = (
+          <div className='loading-info error'>
+            {i18n`global.loadingWorkspaceDenied`}
+          </div>
+        )
+        requestInfo = (
+          <div className='request-info'>
+            <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
+          </div>
+        )
+      } else if (state.errorCode === 403) {
+        if (state.status === 'Rejected') {
+          requestInfo = (
+            <div className='request-info'>
+              {i18n`global.requestCollaborationReject`}
+            </div>
+          )
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
+        } else if (state.status === 'Request') {
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              {i18n`global.requestingCollaboration`}
+            </div>
+          )
+        } else {
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
+        }
+      } else if (state.errorInfo) {
+        info = (
+          <div className='loading-info error'>
+            {i18n`global.loadingWorkspaceFailed`}
+          </div>
+        )
+      }
     }
 
     return (
@@ -30,8 +74,15 @@ class Initialize extends Component {
           <i className='fa fa-exclamation-triangle' />
           {state.errorInfo}
         </div>}
+        {requestInfo}
       </div>
     )
+  }
+
+  handleRequest = () => {
+    api.requestCollaborator()
+    state.errorCode = 403
+    state.status = 'Request'
   }
 }
 

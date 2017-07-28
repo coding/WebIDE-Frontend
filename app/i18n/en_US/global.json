@@ -1,4 +1,8 @@
 {
    "loadingWorkspace": "Loading workspace...",
-   "loadingWorkspaceFailed": "Load workspace failed"
+   "loadingWorkspaceFailed": "Loading workspace is failed",
+   "loadingWorkspaceDenied": "Loading workspace denied",
+   "requestCollaboration": "Request collaboration",
+   "requestCollaborationReject": "Your request has been rejected.",
+   "requestingCollaboration": "You have requested collaboration"
 }

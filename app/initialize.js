@@ -16,8 +16,12 @@ async function initialize () {
   const step = stepFactory()
   const urlPath = window.location.pathname
   let stepNum = 0
+  const qsParsed = qs.parse(window.location.search.slice(1))
 
   await step(`[${stepNum++}] Get spaceKey from window.location`, async () => {
+    // case 0: isTry
+    if (qsParsed.isTry) return true
+
     // case 1: spaceKey in url
     let spaceKey = null
     const wsPathPattern = /^\/ws\/([^/]+)\/?$/
@@ -26,7 +30,6 @@ async function initialize () {
     if (spaceKey) return config.spaceKey = spaceKey
 
     // case 2: spaceKey in querystring
-    const qsParsed = qs.parse(window.location.search.slice(1))
     spaceKey = qsParsed.spaceKey
     if (spaceKey) return config.spaceKey = spaceKey
 
@@ -57,8 +60,26 @@ async function initialize () {
     await step(`[${stepNum++}] Setting up workspace...`, () =>
       api.setupWorkspace().then((res) => {
         if (res.code) {
-          initializeState.errorInfo = res.msg
-          return false
+          if (res.code === 403) {
+            return api.fetchRqeuestState().then((stateRes) => {
+              initializeState.errorCode = res.code
+              initializeState.status = stateRes.status
+              return false
+            }).catch((catchRes) => {
+              if (catchRes.code === 404) {
+                initializeState.errorCode = catchRes.code
+                initializeState.errorInfo = res.msg
+              } else {
+                initializeState.errorCode = res.code
+                initializeState.errorInfo = res.msg
+              }
+              return false
+            })
+          } else {
+            initializeState.errorCode = res.code
+            initializeState.errorInfo = res.msg
+            return false
+          }
         }
         extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
@@ -79,18 +100,21 @@ async function initialize () {
       const queryEntryPathPattern = /^\/ws\/?$/
       const isFromQueryEntryPath = queryEntryPathPattern.test(urlPath)
       if (isFromQueryEntryPath) {
-        const qsParsed = qs.parse(location.search.substring(1))
+        // const qsParsed = qs.parse(location.search.substring(1))
         config.openFile = qsParsed.openFile
         const options = {
           ownerName: qsParsed.ownerName,
           projectName: qsParsed.projectName,
           host: qsParsed.host,
-          cpuLimit: 1,
-          memory: 128,
-          storage: 1
         }
         if (qsParsed.envId) options.envId = qsParsed.envId
-        if (qsParsed.isTry) options.try = true
+        if (qsParsed.isTry) {
+          options.try = true
+        } else {
+          options.cpuLimit = 1
+          options.memory = 128
+          options.storage = 1
+        }
         return api.createWorkspace(options).then((res) => {
           extendObservable(config, res)
           if (config.project && config.project.name) { config.projectName = config.project.name }
@@ -114,11 +138,13 @@ async function initialize () {
   if (config.isPlatform) {
     await step(`[${stepNum++}] Get user globalKey`, () =>
       api.getUserProfile().then((data) => {
-        config.globalKey = data.global_key
-        if (!/^(http|https):\/\/[^ "]+$/.test(data.avatar)) {
-          data.avatar = `https://coding.net${data.avatar}`
+        if (data) {
+          config.globalKey = data.global_key
+          if (!/^(http|https):\/\/[^ "]+$/.test(data.avatar)) {
+            data.avatar = `https://coding.net${data.avatar}`
+          }
+          config.userProfile = data
         }
-        config.userProfile = data
         return true
       })
     )

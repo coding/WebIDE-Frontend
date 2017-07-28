@@ -1,6 +1,7 @@
 import WebSocketClient from './WebSocketClient'
 import config from 'config'
-
+import { autorun } from 'mobx'
+import { FsSocketClient } from 'backendAPI/websocketClients'
 
 export default class ChatManager {
   constructor () {
@@ -56,5 +57,14 @@ export default class ChatManager {
       {},
       messageString
     )
+  }
+
+  subscribeToFsSocket (fn) {
+    autorun(() => {
+      if (!config.fsSocketConnected) return
+      const client = FsSocketClient.$$singleton.stompClient
+
+      client.subscribe(`/topic/collaboration/${config.spaceKey}/collaborators`, fn)
+    })
   }
 }

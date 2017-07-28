@@ -60,6 +60,13 @@ class Chat extends Component {
   componentDidMount () {
     CollaborationActions.loadChat()
     this.chatManager = new ChatManager()
+    this.chatManager.subscribeToFsSocket((frame) => {
+      const data = JSON.parse(frame.body)
+      const { globalKey, action, spaceKey } = data
+      if (action === 'Request') {
+        this.fetchCollaborators()
+      }
+    })
     this.chatManager.subscribe((data) => {
       const { globalKey, message, timestamp } = data
       const collaborator = state.collaborators.find(item => item.collaborator.globalKey === globalKey)

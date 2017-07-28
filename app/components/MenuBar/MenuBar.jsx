@@ -71,10 +71,10 @@ class MenuBar extends Component {
           <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
            {i18n`menuBarItems.switch`}
           </div>
-          <div className='currentUser'>
+          {userProfile && <div className='currentUser'>
             <img className='avatar' src={userProfile.avatar} />
-            <a target='_blank' rel='noopener noreferrer' href={`https://coding.net${userProfile.path}`}>{userProfile.name}</a>
-          </div>
+            <a target='_blank' rel='noopener noreferrer' href='/dashboard'>{userProfile.name}</a>
+          </div>}
         </div>
         )}
       </div>
