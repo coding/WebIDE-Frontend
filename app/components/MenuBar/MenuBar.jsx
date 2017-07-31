@@ -24,7 +24,7 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-  
+
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {
       this.setState({ activeItemIndex: -1 })
@@ -70,14 +70,13 @@ class MenuBar extends Component {
         </ul>
         <div className='menu-bar-right'>
           {extensionRight
-          .sort((labelA, labelB) => labelB.weight || 1 - labelA.weight || 1)
+          .sort((labelA, labelB) => labelA.weight || 1 < labelB.weight ? -1 : 1)
           .map(label => (
             <div key={label.viewId}>
               {store.views[label.viewId]}
             </div>
           ))}
         </div>
-
       </div>
     )
   }

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { extendObservable } from 'mobx'
 import config from './config'
 import api from './backendAPI'
-import { qs, stepFactory, i18n, getExtensions, request } from './utils'
+import { qs, stepFactory, i18n, request } from './utils'
 import * as Modal from './components/Modal/actions'
 import store, { dispatch } from './store'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
@@ -129,7 +129,7 @@ async function initialize () {
     window.store = store
     window.React = React
     window.i18n = i18n
-    window.extension = f => getExtensions
+    window.extension = f => null
     window.refs = {}
     window.config = config
     return true

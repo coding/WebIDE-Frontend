@@ -2,6 +2,19 @@
 .menu-bar-container {
   position: relative;
   noSelect();
+}
+
+.menu-bar-right {
+  display: flex;
+  position: absolute;
+  white-space: nowrap;
+  top: 2px;
+  right: 10px;
+  line-height: 12px;
+  padding-top: 2px;
+  padding-right: 4px;
+  align-items: center;
+  height: 18px;
   .btn-info {
     // position: absolute;
     // top: 2px;
@@ -12,6 +25,30 @@
   .btn-danger{
     margin-left: 10px;
     line-height: 12px;
+    height: 16px;
+  }
+  .share-btn {
+    margin-right: 10px;
+    line-height: 16px;
+    cursor: pointer;
+  }
+  .currentUser {
+    margin-top: 1px;
+    margin-left: 10px;
+    display: flex;
+    margin-right: 4px;
+    margin-bottom: 2px;
+    img {
+      width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      margin-right: 6px;
+    }
+    a {
+      line-height: 18px;
+      display: inline-block;
+      font-size: 12px;
+    }
   }
 }
 

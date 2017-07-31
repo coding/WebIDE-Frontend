@@ -42,7 +42,7 @@ const _SideBar = observer(({ labels, side, activeViewId, activateView, hiddenSta
       {
       labels
       .filter(label => !hiddenStatus.includes(label.viewId))
-      .sort((labelA, labelB) => labelB.weight || 1 - labelA.weight || 1)
+      .sort((labelA, labelB) => labelA.weight || 1 > labelB.weight ? -1 : 1)
       .map(label =>
         <SideBarLabel
           key={label.viewId}
