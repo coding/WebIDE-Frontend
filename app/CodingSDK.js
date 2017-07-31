@@ -5,6 +5,10 @@ import config from './config'
 import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import { addComToSideBar } from './components/Panel/SideBar/actions'
+import { addComToMenuBar } from './components/MenuBar/actions'
+import { addComToContainers } from './containers/actions'
+import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
+import * as Panel from './components/Panel/actions'
 
 
 export default class {
@@ -30,10 +34,30 @@ export default class {
       request,
     })
   }
+  get Panel () {
+    return Panel
+  }
+  get modules () {
+    return ({
+      react: require('react'),
+      moment: require('moment'),
+      mobx: require('mobx'),
+      mobxReact: require('mobx-react'),
+    })
+  }
+
+  get socketManager () {
+    return ({
+      closeWebsocketClient,
+      closeTtySocketClient
+    })
+  }
 
   get injectComponent () {
     return ({
-      addComToSideBar
+      addComToSideBar,
+      addComToMenuBar,
+      addComToContainers,
     })
   }
   get i18n () {

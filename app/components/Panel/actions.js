@@ -26,3 +26,11 @@ export const togglePanelLayout = registerAction(PANEL_TOGGLE_LAYOUT,
     })
   }
 )
+
+export const PRIMIARY_PANEL_BLUR_CONTROLER = 'PRIMIARY_PANEL_BLUR_CONTROLER'
+
+export const primiaryPanelBlurControler = registerAction(PRIMIARY_PANEL_BLUR_CONTROLER,
+(shouldShow) => {
+  state.primaryPanelAxis.blur = shouldShow
+})
+
