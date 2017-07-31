@@ -32,6 +32,8 @@ class MenuBar extends Component {
     // 增加 切换到v1功能
     addComToMenuBar('right', {
       key: 'switch',
+      weight: 1
+
     },
     () => <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
       {i18n`menuBarItems.switch`}
@@ -39,7 +41,7 @@ class MenuBar extends Component {
     // 增加用户
     addComToMenuBar('right', {
       key: 'userProfile',
-      weight: 100
+      weight: 3
     },
       () => userProfile && <div className='currentUser'>
         <img className='avatar' src={userProfile.avatar} />
@@ -90,14 +92,13 @@ class MenuBar extends Component {
         </ul>
         <div className='menu-bar-right'>
           {extensionRight
-          .sort((labelA, labelB) => labelA.weight || 1 - labelB.weight || 1)
+          .sort((labelA, labelB) => labelA.weight || 1 < labelB.weight ? -1 : 1)
           .map(label => (
             <div key={label.viewId}>
               {store.views[label.viewId]}
             </div>
           ))}
         </div>
-
       </div>
     )
   }
