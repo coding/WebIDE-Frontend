@@ -77,7 +77,7 @@ export const registerSideBarView = registerAction(SIDEBAR_REGISTER_VIEW,
 export const addComToSideBar = (side, label, getComponent) => {
   const key = label.key
   const extension = ExtensionsCache.get(label.key)
-  const view = label.key && extension && getComponent(extension)
+  const view = label.key && getComponent(extension, ExtensionsCache)
   return registerSideBarView({
     side,
     key,

@@ -74,10 +74,12 @@ class TerminalClient extends TtySocketClient {
       }
     })
 
-    this.socket.on('disconnect', (data) => {
+    this.socket.on('disconnect', (type) => {
       console.log('terminal disconnect...')
       if (config.ttySocketConnected) runInAction(() => config.ttySocketConnected = false)
-      this.reconnect()
+      if (type !== 'manual') {
+        this.reconnect()
+      }
     })
 
     // this.socket.on('connect', (data) => {

@@ -5,7 +5,7 @@ import config from './config'
 import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import { addComToSideBar } from './components/Panel/SideBar/actions'
-
+import { addComToMenuBar } from './components/MenuBar/actions'
 
 export default class {
   // app data
@@ -30,10 +30,19 @@ export default class {
       request,
     })
   }
+  get modules () {
+    return ({
+      react: require('react'),
+      moment: require('moment'),
+      mobx: require('mobx'),
+      mobxReact: require('mobx-react'),
+    })
+  }
 
   get injectComponent () {
     return ({
-      addComToSideBar
+      addComToSideBar,
+      addComToMenuBar
     })
   }
   get i18n () {

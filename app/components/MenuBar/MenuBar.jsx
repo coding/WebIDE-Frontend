@@ -6,12 +6,15 @@ import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
 import config from '../../config'
-import { inject, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 import i18n from 'utils/createI18n'
+import store from './store'
+import { addComToMenuBar } from './actions'
 
-
-
-@observer
+@inject(() => ({
+  extensionRight: store.labels.values()
+  .filter(label => label.position === 'right')
+}))
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
@@ -21,7 +24,13 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-
+  componentDidMount () {
+    addComToMenuBar('right', {
+      key: 'switch',
+    }, () => <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+      {i18n`menuBarItems.switch`}
+    </div>)
+  }
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {
       this.setState({ activeItemIndex: -1 })
@@ -47,7 +56,9 @@ class MenuBar extends Component {
   }
 
   render () {
-    const { items } = this.props
+    const { items, extensionRight } = this.props
+    console.log('plugin', extensionRight, store.views)
+    // const { extensions }
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -63,9 +74,16 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        {config.isPlatform && (<div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-          {i18n`menuBarItems.switch`}
-        </div>)}
+        <div className='menu-bar-right'>
+          {extensionRight
+          .sort((labelA, labelB) => labelB.weight || 1 - labelA.weight || 1)
+          .map(label => (
+            <div key={label.viewId}>
+              {store.views[label.viewId]}
+            </div>
+          ))}
+        </div>
+
       </div>
     )
   }
@@ -124,5 +142,6 @@ class MenuBarItem extends Component {
     )
   }
 }
+
 
 export default MenuBar
