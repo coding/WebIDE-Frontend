@@ -1,8 +1,9 @@
 import { createAction } from 'redux-actions'
+import { ExtensionsCache } from 'utils/extensions'
 import api from '../../backendAPI'
+
 export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 export const updatePackageList = createAction(PACKAGE_UPDATE_LIST, list => list)
-import { ExtensionsCache } from 'utils/extensions'
 export const fetchPackageList = () => (dispatch) => {
   api.fetchPackageList().then(list => dispatch(updatePackageList(list)))
 }
@@ -30,9 +31,9 @@ export const togglePackage = createAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) 
     try {
       eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
-      const { Manager = (() => null) } = plugin
+      const { Manager = (() => null), key } = plugin
       const manager = new Manager()
-      ExtensionsCache.set(pkgId, plugin)
+      ExtensionsCache.set(key || pkgId, plugin)
       // window.extensions[pkgId] = plugin
       manager.pluginWillMount()
       plugin.manager = manager
