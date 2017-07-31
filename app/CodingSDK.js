@@ -10,6 +10,9 @@ import { addComToContainers } from './containers/actions'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
 import * as Panel from './components/Panel/actions'
 
+import * as appExports from './exports'
+
+window.app = appExports
 
 export default class {
   // app data
