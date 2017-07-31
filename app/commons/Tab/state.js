@@ -26,8 +26,9 @@ function TabScope () {
   class Tab {
 
   @observable _title = i18n.get('tab.makeDropdownMenuItems.untitledTab')
-  @computed get title () { return this._title }
-    set title (v) { return this._title = v }
+  @computed
+  get title () { return this._title }
+  set title (v) { return this._title = v }
 
   @observable index = 0
   @observable tabGroupId = ''

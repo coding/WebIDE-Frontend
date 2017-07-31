@@ -44,7 +44,6 @@ class FileNode {
     state.entities.set(this.path, this)
   }
 
-  @observable name
   @observable path
   @observable contentType
   @observable content = ''
@@ -52,12 +51,16 @@ class FileNode {
   @observable gitStatus = {}
   @observable size = 0
 
-  @computed get id () {
-    return this.path
+  @observable _name = undefined
+  @computed
+  get name () {
+    return this._name || this.path.split('/').pop()
   }
-  set id (v) {
-    this.path = v
-  }
+  set name (v) { this._name = v }
+
+  @computed
+  get id () { return this.path }
+  set id (v) { this.path = v }
 
   @computed get isRoot () {
     return this.path === ROOT_PATH
