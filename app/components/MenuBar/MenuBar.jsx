@@ -27,7 +27,7 @@ class MenuBar extends Component {
   componentDidMount () {
     addComToMenuBar('right', {
       key: 'switch',
-    }, () => <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+    }, () => config.isPlatform && <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
       {i18n`menuBarItems.switch`}
     </div>)
   }

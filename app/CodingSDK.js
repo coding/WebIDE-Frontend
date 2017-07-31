@@ -6,7 +6,10 @@ import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import { addComToSideBar } from './components/Panel/SideBar/actions'
 import { addComToMenuBar } from './components/MenuBar/actions'
+import { addComToContainers } from './containers/actions'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
+import * as Panel from './components/Panel/actions'
+
 
 export default class {
   // app data
@@ -31,6 +34,9 @@ export default class {
       request,
     })
   }
+  get Panel () {
+    return Panel
+  }
   get modules () {
     return ({
       react: require('react'),
@@ -50,7 +56,8 @@ export default class {
   get injectComponent () {
     return ({
       addComToSideBar,
-      addComToMenuBar
+      addComToMenuBar,
+      addComToContainers,
     })
   }
   get i18n () {
