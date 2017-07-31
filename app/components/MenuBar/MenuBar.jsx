@@ -24,13 +24,7 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-  componentDidMount () {
-    addComToMenuBar('right', {
-      key: 'switch',
-    }, () => config.isPlatform && <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-      {i18n`menuBarItems.switch`}
-    </div>)
-  }
+  
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {
       this.setState({ activeItemIndex: -1 })
