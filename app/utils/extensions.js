@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { observable } from 'mobx'
 
 const mapStateToProps = state => ({
   ExtensionState: state.ExtensionState,
@@ -22,16 +23,6 @@ export const ExtensionsCache = {
 }
 
 window.ExtensionsCache = ExtensionsCache
-export const getExtensions = (template = [], ...values) => {
-  const addonInsertComponent = ({ ExtensionState, ...others }) => {
-    const placeHolder = template[0]
-    const addonName = Object.keys(ExtensionState.localExtensions).find(e => ExtensionState.localExtensions[e].config.placeHolder === placeHolder)
-    const packages = ExtensionsCache.packages
-    if (!addonName || !packages[addonName] || !ExtensionState.localExtensions[addonName]) return null
-    return React.createElement(packages[addonName], others)
-  }
-  return React.createElement(connect(mapStateToProps)(addonInsertComponent), ...values)
-}
 
 // addon`sideBar`
 export const getLocalExtensionByName = (name) => {
@@ -40,3 +31,10 @@ export const getLocalExtensionByName = (name) => {
   return ''
 }
 
+export const stateWithExtensions = (state = {}) => {
+  state.extensions = ({
+    labels: observable.map({}),
+    views: {}
+  })
+  return state
+}

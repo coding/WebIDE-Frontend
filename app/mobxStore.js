@@ -5,6 +5,7 @@ import EditorTabState from './components/Tab/state'
 import FileTreeState from './components/FileTree/state'
 import SettingState from './components/Setting/state'
 import FileState from './commons/File/state'
+import EditorState from './components/Editor/state'
 
 const store = {
   PanelState,
@@ -13,6 +14,7 @@ const store = {
   FileTreeState,
   SettingState,
   FileState,
+  EditorState,
 }
 
 extendObservable(store, {

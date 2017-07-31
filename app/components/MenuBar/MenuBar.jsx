@@ -9,9 +9,14 @@ import config from '../../config'
 import collaborationState from '../Collaboration/state'
 import { inject, observer } from 'mobx-react'
 import i18n from 'utils/createI18n'
+import store from './store'
+import { addComToMenuBar } from './actions'
 
 
-@observer
+@inject(() => ({
+  extensionRight: store.labels.values()
+  .filter(label => label.position === 'right')
+}))
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
@@ -21,7 +26,27 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-
+  componentDidMount () {
+    const isOwner = collaborationState.isOwner
+    const { userProfile } = config
+    // 增加 切换到v1功能
+    addComToMenuBar('right', {
+      key: 'switch',
+    },
+    () => <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
+      {i18n`menuBarItems.switch`}
+    </div>)
+    // 增加用户
+    addComToMenuBar('right', {
+      key: 'userProfile',
+      weight: 100
+    },
+      () => userProfile && <div className='currentUser'>
+        <img className='avatar' src={userProfile.avatar} />
+        <a target='_blank' rel='noopener noreferrer' href='/dashboard'>{userProfile.name}</a>
+      </div>
+    )
+  }
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex === index) {
       this.setState({ activeItemIndex: -1 })
@@ -47,9 +72,7 @@ class MenuBar extends Component {
   }
 
   render () {
-    const { items } = this.props
-    const isOwner = collaborationState.isOwner
-    const { userProfile } = config
+    const { items, extensionRight } = this.props
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -65,18 +88,16 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        {config.isPlatform && (
         <div className='menu-bar-right'>
-          {isOwner && <div className='share-btn' onClick={() => Modal.showModal('CollaborationInvite')}>Share</div>}
-          <div className='btn btn-xs btn-info' onClick={this.handleSwitch}>
-           {i18n`menuBarItems.switch`}
-          </div>
-          {userProfile && <div className='currentUser'>
-            <img className='avatar' src={userProfile.avatar} />
-            <a target='_blank' rel='noopener noreferrer' href='/dashboard'>{userProfile.name}</a>
-          </div>}
+          {extensionRight
+          .sort((labelA, labelB) => labelA.weight || 1 - labelB.weight || 1)
+          .map(label => (
+            <div key={label.viewId}>
+              {store.views[label.viewId]}
+            </div>
+          ))}
         </div>
-        )}
+
       </div>
     )
   }
@@ -135,5 +156,6 @@ class MenuBarItem extends Component {
     )
   }
 }
+
 
 export default MenuBar

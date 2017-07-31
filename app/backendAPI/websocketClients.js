@@ -36,8 +36,8 @@ class FsSocketClient {
       runInAction(() => config.fsSocketConnected = true)
       self.backoff.reset()
       connectCallback.call(this)
-    }, function error () {
-      log('fsSocket error')
+    }, function error (e) {
+      log('fsSocket error', self.socket)
       switch (self.socket.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
@@ -51,6 +51,9 @@ class FsSocketClient {
       }
       errorCallback(arguments)
     })
+    self.socket.onclose = () => {
+      log('socket is closing')
+    }
   }
 
   reconnect (connectCallback, errorCallback) {
@@ -67,6 +70,13 @@ class FsSocketClient {
     } else {
       this.backoff.reset()
       warn('Sock connected failed, something may be broken, reload page and try again')
+    }
+  }
+  close (connectCallback) {
+    const self = this
+    if (config.fsSocketConnected) {
+      self.socket.close(1000, 123)
+      runInAction(() => config.fsSocketConnected = false)
     }
   }
 }
@@ -142,7 +152,11 @@ class TtySocketClient {
       this.backoff.reset()
     }
   }
-
+  close () {
+    if (config.ttySocketConnected) {
+      this.socket.disconnect('manual')
+    }
+  }
 }
 
 export { FsSocketClient, TtySocketClient }

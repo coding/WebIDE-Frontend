@@ -1,12 +1,14 @@
 import config from '../config'
 import { request } from '../utils'
-import { FsSocketClient } from './websocketClients'
+import { FsSocketClient, TtySocketClient } from './websocketClients'
 
 let connectedResolve
 export const fsSocketConnectedPromise = new Promise((rs, rj) => connectedResolve = rs)
 
 export function isWorkspaceExist () {
-  return request.get(`/workspaces/${config.spaceKey}`).catch(() => false).then(() => true)
+  return request.get(`/workspaces/${config.spaceKey}`)
+  .catch(() => false)
+  .then(data => data)
 }
 
 export function setupWorkspace () {
@@ -28,6 +30,16 @@ export function connectWebsocketClient () {
     }, (err) => {
     })
   })
+}
+
+export function closeWebsocketClient () {
+  const fsSocketClient = new FsSocketClient()
+  fsSocketClient.close()
+}
+
+export function closeTtySocketClient () {
+  const ttySocketClient = new TtySocketClient()
+  ttySocketClient.close()
 }
 
 export function getSettings () {
@@ -56,4 +68,3 @@ export function findSpaceKey ({ ownerName, projectName }) {
   ).then(res => res.data)
 }
 
-import OTSubscription from './OTSubscription'

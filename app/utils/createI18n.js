@@ -48,7 +48,7 @@ export class CreateI18n {
     }
     // 当字典里找不到先看是否是开发模式下的:=，如果是就先暂时显示它，不是则原样返回
     if (!_.get(dic, key)) {
-      return origin.split(separator)[1] || origin
+      return this.replaceVariable(origin.split(separator)[1] || '', variableObj) || origin
     }
     return this.replaceVariable(_.get(dic, key) || '', variableObj)
   }

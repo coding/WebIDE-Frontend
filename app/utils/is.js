@@ -7,17 +7,38 @@ import isFunction from 'lodash/isFunction'
 import isArray from 'lodash/isArray'
 import isPlainObject from 'lodash/isPlainObject'
 
-export default {
-  number: isNumber,
+function is (type) {
+  if (isUndefined(type)) return isUndefined
+  if (isNull(type)) return isNull
+  switch (type) {
+    case String:
+      return isString
+    case Number:
+      return isNumber
+    case Boolean:
+      return isBoolean
+    case Function:
+      return isFunction
+    case Array:
+      return isArray
+    case Object:
+      return isPlainObject
+    default:
+      return undefined
+  }
+}
+
+export default Object.assign(is, {
   null: isNull,
   undefined: isUndefined,
   string: isString,
+  number: isNumber,
   boolean: isBoolean,
   function: isFunction,
   array: isArray,
   pojo: isPlainObject,
   plainObject: isPlainObject,
-}
+})
 
 export {
   isNumber,
