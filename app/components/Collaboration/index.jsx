@@ -70,6 +70,7 @@ class Collaboration extends Component {
           icon='fa fa-users'
           size='40'
           id='d1'
+          key='d1'
           actions={action}
         >
           <Collaborators />
@@ -79,6 +80,7 @@ class Collaboration extends Component {
           icon='fa fa-comments'
           size='40'
           id='d2'
+          key='d2'
           actions={chatSetting}
         >
           <Chat />
