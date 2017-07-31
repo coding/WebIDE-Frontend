@@ -6,6 +6,7 @@ import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import { addComToSideBar } from './components/Panel/SideBar/actions'
 import { addComToMenuBar } from './components/MenuBar/actions'
+import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
 
 export default class {
   // app data
@@ -36,6 +37,13 @@ export default class {
       moment: require('moment'),
       mobx: require('mobx'),
       mobxReact: require('mobx-react'),
+    })
+  }
+
+  get socketManager () {
+    return ({
+      closeWebsocketClient,
+      closeTtySocketClient
     })
   }
 
