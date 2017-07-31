@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import debounce from 'lodash/debounce'
 import { dispatch } from '../store'
 import mobxStore from '../mobxStore'
 import { observer } from 'mobx-react'
@@ -8,6 +9,7 @@ import * as PaneActions from './Pane/actions'
 import PaneState from './Pane/state'
 import * as TabActions from 'components/Tab/actions'
 import * as FileTreeActions from './FileTree/actions'
+import FileTreeState from './FileTree/state'
 
 // Corner case: file dragging doesn't trigger 'dragend' natively
 // so need to patch for this behavior
@@ -20,6 +22,12 @@ class DragAndDrop extends Component {
 
   constructor (props) {
     super(props)
+    this.state = {
+      dragPos: {
+        x: 0,
+        y: 0,
+      }
+    }
   }
 
   render () {
@@ -51,19 +59,41 @@ class DragAndDrop extends Component {
   }
 
   onDragLeave = (e) => {
+    this.resetDragPos()
     e.preventDefault()
     if (isFileDragEnd(e)) dnd.dragEnd()
   }
 
   onDragOver = (e) => {
     e.preventDefault()
-    const { source, droppables = [], meta } = dnd
-    if (!source) {
-      dnd.dragStart({
-        type: 'EXTERNAL_FILE',
-        id: Date.now(),
-      })
+    const dx = this.state.dragPos.x - e.x
+    const dy = this.state.dragPos.y - e.y
+    if ((dx < -5 || dx > 5) || (dy < -5 || dy > 5)) {
+      const { source } = dnd
+      this.state.dragPos = {
+        x: e.x,
+        y: e.y,
+      }
+      if (!source || !source.id) {
+        dnd.dragStart({
+          type: 'EXTERNAL_FILE',
+          id: Date.now(),
+        })
+      }
+      this.handleDropOver(e)
     }
+  }
+
+  resetDragPos = () => {
+    this.state.dragPos = {
+      x: 0,
+      y: 0,
+    }
+  }
+
+  handleDropOver = debounce((e) => {
+    dnd.updateDroppables()
+    const { source, droppables = [], meta } = dnd
     const [oX, oY] = [e.pageX, e.pageY]
     const target = droppables.reduce((result, droppable) => {
       const {top, left, right, bottom} = droppable.rect
@@ -89,9 +119,10 @@ class DragAndDrop extends Component {
 
       default:
     }
-  }
+  }, 1000)
 
   onDrop = (e) => {
+    this.resetDragPos()
     e.preventDefault()
     const { source, target, meta } = dnd
     if (!source || !target) return
@@ -121,6 +152,7 @@ class DragAndDrop extends Component {
   }
 
   onDragEnd = (e) => {
+    this.resetDragPos()
     e.preventDefault()
     dnd.dragEnd()
   }
@@ -135,12 +167,13 @@ class DragAndDrop extends Component {
   }
 
   dragTabOverFileTree (e, target) {
-    const id = target.id
-    if (id.split('_')[0] === 'folder') {
-      const DOMNode = document.getElementById(target.id)
-      DOMNode.firstChild.click()
+    const { id, DOMNode } = target
+    const node = FileTreeState.entities.get(id)
+    if (node.isDir && node.isFolded) {
+      FileTreeActions.openNode(node)
     }
   }
+
   dragTabOverPane (e, target) {
     if (target.type !== 'PANE') return
     const { source, meta } = dnd
