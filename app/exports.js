@@ -8,4 +8,15 @@ const app = {
   settings: require('./settings'),
 }
 
-export { app }
+const lib = {
+  react: require('react'),
+  mobx: require('mobx'),
+  mobxReact: require('mobx-react'),
+  classnames: require('classnames'),
+  lodash: require('lodash'),
+  eventemitter: require('eventemitter3'),
+  sockjsClient: require('sockjs-client'),
+  moment: require('moment'),
+}
+
+export { app, lib }

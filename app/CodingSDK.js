@@ -8,15 +8,11 @@ import { addComToSideBar } from './components/Panel/SideBar/actions'
 import { addComToMenuBar } from './components/MenuBar/actions'
 import { addComToContainers } from './containers/actions'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
-<<<<<<< HEAD
 import * as Panel from './components/Panel/actions'
-
-import * as appExports from './exports'
-=======
-import { app as appExports } from './exports'
->>>>>>> e881017... exporting more modules to `window.app` for use in plugins
+import { app as appExports, lib as libExports } from './exports'
 
 window.app = appExports
+window.lib = libExports
 
 export default class {
   // app data
