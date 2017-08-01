@@ -98,6 +98,7 @@ class MenuItem extends Component {
           })}
           onMouseEnter={this.onMouseEnter}
           onClick={this.execCommand}
+          id={item.id}
         >
           {(item.icon || item.iconElement) && (
             <div className={cx('menu-item-icon', item.icon)}>
