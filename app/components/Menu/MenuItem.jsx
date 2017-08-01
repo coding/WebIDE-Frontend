@@ -105,7 +105,7 @@ class MenuItem extends Component {
               {item.iconElement}
             </div>
           )}
-          <div className='menu-item-name'>{itemElement || item.displayName || item.name}</div>
+          <div className='menu-item-name'>{itemElement || item.displayName || item.name}{item.showMore && '...'}</div>
           { item.shortcut
             ? <div className='menu-item-shortcut'>{item.shortcut}</div>
           : null }

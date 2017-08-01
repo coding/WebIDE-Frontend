@@ -20,7 +20,7 @@ const Utilities = ({ utilitiesExtensions }) => (
             {store.extensions.views[label.viewId]}
           </div>
           ))
-      }
+    }
   </div>
   )
 Utilities.propTypes = {

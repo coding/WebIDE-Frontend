@@ -17,6 +17,7 @@ const menuBarItems = [
         name: i18n`menuBarItems.meta.main`,
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
+        canopen: true
       }
     ]
   }, {
@@ -28,11 +29,13 @@ const menuBarItems = [
         name: i18n`menuBarItems.file.newFile`,
         icon: 'fa fa-file-o',
         command: 'file:new_file',
+        showMore: true
       }, {
         key: 'newFolder',
         name: i18n`menuBarItems.file.newFolder`,
         icon: '',
-        command: 'file:new_folder'
+        command: 'file:new_folder',
+        showMore: true
       }, {
         key: 'save',
         name: i18n`menuBarItems.file.save`,
@@ -49,7 +52,8 @@ const menuBarItems = [
         key: 'commit',
         name: i18n`menuBarItems.git.commit`,
         icon: 'octicon octicon-git-commit',
-        command: 'git:commit'
+        command: 'git:commit',
+        showMore: true,
       }, {
         key: 'pull',
         name: i18n`menuBarItems.git.pull`,
@@ -66,47 +70,55 @@ const menuBarItems = [
         key: 'resolveConflicts',
         group: 'conflicts',
         name: i18n`menuBarItems.git.resolveConflicts`,
-        command: 'git:resolve_conflicts'
+        command: 'git:resolve_conflicts',
+        showMore: true
       },
       divider,
       {
         key: 'stash',
         name: i18n`menuBarItems.git.stashChanges`,
-        command: 'git:stash'
+        command: 'git:stash',
+        showMore: true,
       },
       {
         key: 'unstash',
         name: i18n`menuBarItems.git.unstashChanges`,
-        command: 'git:unstash'
+        command: 'git:unstash',
+        showMore: true
       },
       {
         key: 'reset',
         name: i18n`menuBarItems.git.resetHead`,
-        command: 'git:reset_head'
+        command: 'git:reset_head',
+        showMore: true
       },
       divider,
       {
         key: 'branches',
         name: i18n`menuBarItems.git.branches`,
         icon: 'octicon octicon-git-branch',
-        command: 'global:show_branches'
+        command: 'global:show_branches',
+        showMore: true
       },
       {
         key: 'merge',
         name: i18n`menuBarItems.git.mergeBranch`,
         icon: 'octicon octicon-git-merge',
-        command: 'git:merge'
+        command: 'git:merge',
+        showMore: true
       },
       {
         key: 'tag',
         name: i18n`menuBarItems.git.tag`,
-        command: 'git:tag'
+        command: 'git:tag',
+        showMore: true
       },
       divider,
       {
         key: 'rebase',
         name: i18n`menuBarItems.git.rebase`,
-        command: 'git:rebase:start'
+        command: 'git:rebase:start',
+        showMore: true
       },
       {
         key: 'abort',
@@ -124,6 +136,7 @@ const menuBarItems = [
         key: 'skipCommit',
         name: i18n`menuBarItems.git.skipCommit`,
         command: 'git:rebase:skip_commit',
+        showMore: true,
         getIsDisabled,
       }
     ]

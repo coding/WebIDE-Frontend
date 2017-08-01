@@ -55,7 +55,7 @@ export class CreateI18n {
     const translateComponent = ({ language }) => {
       const translatedWords =
       template.reduce((p, v, i) => `${p}${this.translate(v, language, values[i] || {})}`, '')
-      return (<span>{translatedWords}</span>)
+      return (<span id={template[0]}>{translatedWords}</span>)
     }
     translateComponent.propTypes = {
       language: PropTypes.string
