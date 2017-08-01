@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
 import { markdown } from 'markdown'
 import { observer } from 'mobx-react'
-import CodeMirrorEditor from '../CodeMirrorEditor'
+import CodeEditor from '../CodeEditor'
 import state from './state'
 import * as actions from './actions'
 
@@ -89,7 +89,7 @@ class MarkdownEditor extends Component {
           flexShrink: 0,
           flexBasis: 0,
         }}>
-        {React.createElement(CodeMirrorEditor, { tab })}
+        {React.createElement(CodeEditor, { editor: tab.editor })}
       </div>): null
     }
       { (showPreview && !showBigSize) ? (
