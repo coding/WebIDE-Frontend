@@ -60,6 +60,18 @@ class Initialize extends Component {
               {i18n`global.requestingCollaboration`}
             </div>
           )
+        } else if (state.status === 'Expired') {
+          errorInfo = null
+          requestInfo = (
+            <div className='request-info'>
+              {i18n`global.requestCollaborationExpires`}
+            </div>
+          )
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
         } else {
           info = (
             <div className='loading-info error'>
