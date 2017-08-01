@@ -88,7 +88,7 @@ const ResizeBar = ({ parentFlexDirection, confirmResize }) => {
 
 ResizeBar.propTypes = {
   parentFlexDirection: PropTypes.string.isRequired,
-  confirmResize: PropTypes.func.isRequired,
+  confirmResize: PropTypes.func,
 }
 
 export default ResizeBar
