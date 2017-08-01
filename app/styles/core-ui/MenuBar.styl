@@ -1,24 +1,24 @@
 // MenuBar
 .menu-bar-container {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fafafa;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid transparent;
   noSelect();
 }
 
 .menu-bar-right {
   display: flex;
-  position: absolute;
   white-space: nowrap;
-  top: 2px;
-  right: 10px;
   line-height: 12px;
-  padding-top: 2px;
+  padding-top: 4px;
+  margin-right: 10px;
   padding-right: 4px;
   align-items: center;
   height: 18px;
   .btn-info {
-    // position: absolute;
-    // top: 2px;
-    // right: 4px;
     margin-left: 10px;
     line-height: 12px;
   }
@@ -54,8 +54,9 @@
 
 .menu-bar {
   display: flex;
-  background-color: #fafafa;
-  border-bottom: 1px solid transparent;
+  // width: 100%;
+  // background-color: #fafafa;
+  // border-bottom: 1px solid transparent;
 }
 
 .menu-bar-item {
