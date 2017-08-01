@@ -1,6 +1,8 @@
 import { gitBlameNode } from './actions'
 import { i18n } from 'utils'
 
+const divider = { isDivider: true }
+
 const items = [
   {
     name: i18n`fileTree.contextMenu.newFile`,
@@ -11,8 +13,10 @@ const items = [
     name: i18n`fileTree.contextMenu.newFolder`,
     icon: '',
     command: 'file:new_folder',
-    id: 'filetree_menu_new_folder',
-  }, {
+
+  },
+  divider,
+  {
     name: i18n`fileTree.contextMenu.delete`,
     icon: '',
     command: 'file:delete',
@@ -21,13 +25,14 @@ const items = [
     name: i18n`fileTree.contextMenu.rename`,
     icon: '',
     command: 'file:rename',
-    id: 'filetree_menu_rename',
-  }, {
-    name: i18n`fileTree.contextMenu.delete`,
+  },
+  divider,
+  {
+    name: i18n`fileTree.contextMenu.download`,
     icon: '',
-    command: 'file:download',
-    id: 'filetree_menu_download',
-  }, {
+    command: 'file:download'
+  },
+  {
     name: i18n`fileTree.contextMenu.upload`,
     icon: '',
     command: () => {
@@ -37,8 +42,10 @@ const items = [
       input.dispatchEvent(new MouseEvent('click'))
     },
     getIsHidden: ctx => !ctx.isDir,
-    id: 'filetree_menu_upload',
-  }, {
+
+  },
+  divider,
+  {
     name: i18n`fileTree.contextMenu.gitBlame`,
     icon: '',
     command: (c) => {

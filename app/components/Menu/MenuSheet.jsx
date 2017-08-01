@@ -134,7 +134,6 @@ class Menu extends Component {
   renderMenuItems (items) {
     return items.map((item, i) => {
       const key = `menu-item-${item.name}-${i}`
-
       if (item.isDivider) {
         return <MenuItemDivider key={key} />
       }
