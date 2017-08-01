@@ -17,6 +17,7 @@ const lib = {
   eventemitter: require('eventemitter3'),
   sockjsClient: require('sockjs-client'),
   moment: require('moment'),
+  codemirror: require('codemirror'),
 }
 
 export { app, lib }

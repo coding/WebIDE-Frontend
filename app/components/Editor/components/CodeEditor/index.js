@@ -1,6 +1,6 @@
 import CodeEditor from './CodeEditor'
 import TablessCodeEditor from './TablessCodeEditor'
-import addons from './addons'
+import './addons'
 
 export default CodeEditor
 export { TablessCodeEditor }
