@@ -87,7 +87,12 @@ async function initialize () {
             initializeState.errorInfo = res.msg
             return false
           }
+        } else if (res.durationStatus === 'Temporary' && res.ttl <= 0) {
+          initializeState.errorCode = 403
+          initializeState.status = 'Expired'
+          return false
         }
+
         extendObservable(config, res)
         if (config.project && config.project.name) { config.projectName = config.project.name }
         return true
