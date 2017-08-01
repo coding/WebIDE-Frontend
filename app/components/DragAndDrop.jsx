@@ -89,7 +89,14 @@ class DragAndDrop extends Component {
       x: 0,
       y: 0,
     }
+    this.unhighlightDirNode()
   }
+
+  unhighlightDirNode = debounce(() => {
+    if (this.highlightNode) {
+      FileTreeActions.unhighlightDirNode(this.highlightNode)
+    }
+  }, 350)
 
   handleDropOver = debounce((e) => {
     dnd.updateDroppables()
@@ -119,7 +126,7 @@ class DragAndDrop extends Component {
 
       default:
     }
-  }, 1000)
+  }, 400)
 
   onDrop = (e) => {
     this.resetDragPos()
@@ -169,8 +176,26 @@ class DragAndDrop extends Component {
   dragTabOverFileTree (e, target) {
     const { id, DOMNode } = target
     const node = FileTreeState.entities.get(id)
-    if (node.isDir && node.isFolded) {
-      FileTreeActions.openNode(node)
+    if (node.isDir) {
+      if (node.isFolded) {
+        FileTreeActions.openNode(node)
+      }
+      if (!node.isHighlighted) {
+        if (this.highlightNode) {
+          FileTreeActions.unhighlightDirNode(this.highlightNode)
+        }
+        this.highlightNode = node
+        FileTreeActions.highlightDirNode(node)
+      }
+    } else {
+      const parentNode = node.parent
+      if (!parentNode.isHighlighted) {
+        if (this.highlightNode) {
+          FileTreeActions.unhighlightDirNode(this.highlightNode)
+        }
+        this.highlightNode = parentNode
+        FileTreeActions.highlightDirNode(parentNode)
+      }
     }
   }
 
