@@ -47,6 +47,10 @@ export const highlightDirNode = registerAction('filetree:highlight_dir_node',
   node => node.isDir && node.highlight()
 )
 
+export const unhighlightDirNode = registerAction('filetree:unhighlight_dir_node',
+  node => node.isDir && node.unhighlight()
+)
+
 export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
