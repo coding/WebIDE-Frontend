@@ -1,3 +1,7 @@
 import FileState from './state'
+import store from './store'
 
-export { FileState }
+export {
+  store,
+  FileState,
+}
