@@ -127,9 +127,9 @@ ${message}`
 
   closePage = async () => {
     const confirmed = await Modal.showModal('Alert', {
-      header: 'Warning',
-      message: `You're not in this collaboration now.`,
-      okText: 'Quit'
+      header: i18n`ot.warning`,
+      message: i18n`ot.kickout`,
+      okText: i18n`ot.quitButton`
     })
     if (confirmed) {
       location = '/dashboard'

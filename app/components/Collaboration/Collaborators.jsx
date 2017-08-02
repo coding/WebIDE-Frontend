@@ -6,32 +6,33 @@ import cx from 'classnames'
 import config from 'config'
 import * as Modal from 'components/Modal/actions'
 import { hueFromString, chroma } from 'utils/colors'
+import i18n from 'utils/createI18n'
 
 const Collaborator = observer(({ item, handleDelete, handleQuit, isOwner, handleOpenFile, handleReject, handleAdd }) => {
   const { collaborator, id } = item
   let info = ''
   if (item.inviteBy === 'Owner') {
     info = (
-      <div className='info-owner'>Owner</div>
+      <div className='info-owner'>{i18n`ot.laberOwner`}</div>
     )
   } else if (isOwner) {
     if (item.status === 'Request') {
       info = (
         <div className='info-action'>
           <button className='btn btn-default btn-xs' onClick={e => handleAdd(collaborator.globalKey)} >
-            Accept
+            {i18n`ot.btnAccept`}
           </button>
-          <div className='info-request' onClick={e => handleReject(id, collaborator.globalKey)}>Reject</div>
+          <div className='info-request' onClick={e => handleReject(id, collaborator.globalKey)}>{i18n`ot.btnReject`}</div>
         </div>
       )
     } else {
       info = (
-        <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>Remove</div>
+        <div className='info-delete' onClick={e => handleDelete(id, collaborator.globalKey)}>{i18n`ot.btnRemove`}</div>
       )
     }
   } else if (config.globalKey === collaborator.globalKey) {
     info = (
-      <div className='info-delete' onClick={e => handleQuit(id, collaborator.globalKey)}>Quit</div>
+      <div className='info-delete' onClick={e => handleQuit(id, collaborator.globalKey)}>{i18n`ot.btnQuit`}</div>
     )
   }
   const online = (item.online || config.globalKey === collaborator.globalKey)
@@ -61,7 +62,7 @@ const Collaborator = observer(({ item, handleDelete, handleQuit, isOwner, handle
       <div className='username'>
         {collaborator.name}
         {config.globalKey === collaborator.globalKey && (
-          ` (You)`
+          i18n`ot.labelYou`
         )}
         {item.path && online && (
           <span className='editing' onClick={(e) => {
@@ -94,9 +95,9 @@ class Collaborators extends Component {
 
   handleDelete = async (id, globalKey) => {
     const confirmed = await Modal.showModal('Confirm', {
-      header: 'Are you sure you want to remove this collaborator?',
-      message: `You're trying to remove ${globalKey}`,
-      okText: 'Delete'
+      header: i18n`ot.deleteCollaborator`,
+      message: i18n`ot.deleteCollaboratorMsg${{ globalKey }}`,
+      okText: i18n`ot.delete`
     })
     if (confirmed) {
       CollaborationActions.deleteCollaborators(id, globalKey)
@@ -109,9 +110,9 @@ class Collaborators extends Component {
 
   handleQuit = async (id, globalKey) => {
     const confirmed = await Modal.showModal('Confirm', {
-      header: 'Are you sure you want to quit?',
-      message: `You're trying to quit this collaboration.`,
-      okText: 'Quit'
+      header: i18n`ot.quitCollaboration`,
+      message: i18n`ot.quitMsg`,
+      okText: i18n`ot.quitButton`
     })
     if (confirmed) {
       CollaborationActions.deleteCollaborators(id, globalKey)
