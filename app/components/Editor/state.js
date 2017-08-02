@@ -92,6 +92,7 @@ class Editor {
       filePath: String,
       gitBlame: Object,
     })
+    if (props.revision) this.revision = props.revision
     // file
     if (!this.file && props.content) {
       this._content = props.content

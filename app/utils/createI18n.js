@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react'
 import settings from 'settings'
 import _ from 'lodash'
 import { inject } from 'mobx-react'
+import moment from 'moment'
+import { autorun } from 'mobx'
 
 const separator = ':='
 // const transferredMeaning = '\\'
@@ -14,6 +16,12 @@ const languageDicPool = require('../i18n/index.json').reduce((p, v) => {
   return p
 }, {})
 
+// setting moment global language
+autorun(() => {
+  const languageSetting = settings.general.language
+  const language = languageToCode[languageSetting.value]
+  moment.locale(language)
+})
 
 // support shape
 const mapStateToProps = () => {
