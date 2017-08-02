@@ -3,12 +3,14 @@ import api from 'backendAPI'
 import { registerAction } from 'utils/actions'
 import FileStore from 'commons/File/store'
 import * as TabActions from 'components/Tab/actions'
+import * as Modal from 'components/Modal/actions'
 import contextMenuStore from 'components/ContextMenu/store'
 import state, { FileTreeNode } from './state'
 import bindToFile from './fileTreeToFileBinding'
 import FileTreeContextMenuItems from './contextMenuItems'
 import dispatchCommand from 'commands/dispatchCommand'
 import { getTabType } from 'utils'
+import i18n from 'utils/createI18n'
 
 export const initializeFileTree = registerAction('filetree:init', () => {
   FileStore.fetchProjectRoot()
@@ -121,5 +123,31 @@ export const uploadFilesToPath = (files, path) => {
         // }
       }
     })
+  })
+}
+
+export const mv = (from, to, force=false) => {
+  const name = from.split('/').pop()
+  const newPath = `${to}/${name}`
+  api.moveFile(from, newPath, force).then(async (res) => {
+    if (res.code && res.code !== 0) {
+      if (res.msg && res.msg.indexOf('force') !== -1) {
+        const confirmed = await Modal.showModal('Confirm', {
+          header: i18n`file.fileExist`,
+          message: i18n`file.fileForceMove`,
+          okText: i18n`file.overwriteButton`
+        })
+        if (confirmed) {
+          mv(from, to, true)
+        }
+        Modal.dismissModal()
+      } else if (/directory.*exist/.test(res.msg)) {
+        await Modal.showModal('Alert', {
+          header: i18n`file.moveFolderFailed`,
+          message: i18n`file.folderExist`,
+        })
+        Modal.dismissModal()
+      }
+    }
   })
 }

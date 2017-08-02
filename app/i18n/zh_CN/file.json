@@ -1,10 +1,15 @@
 {
+   "fileForceMove": "是否覆盖现有文件",
    "newFilePath": "请输入新文件的路径",
-   "newFileFolderPath": "请输入新文件夹的路径",
    "newFileName": "请输入新文件路径/文件名",
+   "folderExist": "目录已经存在",
+   "deleteNotifySuccess": "成功删除",
+   "newFileFolderPath": "请输入新文件夹的路径",
+   "deleteNotifyFailed": "删除失败：{err}",
    "deleteHeader": "你是否确认删除此文件",
+   "fileExist": "文件已经存在",
+   "moveFolderFailed": "目录移动失败",
    "deleteMessage": "你正在删除 {file}",
    "deleteButton": "删除",
-   "deleteNotifySuccess": "成功删除",
-   "deleteNotifyFailed": "删除失败：{err}"
+   "overwriteButton": "覆盖"
 }

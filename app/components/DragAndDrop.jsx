@@ -59,9 +59,11 @@ class DragAndDrop extends Component {
   }
 
   onDragLeave = (e) => {
+    this.dragLeaveTree = true
     this.resetDragPos()
     e.preventDefault()
     if (isFileDragEnd(e)) dnd.dragEnd()
+    this.handleDropOver.cancel()
   }
 
   onDragOver = (e) => {
@@ -93,10 +95,11 @@ class DragAndDrop extends Component {
   }
 
   unhighlightDirNode = debounce(() => {
-    if (this.highlightNode) {
+    if (this.highlightNode && this.dragLeaveTree) {
       FileTreeActions.unhighlightDirNode(this.highlightNode)
+      this.highlightNode = null
     }
-  }, 350)
+  }, 600)
 
   handleDropOver = debounce((e) => {
     dnd.updateDroppables()
@@ -119,6 +122,10 @@ class DragAndDrop extends Component {
       case 'TAB_on_PANE':
         return this.dragTabOverPane(e, target)
       case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
+        this.dragLeaveTree = false
+        return this.dragTabOverFileTree(e, target)
+      case 'FILE_TREE_NODE_on_FILE_TREE_NODE':
+        this.dragLeaveTree = false
         return this.dragTabOverFileTree(e, target)
       case 'TAB_on_TABBAR':
       case 'TAB_on_TABLABEL':
@@ -126,9 +133,10 @@ class DragAndDrop extends Component {
 
       default:
     }
-  }, 400)
+  }, 300)
 
   onDrop = (e) => {
+    this.dragLeaveTree = true
     this.resetDragPos()
     e.preventDefault()
     const { source, target, meta } = dnd
@@ -142,6 +150,16 @@ class DragAndDrop extends Component {
 
       case 'EXTERNAL_FILE_on_FILE_TREE_NODE':
         FileTreeActions.uploadFilesToPath(e.dataTransfer.files, target.id)
+        break
+
+      case 'FILE_TREE_NODE_on_FILE_TREE_NODE':
+        const node = FileTreeState.entities.get(target.id)
+        if (node.isDir) {
+          FileTreeActions.mv(source.id, target.id)
+        } else {
+          const parentNode = node.parent
+          FileTreeActions.mv(source.id, parentNode.id)
+        }
         break
 
       case 'TAB_on_TABBAR':

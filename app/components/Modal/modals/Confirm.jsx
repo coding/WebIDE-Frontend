@@ -1,4 +1,5 @@
 import React from 'react'
+import i18n from 'utils/createI18n'
 
 const Confirm = (props) => {
   const { meta, content } = props
@@ -17,8 +18,8 @@ const Confirm = (props) => {
       : null }
 
       <div className='footer modal-ops'>
-        <button className='btn btn-primary' onClick={e => meta.resolve(true)}>{content.okText || 'OK'}</button>
-        <button className='btn btn-default' onClick={e => meta.resolve(false)}>Cancel</button>
+        <button className='btn btn-primary' onClick={e => meta.resolve(true)}>{content.okText || i18n`modal.okButton`}</button>
+        <button className='btn btn-default' onClick={e => meta.resolve(false)}>{i18n`modal.cancelButton`}</button>
       </div>
     </div>
   )
