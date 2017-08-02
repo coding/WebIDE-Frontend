@@ -10,6 +10,7 @@ import { inject } from 'mobx-react'
 import i18n from 'utils/createI18n'
 import store from './store'
 import { addComToMenuBar } from './actions'
+import PluginArea from 'components/Plugins/component'
 
 @inject(() => ({
   extensionRight: store.labels.values()
@@ -68,15 +69,7 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        <div className='menu-bar-right'>
-          {extensionRight
-          .sort((labelA, labelB) => labelA.weight || 1 < labelB.weight ? -1 : 1)
-          .map(label => (
-            <div key={label.viewId}>
-              {store.views[label.viewId]}
-            </div>
-          ))}
-        </div>
+        <PluginArea className='menu-bar-right' position='MenuBar.Widget' />
       </div>
     )
   }

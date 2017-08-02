@@ -1,10 +1,4 @@
-import React from 'react'
-import { connect } from 'react-redux'
 import { observable } from 'mobx'
-
-const mapStateToProps = state => ({
-  ExtensionState: state.ExtensionState,
-})
 
 export const ExtensionsCache = {
   _plugins: {},
@@ -23,13 +17,6 @@ export const ExtensionsCache = {
 }
 
 window.ExtensionsCache = ExtensionsCache
-
-// addon`sideBar`
-export const getLocalExtensionByName = (name) => {
-  const extensionScript = localStorage.getItem(`extension_${name}`)
-  if (extensionScript) return extensionScript
-  return ''
-}
 
 export const stateWithExtensions = (state = {}) => {
   state.extensions = ({
