@@ -6,35 +6,35 @@ const divider = { isDivider: true }
 const items = [
   {
     name: i18n`fileTree.contextMenu.newFile`,
-    icon: '',
+    icon: 'fa fa-file-o',
     command: 'file:new_file',
     id: 'filetree_menu_new_file',
   }, {
     name: i18n`fileTree.contextMenu.newFolder`,
-    icon: '',
+    icon: 'fa fa-folder-o',
     command: 'file:new_folder',
 
   },
   divider,
   {
     name: i18n`fileTree.contextMenu.delete`,
-    icon: '',
+    icon: 'fa fa-trash-o',
     command: 'file:delete',
     id: 'filetree_menu_delete',
   }, {
     name: i18n`fileTree.contextMenu.rename`,
-    icon: '',
+    icon: 'fa',
     command: 'file:rename',
   },
   divider,
   {
     name: i18n`fileTree.contextMenu.download`,
-    icon: '',
+    icon: 'fa fa-download',
     command: 'file:download'
   },
   {
     name: i18n`fileTree.contextMenu.upload`,
-    icon: '',
+    icon: 'fa fa-upload',
     command: () => {
       // reset the files selected from last round
       document.getElementById('filetree-hidden-input-form').reset()
@@ -47,7 +47,7 @@ const items = [
   divider,
   {
     name: i18n`fileTree.contextMenu.gitBlame`,
-    icon: '',
+    icon: 'fa',
     command: (c) => {
       gitBlameNode(c)
     },
