@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import config from 'config'
 import cx from 'classnames'
-import { dnd } from 'utils'
+import dnd from 'utils/dnd'
 
 @observer
 class TreeNode extends Component {
@@ -24,7 +24,6 @@ class TreeNode extends Component {
         onDragStart={e => {
           e.stopPropagation()
           if (node.id) {
-            console.log('onDragStart', node)
             dnd.dragStart({ type: 'FILE_TREE_NODE', id: node.id, node })
           }
         }}
