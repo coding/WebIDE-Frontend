@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import config from 'config'
 import cx from 'classnames'
+import dnd from 'utils/dnd'
 
 @observer
 class TreeNode extends Component {
@@ -19,6 +20,13 @@ class TreeNode extends Component {
         })}
         data-droppable="FILE_TREE_NODE"
         onContextMenu={e => { selectNode(node); openContextMenu(e, node) }}
+        draggable='true'
+        onDragStart={e => {
+          e.stopPropagation()
+          if (node.id) {
+            dnd.dragStart({ type: 'FILE_TREE_NODE', id: node.id, node })
+          }
+        }}
       >
         <div className={cx('filetree-node', { focus: node.isFocused })}
           ref={r => this.nodeDOM = r}
