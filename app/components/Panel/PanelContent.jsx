@@ -1,6 +1,6 @@
 import React from 'react'
 import MenuBar from '../MenuBar'
-import Breadcrumbs from '../Breadcrumbs'
+import TopBar from '../TopBar'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import FileTree from '../FileTree'
@@ -15,7 +15,7 @@ const PanelContent = ({ panel }) => {
     case 'MENUBAR':
       return <MenuBar />
     case 'BREADCRUMBS':
-      return <Breadcrumbs />
+      return <TopBar />
     case 'FILETREE':
       return <FileTree />
     case 'PANES':
