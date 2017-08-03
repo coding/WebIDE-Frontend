@@ -129,6 +129,7 @@ export const uploadFilesToPath = (files, path) => {
 export const mv = (from, to, force=false) => {
   const name = from.split('/').pop()
   const newPath = `${to}/${name}`
+  if (from === newPath) return
   api.moveFile(from, newPath, force).then(async (res) => {
     if (res.code && res.code !== 0) {
       if (res.msg && res.msg.indexOf('force') !== -1) {
