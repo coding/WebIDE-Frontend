@@ -46,7 +46,7 @@ if (isMac) {
     'ctrl+alt+3': 'editor:split_pane_vertical_3',
     'ctrl+alt+shift+3': 'editor:split_pane_horizontal_3',
     'ctrl+alt+4': 'editor:split_pane_vertical_4',
-    'ctrl+comma': 'global:show_settings',
+    'alt+comma': 'global:show_settings',
     'alt+b': 'global:show_branches',
   }
   modifierKeysMap = {
