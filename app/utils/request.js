@@ -1,6 +1,6 @@
 import axios from 'axios'
 import './promise.prototype.finalCatch'
-import { qs } from './url-helpers'
+import qs from './qs'
 import config from '../config'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 
