@@ -1,7 +1,7 @@
 import qs from 'qs'
 
 // source: https://github.com/jfromaniello/url-join
-export function urlJoin () {
+function urlJoin () {
   let str = [].slice.call(arguments, 0).join('/')
 
   // make sure protocol is followed by two slashes
@@ -25,4 +25,4 @@ qs.stringify = function (queryObject) {
   return _stringify(queryObject, { arrayFormat: 'brackets' })
 }
 
-export { qs }
+export default qs
