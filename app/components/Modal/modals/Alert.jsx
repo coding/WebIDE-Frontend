@@ -1,5 +1,6 @@
 import React from 'react'
 import i18n from 'utils/createI18n'
+import { dismissModal } from '../actions'
 
 const Alert = (props) => {
   const { meta, content } = props
@@ -18,7 +19,12 @@ const Alert = (props) => {
       : null }
 
       <div className='footer modal-ops'>
-        <button className='btn btn-primary' onClick={e => meta.resolve(true)}>{content.okText || i18n`modal.okButton`}</button>
+        <button className='btn btn-primary'
+          onClick={() => {
+            meta.resolve(true)
+            dismissModal()
+          }}
+        >{content.okText || i18n`modal.okButton`}</button>
       </div>
     </div>
   )
