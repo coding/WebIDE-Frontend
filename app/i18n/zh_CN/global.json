@@ -1,4 +1,9 @@
 {
    "loadingWorkspace": "正在加载工作区",
-   "loadingWorkspaceFailed": "加载工作区失败"
+   "loadingWorkspaceFailed": "加载工作区失败",
+   "loadingWorkspaceDenied": "访问工作区未授权",
+   "requestCollaboration": "申请协作",
+   "requestCollaborationReject": "您的申请被拒绝了",
+   "requestingCollaboration": "协作申请已经提交",
+   "requestCollaborationExpires": "试用已经结束"
 }

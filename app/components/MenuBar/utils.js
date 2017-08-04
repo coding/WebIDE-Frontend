@@ -1,4 +1,4 @@
-import keyMapConfig, { modifierKeysMap } from '../../commands/keymaps'
+import keyMapConfig, { modifierKeysMap, isMac } from '../../commands/keymaps'
 
 
 const findKeyByValue = value => Object
@@ -8,8 +8,14 @@ const findKeyByValue = value => Object
       return p
     }, {})[value] || ''
 
-const withModifierKeys = value => value.split('+')
+const withModifierKeys = value => {
+  if (isMac) {
+    return value.split('+')
     .map(e => modifierKeysMap[e] || e.toUpperCase()).join('')
+  }
+  return value.split('+')
+    .map(e => modifierKeysMap[e] || e.toUpperCase()).join('+')
+}
 
 
 const mapShortcutToConfig = configs => configs.map(config => ({

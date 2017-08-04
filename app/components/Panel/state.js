@@ -71,7 +71,7 @@ const BasePanelLayout = {
               views: [
                 { ref: 'PANEL_LEFT', size: 20, contentType: 'PANEL_LEFT' },
                 { ref: 'PANEL_CENTER', size: 80, contentType: 'PANES' },
-                { ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true },
+                { ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT' },
               ],
             },
             { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hide: true },

@@ -14,8 +14,7 @@ import PanelState from './state'
   return { activeViewId, labels }
 })
 class SidePanelContainer extends Component {
-  constructor (props) {
-    super(props)
+  componentWillMount () {
     const children = this.getChildren()
     const { side } = this.props
 

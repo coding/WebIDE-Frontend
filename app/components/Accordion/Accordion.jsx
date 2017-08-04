@@ -48,7 +48,7 @@ class AccordionGroup extends Component {
       {this.props.children.reduce((acc, component, index) => {
         acc.push(component)
         if (index < sectionCount - 1) {
-          acc.push(<ResizeBar parentFlexDirection='column' />)
+          acc.push(<ResizeBar parentFlexDirection='column' key={`resize_${index}`} />)
         }
         return acc
       }, [])}

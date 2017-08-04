@@ -55,8 +55,7 @@ export function switchVersion () {
 }
 
 export function getUserProfile () {
-  // @fixme: platform v1 api
-  // return request.get('/user/current').then(res => res.data)
+  // @fixme: initialize2 requires removing .then(res => res.data)
   return request.get('/user/current', null,
     { headers: { Accept: '*/*' } }
   ).then(res => res.data)
@@ -67,3 +66,4 @@ export function findSpaceKey ({ ownerName, projectName }) {
     { headers: { Accept: '*/*' } }
   ).then(res => res.data)
 }
+
