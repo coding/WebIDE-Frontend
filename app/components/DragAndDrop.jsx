@@ -63,7 +63,6 @@ class DragAndDrop extends Component {
     this.resetDragPos()
     e.preventDefault()
     if (isFileDragEnd(e)) dnd.dragEnd()
-    this.handleDropOver.cancel()
   }
 
   onDragOver = (e) => {
@@ -92,6 +91,7 @@ class DragAndDrop extends Component {
       y: 0,
     }
     this.unhighlightDirNode()
+    this.handleDropOver.cancel()
   }
 
   unhighlightDirNode = debounce(() => {
@@ -99,7 +99,7 @@ class DragAndDrop extends Component {
       FileTreeActions.unhighlightDirNode(this.highlightNode)
       this.highlightNode = null
     }
-  }, 600)
+  }, 400)
 
   handleDropOver = debounce((e) => {
     dnd.updateDroppables()
@@ -133,7 +133,9 @@ class DragAndDrop extends Component {
 
       default:
     }
-  }, 300)
+  }, 200, {
+    leading: false,
+  })
 
   onDrop = (e) => {
     this.dragLeaveTree = true
