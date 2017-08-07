@@ -1,9 +1,10 @@
-import { request } from '../utils'
 import axios from 'axios'
+import { request } from '../utils'
+import { PluginsCache } from 'utils/plugins'
 import config from '../config'
-import store from '../store'
-import { fetchPackage } from '../components/Package/actions'
+import { fetchPackage } from '../components/Plugins/actions'
 const { packageServer, packageDev } = config
+
 
 const io = require('socket.io-client/dist/socket.io.min.js')
 
@@ -33,10 +34,10 @@ export const enablePackageHotReload = () => {
   })
   socket.on('change', () => {
     console.log('plugin is reloading')
-    const { localPackages } = store.getState().PackageState
-    if (Object.keys(localPackages).length) {
-      const targetPackageName = Object.keys(localPackages)[0]
-      store.dispatch(fetchPackage(targetPackageName, localPackages[targetPackageName].version))
+    if (Object.keys(PluginsCache.packages).length) {
+      const targetPackage = Object.values(PluginsCache.packages)[0]
+      console.log('targetPackage', targetPackage)
+      fetchPackage(targetPackage.pkgId, targetPackage.info.version)
     }
   })
 }

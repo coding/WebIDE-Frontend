@@ -3,11 +3,11 @@ import MenuBar from '../MenuBar'
 import TopBar from '../TopBar'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
-import FileTree from '../FileTree'
+import GitGraph from 'components/Git/GitGraph'
 import TerminalContainer from '../Terminal'
+import FileTree from '../FileTree'
 import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
-import GitGraph from 'components/Git/GitGraph'
 
 
 const PanelContent = ({ panel }) => {
@@ -38,7 +38,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
-          <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-code' }} active >
+          <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-code' }} active>
             <FileTree />
           </SidePanelView>
         </SidePanelContainer>

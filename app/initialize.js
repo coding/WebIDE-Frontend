@@ -1,13 +1,11 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
 import { extendObservable } from 'mobx'
 import config from './config'
 import api from './backendAPI'
 import { qs, stepFactory, i18n, request } from './utils'
-import * as Modal from './components/Modal/actions'
 import store, { dispatch } from './store'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
-import { preloadRequirePackages } from './components/Package/actions'
+import { loadPackagesByType } from './components/Plugins/actions'
 import CodingSDK from './CodingSDK'
 import initializeState from './containers/Initialize/state'
 
@@ -144,7 +142,7 @@ async function initialize () {
   }
 
   await step('[7] load required packages', () => {
-    dispatch(preloadRequirePackages())
+    loadPackagesByType('Required')
     return true
   })
 

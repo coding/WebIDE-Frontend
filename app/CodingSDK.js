@@ -1,15 +1,18 @@
+import { injectComponent, pluginRegister } from 'components/Plugins/actions'
+import * as position from 'components/Plugins/constants'
+import PluginArea from 'components/Plugins/component'
+
 import { CreateI18n } from 'utils/createI18n'
 import { request } from './utils'
 import store from './store'
 import config from './config'
 import * as Modal from './components/Modal/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
-import { addComToSideBar } from './components/Panel/SideBar/actions'
-import { addComToMenuBar } from './components/MenuBar/actions'
-import { addComToContainers } from './containers/actions'
+import api from '../app/backendAPI'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
 import * as Panel from './components/Panel/actions'
 import { app as appExports, lib as libExports } from './exports'
+
 
 window.app = appExports
 window.lib = libExports
@@ -58,10 +61,14 @@ export default class {
 
   get injectComponent () {
     return ({
-      addComToSideBar,
-      addComToMenuBar,
-      addComToContainers,
+      inject: injectComponent,
+      register: pluginRegister,
+      PluginArea,
+      position,
     })
+  }
+  get api() {
+    return api
   }
   get i18n () {
     return new CreateI18n(this.i18nConfig || {})

@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Menu from '../Menu'
-import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
+import Menu from '../Menu'
+import PluginArea from '../../components/Plugins/component'
+import { menuBar } from '../../components/Plugins/constants'
 import { isFunction } from 'utils/is'
 import config from '../../config'
 import { inject } from 'mobx-react'
 import i18n from 'utils/createI18n'
 import store from './store'
-import { addComToMenuBar } from './actions'
-import PluginArea from 'components/Plugins/component'
 
 @inject(() => ({
   extensionRight: store.labels.values()
@@ -25,7 +24,6 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {
       this.setState({ activeItemIndex: -1 })
@@ -51,9 +49,7 @@ class MenuBar extends Component {
   }
 
   render () {
-    const { items, extensionRight } = this.props
-    console.log('plugin', extensionRight, store.views)
-    // const { extensions }
+    const { items } = this.props
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -69,7 +65,7 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        <PluginArea className='menu-bar-right' position='MenuBar.Widget' />
+        <PluginArea className='menu-bar-right' position={menuBar.widget} />
       </div>
     )
   }

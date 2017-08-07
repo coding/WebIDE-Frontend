@@ -1,5 +1,7 @@
 import { registerAction } from 'utils/actions'
-import { ExtensionsCache } from 'utils/extensions'
+import { PluginsCache } from 'utils/plugins'
+import { autorun, observable } from 'mobx'
+import config from 'config'
 import store from './store'
 import api from '../../backendAPI'
 
@@ -10,7 +12,7 @@ export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 export const updatePackageList = registerAction(PACKAGE_UPDATE_LIST, () => {
   api.fetchPackageList()
   .then((result) => {
-    store.list.concat(result)
+    store.list.replace(result)
   })
 })
 
@@ -21,29 +23,48 @@ export const PACKAGE_UPDATE_LOCAL = 'PACKAGE_UPDATE_LOCAL'
 
 export const updateLocalPackage = registerAction(PACKAGE_UPDATE_LOCAL, p => p)
 
-
 export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
-export const togglePackage = registerAction(PACKAGE_TOGGLE, (pkgId, shouldEnable) => {
-  const script = localStorage.getItem(pkgId)
+
+export const togglePackage = registerAction(PACKAGE_TOGGLE, ({ pkgId, shouldEnable, info }) => {
+  const script = localStorage.getItem(pkgId) // toggle行为从本地读取
   if (!shouldEnable) {
     // plugin will unmount
-    const extension = ExtensionsCache.get(pkgId)
-    // window.extensions[pkgId].manager.pluginOnUnmount()
-    extension.manager.pluginOnUnmount()
-    ExtensionsCache.delete(pkgId)
-    // delete window.extensions[pkgId]
+    // 根据 package Id 把所有此插件组的插件拔掉
+    const plugins = PluginsCache.findAll(pkgId)
+    plugins.forEach((plugin) => {
+      if (plugin.detaultInstance.pluginWillUnmount) {
+        plugin.detaultInstance.pluginWillUnmount()
+      }
+      PluginsCache.delete(plugin.key)
+    })
   } else {
     // plugin will mount
     // @fixme @hackape consider theme situation
     try {
       eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
+      // codingPackageJsonp 注册的可以是单个插件或者插件组, 每个插件的key必须不同
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
-      const { Manager = (() => null), key } = plugin
-      const manager = new Manager()
-      ExtensionsCache.set(key || pkgId, plugin)
-      // window.extensions[pkgId] = plugin
-      manager.pluginWillMount()
-      plugin.manager = manager
+      const pluginArray = Array.isArray(plugin) ? plugin : [plugin]
+      pluginArray.forEach((plugin) => {
+        const { Manager = (() => null), key } = plugin
+        const manager = new Manager()
+        plugin.detaultInstance = manager
+        PluginsCache.set(key || pkgId, { ...plugin, pkgId, info })
+
+        // mount 生命周期挂载时触发
+        manager.pluginWillMount(config)
+
+        // 提供 autorun生命周期，插件关注 主项目config 声明周期点变化后自动执行
+
+        if (manager.autoRun) {
+          autorun(manager.autoRun)
+        }
+
+        // // render 提供渲染方法，60帧刷新方法，可用来画图
+        // if (manager.render) {
+        //   setInterval(manager.render, 50 / 3)
+        // }
+      })
     } catch (err) {
       throw err
     }
@@ -67,17 +88,13 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
       return pkgId
     })
 
-  if (ExtensionsCache.get(pkgId)) { togglePackage(pkgId, false) }
 
   Promise.all([pkgInfo, pkgScript])
-  .then(([pkg, id]) => {
-    updateLocalPackage({
-      ...pkg,
-      ...others,
-      enabled: Boolean(ExtensionsCache.get(pkgId)),
-      id
-    })
-    togglePackage(pkgId, true)
+  .then(([info, pkgId]) => {
+    if (PluginsCache.find(pkgId)) {
+      togglePackage({ pkgId, info, shouldEnable: false, others })
+    }
+    togglePackage({ pkgId, shouldEnable: true, others, info })
   })
 })
 
@@ -86,9 +103,10 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
-export const preloadRequirePackages = registerAction(PRELOAD_REQUIRED_EXTENSION, () => {
+// 插件申明加载时机，
+export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION, (type) => {
   api.fetchPackageList()
-    .then(list => list.filter(pkg => pkg.requirement === 'Required'))
+    .then(list => list.filter(pkg => (pkg.step || pkg.requirement) === type))
     .then((list) => {
       list.forEach((pkg) => {
         fetchPackage(pkg.name, pkg.version, pkg)
@@ -104,23 +122,26 @@ export const preloadRequirePackages = registerAction(PRELOAD_REQUIRED_EXTENSION,
  */
 
 export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
-(children, callback = '') => ({ children, callback }),
-({ children, callback }) => {
+(children, otherAction = '') => ({ children, otherAction }),
+({ children, otherAction }) => {
   const childrenArray = Array.isArray(children) ? children : [children]
   childrenArray.forEach((child) => {
     // children 的 shape
-    const { position, key, label, view, instanceId } = child
-    const generateViewId = `${position}_${key}${instanceId ? `_${instanceId}` : ''}`
-    store.labels.set(generateViewId, {
+    const { position, key, label, view, instanceId, status } = child
+    const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
+    store.plugins.set(generateViewId, observable({
+      // 可修改位置
       viewId: generateViewId,
       position,
       key,
-      ...label
-    })
+      label,
+      status: status || observable.map({}),
+      actions: observable.ref(label.actions || {})
+    }))
     store.views[generateViewId] = view
-    if (callback) {
+    if (otherAction) {
         // you can do other mapping such as status initialize in this callback
-      callback(store, child)
+      otherAction(store.plugins.get(generateViewId), child, store)
     }
   })
 })
@@ -141,8 +162,8 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
  */
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
-  const extension = ExtensionsCache.get(label.key)
-  const view = label.key && getComponent(extension, ExtensionsCache, store) // ge your package conteng get all package install cache, get the store
+  const extension = PluginsCache.get(label.key)
+  const view = label.key && getComponent(extension, PluginsCache, store) // ge your package conteng get all package install cache, get the store
 
   return pluginRegister({
     position,

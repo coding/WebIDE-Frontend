@@ -1,5 +1,5 @@
 import { registerAction } from 'utils/actions'
-import { ExtensionsCache } from 'utils/extensions'
+import { PluginsCache } from 'utils/plugins'
 
 import store from './store'
 
@@ -24,8 +24,8 @@ export const containersRegister = registerAction(CONTAINER_REGISTER_VIEW, (child
 
 export const addComToContainers = (position, label, getComponent) => {
   const key = label.key
-  const extension = ExtensionsCache.get(label.key)
-  const view = label.key && getComponent(extension, ExtensionsCache)
+  const extension = PluginsCache.get(label.key)
+  const view = label.key && getComponent(extension, PluginsCache)
 
   return containersRegister({
     position,
