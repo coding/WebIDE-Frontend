@@ -1,12 +1,16 @@
 import React, { Component, PropTypes } from 'react'
+import { loadInnerPlugin } from 'components/Plugins/actions.js'
 import { observer } from 'mobx-react'
 import config from 'config'
-import {i18n} from 'utils'
+import { i18n } from 'utils'
 import state from './state'
 
 
 @observer
 class Initialize extends Component {
+  componentWillMount () {
+    loadInnerPlugin(require('../../plugin/index.js').default)
+  }
   render () {
     let info = (
       <div className='loading-info'>
@@ -16,14 +20,14 @@ class Initialize extends Component {
     if (state.errorInfo) {
       info = (
         <div className='loading-info error'>
-        {i18n`global.loadingWorkspaceFailed`}
+          {i18n`global.loadingWorkspaceFailed`}
         </div>
       )
     }
 
     return (
       <div className='initialize-container'>
-        {config.isPlatform && <div className='coding-loading'></div>}
+        {config.isPlatform && <div className='coding-loading' />}
         {/* <div className='monkey splash-logo'></div> */}
         {info}
         {state.errorInfo && <div className='loading-error'>

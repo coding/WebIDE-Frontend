@@ -17,6 +17,9 @@ export const PluginsCache = {
   },
   findAll (pkgId) {
     return Object.values(this._plugins).filter(value => value.pkgId === pkgId)
+  },
+  findAllByType (loadType) {
+    return Object.values(this._plugins).filter(value => value.loadType === loadType)
   }
 }
 // for test

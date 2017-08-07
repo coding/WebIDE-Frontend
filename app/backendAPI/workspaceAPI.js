@@ -58,7 +58,7 @@ export function getUserProfile () {
   // @fixme: initialize2 requires removing .then(res => res.data)
   return request.get('/user/current', null,
     { headers: { Accept: '*/*' } }
-  ).then(res => res.data)
+  ).then(res => res)
 }
 
 export function findSpaceKey ({ ownerName, projectName }) {

@@ -25,7 +25,8 @@ export const updateLocalPackage = registerAction(PACKAGE_UPDATE_LOCAL, p => p)
 
 export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
 
-export const togglePackage = registerAction(PACKAGE_TOGGLE, ({ pkgId, shouldEnable, info }) => {
+export const togglePackage = registerAction(PACKAGE_TOGGLE,
+({ pkgId, shouldEnable, info, type, data }, action) => {
   const script = localStorage.getItem(pkgId) // toggle行为从本地读取
   if (!shouldEnable) {
     // plugin will unmount
@@ -45,20 +46,27 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE, ({ pkgId, shouldEnab
       // codingPackageJsonp 注册的可以是单个插件或者插件组, 每个插件的key必须不同
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
       const pluginArray = Array.isArray(plugin) ? plugin : [plugin]
-      pluginArray.forEach((plugin) => {
+      pluginArray
+      .sort((pgkA, pgkB) => (pgkA.weight || 0) < (pgkB.weight || 0) ? 1 : -1)
+      .forEach((plugin) => {
         const { Manager = (() => null), key } = plugin
         const manager = new Manager()
         plugin.detaultInstance = manager
-        PluginsCache.set(key || pkgId, { ...plugin, pkgId, info })
-
+        PluginsCache.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
+        if (type === 'init') {
+          if (manager.init) {
+            console.log('init', action)
+            manager.init(data, action)
+          }
+        } else {
         // mount 生命周期挂载时触发
-        manager.pluginWillMount(config)
-
+          manager.pluginWillMount(config, data)
+        }
         // 提供 autorun生命周期，插件关注 主项目config 声明周期点变化后自动执行
 
-        if (manager.autoRun) {
-          autorun(manager.autoRun)
-        }
+        // if (manager.autoRun) {
+        //   autorun(manager.autoRun)
+        // }
 
         // // render 提供渲染方法，60帧刷新方法，可用来画图
         // if (manager.render) {
@@ -77,10 +85,9 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE, ({ pkgId, shouldEnab
 
 export const FETCH_PACKAGE = 'FETCH_PACKAGE'
 
-
 export const fetchPackage = registerAction(FETCH_PACKAGE,
-(pkgId, pkgVersion, others) => ({ pkgId, pkgVersion, others }),
-({ pkgId, pkgVersion, others }) => {
+(pkgId, pkgVersion, type, data) => ({ pkgId, pkgVersion, type, data }),
+async ({ pkgId, pkgVersion, type, data }) => {
   const pkgInfo = api.fetchPackageInfo(pkgId, pkgVersion).then(pkg => pkg.codingIdePackage)
   const pkgScript = api.fetchPackageScript(pkgId, pkgVersion)
     .then((script) => {
@@ -89,32 +96,46 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
     })
 
 
-  Promise.all([pkgInfo, pkgScript])
-  .then(([info, pkgId]) => {
+  await Promise.all([pkgInfo, pkgScript])
+  .then(async ([info, pkgId]) => {
     if (PluginsCache.find(pkgId)) {
-      togglePackage({ pkgId, info, shouldEnable: false, others })
+      await togglePackage({ pkgId, info, shouldEnable: false, type, data })
     }
-    togglePackage({ pkgId, shouldEnable: true, others, info })
+    await togglePackage({ pkgId, shouldEnable: true, type, info, data })
   })
 })
 
-// export const PACKAGE_ACTIVATE_EXTENSION = 'PACKAGE_ACTIVATE_EXTENSION'
-// export const activateExtenstion = createAction(PACKAGE_ACTIVATE_EXTENSION)
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
 // 插件申明加载时机，
-export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION, (type) => {
-  api.fetchPackageList()
-    .then(list => list.filter(pkg => (pkg.step || pkg.requirement) === type))
-    .then((list) => {
-      list.forEach((pkg) => {
-        fetchPackage(pkg.name, pkg.version, pkg)
-      })
-    })
-})
+export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
+(type, data = {}) => ({ type, data }),
+({ type, data }) => api.fetchPackageList()
+    .then(list => list
+                  .sort((pgkA, pgkB) => (pgkA.weight || 0) < (pgkB.weight || 0) ? 1 : -1)
+                  .filter(pkg => (pkg.loadType || pkg.requirement) === type)
+    )
+    .then(async (list) => {
+      for (const pkg of list) {
+        await fetchPackage(pkg.name, pkg.version, type, data)
+      }
+    }))
 
+export const mountPackagesByType = (type) => {
+  const plugins = PluginsCache.findAllByType(type)
+  plugins.forEach((plugin) => {
+    plugin.detaultInstance.pluginWillMount(plugin)
+  })
+}
 
+export const loadInnerPlugin = (plugin) => {
+  const { Manager = (() => null), key } = plugin
+  const manager = new Manager()
+  plugin.detaultInstance = manager
+  PluginsCache.set(key, { ...plugin, pkgId: 'inner plugin', info: plugin.info || {} })
+  manager.pluginWillMount(config)
+}
 /**
  * @param  { position label getComponent callback } children // children is the shape of per component
 
