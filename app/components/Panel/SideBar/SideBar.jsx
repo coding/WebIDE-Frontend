@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import cx from 'classnames'
 import PluginArea from 'components/Plugins/component'
-import { sideBar } from 'components/Plugins/constants'
+import { SIDEBAR } from 'components/Plugins/constants'
 import { observer } from 'mobx-react'
 import { toggleSidePanelView } from './actions'
 
@@ -39,7 +39,7 @@ SideBarLabel.propTypes = {
 const SideBar = observer(({ side }) => (
   <PluginArea
     className={`bar side-bar ${side}`}
-    position={sideBar[side]}
+    position={SIDEBAR[side.toUpperCase()]}
     filter={plugin => !plugin.status.hidden}
     getChildView={plugin => (
       <SideBarLabel

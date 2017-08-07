@@ -1,16 +1,19 @@
 // 菜单栏
-export const menuBar = {
+export const MENUBAR = {
   // 菜单栏右上角的 widget
-  widget: 'menuBar.widget'
+  WIDGET: 'MENUBAR.WIDGET'
 }
 // 侧边烂区域
-export const sideBar = {
-  right: 'sideBar.right',
-  left: 'sideBar.left',
-  bottom: 'sideBar.bottom'
+export const SIDEBAR = {
+  RIGHT: 'SIDEBAR.RIGHT',
+  LEFT: 'SIDEBAR.LEFT',
+  BOTTOM: 'SIDEBAR.BOTTOM'
 }
 
+export const TOPBAR = {
+  WIDGET: 'TOPBAR.WIDGET'
+}
 // containers 最外层区域
-export const containers = {
-  utilities: 'containers.utilities'
+export const CONTAINERS = {
+  UTILITIES: 'CONTAINERS.UTILITIES'
 }

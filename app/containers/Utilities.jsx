@@ -3,7 +3,8 @@ import ModalContainer from 'components/Modal'
 import Notification from 'components/Notification'
 import DragAndDrop from 'components/DragAndDrop'
 import PluginArea from 'components/Plugins/component'
-import { containers } from 'components/Plugins/constants'
+import { CONTAINERS } from 'components/Plugins/constants'
+import { ContextMenuContainer } from 'components/ContextMenu'
 
 
 const Utilities = () => (
@@ -11,7 +12,8 @@ const Utilities = () => (
     <ModalContainer />
     <Notification />
     <DragAndDrop />
-    <PluginArea position={containers.utilities} />
+    <ContextMenuContainer />
+    <PluginArea position={CONTAINERS.UTILITIES} />
   </div>
   )
 

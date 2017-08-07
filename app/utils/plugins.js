@@ -1,4 +1,4 @@
-export const PluginsCache = {
+export const PluginRegistry = {
   _plugins: {},
   get packages () {
     return this._plugins
@@ -23,4 +23,4 @@ export const PluginsCache = {
   }
 }
 // for test
-window.PluginsCache = PluginsCache
+window.PluginRegistry = PluginRegistry

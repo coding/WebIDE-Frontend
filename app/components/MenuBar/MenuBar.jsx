@@ -4,7 +4,7 @@ import cx from 'classnames'
 import api from 'backendAPI'
 import Menu from '../Menu'
 import PluginArea from '../../components/Plugins/component'
-import { menuBar } from '../../components/Plugins/constants'
+import { MENUBAR } from '../../components/Plugins/constants'
 import { isFunction } from 'utils/is'
 import config from '../../config'
 import { inject } from 'mobx-react'
@@ -65,7 +65,7 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        <PluginArea className='menu-bar-right' position={menuBar.widget} />
+        <PluginArea className='menu-bar-right' position={MENUBAR.WIDGET} />
       </div>
     )
   }

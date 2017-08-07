@@ -1,7 +1,6 @@
-/*eslint-disable no-await-in-loop*/
+/* eslint-disable no-await-in-loop */
 import React from 'react'
 import { isFunction } from 'utils/is'
-// import { extendObservable } from 'mobx'
 import config from '../config'
 import api from '../backendAPI'
 import { stepFactory, i18n } from '../utils'
@@ -38,23 +37,25 @@ async function initialize () {
   })
 
   await step('load step from settings', async() => {
-    for (const key of state.manager) {
-      if (checkEnable(state.stepCache.get(key).enable)) {
-        await step(`[${stepNum++}] ${state.stepCache.get(key).desc}`, state.stepCache.get(key).func)
+    for (const value of state.values()) {
+      if (checkEnable(value.enable)) {
+        await step(`[${stepNum++}] ${value.desc}`, value.func)
       }
     }
     return true
   })
 
 
-  await step(`[${stepNum++}] load required package`, async () => {
+  await step(`[${stepNum++}] load required package`,
+  async () => {
     await loadPackagesByType('Required')
     mountPackagesByType('init')
     return true
   })
 
   if (config.packageDev) {
-    await step(`[${stepNum++}] enable package server hotreload`, () => {
+    await step(`[${stepNum++}] enable package server hotreload`,
+    () => {
       api.enablePackageHotReload()
       return true
     })

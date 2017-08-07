@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react'
-import { loadInnerPlugin } from 'components/Plugins/actions.js'
+import React, { Component } from 'react'
+import { loadPlugin } from 'components/Plugins/actions.js'
 import { observer } from 'mobx-react'
 import config from 'config'
 import { i18n } from 'utils'
@@ -9,7 +9,7 @@ import state from './state'
 @observer
 class Initialize extends Component {
   componentWillMount () {
-    loadInnerPlugin(require('../../plugin/index.js').default)
+    loadPlugin(require('../../plugin/index.js').default)
   }
   render () {
     let info = (

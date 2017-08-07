@@ -1,5 +1,5 @@
 import { registerAction } from 'utils/actions'
-import { PluginsCache } from 'utils/plugins'
+import { PluginRegistry } from 'utils/plugins'
 import { autorun, observable } from 'mobx'
 import config from 'config'
 import store from './store'
@@ -31,12 +31,12 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
   if (!shouldEnable) {
     // plugin will unmount
     // 根据 package Id 把所有此插件组的插件拔掉
-    const plugins = PluginsCache.findAll(pkgId)
+    const plugins = PluginRegistry.findAll(pkgId)
     plugins.forEach((plugin) => {
       if (plugin.detaultInstance.pluginWillUnmount) {
         plugin.detaultInstance.pluginWillUnmount()
       }
-      PluginsCache.delete(plugin.key)
+      PluginRegistry.delete(plugin.key)
     })
   } else {
     // plugin will mount
@@ -52,10 +52,9 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         const { Manager = (() => null), key } = plugin
         const manager = new Manager()
         plugin.detaultInstance = manager
-        PluginsCache.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
+        PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
         if (type === 'init') {
           if (manager.init) {
-            console.log('init', action)
             manager.init(data, action)
           }
         } else {
@@ -98,7 +97,7 @@ async ({ pkgId, pkgVersion, type, data }) => {
 
   await Promise.all([pkgInfo, pkgScript])
   .then(async ([info, pkgId]) => {
-    if (PluginsCache.find(pkgId)) {
+    if (PluginRegistry.find(pkgId)) {
       await togglePackage({ pkgId, info, shouldEnable: false, type, data })
     }
     await togglePackage({ pkgId, shouldEnable: true, type, info, data })
@@ -123,17 +122,17 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
     }))
 
 export const mountPackagesByType = (type) => {
-  const plugins = PluginsCache.findAllByType(type)
+  const plugins = PluginRegistry.findAllByType(type)
   plugins.forEach((plugin) => {
     plugin.detaultInstance.pluginWillMount(plugin)
   })
 }
 
-export const loadInnerPlugin = (plugin) => {
+export const loadPlugin = (plugin) => {
   const { Manager = (() => null), key } = plugin
   const manager = new Manager()
   plugin.detaultInstance = manager
-  PluginsCache.set(key, { ...plugin, pkgId: 'inner plugin', info: plugin.info || {} })
+  PluginRegistry.set(key, { ...plugin, pkgId: 'inner plugin', info: plugin.info || {} })
   manager.pluginWillMount(config)
 }
 /**
@@ -143,8 +142,8 @@ export const loadInnerPlugin = (plugin) => {
  */
 
 export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
-(children, otherAction = '') => ({ children, otherAction }),
-({ children, otherAction }) => {
+(children, callback = '') => ({ children, callback }),
+({ children, callback }) => {
   const childrenArray = Array.isArray(children) ? children : [children]
   childrenArray.forEach((child) => {
     // children 的 shape
@@ -160,9 +159,9 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
       actions: observable.ref(label.actions || {})
     }))
     store.views[generateViewId] = view
-    if (otherAction) {
+    if (callback) {
         // you can do other mapping such as status initialize in this callback
-      otherAction(store.plugins.get(generateViewId), child, store)
+      callback(store.plugins.get(generateViewId), child, store)
     }
   })
 })
@@ -183,8 +182,8 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
  */
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
-  const extension = PluginsCache.get(label.key)
-  const view = label.key && getComponent(extension, PluginsCache, store) // ge your package conteng get all package install cache, get the store
+  const extension = PluginRegistry.get(label.key)
+  const view = label.key && getComponent(extension, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
 
   return pluginRegister({
     position,

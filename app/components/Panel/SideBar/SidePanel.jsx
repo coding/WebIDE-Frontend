@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import _ from 'lodash'
-import { sideBar } from 'components/Plugins/constants'
+import { SIDEBAR } from 'components/Plugins/constants'
 import { pluginRegister } from '../../Plugins/actions'
 import PluginArea from '../../Plugins/component'
 
@@ -11,7 +11,7 @@ class SidePanelContainer extends Component {
 
     const mapChildrenToRegister = children.map((child, idx) => ({
       label: child.props.label,
-      position: sideBar[side],
+      position: SIDEBAR[side.toUpperCase()],
       key: child.key || idx,
       view: child,
       active: child.props.active
@@ -28,7 +28,7 @@ class SidePanelContainer extends Component {
     const { side } = this.props
     return (<div style={{ height: '100%' }}>
       <PluginArea
-        position={sideBar[side]}
+        position={SIDEBAR[side.toUpperCase()]}
         getChildView={(plugin, view) => (
           <SidePanelViewContent key={plugin.viewId}
             view={view}

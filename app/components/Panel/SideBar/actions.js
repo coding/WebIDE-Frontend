@@ -2,7 +2,7 @@ import { registerAction } from 'utils/actions'
 import { emitter, E } from 'utils'
 import panelState from '../state'
 import pluginState from '../../Plugins/store'
-import { sideBar } from '../../Plugins/constants'
+import { SIDEBAR } from '../../Plugins/constants'
 
 export const SIDEBAR_ACTIVATE_VIEW = 'SIDEBAR_ACTIVATE_VIEW'
 export const SIDEBAR_TOGGLE_VIEW = 'SIDEBAR_TOGGLE_VIEW'
@@ -10,9 +10,9 @@ export const SIDEBAR_SHOW_VIEW = 'SIDEBAR_SHOW_VIEW'
 
 
 const positionToPanel = {
-  [sideBar.right]: 'RIGHT',
-  [sideBar.left]: 'LEFT',
-  [sideBar.bottom]: 'BOTTOM',
+  [SIDEBAR.RIGHT]: 'RIGHT',
+  [SIDEBAR.LEFT]: 'LEFT',
+  [SIDEBAR.BOTTOM]: 'BOTTOM',
 }
 
 const _toggleSidePanelView = (viewId, shouldShow) => {

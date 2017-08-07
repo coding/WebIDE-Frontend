@@ -1,10 +1,7 @@
 import { extendObservable, observable } from 'mobx'
 import config from '../config'
 import api from '../backendAPI'
-import { qs, stepFactory, i18n, request } from '../utils'
-import store, { dispatch } from '../store'
-import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
-import { loadPackagesByType } from '../components/Plugins/actions'
+import { qs } from '../utils'
 // import CodingSDK from '../CodingSDK'
 import initializeState from '../containers/Initialize/state'
 
@@ -14,7 +11,6 @@ const qsParsed = qs.parse(window.location.search.slice(1))
 
 const stepCache = observable.map({
   getSpaceKey: {
-    key: 'GetSpaceKeyFromLocation',
     desc: 'Get spaceKey from window.location',
     func: async () => {
     // case 0: isTry
@@ -49,13 +45,11 @@ const stepCache = observable.map({
     }
   },
   checkExist: {
-    key: 'checkExist',
     desc: 'Check if workspace exist',
     enable: () => config.spaceKey,
     func: () => api.isWorkspaceExist()
   },
   setupWorkspace: {
-    key: 'setupWorkspace',
     desc: 'Setting up workspace...',
     enable: () => config.spaceKey,
     func: () =>
@@ -75,27 +69,47 @@ const stepCache = observable.map({
       })
   },
   getSettings: {
-    key: 'getSettings',
     desc: 'Get workspace settings',
-    enable: !config.isPlatform,
     func: () =>
       api.getSettings().then(settings => config.settings = settings)
   },
   connectSocket: {
-    key: 'connectSocket',
     desc: 'Connect websocket',
     func: () =>
       api.connectWebsocketClient()
   },
 })
 
+stepCache.insert = function (key, value, referKey, before = false) {
+  let entries = this.entries()
+  let insertIndex = entries.findIndex(entry => entry[0] === referKey)
+  if (insertIndex < 0) {
+    entries = entries.concat([key, value])
+  } else {
+    if (!before) insertIndex += 1
+    entries.splice(insertIndex, 0, [key, value])
+  }
+  this.replace(entries)
+}
+// delete muliple keys
+stepCache.delete = function (keys) {
+  const keyArray = Array.isArray(keys) ? keys : [keys]
+  keyArray.forEach((key) => {
+    observable.map().delete.call(this, key)
+  })
+}
+stepCache.move = function (key, referKey, before = false) {
+  const entries = this.entries()
+  let insertIndex = entries.findIndex(entry => entry[0] === referKey)
+  const currentIndex = entries.findIndex(entry => entry[0] === key)
+  if (insertIndex < 0) return
+  const value = stepCache.get(key)
+  if (!before) insertIndex += 1
+  // 删除当前
+  entries.splice(currentIndex, 1)
+  // 新位置后插入
+  entries.splice(insertIndex, 0, [key, value])
+  this.replace(entries)
+}
 
-const manager = observable([
-  'getSpaceKey',
-  'setupWorkspace',
-  'getSettings',
-  'connectSocket'
-])
-
-
-export default { manager, stepCache }
+export default stepCache

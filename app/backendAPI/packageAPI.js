@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { request } from '../utils'
-import { PluginsCache } from 'utils/plugins'
+import { PluginRegistry } from 'utils/plugins'
 import config from '../config'
 import { fetchPackage } from '../components/Plugins/actions'
 const { packageServer, packageDev } = config
@@ -34,8 +34,8 @@ export const enablePackageHotReload = () => {
   })
   socket.on('change', () => {
     console.log('plugin is reloading')
-    if (Object.keys(PluginsCache.packages).length) {
-      const targetPackage = Object.values(PluginsCache.packages)[0]
+    if (Object.keys(PluginRegistry.packages).length) {
+      const targetPackage = Object.values(PluginRegistry.packages)[0]
       console.log('targetPackage', targetPackage)
       fetchPackage(targetPackage.pkgId, targetPackage.info.version)
     }
