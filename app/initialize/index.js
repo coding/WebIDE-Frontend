@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import React from 'react'
-import { isFunction } from 'utils/is'
+import { isFunction, isBoolean, isString } from 'utils/is'
 import config from '../config'
 import api from '../backendAPI'
 import { stepFactory, i18n } from '../utils'
@@ -8,6 +8,12 @@ import { loadPackagesByType, mountPackagesByType } from '../components/Plugins/a
 import CodingSDK from '../CodingSDK'
 import state from './state'
 import pluginUrls from '../../.plugins.json'
+
+function closestTo (arr, key, isPrev) {
+  const offsetIndex = isPrev ? -1 : 1
+  const current = arr.indexOf(key)
+  return arr[current + offsetIndex]
+}
 
 
 function checkEnable (enable) {
@@ -39,12 +45,20 @@ async function initialize () {
   })
 
   await step('load step from settings', async() => {
-    for (const value of state.values()) {
-      if (checkEnable(value.enable)) {
-        await step(`[${stepNum++}] ${value.desc}`, value.func)
+    async function goto (key, hasNext = true) {
+      if (!hasNext) {
+        return true
+      }
+      const nextKey = await step(`[${stepNum++}] ${state.get(key).desc}`, state.get(key).func)
+      if (nextKey === undefined || isBoolean(nextKey)) {
+        const next = closestTo(state.keys(), key)
+        return nextKey && goto(next, !!next)
+      }
+      if (isString(nextKey)) {
+        return goto(nextKey)
       }
     }
-    return true
+    return goto(state.keys()[0])
   })
 
 
