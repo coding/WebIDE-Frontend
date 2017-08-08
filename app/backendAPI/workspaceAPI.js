@@ -43,3 +43,7 @@ export function closeTtySocketClient () {
 export function getSettings () {
   return request.get(`/workspaces/${config.spaceKey}/settings`).then(({ content = {} }) => JSON.parse(content))
 }
+
+export function triggerCloneTask () {
+  return request.post(`/workspaces/${config.spaceKey}/clone`)
+}

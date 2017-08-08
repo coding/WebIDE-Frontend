@@ -10,9 +10,6 @@ const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./sty
 baseTheme.use()
 window.themes = { '@current': baseTheme }
 
-const rootElement = document.getElementById('root')
-render(<InitializeContainer />, rootElement)
-
 async function startApp (module) {
   const step = await initialize()
   if (!step.allSuccess) {
@@ -28,6 +25,9 @@ async function startApp (module) {
     render(<Root />, rootElement)
   }
 }
+
+const rootElement = document.getElementById('root')
+render(<InitializeContainer startApp={() => startApp(module)} />, rootElement)
 
 startApp(module)
 
