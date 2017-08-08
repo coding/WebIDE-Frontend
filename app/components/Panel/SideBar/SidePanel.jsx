@@ -1,52 +1,46 @@
 import React, { Component, PropTypes } from 'react'
-import { inject } from 'mobx-react'
 import _ from 'lodash'
+import { SIDEBAR } from 'components/Plugins/constants'
+import { pluginRegister } from '../../Plugins/actions'
+import PluginArea from '../../Plugins/component'
 
-import {
-  registerSideBarView
-} from './actions'
-import state, { labelsShape } from './state'
-
-
-@inject((__, { side }) => {
-  const labels = state.labels.values().filter(label => label.side === side)
-  const activeViewId = state.activeStatus.get(side)
-  return { activeViewId, labels, side }
-})
 class SidePanelContainer extends Component {
   componentWillMount () {
     const children = this.getChildren()
     const { side } = this.props
-    const mapChildrenToSidebar = children.map((child, idx) => ({
-      side,
-      key: child.key || `${side}_${idx}`,
-      isActive: child.props.active || false,
+
+    const mapChildrenToRegister = children.map((child, idx) => ({
       label: child.props.label,
-      view: child
+      position: SIDEBAR[side.toUpperCase()],
+      key: child.key || idx,
+      view: child,
+      active: child.props.active
     }))
-    registerSideBarView(mapChildrenToSidebar)
+    pluginRegister(mapChildrenToRegister, (label, child) => {
+      label.status.set('active', child.active)
+    })
   }
   getChildren () {
     if (!this.props.children) return []
     return Array.isArray(this.props.children) ? this.props.children : [this.props.children]
   }
   render () {
-    const { labels = {}, activeViewId } = this.props
+    const { side } = this.props
     return (<div style={{ height: '100%' }}>
-      {labels
-      .map(label =>
-        <SidePanelViewContent key={label.viewId}
-          view={state.views[label.viewId]}
-          isActive={activeViewId === label.viewId}
-        />
-      )}
+      <PluginArea
+        position={SIDEBAR[side.toUpperCase()]}
+        getChildView={(plugin, view) => (
+          <SidePanelViewContent key={plugin.viewId}
+            view={view}
+            isActive={plugin.status.get('active')}
+          />
+        )}
+      />
     </div>)
   }
 }
 SidePanelContainer.propTypes = {
-  labels: labelsShape,
   children: PropTypes.node,
-  activeViewId: PropTypes.string,
   side: PropTypes.string
 }
 

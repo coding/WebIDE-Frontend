@@ -8,15 +8,20 @@ function getChildren (children) {
 }
 
 
-const PluginArea = observer(({ position = '', childProps = {}, children, ...others }) => {
-  const pluginsArray = store.labels.values().filter(label => label.position === position)
+const PluginArea = observer(({ position = '', childProps = {}, children, getChildView, filter, ...others }) => {
+  const pluginsArray = store.plugins.values().filter(plugin => plugin.position === position)
 
   const pluginComponents = pluginsArray
-  .sort((labelA, labelB) => labelA.weight || labelB.weight < 1 || 1 ? -1 : 1)
-  .map(label => React.createElement(store.views[label.viewId], {
-    key: label.viewId,
-    ...childProps,
-  }))
+  .filter(filter || (() => true))
+  .sort((pluginA, pluginB) => (pluginA.label.weight || 0) < (pluginB.label.weight || 0) ? 1 : -1)
+  .map((plugin) => {
+    const view = store.views[plugin.viewId]
+    return getChildView ? getChildView(plugin, view) :
+     React[React.isValidElement(view) ? 'cloneElement' : 'createElement'](view, {
+       key: plugin.viewId,
+       ...childProps,
+     })
+  })
   // 允许提供children的必有不可插拔项
   return (
     <div {...others}>

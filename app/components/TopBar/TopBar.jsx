@@ -1,15 +1,14 @@
 import React from 'react'
-import { observer, inject } from 'mobx-react'
-import Breadcrumbs from './Breadcrumbs'
 import PluginArea from 'components/Plugins/component'
+import { TOPBAR } from 'components/Plugins/constants'
+import { observer } from 'mobx-react'
+import Breadcrumbs from './Breadcrumbs'
 
-const TopBar = observer(() => {
-  return (
-    <div className='top-bar'>
-      <Breadcrumbs />
-      <PluginArea className='widget' position='TopBar.Widget' />
-    </div>
-  )
-})
+const TopBar = observer(() => (
+  <div className='top-bar'>
+    <Breadcrumbs />
+    <PluginArea className='widget' position={TOPBAR.WIDGET} />
+  </div>
+  ))
 
 export default TopBar

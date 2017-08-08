@@ -12,9 +12,7 @@ export function isWorkspaceExist () {
 }
 
 export function setupWorkspace () {
-  return config.isPlatform ?
-    request.post('/workspaces', { spaceKey: config.spaceKey })
-  : request.post(`/workspaces/${config.spaceKey}/setup`)
+  return request.post(`/workspaces/${config.spaceKey}/setup`)
 }
 
 export function createWorkspace (options) {
@@ -45,25 +43,3 @@ export function closeTtySocketClient () {
 export function getSettings () {
   return request.get(`/workspaces/${config.spaceKey}/settings`).then(({ content = {} }) => JSON.parse(content))
 }
-
-// Switch back to old version
-export function switchVersion () {
-  return request.put('/versions')
-  .then((res) => {
-    window.location.reload()
-  })
-}
-
-export function getUserProfile () {
-  // @fixme: initialize2 requires removing .then(res => res.data)
-  return request.get('/user/current', null,
-    { headers: { Accept: '*/*' } }
-  ).then(res => res.data)
-}
-
-export function findSpaceKey ({ ownerName, projectName }) {
-  return request.get(`/ws/find/coding/${ownerName}/${projectName}`, null,
-    { headers: { Accept: '*/*' } }
-  ).then(res => res.data)
-}
-

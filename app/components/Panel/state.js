@@ -7,9 +7,6 @@ const { state, BasePane } = PaneScope()
 
 extendObservable(state, {
   activePanelId: null,
-  primaryPanelAxis: {
-    blur: false
-  },
   get panels () { return this.entities },
   get rootPanel () {
     const rootPanel = this.panels.values().find(panel => panel.isRoot)
@@ -20,8 +17,6 @@ extendObservable(state, {
     return activePanel || this.rootPanel
   },
 })
-state.views = {}
-
 class Panel extends BasePane {
   constructor (opt) {
     super()

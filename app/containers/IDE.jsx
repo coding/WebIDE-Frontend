@@ -4,9 +4,6 @@ import { initializeFileTree } from '../components/FileTree/actions'
 import PanelsContainer from '../components/Panel'
 import Utilities from './Utilities'
 
-import api from '../backendAPI'
-import config from '../config'
-
 
 class IDE extends Component {
   constructor (props) {
