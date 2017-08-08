@@ -34,7 +34,6 @@ class Initialize extends Component {
     state.status = WORKING_STATE.Created
   }
   render () {
-    const { startApp } = this.props
     let errorInfo = null
     if (state.errorInfo) {
       errorInfo = (
