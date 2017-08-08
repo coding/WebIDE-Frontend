@@ -5,5 +5,4 @@ const state = observable({
   errorCode: null,
   status: '',
 })
-
 export default state

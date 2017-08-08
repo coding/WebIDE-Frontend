@@ -1,9 +1,13 @@
 {
-   "loadingWorkspace": "Loading workspace...",
-   "loadingWorkspaceFailed": "Loading workspace is failed",
-   "loadingWorkspaceDenied": "Loading workspace denied",
-   "requestCollaboration": "Request collaboration",
-   "requestCollaborationReject": "Your request has been rejected.",
+   "loadingWorkspaceCloning": "Now cloning code...",
+   "loadingWorkspaceCloneFailed": "Clone failed",
+   "recloneWorkspace": "Try clone again",
    "requestingCollaboration": "You have requested collaboration",
+   "loadingWorkspaceDenied": "Loading workspace denied",
+   "requestCollaborationReject": "Your request has been rejected.",
+   "loadingWorkspaceFailed": "Loading workspace is failed",
+   "requestCollaboration": "Request collaboration",
+   "loadingWorkspace": "Loading workspace...",
+   "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired."
 }

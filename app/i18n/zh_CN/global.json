@@ -1,9 +1,13 @@
 {
-   "loadingWorkspace": "正在加载工作区",
-   "loadingWorkspaceFailed": "加载工作区失败",
-   "loadingWorkspaceDenied": "访问工作区未授权",
-   "requestCollaboration": "申请协作",
-   "requestCollaborationReject": "您的申请被拒绝了",
+   "loadingWorkspaceCloning": "正在 Clone 项目代码...",
+   "loadingWorkspaceCloneFailed": "Clone 代码失败",
+   "recloneWorkspace": "重新 Clone 代码",
    "requestingCollaboration": "协作申请已经提交",
+   "loadingWorkspaceDenied": "访问工作区未授权",
+   "requestCollaborationReject": "您的申请被拒绝了",
+   "loadingWorkspaceFailed": "加载工作区失败",
+   "requestCollaboration": "申请协作",
+   "loadingWorkspace": "正在加载工作区",
+   "reloadWorkspace": "重新加载",
    "requestCollaborationExpires": "试用已经结束"
 }
