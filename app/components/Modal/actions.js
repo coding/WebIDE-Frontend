@@ -33,7 +33,7 @@ export const addModal = registerAction(MODAL_ADD, modalPayloadCreator,
 
 export const MODAL_DISMISS = 'MODAL_DISMISS'
 export const dismissModal = registerAction(MODAL_DISMISS, () => {
-  state.stack.shift()
+  state.stack.pop()
 })
 
 export const MODAL_UPDATE = 'MODAL_UPDATE'

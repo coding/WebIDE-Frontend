@@ -40,7 +40,8 @@ function initializeEditor (cmContainer, theme) {
 
 // Ref: codemirror/mode/meta.js
 function getMode (file) {
-  return CodeMirror.findModeByMIME(file.contentType) || CodeMirror.findModeByFileName(file.path.split('/').pop())
+  // return CodeMirror.findModeByMIME(file.contentType) || CodeMirror.findModeByFileName(file.path.split('/').pop())
+  return CodeMirror.findModeByFileName(file.path.split('/').pop()) || CodeMirror.findModeByMIME(file.contentType)
 }
 
 const debounced = _.debounce(func => func(), 1000)
@@ -79,11 +80,10 @@ class CodeMirrorEditor extends Component {
       let modeInfo
       if (file) modeInfo = getMode(file)
       if (modeInfo) {
-        let mode = modeInfo.mode
-        if (mode === 'null') {
-          cm.setOption('mode', mode)
+        if (modeInfo.mode === 'null') {
+          cm.setOption('mode', modeInfo.mode)
         } else {
-          require([`codemirror/mode/${mode}/${mode}.js`], () => cm.setOption('mode', mode))
+          require([`codemirror/mode/${modeInfo.mode}/${modeInfo.mode}.js`], () => cm.setOption('mode', modeInfo.mime))
         }
       }
     }

@@ -1,7 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import assignProps from 'utils/assignProps'
-import { observable, computed, action, autorun, toJS } from 'mobx'
+import { observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -37,12 +37,16 @@ class Editor {
     const cm = CodeMirror(this.cmDOM, this.options)
     this.cm = cm
     cm._editor = this
+    const setOption = this.cm.setOption.bind(this.cm)
+    this.cm.setOption = this.setOption = (option, value) => {
+      this._options.set(option, value)
+    }
 
     this.dispose = autorun(() => {
       const options = Object.entries(this.options)
       options.forEach(([option, value]) => {
         if (this.cm.options[option] === value) return
-        this.cm.setOption(option, value)
+        setOption(option, value)
       })
     })
 
@@ -87,6 +91,7 @@ class Editor {
 
   @action update (props = {}) {
     // simple assignments
+    extendObservable(this, props)
     assignProps(this, props, {
       tabId: String,
       filePath: String,
