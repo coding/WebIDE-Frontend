@@ -2,19 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import api from 'backendAPI'
+import { isFunction } from 'utils/is'
 import Menu from '../Menu'
 import PluginArea from '../../components/Plugins/component'
 import { MENUBAR } from '../../components/Plugins/constants'
-import { isFunction } from 'utils/is'
-import config from '../../config'
-import { inject } from 'mobx-react'
-import i18n from 'utils/createI18n'
-import store from './store'
 
-@inject(() => ({
-  extensionRight: store.labels.values()
-  .filter(label => label.position === 'right')
-}))
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
