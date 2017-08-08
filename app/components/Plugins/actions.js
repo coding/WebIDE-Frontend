@@ -85,13 +85,14 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
 export const FETCH_PACKAGE = 'FETCH_PACKAGE'
 
 export const fetchPackage = registerAction(FETCH_PACKAGE,
-(pkgId, pkgVersion, type, data) => ({ pkgId, pkgVersion, type, data }),
-async ({ pkgId, pkgVersion, type, data }) => {
-  const pkgInfo = api.fetchPackageInfo(pkgId, pkgVersion).then(pkg => pkg.codingIdePackage)
-  const pkgScript = api.fetchPackageScript(pkgId, pkgVersion)
+(pkg, type, data) => ({ pkg, type, data }),
+async ({ pkg, type, data }) => {
+  const pkgInfo = api.fetchPackageInfo(pkg.name, pkg.version, pkg.TARGET)
+  .then(pkg => pkg.codingIdePackage)
+  const pkgScript = api.fetchPackageScript(pkg.name, pkg.version, pkg.TARGET)
     .then((script) => {
-      localStorage.setItem(pkgId, script)
-      return pkgId
+      localStorage.setItem(pkg.name, script)
+      return pkg.name
     })
 
 
@@ -117,7 +118,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
     )
     .then(async (list) => {
       for (const pkg of list) {
-        await fetchPackage(pkg.name, pkg.version, type, data)
+        await fetchPackage(pkg, type, data)
       }
     }))
 

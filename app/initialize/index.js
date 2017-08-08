@@ -7,6 +7,8 @@ import { stepFactory, i18n } from '../utils'
 import { loadPackagesByType, mountPackagesByType } from '../components/Plugins/actions'
 import CodingSDK from '../CodingSDK'
 import state from './state'
+import pluginUrls from '../../.plugins.json'
+
 
 function checkEnable (enable) {
   if (enable === undefined) {
@@ -56,7 +58,13 @@ async function initialize () {
   if (config.packageDev) {
     await step(`[${stepNum++}] enable package server hotreload`,
     () => {
-      api.enablePackageHotReload()
+      if (pluginUrls && pluginUrls.length) {
+        pluginUrls.forEach((pluginUrl) => {
+          api.enablePackageHotReload(pluginUrl)
+        })
+      } else {
+        api.enablePackageHotReload()
+      }
       return true
     })
   }
