@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
-import { extendObservable, observable, computed, action } from 'mobx'
+import { autorun, extendObservable, observable, computed, action } from 'mobx'
 import { TabStateScope } from 'commons/Tab'
 import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
@@ -14,11 +14,15 @@ class Tab extends BaseTab {
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
     this.update(props)
+    autorun(() => {
+      if (!this.file) return
+      this.flags.modified = !this.file.isSynced
+    })
   }
 
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
-    if (is.pojo(props.flags)) this.flags = props.flags
+    if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
 
     // tabGroup
     let tabGroup
@@ -26,7 +30,7 @@ class Tab extends BaseTab {
       tabGroup = state.tabGroups.get(props.tabGroup.id)
     }
     if (!tabGroup) tabGroup = state.activeTabGroup
-    if (this.tabGroup !== tabGroup) { tabGroup && tabGroup.addTab(this) }
+    if (tabGroup && this.tabGroup !== tabGroup) tabGroup.addTab(this)
 
     // editor
     if (!props.editor) props.editor = {}
@@ -38,7 +42,9 @@ class Tab extends BaseTab {
     }
   }
 
-  @observable flags = {}
+  @observable flags = {
+    modified: false
+  }
 
   @computed get title () {
     if (this.file) {
@@ -62,8 +68,7 @@ class Tab extends BaseTab {
   }
 
   @computed get file () {
-    const editor = this.editor
-    return editor ? editor.file : null
+    return this.editor ? this.editor.file : null
   }
 }
 
