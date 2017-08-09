@@ -48,7 +48,7 @@ class FileNode {
   @observable contentType
   @observable content = ''
   @observable isDir = false
-  @observable isSynced = false
+  @observable isSynced = true
   @observable gitStatus = {}
   @observable size = 0
 

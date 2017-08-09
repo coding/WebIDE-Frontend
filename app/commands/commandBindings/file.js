@@ -115,16 +115,14 @@ export default {
         .then(createFile)
         .then(path => TabStore.updateTab({
           id: activeTab.id,
-          title: path.replace(/^.*\/([^\/]+$)/, '$1'),
           editor: { filePath: path },
         }))
-        .then(() => TabStore.updateTabFlags(activeTab.id, 'modified', false))
     } else {
       api.writeFile(activeTab.file.path, content)
         .then(() => {
-          TabStore.updateTabFlags(activeTab.id, 'modified', false)
           FileStore.updateFile({
             path: activeTab.file.path,
+            isSynced: true,
             content,
           })
         })
