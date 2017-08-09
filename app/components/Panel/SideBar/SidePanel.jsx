@@ -26,8 +26,9 @@ class SidePanelContainer extends Component {
   }
   render () {
     const { side } = this.props
-    return (<div style={{ height: '100%' }}>
+    return (
       <PluginArea
+        style={{ height: '100%' }}
         position={SIDEBAR[side.toUpperCase()]}
         getChildView={(plugin, view) => (
           <SidePanelViewContent key={plugin.viewId}
@@ -36,7 +37,7 @@ class SidePanelContainer extends Component {
           />
         )}
       />
-    </div>)
+    )
   }
 }
 SidePanelContainer.propTypes = {
