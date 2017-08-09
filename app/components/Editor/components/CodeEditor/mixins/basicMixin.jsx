@@ -10,20 +10,19 @@ export default {
   getEventListeners () {
     return {
       change: (cm) => {
-        if (!this.isChanging) this.isChanging = true
         const { editor } = this.props
-        TabStore.updateTab({
-          id: editor.tab.id,
-          flags: { modified: true },
-        })
-
-        if (editor.file) debounced(() => {
+        // TabStore.updateTab({
+        //   id: editor.tab.id,
+        //   flags: { modified: true },
+        // })
+        if (!editor.file) return
+        editor.file.isSynced = false
+        debounced(() => {
           FileStore.updateFile({
             id: editor.file.id,
             content: cm.getValue(),
           })
           dispatchCommand('file:save')
-          this.isChanging = false
         })
       },
 

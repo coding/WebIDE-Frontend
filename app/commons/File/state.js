@@ -48,6 +48,7 @@ class FileNode {
   @observable contentType
   @observable content = ''
   @observable isDir = false
+  @observable isSynced = true
   @observable gitStatus = {}
   @observable size = 0
 
@@ -67,7 +68,7 @@ class FileNode {
   }
 
   @computed get depth () {
-    const slashMatches = this.path.match(/\/(?=.)/g)
+    const slashMatches = this.path.match(/\/(?=[^/]+)/g)
     return slashMatches ? slashMatches.length : 0
   }
 
