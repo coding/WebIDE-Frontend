@@ -53,14 +53,17 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         const manager = new Manager()
         plugin.detaultInstance = manager
         PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
-        if (type === 'init') {
-          if (manager.init) {
+        if (manager.init) {
             manager.init(data, action)
-          }
-        } else {
-        // mount 生命周期挂载时触发
-          manager.pluginWillMount(config, data)
         }
+        // if (type === 'init') {
+        //   if (manager.init) {
+        //     manager.init(data, action)
+        //   }
+        // } else {
+        // // mount 生命周期挂载时触发
+        //   manager.pluginWillMount(config, data)
+        // }
         // 提供 autorun生命周期，插件关注 主项目config 声明周期点变化后自动执行
 
         // if (manager.autoRun) {

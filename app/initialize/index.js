@@ -34,7 +34,7 @@ async function initialize () {
   })
 
   await step('[1] load initialize package', async() => {
-    await loadPackagesByType('init', state)
+    await loadPackagesByType('Required', state)
     return true
   })
 
@@ -50,8 +50,8 @@ async function initialize () {
 
   await step(`[${stepNum++}] load required package`,
   async () => {
-    await loadPackagesByType('Required')
-    mountPackagesByType('init')
+    // await loadPackagesByType('Required')
+    mountPackagesByType('Required')
     return true
   })
 
