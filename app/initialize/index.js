@@ -33,7 +33,7 @@ async function initialize () {
     return true
   })
 
-  await step('[1] load initialize package', async() => {
+  await step('[1] load required package', async() => {
     await loadPackagesByType('Required', state)
     return true
   })
