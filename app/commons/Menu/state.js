@@ -1,5 +1,17 @@
 import React from 'react'
 import { observable, extendShallowObservable } from 'mobx'
+import keyMapConfig, { modifierKeysMap } from 'commands/keymaps'
+
+const findKeyByValue = value => Object
+    .keys(keyMapConfig)
+    .reduce((p, v) => {
+      p[keyMapConfig[v]] = v
+      return p
+    }, {})[value] || ''
+
+const withModifierKeys = value => value.split('+')
+    .map(e => modifierKeysMap[e] || e.toUpperCase()).join('')
+
 
 function MenuScope (defaultMenuItems=[]) {
 
@@ -16,6 +28,9 @@ function MenuScope (defaultMenuItems=[]) {
                 return this.items.reduce((acc, item) => {
                   if (item.key) acc[item.key] = item
                 }, {})
+              },
+              get shortcut () {
+                return withModifierKeys(findKeyByValue(this.command))
               }
             })
           // case 'key':

@@ -11,8 +11,9 @@ class TreeNode extends Component {
   }
 
   render () {
-    const { node, openNode, selectNode, openContextMenu } = this.props
+    const { node, openNode, selectNode, openContextMenu, onlyDir } = this.props
     if (!node) return null
+    if (onlyDir && !node.isDir) return null
     return (
       <div id={node.id}
         className={cx('filetree-node-container', {
@@ -63,6 +64,7 @@ class TreeNode extends Component {
               openNode={openNode}
               selectNode={selectNode}
               openContextMenu={openContextMenu}
+              onlyDir={onlyDir}
             />
           )}
         </div>}

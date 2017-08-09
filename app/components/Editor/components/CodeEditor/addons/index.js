@@ -18,4 +18,7 @@ import 'codemirror/addon/fold/foldcode.js'
 import 'codemirror/addon/fold/foldgutter.js'
 
 // hint
-import 'codemirror/addon/hint/show-hint.js'
+// import 'codemirror/addon/hint/show-hint.js'
+
+// lint
+// import 'codemirror/addon/lint/lint.js'

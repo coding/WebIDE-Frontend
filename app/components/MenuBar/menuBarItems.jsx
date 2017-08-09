@@ -1,10 +1,10 @@
 import React from 'react'
 import api from 'backendAPI'
-import mapShortcutToItems from './utils'
 import i18n from '../../utils/createI18n'
+import { observable } from 'mobx'
 
 const divider = { isDivider: true }
-const menuBarItems = [
+const menuBarItems = observable([
   {
     key: 'meta',
     name: (<div className='menu-bar-item-logo' ></div>),
@@ -157,7 +157,7 @@ const menuBarItems = [
       }
     ]
   }
-]
+])
 
 const isRebasing = ['REBASING', 'REBASING_REBASING',
   'REBASING_MERGE', 'REBASING_INTERACTIVE']
@@ -169,5 +169,4 @@ function onGitMenuOpen () {
 function getIsDisabled (menuContext) {
   return (isRebasing.indexOf(menuContext.rebaseState) === -1)
 }
-
-export default mapShortcutToItems(menuBarItems)
+export default menuBarItems

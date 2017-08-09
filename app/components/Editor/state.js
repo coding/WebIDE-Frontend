@@ -1,7 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import assignProps from 'utils/assignProps'
-import { observable, computed, action, autorun } from 'mobx'
+import { observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -91,6 +91,7 @@ class Editor {
 
   @action update (props = {}) {
     // simple assignments
+    extendObservable(this, props)
     assignProps(this, props, {
       tabId: String,
       filePath: String,
