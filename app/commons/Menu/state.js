@@ -1,6 +1,5 @@
 import React from 'react'
 import { observable, extendShallowObservable } from 'mobx'
-import mapShortcutToItems from '../../components/MenuBar/utils'
 import keyMapConfig, { modifierKeysMap } from 'commands/keymaps'
 
 const findKeyByValue = value => Object

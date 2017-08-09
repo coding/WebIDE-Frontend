@@ -1,6 +1,5 @@
 import React from 'react'
 import api from 'backendAPI'
-import mapShortcutToItems from './utils'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 
@@ -170,5 +169,4 @@ function onGitMenuOpen () {
 function getIsDisabled (menuContext) {
   return (isRebasing.indexOf(menuContext.rebaseState) === -1)
 }
-window.menuBarItems = menuBarItems
 export default menuBarItems
