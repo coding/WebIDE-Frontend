@@ -29,7 +29,7 @@ return {
     publicPath,
     path: path.join(PROJECT_ROOT, 'build', staticDir),
     filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].chunk.js',
+    chunkFilename: '[name].[chunkhash].chunk.js',
   },
   resolve: {
     extensions: ['*', '.js', '.jsx'],
