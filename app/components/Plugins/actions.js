@@ -53,14 +53,17 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         const manager = new Manager()
         plugin.detaultInstance = manager
         PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
-        if (type === 'init') {
-          if (manager.init) {
+        if (manager.init) {
             manager.init(data, action)
-          }
-        } else {
-        // mount 生命周期挂载时触发
-          manager.pluginWillMount(config, data)
         }
+        // if (type === 'init') {
+        //   if (manager.init) {
+        //     manager.init(data, action)
+        //   }
+        // } else {
+        // // mount 生命周期挂载时触发
+        //   manager.pluginWillMount(config, data)
+        // }
         // 提供 autorun生命周期，插件关注 主项目config 声明周期点变化后自动执行
 
         // if (manager.autoRun) {
@@ -112,10 +115,7 @@ export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
 (type, data = {}) => ({ type, data }),
 ({ type, data }) => api.fetchPackageList()
-    .then(list => list
-                  .sort((pgkA, pgkB) => (pgkA.weight || 0) < (pgkB.weight || 0) ? 1 : -1)
-                  .filter(pkg => (pkg.loadType || pkg.requirement) === type)
-    )
+    .then(list => list.filter(pkg => pkg.requirement === type))
     .then(async (list) => {
       for (const pkg of list) {
         await fetchPackage(pkg, type, data)
