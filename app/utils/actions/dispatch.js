@@ -7,13 +7,7 @@ function isValidActionObj (actionObj) {
   return true
 }
 
-function compose (...funcs) {
-  if (funcs.length === 0) return arg => arg
-  if (funcs.length === 1) return funcs[0]
-  return funcs.reduce((a, b) => (...args) => a(b(...args)))
-}
-
-function naiveDispatch (actionObj) {
+function dispatch (actionObj) {
   if (isValidActionObj(actionObj)) {
     if (!actionObj.isDispatched) {
       emitter.emit(actionObj.type, actionObj)
@@ -23,23 +17,6 @@ function naiveDispatch (actionObj) {
     console.warn('Invalid action object is dispatched', actionObj)
   }
   return actionObj
-}
-
-let _dispatch = naiveDispatch
-export function dispatch (actionObj) {
-  return _dispatch(actionObj)
-}
-
-dispatch.middlewares = []
-
-dispatch.applyMiddleware = function (...middlewares) {
-  dispatch.middlewares = dispatch.middlewares.concat(middlewares)
-  const middlewareAPI = {
-    getState: () => dispatch.state,
-    dispatch: action => _dispatch(action)
-  }
-  const chain = middlewares.map(middleware => middleware(middlewareAPI))
-  _dispatch = compose(...chain)(_dispatch)
 }
 
 export default dispatch
