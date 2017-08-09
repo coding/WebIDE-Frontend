@@ -1,5 +1,5 @@
 import * as Accordion from './Accordion'
-import * as Breadcrumbs from './Breadcrumbs'
+import * as TopBar from './TopBar'
 import * as ContextMenu from './ContextMenu'
 import * as Editor from './Editor'
 import * as Menu from './Menu'
@@ -9,7 +9,7 @@ import * as Tab from './Tab'
 
 export {
   Accordion,
-  Breadcrumbs,
+  TopBar,
   ContextMenu,
   Editor,
   Menu,

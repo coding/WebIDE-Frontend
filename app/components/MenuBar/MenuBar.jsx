@@ -1,20 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import Menu from '../Menu'
-import menuBarItems from './menuBarItems'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
-import config from '../../config'
-import { inject } from 'mobx-react'
-import i18n from 'utils/createI18n'
-import store from './store'
-import { addComToMenuBar } from './actions'
+import Menu from '../Menu'
+import PluginArea from '../../components/Plugins/component'
+import { MENUBAR } from '../../components/Plugins/constants'
 
-@inject(() => ({
-  extensionRight: store.labels.values()
-  .filter(label => label.position === 'right')
-}))
 class MenuBar extends Component {
   static propTypes = {
     items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
@@ -24,7 +16,6 @@ class MenuBar extends Component {
     super(props)
     this.state = { activeItemIndex: -1 }
   }
-
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {
       this.setState({ activeItemIndex: -1 })
@@ -50,9 +41,7 @@ class MenuBar extends Component {
   }
 
   render () {
-    const { items, extensionRight } = this.props
-    // console.log('plugin', extensionRight, store.views)
-    // const { extensions }
+    const { items } = this.props
     return (
       <div className='menu-bar-container'>
         <ul className='menu-bar'>
@@ -68,15 +57,7 @@ class MenuBar extends Component {
               activateNextTopLevelMenuItem={this.activateNextMenuItem}
             />) }
         </ul>
-        <div className='menu-bar-right'>
-          {extensionRight
-          .sort((labelA, labelB) => labelA.weight || 1 < labelB.weight ? -1 : 1)
-          .map(label => (
-            <div key={label.viewId}>
-              {store.views[label.viewId]}
-            </div>
-          ))}
-        </div>
+        <PluginArea className='menu-bar-right' position={MENUBAR.WIDGET} />
       </div>
     )
   }

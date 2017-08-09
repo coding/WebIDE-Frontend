@@ -7,6 +7,7 @@ import { dismissModal } from './actions'
 import {
   Prompt,
   Confirm,
+  Alert,
   SettingsView,
   CommandPalette,
   FilePalette,
@@ -118,6 +119,9 @@ class Modal extends Component {
 
         case 'Confirm':
           return <Confirm {...modalConfig} />
+
+        case 'Alert':
+          return <Alert {...modalConfig} />
 
         case 'CommandPalette':
           return <CommandPalette {...modalConfig} />

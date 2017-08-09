@@ -1,5 +1,6 @@
+import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
-import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
 import { emitter, E } from 'utils'
 

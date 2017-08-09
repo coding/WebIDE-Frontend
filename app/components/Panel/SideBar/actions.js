@@ -1,112 +1,41 @@
 import { registerAction } from 'utils/actions'
 import { emitter, E } from 'utils'
-import { ExtensionsCache } from 'utils/extensions'
-import { extendObservable, observable } from 'mobx'
-
-import state from './state'
 import panelState from '../state'
+import pluginState from '../../Plugins/store'
+import { SIDEBAR } from '../../Plugins/constants'
 
-export const SIDEBAR_REGISTER_VIEW = 'SIDEBAR_REGISTER_VIEW'
 export const SIDEBAR_ACTIVATE_VIEW = 'SIDEBAR_ACTIVATE_VIEW'
 export const SIDEBAR_TOGGLE_VIEW = 'SIDEBAR_TOGGLE_VIEW'
 export const SIDEBAR_SHOW_VIEW = 'SIDEBAR_SHOW_VIEW'
 
-/*
-side bar api
-* side bar state shape
-  labels: {
-          //  sideBar label
-          [viewId]:
-            key, // 业务名 required
-            side: // 侧边
-            viewId, // 视图名 optional defatult: {side_key_instanceId}
-            text,   // 标签元素 optional
-            icon, // 标签图标 optional
-            instanceId, // component 的 实例名 optional
-            onSidebarActive: func, // side bar 激活通知
-            onSidebarDeactive: func, // side bar 隐藏通知
-            weight: number // control the view order // 排序序号 optional
-            isActive: bool // 是否默认开启,
-           },
-  },
-  labelStatus: { observable，普通object
-    left: '', // 不同 side 当前激活情况
-  },
-  views: { // component cache，根据 viewid 去查
-      [viewId]: {view} component
-  }
-*/
 
-/**
- * @param  {} registerSideBarView
- * @param  {} (children
- * @param  {} =>{constchildrenArray=Array.isArray(children
- * @param  {[children]childrenArray.forEach((child} ?children
- */
-export const registerSideBarView = registerAction(SIDEBAR_REGISTER_VIEW,
-  (children) => {
-    // 可支持数组批量注册，或单个孩子
-    const childrenArray = Array.isArray(children) ? children : [children]
-    childrenArray.forEach((child) => {
-      const { side, key, label, view, isActive, instanceId } = child
-      const generateViewId = `${side}_${key}${instanceId ? `_${instanceId}` : ''}`
-      if (isActive) {
-        state.activeStatus.set(side, generateViewId)
-      }
-      state.labels.set(generateViewId, {
-        viewId: generateViewId,
-        side,
-        key,
-        ...label
-      })
-      state.views[generateViewId] = view
-    })
-  }
-)
-
-// API：单个 component 注入到 sideBar
-/**
- * @param  {} side 所在 side 名称
- * @param  {} label label 相关信息
- * @param  {} getComponent 根据信息获取
- * @param  {} return registerSideBarView({side
- * @param  {} key
- * @param  {} label
- * @param  {} view}
- */
-export const addComToSideBar = (side, label, getComponent) => {
-  const key = label.key
-  const extension = ExtensionsCache.get(label.key)
-  const view = label.key && getComponent(extension, ExtensionsCache)
-  return registerSideBarView({
-    side,
-    key,
-    label,
-    view
-  })
+const positionToPanel = {
+  [SIDEBAR.RIGHT]: 'RIGHT',
+  [SIDEBAR.LEFT]: 'LEFT',
+  [SIDEBAR.BOTTOM]: 'BOTTOM',
 }
-
 
 const _toggleSidePanelView = (viewId, shouldShow) => {
   setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
-  const side = viewId.split('_')[0]
-  const currentLabel = state.labels.get(viewId)
-  const targetPanel = panelState.panels.get(`PANEL_${side.toUpperCase()}`)
-  shouldShow = Boolean(shouldShow) || state.activeStatus.get(side) === viewId
+  const plugin = pluginState.plugins.get(viewId) || {}
+
+  const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[plugin.position]}`)
+  // 当前状态
+  shouldShow = Boolean(shouldShow) || plugin.status.get('active')
 //   需要隐藏
   if (shouldShow) {
-    state.activeStatus.set(side, '')
+    plugin.status.set('active', false)
     targetPanel.hide = true
     // 通知插件
-    if (currentLabel && currentLabel.onSidebarDeactive) {
-      currentLabel.onSidebarDeactive()
+    if (plugin.actions.onSidebarDeactive) {
+      plugin.actions.onSidebarDeactive()
     }
   } else {
-    state.activeStatus.set(side, viewId)
+    plugin.status.set('active', true)
     targetPanel.hide = false
         // 通知插件
-    if (currentLabel && currentLabel.onSidebarActive) {
-      currentLabel.onSidebarActive()
+    if (plugin.actions.onSidebarActive) {
+      plugin.actions.onSidebarActive()
     }
   }
 }
@@ -116,11 +45,12 @@ export const activateSidePanelView = registerAction(SIDEBAR_ACTIVATE_VIEW, (view
 })
 
 export const showSidePanelView = registerAction(SIDEBAR_SHOW_VIEW, ({ viewId, shouldShow }) => {
+  const plugin = pluginState.plugins.get(viewId)
   if (shouldShow) {
-    state.hiddenStatus.remove(viewId)
+    plugin.status.set('active', true)
   }
   if (!shouldShow) {
-    state.hiddenStatus.push(viewId)
+    plugin.status.set('active', false)
   }
 })
 

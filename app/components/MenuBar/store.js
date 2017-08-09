@@ -18,9 +18,4 @@ class MenuBarStore {
 
 
 const store = new MenuBarStore()
-store.views = {}
-store.extensions = observable.map({
-  labels: {}
-})
-
-export default store
+export default (store)

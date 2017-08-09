@@ -1,48 +1,53 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { togglePackage, fetchPackageList } from './actions'
-const Card = props => (
+import { observer } from 'mobx-react'
+import { togglePackage, updatePackageList } from './actions'
+import store from './store'
+
+const Card = ({ card }) => (
   <div className='card'>
     <div className='title'>
-      {props.name}
-      <span>{props.version}</span>
+      {card.name}
+      <span>{card.version}</span>
     </div>
     <div className='desc'>
-      {props.desc}
+      {card.description}
     </div>
     <div className='author'>
       <div className='icon' />
       <div className='text'>
-        {props.author}
+        {card.author}
       </div>
     </div>
     <div className='buttons'>
       <div className='label'>
         {/* <button>settings</button>*/}
         {/* <button>uninstall</button>*/}
-        {props.requirement !== 'Required' ? (
+        {card.requirement !== 'Required' ? (
           <button
-            onClick={e => props.dispatch(togglePackage(props.name, !props.enabled))}
+            onClick={e => togglePackage(card.name, !card.enabled)}
           >
-            {props.enabled
-                                ? 'disable'
-                                : 'enable'}
+            {card.enabled
+              ? 'disable'
+              : 'enable'}
           </button>
-                        ) : null}
+          ) : null}
       </div>
     </div>
-  </div>
-    )
+  </div>)
+
+Card.propTypes = {
+  card: PropTypes.object,
+}
 
 class ExtensionList extends Component {
   state = {
     searchKey: ''
   }
   componentWillMount () {
-    this.props.dispatch(fetchPackageList())
+    updatePackageList()
   }
   render () {
-    const { data, dispatch } = this.props
+    const data = store.list
     return (
       <div className='settings-extension-container'>
         <div>
@@ -58,6 +63,7 @@ class ExtensionList extends Component {
         </div>
         <div className='lists'>
           {data
+              .toJS()
               .filter((card) => {
                 if (this.state.searchKey) {
                   if (card.name.includes(this.state.searchKey)) {
@@ -67,7 +73,7 @@ class ExtensionList extends Component {
                 }
                 return true
               })
-              .map((card, idx) => (<Card {...card} dispatch={dispatch} />))
+              .map((card, idx) => (<Card key={idx} card={card} />))
           }
         </div>
       </div>
@@ -75,21 +81,4 @@ class ExtensionList extends Component {
   }
 }
 
-export default connect((state) => {
-  const {
-        PackageState: {
-            localPackages = {}
-        }
-    } = state
-  const data = Object
-        .keys(localPackages)
-        .map(key => ({
-          name: localPackages[key].name,
-          desc: localPackages[key].description,
-          author: localPackages[key].author,
-          version: localPackages[key].version,
-          enabled: localPackages[key].enabled,
-          requirement: localPackages[key].requirement
-        }))
-  return ({ data })
-})(ExtensionList)
+export default observer(ExtensionList)

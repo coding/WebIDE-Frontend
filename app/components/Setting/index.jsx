@@ -1,9 +1,9 @@
 import React from 'react'
 import { inject, observer } from 'mobx-react'
 import cx from 'classnames'
-import ExtensionList from '../Package/extensionList'
-import SettingForm from './SettingForm'
 import i18n from 'utils/createI18n'
+import ExtensionList from '../Plugins/extensionList'
+import SettingForm from './SettingForm'
 
 
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import api from 'backendAPI'
-import logoUrl from 'static/logo.svg'
 import mapShortcutToItems from './utils'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
@@ -9,7 +8,7 @@ const divider = { isDivider: true }
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className='menu-bar-item-logo'><embed className='logo' src={logoUrl} /></div>),
+    name: (<div className='menu-bar-item-logo' ></div>),
     className: 'coding-logo',
     items: [
       {

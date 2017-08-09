@@ -4,17 +4,15 @@ import { dispatch as emitterDispatch, emitterMiddleware } from 'utils/actions'
 import thunkMiddleware from 'redux-thunk'
 
 import GitReducer from './components/Git/reducer'
-import PackageReducer, { PackageCrossReducer } from './components/Package/reducer'
 import RootReducer from './containers/Root/reducer'
 
 import localStoreCache from './localStoreCache'
 
 const combinedReducers = combineReducers({
-  PackageState: PackageReducer,
   GitState: GitReducer,
 })
 
-const crossReducers = composeReducers(RootReducer, PackageCrossReducer)
+const crossReducers = composeReducers(RootReducer)
 const finalReducer = composeReducers(
   localStoreCache.afterReducer,
   crossReducers,
