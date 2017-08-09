@@ -17,25 +17,30 @@ const positionToPanel = {
 
 const _toggleSidePanelView = (viewId, shouldShow) => {
   setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
-  const plugin = pluginState.plugins.get(viewId) || {}
+  const targetPlugin = pluginState.plugins.get(viewId) || {}
 
-  const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[plugin.position]}`)
+  const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[targetPlugin.position]}`)
   // 当前状态
-  shouldShow = Boolean(shouldShow) || plugin.status.get('active')
+  shouldShow = Boolean(shouldShow) || targetPlugin.status.get('active')
 //   需要隐藏
   if (shouldShow) {
-    plugin.status.set('active', false)
+    targetPlugin.status.set('active', false)
     targetPanel.hide = true
     // 通知插件
-    if (plugin.actions.onSidebarDeactive) {
-      plugin.actions.onSidebarDeactive()
+    if (targetPlugin.actions.onSidebarDeactive) {
+      targetPlugin.actions.onSidebarDeactive()
     }
   } else {
-    plugin.status.set('active', true)
+    pluginState.plugins.forEach((plugin) => {
+      if (plugin.position === targetPlugin.position) {
+        plugin.status.set('active', false)
+      }
+    })
+    targetPlugin.status.set('active', true)
     targetPanel.hide = false
         // 通知插件
-    if (plugin.actions.onSidebarActive) {
-      plugin.actions.onSidebarActive()
+    if (targetPlugin.actions.onSidebarActive) {
+      targetPlugin.actions.onSidebarActive()
     }
   }
 }
