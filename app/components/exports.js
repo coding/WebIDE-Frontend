@@ -3,6 +3,7 @@ import * as Breadcrumbs from './Breadcrumbs'
 import * as ContextMenu from './ContextMenu'
 import * as Editor from './Editor'
 import * as Menu from './Menu'
+import * as MenuBar from './MenuBar'
 import * as Modal from './Modal'
 import * as Tab from './Tab'
 
@@ -14,4 +15,5 @@ export {
   Menu,
   Modal,
   Tab,
+  MenuBar,
 }

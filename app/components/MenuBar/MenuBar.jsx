@@ -51,7 +51,7 @@ class MenuBar extends Component {
 
   render () {
     const { items, extensionRight } = this.props
-    console.log('plugin', extensionRight, store.views)
+    // console.log('plugin', extensionRight, store.views)
     // const { extensions }
     return (
       <div className='menu-bar-container'>
