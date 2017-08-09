@@ -115,10 +115,7 @@ export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
 (type, data = {}) => ({ type, data }),
 ({ type, data }) => api.fetchPackageList()
-    .then(list => list
-                  .sort((pgkA, pgkB) => (pgkA.weight || 0) < (pgkB.weight || 0) ? 1 : -1)
-                  .filter(pkg => (pkg.loadType || pkg.requirement) === type)
-    )
+    .then(list => list.filter(pkg => pkg.requirement === type))
     .then(async (list) => {
       for (const pkg of list) {
         await fetchPackage(pkg, type, data)
