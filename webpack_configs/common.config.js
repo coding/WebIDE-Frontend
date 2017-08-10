@@ -74,6 +74,12 @@ return {
     // https://github.com/kevlened/copy-webpack-plugin
     new CopyWebpackPlugin([{
       from: path.join(PROJECT_ROOT, 'static'),
+    }, {
+      from: path.join(PROJECT_ROOT, 'node_modules/font-awesome'),
+      to: 'font-awesome',
+    }, {
+      from: path.join(PROJECT_ROOT, 'node_modules/octicons'),
+      to: 'octicons',
     }])
   ],
   module: {

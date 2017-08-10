@@ -2700,7 +2700,7 @@ follow-redirects@1.0.0:
   dependencies:
     debug "^2.2.0"
 
-font-awesome@^4.6.3:
+font-awesome@^4.7.0:
   version "4.7.0"
   resolved "http://registry.npm.taobao.org/font-awesome/download/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
 
@@ -4491,7 +4491,7 @@ obuf@^1.0.0, obuf@^1.1.0:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/obuf/download/obuf-1.1.1.tgz#104124b6c602c6796881a042541d36db43a5264e"
 
-octicons@^4.3.0:
+octicons@4.4.0:
   version "4.4.0"
   resolved "http://registry.npm.taobao.org/octicons/download/octicons-4.4.0.tgz#aca3bd32f5dc1d907a8d0de744f78e0c54e19446"
 
