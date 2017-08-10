@@ -9,6 +9,9 @@ const { packageServer, packageDev } = config
 const io = require('socket.io-client/dist/socket.io.min.js')
 
 export const fetchRequiredPackageList = () => {
+  if (packageDev) {
+    return request.get(`${packageServer}/packages/`)
+  }
   return request.get('/packages?requirement=Required')
 }
 export const fetchPackageList = () => {

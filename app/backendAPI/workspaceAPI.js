@@ -47,3 +47,7 @@ export function getSettings () {
 export function triggerCloneTask () {
   return request.post(`/workspaces/${config.spaceKey}/clone`)
 }
+
+export function requestCollaborator () {
+  return request.post(`/workspaces/${config.spaceKey}/collaborator/request`)
+}
