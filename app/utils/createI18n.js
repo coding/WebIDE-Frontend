@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import settings from 'settings'
 import _ from 'lodash'
 import { inject } from 'mobx-react'
@@ -60,15 +60,16 @@ export class CreateI18n {
     })
   }
   i18nComponent (template = [], ...values) {
-    const translateComponent = ({ language }) => {
-      const translatedWords =
-      template.reduce((p, v, i) => `${p}${this.translate(v, language, values[i] || {})}`, '')
-      return (<span id={template[0]}>{translatedWords}</span>)
-    }
-    translateComponent.propTypes = {
-      language: PropTypes.string
-    }
-    return React.createElement(inject(mapStateToProps)(translateComponent))
+    const translate = (language) => template.reduce(
+      (p, v, i) => `${p}${this.translate(v, language, values[i] || {})}`
+    , '')
+
+    const TranslateComponent = inject(mapStateToProps)(({ language }) => (
+      <span id={template[0]}>{translate(language)}</span>
+    ))
+
+    const toString = () => translate(mapStateToProps().language)
+    return React.createElement(TranslateComponent, { toString })
   }
   getCache (key, value) {
     const language = languageToCode[settings.general.language.value]

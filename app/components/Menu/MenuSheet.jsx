@@ -7,7 +7,10 @@ import { isFunction, isBoolean } from 'utils/is'
 
 
 function buildFilterIndex (items=[]) {
-  return items.map(({ key='' }) => key.toLowerCase())
+  return items.map(({ name='' }) => {
+    name = React.isValidElement(name) ? name.props.toString() : name
+    return name.toLowerCase()
+  })
 }
 
 const MenuItemDivider = () => (<li><hr /></li>)
