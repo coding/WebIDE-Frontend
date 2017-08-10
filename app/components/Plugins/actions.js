@@ -113,14 +113,16 @@ export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
 // 插件申明加载时机，
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
-(type, data = {}) => ({ type, data }),
-({ type, data }) => api.fetchPackageList()
-    .then(list => list.filter(pkg => pkg.requirement === type))
-    .then(async (list) => {
+  (type, data = {}) => ({ type, data }),
+  ({ type, data }) => {
+    const fetchPackgeListPromise = type === 'Required' ? api.fetchRequiredPackageList() : api.fetchPackageList()
+    return fetchPackgeListPromise.then(async (list) => {
       for (const pkg of list) {
         await fetchPackage(pkg, type, data)
       }
-    }))
+    })
+  }
+)
 
 export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)

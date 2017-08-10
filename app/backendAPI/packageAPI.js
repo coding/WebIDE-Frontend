@@ -8,12 +8,15 @@ const { packageServer, packageDev } = config
 
 const io = require('socket.io-client/dist/socket.io.min.js')
 
+export const fetchRequiredPackageList = () => {
+  return request.get('/packages?requirement=Required')
+}
 export const fetchPackageList = () => {
   if (packageDev) {
     return request.get(`${packageServer}/packages/`)
   }
   if (config.isPlatform) {
-    return request.get(`/users/${config.globalKey}/packages`)
+    return request.get(`/workspaces/${config.spaceKey}/packages`)
   }
   return request.get('/packages')
 }
