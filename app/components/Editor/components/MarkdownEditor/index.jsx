@@ -6,6 +6,7 @@ import CodeEditor from '../CodeEditor'
 import state from './state'
 import * as actions from './actions'
 
+
 const PreviewEditor = (content) => {
   const makeHTMLComponent = (html) => React.DOM.div({ dangerouslySetInnerHTML: {__html: html} });
   return (
@@ -50,7 +51,8 @@ class MarkdownEditor extends Component {
 
   render () {
     const { leftGrow, rightGrow, showBigSize, showPreview } = state
-    const { tab, content } = this.props
+    const { editor } = this.props
+
     return (<div
       name="markdown_editor_container"
       style={{
@@ -89,8 +91,8 @@ class MarkdownEditor extends Component {
           flexShrink: 0,
           flexBasis: 0,
         }}>
-        {React.createElement(CodeEditor, { editor: tab.editor })}
-      </div>): null
+        {React.createElement(CodeEditor, { editor })}
+      </div>) : null
     }
       { (showPreview && !showBigSize) ? (
           <ResizeBar
@@ -110,7 +112,7 @@ class MarkdownEditor extends Component {
             flexBasis: 0,
             backgroundColor: 'white',
           }}>
-          {PreviewEditor(content)}
+          {PreviewEditor(editor.file.content)}
         </div>) : null
       }
       </div>

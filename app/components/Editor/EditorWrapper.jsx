@@ -23,7 +23,7 @@ const getEditorByName = ({
   if (type === 'default') {
     return React.createElement(editors.CodeEditor, { editor: tab.editor })
   } else if (type === 'editorWithPreview') {
-    return React.createElement(editors.MarkdownEditor, { content, tab })
+    return React.createElement(editors.MarkdownEditor, { editor: tab && tab.editor })
   } else if (type === 'imageEditor') {
     return React.createElement(editors.ImageEditor, { path })  // @fixme: path is wrapped in tab.editor in the new api
   }

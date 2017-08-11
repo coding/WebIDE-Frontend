@@ -46,7 +46,7 @@ const SideBar = observer(({ side }) => (
         key={plugin.viewId}
         label={plugin.label}
         onClick={() => toggleSidePanelView(plugin.viewId)}
-        isActive={plugin.status.active}
+        isActive={plugin.status.get('active')}
       />
       )}
   />))
