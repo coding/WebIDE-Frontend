@@ -77,10 +77,6 @@ class Editor {
   setCursor (...args) {
     if (!args[0]) return
     const lineColExp = args[0]
-    // if (is.string(lineColExp) && lineColExp.startsWith(':')) {
-      // const [line = 0, ch = 0] = lineColExp.slice(1).split(':')
-      // args = [line - 1, ch - 1]
-    // }
     if (is.string(lineColExp)) {
       const [line = 0, ch = 0] = lineColExp.split(':')
       args = [line - 1, ch - 1]
