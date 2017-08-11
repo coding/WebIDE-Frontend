@@ -57,7 +57,7 @@ class Tab extends BaseTab {
 
   @observable editorId = null
   @computed get editor () {
-    // return EditorState.entities.get() values().find(editor => editor.tabId === this.id)
+    // return EditorState.entities.values().find(editor => editor.tabId === this.id)
     return EditorState.entities.get(this.editorId)
   }
   set editor (editor) {

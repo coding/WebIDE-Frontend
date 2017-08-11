@@ -28,7 +28,10 @@ class Editor {
     this.id = props.id || uniqueId('editor_')
     state.entities.set(this.id, this)
     this.update(props)
-    this.createCodeMirrorInstance()
+    const file = FileStore.get(props.filePath)
+    if (!file || (file && file.isCM)) {
+      this.createCodeMirrorInstance()
+    }
   }
 
   createCodeMirrorInstance () {
@@ -51,7 +54,9 @@ class Editor {
     })
 
     // 1. set value
-    cm.setValue(this.content)
+    if (this.content) {
+      cm.setValue(this.content)
+    }
     if (!this.file) {
       cm.setCursor(cm.posFromIndex(this.content.length))
     }

@@ -4,7 +4,6 @@ import MarkdownEditor from './components/MarkdownEditor'
 import ImageEditor from './components/ImageEditor'
 import UnknownEditor from './components/UnknownEditor'
 import WelcomeEditor from './components/WelcomeEditor'
-import { getTabType } from 'utils'
 
 const editors = {
   CodeEditor,
@@ -30,36 +29,15 @@ const getEditorByName = ({
   return React.createElement(editors.UnknownEditor, { path, size })
 }
 
-const typeDetect = (title, types) => {
-  // title is the filename
-  // typeArray is the suffix
-  if (!Array.isArray(types)) return title.endsWith(`.${types}`)
-  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
-}
-
 const EditorWrapper = ({ tab }, { i18n }) => {
   const title = tab.title
-  const { path = '', content = '' } = tab
-  let type = 'default'
-  if (tab.contentType) {
-    if (getTabType(tab) === 'IMAGE') {
-      type = 'imageEditor'
-    } else if (getTabType(tab) === 'UNKNOWN') {
-      type = 'unknownEditor'
-    }
-  }
-  if (typeDetect(title, 'md')) {
-    type = 'editorWithPreview'
-  }
-  if (typeDetect(title, ['png', 'jpg', 'jpeg', 'gif'])) {
-    type = 'imageEditor'
-  }
+  const { content = '', file } = tab
   return getEditorByName({
-    type,
+    type: file.editorType,
     tab,
     content,
-    path,
-    size: tab.size
+    path: file.path,
+    size: file.size
   })
 }
 
