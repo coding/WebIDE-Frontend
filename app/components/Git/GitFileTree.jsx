@@ -111,7 +111,7 @@ class _GitFileTreeNode extends Component {
             </span>
             <span className='filetree-node-icon'>
               <i className={cx('fa file-status-indicator', node.status.toLowerCase(), {
-                'fa-folder-o': node.isDir,
+                'fa-folder': node.isDir,
                 'fa-pencil-square': node.status == 'MODIFIED' || node.status == 'CHANGED' || node.status == 'MODIFY',
                 'fa-plus-square': node.status == 'UNTRACKED' || node.status == 'ADD',
                 'fa-minus-square': node.status == 'MISSING',

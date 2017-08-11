@@ -45,8 +45,8 @@ class TreeNode extends Component {
           <span className="filetree-node-icon">
             <i className={cx({
               'fa fa-briefcase': node.isRoot,
-              'fa fa-folder-o': node.isDir && !node.isRoot && node.isFolded,
-              'fa fa-folder-open-o': node.isDir && !node.isRoot && !node.isFolded,
+              'fa fa-folder': node.isDir && !node.isRoot && node.isFolded,
+              'fa fa-folder-open': node.isDir && !node.isRoot && !node.isFolded,
               'fa fa-file-o': !node.isDir
             })}></i>
           </span>
