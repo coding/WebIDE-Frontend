@@ -26,21 +26,6 @@ const stepCache = observable.map({
       spaceKey = qsParsed.spaceKey
       if (spaceKey) return config.spaceKey = spaceKey
 
-    // case 3: get spaceKey by ownerName and projectName
-      const { ownerName, projectName } = qsParsed
-      if (config.isPlatform && ownerName && projectName) {
-        spaceKey = await api.findSpaceKey({ ownerName, projectName })
-        if (spaceKey) {
-          config.spaceKey = spaceKey
-          const redirectUrl = `${location.origin}/ws/${config.spaceKey}`
-          if (window.history.pushState) {
-            window.history.pushState(null, null, redirectUrl)
-          } else {
-            window.location = redirectUrl
-          }
-          return true
-        }
-      }
       return true // MISSING OF SPACEKEY SHOULD NOT BLOCK
     }
   },
