@@ -52,7 +52,6 @@ class MarkdownEditor extends Component {
   render () {
     const { leftGrow, rightGrow, showBigSize, showPreview } = state
     const { editor } = this.props
-    console.log('editor', editor)
 
     return (<div
       name="markdown_editor_container"
