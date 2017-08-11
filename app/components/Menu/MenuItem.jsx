@@ -37,6 +37,12 @@ class MenuItem extends Component {
     }
   }
 
+  componentDidUpdate () {
+    if (this.props.isActive) {
+      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
+    }
+  }
+
   componentWillUnmount () {
     clearTimeout(this.submenuShowTimeout)
   }
@@ -90,7 +96,7 @@ class MenuItem extends Component {
     const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
       : isFunction(item.getIsDisabled) && item.getIsDisabled(this.context.menuContext)
     return (
-      <li className='menu-item'>
+      <li className='menu-item' ref={r => this.nodeDOM = r}>
         <div
           className={cx('menu-item-container', {
             active: isActive || submenuIsFocused,

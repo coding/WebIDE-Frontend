@@ -28,7 +28,7 @@ export default class GitBranchWidget extends Component {
     const { current: currentBranch, local: localBranches, remote: remoteBranches } = this.props
     return (
       <div className='status-bar-menu-item'
-        onClick={e => { e.stopPropagation(); this.toggleActive(true, true) }}
+        onClick={e => { this.toggleActive(true, true) }}
       >
         <span>
           <span className='fa fa-code-fork' style={{ fontWeight: 800, marginRight: '5px' }} />
@@ -36,15 +36,10 @@ export default class GitBranchWidget extends Component {
         </span>
         {this.state.isActive ?
           <div className='git-branch-widget'>
-            <div className='widget-header'>
-              <h2>{i18n`git.branchWidget.branches`}</h2>
-            </div>
             <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}
               style={{
                 position: 'relative',
                 border: 0,
-                borderTopRightRadius: 0,
-                borderTopLeftRadius: 0,
               }}
               items={this.makeBrancheMenuItems(localBranches, remoteBranches)}
               deactivate={this.toggleActive.bind(this, false)}
@@ -70,6 +65,7 @@ export default class GitBranchWidget extends Component {
 
     const localBranchItems = localBranches.map(branch => ({
       name: branch,
+      icon: 'fa',
       items: [{
         name: i18n`git.branchWidget.checkout`,
         command: () => { this.props.checkoutBranch(branch) }
@@ -88,6 +84,7 @@ export default class GitBranchWidget extends Component {
       const localBranch = remoteBranch.split('/').slice(1).join('/')
       return {
         name: remoteBranch,
+        icon: 'fa',
         items: [{
           name: i18n`git.branchWidget.checkout`,
           // @todo: should prompt to input local branch name
@@ -104,7 +101,8 @@ export default class GitBranchWidget extends Component {
     return [
       { name: i18n`git.branchWidget.newBranch`, command: () => dispatchCommand('git:new_branch'),
         iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
-      { name: i18n`git.branchWidget.synchronize`, command: () => this.props.getFetch() },
+      { name: i18n`git.branchWidget.synchronize`, command: () => this.props.getFetch(),
+      icon: 'fa' },
       { isDivider: true },
       { name: i18n`git.branchWidget.localBranches`, isDisabled: true },
       ...localBranchItems,

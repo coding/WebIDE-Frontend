@@ -25,6 +25,7 @@ class Prompt extends Component {
           onChange={e => this.setState({ value: e.target.value })}
           onKeyDown={this.onKeyDown}
           value={this.state.value}
+          placeholder={this.props.placeholder}
         />
         { content.statusMessage ?
           <div className='message'>{content.statusMessage}</div>
