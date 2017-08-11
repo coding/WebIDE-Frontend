@@ -31,13 +31,13 @@ const getEditorByName = ({
 
 const EditorWrapper = ({ tab }, { i18n }) => {
   const title = tab.title
-  const { content = '', file } = tab
+  const { content = '', editor } = tab
   return getEditorByName({
-    type: file.editorType,
+    type: editor.editorType,
     tab,
     content,
-    path: file.path,
-    size: file.size
+    path: editor.file.path,
+    size: editor.file.size
   })
 }
 

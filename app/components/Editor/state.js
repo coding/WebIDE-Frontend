@@ -1,5 +1,5 @@
 import uniqueId from 'lodash/uniqueId'
-import is from 'utils/is'
+import { is, getTabType } from 'utils'
 import assignProps from 'utils/assignProps'
 import { observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
@@ -8,6 +8,13 @@ import TabStore from 'components/Tab/store'
 import overrideDefaultOptions from './codemirrorDefaultOptions'
 import { loadMode } from './components/CodeEditor/addons/mode'
 import { findModeByFile, findModeByMIME, findModeByName } from './components/CodeEditor/addons/mode/findMode'
+
+const typeDetect = (title, types) => {
+  // title is the filename
+  // typeArray is the suffix
+  if (!Array.isArray(types)) return title.endsWith(`.${types}`)
+  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
+}
 
 const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
@@ -28,8 +35,7 @@ class Editor {
     this.id = props.id || uniqueId('editor_')
     state.entities.set(this.id, this)
     this.update(props)
-    const file = FileStore.get(props.filePath)
-    if (!file || (file && file.isCM)) {
+    if (!props.filePath || this.isCM) {
       this.createCodeMirrorInstance()
     }
   }
@@ -150,6 +156,30 @@ class Editor {
   @observable gitBlame = {
     show: false,
     data: observable.ref([]),
+  }
+
+  @computed
+  get editorType () {
+    let type = 'default'
+    if (this.file.contentType) {
+      if (getTabType(this.file) === 'IMAGE') {
+        type = 'imageEditor'
+      } else if (getTabType(this.file) === 'UNKNOWN') {
+        type = 'unknownEditor'
+      }
+    }
+    if (typeDetect(this.file.name, 'md')) {
+      type = 'editorWithPreview'
+    }
+    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
+      type = 'imageEditor'
+    }
+    return type
+  }
+
+  @computed
+  get isCM () {
+    return this.editorType === 'default' || this.editorType === 'editorWithPreview'
   }
 
   destroy () {

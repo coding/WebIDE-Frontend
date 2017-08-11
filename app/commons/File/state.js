@@ -1,14 +1,6 @@
 import _ from 'lodash'
 import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
 import config from 'config'
-import { getTabType } from 'utils'
-
-const typeDetect = (title, types) => {
-  // title is the filename
-  // typeArray is the suffix
-  if (!Array.isArray(types)) return title.endsWith(`.${types}`)
-  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
-}
 
 const ROOT_PATH = ''
 const nodeSorter = (a, b) => {
@@ -70,30 +62,6 @@ class FileNode {
   @computed
   get id () { return this.path }
   set id (v) { this.path = v }
-
-  @computed
-  get editorType () {
-    let type = 'default'
-    if (this.contentType) {
-      if (getTabType(this) === 'IMAGE') {
-        type = 'imageEditor'
-      } else if (getTabType(this) === 'UNKNOWN') {
-        type = 'unknownEditor'
-      }
-    }
-    if (typeDetect(this.name, 'md')) {
-      type = 'editorWithPreview'
-    }
-    if (typeDetect(this.name, ['png', 'jpg', 'jpeg', 'gif'])) {
-      type = 'imageEditor'
-    }
-    return type
-  }
-
-  @computed
-  get isCM () {
-    return this.editorType === 'default' || this.editorType === 'editorWithPreview'
-  }
 
   @computed get isRoot () {
     return this.path === ROOT_PATH
