@@ -52,7 +52,9 @@ class Editor {
 
     // 1. set value
     cm.setValue(this.content)
-    cm.setCursor(cm.posFromIndex(this.content.length))
+    if (!this.file) {
+      cm.setCursor(cm.posFromIndex(this.content.length))
+    }
     // 2. set mode
     const modeInfo = findModeByFile(this.file)
     if (modeInfo) {
@@ -61,25 +63,34 @@ class Editor {
     // 3. sync cursor state to corresponding editor properties
     cm.on('cursorActivity', () => {
       this.selections = cm.getSelections()
-      this.cursorPos = cm.getCursor()
+      const { line, ch } = cm.getCursor()
+      this.cursorPosition = {
+        ln: line + 1,
+        col: ch + 1,
+      }
     })
   }
 
   @observable selections = []
-  @observable cursorPos = { line: 0, ch: 0 }
+  @observable cursorPosition = { ln: 1, col: 1 }
 
   setCursor (...args) {
     if (!args[0]) return
     const lineColExp = args[0]
-    if (is.string(lineColExp) && lineColExp.startsWith(':')) {
-      const [line = 0, ch = 0] = lineColExp.slice(1).split(':')
-      args = [line, ch]
+    // if (is.string(lineColExp) && lineColExp.startsWith(':')) {
+      // const [line = 0, ch = 0] = lineColExp.slice(1).split(':')
+      // args = [line - 1, ch - 1]
+    // }
+    if (is.string(lineColExp)) {
+      const [line = 0, ch = 0] = lineColExp.split(':')
+      args = [line - 1, ch - 1]
     }
     this.cm.setCursor(...args)
+    setTimeout(() => this.cm.focus())
   }
 
   @computed get mode () {
-    if (!this.options.mode) return 'Null'
+    if (!this.options.mode) return ''
     const modeInfo = findModeByMIME(this.options.mode)
     return modeInfo.name
   }

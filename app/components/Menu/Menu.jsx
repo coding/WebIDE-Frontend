@@ -48,7 +48,7 @@ class MenuContainer extends Component {
 
   componentWillMount () {
     this.deactivateTopLevelMenu = () => { this.props.deactivate() }
-    if (this.deactivateTopLevelMenu) window.addEventListener('click', this.deactivateTopLevelMenu)
+    if (this.deactivateTopLevelMenu) setTimeout(() => window.addEventListener('click', this.deactivateTopLevelMenu), 0)
   }
 
   componentDidMount () {

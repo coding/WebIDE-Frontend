@@ -1,15 +1,19 @@
 {
    "fileForceMove": "Do you want to overwrite?",
    "newFilePath": "Enter the path for the new file.",
+   "posInfo": "Ln:{ln} Col:{col}",
+   "goto": "Go to Line[:Column]",
    "newFileName": "Enter the new name (or new path) for this file.",
    "folderExist": "The folder already exists",
    "deleteNotifySuccess": "Delete success!",
    "newFileFolderPath": "Enter the path for the new folder.",
+   "carets": "{length} carets",
    "deleteNotifyFailed": "Delete fail: {err}",
    "deleteHeader": "Are you sure you want to delete this file?",
    "fileExist": "The path already exists",
    "moveFolderFailed": "Failed to move folder",
    "deleteMessage": "You're trying to delete {file}",
    "deleteButton": "Delete",
-   "overwriteButton": "Overwrite"
+   "overwriteButton": "Overwrite",
+   "totalSelected": "{length} carets ({count} characters selected)"
 }
