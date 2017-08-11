@@ -11,7 +11,7 @@ const items = [
     id: 'filetree_menu_new_file',
   }, {
     name: i18n`fileTree.contextMenu.newFolder`,
-    icon: 'fa fa-folder-o',
+    icon: 'fa fa-folder',
     command: 'file:new_folder',
 
   },

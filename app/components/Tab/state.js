@@ -23,6 +23,7 @@ class Tab extends BaseTab {
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
     if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
+    if (is.string(props.icon)) this.icon = props.icon
 
     // tabGroup
     let tabGroup
@@ -56,7 +57,7 @@ class Tab extends BaseTab {
 
   @observable editorId = null
   @computed get editor () {
-    // return EditorState.entities.get() values().find(editor => editor.tabId === this.id)
+    // return EditorState.entities.values().find(editor => editor.tabId === this.id)
     return EditorState.entities.get(this.editorId)
   }
   set editor (editor) {

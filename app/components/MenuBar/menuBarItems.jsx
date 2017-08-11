@@ -31,7 +31,7 @@ const menuBarItems = observable([
       }, {
         key: 'newFolder',
         name: i18n`menuBarItems.file.newFolder`,
-        icon: '',
+        icon: 'fa fa-folder',
         command: 'file:new_folder',
         showMore: true
       }, {
