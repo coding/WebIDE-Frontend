@@ -6,6 +6,7 @@ import * as Menu from './Menu'
 import * as MenuBar from './MenuBar'
 import * as Modal from './Modal'
 import * as Tab from './Tab'
+import * as Notification from './Notification'
 
 export {
   Accordion,
@@ -16,4 +17,5 @@ export {
   Modal,
   Tab,
   MenuBar,
+  Notification,
 }

@@ -60,7 +60,7 @@ function openFile ({ path, editor={} }) {
         icon: 'fa fa-file-o',
         editor: {
           ...editor,
-          revision: data.hashedVersion,
+          // revision: data.hashedVersion,
           filePath: path,
         }
       })

@@ -33,3 +33,8 @@ export const updateFile = registerAction('fs:update', (fileProps) => {
   const file = state.entities.get(path)
   file.update(fileProps)
 })
+
+export const syncFile = registerAction('fs:sync', (path) => {
+  const fileNode = state.entities.get(path)
+  if (!fileNode.isDir) return api.readFile(path).then(loadNodeData).then(files => files[0])
+})

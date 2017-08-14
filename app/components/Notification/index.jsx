@@ -1,7 +1,7 @@
 import React from 'react'
 import { inject } from 'mobx-react'
 import { NotificationStack } from 'react-notification'
-import { removeNotification } from './actions'
+import * as actions from './actions'
 import state from './state'
 
 const barStyleFactory = (index, style) => {
@@ -26,7 +26,7 @@ const Notification = ({ notifications }) => {
   return (
     <NotificationStack
       notifications={notifications}
-      onDismiss={notification => removeNotification(notification.key)}
+      onDismiss={notification => actions.removeNotification(notification.key)}
       barStyleFactory={barStyleFactory}
       activeBarStyleFactory={activeBarStyleFactory}
     />
@@ -37,3 +37,5 @@ export default inject(() => {
   const notifications = state.notifications.toJS()
   return { notifications }
 })(Notification)
+
+export { actions, state }
