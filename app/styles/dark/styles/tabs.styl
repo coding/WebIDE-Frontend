@@ -72,7 +72,7 @@
   left: 0px;
   right: 0px;
   overflow: auto;
-  background: #f8f8f8;
+  background: $second-background-color;
   .editor-tools {
     position: absolute;
     top: 10px;
@@ -166,7 +166,7 @@
     width: 0;
     height: 0;
     border-bottom: 70px solid #eee;
-    border-right: 70px solid @tabActiveColor; /*Set to background color, not transparent!*/
+    border-right: 70px solid $second-background-color; /*Set to background color, not transparent!*/
     -webkit-box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
     box-shadow: -7px 7px 7px rgba(0, 0, 0, 0.3);
@@ -186,7 +186,8 @@
     left: 0;
     right: 0;
     text-align: center;
-    background: white;
+    background: $base-background-color;
+    color: $text-color;
   }
 
 }

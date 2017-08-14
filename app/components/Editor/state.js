@@ -1,5 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
-import { is, getTabType } from 'utils'
+import is from 'utils/is'
+import getTabType from 'utils/getTabType'
 import assignProps from 'utils/assignProps'
 import { observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
