@@ -1,6 +1,9 @@
 import isObject from 'lodash/isObject'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import { observable, extendObservable, computed, action, autorunAsync } from 'mobx'
+let EditorState
+import('components/Editor/state').then(res => EditorState = res.default)
+
 
 export const UIThemeOptions = [
   { name: 'settings.theme.uiThemeOption.baseTheme', value: 'base-theme' },
@@ -19,7 +22,17 @@ const changeTheme = (nextThemeId) => {
       module.use()
     })
   }
+
+  if (nextThemeId === 'dark' && EditorState.options.theme === 'default') {
+    settings.theme.syntax_theme.value = 'material'
+  } else if (nextThemeId === 'base-theme' && (EditorState.options.theme === 'monokai' || EditorState.options.theme === 'material')) {
+    settings.theme.syntax_theme.value = 'default'
+  }
   emitter.emit(THEME_CHANGED, nextThemeId)
+}
+
+const changeSyntaxTheme = (nextSyntaxThemeId) => {
+  EditorState.options.theme = nextSyntaxThemeId
 }
 
 const localeToLangs = {
@@ -217,4 +230,8 @@ export default settings
 
 autorunAsync('changeTheme', () => {
   changeTheme(settings.theme.ui_theme.value)
+})
+
+autorunAsync('changeSyntaxTheme', () => {
+  changeSyntaxTheme(settings.theme.syntax_theme.value)
 })

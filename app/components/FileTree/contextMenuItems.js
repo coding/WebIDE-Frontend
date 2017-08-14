@@ -1,5 +1,5 @@
 import { gitBlameNode } from './actions'
-import { i18n } from 'utils'
+import i18n from 'utils/createI18n'
 
 const divider = { isDivider: true }
 

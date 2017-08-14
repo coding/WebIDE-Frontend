@@ -110,7 +110,6 @@ class MarkdownEditor extends Component {
             flexGrow: rightGrow,
             flexShrink: 0,
             flexBasis: 0,
-            backgroundColor: 'white',
           }}>
           {PreviewEditor(editor.file.content)}
         </div>) : null

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 import * as GitActions from '../actions'
 import GitFileTree from '../GitFileTree'
-import { i18n } from 'utils'
+import i18n from 'utils/createI18n'
 
 
 class GitCheckoutStashView extends Component {

@@ -6,7 +6,8 @@ import moment from 'moment'
 import { Table, Column, Cell } from 'fixed-data-table-2'
 import cx from 'classnames'
 import ContextMenu from '../ContextMenu'
-import { emitter, E, i18n } from 'utils'
+import { emitter, E } from 'utils'
+import i18n from 'utils/createI18n'
 
 
 const items = [
