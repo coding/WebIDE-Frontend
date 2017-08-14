@@ -20,28 +20,15 @@ const state = observable({
 })
 
 class FileNode {
-  constructor (nodeConfig) {
-    const {
-      name,
-      path,
-      isDir,
-      gitStatus,
-      contentType,
-      content,
-      size,
-    } = nodeConfig
-
-    extendObservable(this, {
-      name,
-      path,
-      isDir,
-      gitStatus,
-      contentType,
-      content,
-      size,
-    })
+  constructor (props) {
+    this.update(props)
 
     state.entities.set(this.path, this)
+  }
+
+  @action
+  update (props) {
+    extendObservable(this, props)
   }
 
   @observable path
@@ -49,7 +36,7 @@ class FileNode {
   @observable content = ''
   @observable isDir = false
   @observable isSynced = true
-  @observable gitStatus = {}
+  @observable gitStatus = 'NONE'
   @observable size = 0
 
   @observable _name = undefined
@@ -126,11 +113,6 @@ class FileNode {
       handler(childNode)
       childNode.forEachDescendant(handler)
     })
-  }
-
-  @action
-  update (nodeConfig) {
-    extendObservable(this, nodeConfig)
   }
 }
 

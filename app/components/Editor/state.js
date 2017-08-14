@@ -1,7 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import { is, getTabType } from 'utils'
 import assignProps from 'utils/assignProps'
-import { observable, computed, action, autorun, extendObservable } from 'mobx'
+import { observe, observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -59,6 +59,10 @@ class Editor {
       })
     })
 
+    observe(this, 'content', (change) => {
+      const content = change.newValue || ''
+      if (content !== cm.getValue()) cm.setValue(content)
+    })
     // 1. set value
     if (this.content) {
       cm.setValue(this.content)
@@ -115,7 +119,6 @@ class Editor {
       filePath: String,
       gitBlame: Object,
     })
-    if (props.revision) this.revision = props.revision
     // file
     if (!this.file && props.content) {
       this._content = props.content
@@ -153,6 +156,10 @@ class Editor {
   }
   set content (v) { return this._content = v }
 
+  @computed get revision () {
+    return this.file ? this.file.revision : null
+  }
+
   @observable gitBlame = {
     show: false,
     data: observable.ref([]),
@@ -161,6 +168,7 @@ class Editor {
   @computed
   get editorType () {
     let type = 'default'
+    if (!this.file) return type
     if (this.file.contentType) {
       if (getTabType(this.file) === 'IMAGE') {
         type = 'imageEditor'
