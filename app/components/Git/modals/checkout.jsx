@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { dispatchCommand } from '../../../commands'
 import * as GitActions from '../actions'
 import * as ModalActions from '../../Modal/actions'
-import { i18n } from 'utils'
+import i18n from 'utils/createI18n'
 
 class GitCheckout extends Component {
   constructor (props) {
