@@ -46,7 +46,7 @@ async function initialize () {
   })
 
   await step('load step from settings', async() => {
-    async function goto (key, hasNext = true) {
+    /*async function goto (key, hasNext = true) {
       if (!hasNext) {
         return true
       }
@@ -59,7 +59,13 @@ async function initialize () {
         return goto(nextKey)
       }
     }
-    return goto(state.keys()[0])
+    return goto(state.keys()[0])*/
+    for (const value of state.values()) {
+      if (checkEnable(value.enable)) {
+        await step(`[${stepNum++}] ${value.desc}`, value.func)
+      }
+    }
+    return true
   })
 
 
