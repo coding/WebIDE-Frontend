@@ -17,7 +17,7 @@
       "fontSize": "字号",
       "fontFamily": "字体",
       "charset": "编码",
-      "softTab": "空格缩进",
+      "spaceTab": "用空格缩进",
       "tabSize": "缩进大小",
       "autoSave": "自动保存",
       "autoWrap": "自动换行",
