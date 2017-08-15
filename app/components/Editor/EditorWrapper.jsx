@@ -5,53 +5,24 @@ import ImageEditor from './components/ImageEditor'
 import UnknownEditor from './components/UnknownEditor'
 import WelcomeEditor from './components/WelcomeEditor'
 
-const editors = {
-  CodeEditor,
-  MarkdownEditor,
-  ImageEditor,
-  UnknownEditor,
-}
-
-const getEditorByName = ({
-  type = 'default',
-  tab,
-  content,
-  path,
-  size
-}) => {
-  if (type === 'default') {
-    return React.createElement(editors.CodeEditor, { editor: tab.editor })
-  } else if (type === 'editorWithPreview') {
-    return React.createElement(editors.MarkdownEditor, { editor: tab && tab.editor })
-  } else if (type === 'imageEditor') {
-    return React.createElement(editors.ImageEditor, { path })  // @fixme: path is wrapped in tab.editor in the new api
+const EditorWrapper = ({ tab }) => {
+  const { editor } = tab
+  const editorType = editor.editorType || 'default'
+  const file = editor.file || {}
+  switch (editorType) {
+    case 'default':
+      return React.createElement(CodeEditor, { editor })
+    case 'editorWithPreview':
+      return React.createElement(MarkdownEditor, { editor })
+    case 'imageEditor':
+      return React.createElement(ImageEditor, { path: file.path })
+    default:
+      return React.createElement(UnknownEditor, { path: file.path, size: file.size })
   }
-  return React.createElement(editors.UnknownEditor, { path, size })
-}
-
-const EditorWrapper = ({ tab }, { i18n }) => {
-  const title = tab.title
-  const { content = '', editor } = tab
-  return getEditorByName({
-    type: editor.editorType,
-    tab,
-    content,
-    path: editor.file.path,
-    size: editor.file.size
-  })
 }
 
 EditorWrapper.propTypes = {
-  name: PropTypes.string,
   tab: PropTypes.object
-}
-
-getEditorByName.propTypes = {
-  type: PropTypes.string,
-  tab: PropTypes.object,
-  content: PropTypes.string,
-  path: PropTypes.string,
-  size: PropTypes.number
 }
 
 EditorWrapper.contextTypes = {
