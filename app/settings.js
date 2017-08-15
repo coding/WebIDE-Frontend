@@ -180,7 +180,7 @@ const settings = observable({
       'keyboard_mode',
       'font_size',
       // 'font_family',
-      'charset',
+      // 'charset',
       'space_tab',
       'tab_size',
       // 'auto_save',
