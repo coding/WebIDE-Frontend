@@ -1,7 +1,9 @@
 import isObject from 'lodash/isObject'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
-import { observable, observe, extendObservable, computed, action, autorunAsync } from 'mobx'
+import is from 'utils/is'
+import { observable, reaction, extendObservable, computed, action, autorunAsync } from 'mobx'
 import dynamicStyle from 'utils/dynamicStyle'
+
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
 
@@ -33,7 +35,7 @@ const changeTheme = (nextThemeId) => {
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  EditorState.options.theme = nextSyntaxThemeId
+  if (EditorState) EditorState.options.theme = nextSyntaxThemeId
 }
 
 const localeToLangs = {
@@ -84,6 +86,15 @@ class DomainSetting {
       }
     })
     extendObservable(this, config)
+    Object.entries(this).forEach(([key, settingItem]) => {
+      if (settingItem.reaction && is.function(settingItem.reaction)) {
+        reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
+          name: settingItem.name || key,
+          fireImmediately: true,
+          delay: 10,
+        })
+      }
+    })
   }
 
   @observable _keys = [];
@@ -137,7 +148,10 @@ const settings = observable({
     syntax_theme: {
       name: 'settings.theme.syntaxTheme',
       value: 'default',
-      options: SyntaxThemeOptions
+      options: SyntaxThemeOptions,
+      reaction (value) {
+        changeSyntaxTheme(value)
+      }
     }
   }),
 
@@ -166,22 +180,46 @@ const settings = observable({
       'font_size',
       // 'font_family',
       'charset',
-      'soft_tab',
+      'space_tab',
       'tab_size',
-      'auto_save',
-      'auto_wrap',
-      'live_auto_completion',
-      'snippets',
+      // 'auto_save',
+      // 'auto_wrap',
+      // 'live_auto_completion',
+      // 'snippets',
     ],
 
     keyboard_mode: {
       name: 'settings.editor.keyboardMode',
       value: 'Default',
-      options: ['Default', 'Sublime', 'Vim', 'Emacs']
+      options: ['Default', 'Sublime', 'Vim', 'Emacs'],
+      reaction (value) {
+        if (!EditorState) return
+        const keyboardMode = value.toLowerCase()
+        switch (keyboardMode) {
+          case 'sublime':
+            import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'emacs':
+            import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'vim':
+            import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'default':
+          default:
+            EditorState.options.keyMap = 'default'
+        }
+      }
     },
     font_size: {
       name: 'settings.editor.fontSize',
-      value: 13
+      value: 13,
+      reaction (value) {
+        dynamicStyle.set('codemirror font size',
+        `.CodeMirror {
+          font-size: ${value}px;
+        }`)
+      }
     },
     font_family: {
       name: 'settings.editor.fontFamily',
@@ -197,8 +235,8 @@ const settings = observable({
         { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
       ]
     },
-    soft_tab: {
-      name: 'settings.editor.softTab',
+    space_tab: {
+      name: 'settings.editor.spaceTab',
       value: true
     },
     tab_size: {
@@ -229,33 +267,4 @@ export default settings
 
 autorunAsync('changeTheme', () => {
   changeTheme(settings.theme.ui_theme.value)
-})
-
-autorunAsync('changeSyntaxTheme', () => {
-  changeSyntaxTheme(settings.theme.syntax_theme.value)
-})
-
-autorunAsync('changeEditorStyle', () => {
-  dynamicStyle.set('codemirror font size',
-  `.CodeMirror {
-    font-size: ${settings.editor.font_size.value}px;
-  }`)
-})
-
-autorunAsync('changeEditorStyle', () => {
-  const keyboardMode = settings.editor.keyboard_mode.value.toLowerCase()
-  switch (keyboardMode) {
-    case 'sublime':
-      import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
-      break
-    case 'emacs':
-      import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
-      break
-    case 'vim':
-      import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
-      break
-    case 'default':
-    default:
-      EditorState.options.keyMap = 'default'
-  }
 })
