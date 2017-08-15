@@ -1,6 +1,7 @@
 import isObject from 'lodash/isObject'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
-import { observable, extendObservable, computed, action, autorunAsync } from 'mobx'
+import { observable, observe, extendObservable, computed, action, autorunAsync } from 'mobx'
+import dynamicStyle from 'utils/dynamicStyle'
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
 
@@ -163,7 +164,7 @@ const settings = observable({
     _keys: [
       'keyboard_mode',
       'font_size',
-      'font_family',
+      // 'font_family',
       'charset',
       'soft_tab',
       'tab_size',
@@ -176,11 +177,11 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.editor.keyboardMode',
       value: 'Default',
-      options: [{ name: 'settings.default', value: 'Default' }, 'Vim', 'Emacs']
+      options: ['Default', 'Sublime', 'Vim', 'Emacs']
     },
     font_size: {
       name: 'settings.editor.fontSize',
-      value: 14
+      value: 13
     },
     font_family: {
       name: 'settings.editor.fontFamily',
@@ -226,12 +227,35 @@ const settings = observable({
 
 export default settings
 
-
-
 autorunAsync('changeTheme', () => {
   changeTheme(settings.theme.ui_theme.value)
 })
 
 autorunAsync('changeSyntaxTheme', () => {
   changeSyntaxTheme(settings.theme.syntax_theme.value)
+})
+
+autorunAsync('changeEditorStyle', () => {
+  dynamicStyle.set('codemirror font size',
+  `.CodeMirror {
+    font-size: ${settings.editor.font_size.value}px;
+  }`)
+})
+
+autorunAsync('changeEditorStyle', () => {
+  const keyboardMode = settings.editor.keyboard_mode.value.toLowerCase()
+  switch (keyboardMode) {
+    case 'sublime':
+      import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
+      break
+    case 'emacs':
+      import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
+      break
+    case 'vim':
+      import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
+      break
+    case 'default':
+    default:
+      EditorState.options.keyMap = 'default'
+  }
 })
