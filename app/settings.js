@@ -86,15 +86,16 @@ class DomainSetting {
       }
     })
     extendObservable(this, config)
-    Object.entries(this).forEach(([key, settingItem]) => {
+    // fixme: this is due to late resolve of EditorState
+    setTimeout(() => Object.entries(this).forEach(([key, settingItem]) => {
       if (settingItem.reaction && is.function(settingItem.reaction)) {
         reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
           name: settingItem.name || key,
           fireImmediately: true,
-          delay: 10,
+          delay: 1,
         })
       }
-    })
+    }), 1)
   }
 
   @observable _keys = [];
@@ -237,12 +238,22 @@ const settings = observable({
     },
     space_tab: {
       name: 'settings.editor.spaceTab',
-      value: true
+      value: true,
+      reaction (value) {
+        if (EditorState) EditorState.options.indentWithTabs = !value
+      }
     },
     tab_size: {
       name: 'settings.editor.tabSize',
       value: 4,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
+      reaction (value) {
+        value = Number(value)
+        if (EditorState) {
+          EditorState.options.tabSize = value
+          EditorState.options.indentUnit = value
+        }
+      }
     },
     auto_save: {
       name: 'settings.editor.autoSave',
