@@ -17,7 +17,7 @@
       "fontSize": "Font Size",
       "fontFamily": "Font Family",
       "charset": "Charset",
-      "softTab": "Soft Tab",
+      "spaceTab": "Indent Using Space",
       "tabSize": "Tab Size",
       "autoSave": "Auto Save",
       "autoWrap": "Auto Wrap",
