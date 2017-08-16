@@ -4,7 +4,6 @@ import { autorun, extendObservable, observable, computed, action } from 'mobx'
 import { TabStateScope } from 'commons/Tab'
 import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
-import FileState, { FileNode } from 'commons/File/state'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 

@@ -55,15 +55,22 @@ function openFile ({ path, editor={} }) {
       return data
     })
     .then((data) => {
-      TabStore.createTab({
-        title: path.split('/').pop(),
-        icon: 'fa fa-file-text-o',
-        editor: {
-          ...editor,
-          // revision: data.hashedVersion,
-          filePath: path,
-        }
-      })
+      const activeTabGroup = TabStore.getState().activeTabGroup
+      const existingTabs = TabStore.findTab(
+        tab => tab.file && tab.file.path === path && tab.tabGroup === activeTabGroup
+      )
+      if (existingTabs.length) {
+        const existingTab = existingTabs[0]
+        existingTab.activate()
+      } else {
+        TabStore.createTab({
+          icon: 'fa fa-file-text-o',
+          editor: {
+            ...editor,
+            filePath: path,
+          }
+        })
+      }
     })
 }
 

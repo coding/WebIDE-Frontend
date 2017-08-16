@@ -20,14 +20,13 @@ if (isMac) {
     'cmd+alt+3': 'editor:split_pane_vertical_3',
     'cmd+alt+shift+3': 'editor:split_pane_horizontal_3',
     'cmd+alt+4': 'editor:split_pane_vertical_4',
-    'cmd+comma': 'global:show_settings',
+    'cmd+,': 'global:show_settings',
     'alt+b': 'global:show_branches',
   }
   modifierKeysMap = {
     ctrl: '⌃',
     alt: '⌥',
     cmd: '⌘',
-    comma: ',',
     shift: '⇧',
   }
 } else {
@@ -46,14 +45,13 @@ if (isMac) {
     'ctrl+alt+3': 'editor:split_pane_vertical_3',
     'ctrl+alt+shift+3': 'editor:split_pane_horizontal_3',
     'ctrl+alt+4': 'editor:split_pane_vertical_4',
-    'alt+comma': 'global:show_settings',
+    'alt+,': 'global:show_settings',
     'alt+b': 'global:show_branches',
   }
   modifierKeysMap = {
     ctrl: 'Ctrl',
     alt: 'Alt',
     cmd: 'Cmd',
-    comma: ',',
     shift: 'Shift',
   }
 }
