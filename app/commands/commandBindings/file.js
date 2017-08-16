@@ -64,7 +64,7 @@ function openFile ({ path, editor={} }) {
         existingTab.activate()
       } else {
         TabStore.createTab({
-          icon: 'fa fa-file-o',
+          icon: 'fa fa-file-text-o',
           editor: {
             ...editor,
             filePath: path,

@@ -6,12 +6,12 @@ const divider = { isDivider: true }
 const items = [
   {
     name: i18n`fileTree.contextMenu.newFile`,
-    icon: 'fa fa-file-o',
+    icon: 'fa fa-file-text-o',
     command: 'file:new_file',
     id: 'filetree_menu_new_file',
   }, {
     name: i18n`fileTree.contextMenu.newFolder`,
-    icon: 'fa fa-folder',
+    icon: 'fa fa-folder-o',
     command: 'file:new_folder',
 
   },

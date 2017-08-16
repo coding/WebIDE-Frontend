@@ -64,7 +64,7 @@ class GitMergeView extends Component {
               </div>
               <div className='gutterTitle' />
               <div>
-                {i18n`git.mergeFile.base`}
+                {i18n`git.mergeFile.result`}
               </div>
               <div className='gutterTitle' />
               <div>
