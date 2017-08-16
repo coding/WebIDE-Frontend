@@ -47,7 +47,7 @@ const menubar = [
     items: [
       {
         name: 'New File',
-        icon: 'fa fa-file-o',
+        icon: 'fa fa-file-text-o',
         command: 'file:new_file'
       }, {
         name: 'Save',

@@ -22,6 +22,27 @@ $filetree-indent = 1em;
     &.isFolded {display: none}
   }
 
+  .filetree-enter {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .5s ease-in;
+    &.filetree-enter-active {
+      max-height: 500px;
+    }
+  }
+  .filetree-leave {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height .3s ease-out;
+    &.filetree-leave-active {
+      max-height: 0;
+    }
+    .node-selected {
+      background: inherit !important;
+      color: inherit !important;
+    }
+  }
+
   .filetree-node {
     cursor: default;
     padding: 4px 0;

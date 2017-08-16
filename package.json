@@ -100,6 +100,7 @@
     "prop-types": "^15.5.10",
     "qs": "^6.4.0",
     "react": "^15.3.0",
+    "react-addons-css-transition-group": "^15.6.0",
     "react-dom": "^15.3.1",
     "react-notification": "^6.1.1",
     "react-redux": "^4.4.5",
