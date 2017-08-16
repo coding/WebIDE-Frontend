@@ -57,7 +57,7 @@ function openFile ({ path, editor={} }) {
     .then((data) => {
       TabStore.createTab({
         title: path.split('/').pop(),
-        icon: 'fa fa-file-o',
+        icon: 'fa fa-file-text-o',
         editor: {
           ...editor,
           // revision: data.hashedVersion,

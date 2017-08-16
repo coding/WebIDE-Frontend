@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { observer } from 'mobx-react'
 import config from 'config'
 import cx from 'classnames'
@@ -45,9 +46,9 @@ class TreeNode extends Component {
           <span className="filetree-node-icon">
             <i className={cx({
               'fa fa-briefcase': node.isRoot,
-              'fa fa-folder': node.isDir && !node.isRoot && node.isFolded,
-              'fa fa-folder-open': node.isDir && !node.isRoot && !node.isFolded,
-              'fa fa-file-o': !node.isDir
+              'fa fa-folder-o': node.isDir && !node.isRoot && node.isFolded,
+              'fa fa-folder-open-o': node.isDir && !node.isRoot && !node.isFolded,
+              'fa fa-file-text-o': !node.isDir
             })}></i>
           </span>
           <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
@@ -56,17 +57,21 @@ class TreeNode extends Component {
         </div>
         {node.isDir &&
         <div className={cx('filetree-node-children', {
-          isFolded: node.isFolded
         })}>
-          {node.children.map(childNode =>
-            <TreeNode key={childNode.id}
-              node={childNode}
-              openNode={openNode}
-              selectNode={selectNode}
-              openContextMenu={openContextMenu}
-              onlyDir={onlyDir}
-            />
-          )}
+          <ReactCSSTransitionGroup
+            transitionName='filetree'
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}>
+            {!node.isFolded && node.children.map(childNode =>
+              <TreeNode key={childNode.id}
+                node={childNode}
+                openNode={openNode}
+                selectNode={selectNode}
+                openContextMenu={openContextMenu}
+                onlyDir={onlyDir}
+              />
+            )}
+          </ReactCSSTransitionGroup>
         </div>}
       </div>
     )

@@ -88,7 +88,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
   } else {
     TabActions.createTab({
       title: node.name,
-      icon: 'fa fa-file-o',
+      icon: 'fa fa-file-text-o',
       editor: {
         ...editor,
         filePath: node.path,
