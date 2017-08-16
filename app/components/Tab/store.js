@@ -11,6 +11,11 @@ class TabStore {
   getTab (key) { return state.tabs.get(key) }
   getTabGroup (key) { return state.tabGroups.get(key) }
 
+  findTab (predicate) {
+    const state = this.getState()
+    return state.tabs.values().filter(predicate)
+  }
+
   isValidTab (instance) {
     return (instance instanceof Tab && state.tabs.has(instance.id))
   }

@@ -17,11 +17,11 @@ export default {
         // })
         if (!editor.file) return
         editor.file.isSynced = false
+        FileStore.updateFile({
+          id: editor.file.id,
+          content: cm.getValue(),
+        })
         debounced(() => {
-          FileStore.updateFile({
-            id: editor.file.id,
-            content: cm.getValue(),
-          })
           dispatchCommand('file:save')
         })
       },
