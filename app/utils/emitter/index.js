@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
+
 const emitter = new EventEmitter()
-window.emitter = emitter
 export default emitter
 
 export const PANEL_RESIZED = 'PANEL_RESIZED'

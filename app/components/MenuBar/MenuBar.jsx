@@ -20,7 +20,7 @@ class MenuBar extends Component {
   }
   componentDidMount () {
     injectComponent(MENUBAR.WIDGET, {
-      key: 'offlineControler',
+      key: 'offlineController',
     }, () => Offline)
   }
   activateItemAtIndex = (index, isTogglingEnabled) => {

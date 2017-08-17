@@ -57,7 +57,7 @@ class Offline extends Component {
       }}
       >
         <span className={cx('btn toggle-on btn-xs', isConnecting ? 'btn-primary' : 'btn-success')}>
-          {isConnecting ? i18n`global.connecting` : i18n`global.online`}
+          {i18n`global.online`}
         </span>
         <span className='btn toggle-off btn-xs btn-danger'>{i18n`global.offline`}</span>
         <span className='toggle-handle btn btn-default btn-xs' />
