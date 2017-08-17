@@ -63,6 +63,18 @@ const stepCache = observable.map({
     func: () =>
       api.connectWebsocketClient()
   },
+  preventAccidentalClose: {
+    desc: 'Prevent accidental close',
+    func: () => {
+      window.onbeforeunload = function () {
+        if (config.preventAccidentalClose) {
+          return 'Do you really want to leave this site? Changes you made may not be saved.'
+        }
+        return void 0
+      }
+      return true
+    }
+  }
 })
 
 stepCache.insert = function (key, value, referKey, before = false) {

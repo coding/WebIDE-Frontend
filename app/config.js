@@ -14,6 +14,7 @@ const config = observable({
   fsSocketConnected: false,
   ttySocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
+  preventAccidentalClose: false,
 })
 
 window.config = config
