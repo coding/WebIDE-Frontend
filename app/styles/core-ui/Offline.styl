@@ -1,0 +1,61 @@
+.offline-container {
+  $container-width = 60px;
+  $toggle-handle-width = 10px;
+  $button-text-width = $container-width - $toggle-handle-width - 2px;
+
+  padding: 0;
+  width: $container-width;
+  height: 16px;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+  noSelect()
+
+  .toggle-group {
+    position: absolute;
+    display: flex;
+    align-content: center;
+    transition: all 0.35s ease;
+    top: 0;
+    bottom: 0;
+
+    & > span {
+      width: $button-text-width;
+      display: inline-block;
+      text-align: center;
+      height: 100%
+    }
+  }
+
+  &.on .toggle-group {
+    left: 0px;
+  }
+
+  &.off .toggle-group {
+    left: -1 * $button-text-width;
+  }
+
+  .toggle-handle {
+    display: inline-block;
+    width: $toggle-handle-width;
+    background-color: #ffffff;
+    height: 100%;
+    border-radius: 2px;
+  }
+}
+
+.blink {
+  animation: blink 800ms infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -1,12 +1,16 @@
 {
    "loadingWorkspaceCloning": "Now cloning code...",
    "loadingWorkspaceCloneFailed": "Clone failed",
+   "offline": "Offline",
    "recloneWorkspace": "Try clone again",
    "requestingCollaboration": "You have requested collaboration",
+   "online": "Online",
    "loadingWorkspaceDenied": "Loading workspace denied",
    "requestCollaborationReject": "Your request has been rejected.",
    "loadingWorkspaceFailed": "Loading workspace is failed",
+   "onSocketError": "file socket is error",
    "requestCollaboration": "Request collaboration",
+   "connecting": "Connecting",
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired."
