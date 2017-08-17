@@ -1,66 +1,51 @@
 .offline-container {
-    width: 52px;
-    height: 16px;
-}
-.toggle-handle {
-    position: relative;
-    margin: auto;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    height: 100%;
-    margin-bottom: 10px;
-    width: 0px;
-    border-width: 0 1px;
-    .btn-xs {
-        line-height: 1;
-    }
-}
-.toggle.off .toggle-group {
-    left: -100%;
-}
-.toggle-group {
+  $container-width = 60px;
+  $toggle-handle-width = 10px;
+  $button-text-width = $container-width - $toggle-handle-width - 2px;
+
+  padding: 0;
+  width: $container-width;
+  height: 16px;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+  noSelect()
+
+  .toggle-group {
     position: absolute;
-    width: 200%;
+    display: flex;
+    align-content: center;
+    transition: all 0.35s ease;
     top: 0;
     bottom: 0;
-    left: 0;
-    transition: left 0.35s;
-    -webkit-user-select: none;
+
+    & > span {
+      width: $button-text-width;
+      display: inline-block;
+      text-align: center;
+      height: 100%
+    }
+  }
+
+  &.on .toggle-group {
+    left: 0px;
+  }
+
+  &.off .toggle-group {
+    left: -1 * $button-text-width;
+  }
+
+  .toggle-handle {
+    display: inline-block;
+    width: $toggle-handle-width;
+    background-color: #ffffff;
+    height: 100%;
+    border-radius: 2px;
+  }
 }
 
-.toggle-on {
-    position: absolute;
-    line-height: 12px;
-    left: 0;
-    border: 0;
-    border-radius: 0;
-    .btn {
-        display: flex;
-        -webkit-box-align: center;
-        align-items: center;
-    }
-}
-.toggle-off {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    right: 0;
-    margin-left: 4px !important;
-    border: 0;
-    border-radius: 0;
-    .btn {
-        display: flex;
-        -webkit-box-align: center;
-        align-items: center;
-    }
-}
-.toggle {
-    position: relative;
-    overflow: hidden;
-}
 .blink {
-    animation: blink 800ms infinite;
+  animation: blink 800ms infinite;
 }
 
 @keyframes blink {
@@ -68,9 +53,9 @@
     opacity: 1;
   }
   50% {
-      opacity: 0.2;
+    opacity: 0.2;
   }
   100% {
-      opacity: 1;
+    opacity: 1;
   }
 }

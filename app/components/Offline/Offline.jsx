@@ -37,7 +37,7 @@ class Offline extends Component {
       return null
     }
 
-    let buttonStatusClass = 'btn-danger'
+    let buttonStatusClass
     if (isConnecting) {
       buttonStatusClass = 'btn-primary'
     } else if (isConnected) {
@@ -46,21 +46,20 @@ class Offline extends Component {
       buttonStatusClass = 'btn-danger'
     }
 
-    return (<div className={cx('offline-container btn toggle btx-xs',
-  buttonStatusClass,
-  !isConnecting && !isConnected && 'off',
-  isConnecting && 'blink')}
-    >
-      <div className='toggle-group' onClick={() => {
+    return (<div
+      className={cx('offline-container btn toggle btn-xs', buttonStatusClass, {
+        on: isConnecting || isConnected,
+        off: !isConnecting && !isConnected,
+        blink: isConnecting,
+      })}
+      onClick={() => {
+        if (isConnected) return
         this.setState({ isConnecting: true })
         emitter.emit(E.SOCKET_RETRY)
       }}
-      >
-        <span className={cx('btn toggle-on btn-xs', isConnecting ? 'btn-primary' : 'btn-success')}>
-          {i18n`global.online`}
-        </span>
-        <span className='btn toggle-off btn-xs btn-danger'>{i18n`global.offline`}</span>
-        <span className='toggle-handle btn btn-default btn-xs' />
+    >
+      <div className='toggle-group'>
+        {i18n`global.online`}<div className='toggle-handle' />{i18n`global.offline`}
       </div>
     </div>)
   }

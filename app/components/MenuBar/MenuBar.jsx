@@ -21,6 +21,7 @@ class MenuBar extends Component {
   componentDidMount () {
     injectComponent(MENUBAR.WIDGET, {
       key: 'offlineController',
+      weight: 3,
     }, () => Offline)
   }
   activateItemAtIndex = (index, isTogglingEnabled) => {
