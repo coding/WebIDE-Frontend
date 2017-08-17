@@ -1,12 +1,16 @@
 {
    "loadingWorkspaceCloning": "正在 Clone 项目代码...",
    "loadingWorkspaceCloneFailed": "Clone 代码失败",
+   "offline": "离线",
    "recloneWorkspace": "重新 Clone 代码",
    "requestingCollaboration": "协作申请已经提交",
+   "online": "在线",
    "loadingWorkspaceDenied": "访问工作区未授权",
    "requestCollaborationReject": "您的申请被拒绝了",
    "loadingWorkspaceFailed": "加载工作区失败",
+   "onSocketError": "已断线",
    "requestCollaboration": "申请协作",
+   "connecting": "连接",
    "loadingWorkspace": "正在加载工作区",
    "reloadWorkspace": "重新加载",
    "requestCollaborationExpires": "试用已经结束"

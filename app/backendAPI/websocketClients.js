@@ -1,8 +1,10 @@
 import { Stomp } from 'stompjs/lib/stomp'
 import SockJS from 'sockjs-client'
 import getBackoff from 'utils/getBackoff'
+import emitter, * as E from 'utils/emitter'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
+import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 
 const log = console.log || (x => x)
 const warn = console.warn || (x => x)
@@ -23,40 +25,40 @@ class FsSocketClient {
     })
     this.maxAttempts = 7
     FsSocketClient.$$singleton = this
+    emitter.on(E.SOCKET_RETRY, this.reconnect.bind(this))
   }
 
-  connect (connectCallback, errorCallback) {
-    const self = this
+  connect () {
     if (!this.socket || !this.stompClient) {
       this.socket = new SockJS(...this.sockJSConfigs)
       this.stompClient = Stomp.over(this.socket)
       this.stompClient.debug = false // stop logging PING/PONG
     }
-    self.stompClient.connect({}, function success () {
+    const success = () => {
       runInAction(() => config.fsSocketConnected = true)
-      self.backoff.reset()
-      connectCallback.call(this)
-    }, function error (e) {
-      log('fsSocket error', self.socket)
-      switch (self.socket.readyState) {
+      this.backoff.reset()
+      this.successCallback(this.stompClient)
+    }
+    const error = (frame) => {
+      log('fsSocket error', this.socket)
+      switch (this.socket.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
           runInAction(() => config.fsSocketConnected = false)
-          self.reconnect(connectCallback, errorCallback)
+          this.reconnect()
           break
         case SockJS.OPEN:
-          log('FRAME ERROR', arguments[0])
+          log('FRAME ERROR', frame)
           break
         default:
       }
-      errorCallback(arguments)
-    })
-    self.socket.onclose = () => {
-      log('socket is closing')
+      this.errorCallback(frame)
     }
+
+    this.stompClient.connect({}, success, error)
   }
 
-  reconnect (connectCallback, errorCallback) {
+  reconnect () {
     if (config.fsSocketConnected) return
     log(`try reconnect fsSocket ${this.backoff.attempts}`)
     // unset this.socket
@@ -65,14 +67,17 @@ class FsSocketClient {
       const retryDelay = this.backoff.duration()
       log(`Retry after ${retryDelay}ms`)
       const timer = setTimeout(
-        this.connect.bind(this, connectCallback, errorCallback)
+        this.connect.bind(this)
       , retryDelay)
     } else {
+      emitter.emit(E.SOCKET_TRIED_FAILED)
+      notify({ message: i18n`global.onSocketError`, notifyType: NOTIFY_TYPE.ERROR })
       this.backoff.reset()
       warn('Sock connected failed, something may be broken, reload page and try again')
     }
   }
-  close (connectCallback) {
+
+  close () {
     const self = this
     if (config.fsSocketConnected) {
       self.socket.close(1000, 123)
@@ -110,6 +115,9 @@ class TtySocketClient {
     this.maxAttempts = 5
 
     TtySocketClient.$$singleton = this
+    emitter.on(E.SOCKET_RETRY, () => {
+      this.reconnect()
+    })
     return this
   }
 

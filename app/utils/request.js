@@ -69,7 +69,7 @@ const responseInterceptor = request.interceptors.response.use((response) => {
   return response.data
 }, (error) => {
   responseRedirect(error.response)
-  if (error.response.data) Object.assign(error, error.response.data)
+  if (error.response && error.response.data) Object.assign(error, error.response.data)
   return Promise.reject(error)
 })
 

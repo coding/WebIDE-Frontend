@@ -6,6 +6,8 @@ import { isFunction } from 'utils/is'
 import Menu from '../Menu'
 import PluginArea from '../../components/Plugins/component'
 import { MENUBAR } from '../../components/Plugins/constants'
+import { injectComponent } from '../../components/Plugins/actions'
+import Offline from '../../components/Offline/Offline'
 
 class MenuBar extends Component {
   static propTypes = {
@@ -15,6 +17,11 @@ class MenuBar extends Component {
   constructor (props) {
     super(props)
     this.state = { activeItemIndex: -1 }
+  }
+  componentDidMount () {
+    injectComponent(MENUBAR.WIDGET, {
+      key: 'offlineControler',
+    }, () => Offline)
   }
   activateItemAtIndex = (index, isTogglingEnabled) => {
     if (isTogglingEnabled && this.state.activeItemIndex == index) {

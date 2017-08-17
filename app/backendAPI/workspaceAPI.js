@@ -20,13 +20,14 @@ export function createWorkspace (options) {
 }
 
 export function connectWebsocketClient () {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const fsSocketClient = new FsSocketClient()
-    fsSocketClient.connect(function () {
-      connectedResolve(this)
+    fsSocketClient.successCallback = function (stompClient) {
+      connectedResolve(stompClient)
       resolve(true)
-    }, (err) => {
-    })
+    }
+    fsSocketClient.errorCallback = function (err) {}
+    fsSocketClient.connect()
   })
 }
 
