@@ -1,7 +1,8 @@
 import isObject from 'lodash/isObject'
+import { observable, reaction, extendObservable, computed, action, autorunAsync } from 'mobx'
+import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
-import { observable, reaction, extendObservable, computed, action, autorunAsync } from 'mobx'
 import dynamicStyle from 'utils/dynamicStyle'
 
 let EditorState
@@ -159,7 +160,7 @@ const settings = observable({
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'hide_files'],
+    _keys: ['language', 'exclude_files'],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -169,9 +170,12 @@ const settings = observable({
       { name: 'settings.general.languageOption.chinese', value: 'Chinese' },
       ]
     },
-    hide_files: {
+    exclude_files: {
       name: 'settings.general.hideFiles',
-      value: '/.git,/.coding-ide'
+      value: config.fileExcludePatterns.join(','),
+      reaction (value) {
+        config.fileExcludePatterns = value.split(',')
+      }
     }
   }),
 
