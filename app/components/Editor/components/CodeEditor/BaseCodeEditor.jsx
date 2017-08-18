@@ -30,6 +30,10 @@ class BaseCodeEditor extends Component {
       <div ref={r => this.dom = r} style={{ width: '100%', height: '100%' }} />
     )
   }
+
+  componentWillUnmount () {
+    this.editor.destroy()
+  }
 }
 
 BaseCodeEditor.propTypes = {
