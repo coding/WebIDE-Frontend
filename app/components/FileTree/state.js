@@ -42,29 +42,29 @@ class FileTreeNode extends TreeNode {
     if (this.path === ROOT_PATH) this.isFolded = false
   }
 
-  @observable path = null
-
-  // override default name / isDir behavior
+  /* override base class */
   @computed get name () {
-    return this.file.name
+    return this.file ? this.file.name : ''
   }
 
   @computed get isDir () {
-    return this.file.isDir
+    return this.file ? this.file.isDir : false
   }
+
+  @computed get parentId () {
+    // prioritize corresponding file's tree node
+    if (this.file && this.file.parent) {
+      return this.file.parent.path
+    }
+    return this._parentId
+  }
+  /* end override */
+
+  /* extend base class */
+  @observable path = null
 
   @computed get file () {
     return FileState.entities.get(this.path)
-  }
-
-  @computed get parent () {
-    // prioritize corresponding file's tree node
-    if (this.file) {
-      const parentFile = this.file && this.file.parent
-      if (parentFile === null) return state.shadowRoot
-      return state.entities.get(parentFile.path)
-    }
-    return null
   }
 
   @computed get children () {
@@ -84,6 +84,7 @@ class FileTreeNode extends TreeNode {
   @computed get size () {
     if (this.file) return this.file.size
   }
+  /* end extend */
 }
 
 export default state
