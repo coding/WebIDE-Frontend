@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { observable, computed, action, autorun } from 'mobx'
+import { protectedObservable } from 'utils/decorators'
 
 function TreeNodeScope () {
   const SHADOW_ROOT_NODE = 'SHADOW_ROOT_NODE'
@@ -28,17 +29,13 @@ function TreeNodeScope () {
       state.entities.set(this.id, this)
     }
 
-  @observable _isDir = false
-  @observable _name = ''
-  @computed get name () { return this._name }
-    set name (v) { return this._name = v }
-  @computed get isDir () { return this._isDir }
-    set isDir (v) { return this._isDir = v }
+  @protectedObservable _name = ''
+  @protectedObservable _isDir = false
+  @protectedObservable _parentId = undefined
 
   @observable isFolded = true
   @observable isFocused = false
   @observable isHighlighted = false
-  @observable parentId = undefined
   @observable index = 0
 
   @computed get isShadowRoot () {
