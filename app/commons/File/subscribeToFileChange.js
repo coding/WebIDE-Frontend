@@ -43,6 +43,12 @@ function handleGitFiles (node) {
   return false
 }
 
+// fixme: maybe we should make this a standard method of File model
+function fileIsOpened (filePath) {
+  const openedFilePaths = mobxStore.EditorState.entities.values().map(editor => editor.filePath)
+  return openedFilePaths.includes(filePath)
+}
+
 export default function subscribeToFileChange () {
   autorun(() => {
     if (!config.fsSocketConnected) return
@@ -51,27 +57,22 @@ export default function subscribeToFileChange () {
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo
+
       switch (data.changeType) {
         case 'create':
-          if (handleGitFiles(node)) {
-            break
-          }
-          FileActions.loadNodeData([node])
-          break
         case 'modify':
           if (handleGitFiles(node)) {
             break
           }
-          FileActions.loadNodeData([node])
-          const tabsToUpdate = mobxStore.EditorTabState.tabs.values().filter(tab => tab.path === node.path)
-          if (tabsToUpdate.length) {
+          if (!node.isDir && fileIsOpened(node.path)) {
             api.readFile(node.path).then(({ content }) => {
-              TabActions.updateTabByPath({
-                path: node.path,
-                content,
-              })
+              node.content = content
+              FileActions.loadNodeData([node])
             })
+          } else {
+            FileActions.loadNodeData([node])
           }
+
           break
         case 'delete':
           FileActions.removeNode(node)

@@ -1,4 +1,5 @@
 import mapEntityFactory from './mapEntity'
 import defaultProps from './defaultProps'
+import protectedObservable from './protectedObservable'
 
-export { mapEntityFactory, defaultProps }
+export { mapEntityFactory, defaultProps, protectedObservable }

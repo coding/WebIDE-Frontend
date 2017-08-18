@@ -67,9 +67,9 @@ export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
   }
 )
 
-export const removeNode = registerAction('filetree:remove_node',
-  node => state.entities.delete(node.id)
-)
+export const removeNode = registerAction('filetree:remove_node', (node) => {
+  state.entities.delete(node.id || node.path)
+})
 
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu

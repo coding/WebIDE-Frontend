@@ -1,7 +1,8 @@
 import isObject from 'lodash/isObject'
+import { observable, reaction, extendObservable, computed, action } from 'mobx'
+import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
-import { observable, reaction, extendObservable, computed, action, autorunAsync } from 'mobx'
 import dynamicStyle from 'utils/dynamicStyle'
 
 let EditorState
@@ -14,7 +15,7 @@ export const UIThemeOptions = [
 ]
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
-const changeTheme = (nextThemeId) => {
+const changeUITheme = (nextThemeId) => {
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
     import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
@@ -26,9 +27,10 @@ const changeTheme = (nextThemeId) => {
     })
   }
 
-  if (nextThemeId === 'dark' && EditorState.options.theme === 'default') {
+  const editorTheme = EditorState.options.theme
+  if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
     settings.theme.syntax_theme.value = 'material'
-  } else if (nextThemeId === 'base-theme' && (EditorState.options.theme === 'monokai' || EditorState.options.theme === 'material')) {
+  } else if (nextThemeId === 'base-theme' && (editorTheme === 'monokai' || editorTheme === 'material')) {
     settings.theme.syntax_theme.value = 'default'
   }
   emitter.emit(THEME_CHANGED, nextThemeId)
@@ -144,22 +146,21 @@ const settings = observable({
     ui_theme: {
       name: 'settings.theme.uiTheme',
       value: 'base-theme',
-      options: UIThemeOptions
+      options: UIThemeOptions,
+      reaction: changeUITheme,
     },
     syntax_theme: {
       name: 'settings.theme.syntaxTheme',
       value: 'default',
       options: SyntaxThemeOptions,
-      reaction (value) {
-        changeSyntaxTheme(value)
-      }
+      reaction: changeSyntaxTheme,
     }
   }),
 
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'hide_files'],
+    _keys: ['language', 'exclude_files'],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -169,9 +170,12 @@ const settings = observable({
       { name: 'settings.general.languageOption.chinese', value: 'Chinese' },
       ]
     },
-    hide_files: {
+    exclude_files: {
       name: 'settings.general.hideFiles',
-      value: '/.git,/.coding-ide'
+      value: config.fileExcludePatterns.join(','),
+      reaction (value) {
+        config.fileExcludePatterns = value.split(',')
+      }
     }
   }),
 
@@ -275,7 +279,3 @@ const settings = observable({
 })
 
 export default settings
-
-autorunAsync('changeTheme', () => {
-  changeTheme(settings.theme.ui_theme.value)
-})
