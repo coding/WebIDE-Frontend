@@ -7,6 +7,7 @@ const nodeSorter = (a, b) => {
   // node.isDir comes first
   // then sort by node.path alphabetically
   if (a.isDir && !b.isDir) return -1
+  if (!a.isDir && b.isDir) return 1
   if (a.path < b.path) return -1
   if (a.path > b.path) return 1
   return 0
