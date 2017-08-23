@@ -40,7 +40,11 @@ class FileTreeNode extends TreeNode {
     const path = props.file ? props.file.path : props.path
     super({ ...props, id: path })
     this.path = path
-    if (this.path === ROOT_PATH) this.isFolded = false
+    if (this.path === ROOT_PATH) {
+      this.isFolded = false
+      this._parentId = state.shadowRoot.id
+      this.index = 0
+    }
   }
 
   /* override base class */
@@ -89,4 +93,4 @@ class FileTreeNode extends TreeNode {
 }
 
 export default state
-export { FileTreeNode }
+export { FileTreeNode, TreeNode }
