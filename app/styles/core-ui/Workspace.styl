@@ -10,6 +10,39 @@
   }
 
   overflow: auto;
+
+  .strike {
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap; 
+    margin: 10px 0;
+  }
+
+  .strike > span {
+      position: relative;
+      display: inline-block;
+  }
+
+  .strike > span:before,
+  .strike > span:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 9999px;
+      height: 1px;
+      background: #000;
+  }
+
+  .strike > span:before {
+      right: 100%;
+      margin-right: 15px;
+  }
+
+  .strike > span:after {
+      left: 100%;
+      margin-left: 15px;
+  }
 }
 
 .workspace {
@@ -72,4 +105,57 @@
 .creating-workspace-process {
   opacity: 0.7;
 
+}
+
+.import-plugin-container {
+  width: 600px;
+  h2 {
+    font-size: 14px;
+    margin: 18px 0;
+  }
+  .control-label {
+    text-align: left;
+  }
+  .checkbox-inline input[type="checkbox"] {
+    position: relative;
+    margin-left: -4px;
+    margin-right: 8px;
+  }
+  .opt-list {
+    padding-left: 5px;
+    .btn {
+      margin-bottom: 10px;
+    }
+  }
+}
+.template-option {
+  padding-left: 36px;
+}
+.template-list {
+  border: 1px solid $base-border-color;
+  overflow: auto;
+  height: 200px;
+  .template-item {
+    font-weight: normal;
+    line-height: 20px;
+    padding: 2px 10px;
+    cursor: pointer;
+    display: block;
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    &.selected {
+      background-color: $background-color-selected;
+    }
+    .fa {
+      margin-right: 4px;
+    }
+  }
+}
+.template-intro {
+  border: 1px solid $base-border-color;
+  overflow: auto;
+  height: 200px;
+  padding: 10px;
+  line-height: 1.4;
 }

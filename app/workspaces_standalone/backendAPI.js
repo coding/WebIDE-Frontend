@@ -4,8 +4,8 @@ export function getWorkspaces () {
   return request.get('/workspaces')
 }
 
-export function createWorkspace (url) {
-  return request.post('/workspaces', { url })
+export function createWorkspace (options) {
+  return request.post('/workspaces', options)
 }
 
 export function deleteWorkspace (spaceKey) {

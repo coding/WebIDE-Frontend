@@ -42,7 +42,7 @@ class TreeNode extends Component {
             })}></i>}
           </span>
           <span className="filetree-node-icon">
-            <i className={cx({
+            <i className={node.icon || cx({
               'fa fa-briefcase': node.isRoot,
               'fa fa-folder-o': node.isDir && !node.isRoot && node.isFolded,
               'fa fa-folder-open-o': node.isDir && !node.isRoot && !node.isFolded,

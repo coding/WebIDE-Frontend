@@ -2,11 +2,18 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as WorkspaceActions from './actions'
+import * as Modal from 'components/Modal/actions'
+import i18n from 'utils/createI18n'
+import state from './state'
+import WizardPluginProjectView from './modals/pluginProject'
+import { observer } from 'mobx-react'
 
+@observer
 class WorkspaceList extends Component {
   constructor (props) {
     super(props)
     this.state = { showPublicKey: false, percent: 0, hasCreated: false }
+    this.handleTemplate = this.handleTemplate.bind(this)
   }
 
   componentDidMount () {
@@ -19,6 +26,19 @@ class WorkspaceList extends Component {
     if (this.props.isCreating && !nextProps.isCreating) this.setState({ hasCreated: true })
     // isCreating false -> true
     if (!this.props.isCreating && nextProps.isCreating) this.changePercent()
+  }
+
+  handleTemplate = () => {
+    state.wizard.step = 1
+    this.showModal()
+  }
+
+  showModal () {
+    state.wizard.showModal = true
+  }
+
+  dismissModal () {
+    state.wizard.showModal = false
   }
 
   changePercent () {
@@ -70,7 +90,7 @@ class WorkspaceList extends Component {
             { isCreating
               ? <button className='btn btn-default' disabled='true'>Creating</button>
               : <button className='btn btn-default'
-                  onClick={e => createWorkspace(this.gitUrlInput.value)}>
+                  onClick={e => createWorkspace({ url: this.gitUrlInput.value })}>
                   Create
                 </button>
             }
@@ -78,6 +98,19 @@ class WorkspaceList extends Component {
           { (isCreating || this.state.hasCreated) && !errMsg ? <p className="creating-workspace-process">
             Creating workspace...{this.state.percent}%</p> : null}
           { errMsg ? <p className='creating-workspace-indicator-error'>Error: {errMsg}</p> : null }
+          <div className="strike">
+              <span> OR </span>
+          </div>
+          <div>
+            <p>
+              &nbsp;&nbsp;&nbsp;&nbsp;You can <a href='#' onClick={e => {
+                e.preventDefault()
+                e.stopPropagation()
+                this.handleTemplate()
+              }}
+              >use template wizard</a>
+            </p>
+          </div>
         </div>
         <div className='workspace-list-container'>
           { workspaces.map(ws =>
@@ -95,6 +128,18 @@ class WorkspaceList extends Component {
               </div>
             </div>
           ) }
+        </div>
+        {/* <Utilities /> */}
+        <div className='utilities-container'>
+          {state.wizard.showModal &&
+          <div className='modals-container'>
+            <div className='top modal-container show-backdrop'>
+              <div className='modal'>
+              <WizardPluginProjectView />
+              </div>
+              <div className='backdrop' onClick={this.dismissModal} />
+            </div>
+          </div>}
         </div>
       </div>
     )

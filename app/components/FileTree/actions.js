@@ -38,7 +38,7 @@ export const selectNode = registerAction('filetree:select_node',
 
     if (!multiSelect) {
       state.root.unfocus()
-      state.root.forEachDescendant(childNode => childNode.unfocus())
+      state.shadowRoot.forEachDescendant(childNode => childNode.unfocus())
     }
 
     node.focus()

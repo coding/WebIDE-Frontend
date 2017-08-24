@@ -4,6 +4,7 @@ import { TreeNode as FileTreeNode } from 'commons/Tree'
 import subscribeToFileChange from 'commons/File/subscribeToFileChange'
 import * as FileTreeActions from './actions'
 import FileTreeState from './state'
+import './addLibNodeToFileTreeState'
 
 const FileUploadInput = ({ node, handleUpload }) => (
   <form id='filetree-hidden-input-form' style={{ position: 'fixed', top: '-10000px' }}>
@@ -59,6 +60,7 @@ class FileTree extends Component {
   render () {
     const { uploadFilesToPath, selectNode, openNode, openContextMenu } = FileTreeActions
     const rootNode = FileTreeState.root
+    const rootLibNode = FileTreeState.rootLib
     const curNode = FileTreeState.focusedNodes[0]
 
     return (
@@ -71,6 +73,13 @@ class FileTree extends Component {
           openNode={openNode}
           openContextMenu={openContextMenu}
         />
+
+        <FileTreeNode node={rootLibNode}
+          selectNode={selectNode}
+          openNode={openNode}
+          openContextMenu={openContextMenu}
+        />
+
         <FileUploadInput
           node={curNode}
           handleUpload={uploadFilesToPath}

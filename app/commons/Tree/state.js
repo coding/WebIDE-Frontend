@@ -24,7 +24,7 @@ function TreeNodeScope () {
       } else if (props.parentId) {
         this.parentId = props.parentId
       }
-
+      this.icon = props.icon
       state.entities.set(this.id, this)
     }
 
@@ -75,6 +75,7 @@ function TreeNodeScope () {
   }
 
   @computed get next () {
+    if (this.isShadowRoot) return this.children[0]
     return this.siblings[this.index + 1]
   }
 
@@ -116,7 +117,7 @@ function TreeNodeScope () {
 
     const nextNode = this.next
     if (nextNode) return nextNode
-    if (this.parent.isShadowRoot) return this
+    // if (this.parent.isShadowRoot) return this
     return this.parent.next
   }
 
@@ -176,6 +177,7 @@ function TreeNodeScope () {
   autorun(() => {
     state.entities.forEach((parentNode) => {
       if (!parentNode) return
+      if (parentNode.isShadowRoot) return
       parentNode.children.forEach((node, i) => {
         if (node.index !== i) node.index = i
       })
