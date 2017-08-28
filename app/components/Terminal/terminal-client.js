@@ -142,22 +142,22 @@ class TerminalClient extends TtySocketClient {
   getSocket () { return this.socket }
 
   clearBuffer (tabId) {
-    const term = _.find(terms, term => term.tabId == tabId)
+    const term = _.find(terms, term => term.id == tabId)
     this.socket.emit('term.input', { id: term.id, input: "printf '\\033c'\r" })
   }
 
   clearScrollBuffer (tabId) {
-    const term = _.find(terms, term => term.tabId == tabId)
+    const term = _.find(terms, term => term.id == tabId)
     term.clearScrollbackBuffer()
   }
 
   reset (tabId) {
-    const term = _.find(terms, term => term.tabId == tabId)
+    const term = _.find(terms, term => term.id == tabId)
     this.socket.emit('term.input', { id: term.id, input: '\f' })
   }
 
   input (tabId, inputString) {
-    const term = _.find(terms, term => term.tabId == tabId)
+    const term = _.find(terms, term => term.id == tabId)
     this.socket.emit('term.input', { id: term.id, input: inputString })
   }
 

@@ -10,6 +10,8 @@ import PaneState from './Pane/state'
 import * as TabActions from 'components/Tab/actions'
 import * as FileTreeActions from './FileTree/actions'
 import FileTreeState from './FileTree/state'
+import TerminalTabState from 'components/Terminal/state'
+import TerminalManager from '../components/Terminal/terminal-client'
 
 // Corner case: file dragging doesn't trigger 'dragend' natively
 // so need to patch for this behavior
@@ -56,6 +58,7 @@ class DragAndDrop extends Component {
     window.ondrop = this.onDrop
     window.ondragend = this.onDragEnd
     window.ondragleave = this.onDragLeave
+    this.terminalManager = new TerminalManager()
   }
 
   onDragLeave = (e) => {
@@ -170,6 +173,12 @@ class DragAndDrop extends Component {
 
       case 'TAB_on_TABLABEL':
         TabActions.insertTabBefore(source.id, target.id.replace('tab_label_', ''))
+        break
+
+      case 'FILE_TREE_NODE_on_TERMINAL':
+        const activeTerminalTab = TerminalTabState.activeTab
+        const terminal = activeTerminalTab.terminal
+        this.terminalManager.inputFilePath(terminal.id, source.id)
         break
 
       default:

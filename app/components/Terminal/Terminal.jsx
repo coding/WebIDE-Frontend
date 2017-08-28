@@ -27,6 +27,7 @@ class Term extends Component {
     terminalManager.setActions(TabActions)
 
     terminal.tabId = this.props.tab.id;
+    this.props.tab.terminal = terminal
     terminal.open(this.termDOM);
     terminal.id = this.sessionId = _.uniqueId('term_');
 
@@ -56,7 +57,7 @@ class Term extends Component {
     return (
       <div className='ide-terminal'>
         <div className='terminal-container'>
-          <div className='terminal-body' ref={r=>this.termDOM=r}></div>
+          <div className='terminal-body' data-droppable="TERMINAL" ref={r=>this.termDOM=r}></div>
         </div>
       </div>
     );
