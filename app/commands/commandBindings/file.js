@@ -40,7 +40,13 @@ function createFileWithContent (content) {
 
 function createFolderAtPath (path) {
   return api.createFolder(path)
-  .then(Modal.dismissModal)
+  .then((data) => {
+    if (data.code < 0) {
+      Modal.updateModal({ statusMessage: data.msg }).then(createFolderAtPath)
+    } else {
+      Modal.dismissModal()
+    }
+  })
   .then(() => path)
     // if error, try again.
   .catch(err =>
