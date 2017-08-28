@@ -44,6 +44,6 @@ export const enablePackageHotReload = (target) => {
       console.log(`plugin is reloading from ${target}`, data)
       data.codingIdePackage.TARGET = target
     }
-    fetchPackage(data.codingIdePackage)
+    fetchPackage(data.codingIdePackage, 'reload')
   })
 }

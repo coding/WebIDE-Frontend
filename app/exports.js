@@ -18,6 +18,8 @@ const lib = {
   sockjsClient: require('sockjs-client'),
   moment: require('moment'),
   codemirror: require('codemirror'),
+  reactDom: require('react-dom'),
+  axios: require('axios')
 }
 
 export { app, lib }

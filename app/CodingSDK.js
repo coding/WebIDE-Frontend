@@ -11,6 +11,7 @@ import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import api from '../app/backendAPI'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
 import * as Panel from './components/Panel/actions'
+import * as File from './commons/File'
 import initializeState from './containers/Initialize/state'
 import { app as appExports, lib as libExports } from './exports'
 
@@ -80,6 +81,9 @@ export default class {
   }
   get Modal () {
     return Modal
+  }
+  get File () {
+    return File
   }
   get Initialize () {
     return initializeState
