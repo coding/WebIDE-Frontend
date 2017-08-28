@@ -1,4 +1,5 @@
-import { observable, extendObservable } from 'mobx'
+import React from 'react'
+import { observable, extendShallowObservable } from 'mobx'
 import keyMapConfig, { modifierKeysMap } from 'commands/keymaps'
 
 const findKeyByValue = value => Object
@@ -15,28 +16,43 @@ const withModifierKeys = value => value.split('+')
 function MenuScope (defaultMenuItems=[]) {
 
   class MenuItem {
-    constructor (props) {
-      let subItems
-      if (Array.isArray(props.items)) {
-        subItems = props.items.map(itemProps => new MenuItem(itemProps))
-        delete props.items
-      }
-      extendObservable(this, props)
-
-      if (subItems) extendObservable(this, { items: subItems })
-      if (this.command) {
-        extendObservable(this, {
-          get shortcut () {
-            return withModifierKeys(findKeyByValue(this.command))
-          }
-        })
-      }
+    constructor (opts) {
+      const keys = Object.keys(opts)
+      keys.forEach((keyName) => {
+        switch (keyName) {
+          case 'items':
+            const subItems = opts.items.map(itemOpts => new MenuItem(itemOpts))
+            return extendShallowObservable(this, {
+              items: subItems,
+              get itemsMap () {
+                return this.items.reduce((acc, item) => {
+                  if (item.key) acc[item.key] = item
+                }, {})
+              },
+              get shortcut () {
+                return withModifierKeys(findKeyByValue(this.command))
+              }
+            })
+          // case 'key':
+          // case 'name':
+          // case 'className':
+          // case 'command':
+          // case 'isDisabled':
+          default:
+            return extendShallowObservable(this, { [keyName]: opts[keyName] })
+        }
+      })
       return this
     }
   }
 
   const state = observable({
-    items: defaultMenuItems.map(props => new MenuItem(props)),
+    items: observable.shallowArray(defaultMenuItems.map(opts => new MenuItem(opts))),
+    get itemsMap () {
+      return this.items.reduce((acc, item) => {
+        if (item.key) acc[item.key] = item
+      }, {})
+    }
   })
 
   return { state, MenuItem }
