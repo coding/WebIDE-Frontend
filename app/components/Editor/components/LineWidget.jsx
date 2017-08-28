@@ -6,6 +6,7 @@ import cx from 'classnames'
 import modeInfos from 'components/Editor/components/CodeEditor/addons/mode/modeInfos'
 import Menu from '../../Menu'
 import i18n from 'utils/createI18n'
+import { registerAction } from 'utils/actions'
 
 @observer
 export default class LineWidget extends Component {
@@ -13,7 +14,13 @@ export default class LineWidget extends Component {
     super(props)
   }
 
-  handleGoto (defaultGoto) {
+  handleGoto = registerAction('editor:goto', () => {
+    const activeTab = EditorTabState.activeTab
+    if (!activeTab) {
+      return
+    }
+    const { cursorPosition } = activeTab.editor
+    const defaultGoto = `${cursorPosition.ln}:${cursorPosition.col}`
     Modal.showModal('Prompt', {
       message: i18n`file.goto`,
       defaultValue: defaultGoto,
@@ -23,7 +30,7 @@ export default class LineWidget extends Component {
       editor.setCursor(goto)
       Modal.dismissModal()
     })
-  }
+  })
 
   render () {
     const activeTab = EditorTabState.activeTab
@@ -32,7 +39,6 @@ export default class LineWidget extends Component {
     }
     const { cursorPosition, selections } = activeTab.editor
     let lineText = ''
-    const defaultGoto = `${cursorPosition.ln}:${cursorPosition.col}`
     if (selections.length <= 1) {
       lineText = i18n`file.posInfo${{ ln: cursorPosition.ln, col: cursorPosition.col }}`
     } else {
@@ -49,7 +55,7 @@ export default class LineWidget extends Component {
     }
     return (
       <div className='status-bar-menu-item'
-        onClick={e => { this.handleGoto(defaultGoto) }}
+        onClick={e => { this.handleGoto() }}
       >
         <span title='Click to goto line'>
           {lineText}
