@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 import Root from './containers/Root'
 import './styles/main.styl'
 import initialize from './initialize'
-import InitializeContainer from './containers/Initialize'  
+import InitializeContainer from './containers/Initialize'
 
 const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/base-theme/index.styl')
 baseTheme.use()
@@ -31,5 +31,5 @@ async function startApp (module) {
 
 startApp(module)
 
-const log = console.log || (x => x)
+const log = (...args) => console.log(...args) || (x => x)
 if (__VERSION__) log(`[VERSION] ${__VERSION__}`)
