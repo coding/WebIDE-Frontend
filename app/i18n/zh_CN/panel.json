@@ -5,6 +5,7 @@
       "history": "版本历史"
    },
    "left": {
-      "project": "文件树"
+      "project": "文件树",
+      "working": "工作文件"
    }
 }
