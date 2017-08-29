@@ -12,13 +12,13 @@ class Tab extends BaseTab {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
+    this.editorProps = props.editor
     this.update(props)
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
     })
   }
-
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
     if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
@@ -45,7 +45,9 @@ class Tab extends BaseTab {
   @observable flags = {
     modified: false
   }
-
+  toJS () {
+    return { ...this, path: this.file ? this.file.path : '', editor: this.editorProps }
+  }
   @computed get title () {
     if (this.file) {
       return this.file.name
