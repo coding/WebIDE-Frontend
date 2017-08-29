@@ -19,7 +19,9 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   Promise.all(openTabs).then(() => {
     Object.values(json.tabGroups).forEach((tabGroupsValue) => {
       if (tabGroupsValue.activeTabId) {
-        activateTab(tabGroupsValue.activeTabId)
+        setTimeout(() => {
+          activateTab(tabGroupsValue.activeTabId)
+        }, 1)
       }
     })
   })
@@ -52,7 +54,9 @@ export const removeAllTab = registerAction('tab:remove_all', (tabId) => {
 
 export const activateTab = registerAction('tab:activate', (tabId) => {
   const tab = state.tabs.get(tabId)
-  tab.activate()
+  if (tab && tab.activate) {
+    tab.activate()
+  }
 })
 
 export const createGroup = registerAction('tab:create_tab_group',

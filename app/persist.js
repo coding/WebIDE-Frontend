@@ -34,6 +34,14 @@ function persistStore (store, transform) {
   })
 }
 
+export const clearPersist = (key) => {
+  if (!key) {
+    mainStore.clear()
+  } else {
+    mainStore.removeItem(key)
+  }
+}
+
 const hydrateAction = {
   EditorTabState: editorTabHydrate,
   SettingState: settingsHydrate
@@ -46,4 +54,6 @@ function autoRehydrate (store) {
     }
   })
 }
+
+window.clearPersist = clearPersist
 export default persistStore
