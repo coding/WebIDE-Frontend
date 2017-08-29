@@ -77,14 +77,14 @@ function TabScope () {
   }
 }
 
-  autorun(() => {
-    state.tabGroups.forEach((tabGroup) => {
-    // correct tab index
-      tabGroup.tabs.forEach((tab, tabIndex) => {
-        if (tab.index !== tabIndex) tab.index = tabIndex
-      })
-    })
-  })
+  // autorun(() => {
+  //   state.tabGroups.forEach((tabGroup) => {
+  //   // correct tab index
+  //     tabGroup.tabs.forEach((tab, tabIndex) => {
+  //       if (tab.index !== tabIndex) tab.index = tabIndex
+  //     })
+  //   })
+  // })
 
 
   class TabGroup {
@@ -117,7 +117,9 @@ function TabScope () {
   @mapEntity('tabs')
   @action addTab (tab, insertIndex = this.tabs.length) {
     if (!tab) tab = new this.constructor.Tab()
-    tab.index = insertIndex
+    if (tab.index === undefined) {
+      tab.index = insertIndex
+    }
     tab.tabGroupId = this.id
     tab.activate()
     return tab

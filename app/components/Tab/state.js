@@ -23,6 +23,7 @@ class Tab extends BaseTab {
     if (is.string(props.title)) this.title = props.title
     if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
     if (is.string(props.icon)) this.icon = props.icon
+    if (is.number(props.index)) this.index = props.index
 
     // tabGroup
     let tabGroup
@@ -46,7 +47,10 @@ class Tab extends BaseTab {
     modified: false
   }
   toJS () {
-    return { ...this, path: this.file ? this.file.path : '', editor: this.editorProps }
+    if (this.file) {
+      return { ...this, path: this.file.path || '', editor: this.editorProps }
+    }
+    return null
   }
   @computed get title () {
     if (this.file) {
