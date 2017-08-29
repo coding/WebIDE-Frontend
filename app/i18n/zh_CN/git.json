@@ -106,7 +106,8 @@
       "errMsg": "此 tag 已存在"
    },
    "commitView": {
-      "nothingCommit": "你的当前工作目录无内容提交"
+      "nothingCommit": "你的当前工作目录无内容提交",
+      "initMessage": "由 Coding WebIDE 更新，https://ide.coding.net"
    },
    "unStash": {
       "branch": "新建分支并应用",

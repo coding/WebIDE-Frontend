@@ -12,6 +12,7 @@ import GitFileTree from './GitFileTree'
 
 var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
   const {updateCommitMessage, commit, statusFiles, diffFile} = actionProps
+  const initialCommitMessage = i18n.get('git.commitView.initMessage')
   return isWorkingDirClean ?
     <h1 className=''>{i18n`git.commitView.nothingCommit`}</h1>
   : (<div>
@@ -26,6 +27,7 @@ var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
       <hr />
       <div className='git-commit-message-container'>
         <textarea name='git-commit-message' id='git-commit-message' rows='4'
+          placeholder={initialCommitMessage}
           onChange={e => updateCommitMessage(e.target.value)}
           onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) commit()}}
         />

@@ -40,6 +40,12 @@ const changeSyntaxTheme = (nextSyntaxThemeId) => {
   if (EditorState) EditorState.options.theme = nextSyntaxThemeId
 }
 
+const formatLocateName = (name) => {
+  const replacedName = name.replace(/-/g, '_')
+  const splitNames = replacedName.split('_')
+  return `${splitNames[0].toLowerCase()}_${splitNames[1].toUpperCase()}`
+}
+
 const localeToLangs = {
   en_US: 'English',
   zh_CN: 'Chinese'
@@ -59,7 +65,7 @@ const getDefaultLangCode = () => {
     if (!Array.isArray(languages)) languages = [languages]
     return languages.reduce((defaultLangCode, lang) => {
       if (!lang) return defaultLangCode
-      lang = lang.replace(/-/g, '_')
+      lang = formatLocateName(lang)
       if (Object.keys(localeToLangs).includes(lang)) return lang
       return defaultLangCode
     }, '')

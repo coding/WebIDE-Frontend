@@ -5,9 +5,9 @@
  * @returns {function} step - step function, see below
  */
 function stepFactory ({
-  descriptionHandler = console.log,
-  successHandler = console.log,
-  errorHandler = console.error,
+  descriptionHandler = (...args) => console.log(...args),
+  successHandler = (...args) => console.log(...args),
+  errorHandler = (...args) => console.error(...args),
 } = {}) {
   /**
    * step function has the syntax of
