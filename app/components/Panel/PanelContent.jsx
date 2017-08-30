@@ -8,6 +8,7 @@ import TerminalContainer from '../Terminal'
 import FileTree from '../FileTree'
 import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
+import FileList from '../Tab/fileList'
 
 
 const PanelContent = ({ panel }) => {
@@ -40,6 +41,9 @@ const PanelContent = ({ panel }) => {
         <SidePanelContainer side='left'>
           <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-code' }} active>
             <FileTree />
+          </SidePanelView>
+          <SidePanelView key='working' label={{ text: i18n`panel.left.working`, icon: 'fa fa-folder-open-o' }}>
+            <FileList />
           </SidePanelView>
         </SidePanelContainer>
       )
