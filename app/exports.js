@@ -19,7 +19,8 @@ const lib = {
   moment: require('moment'),
   codemirror: require('codemirror'),
   reactDom: require('react-dom'),
-  axios: require('axios')
+  axios: require('axios'),
+  localforage: require('localforage')
 }
 
 export { app, lib }
