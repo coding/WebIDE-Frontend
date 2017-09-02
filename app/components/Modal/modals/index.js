@@ -1,6 +1,7 @@
 export Prompt from './Prompt'
 export Confirm from './Confirm'
 export Alert from './Alert'
+export Form from './Form'
 export { GitCommitView } from '../../Git'
 export { CommandPalette } from '../../../commands'
 export { FilePalette } from '../FilePalette'
