@@ -20,10 +20,26 @@ const state = observable({
   },
 })
 
+// state.entities.intercept((change) => {
+//   console.log(change)
+//   if (change.type === 'add') {
+
+//   }
+//   return change
+// })
+
 class FileNode {
   constructor (props) {
     this.update(props)
-
+    if (!this.parent && !this.isRoot) {
+      const pathComps = this.path.split('/')
+      pathComps.pop()
+      const parentPath = pathComps.join('/')
+      new FileNode({
+        path: parentPath,
+        isDir: true
+      })
+    }
     state.entities.set(this.path, this)
   }
 
@@ -68,7 +84,9 @@ class FileNode {
     const parentPath = pathComps.join('/')
     const parent = state.entities.get(parentPath)
     // only rootFileNode has no parent, other case means something wrong
-    if (!parent) { throw Error(`Missing internal node of path '${parentPath}'`) }
+    if (!parent) return null
+    //   parent = new FileNode({ path: parentPath, isDir: true })
+    // }
     return parent
   }
 
