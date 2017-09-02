@@ -1,13 +1,12 @@
-import uniqueId from 'lodash/uniqueId'
-import is from 'utils/is'
 import { observable, computed, action, autorun } from 'mobx'
 import { mapEntityFactory } from 'utils/decorators'
 import i18n from 'utils/createI18n'
+import { mapToJS } from 'utils/toJS'
 
 function TabScope () {
   const state = observable({
-    tabs: observable.map({}),
-    tabGroups: observable.map({}),
+    tabs: new observable.map({}),
+    tabGroups: new observable.map({}),
     activeTabGroupId: null,
     get activeTabGroup () {
       const activeTabGroup = this.tabGroups.get(this.activeTabGroupId)
@@ -18,6 +17,13 @@ function TabScope () {
       const activeTabGroup = this.activeTabGroup
       if (!activeTabGroup) return this.tabs.values()[0]
       return activeTabGroup.activeTab
+    },
+    toJS () {
+      return {
+        tabs: mapToJS(this.tabs),
+        tabGroups: mapToJS(this.tabGroups),
+        activeTabGroupId: this.activeTabGroupId
+      }
     }
   })
 
@@ -27,8 +33,8 @@ function TabScope () {
 
   @observable _title = i18n.get('tab.makeDropdownMenuItems.untitledTab')
   @computed
-  get title () { return this._title }
-  set title (v) { return this._title = v }
+    get title () { return this._title }
+    set title (v) { return this._title = v }
 
   @observable index = 0
   @observable tabGroupId = ''
@@ -80,7 +86,6 @@ function TabScope () {
     })
   })
 
-
   class TabGroup {
     static Tab = Tab;
 
@@ -111,7 +116,9 @@ function TabScope () {
   @mapEntity('tabs')
   @action addTab (tab, insertIndex = this.tabs.length) {
     if (!tab) tab = new this.constructor.Tab()
-    tab.index = insertIndex
+    if (tab.index === undefined) {
+      tab.index = insertIndex
+    }
     tab.tabGroupId = this.id
     tab.activate()
     return tab

@@ -12,17 +12,18 @@ class Tab extends BaseTab {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
+    this.editorProps = props.editor
     this.update(props)
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
     })
   }
-
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
     if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
     if (is.string(props.icon)) this.icon = props.icon
+    if (is.number(props.index)) this.index = props.index
 
     // tabGroup
     let tabGroup
@@ -45,7 +46,12 @@ class Tab extends BaseTab {
   @observable flags = {
     modified: false
   }
-
+  toJS () {
+    if (this.file) {
+      return { ...this, path: this.file.path || '', editor: this.editorProps }
+    }
+    return null
+  }
   @computed get title () {
     if (this.file) {
       return this.file.name

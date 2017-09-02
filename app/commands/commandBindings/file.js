@@ -40,7 +40,13 @@ function createFileWithContent (content) {
 
 function createFolderAtPath (path) {
   return api.createFolder(path)
-  .then(Modal.dismissModal)
+  .then((data) => {
+    if (data.code < 0) {
+      Modal.updateModal({ statusMessage: data.msg }).then(createFolderAtPath)
+    } else {
+      Modal.dismissModal()
+    }
+  })
   .then(() => path)
     // if error, try again.
   .catch(err =>
@@ -48,8 +54,8 @@ function createFolderAtPath (path) {
   )
 }
 
-function openFile ({ path, editor={} }) {
-  api.readFile(path)
+export function openFile ({ path, editor = {}, others = {} }) {
+  return api.readFile(path)
     .then((data) => {
       FileStore.loadNodeData(data)
       return data
@@ -68,7 +74,8 @@ function openFile ({ path, editor={} }) {
           editor: {
             ...editor,
             filePath: path,
-          }
+          },
+          ...others
         })
       }
     })
@@ -95,7 +102,7 @@ export default {
       selectionRange: [path.length, defaultValue.length]
     })
     .then(createFile)
-    .then((path) => openFile({ path }))
+    .then(path => openFile({ path }))
   },
   'file:new_folder': (c) => {
     const node = c.context

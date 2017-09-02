@@ -56,6 +56,9 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         if (manager.init) {
             manager.init(data, action)
         }
+        if (type === 'reload') {
+          manager.pluginWillMount()
+        }
         // if (type === 'init') {
         //   if (manager.init) {
         //     manager.init(data, action)

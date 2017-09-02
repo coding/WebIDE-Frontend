@@ -3,7 +3,7 @@ import * as position from 'components/Plugins/constants'
 import PluginArea from 'components/Plugins/component'
 
 import { CreateI18n } from 'utils/createI18n'
-import { request, qs } from './utils'
+import * as utils from './utils'
 import store from './store'
 import config from './config'
 import * as Modal from './components/Modal/actions'
@@ -11,6 +11,7 @@ import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import api from '../app/backendAPI'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
 import * as Panel from './components/Panel/actions'
+import * as File from './commons/File'
 import initializeState from './containers/Initialize/state'
 import { app as appExports, lib as libExports } from './exports'
 
@@ -37,10 +38,7 @@ export default class {
     store.subscribe(func(this.getData()))
   }
   get utils () {
-    return ({
-      request,
-      qs
-    })
+    return utils
   }
   get Panel () {
     return Panel
@@ -80,6 +78,9 @@ export default class {
   }
   get Modal () {
     return Modal
+  }
+  get File () {
+    return File
   }
   get Initialize () {
     return initializeState

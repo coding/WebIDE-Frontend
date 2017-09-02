@@ -5,6 +5,7 @@
       "history": "History"
    },
    "left": {
-      "project": "Project"
+      "project": "Project",
+      "working": "Working"
    }
 }

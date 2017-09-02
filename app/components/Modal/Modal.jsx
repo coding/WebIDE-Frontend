@@ -28,6 +28,7 @@ import {
   GitCheckoutView,
   GitCheckoutStashView,
   FileSelectorView,
+  Form,
 } from './modals'
 
 let ModalContainer = observer(props => {
@@ -66,6 +67,8 @@ class Modal extends Component {
 
     var modalContent = function () {
       switch (type) {
+        case 'Form':
+          return <Form {...modalConfig} />
         case 'GitCommit':
           return <GitCommitView {...modalConfig} />
 

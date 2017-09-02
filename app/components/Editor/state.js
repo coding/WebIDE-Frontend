@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import getTabType from 'utils/getTabType'
 import assignProps from 'utils/assignProps'
-import { observe, observable, computed, action, autorun, extendObservable } from 'mobx'
+import { reaction, observe, observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -52,18 +52,30 @@ class Editor {
       this._options.set(option, value)
     }
 
-    this.dispose = autorun(() => {
+    this.disposers.push(autorun(() => {
       const options = Object.entries(this.options)
       options.forEach(([option, value]) => {
         if (this.cm.options[option] === value) return
         setOption(option, value)
       })
-    })
+    }))
 
-    observe(this, 'content', (change) => {
+    this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
       if (content !== cm.getValue()) cm.setValue(content)
-    })
+    }))
+
+    this.disposers.push(reaction(() => {
+      if (this.tab && this.tab.isActive) return this.tab
+    }, (activeTab) => {
+      if (!activeTab) return
+      if (activeTab.editor && activeTab.editor.cm) {
+        setTimeout(() => {
+          activeTab.editor.cm.refresh()
+          activeTab.editor.cm.focus()
+        }, 1)
+      }
+    }))
     // 1. set value
     if (this.content) {
       cm.setValue(this.content)
@@ -189,6 +201,11 @@ class Editor {
   @computed
   get isCM () {
     return this.editorType === 'default' || this.editorType === 'editorWithPreview'
+  }
+
+  disposers = []
+  dispose () {
+    this.disposers.forEach(disposer => disposer && disposer())
   }
 
   destroy () {

@@ -40,6 +40,7 @@ class FileTreeNode extends TreeNode {
     const path = props.file ? props.file.path : props.path
     super({ ...props, id: path })
     this.path = path
+    this.isLoaded = false
     if (this.path === ROOT_PATH) {
       this.isFolded = false
       this._parentId = state.shadowRoot.id

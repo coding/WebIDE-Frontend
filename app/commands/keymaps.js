@@ -22,6 +22,7 @@ if (isMac) {
     'cmd+alt+4': 'editor:split_pane_vertical_4',
     'cmd+,': 'global:show_settings',
     'alt+b': 'global:show_branches',
+    'ctrl+g': 'editor:goto',
   }
   modifierKeysMap = {
     ctrl: '⌃',
@@ -47,6 +48,7 @@ if (isMac) {
     'ctrl+alt+4': 'editor:split_pane_vertical_4',
     'alt+,': 'global:show_settings',
     'alt+b': 'global:show_branches',
+    'ctrl+g': 'editor:goto',
   }
   modifierKeysMap = {
     ctrl: 'Ctrl',

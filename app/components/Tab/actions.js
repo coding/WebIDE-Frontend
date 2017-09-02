@@ -1,9 +1,32 @@
 import { extendObservable } from 'mobx'
+import mobxStore from 'mobxStore'
 import { createAction, handleActions, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
-import mobxStore from 'mobxStore'
+import { openFile } from '../../commands/commandBindings/file'
 
 export const TAB_CREATE = 'TAB_CREATE'
+export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
+
+export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
+  Object.values(json.tabGroups).forEach((tabGroupsValue) => {
+    createGroup(tabGroupsValue.id)
+  })
+  const openTabs = Object.values(json.tabs).map((tabValue) => {
+    const { path, editor, ...others } = tabValue
+    const option = { path, editor, others }
+    return openFile(option)
+  })
+  Promise.all(openTabs).then(() => {
+    Object.values(json.tabGroups).forEach((tabGroupsValue) => {
+      if (tabGroupsValue.activeTabId) {
+        setTimeout(() => {
+          activateTab(tabGroupsValue.activeTabId)
+        }, 1)
+      }
+    })
+  })
+})
+
 export const createTab = registerAction(TAB_CREATE,
   (tabProps) => {
     const tab = new Tab(tabProps)
@@ -31,7 +54,9 @@ export const removeAllTab = registerAction('tab:remove_all', (tabId) => {
 
 export const activateTab = registerAction('tab:activate', (tabId) => {
   const tab = state.tabs.get(tabId)
-  tab.activate()
+  if (tab && tab.activate) {
+    tab.activate()
+  }
 })
 
 export const createGroup = registerAction('tab:create_tab_group',
