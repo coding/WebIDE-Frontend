@@ -6,6 +6,7 @@ import store, { getState, dispatch } from 'store'
 import mobxStore from 'mobxStore'
 import * as TabActions from 'components/Tab/actions'
 import * as GitActions from 'components/Git/actions'
+import EditorState from 'components/Editor/state'
 import * as FileActions from './actions'
 
 function handleGitFiles (node) {
@@ -45,7 +46,7 @@ function handleGitFiles (node) {
 
 // fixme: maybe we should make this a standard method of File model
 function fileIsOpened (filePath) {
-  const openedFilePaths = mobxStore.EditorState.entities.values().map(editor => editor.filePath)
+  const openedFilePaths = EditorState.entities.values().map(editor => editor.filePath)
   return openedFilePaths.includes(filePath)
 }
 
