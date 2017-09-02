@@ -3,7 +3,7 @@ import * as position from 'components/Plugins/constants'
 import PluginArea from 'components/Plugins/component'
 
 import { CreateI18n } from 'utils/createI18n'
-import { request, qs } from './utils'
+import * as utils from './utils'
 import store from './store'
 import config from './config'
 import * as Modal from './components/Modal/actions'
@@ -38,10 +38,7 @@ export default class {
     store.subscribe(func(this.getData()))
   }
   get utils () {
-    return ({
-      request,
-      qs
-    })
+    return utils
   }
   get Panel () {
     return Panel

@@ -1,5 +1,6 @@
 import config from 'config'
 import api from 'backendAPI'
+import emitter, { FILE_CHANGE } from 'utils/emitter'
 import { autorun } from 'mobx'
 import { FsSocketClient } from 'backendAPI/websocketClients'
 import store, { getState, dispatch } from 'store'
@@ -57,7 +58,7 @@ export default function subscribeToFileChange () {
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo
-
+      emitter.emit(FILE_CHANGE, data.changeType)
       switch (data.changeType) {
         case 'create':
         case 'modify':
