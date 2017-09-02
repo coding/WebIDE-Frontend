@@ -14,17 +14,22 @@ class FileList extends Component {
   render () {
     return (
       <div className='file-list-container'>
-        {state.tabs.entries().map((tab) => {
+        {state.tabs.values().map((tab) => {
           return (
-            <div className={cx('file-list-item', { focus: tab[1].isActive })} onClick={e => this.handleActivate(tab[1])}>
+            <div className={cx('file-list-item', { focus: tab.isActive })} onClick={e => this.handleActivate(tab)}>
               <i className='fa fa-times' onClick={e => {
                 e.preventDefault()
-                this.handleDestroy(tab[1])
+                this.handleDestroy(tab)
               }} />
-              <i className={tab[1].icon} />
-              <span className={cx('file-list-label', `git-${tab[1].file.gitStatus ? tab[1].file.gitStatus.toLowerCase() : 'none'}`)}>
-                {tab[1].file.name}
-              </span>
+              <i className={tab.icon} />
+              {tab.file ?
+                <span className={cx('file-list-label', `git-${tab.file.gitStatus ? tab.file.gitStatus.toLowerCase() : 'none'}`)}>
+                  {tab.file.name}
+                </span> :
+                <span className='file-list-label git-none'>
+                  {tab.title}
+                </span>
+              }
             </div>
           )
         })}
