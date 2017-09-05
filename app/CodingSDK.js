@@ -7,6 +7,7 @@ import * as utils from './utils'
 import store from './store'
 import config from './config'
 import * as Modal from './components/Modal/actions'
+import * as SideBarActions from './components/Panel/SideBar/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import api from '../app/backendAPI'
 import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
@@ -42,6 +43,11 @@ export default class {
   }
   get Panel () {
     return Panel
+  }
+  get SideBar () {
+    return {
+      actions: SideBarActions,
+    }
   }
   get modules () {
     return ({

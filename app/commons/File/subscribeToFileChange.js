@@ -59,7 +59,7 @@ export default function subscribeToFileChange () {
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo
-      emitter.emit(FILE_CHANGE, data.changeType)
+      emitter.emit(FILE_CHANGE, data)
       switch (data.changeType) {
         case 'create':
         case 'modify':

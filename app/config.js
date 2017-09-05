@@ -15,7 +15,8 @@ const config = observable({
   ttySocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
   preventAccidentalClose: false,
-  hasRehydrated: getCookie('skipRehydrate') || false
+  hasRehydrated: getCookie('skipRehydrate') || false,
+  estimatedMap: observable.map({})
 })
 
 window.config = config
