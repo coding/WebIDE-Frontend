@@ -66,14 +66,16 @@ export default function subscribeToFileChange () {
           if (handleGitFiles(node)) {
             break
           }
-          if (!node.isDir && fileIsOpened(node.path)) {
-            api.readFile(node.path).then(({ content }) => {
-              node.content = content
-              FileActions.loadNodeData([node])
-            })
-          } else {
-            FileActions.loadNodeData([node])
-          }
+          // fixme: should include 'lastModified' as a factor to exclude unnecessary update
+
+          // if (!node.isDir && fileIsOpened(node.path)) {
+          //   api.readFile(node.path).then(({ content }) => {
+          //     node.content = content
+          //     FileActions.loadNodeData([node])
+          //   })
+          // } else {
+          FileActions.loadNodeData([node])
+          // }
 
           break
         case 'delete':
