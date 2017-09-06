@@ -58,7 +58,7 @@ export function findModeByName (name) {
 }
 
 export function findModeByFile (file = {}) {
-  const info = file.path && findModeByFileName(file.path)
+  const info = file.path && findModeByFileName(file.path.split('/').pop())
     || file.contentType && findModeByMIME(file.contentType)
 
   return info || defaultModeInfo
