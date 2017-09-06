@@ -151,7 +151,7 @@ const settings = observable({
     _keys: ['ui_theme', 'syntax_theme'],
     ui_theme: {
       name: 'settings.theme.uiTheme',
-      value: 'base-theme',
+      value: 'dark',
       options: UIThemeOptions,
       reaction: changeUITheme,
     },
