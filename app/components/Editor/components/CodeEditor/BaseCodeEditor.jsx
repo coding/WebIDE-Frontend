@@ -32,7 +32,8 @@ class BaseCodeEditor extends Component {
   }
 
   componentWillUnmount () {
-    this.editor.destroy()
+    const async = true
+    this.editor.destroy(async)
   }
 }
 

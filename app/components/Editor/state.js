@@ -208,9 +208,17 @@ class Editor {
     this.disposers.forEach(disposer => disposer && disposer())
   }
 
-  destroy () {
-    this.dispose && this.dispose()
-    state.entities.delete(this.id)
+  destroy (async) {
+    if (async) {
+      setTimeout(() => {
+        if (this.tab) return
+        this.dispose()
+        state.entities.delete(this.id)
+      }, 1000)
+    } else {
+      this.dispose()
+      state.entities.delete(this.id)
+    }
   }
 }
 
