@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { observable, autorun } from 'mobx'
 import getCookie from './utils/getCookie'
 
 const config = observable({
@@ -17,6 +17,12 @@ const config = observable({
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({})
+})
+
+autorun(() => {
+  if (config.projectName) {
+    window.document.title = `${config.projectName} | Coding WebIDE 开启云端开发模式！ -  Coding.net`
+  }
 })
 
 window.config = config
