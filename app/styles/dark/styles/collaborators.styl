@@ -2,7 +2,24 @@
   .collaborators {
     color: $text-color;
   }
-  .collaboration-chat .chat-editor {
-    border-color: $tab-bar-border-color;
+  .collaboration-chat {
+    color: $text-color;
+    .chat-editor {
+      border-color: $tab-bar-border-color;
+    }
+    .chat-item .chat-item-body {
+      color: $text-color;
+    }
+    .chat-item .chat-item-header .chat-item-time {
+      color: $text-color-subtle;
+    }
+    .emoji-mart {
+      background: $base-background-color;
+      border-color: $tab-bar-border-color;
+      .emoji-mart-category-label span {
+        background: $base-background-color;
+        color: $text-color;
+      }
+    }
   }
 }

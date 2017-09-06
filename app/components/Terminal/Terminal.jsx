@@ -18,7 +18,7 @@ class Term extends Component {
     var _this = this;
     var terminalManager = new TerminalManager()
     var terminal = this.terminal = new Terminal({
-      theme: 'terminal_basic',
+      theme: 'default',
       cols: 80,
       rows:24
     })

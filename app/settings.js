@@ -157,7 +157,7 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.theme.syntaxTheme',
-      value: 'default',
+      value: 'material',
       options: SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     }
