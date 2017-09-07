@@ -45,10 +45,35 @@ SidePanelContainer.propTypes = {
   side: PropTypes.string
 }
 
-const SidePanelViewContent = ({ isActive, view }) =>
-  <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
-    {view}
-  </div>
+class SidePanelViewContent extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isActived: false
+    }
+  }
+
+  componentWillReceiveProps ({ isActive }) {
+    if (isActive && !this.state.isActived) {
+      this.setState({
+        isActived: true
+      })
+    }
+  }
+
+  render () {
+    const { isActive, view } = this.props
+    return (
+      <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
+        {this.state.isActived && view}
+      </div>
+    )
+  }
+}
+// const SidePanelViewContent = ({ isActive, view }) =>
+  // <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
+    // {view}
+  // </div>
 
 SidePanelViewContent.propTypes = {
   isActive: PropTypes.bool,

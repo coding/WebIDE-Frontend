@@ -94,7 +94,7 @@ class DragAndDrop extends Component {
       y: 0,
     }
     this.unhighlightDirNode()
-    this.handleDropOver.cancel()
+    this.dragTabOverFileTree.cancel()
   }
 
   unhighlightDirNode = debounce(() => {
@@ -104,7 +104,7 @@ class DragAndDrop extends Component {
     }
   }, 400)
 
-  handleDropOver = debounce((e) => {
+  handleDropOver = (e) => {
     dnd.updateDroppables()
     const { source, droppables = [], meta } = dnd
     const [oX, oY] = [e.pageX, e.pageY]
@@ -136,9 +136,7 @@ class DragAndDrop extends Component {
 
       default:
     }
-  }, 200, {
-    leading: false,
-  })
+  }
 
   onDrop = (e) => {
     this.dragLeaveTree = true
@@ -202,7 +200,7 @@ class DragAndDrop extends Component {
     }
   }
 
-  dragTabOverFileTree (e, target) {
+  dragTabOverFileTree = debounce((e, target) => {
     const { id, DOMNode } = target
     const node = FileTreeState.entities.get(id)
     if (node.isDir) {
@@ -226,7 +224,9 @@ class DragAndDrop extends Component {
         FileTreeActions.highlightDirNode(parentNode)
       }
     }
-  }
+  }, 200, {
+    leading: false,
+  })
 
   dragTabOverPane (e, target) {
     if (target.type !== 'PANE') return
