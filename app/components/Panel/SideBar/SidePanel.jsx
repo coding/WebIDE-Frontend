@@ -49,7 +49,7 @@ class SidePanelViewContent extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isActived: false
+      isActived: this.props.isActive
     }
   }
 
