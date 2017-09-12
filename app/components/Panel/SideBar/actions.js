@@ -21,9 +21,9 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
 
   const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[targetPlugin.position]}`)
   // 当前状态
-  shouldShow = Boolean(shouldShow) || targetPlugin.status.get('active')
+  shouldShow = Boolean(shouldShow) || !targetPlugin.status.get('active')
 //   需要隐藏
-  if (shouldShow) {
+  if (!shouldShow) {
     targetPlugin.status.set('active', false)
     targetPanel.hide = true
     // 通知插件

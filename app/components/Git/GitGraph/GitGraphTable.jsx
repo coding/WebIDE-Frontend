@@ -103,7 +103,7 @@ class GitGraphTable extends Component {
 
           {commits.map((commit, commitIndex) =>
             this.state.viewSize === 'large' ?
-              (<div className={cx('flex-row view-size-large', {
+              (<div key={commit.shortId} className={cx('flex-row view-size-large', {
                   selected: this.state.selectedRowIndex === commitIndex
                 })}
                 style={{
@@ -140,7 +140,7 @@ class GitGraphTable extends Component {
                 </div>
               </div>)
 
-            : (<div className={cx('flex-row view-size-small', {
+            : (<div key={commit.shortId} className={cx('flex-row view-size-small', {
                   selected: this.state.selectedRowIndex === commitIndex
                 })}
                 style={{
