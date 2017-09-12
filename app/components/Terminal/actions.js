@@ -1,3 +1,6 @@
+import { registerAction } from 'utils/actions'
+import state, { Tab, TabGroup } from './state'
+
 export const TERM_CLOSE = 'TERM_CLOSE'
 export function close (tabId) {
   return {
@@ -96,3 +99,8 @@ export function inputPath (inputPath) {
     inputPath
   }
 }
+
+
+export const addTerminal = registerAction('terminal:add', () => {
+  state.tabGroups.get('terminalGroup').addTab(new Tab())
+})

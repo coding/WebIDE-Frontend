@@ -5,6 +5,8 @@ import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import Terminal from './Terminal'
 import { Tab, TabGroup } from './state'
 
+import * as Actions from './actions'
+
 const contextMenuItems = [
   {
     name: 'Close',
@@ -26,7 +28,7 @@ class TerminalContainer extends Component {
   constructor (props) {
     super(props)
     const tab = new Tab()
-    this.tabGroup = new TabGroup()
+    this.tabGroup = new TabGroup({ id: 'terminalGroup' })
     this.tabGroup.addTab(tab)
   }
 
@@ -34,7 +36,7 @@ class TerminalContainer extends Component {
     return (
       <div className='tab-container'>
         <TabBar tabGroup={this.tabGroup}
-          addTab={() => this.tabGroup.addTab(new Tab())}
+          addTab={Actions.addTerminal}
           contextMenuItems={contextMenuItems}/>
         <TabContent tabGroup={this.tabGroup} >
           {this.tabGroup.tabs.map(tab =>

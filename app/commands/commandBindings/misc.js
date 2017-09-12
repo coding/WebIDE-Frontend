@@ -1,7 +1,8 @@
 import * as Modal from 'components/Modal/actions'
 import * as Panel from 'components/Panel/actions'
 import * as SideBar from 'components/Panel/SideBar/actions'
-
+import terminalState from 'components/Terminal/state'
+import * as Terminal from 'components/Terminal/actions'
 
 const getComponentByName = name => window.refs[name].getWrappedInstance()
 export default {
@@ -33,7 +34,11 @@ export default {
   // 'tools:terminal:clear_scrollback_buffer':
   // 'tools:terminal:reset':
   'tools:terminal:new_terminal': (c) => {
-    SideBar.activateSidePanelView('bottom_0')
+    const terminalGroup = terminalState.tabGroups.get('terminalGroup')
+    if (terminalGroup) {
+      Terminal.addTerminal()
+    }
+    SideBar.activateSidePanelView('SIDEBAR.BOTTOM.terminal')
     // $d(Tab.createTabInGroup('tab_group_terminal'))
   }
 }
