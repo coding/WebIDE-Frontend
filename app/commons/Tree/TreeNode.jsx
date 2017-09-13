@@ -21,9 +21,14 @@ class TreeNode extends Component {
           highlight: node.isHighlighted
         })}
         data-droppable="FILE_TREE_NODE"
-        onContextMenu={e => { selectNode(node); openContextMenu(e, node) }}
+        onContextMenu={e => {
+          selectNode(node)
+          openContextMenu(e, node)
+        }}
         draggable='true'
         onDragStart={e => {
+          e.dataTransfer.effectAllowed = 'move'
+          e.dataTransfer.setData('text/html', e.target.innerHTML)
           e.stopPropagation()
           if (node.id) {
             dnd.dragStart({ type: 'FILE_TREE_NODE', id: node.id, node })

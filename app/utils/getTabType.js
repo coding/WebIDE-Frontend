@@ -7,6 +7,9 @@ export default function getTabType (node) {
     )) {
     return 'TEXT'
   } else if (/^image\/[^/]+/.test(node.contentType)) {
+    if (node.contentType === 'image/vnd.adobe.photoshop') {
+      return 'UNKNOWN'
+    }
     return 'IMAGE'
   }
   // Unknown
