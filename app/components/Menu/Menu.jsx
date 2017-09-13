@@ -47,8 +47,10 @@ class MenuContainer extends Component {
   }
 
   componentWillMount () {
-    this.deactivateTopLevelMenu = () => { this.props.deactivate() }
-    if (this.deactivateTopLevelMenu) setTimeout(() => window.addEventListener('click', this.deactivateTopLevelMenu), 0)
+    this.deactivateTopLevelMenu = (e) => {
+      this.props.deactivate()
+    }
+    if (this.deactivateTopLevelMenu) this.deactivateTimeout = setTimeout(() => window.addEventListener('click', this.deactivateTopLevelMenu), 1000)
   }
 
   componentDidMount () {
@@ -58,7 +60,10 @@ class MenuContainer extends Component {
   }
 
   componentWillUnmount () {
-    if (this.deactivateTopLevelMenu) window.removeEventListener('click', this.deactivateTopLevelMenu)
+    if (this.deactivateTopLevelMenu) {
+      clearTimeout(this.deactivateTimeout)
+      window.removeEventListener('click', this.deactivateTopLevelMenu)
+    }
   }
 
   onKeyPress = (e) => {
