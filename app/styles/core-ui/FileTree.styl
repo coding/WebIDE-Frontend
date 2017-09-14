@@ -95,6 +95,11 @@ $filetree-indent = 1em;
   noSelect();
   height: 100%;
   overflow: auto;
+  > .filetree-node-container > .filetree-node-children {
+    max-height: 400px;
+    overflow: auto;
+    scrollBar();
+  }
 
   & > .filetree-node-container {
     float: left;

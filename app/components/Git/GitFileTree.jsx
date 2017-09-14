@@ -204,6 +204,9 @@ class _GitFileTreeNode extends Component {
     } else {
       indentOffset = (node.path.split('/').length - visualParentPath.split('/').length) || 1
     }
+    if (indentOffset > 1) {
+      return indentOffset - 1
+    }
     return indentCompensation + indentOffset - 1
   }
 
