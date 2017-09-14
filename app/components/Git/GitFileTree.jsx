@@ -135,7 +135,16 @@ class _GitFileTreeNode extends Component {
 
         { node.isDir ?
           <div className={cx('filetree-node-children', {isFolded: node.isFolded})}>
-            {node.children.map(childNodePath =>
+            {node.children.sort((a, b) => {
+              const nodeA = statusFiles.get(a)
+              const nodeB = statusFiles.get(b)
+              if (nodeB.isDir && !nodeA.isDir) {
+                return 1
+              } else if (nodeA.isDir && !nodeB.isDir) {
+                return -1
+              }
+              return 0
+            }).map(childNodePath =>
               <GitFileTreeNode
                 statusFiles={statusFiles}
                 key={childNodePath}
