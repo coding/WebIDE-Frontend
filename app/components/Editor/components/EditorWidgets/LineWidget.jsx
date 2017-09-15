@@ -1,43 +1,31 @@
 import React, { Component } from 'react'
-import EditorTabState from 'components/Tab/state'
 import * as Modal from 'components/Modal/actions'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 import modeInfos from 'components/Editor/components/CodeEditor/addons/mode/modeInfos'
-import Menu from '../../Menu'
+import Menu from 'components/Menu'
 import i18n from 'utils/createI18n'
 import { registerAction } from 'utils/actions'
 
 @observer
 export default class LineWidget extends Component {
-  constructor (props) {
-    super(props)
-  }
-
   handleGoto = registerAction('editor:goto', () => {
-    const activeTab = EditorTabState.activeTab
-    if (!activeTab) {
-      return
-    }
-    const { cursorPosition } = activeTab.editor
+    const editor = this.props.editor
+    const { cursorPosition } = editor
     const defaultGoto = `${cursorPosition.ln}:${cursorPosition.col}`
     Modal.showModal('Prompt', {
       message: i18n`file.goto`,
       defaultValue: defaultGoto,
       selectionRange: [0, defaultGoto.length]
     }).then((goto) => {
-      const editor = EditorTabState.activeTab.editor
       editor.setCursor(goto)
       Modal.dismissModal()
     })
   })
 
   render () {
-    const activeTab = EditorTabState.activeTab
-    if (!activeTab) {
-      return null
-    }
-    const { cursorPosition, selections } = activeTab.editor
+    const editor = this.props.editor
+    const { cursorPosition, selections } = editor
     let lineText = ''
     if (selections.length <= 1) {
       lineText = i18n`file.posInfo${{ ln: cursorPosition.ln, col: cursorPosition.col }}`
@@ -54,7 +42,7 @@ export default class LineWidget extends Component {
       }
     }
     return (
-      <div className='status-bar-menu-item'
+      <div className='editor-widget'
         onClick={e => { this.handleGoto() }}
       >
         <span title='Click to goto line'>
