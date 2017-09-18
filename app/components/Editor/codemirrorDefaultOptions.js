@@ -3,6 +3,7 @@ const options = {
   theme: 'default',
   autofocus: true,
   lineNumbers: true,
+  lint: null,
   matchBrackets: true,
   autoCloseBrackets: true,
   dragDrop: false,
