@@ -67,7 +67,12 @@ function attachMixinContexts (self, mixins) {
   mixins.forEach((mixin) => {
     const context = setPrototypeOf(mixin, self)
     context.self = self
-    self.$mixinContexts.set(mixin.key, context)
+    if (is.function(mixin.shouldMount)) {
+      const shouldMount = mixin.shouldMount.call(context)
+      is.boolean(shouldMount) && shouldMount && self.$mixinContexts.set(mixin.key, context)
+    } else {
+      self.$mixinContexts.set(mixin.key, context)
+    }
   })
 }
 
@@ -97,10 +102,11 @@ function addMixinMechanism (Class, SuperClass) {
       }
 
       Class.$mixins.forEach((mixin) => {
+        const context = this.$mixinContexts.get(mixin.key)
+        // if a mixin doesn't have a context, that means it's `shouldMount` method returns false.
+        if (!context) return
         const mixinLifecycle = mixin[lifecycle]
-
         if (is.function(mixinLifecycle)) {
-          const context = this.$mixinContexts.get(mixin.key)
           mixinLifecycle.call(context, ...args)
         }
       })
