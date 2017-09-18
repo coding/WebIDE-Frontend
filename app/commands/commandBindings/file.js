@@ -60,7 +60,7 @@ export function openFile ({ path, editor = {}, others = {} }) {
       FileStore.loadNodeData(data)
       return data
     })
-    .then((data) => {
+    .then(() => {
       const activeTabGroup = TabStore.getState().activeTabGroup
       const existingTabs = TabStore.findTab(
         tab => tab.file && tab.file.path === path && tab.tabGroup === activeTabGroup
@@ -127,10 +127,15 @@ export default {
         selectionRange: [1, '/untitled'.length]
       })
         .then(createFile)
-        .then(path => TabStore.updateTab({
-          id: activeTab.id,
-          editor: { filePath: path },
-        }))
+        .then((path) => {
+          api.readFile(path).then((data) => {
+            FileStore.loadNodeData(data)
+            TabStore.updateTab({
+              id: activeTab.id,
+              editor: { filePath: path },
+            })
+          })
+        })
     } else {
       api.writeFile(activeTab.file.path, content)
         .then(() => {
@@ -147,6 +152,9 @@ export default {
   'file:rename': (c) => {
     const node = c.context
     const parentPath = nodeToParentDirPath(node)
+    const existingTabs = TabStore.findTab(
+      tab => tab.file && tab.file.path === node.path
+    )
 
     const moveFile = (from, newPath, force) => {
       api.moveFile(node.path, newPath, force)
@@ -156,7 +164,19 @@ export default {
           .then((newPath, force) =>
             moveFile(from, newPath, force)
           )
-        )
+        ).then(() => {
+          if (existingTabs.length) {
+            api.readFile(newPath).then((data) => {
+              FileStore.loadNodeData(data)
+              existingTabs.forEach((tab) => {
+                TabStore.updateTab({
+                  id: tab.id,
+                  editor: { filePath: newPath },
+                })
+              })
+            })
+          }
+        })
     }
 
     Modal.showModal('Prompt', {

@@ -86,6 +86,7 @@ class Editor {
     // 2. set mode
     const modeInfo = findModeByFile(this.file)
     if (modeInfo) {
+      this.modeInfo = modeInfo
       loadMode(modeInfo.mode).then(() => this.options.mode = modeInfo.mime)
     }
     // 3. sync cursor state to corresponding editor properties

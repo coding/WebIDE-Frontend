@@ -37,7 +37,8 @@ class Tab extends BaseTab {
     if (!props.editor) props.editor = {}
     props.editor.tabId = this.id
     if (this.editor) {
-      this.editor.update(props.editor)
+      this.editor.destroy()
+      this.editor = new Editor(props.editor)
     } else {
       this.editor = new Editor(props.editor)
     }

@@ -10,7 +10,7 @@ class BaseCodeEditor extends Component {
     let { editor } = props
     if (!editor) editor = new Editor()
     this.editor = editor
-    this.cm = editor.cm
+    this.cm = this.editor.cm
     this.cmDOM = this.cm.getWrapperElement()
   }
 
