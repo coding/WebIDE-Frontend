@@ -21,8 +21,13 @@ export const togglePanelLayout = registerAction(PANEL_TOGGLE_LAYOUT,
   ({ selectors, shouldShow }) => {
     const selectedPanels = selectors.map(panelId => state.panels.get(panelId))
     selectedPanels.forEach((panel) => {
-      if (shouldShow === undefined) shouldShow = panel.hide
-      panel.hide = !shouldShow
+      if (shouldShow === undefined) {
+        panel.hidden ? panel.show() : panel.hide()
+      } else if (shouldShow) {
+        panel.show()
+      } else {
+        panel.hide()
+      }
     })
   }
 )
