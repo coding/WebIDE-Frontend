@@ -22,7 +22,7 @@ export default {
   key: 'eslint',
   shouldMount () {
     const editor = this.editor
-    if (editor.modeInfo && editor.modeInfo.mode === 'javascript') return true
+    if (editor.modeInfo && (editor.modeInfo.mode === 'javascript' || editor.modeInfo.mode === 'jsx')) return true
   },
   componentDidMount () {
     const editor = this.editor
