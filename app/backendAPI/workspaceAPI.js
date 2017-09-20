@@ -52,3 +52,7 @@ export function triggerCloneTask () {
 export function requestCollaborator () {
   return request.post(`/workspaces/${config.spaceKey}/collaborator/request`)
 }
+
+export function execShellCommand (command) {
+  return request.post(`/tty/${config.spaceKey}/exec`, { command })
+}

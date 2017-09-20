@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import EditorTabState from 'components/Tab/state'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 import modeInfos from 'components/Editor/components/CodeEditor/addons/mode/modeInfos'
-import Menu from '../../Menu'
+import Menu from 'components/Menu'
 
 @observer
 export default class ModeWidget extends Component {
@@ -20,8 +19,7 @@ export default class ModeWidget extends Component {
   }
 
   setMode (name) {
-    const activeTab = EditorTabState.activeTab
-    activeTab.editor.setMode(name)
+    this.props.editor.setMode(name)
   }
 
   makeModeMenuItems () {
@@ -35,17 +33,12 @@ export default class ModeWidget extends Component {
   }
 
   render () {
-    const activeTab = EditorTabState.activeTab
-    if (!activeTab) {
-      return null
-    }
+    const editor = this.props.editor
     return (
-      <div className='status-bar-menu-item'
+      <div className='editor-widget'
         onClick={e => { this.toggleActive(true, true) }}
       >
-        {activeTab && <span>
-          {activeTab.editor.mode}
-        </span>}
+        <span>{editor.mode}</span>
         {this.state.isActive ?
           <div className='mode-widget'>
             <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}

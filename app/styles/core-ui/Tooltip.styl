@@ -1,0 +1,81 @@
+triangle($pos, $size) {
+  others = {
+    top: bottom right left
+    bottom: top right left
+    right: left bottom top
+    left: right bottom top
+  }
+
+  &.{$pos} {
+    &:before {
+      border-{$pos}-width: $size;
+      border-{others[$pos][0]}: 0;
+      border-{others[$pos][1]}: 0;
+      border-{others[$pos][2]}-width: $size;
+      border-{others[$pos][2]}-color: transparent;
+      {others[$pos][1]}: 0;
+      {others[$pos][0]}: 0;
+    }
+    &:after {
+      border-{$pos}-width: $size;
+      border-{others[$pos][0]}: 0;
+      border-{others[$pos][2]}: 0;
+      border-{others[$pos][1]}-width: $size;
+      border-{others[$pos][1]}-color: transparent;
+      {others[$pos][2]}: 0;
+      {others[$pos][0]}: 0;
+    }
+  }
+}
+
+tooltipPosition($pos, $size) {
+  others = {
+    top: bottom X
+    bottom: top X
+    left: right Y
+    right: left Y
+  }
+
+  &.{$pos} {
+    {others[$pos][0]}: 100%;
+    transform: translate + others[$pos][1] + '(-50%)';
+    margin-{others[$pos][0]}: $size;
+  }
+}
+
+$arrow-height = 7px
+$tooltip-color = black
+.tooltip-anchor {
+  position: fixed;
+  opacity: 0;
+  transition: 0.5s opacity ease;
+  &.show {
+    opacity: 1;
+  }
+  &:before, &:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    border-style: solid;
+    border-color: $tooltip-color;
+    width: $arrow-height;
+    height: $arrow-height;
+  }
+  for $pos in (top bottom left right) {
+    triangle($pos, $arrow-height)
+  }
+}
+
+.tooltip-content {
+  cursor: initial;
+  padding: 10px 8px;
+  position: absolute;
+  background-color: $tooltip-color;
+  border-radius: 3px;
+  width: 200px;
+  overflow: hidden;
+
+  for $pos in (top bottom left right) {
+    tooltipPosition($pos, $arrow-height)
+  }
+}
