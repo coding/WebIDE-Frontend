@@ -47,10 +47,16 @@ class Panel extends BasePane {
   }
 
   @action hide () {
+    if (this.hidden) return
+    const adjacentPanel = this.prev || this.next
+    if (adjacentPanel) adjacentPanel.size += this.size
     this.hidden = true
   }
 
   @action show () {
+    if (!this.hidden) return
+    const adjacentPanel = this.prev || this.next
+    if (adjacentPanel) adjacentPanel.size -= this.size
     this.hidden = false
   }
 }
@@ -101,12 +107,21 @@ const constructPanelState = action((panelConfig) => {
   }
 
   if (views && views.length) {
-    views.forEach(
-      (config, index) => constructPanelState({ ...config, index, parentId: panel.id })
-    )
+    views.forEach((config, index) => {
+      constructPanelState({ ...config, index, parentId: panel.id })
+    })
   }
 })
 
 constructPanelState(BasePanelLayout)
+state.entities.forEach(panel => {
+  if (!panel.resizable) panel.size = 1
+  if (panel.resizable && panel.hidden) {
+    const adjacentPanel = panel.prev || panel.next
+    if (adjacentPanel && adjacentPanel.resizable) {
+      adjacentPanel.size += panel.size
+    }
+  }
+})
 
 export default state
