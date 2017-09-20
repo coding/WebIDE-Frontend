@@ -63,6 +63,7 @@
     "jest": "^19.0.2",
     "nock": "^9.0.13",
     "qiniu": "^6.1.13",
+    "raw-loader": "^0.5.1",
     "react-hot-loader": "next",
     "react-test-renderer": "^15.5.4",
     "redux-mock-store": "^1.2.3",
