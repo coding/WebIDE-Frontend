@@ -3,18 +3,20 @@ $bar-height = 30px;
 .status-bar {
   // border-top: 1px solid transparent;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   min-height: $bar-height;
   noSelect();
 
   .status-widget-container {
-    display: flex
+    display: flex;
     &.right {
       margin-left: auto;
     }
   }
 
   .status-bar-menu-item {
+    display: flex;
+    align-items: center;
     padding: 0 8px;
     cursor: pointer;
     position: relative;
@@ -31,6 +33,7 @@ $bar-height = 30px;
 
   .status-messages {
     display: flex;
+    align-items: center;
     .status-message {
       margin-right: 0.5em;
     }

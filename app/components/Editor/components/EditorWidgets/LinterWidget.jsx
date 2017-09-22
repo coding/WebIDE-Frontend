@@ -15,8 +15,8 @@ export default class LinterWidget extends Component {
         placement='top'
         content={lintError && <span style={{ color: 'red' }}>{lintError.message}</span>}
       >
-        <div className='editor-widget'
-          onClick={() => lintOptions.retry && lintOptions.retry()}
+        <div className={cx('editor-widget', { enabled: lintOptions.enabled })}
+          onClick={() => lintOptions.toggle && lintOptions.toggle(editor.cm)}
         >
           <span style={lintError ? { color: 'red' } : {}}
           >ESLint</span>

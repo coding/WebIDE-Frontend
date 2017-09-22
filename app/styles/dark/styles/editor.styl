@@ -13,3 +13,16 @@
     color: $text-color;
   }
 }
+
+.status-bar-editor-widgets {
+  display: flex;
+  align-items: stretch;
+  .editor-widget {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    &.enabled {
+      background-color: #444;
+    }
+  }
+}
