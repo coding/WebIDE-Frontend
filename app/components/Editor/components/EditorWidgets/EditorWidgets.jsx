@@ -15,7 +15,7 @@ class EditorWidgets extends Component {
     const editor = this.props.editor
     if (!editor) return null
     return (
-      <div className='status-bar-menu-item status-bar-editor-widgets'>
+      <div className='status-bar-editor-widgets'>
         <LineWidget editor={editor} />
         <ModeWidget editor={editor} />
         {editor.options.lint && <LinterWidget editor={editor} />}
