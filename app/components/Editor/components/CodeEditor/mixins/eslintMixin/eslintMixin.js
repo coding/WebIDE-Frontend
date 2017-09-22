@@ -6,6 +6,8 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 
 function handleLinterError (error, cm) {
   cm.setOption('lint', {
+    name: 'ESLint',
+    enabled: false,
     error,
     retry () {
       cm.setOption('lint', lintOption)
@@ -14,8 +16,14 @@ function handleLinterError (error, cm) {
 }
 
 const lintOption = {
+  name: 'ESLint',
+  enabled: true,
   async: true,
-  getAnnotations: linterFactory(handleLinterError)
+  getAnnotations: linterFactory(handleLinterError),
+  toggle (cm) {
+    this.enabled = !this.enabled
+    cm && cm.performLint()
+  },
 }
 
 export default {
@@ -25,10 +33,6 @@ export default {
     if (editor.modeInfo && (editor.modeInfo.mode === 'javascript' || editor.modeInfo.mode === 'jsx')) return true
   },
   componentDidMount () {
-    const editor = this.editor
-    extendObservable(editor, {
-      linter: { mode: 'javascript', name: 'ESLint' }
-    })
     const cm = this.cm
     cm.setOption('gutters', ['CodeMirror-lint-markers'])
     cm.setOption('lint', lintOption)

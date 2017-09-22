@@ -27,6 +27,9 @@ const annotationFormatter = annotation => ({
 
 export default function linterFactory (handleLinterError) {
   return function linter (text, returnAnnotations, options, cm) {
+    if (!options.enabled) {
+      return returnAnnotations([])
+    }
     const filePath = cm._editor.filePath
     const promise = filePath ? eslintService.executeOnFile(filePath) : eslintService.executeOnText(text)
     promise.then((results) => {
