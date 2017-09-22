@@ -25,7 +25,7 @@ class Panel extends BasePane {
       ref: '',
       direction: 'row',
       overflow: '',
-      hide: false,
+      hidden: false,
       size: 100,
       parentId: '',
       index: 0,
@@ -44,6 +44,20 @@ class Panel extends BasePane {
   }
   set disableResizeBar (value) {
     this._disableResizeBar = value
+  }
+
+  @action hide () {
+    if (this.hidden) return
+    const adjacentPanel = this.prev || this.next
+    if (adjacentPanel) adjacentPanel.size += this.size
+    this.hidden = true
+  }
+
+  @action show () {
+    if (!this.hidden) return
+    const adjacentPanel = this.prev || this.next
+    if (adjacentPanel) adjacentPanel.size -= this.size
+    this.hidden = false
   }
 }
 
@@ -65,15 +79,15 @@ const BasePanelLayout = {
               size: 75,
               views: [
                 { ref: 'PANEL_LEFT', size: 20, contentType: 'PANEL_LEFT' },
-                { ref: 'PANEL_CENTER', size: 80, contentType: 'PANES' },
-                { ref: 'PANEL_RIGHT', size: 40, contentType: 'EXTENSION_RIGHT', hide: true },
+                { ref: 'PANEL_CENTER', size: 50, contentType: 'PANES' },
+                { ref: 'PANEL_RIGHT', size: 30, contentType: 'EXTENSION_RIGHT', hidden: true },
               ],
             },
-            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hide: true },
-            { ref: 'BAR_BOTTOM', resizable: false, hide: false },
+            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: true },
+            { ref: 'BAR_BOTTOM', resizable: false },
           ]
         },
-        { ref: 'BAR_RIGHT', resizable: false, hide: false },
+        { ref: 'BAR_RIGHT', resizable: false },
       ]
     },
     { ref: 'STATUSBAR', contentType: 'STATUSBAR', resizable: false, overflow: 'visible' },
@@ -93,12 +107,21 @@ const constructPanelState = action((panelConfig) => {
   }
 
   if (views && views.length) {
-    views.forEach(
-      (config, index) => constructPanelState({ ...config, index, parentId: panel.id })
-    )
+    views.forEach((config, index) => {
+      constructPanelState({ ...config, index, parentId: panel.id })
+    })
   }
 })
 
 constructPanelState(BasePanelLayout)
+state.entities.forEach(panel => {
+  if (!panel.resizable) panel.size = 1
+  if (panel.resizable && panel.hidden) {
+    const adjacentPanel = panel.prev || panel.next
+    if (adjacentPanel && adjacentPanel.resizable) {
+      adjacentPanel.size += panel.size
+    }
+  }
+})
 
 export default state
