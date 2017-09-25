@@ -20,7 +20,8 @@ const lib = {
   codemirror: require('codemirror'),
   reactDom: require('react-dom'),
   axios: require('axios'),
-  localforage: require('localforage')
+  localforage: require('localforage'),
+  styled: require('styled-components'),
 }
 
 export { app, lib }

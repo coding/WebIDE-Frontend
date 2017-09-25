@@ -4,6 +4,7 @@ import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
+window.themeVariables = observable.map({})
 
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
@@ -24,6 +25,7 @@ const changeUITheme = (nextThemeId) => {
       if (currentTheme && currentTheme.unuse) currentTheme.unuse()
       window.themes['@current'] = window.themes[nextThemeId] = module
       module.use()
+      window.themeVariables.replace(window.themes['@current'].locals)
     })
   }
 
