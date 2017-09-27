@@ -31,6 +31,7 @@ const ROOT_PATH = ''
 extendObservable(state, {
   enableShrinkPath: true,
   shrinkPathDelimiter: '.',
+  shrinkPathDirectories: [],
   get focusedNodes () {
     return this.entities.values().filter(node => node.isFocused).sort(nodeSorter)
   },
