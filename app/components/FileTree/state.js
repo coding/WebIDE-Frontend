@@ -29,9 +29,11 @@ const stateToJS = createTransformer(state => ({
 
 const ROOT_PATH = ''
 extendObservable(state, {
-  enableShrinkPath: true,
-  shrinkPathDelimiter: '.',
-  shrinkPathDirectories: [],
+  shrinkPath: {
+    enabled: false,
+    delimiter: '.',
+    directories: [],
+  },
   get focusedNodes () {
     return this.entities.values().filter(node => node.isFocused).sort(nodeSorter)
   },
@@ -63,7 +65,7 @@ class FileTreeNode extends TreeNode {
   /* override base class */
   @computed get name () {
     return this._name ? this._name
-    : state.enableShrinkPath && is.string(this._parentId) ? this.shrinkPathName
+    : state.shrinkPath.enabled && is.string(this._parentId) ? this.shrinkPathName
     : this.file ? this.file.name
     : ''
   }
@@ -87,7 +89,7 @@ class FileTreeNode extends TreeNode {
   @computed get shrinkPathName () {
     const parentPath = this.parentId
     const relativePath = this.path.replace(`${parentPath}/`, '')
-    return relativePath.replace(/\//g, state.shrinkPathDelimiter)
+    return relativePath.replace(/\//g, state.shrinkPath.delimiter)
   }
 
   @computed get file () {

@@ -114,7 +114,7 @@ export default function bindToFile (FileTreeState, FileState, FileTreeNode) {
 
     // test if a node is descendents of a dirNode that meets the pattern
     function shouldEnableShrinkPath (node) {
-      return FileTreeState.shrinkPathDirectories.reduce((passTest, dir) => {
+      return FileTreeState.shrinkPath.directories.reduce((passTest, dir) => {
         if (passTest) return true
         return node.path.startsWith(`${dir}/`)
       }, false)
@@ -148,9 +148,9 @@ export default function bindToFile (FileTreeState, FileState, FileTreeNode) {
     }
 
     return reaction(() =>
-      [FileTreeState.enableShrinkPath, FileTreeState.entities.values(), FileTreeState.shrinkPathDirectories.length]
+      FileTreeState.shrinkPath.enabled && [FileTreeState.entities.values(), FileTreeState.shrinkPath.directories.length]
     , () => {
-      if (FileTreeState.enableShrinkPath) {
+      if (FileTreeState.shrinkPath.enabled) {
         // 1. each time FileTreeState change, recompute all shrinkable fileNodes,
         // then see if we need to do something
         const _shrinkables = FileState.entities.values().filter(file =>
