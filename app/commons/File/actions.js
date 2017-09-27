@@ -1,3 +1,4 @@
+import flattenDeep from 'lodash/flattenDeep'
 import { registerAction } from 'utils/actions'
 import is from 'utils/is'
 import { action } from 'mobx'
@@ -5,23 +6,35 @@ import api from 'backendAPI'
 import state, { FileNode } from './state'
 
 export const loadNodeData = registerAction('fs:load_node_data',
-  (nodeConfigs) => {
-    if (!is.array(nodeConfigs)) nodeConfigs = [nodeConfigs]
-    return nodeConfigs.map((nodeConfig) => {
-      const curNode = state.entities.get(nodeConfig.path)
+  (nodePropsList) => {
+    if (!is.array(nodePropsList)) nodePropsList = [nodePropsList]
+    return nodePropsList.map((nodeProps) => {
+      const curNode = state.entities.get(nodeProps.path)
       if (curNode) {
-        curNode.update(nodeConfig)
+        curNode.update(nodeProps)
         return curNode
       }
-      const newNode = new FileNode(nodeConfig)
+      const newNode = new FileNode(nodeProps)
       state.entities.set(newNode.path, newNode)
       return newNode
     })
   }
 )
 
+export function fetchPath (path) {
+  return api.fetchPath(path).then((nodePropsList) => {
+    return Promise.all(nodePropsList.map((nodeProps) => {
+      if (nodeProps.isDir && nodeProps.directoriesCount === 1 && nodeProps.filesCount === 0) {
+        return fetchPath(nodeProps.path)
+      } else {
+        return Promise.resolve(nodeProps)
+      }
+    })).then(flattenDeep)
+  })
+}
+
 export const fetchProjectRoot = registerAction('fs:init', () =>
-  api.fetchPath('/').then(loadNodeData)
+  fetchPath('/').then(loadNodeData)
 )
 
 export const removeNode = registerAction('fs:remove_node', (node) => {
