@@ -2,6 +2,7 @@ import { observable, action } from 'mobx'
 import { registerAction } from 'utils/actions'
 import { isPlainObject } from 'utils/is'
 import settings from 'settings'
+import i18n from 'utils/createI18n'
 
 const getSettingValueHelper = store => Object.keys(store).filter(e => e !== '_keys').reduce((p, v) => {
   p[v] = isPlainObject(store[v]) ? store[v].value : store[v]
@@ -14,6 +15,12 @@ export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 const state = observable({
   activeTabId: 'GENERAL',
   tabIds: ['GENERAL', 'THEME', 'EDITOR', 'EXTENSIONS'],
+  tabNames: {
+    GENERAL: i18n`settings.tabs.general`,
+    THEME: i18n`settings.tabs.theme`,
+    EDITOR: i18n`settings.tabs.editor`,
+    EXTENSIONS: i18n`settings.tabs.extensions`,
+  },
   get activeTab () {
     return settings[this.activeTabId.toLowerCase()]
   },
@@ -27,7 +34,7 @@ const state = observable({
       general: getSettingValueHelper(settings.general),
       theme: getSettingValueHelper(settings.theme),
     }
-  }
+  },
 })
 
 export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {

@@ -5,15 +5,6 @@ import i18n from 'utils/createI18n'
 import ExtensionList from '../Plugins/extensionList'
 import SettingForm from './SettingForm'
 
-
-
-const tabNames = {
-  GENERAL: i18n`settings.tabs.general`,
-  THEME: i18n`settings.tabs.theme`,
-  EDITOR: i18n`settings.tabs.editor`,
-  EXTENSIONS: i18n`settings.tabs.extensions`,
-}
-
 const GeneralSetting = ({ content }) => (
   <div>
     <h2 className='settings-content-header'>{i18n`settings.general.main`}</h2>
@@ -43,7 +34,8 @@ const ExtensionSetting = () => (
 )
 
 
-const DomainSetting = ({ content, domainKey }) => {
+const DomainSetting = ({ content, domainKey, component }) => {
+  if (component) return component;
   switch (domainKey) {
     case 'GENERAL':
     default:
@@ -59,7 +51,7 @@ const DomainSetting = ({ content, domainKey }) => {
 
 let SettingsView = observer((props) => {
   const {
-    activeTabId, tabIds, activeTab, activateTab
+    activeTabId, tabIds, activeTab, activateTab, tabNames
   } = props
 
   const onConfirm = () => activeTab.onConfirm && activeTab.onConfirm()
@@ -81,7 +73,8 @@ let SettingsView = observer((props) => {
         </div>
         <div className='settings-content' >
           <div className='settings-content-container'>
-            <DomainSetting content={activeTab} domainKey={activeTabId} />
+            {/* activeTab = state.settings.resources */}
+            <DomainSetting content={activeTab} domainKey={activeTabId} component={activeTab.component} />
           </div>
           {activeTab.requireConfirm && <div className='modal-ops settings-content-controls'>
             <button className='btn btn-default' onClick={onCancel} >{i18n`settings.reset`}</button>
@@ -97,7 +90,7 @@ let SettingsView = observer((props) => {
 })
 
 SettingsView = inject((state) => {
-  const { activeTabId, tabIds, activeTab, activateTab } = state.SettingState
-  return { activeTabId, tabIds, activeTab, activateTab }
+  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
+  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
 })(SettingsView)
 export default SettingsView
