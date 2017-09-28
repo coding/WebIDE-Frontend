@@ -3,6 +3,7 @@ import { observable, computed, action, autorun } from 'mobx'
 import { protectedObservable } from 'utils/decorators'
 
 function TreeNodeScope () {
+  const NOWHERE_LAND = '@@NOWHERE_LAND_FOR_THE_EXILEES@@'
   const SHADOW_ROOT_NODE = 'SHADOW_ROOT_NODE'
   const state = observable({
     entities: observable.map({}),
@@ -10,6 +11,7 @@ function TreeNodeScope () {
   })
 
   class TreeNode {
+    static nodeSorter = (a, b) => a.index - b.index
     constructor (props) {
       this.id = _.isUndefined(props.id) ? _.uniqueId('tree_node_') : props.id
 
@@ -33,6 +35,7 @@ function TreeNodeScope () {
   @protectedObservable _isDir = false
   @protectedObservable _parentId = undefined
 
+  @observable _depth = undefined
   @observable isFolded = true
   @observable isFocused = false
   @observable isHighlighted = false
@@ -53,6 +56,7 @@ function TreeNodeScope () {
     set parent (parent) { this.parentId = parent.id }
 
   @computed get depth () {
+    if (this._depth !== undefined) return this._depth
     if (this.isShadowRoot) return -1
     return this.parent.depth + 1
   }
@@ -60,7 +64,7 @@ function TreeNodeScope () {
   @computed get children () {
     return state.entities.values()
       .filter(node => node.parent === this)
-      .sort((a, b) => a.index - b.index)
+      .sort(this.constructor.nodeSorter)
   }
 
   @computed get siblings () {
@@ -160,6 +164,17 @@ function TreeNodeScope () {
   @action unhighlight () {
     if (!this.isDir || !this.isHighlighted) return
     this.isHighlighted = false
+  }
+
+  @action exile () {
+    this.originalParentId = this._parentId
+    this._parentId = NOWHERE_LAND
+  }
+
+  @action welcome () {
+    if (this._parentId !== NOWHERE_LAND) return
+    this._parentId = this.originalParentId
+    delete this.originalParentId
   }
 }
 

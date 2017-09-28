@@ -1,7 +1,15 @@
-import _ from 'lodash'
+import is from 'utils/is'
 import { TreeNodeScope } from 'commons/Tree'
 import { FileState } from 'commons/File'
-import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
+import {
+  toJS,
+  createTransformer,
+  extendObservable,
+  observable,
+  reaction,
+  computed,
+  action,
+} from 'mobx'
 
 const { state, TreeNode } = TreeNodeScope()
 const nodeSorter = (a, b) => {
@@ -21,6 +29,11 @@ const stateToJS = createTransformer(state => ({
 
 const ROOT_PATH = ''
 extendObservable(state, {
+  shrinkPath: {
+    enabled: false,
+    delimiter: '.',
+    directories: [],
+  },
   get focusedNodes () {
     return this.entities.values().filter(node => node.isFocused).sort(nodeSorter)
   },
@@ -36,6 +49,7 @@ extendObservable(state, {
 })
 
 class FileTreeNode extends TreeNode {
+  static nodeSorter = nodeSorter
   constructor (props) {
     const path = props.file ? props.file.path : props.path
     super({ ...props, id: path })
@@ -50,7 +64,10 @@ class FileTreeNode extends TreeNode {
 
   /* override base class */
   @computed get name () {
-    return this.file ? this.file.name : ''
+    return this._name ? this._name
+    : state.shrinkPath.enabled && is.string(this._parentId) ? this.shrinkPathName
+    : this.file ? this.file.name
+    : ''
   }
 
   @computed get isDir () {
@@ -59,24 +76,31 @@ class FileTreeNode extends TreeNode {
 
   @computed get parentId () {
     // prioritize corresponding file's tree node
+    if (this._parentId !== undefined) return this._parentId
     if (this.file && this.file.parent) {
       return this.file.parent.path
     }
-    return this._parentId
   }
   /* end override */
 
   /* extend base class */
   @observable path = null
 
+  @computed get shrinkPathName () {
+    const parentPath = this.parentId
+    const relativePath = this.path.replace(`${parentPath}/`, '')
+    return relativePath.replace(/\//g, state.shrinkPath.delimiter)
+  }
+
   @computed get file () {
     return FileState.entities.get(this.path)
   }
 
+  // simply get one's children
   @computed get children () {
     return state.entities.values()
       .filter(node => node.parent === this)
-      .sort(nodeSorter)
+      .sort(this.constructor.nodeSorter)
   }
 
   @computed get gitStatus () {

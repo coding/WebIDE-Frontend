@@ -62,6 +62,17 @@ export default function subscribeToFileChange () {
       emitter.emit(FILE_CHANGE, data)
       switch (data.changeType) {
         case 'create':
+          if (handleGitFiles(node)) break
+          if (!node.isDir && fileIsOpened(node.path)) {
+            api.readFile(node.path).then(({ content }) => {
+              node.content = content
+              FileActions.loadNodeData([node])
+            })
+          } else {
+            FileActions.loadNodeData([node])
+          }
+          break
+
         case 'modify':
           if (handleGitFiles(node)) {
             break
