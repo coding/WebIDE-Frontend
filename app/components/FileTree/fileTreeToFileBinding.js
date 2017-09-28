@@ -65,10 +65,8 @@ export default function bindToFile (FileTreeState, FileState, FileTreeNode) {
       const set = []
       set.has = function (item) { return this.indexOf(item) !== -1 }
       set.add = function (item) {
-        if (!this.has(item)) {
-          if (is.function(this.onAdd)) this.onAdd(item)
-          this.push(item)
-        }
+        if (is.function(this.onAdd)) this.onAdd(item) // <-- this is NOT intuitive enough though, but it works for now.
+        if (!this.has(item)) this.push(item)
         return this
       }
       set.remove = function (item) {
