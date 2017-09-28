@@ -6,6 +6,7 @@ const app = {
   utils: require('utils/exports'),
   config: require('./config'),
   settings: require('./settings'),
+  settingFormState: require('components/Setting/state')
 }
 
 const lib = {
