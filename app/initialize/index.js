@@ -49,7 +49,7 @@ async function initialize () {
     return true
   })
 
-  await step('load step from settings', async() => {
+  await step('=== Run steps in stepCache ===', async() => {
     /*async function goto (key, hasNext = true) {
       if (!hasNext) {
         return true
@@ -69,6 +69,7 @@ async function initialize () {
         await step(`[${stepNum++}] ${value.desc}`, value.func)
       }
     }
+    console.log('=== End running stepCache ===')
     return true
   })
 

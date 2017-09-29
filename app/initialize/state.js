@@ -77,24 +77,23 @@ const stepCache = observable.map({
   }
 })
 
-stepCache.insert = function (key, value, referKey, before = false) {
-  let entries = this.entries()
-  let insertIndex = entries.findIndex(entry => entry[0] === referKey)
-  if (insertIndex < 0) {
-    entries = entries.concat([key, value])
-  } else {
-    if (!before) insertIndex += 1
-    entries.splice(insertIndex, 0, [key, value])
+function insertFactory (beforeOrAfter) {
+  return function insert (referKey, value) {
+    const key = value.key || value.desc
+    let entries = this.entries()
+    let insertIndex = entries.findIndex(entry => entry[0] === referKey)
+    if (insertIndex < 0) {
+      entries = entries.concat([key, value])
+    } else {
+      if (beforeOrAfter === 'after') insertIndex += 1
+      entries.splice(insertIndex, 0, [key, value])
+    }
+    this.replace(entries)
   }
-  this.replace(entries)
 }
-// delete muliple keys
-stepCache.delete = function (keys) {
-  const keyArray = Array.isArray(keys) ? keys : [keys]
-  keyArray.forEach((key) => {
-    observable.map().delete.call(this, key)
-  })
-}
+
+stepCache.insertBefore = insertFactory('before')
+stepCache.insertAfter = insertFactory('after')
 stepCache.move = function (key, referKey, before = false) {
   const entries = this.entries()
   let insertIndex = entries.findIndex(entry => entry[0] === referKey)
