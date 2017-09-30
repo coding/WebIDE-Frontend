@@ -38,7 +38,16 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
 )
 
 export const removeNode = registerAction('fs:remove_node', (node) => {
-  if (is.string(node.path)) state.entities.delete(node.path)
+  const nodePath = node.path
+  const fileNode = state.entities.get(nodePath)
+  if (fileNode) {
+    if (fileNode.isDir) {
+      const nodesToKeep = state.entities.entries().filter(([nPath]) => !nPath.startsWith(nodePath))
+      state.entities.replace(nodesToKeep)
+    } else {
+      state.entities.delete(nodePath)
+    }
+  }
 })
 
 export const updateFile = registerAction('fs:update', (fileProps) => {
