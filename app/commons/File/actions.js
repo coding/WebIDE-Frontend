@@ -5,6 +5,18 @@ import { action } from 'mobx'
 import api from 'backendAPI'
 import state, { FileNode } from './state'
 
+export function fetchPath (path) {
+  return api.fetchPath(path).then((nodePropsList) => {
+    return Promise.all(nodePropsList.map((nodeProps) => {
+      if (nodeProps.isDir && nodeProps.directoriesCount === 1 && nodeProps.filesCount === 0) {
+        return fetchPath(nodeProps.path).then(data => [nodeProps].concat(data))
+      } else {
+        return Promise.resolve(nodeProps)
+      }
+    })).then(flattenDeep)
+  })
+}
+
 export const loadNodeData = registerAction('fs:load_node_data',
   (nodePropsList) => {
     if (!is.array(nodePropsList)) nodePropsList = [nodePropsList]
@@ -20,18 +32,6 @@ export const loadNodeData = registerAction('fs:load_node_data',
     })
   }
 )
-
-export function fetchPath (path) {
-  return api.fetchPath(path).then((nodePropsList) => {
-    return Promise.all(nodePropsList.map((nodeProps) => {
-      if (nodeProps.isDir && nodeProps.directoriesCount === 1 && nodeProps.filesCount === 0) {
-        return fetchPath(nodeProps.path)
-      } else {
-        return Promise.resolve(nodeProps)
-      }
-    })).then(flattenDeep)
-  })
-}
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then(loadNodeData)
