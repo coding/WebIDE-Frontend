@@ -151,28 +151,26 @@ export default {
 
   'file:rename': (c) => {
     const node = c.context
+    const oldPath = node.path
     const parentPath = nodeToParentDirPath(node)
     const existingTabs = TabStore.findTab(
-      tab => tab.file && tab.file.path === node.path
+      tab => tab.file && tab.file.path.startsWith(oldPath)
     )
 
-    const moveFile = (from, newPath, force) => {
-      api.moveFile(node.path, newPath, force)
+    const moveFile = (from, to, force) => {
+      api.moveFile(from, to, force)
         .then(() => Modal.dismissModal())
         .catch(err =>
-          Modal.updateModal({ statusMessage: err.msg })
-          .then((newPath, force) =>
-            moveFile(from, newPath, force)
+          Modal.updateModal({ statusMessage: err.msg }).then((_to, _force) =>
+            moveFile(from, _to, _force)
           )
         ).then(() => {
           if (existingTabs.length) {
-            api.readFile(newPath).then((data) => {
-              FileStore.loadNodeData(data)
-              existingTabs.forEach((tab) => {
-                TabStore.updateTab({
-                  id: tab.id,
-                  editor: { filePath: newPath },
-                })
+            existingTabs.forEach((tab) => {
+              const newPath = tab.file.path.replace(from, to)
+              api.readFile(newPath).then((data) => {
+                FileStore.loadNodeData(data)
+                TabStore.updateTab({ id: tab.id, editor: { filePath: newPath } })
               })
             })
           }
@@ -181,9 +179,9 @@ export default {
 
     Modal.showModal('Prompt', {
       message: i18n`file.newFileName`,
-      defaultValue: node.path,
-      selectionRange: [parentPath.length, node.path.length]
-    }).then(newPath => moveFile(node.path, newPath))
+      defaultValue: oldPath,
+      selectionRange: [parentPath.length, oldPath.length]
+    }).then(newPath => moveFile(oldPath, newPath))
   },
 
 
