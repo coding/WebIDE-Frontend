@@ -21,7 +21,7 @@ class FileList extends Component {
                 e.preventDefault()
                 this.handleDestroy(tab)
               }} />
-              <i className={tab.icon} />
+              <i className={`icon ${tab.icon}`} />
               {tab.file ?
                 <span className={cx('file-list-label', `git-${tab.file.gitStatus ? tab.file.gitStatus.toLowerCase() : 'none'}`)}>
                   {tab.file.name}

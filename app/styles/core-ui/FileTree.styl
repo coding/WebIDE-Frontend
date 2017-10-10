@@ -74,6 +74,17 @@ $filetree-indent = 1em;
 .filetree-node-icon {
   width: $filetree-indent;
   text-align: center;
+  i {
+    font-style: normal;
+    text-align: center;
+    position: relative;
+    &:before {
+      font-size: 14px;
+    }
+    &.image-icon {
+      padding-left: 2px;
+    }
+  }
 
   .fa-folder-o, .fa-folder-open-o {
     transform: translateY(1px);
