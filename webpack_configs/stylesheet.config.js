@@ -6,11 +6,7 @@ module.exports = function (paths) {
     module: {
       rules: [
         {
-          test: /\.woff\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
-          use: ['file-loader']
-          // loader: "url?limit=10000&mimetype=application/font-woff"
-        }, {
-          test: /\.woff2\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
+          test: /\.woff2?\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
           use: ['file-loader']
           // loader: "url?limit=10000&mimetype=application/font-woff"
         }, {

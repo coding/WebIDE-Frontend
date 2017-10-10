@@ -11,6 +11,7 @@ import FileTreeContextMenuItems from './contextMenuItems'
 import dispatchCommand from 'commands/dispatchCommand'
 import { getTabType } from 'utils'
 import i18n from 'utils/createI18n'
+import icons from 'file-icons-js'
 
 export const initializeFileTree = registerAction('filetree:init', () => {
   FileStore.fetchProjectRoot()
@@ -89,7 +90,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
   } else {
     TabActions.createTab({
       title: node.name,
-      icon: 'fa fa-file-text-o',
+      icon: icons.getClassWithColor(node.name),
       editor: {
         ...editor,
         filePath: node.path,

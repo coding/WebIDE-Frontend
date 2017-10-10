@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import config from 'config'
 import cx from 'classnames'
 import dnd from 'utils/dnd'
+import icons from 'file-icons-js'
 
 @observer
 class TreeNode extends Component {
@@ -15,6 +16,16 @@ class TreeNode extends Component {
     const { node, openNode, selectNode, openContextMenu, onlyDir } = this.props
     if (!node) return null
     if (onlyDir && !node.isDir) return null
+    let iconStr = ''
+    if (node.isRoot) {
+      iconStr = 'fa fa-briefcase'
+    } else if (node.isDir && !node.isRoot && node.isFolded) {
+      iconStr = 'fa fa-folder-o'
+    } else if (node.isDir && !node.isRoot && !node.isFolded) {
+      iconStr = 'fa fa-folder-open-o'
+    } else if (!node.isDir) {
+      iconStr = icons.getClassWithColor(node.name)
+    }
     return (
       <div id={node.id}
         className={cx('filetree-node-container', {
@@ -49,12 +60,7 @@ class TreeNode extends Component {
             })}></i>}
           </span>
           <span className="filetree-node-icon">
-            <i className={cx({
-              'fa fa-briefcase': node.isRoot,
-              'fa fa-folder-o': node.isDir && !node.isRoot && node.isFolded,
-              'fa fa-folder-open-o': node.isDir && !node.isRoot && !node.isFolded,
-              'fa fa-file-text-o': !node.isDir
-            })}></i>
+            <i className={iconStr}></i>
           </span>
           <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
             {node.name || config.projectName}

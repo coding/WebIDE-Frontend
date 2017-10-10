@@ -6,7 +6,7 @@ import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
-
+import icons from 'file-icons-js'
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -70,7 +70,7 @@ export function openFile ({ path, editor = {}, others = {} }) {
         existingTab.activate()
       } else {
         TabStore.createTab({
-          icon: 'fa fa-file-text-o',
+          icon: icons.getClassWithColor(path.split('/').pop()),
           editor: {
             ...editor,
             filePath: path,
