@@ -70,7 +70,7 @@ export function openFile ({ path, editor = {}, others = {} }) {
         existingTab.activate()
       } else {
         TabStore.createTab({
-          icon: icons.getClassWithColor(path.split('/').pop()),
+          icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
           editor: {
             ...editor,
             filePath: path,

@@ -24,7 +24,7 @@ class TreeNode extends Component {
     } else if (node.isDir && !node.isRoot && !node.isFolded) {
       iconStr = 'fa fa-folder-open-o'
     } else if (!node.isDir) {
-      iconStr = icons.getClassWithColor(node.name)
+      iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o'
     }
     return (
       <div id={node.id}

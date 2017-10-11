@@ -40,7 +40,7 @@ const Crumb = ({node}) => {
   }
   return (
     <div className='crumb'>
-      {SHOW_ICON ? <i className={node.isDir ? 'fa fa-folder-o' : icons.getClassWithColor(node.name)} style={{marginRight:'5px'}}></i>:null}
+      {SHOW_ICON ? <i className={node.isDir ? 'fa fa-folder-o' : (icons.getClassWithColor(node.name) || 'fa fa-file-text-o')} style={{marginRight:'5px'}}></i>:null}
       <div className={fileClassName}>{node.name}</div>
       <div className='crumb-node-name'>{extension`siderBar${props}`}</div>
     </div>
