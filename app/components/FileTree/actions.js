@@ -90,7 +90,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
   } else {
     TabActions.createTab({
       title: node.name,
-      icon: icons.getClassWithColor(node.name),
+      icon: icons.getClassWithColor(node.name) || 'fa fa-file-text-o',
       editor: {
         ...editor,
         filePath: node.path,
