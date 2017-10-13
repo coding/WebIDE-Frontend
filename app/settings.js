@@ -12,8 +12,8 @@ import('components/Editor/state').then(res => EditorState = res.default)
 
 
 export const UIThemeOptions = [
-  { name: 'settings.theme.uiThemeOption.baseTheme', value: 'base-theme' },
-  { name: 'settings.theme.uiThemeOption.dark', value: 'dark' },
+  { name: 'settings.appearance.uiThemeOption.baseTheme', value: 'base-theme' },
+  { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
 ]
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
@@ -32,9 +32,9 @@ const changeUITheme = (nextThemeId) => {
 
   const editorTheme = EditorState.options.theme
   if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
-    settings.theme.syntax_theme.value = 'material'
+    settings.appearance.syntax_theme.value = 'material'
   } else if (nextThemeId === 'base-theme' && (editorTheme === 'monokai' || editorTheme === 'material')) {
-    settings.theme.syntax_theme.value = 'default'
+    settings.appearance.syntax_theme.value = 'default'
   }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
@@ -147,30 +147,30 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'theme', 'editor', 'keymap', 'extensions'],
+  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions'],
   get items () {
     return this._keys.map(key => this[key])
   },
-  theme: new DomainSetting({
+  appearance: new DomainSetting({
     _keys: [
       'ui_theme',
       'syntax_theme',
       'font_size'
     ],
     ui_theme: {
-      name: 'settings.theme.uiTheme',
+      name: 'settings.appearance.uiTheme',
       value: 'dark',
       options: UIThemeOptions,
       reaction: changeUITheme,
     },
     syntax_theme: {
-      name: 'settings.theme.syntaxTheme',
+      name: 'settings.appearance.syntaxTheme',
       value: 'material',
       options: SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     },
     font_size: {
-      name: 'settings.theme.fontSize',
+      name: 'settings.appearance.fontSize',
       value: 13,
       reaction (value) {
         dynamicStyle.set('codemirror font size',

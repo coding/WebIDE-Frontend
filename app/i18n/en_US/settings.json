@@ -29,11 +29,11 @@
     "main": "Keymap Setting",
     "keyboardMode": "Editor Keyboard Mode"
    },
-   "theme": {
+   "appearance": {
       "main": "Appearance Setting",
       "uiTheme": "UI theme",
       "uiThemeOption": {
-         "baseTheme": "default",
+         "baseTheme": "Default",
          "dark": "Dark"
       },
       "syntaxTheme": "Syntax Theme",
@@ -45,7 +45,7 @@
    },
    "tabs": {
       "general": "General",
-      "theme": "Appearance",
+      "appearance": "Appearance",
       "editor": "Editor",
       "keymap": "Keymap",
       "extensions": "Extensions"

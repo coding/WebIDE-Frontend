@@ -20,8 +20,8 @@ const DomainSetting = ({ content, domainKey, component }) => {
     case 'GENERAL':
     default:
       return <SettingForm content={content} header={i18n`settings.general.main`} />
-    case 'THEME':
-      return <SettingForm content={content} header={i18n`settings.theme.main`} />
+    case 'APPEARANCE':
+      return <SettingForm content={content} header={i18n`settings.appearance.main`} />
     case 'EDITOR':
       return <EditorSetting content={content} />
     case 'KEYMAP':

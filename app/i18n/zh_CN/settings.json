@@ -29,7 +29,7 @@
     "main": "快捷键",
     "keyboardMode": "编辑器键盘模式"
    },
-   "theme": {
+   "appearance": {
       "main": "样式",
       "uiTheme": "UI 主题",
       "uiThemeOption": {
@@ -45,7 +45,7 @@
    },
    "tabs": {
       "general": "通用",
-      "theme": "样式",
+      "appearance": "样式",
       "editor": "编辑器",
       "keymap": "快捷键",
       "extensions": "插件中心"
