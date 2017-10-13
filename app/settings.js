@@ -1,5 +1,6 @@
 import isObject from 'lodash/isObject'
 import { observable, reaction, extendObservable, computed, action } from 'mobx'
+import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
@@ -85,6 +86,7 @@ class DomainSetting {
     Object.entries(config).forEach(([key, settingItem]) => {
       if (!isObject(settingItem)) return
       settingItem.key = key
+      settingItem.defaultValue = settingItem.value
       settingItem.name = settingItem.name || titleCase(key)
       if (settingItem.options) {
         // don't auto-convert 'options' to observable
@@ -193,8 +195,11 @@ const settings = observable({
       'font_size',
       // 'font_family',
       // 'charset',
-      'space_tab',
-      'tab_size',
+      'indent_style',
+      'indent_size',
+      'tab_width',
+      'trim_trailing_whitespace',
+      'insert_final_newline',
       // 'auto_save',
       // 'auto_wrap',
       // 'live_auto_completion',
@@ -248,23 +253,44 @@ const settings = observable({
         { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
       ]
     },
-    space_tab: {
-      name: 'settings.editor.spaceTab',
-      value: true,
+    indent_style: {
+      name: 'settings.editor.indentStyle',
+      value: 'space',
+      options: [{ name: 'Space', value: 'space' }, { name: 'Tab', value: 'tab' }],
       reaction (value) {
-        if (EditorState) EditorState.options.indentWithTabs = !value
+        if (EditorState) EditorState.options.indentWithTabs = value === 'tab'
       }
     },
-    tab_size: {
-      name: 'settings.editor.tabSize',
+    indent_size: {
+      name: 'settings.editor.indentSize',
       value: 4,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
-        if (EditorState) {
-          EditorState.options.tabSize = value
-          EditorState.options.indentUnit = value
-        }
+        if (EditorState) EditorState.options.indentUnit = value
+      }
+    },
+    tab_width: {
+      name: 'settings.editor.tabWidth',
+      value: 4,
+      options: [1, 2, 3, 4, 5, 6, 7, 8],
+      reaction (value) {
+        value = Number(value)
+        if (EditorState) EditorState.options.tabSize = value
+      }
+    },
+    trim_trailing_whitespace: {
+      name: 'settings.editor.trimTrailingWhitespace',
+      value: false,
+      reaction (value) {
+        if (EditorState) EditorState.options.trimTrailingWhitespace = value
+      }
+    },
+    insert_final_newline: {
+      name: 'settings.editor.insertFinalNewline',
+      value: false,
+      reaction (value) {
+        if (EditorState) EditorState.options.insertFinalNewline = value
       }
     },
     auto_save: {
@@ -284,6 +310,22 @@ const settings = observable({
       value: false
     }
   })
+})
+
+reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules })
+, ({ isEnabled, rules }) => {
+  if (isEnabled) {
+    const defaultRules = rules['*'] || {}
+    editorConfig.keys.forEach((key) => {
+      if (defaultRules.hasOwnProperty(key)) {
+        if (settings.editor[key].value !== defaultRules[key]) {
+          settings.editor[key].value = defaultRules[key]
+        }
+      } else {
+        settings.editor[key].value = settings.editor[key].defaultValue
+      }
+    })
+  }
 })
 
 export default settings

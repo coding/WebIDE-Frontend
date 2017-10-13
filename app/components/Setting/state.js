@@ -48,5 +48,4 @@ export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {
   })
 })
 
-
 export default state
