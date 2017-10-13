@@ -7,20 +7,6 @@ import SettingForm from './SettingForm'
 import KeymapSetting from './KeymapSetting'
 import EditorSetting from './EditorSetting'
 
-const GeneralSetting = ({ content }) => (
-  <div>
-    <h2 className='settings-content-header'>{i18n`settings.general.main`}</h2>
-    <SettingForm setting={content} />
-  </div>
-)
-
-const ThemeSetting = ({ content }) => (
-  <div>
-    <h2 className='settings-content-header'>{i18n`settings.theme.main`}</h2>
-    <SettingForm setting={content} />
-  </div>
-)
-
 const ExtensionSetting = () => (
   <div>
     <h2 className='settings-content-header'>{i18n`settings.extension.main`}</h2>
@@ -29,13 +15,13 @@ const ExtensionSetting = () => (
 )
 
 const DomainSetting = ({ content, domainKey, component }) => {
-  if (component) return component;
+  if (component) return component
   switch (domainKey) {
     case 'GENERAL':
     default:
-      return <GeneralSetting content={content} />
+      return <SettingForm content={content} header={i18n`settings.general.main`} />
     case 'THEME':
-      return <ThemeSetting content={content} />
+      return <SettingForm content={content} header={i18n`settings.theme.main`} />
     case 'EDITOR':
       return <EditorSetting content={content} />
     case 'KEYMAP':
@@ -45,7 +31,10 @@ const DomainSetting = ({ content, domainKey, component }) => {
   }
 }
 
-let SettingsView = observer((props) => {
+const SettingsView = inject((state) => {
+  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
+  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
+})(observer((props) => {
   const {
     activeTabId, tabIds, activeTab, activateTab, tabNames
   } = props
@@ -83,10 +72,6 @@ let SettingsView = observer((props) => {
       </div>
     </div>
   )
-})
+}))
 
-SettingsView = inject((state) => {
-  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
-  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
-})(SettingsView)
 export default SettingsView
