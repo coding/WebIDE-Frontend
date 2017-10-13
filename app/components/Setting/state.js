@@ -14,11 +14,12 @@ export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 
 const state = observable({
   activeTabId: 'GENERAL',
-  tabIds: ['GENERAL', 'THEME', 'EDITOR', 'EXTENSIONS'],
+  tabIds: ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP', 'EXTENSIONS'],
   tabNames: {
     GENERAL: i18n`settings.tabs.general`,
-    THEME: i18n`settings.tabs.theme`,
+    APPEARANCE: i18n`settings.tabs.appearance`,
     EDITOR: i18n`settings.tabs.editor`,
+    KEYMAP: i18n`settings.tabs.keymap`,
     EXTENSIONS: i18n`settings.tabs.extensions`,
   },
   get activeTab () {
@@ -32,7 +33,7 @@ const state = observable({
     return {
       editor: getSettingValueHelper(settings.editor),
       general: getSettingValueHelper(settings.general),
-      theme: getSettingValueHelper(settings.theme),
+      appearance: getSettingValueHelper(settings.appearance),
     }
   },
 })
@@ -47,6 +48,5 @@ export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {
     })
   })
 })
-
 
 export default state

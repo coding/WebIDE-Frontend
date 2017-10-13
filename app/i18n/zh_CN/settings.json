@@ -13,25 +13,33 @@
    },
    "editor": {
       "main": "编辑器",
-      "keyboardMode": "键盘模式",
-      "fontSize": "字号",
+      "editorconfigNote": "如果你的项目根目录下有 .editorconfig 文件，那么本页面下的一些选项的控制会被它接管。",
+      "editorconfigNoteLink": "打开 .editorconfig",
       "fontFamily": "字体",
       "charset": "编码",
-      "spaceTab": "用空格缩进",
-      "tabSize": "缩进大小",
+      "indentStyle": "缩进风格",
+      "indentSize": "缩进空格数",
+      "tabWidth": "Tab 宽度",
+      "trimTrailingWhitespace": "删除行尾空格",
+      "insertFinalNewline": "文件结尾插入空白行",
       "autoSave": "自动保存",
       "autoWrap": "自动换行",
       "autoCompletion": "自动补全",
       "snippets": "代码片段"
    },
-   "theme": {
-      "main": "主题",
+   "keymap": {
+    "main": "快捷键",
+    "keyboardMode": "编辑器键盘模式"
+   },
+   "appearance": {
+      "main": "样式",
       "uiTheme": "UI 主题",
       "uiThemeOption": {
          "baseTheme": "默认",
          "dark": "黑色"
       },
-      "syntaxTheme": "代码着色"
+      "syntaxTheme": "代码着色",
+      "fontSize": "编辑器字号"
    },
    "extension": {
       "main": "插件中心",
@@ -39,8 +47,9 @@
    },
    "tabs": {
       "general": "通用",
-      "theme": "主题",
+      "appearance": "样式",
       "editor": "编辑器",
+      "keymap": "快捷键",
       "extensions": "插件中心"
    }
 }

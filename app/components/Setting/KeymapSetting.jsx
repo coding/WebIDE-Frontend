@@ -1,16 +1,16 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { observer } from 'mobx-react'
+import i18n from 'utils/createI18n'
 import FormInputGroup from './FormInputGroup'
 
-export default observer(({ header, content }) => (
+export default observer(({ content }) => (
   <div>
-    <h2 className='settings-content-header'>{ header }</h2>
+    <h2 className='settings-content-header'>{i18n`settings.keymap.main`}</h2>
     <div>
       {content.items.map(settingItem =>
         <FormInputGroup
           key={settingItem.key}
           settingItem={settingItem}
-          requireConfirm={content.requireConfirm}
         />
       )}
     </div>

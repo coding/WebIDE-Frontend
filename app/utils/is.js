@@ -1,11 +1,17 @@
 import isNull from 'lodash/isNull'
 import isUndefined from 'lodash/isUndefined'
 import isString from 'lodash/isString'
-import isNumber from 'lodash/isNumber'
 import isBoolean from 'lodash/isBoolean'
 import isFunction from 'lodash/isFunction'
 import isArray from 'lodash/isArray'
 import isPlainObject from 'lodash/isPlainObject'
+import isNaN from 'lodash/isNaN'
+import _isNumber from 'lodash/isNumber'
+
+const isNumber = n => {
+  if (isNaN(n)) return false
+  return _isNumber(n)
+}
 
 function is (type) {
   if (isUndefined(type)) return isUndefined

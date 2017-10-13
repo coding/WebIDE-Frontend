@@ -7,6 +7,8 @@ const options = {
   matchBrackets: true,
   autoCloseBrackets: true,
   dragDrop: false,
+  trimTrailingWhitespace: undefined,
+  insertFinalNewline: undefined,
   extraKeys: {
     Tab: function betterTab (cm) {
       if (cm.somethingSelected()) {

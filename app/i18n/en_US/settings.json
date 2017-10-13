@@ -13,34 +13,43 @@
    },
    "editor": {
       "main": "Editor Setting",
-      "keyboardMode": "Keyboard Mode",
-      "fontSize": "Font Size",
+      "editorconfigNote": "If .editorconfig file is found in your project's root directory, it will take charge of some of the configurations on this tab.",
+      "editorconfigNoteLink": "Open .editorconfig",
       "fontFamily": "Font Family",
       "charset": "Charset",
-      "spaceTab": "Indent Using Space",
-      "tabSize": "Tab Size",
+      "indentStyle": "Indent Style",
+      "indentSize": "Indent Size",
+      "tabWidth": "Tab Width",
+      "trimTrailingWhitespace": "Trim Trailing Whitespace",
+      "insertFinalNewline": "Insert Final Newline",
       "autoSave": "Auto Save",
       "autoWrap": "Auto Wrap",
       "autoCompletion": "Live Auto Completion",
       "snippets": "Snippets"
    },
-   "theme": {
-      "main": "Theme Setting",
+   "keymap": {
+    "main": "Keymap Setting",
+    "keyboardMode": "Editor Keyboard Mode"
+   },
+   "appearance": {
+      "main": "Appearance Setting",
       "uiTheme": "UI theme",
       "uiThemeOption": {
-         "baseTheme": "default",
+         "baseTheme": "Default",
          "dark": "Dark"
       },
-      "syntaxTheme": "Syntax Theme"
+      "syntaxTheme": "Syntax Theme",
+      "fontSize": "Editor Font Size"
    },
    "extension": {
       "main": "Extension Setting",
       "searchPlaceholder": "Search By Extension Name"
    },
    "tabs": {
-      "general": "GENERAL",
-      "theme": "THEME",
-      "editor": "EDITOR",
-      "extensions": "EXTENSIONS"
+      "general": "General",
+      "appearance": "Appearance",
+      "editor": "Editor",
+      "keymap": "Keymap",
+      "extensions": "Extensions"
    }
 }

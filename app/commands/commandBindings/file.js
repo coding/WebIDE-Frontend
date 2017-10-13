@@ -81,7 +81,7 @@ export function openFile ({ path, editor = {}, others = {} }) {
     })
 }
 
-export default {
+const fileCommands =  {
   'file:open_file': (c) => {
     if (typeof c.data === 'string') {
       openFile({ path: c.data })
@@ -121,10 +121,11 @@ export default {
 
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
+      const defaultPath = activeTab._title ? `/${activeTab._title}` : '/untitled'
       Modal.showModal('Prompt', {
         message: i18n`file.newFilePath`,
-        defaultValue: '/untitled',
-        selectionRange: [1, '/untitled'.length]
+        defaultValue: defaultPath,
+        selectionRange: [1, defaultPath.length]
       })
         .then(createFile)
         .then((path) => {
@@ -209,3 +210,5 @@ export default {
 
   // 'file:unsaved_files_list':
 }
+
+export default fileCommands

@@ -17,7 +17,7 @@ class Term extends Component {
   componentDidMount() {
     var _this = this;
     var terminalManager = new TerminalManager()
-    const uiTheme = SettingState.settings.theme.ui_theme.value
+    const uiTheme = SettingState.settings.appearance.ui_theme.value
     let themeName = 'terminal_basic'
     if (uiTheme === 'dark') {
       themeName = 'default'

@@ -4,27 +4,8 @@ import cx from 'classnames'
 import i18n from 'utils/createI18n'
 import ExtensionList from '../Plugins/extensionList'
 import SettingForm from './SettingForm'
-
-const GeneralSetting = ({ content }) => (
-  <div>
-    <h2 className='settings-content-header'>{i18n`settings.general.main`}</h2>
-    <SettingForm setting={content} />
-  </div>
-  )
-
-const EditorSetting = ({ content }) => (
-  <div>
-    <h2 className='settings-content-header'>{i18n`settings.editor.main`}</h2>
-    <SettingForm setting={content} />
-  </div>
-  )
-
-const ThemeSetting = ({ content }) => (
-  <div>
-    <h2 className='settings-content-header'>{i18n`settings.theme.main`}</h2>
-    <SettingForm setting={content} />
-  </div>
-  )
+import KeymapSetting from './KeymapSetting'
+import EditorSetting from './EditorSetting'
 
 const ExtensionSetting = () => (
   <div>
@@ -33,23 +14,27 @@ const ExtensionSetting = () => (
   </div>
 )
 
-
 const DomainSetting = ({ content, domainKey, component }) => {
-  if (component) return component;
+  if (component) return component
   switch (domainKey) {
     case 'GENERAL':
     default:
-      return <GeneralSetting content={content} />
+      return <SettingForm content={content} header={i18n`settings.general.main`} />
+    case 'APPEARANCE':
+      return <SettingForm content={content} header={i18n`settings.appearance.main`} />
     case 'EDITOR':
       return <EditorSetting content={content} />
-    case 'THEME':
-      return <ThemeSetting content={content} />
+    case 'KEYMAP':
+      return <KeymapSetting content={content} />
     case 'EXTENSIONS':
       return <ExtensionSetting />
   }
 }
 
-let SettingsView = observer((props) => {
+const SettingsView = inject((state) => {
+  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
+  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
+})(observer((props) => {
   const {
     activeTabId, tabIds, activeTab, activateTab, tabNames
   } = props
@@ -87,10 +72,6 @@ let SettingsView = observer((props) => {
       </div>
     </div>
   )
-})
+}))
 
-SettingsView = inject((state) => {
-  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
-  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
-})(SettingsView)
 export default SettingsView

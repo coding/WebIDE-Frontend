@@ -1,5 +1,6 @@
 import isObject from 'lodash/isObject'
 import { observable, reaction, extendObservable, computed, action } from 'mobx'
+import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
@@ -11,8 +12,8 @@ import('components/Editor/state').then(res => EditorState = res.default)
 
 
 export const UIThemeOptions = [
-  { name: 'settings.theme.uiThemeOption.baseTheme', value: 'base-theme' },
-  { name: 'settings.theme.uiThemeOption.dark', value: 'dark' },
+  { name: 'settings.appearance.uiThemeOption.baseTheme', value: 'base-theme' },
+  { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
 ]
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
@@ -31,9 +32,9 @@ const changeUITheme = (nextThemeId) => {
 
   const editorTheme = EditorState.options.theme
   if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
-    settings.theme.syntax_theme.value = 'material'
+    settings.appearance.syntax_theme.value = 'material'
   } else if (nextThemeId === 'base-theme' && (editorTheme === 'monokai' || editorTheme === 'material')) {
-    settings.theme.syntax_theme.value = 'default'
+    settings.appearance.syntax_theme.value = 'default'
   }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
@@ -85,6 +86,7 @@ class DomainSetting {
     Object.entries(config).forEach(([key, settingItem]) => {
       if (!isObject(settingItem)) return
       settingItem.key = key
+      settingItem.defaultValue = settingItem.value
       settingItem.name = settingItem.name || titleCase(key)
       if (settingItem.options) {
         // don't auto-convert 'options' to observable
@@ -145,24 +147,38 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['theme', 'extensions', 'general', 'editor'],
+  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions'],
   get items () {
     return this._keys.map(key => this[key])
   },
-  theme: new DomainSetting({
-    _keys: ['ui_theme', 'syntax_theme'],
+  appearance: new DomainSetting({
+    _keys: [
+      'ui_theme',
+      'syntax_theme',
+      'font_size'
+    ],
     ui_theme: {
-      name: 'settings.theme.uiTheme',
+      name: 'settings.appearance.uiTheme',
       value: 'dark',
       options: UIThemeOptions,
       reaction: changeUITheme,
     },
     syntax_theme: {
-      name: 'settings.theme.syntaxTheme',
+      name: 'settings.appearance.syntaxTheme',
       value: 'material',
       options: SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
-    }
+    },
+    font_size: {
+      name: 'settings.appearance.fontSize',
+      value: 13,
+      reaction (value) {
+        dynamicStyle.set('codemirror font size',
+        `.CodeMirror {
+          font-size: ${value}px;
+        }`)
+      }
+    },
   }),
 
   extensions: new DomainSetting({}),
@@ -189,20 +205,94 @@ const settings = observable({
 
   editor: new DomainSetting({
     _keys: [
-      'keyboard_mode',
-      'font_size',
       // 'font_family',
       // 'charset',
-      'space_tab',
-      'tab_size',
+      'indent_style',
+      'indent_size',
+      'tab_width',
+      'trim_trailing_whitespace',
+      'insert_final_newline',
       // 'auto_save',
       // 'auto_wrap',
       // 'live_auto_completion',
       // 'snippets',
     ],
+    font_family: {
+      name: 'settings.editor.fontFamily',
+      value: 'Consolas',
+      options: ['Consolas', 'Courier', 'Courier New', 'Menlo']
+    },
+    charset: {
+      name: 'settings.editor.charset',
+      value: 'utf8',
+      options: [
+        { name: 'Unicode (UTF-8)', value: 'utf8' },
+        { name: '中文简体 (GB18030)', value: 'gb18030' },
+        { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
+      ]
+    },
+    indent_style: {
+      name: 'settings.editor.indentStyle',
+      value: 'space',
+      options: [{ name: 'Space', value: 'space' }, { name: 'Tab', value: 'tab' }],
+      reaction (value) {
+        if (EditorState) EditorState.options.indentWithTabs = value === 'tab'
+      }
+    },
+    indent_size: {
+      name: 'settings.editor.indentSize',
+      value: 4,
+      options: [1, 2, 3, 4, 5, 6, 7, 8],
+      reaction (value) {
+        value = Number(value)
+        if (EditorState) EditorState.options.indentUnit = value
+      }
+    },
+    tab_width: {
+      name: 'settings.editor.tabWidth',
+      value: 4,
+      options: [1, 2, 3, 4, 5, 6, 7, 8],
+      reaction (value) {
+        value = Number(value)
+        if (EditorState) EditorState.options.tabSize = value
+      }
+    },
+    trim_trailing_whitespace: {
+      name: 'settings.editor.trimTrailingWhitespace',
+      value: false,
+      reaction (value) {
+        if (EditorState) EditorState.options.trimTrailingWhitespace = value
+      }
+    },
+    insert_final_newline: {
+      name: 'settings.editor.insertFinalNewline',
+      value: false,
+      reaction (value) {
+        if (EditorState) EditorState.options.insertFinalNewline = value
+      }
+    },
+    auto_save: {
+      name: 'settings.editor.autoSave',
+      value: true
+    },
+    auto_wrap: {
+      name: 'settings.editor.autoWrap',
+      value: false
+    },
+    live_auto_completion: {
+      name: 'settings.editor.autoCompletion',
+      value: true
+    },
+    snippets: {
+      name: 'settings.editor.snippets',
+      value: false
+    }
+  }),
 
+  keymap: new DomainSetting({
+    _keys: ['keyboard_mode'],
     keyboard_mode: {
-      name: 'settings.editor.keyboardMode',
+      name: 'settings.keymap.keyboardMode',
       value: 'Default',
       options: ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
@@ -223,67 +313,36 @@ const settings = observable({
             EditorState.options.keyMap = 'default'
         }
       }
-    },
-    font_size: {
-      name: 'settings.editor.fontSize',
-      value: 13,
-      reaction (value) {
-        dynamicStyle.set('codemirror font size',
-        `.CodeMirror {
-          font-size: ${value}px;
-        }`)
-      }
-    },
-    font_family: {
-      name: 'settings.editor.fontFamily',
-      value: 'Consolas',
-      options: ['Consolas', 'Courier', 'Courier New', 'Menlo']
-    },
-    charset: {
-      name: 'settings.editor.charset',
-      value: 'utf8',
-      options: [
-        { name: 'Unicode (UTF-8)', value: 'utf8' },
-        { name: '中文简体 (GB18030)', value: 'gb18030' },
-        { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
-      ]
-    },
-    space_tab: {
-      name: 'settings.editor.spaceTab',
-      value: true,
-      reaction (value) {
-        if (EditorState) EditorState.options.indentWithTabs = !value
-      }
-    },
-    tab_size: {
-      name: 'settings.editor.tabSize',
-      value: 4,
-      options: [1, 2, 3, 4, 5, 6, 7, 8],
-      reaction (value) {
-        value = Number(value)
-        if (EditorState) {
-          EditorState.options.tabSize = value
-          EditorState.options.indentUnit = value
-        }
-      }
-    },
-    auto_save: {
-      name: 'settings.editor.autoSave',
-      value: true
-    },
-    auto_wrap: {
-      name: 'settings.editor.autoWrap',
-      value: false
-    },
-    live_auto_completion: {
-      name: 'settings.editor.autoCompletion',
-      value: true
-    },
-    snippets: {
-      name: 'settings.editor.snippets',
-      value: false
     }
   })
+})
+
+// for backward compatibility
+// add alias "settings.theme" -> "settings.appearance"
+extendObservable(settings, {
+  get theme () { return this.appearance }
+})
+
+reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules })
+, ({ isEnabled, rules }) => {
+  if (isEnabled) {
+    const defaultRules = rules['*'] || {}
+    editorConfig.keys.forEach((key) => {
+      if (defaultRules.hasOwnProperty(key)) {
+        settings.editor[key].disabled = true
+        if (settings.editor[key].value !== defaultRules[key]) {
+          settings.editor[key].value = defaultRules[key]
+        }
+      } else {
+        settings.editor[key].disabled = false
+        settings.editor[key].value = settings.editor[key].defaultValue
+      }
+    })
+  } else {
+    editorConfig.keys.forEach((key) => {
+      settings.editor[key].disabled = false
+    })
+  }
 })
 
 export default settings

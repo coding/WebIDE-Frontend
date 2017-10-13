@@ -51,7 +51,7 @@ const debounced = _.debounce(func => func(), 1000)
   file: tab.editor ? tab.editor.file : null,
 }))
 @inject(state => ({
-  themeName: state.SettingState.settings.theme.syntax_theme.value,
+  themeName: state.SettingState.settings.appearance.syntax_theme.value,
 }))
 @observer
 class CodeMirrorEditor extends Component {
@@ -181,7 +181,7 @@ class CodeMirrorEditor extends Component {
 
 
 @inject(state => ({
-  themeName: state.SettingState.settings.theme.syntax_theme.value,
+  themeName: state.SettingState.settings.appearance.syntax_theme.value,
 }))
 @observer
 class TablessCodeMirrorEditor extends Component {
