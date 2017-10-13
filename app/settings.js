@@ -329,12 +329,18 @@ reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules }
     const defaultRules = rules['*'] || {}
     editorConfig.keys.forEach((key) => {
       if (defaultRules.hasOwnProperty(key)) {
+        settings.editor[key].disabled = true
         if (settings.editor[key].value !== defaultRules[key]) {
           settings.editor[key].value = defaultRules[key]
         }
       } else {
+        settings.editor[key].disabled = false
         settings.editor[key].value = settings.editor[key].defaultValue
       }
+    })
+  } else {
+    editorConfig.keys.forEach((key) => {
+      settings.editor[key].disabled = false
     })
   }
 })

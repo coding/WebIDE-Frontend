@@ -39,6 +39,7 @@ const FormInputGroup = defaultProps((props) => {
       <div className='form-group'>
         <label>{i18n([settingItem.name])}</label>
         <select className='form-control'
+          disabled={settingItem.disabled}
           onChange={updateSettingItem}
           value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
         >
@@ -55,7 +56,9 @@ const FormInputGroup = defaultProps((props) => {
         <div className='checkbox'>
           <label>
             <input type='checkbox'
-              onChange={updateSettingItem} checked={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
+              disabled={settingItem.disabled}
+              onChange={updateSettingItem}
+              checked={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
             />
             <strong>{i18n([settingItem.name])}</strong>
           </label>
@@ -71,6 +74,7 @@ const FormInputGroup = defaultProps((props) => {
         min='1'
         onChange={updateSettingItem}
         value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
+        disabled={settingItem.disabled}
       />
     </div>)
 }))
