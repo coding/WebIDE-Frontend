@@ -13,8 +13,6 @@
    },
    "editor": {
       "main": "编辑器",
-      "keyboardMode": "键盘模式",
-      "fontSize": "字号",
       "fontFamily": "字体",
       "charset": "编码",
       "indentStyle": "缩进风格",
@@ -27,14 +25,19 @@
       "autoCompletion": "自动补全",
       "snippets": "代码片段"
    },
+   "keymap": {
+    "main": "快捷键",
+    "keyboardMode": "编辑器键盘模式"
+   },
    "theme": {
-      "main": "主题",
+      "main": "样式",
       "uiTheme": "UI 主题",
       "uiThemeOption": {
          "baseTheme": "默认",
          "dark": "黑色"
       },
-      "syntaxTheme": "代码着色"
+      "syntaxTheme": "代码着色",
+      "fontSize": "编辑器字号"
    },
    "extension": {
       "main": "插件中心",
@@ -42,8 +45,9 @@
    },
    "tabs": {
       "general": "通用",
-      "theme": "主题",
+      "theme": "样式",
       "editor": "编辑器",
+      "keymap": "快捷键",
       "extensions": "插件中心"
    }
 }

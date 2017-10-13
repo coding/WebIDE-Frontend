@@ -4,6 +4,7 @@ import cx from 'classnames'
 import i18n from 'utils/createI18n'
 import ExtensionList from '../Plugins/extensionList'
 import SettingForm from './SettingForm'
+import KeymapSetting from './KeymapSetting'
 import EditorSetting from './EditorSetting'
 
 const GeneralSetting = ({ content }) => (
@@ -33,10 +34,12 @@ const DomainSetting = ({ content, domainKey, component }) => {
     case 'GENERAL':
     default:
       return <GeneralSetting content={content} />
-    case 'EDITOR':
-      return <EditorSetting content={content} />
     case 'THEME':
       return <ThemeSetting content={content} />
+    case 'EDITOR':
+      return <EditorSetting content={content} />
+    case 'KEYMAP':
+      return <KeymapSetting content={content} />
     case 'EXTENSIONS':
       return <ExtensionSetting />
   }

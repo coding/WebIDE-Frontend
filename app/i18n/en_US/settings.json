@@ -13,8 +13,6 @@
    },
    "editor": {
       "main": "Editor Setting",
-      "keyboardMode": "Keyboard Mode",
-      "fontSize": "Font Size",
       "fontFamily": "Font Family",
       "charset": "Charset",
       "indentStyle": "Indent Style",
@@ -27,23 +25,29 @@
       "autoCompletion": "Live Auto Completion",
       "snippets": "Snippets"
    },
+   "keymap": {
+    "main": "Keymap Setting",
+    "keyboardMode": "Editor Keyboard Mode"
+   },
    "theme": {
-      "main": "Theme Setting",
+      "main": "Appearance Setting",
       "uiTheme": "UI theme",
       "uiThemeOption": {
          "baseTheme": "default",
          "dark": "Dark"
       },
-      "syntaxTheme": "Syntax Theme"
+      "syntaxTheme": "Syntax Theme",
+      "fontSize": "Editor Font Size"
    },
    "extension": {
       "main": "Extension Setting",
       "searchPlaceholder": "Search By Extension Name"
    },
    "tabs": {
-      "general": "GENERAL",
-      "theme": "THEME",
-      "editor": "EDITOR",
-      "extensions": "EXTENSIONS"
+      "general": "General",
+      "theme": "Appearance",
+      "editor": "Editor",
+      "keymap": "Keymap",
+      "extensions": "Extensions"
    }
 }

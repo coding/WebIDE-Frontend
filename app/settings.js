@@ -147,12 +147,16 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['theme', 'extensions', 'general', 'editor'],
+  _keys: ['general', 'theme', 'editor', 'keymap', 'extensions'],
   get items () {
     return this._keys.map(key => this[key])
   },
   theme: new DomainSetting({
-    _keys: ['ui_theme', 'syntax_theme'],
+    _keys: [
+      'ui_theme',
+      'syntax_theme',
+      'font_size'
+    ],
     ui_theme: {
       name: 'settings.theme.uiTheme',
       value: 'dark',
@@ -164,7 +168,17 @@ const settings = observable({
       value: 'material',
       options: SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
-    }
+    },
+    font_size: {
+      name: 'settings.theme.fontSize',
+      value: 13,
+      reaction (value) {
+        dynamicStyle.set('codemirror font size',
+        `.CodeMirror {
+          font-size: ${value}px;
+        }`)
+      }
+    },
   }),
 
   extensions: new DomainSetting({}),
@@ -191,8 +205,6 @@ const settings = observable({
 
   editor: new DomainSetting({
     _keys: [
-      'keyboard_mode',
-      'font_size',
       // 'font_family',
       // 'charset',
       'indent_style',
@@ -205,40 +217,6 @@ const settings = observable({
       // 'live_auto_completion',
       // 'snippets',
     ],
-
-    keyboard_mode: {
-      name: 'settings.editor.keyboardMode',
-      value: 'Default',
-      options: ['Default', 'Sublime', 'Vim', 'Emacs'],
-      reaction (value) {
-        if (!EditorState) return
-        const keyboardMode = value.toLowerCase()
-        switch (keyboardMode) {
-          case 'sublime':
-            import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
-            break
-          case 'emacs':
-            import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
-            break
-          case 'vim':
-            import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
-            break
-          case 'default':
-          default:
-            EditorState.options.keyMap = 'default'
-        }
-      }
-    },
-    font_size: {
-      name: 'settings.editor.fontSize',
-      value: 13,
-      reaction (value) {
-        dynamicStyle.set('codemirror font size',
-        `.CodeMirror {
-          font-size: ${value}px;
-        }`)
-      }
-    },
     font_family: {
       name: 'settings.editor.fontFamily',
       value: 'Consolas',
@@ -308,6 +286,33 @@ const settings = observable({
     snippets: {
       name: 'settings.editor.snippets',
       value: false
+    }
+  }),
+
+  keymap: new DomainSetting({
+    _keys: ['keyboard_mode'],
+    keyboard_mode: {
+      name: 'settings.keymap.keyboardMode',
+      value: 'Default',
+      options: ['Default', 'Sublime', 'Vim', 'Emacs'],
+      reaction (value) {
+        if (!EditorState) return
+        const keyboardMode = value.toLowerCase()
+        switch (keyboardMode) {
+          case 'sublime':
+            import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'emacs':
+            import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'vim':
+            import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            break
+          case 'default':
+          default:
+            EditorState.options.keyMap = 'default'
+        }
+      }
     }
   })
 })
