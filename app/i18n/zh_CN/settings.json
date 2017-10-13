@@ -13,6 +13,8 @@
    },
    "editor": {
       "main": "编辑器",
+      "editorconfigNote": "如果你的项目根目录下有 .editorconfig 文件，那么本页面下的一些选项的控制会被它接管。",
+      "editorconfigNoteLink": "打开 .editorconfig",
       "fontFamily": "字体",
       "charset": "编码",
       "indentStyle": "缩进风格",

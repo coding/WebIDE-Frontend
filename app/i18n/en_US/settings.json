@@ -13,6 +13,8 @@
    },
    "editor": {
       "main": "Editor Setting",
+      "editorconfigNote": "If .editorconfig file is found in your project's root directory, it will take charge of some of the configurations on this tab.",
+      "editorconfigNoteLink": "Open .editorconfig",
       "fontFamily": "Font Family",
       "charset": "Charset",
       "indentStyle": "Indent Style",
