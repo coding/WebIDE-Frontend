@@ -317,6 +317,12 @@ const settings = observable({
   })
 })
 
+// for backward compatibility
+// add alias "settings.theme" -> "settings.appearance"
+extendObservable(settings, {
+  get theme () { return this.appearance }
+})
+
 reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules })
 , ({ isEnabled, rules }) => {
   if (isEnabled) {
