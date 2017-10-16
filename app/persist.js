@@ -1,4 +1,4 @@
-import { autorun, createTransformer, toJS as mobxToJS } from 'mobx'
+import { autorunAsync, createTransformer, toJS as mobxToJS } from 'mobx'
 import localforage from 'localforage'
 import config from './config'
 import { hydrate as editorTabHydrate } from './components/Tab/actions'
@@ -13,7 +13,7 @@ const mainStore = localforage.createInstance({
 // the delay to set
 
 function persistStore (store, transform) {
-  autorun(() => {
+  autorunAsync(() => {
     const customTransform = transform || createTransformer(store => mobxToJS(store))
     const transformedStore = customTransform(store)
         // 初次等spacekey出现存
@@ -31,7 +31,7 @@ function persistStore (store, transform) {
         })
       }
     }
-  })
+  }, 200)
 }
 
 export const clearPersist = (key) => {
