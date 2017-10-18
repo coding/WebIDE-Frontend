@@ -1,24 +1,34 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import state from './state'
+import { FileListState } from './state'
 import cx from 'classnames'
+import dispatchCommand from 'commands/dispatchCommand'
+
+const state = FileListState
 
 @observer
 class FileList extends Component {
   handleActivate (tab) {
-    tab.activate()
+    // tab.activate()
+    dispatchCommand('file:open_exist_file', tab.file.path)
   }
   handleDestroy (tab) {
-    tab.destroy()
+    // tab.destroy()
+    state.tabs.delete(tab.file.path)
   }
   render () {
     return (
       <div className='file-list-container'>
         {state.tabs.values().map((tab) => {
           return (
-            <div className={cx('file-list-item', { focus: tab.isActive })} onClick={e => this.handleActivate(tab)}>
+            <div key={tab.id} className={cx('file-list-item', { focus: tab.isActive })} onClick={e => {
+              e.preventDefault()
+              e.stopPropagation()
+              this.handleActivate(tab)
+            }}>
               <i className='fa fa-times' onClick={e => {
                 e.preventDefault()
+                e.stopPropagation()
                 this.handleDestroy(tab)
               }} />
               <i className={`icon ${tab.icon}`} />

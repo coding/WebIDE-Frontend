@@ -7,6 +7,10 @@ import EditorState, { Editor } from 'components/Editor/state'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 
+const FileListState = observable({
+  tabs: new observable.map({}),
+})
+
 class Tab extends BaseTab {
   constructor (props = {}) {
     super()
@@ -14,6 +18,13 @@ class Tab extends BaseTab {
     state.tabs.set(this.id, this)
     this.editorProps = props.editor
     this.update(props)
+    FileListState.tabs.set(this.file.path, {
+      id: this.id,
+      isActive: false,
+      file: this.file,
+      icon: this.icon,
+      title: this.title,
+    })
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
@@ -94,4 +105,4 @@ class TabGroup extends BaseTabGroup {
 }
 
 export default state
-export { Tab, TabGroup }
+export { Tab, TabGroup, FileListState }
