@@ -54,7 +54,7 @@ function createFolderAtPath (path) {
   )
 }
 
-export function openFile ({ path, editor = {}, others = {} }) {
+export function openFile ({ path, editor = {}, others = {}, allGroup = false }) {
   return api.readFile(path)
     .then((data) => {
       FileStore.loadNodeData(data)
@@ -63,7 +63,7 @@ export function openFile ({ path, editor = {}, others = {} }) {
     .then(() => {
       const activeTabGroup = TabStore.getState().activeTabGroup
       const existingTabs = TabStore.findTab(
-        tab => tab.file && tab.file.path === path && tab.tabGroup === activeTabGroup
+        tab => tab.file && tab.file.path === path && (tab.tabGroup === activeTabGroup || allGroup)
       )
       if (existingTabs.length) {
         const existingTab = existingTabs[0]
@@ -82,9 +82,16 @@ export function openFile ({ path, editor = {}, others = {} }) {
 }
 
 const fileCommands =  {
-  'file:open_file': (c) => {
+  'file:open_file': (c) => { // 在当前 tabgroup 中优先打开已有的 tab
     if (typeof c.data === 'string') {
       openFile({ path: c.data })
+    } else {
+      openFile(c.data)
+    }
+  },
+  'file:open_exist_file': (c) => { // 在所有 tabgroup 中优先打开已有的 tab
+    if (typeof c.data === 'string') {
+      openFile({ path: c.data, allGroup: true })
     } else {
       openFile(c.data)
     }
