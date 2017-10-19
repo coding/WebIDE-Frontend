@@ -14,7 +14,7 @@ class TreeNode extends Component {
 
   render () {
     const { node, openNode, selectNode, openContextMenu, onlyDir } = this.props
-    if (!node) return null
+    if (!node || node.parentId === undefined) return null
     if (onlyDir && !node.isDir) return null
     let iconStr = ''
     if (node.isRoot) {
@@ -89,7 +89,7 @@ class TreeNode extends Component {
   }
 
   componentDidUpdate () {
-    if (this.props.node.isFocused) {
+    if (this.props.node.isFocused && this.nodeDOM) {
       this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
     }
   }
