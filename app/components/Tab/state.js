@@ -18,13 +18,7 @@ class Tab extends BaseTab {
     state.tabs.set(this.id, this)
     this.editorProps = props.editor
     this.update(props)
-    FileListState.tabs.set(this.file.path, {
-      id: this.id,
-      isActive: false,
-      file: this.file,
-      icon: this.icon,
-      title: this.title,
-    })
+    this.saveFileList()
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
@@ -52,6 +46,19 @@ class Tab extends BaseTab {
       this.editor = new Editor(props.editor)
     } else {
       this.editor = new Editor(props.editor)
+    }
+    this.saveFileList()
+  }
+
+  @action saveFileList () {
+    if (this.file) {
+      FileListState.tabs.set(this.file.path, {
+        id: this.id,
+        isActive: false,
+        file: this.file,
+        icon: this.icon,
+        title: this.title,
+      })
     }
   }
 

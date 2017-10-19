@@ -21,7 +21,7 @@ class FileList extends Component {
       <div className='file-list-container'>
         {state.tabs.values().map((tab) => {
           return (
-            <div key={tab.id} className={cx('file-list-item', { focus: tab.isActive })} onClick={e => {
+            <div key={tab.file.path} className={cx('file-list-item', { focus: tab.isActive })} onClick={e => {
               e.preventDefault()
               e.stopPropagation()
               this.handleActivate(tab)
