@@ -27,8 +27,15 @@ const nodeToParentDirPath = (node) => {
 
 function createFileWithContent (content) {
   return function createFileAtPath (path) {
+    if (content) {
+      return api.writeFile(path, content)
+        .then(Modal.dismissModal)
+        .then(() => path)
+        .catch(err =>
+          Modal.updateModal({ statusMessage: err.msg }).then(createFileAtPath)
+        )
+    }
     return api.createFile(path, content)
-      .then(() => { if (content) api.writeFile(path, content) })
       .then(Modal.dismissModal)
       .then(() => path)
       // if error, try again.
@@ -139,6 +146,7 @@ const fileCommands =  {
           api.readFile(path).then((data) => {
             FileStore.loadNodeData(data)
             TabStore.updateTab({
+              icon: (path && icons.getClassWithColor(path.split('/').pop())) || 'fa fa-file-text-o',
               id: activeTab.id,
               editor: { filePath: path },
             })
