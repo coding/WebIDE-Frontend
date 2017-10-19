@@ -1,7 +1,7 @@
 {
    "contextMenu": {
-      "newFile": "New File",
-      "newFolder": "New Folder",
+      "newFile": "New File...",
+      "newFolder": "New Folder...",
       "delete": "Delete...",
       "rename": "Rename...",
       "download": "Download",
