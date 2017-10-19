@@ -8,7 +8,7 @@ console.log(`lisitening on PORT ${PORT}`)
 
 const commonHeader = {
   'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': 'http://localhost:8060',
+  'Access-Control-Allow-Origin': 'http://ide.test:8060',
   'Access-Control-Allow-Credentials': true,
   'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-Space-Key'
 }
@@ -16,10 +16,14 @@ const commonHeader = {
 http.createServer((req, res) => {
   if (req.url.startsWith('/packages')) {
     const listsPromises = lists
-    .map(list => axios.get(`${list}/packages`).then(res => Object.assign(res.data[0], { TARGET: list })))
+    .map(list => axios.get(`${list}/packages`)
+    .then(res => Object.assign(res.data[0], { TARGET: list }))
+    .catch(e => null)
+  )
+
     Promise.all(listsPromises)
     .then((values) => {
-      const result = values
+      const result = values.filter(v => v)
       res.writeHead(200, commonHeader)
       res.write(JSON.stringify(result))
       res.end()

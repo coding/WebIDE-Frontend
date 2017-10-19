@@ -1,7 +1,7 @@
 {
    "contextMenu": {
-      "newFile": "新建文件",
-      "newFolder": "新建文件夹",
+      "newFile": "新建文件...",
+      "newFolder": "新建文件夹...",
       "delete": "删除...",
       "rename": "重命名...",
       "download": "下载",

@@ -9,7 +9,8 @@ const items = [
     icon: 'fa fa-file-text-o',
     command: 'file:new_file',
     id: 'filetree_menu_new_file',
-  }, {
+  },
+  {
     name: i18n`fileTree.contextMenu.newFolder`,
     icon: 'fa fa-folder-o',
     command: 'file:new_folder',

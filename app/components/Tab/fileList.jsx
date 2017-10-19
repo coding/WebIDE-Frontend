@@ -6,6 +6,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 
 const state = FileListState
 
+
 @observer
 class FileList extends Component {
   handleActivate (tab) {

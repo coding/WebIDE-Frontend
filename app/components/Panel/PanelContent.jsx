@@ -39,7 +39,7 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_LEFT':
       return (
         <SidePanelContainer side='left'>
-          <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-file-submodule' }} active>
+          <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-file-submodule', weight: 2 }} active>
             <FileTree />
           </SidePanelView>
           <SidePanelView key='working' label={{ text: i18n`panel.left.working`, icon: 'fa fa-folder-open-o' }}>
