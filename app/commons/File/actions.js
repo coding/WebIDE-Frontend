@@ -56,7 +56,14 @@ export const updateFile = registerAction('fs:update', (fileProps) => {
   file.update(fileProps)
 })
 
-export const syncFile = registerAction('fs:sync', (path) => {
+export const syncFile = registerAction('fs:sync', (params) => {
+  let path, encoding
+  if (is.string(params)) {
+    path = params
+  } else {
+    path = params.path
+    encoding = params.encoding
+  }
   const fileNode = state.entities.get(path)
-  if (!fileNode.isDir) return api.readFile(path).then(loadNodeData).then(files => files[0])
+  if (!fileNode.isDir) return api.readFile(path, encoding).then(loadNodeData).then(files => files[0])
 })
