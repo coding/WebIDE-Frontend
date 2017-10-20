@@ -125,6 +125,10 @@ class Editor {
     this.options.mode = modeInfo.mime
   }
 
+  setEncoding (encoding) {
+    return FileStore.syncFile({ path: this.filePath, encoding })
+  }
+
   @action update (props = {}) {
     // simple assignments
     extendObservable(this, props)
