@@ -1,5 +1,27 @@
 import { registerAction } from 'utils/actions'
 import state, { Modal } from './state'
+import modalCache from './modals/modalCache'
+import { addCommand } from '../../commands'
+
+export const MODAL_REGISTER = 'MODAL_REGISTER'
+export const MODAL_REMOVE = 'MODAL_REMOVE'
+
+
+export const modalRegister = registerAction(MODAL_REGISTER,
+  (name, component, command) => ({ name, component, command }),
+  ({ name, component, command }) => {
+    modalCache.set(name, component)
+    if (command && typeof command === 'string') {
+      addCommand({ [command]: () => showModal({ type: name, position: 'center ' }) })
+    }
+    if (command && typeof command === 'object') {
+      addCommand(command)
+    }
+  })
+
+export const modalRemove = registerAction(MODAL_REMOVE, (name) => {
+  modalCache.delete(name)
+})
 
 const modalPayloadCreator = (modalConfig, content) => {
   switch (typeof modalConfig) {
