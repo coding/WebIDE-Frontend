@@ -7,6 +7,7 @@ import { emitter, E } from 'utils'
 import TerminalManager from './terminal-client';
 import * as TabActions from 'components/Tab/actions';
 import SettingState from 'components/Setting/state'
+import TerminalState from './state';
 
 class Term extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Term extends Component {
   componentDidMount() {
     var _this = this;
     var terminalManager = new TerminalManager()
+    TerminalState.terminalManager = terminalManager
     const uiTheme = SettingState.settings.appearance.ui_theme.value
     let themeName = 'terminal_basic'
     if (uiTheme === 'dark') {
