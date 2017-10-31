@@ -23,7 +23,11 @@ export const loadNodeData = registerAction('fs:load_node_data',
     return nodePropsList.map((nodeProps) => {
       const curNode = state.entities.get(nodeProps.path)
       if (curNode) {
-        curNode.update(nodeProps)
+        const curNodeTime = new Date(curNode.lastModified)
+        const newNodeTime = new Date(nodeProps.lastModified)
+        if (newNodeTime.getTime() > curNodeTime.getTime() || !curNodeTime.content) {
+          curNode.update(nodeProps)
+        }
         return curNode
       }
       const newNode = new FileNode(nodeProps)
