@@ -154,10 +154,11 @@ const fileCommands =  {
         })
     } else {
       api.writeFile(activeTab.file.path, content)
-        .then(() => {
+        .then((res) => {
           FileStore.updateFile({
             path: activeTab.file.path,
             isSynced: true,
+            lastModified: res.lastModified,
             content,
           })
         })
