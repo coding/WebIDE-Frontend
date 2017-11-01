@@ -40,11 +40,12 @@ export default class EncodingWidget extends Component {
   render () {
     const { editor = { file: {} } } = this.props || {}
     const encodingValue = editor.file.encoding || 'utf8'
+    const { labelLong = 'utf8' } = SUPPORTED_ENCODINGS[encodingValue]
     return (
       <div className='editor-widget'
         onClick={(e) => { this.toggleActive(true, true) }}
       >
-        <span>{SUPPORTED_ENCODINGS[encodingValue].labelLong}</span>
+        <span>{labelLong}</span>
         {this.state.isActive ?
           <div className='mode-widget'>
             <Menu className={cx('bottom-up to-left', { active: this.state.isActive })}
