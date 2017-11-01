@@ -38,11 +38,11 @@ export default class EncodingWidget extends Component {
   }
 
   render () {
-    const editor = this.props.editor || { file: {} }
+    const { editor = { file: {} } } = this.props || {}
     const encodingValue = editor.file.encoding || 'utf8'
     return (
       <div className='editor-widget'
-        onClick={e => { this.toggleActive(true, true) }}
+        onClick={(e) => { this.toggleActive(true, true) }}
       >
         <span>{SUPPORTED_ENCODINGS[encodingValue].labelLong}</span>
         {this.state.isActive ?
