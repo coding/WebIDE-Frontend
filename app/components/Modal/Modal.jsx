@@ -69,7 +69,7 @@ class Modal extends Component {
         <TargetComponent {...modalConfig} />
       </div>)
     }
-    return content
+    return <div className='modal'>{content}</div>
   }
 
   render () {
