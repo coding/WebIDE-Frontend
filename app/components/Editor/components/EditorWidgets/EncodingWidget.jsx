@@ -38,9 +38,8 @@ export default class EncodingWidget extends Component {
   }
 
   render () {
-    const editor = this.props.editor
+    const editor = this.props.editor || { file: {} }
     const encodingValue = editor.file.encoding || 'utf8'
-
     return (
       <div className='editor-widget'
         onClick={e => { this.toggleActive(true, true) }}
