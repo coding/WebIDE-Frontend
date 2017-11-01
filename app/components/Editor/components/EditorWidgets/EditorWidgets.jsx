@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react'
 import ModeWidget from './ModeWidget'
 import LineWidget from './LineWidget'
 import LinterWidget from './LinterWidget'
+import EncodingWidget from './EncodingWidget'
 
 @inject(({ EditorTabState }) => {
   const activeTab = EditorTabState.activeTab
@@ -17,6 +18,7 @@ class EditorWidgets extends Component {
     return (
       <div className='status-bar-editor-widgets'>
         <LineWidget editor={editor} />
+        {editor.file && <EncodingWidget editor={editor} />}
         <ModeWidget editor={editor} />
         {editor.options.lint && <LinterWidget editor={editor} />}
       </div>
