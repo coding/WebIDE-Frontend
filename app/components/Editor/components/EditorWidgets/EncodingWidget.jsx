@@ -40,7 +40,8 @@ export default class EncodingWidget extends Component {
   render () {
     const { editor = { file: {} } } = this.props || {}
     const encodingValue = editor.file.encoding || 'utf8'
-    const { labelLong = 'utf8' } = SUPPORTED_ENCODINGS[encodingValue]
+    const { labelLong = encodingValue } = SUPPORTED_ENCODINGS[encodingValue] || {}
+    const items = this.makeModeMenuItems()
     return (
       <div className='editor-widget'
         onClick={(e) => { this.toggleActive(true, true) }}
@@ -53,7 +54,7 @@ export default class EncodingWidget extends Component {
                 position: 'relative',
                 border: 0,
               }}
-              items={this.makeModeMenuItems()}
+              items={items}
               deactivate={this.toggleActive.bind(this, false)}
             />
           </div>
