@@ -1,20 +1,17 @@
 import flattenDeep from 'lodash/flattenDeep'
 import { registerAction } from 'utils/actions'
 import is from 'utils/is'
-import { action } from 'mobx'
+import { action, when } from 'mobx'
 import api from 'backendAPI'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
-  return api.fetchPath(path).then((nodePropsList) => {
-    return Promise.all(nodePropsList.map((nodeProps) => {
-      if (nodeProps.isDir && nodeProps.directoriesCount === 1 && nodeProps.filesCount === 0) {
-        return fetchPath(nodeProps.path).then(data => [nodeProps].concat(data))
-      } else {
-        return Promise.resolve(nodeProps)
-      }
-    })).then(flattenDeep)
-  })
+  return api.fetchPath(path).then(nodePropsList => Promise.all(nodePropsList.map((nodeProps) => {
+    if (nodeProps.isDir && nodeProps.directoriesCount === 1 && nodeProps.filesCount === 0) {
+      return fetchPath(nodeProps.path).then(data => [nodeProps].concat(data))
+    }
+    return Promise.resolve(nodeProps)
+  })).then(flattenDeep))
 }
 
 export const loadNodeData = registerAction('fs:load_node_data',
@@ -69,5 +66,12 @@ export const syncFile = registerAction('fs:sync', (params) => {
     encoding = params.encoding
   }
   const fileNode = state.entities.get(path)
+  if (!fileNode) {
+    return when(() => state.entities.get(path), () => {
+      if (!state.entities.get(path).isDir) {
+        return api.readFile(path, encoding).then(loadNodeData).then(files => files[0])
+      }
+    })
+  }
   if (!fileNode.isDir) return api.readFile(path, encoding).then(loadNodeData).then(files => files[0])
 })
