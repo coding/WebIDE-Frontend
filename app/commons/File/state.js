@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
 import config from 'config'
+import { syncFile } from './actions'
 
 const ROOT_PATH = ''
 const nodeSorter = (a, b) => {
@@ -141,5 +142,15 @@ state.entities.set(ROOT_PATH, new FileNode({
   isDir: true,
 }))
 
+
+function hydrate (json) {
+  const { entities } = json
+  // hydrate encodings
+  Object.keys(entities).filter(key => entities[key].encoding)
+  .forEach((key) => {
+    syncFile({ path: key, encoding: entities[key].encoding })
+  })
+}
+
 export default state
-export { state, FileNode }
+export { state, FileNode, hydrate }
