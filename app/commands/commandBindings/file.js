@@ -3,10 +3,12 @@ import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as Modal from '../../components/Modal/actions'
 import TabStore from 'components/Tab/store'
+import FileState from 'commons/File/state'
 import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
+import { toJS, when } from 'mobx'
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -61,8 +63,25 @@ function createFolderAtPath (path) {
   )
 }
 
-export function openFile ({ path, editor = {}, others = {}, allGroup = false }) {
-  return api.readFile(path)
+
+export function openFile (obj) {
+  // 做一些encoding的调度
+  if (!FileState.initData.size) {
+    when(() => FileState.initData.size && FileState.initData.get(obj.path), () => {
+      const { encoding } = FileState.initData.get(obj.path) || {}
+      openFileWithEncoding({ ...obj, encoding })
+      FileState.initData.set(obj.path, {})
+    })
+  } else {
+    const { encoding } = FileState.initData.get(obj.path) || {}
+    openFileWithEncoding({ ...obj, encoding })
+    FileState.initData.set(obj.path, {})
+  }
+}
+
+export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup = false, encoding }) {
+  const { encoding: currentEncoding } = FileStore.get(path) || {}
+  return api.readFile(path, encoding || currentEncoding)
     .then((data) => {
       FileStore.loadNodeData(data)
       return data
@@ -88,7 +107,7 @@ export function openFile ({ path, editor = {}, others = {}, allGroup = false }) 
     })
 }
 
-const fileCommands =  {
+const fileCommands = {
   'file:open_file': (c) => { // 在当前 tabgroup 中优先打开已有的 tab
     if (typeof c.data === 'string') {
       openFile({ path: c.data })
