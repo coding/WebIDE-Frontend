@@ -16,7 +16,7 @@ const nodeSorter = (a, b) => {
 
 const state = observable({
   entities: observable.map(),
-  initData: observable.map(),
+  initData: observable.map({ _init: true }),
   get root () {
     return this.entities.get(ROOT_PATH)
   },

@@ -66,8 +66,8 @@ function createFolderAtPath (path) {
 
 export function openFile (obj) {
   // 做一些encoding的调度
-  if (!FileState.initData.size) {
-    when(() => FileState.initData.size && FileState.initData.get(obj.path), () => {
+  if (FileState.initData.get('_init')) {
+    when(() => !FileState.initData.get('_init'), () => {
       const { encoding } = FileState.initData.get(obj.path) || {}
       openFileWithEncoding({ ...obj, encoding })
       FileState.initData.set(obj.path, {})
