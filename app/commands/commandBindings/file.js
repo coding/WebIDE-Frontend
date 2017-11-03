@@ -70,12 +70,12 @@ export function openFile (obj) {
     when(() => FileState.initData.size && FileState.initData.get(obj.path), () => {
       const { encoding } = FileState.initData.get(obj.path) || {}
       openFileWithEncoding({ ...obj, encoding })
-      FileState.initData.delete(obj.path)
+      FileState.initData.set(obj.path, {})
     })
   } else {
     const { encoding } = FileState.initData.get(obj.path) || {}
     openFileWithEncoding({ ...obj, encoding })
-    FileState.initData.delete(obj.path)
+    FileState.initData.set(obj.path, {})
   }
 }
 
