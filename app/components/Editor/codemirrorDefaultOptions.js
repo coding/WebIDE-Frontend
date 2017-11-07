@@ -9,6 +9,7 @@ const options = {
   dragDrop: false,
   trimTrailingWhitespace: undefined,
   insertFinalNewline: undefined,
+  smartIndent: false,
   extraKeys: {
     Tab: function betterTab (cm) {
       if (cm.somethingSelected()) {
