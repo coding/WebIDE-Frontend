@@ -21,8 +21,11 @@ class BaseCodeEditor extends Component {
     // `setSize()` and `refresh()` are required to correctly render cm
     cm.setSize('100%', '100%')
     cm.refresh()
-
-    cm.focus()
+    const scrollLine = this.editor.scrollLine
+    setTimeout(() => {
+      cm.scrollIntoView({ line: scrollLine, ch: 0 })
+      cm.focus()
+    }, 0)
   }
 
   render () {

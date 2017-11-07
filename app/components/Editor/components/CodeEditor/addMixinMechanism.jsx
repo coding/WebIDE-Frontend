@@ -46,7 +46,9 @@ function preprocessMixin (mixin) {
         this.cmRemoveEventListeners = addEventListeners(this) || noop
       },
       componentWillUnmount () {
-        this.cmRemoveEventListeners()
+        if (this.cmRemoveEventListeners) {
+          this.cmRemoveEventListeners()
+        }
         oComponentWillUnmount.call(this)
       },
     }
@@ -96,8 +98,7 @@ function addMixinMechanism (Class, SuperClass) {
       if (is.function(superLifecycle)) {
         superLifecycle.call(this, ...args)
       }
-
-      if (is.function(oLifecycle)) {
+      if (is.function(oLifecycle) && oLifecycle !== superLifecycle) {
         oLifecycle.call(this, ...args)
       }
 

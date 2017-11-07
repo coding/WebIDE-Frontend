@@ -58,6 +58,12 @@ export default {
         const { editor } = this.props
         TabStore.activateTab(editor.tab.id)
       },
+
+      scroll: (cm) => {
+        const { editor } = this.props
+        const { top, clientHeight } = cm.getScrollInfo()
+        editor.scrollLine = Math.floor((top + clientHeight) / cm.defaultTextHeight()) - 1
+      },
     }
   },
 }
