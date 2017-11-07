@@ -3,6 +3,8 @@ import localforage from 'localforage'
 import config from './config'
 import { hydrate as editorTabHydrate } from './components/Tab/actions'
 import { hydrate as settingsHydrate } from './components/Setting/state'
+import fileState, { hydrate as fileHydrate } from './commons/File/state'
+
 
 const mainStore = localforage.createInstance({
   name: 'mainProject'
@@ -27,6 +29,7 @@ function persistStore (store, transform) {
           if (store) {
             autoRehydrate(store)
           }
+          fileState.initData.set('_init', false)
           config.hasRehydrated = true
         })
       }
@@ -43,8 +46,9 @@ export const clearPersist = (key) => {
 }
 
 const hydrateAction = {
+  FileState: fileHydrate,
   EditorTabState: editorTabHydrate,
-  SettingState: settingsHydrate
+  SettingState: settingsHydrate,
 }
 
 function autoRehydrate (store) {

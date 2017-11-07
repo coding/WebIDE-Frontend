@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
 import config from 'config'
+import { syncFile } from './actions'
 
 const ROOT_PATH = ''
 const nodeSorter = (a, b) => {
@@ -15,6 +16,7 @@ const nodeSorter = (a, b) => {
 
 const state = observable({
   entities: observable.map(),
+  initData: observable.map({ _init: true }),
   get root () {
     return this.entities.get(ROOT_PATH)
   },
@@ -141,5 +143,16 @@ state.entities.set(ROOT_PATH, new FileNode({
   isDir: true,
 }))
 
+function hydrate (json) {
+  const { entities } = json
+  // hydrate encodings
+  Object.keys(entities).filter(key => entities[key].encoding)
+  .forEach((key) => {
+    state.initData.set(key, {
+      encoding: entities[key].encoding
+    })
+  })
+}
+
 export default state
-export { state, FileNode }
+export { state, FileNode, hydrate }
