@@ -16,7 +16,10 @@ let TabLabel = observer(({tab, removeTab, activateTab, openContextMenu}) => {
       data-droppable='TABLABEL'
       draggable='true'
       onClick={e => activateTab(tab.id)}
-      onDragStart={e => dnd.dragStart({ type: 'TAB', id: tab.id }) }
+      onDragStart={e => {
+        // Chrome 下直接执行 dragStart 会导致立即又出发了 window.dragend, 添加 timeout 以避免无法拖动的情况
+        setTimeout(() => dnd.dragStart({ type: 'TAB', id: tab.id }), 0)
+      }}
       onContextMenu={e => openContextMenu(e, tab)}
     >
       {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div>: null}
