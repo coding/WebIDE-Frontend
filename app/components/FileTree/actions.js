@@ -78,10 +78,14 @@ export const closeContextMenu = contextMenuStore.closeContextMenu
 const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep = false) {
   if (node.isDir) {
     if (!node.isLoaded) {
+      node.isLoading = true
       FileStore.fetchPath(node.path)
         .then(data => FileStore.loadNodeData(data))
         .then(() => toggleNodeFold(node, shouldBeFolded, deep))
-        .then(() => node.isLoaded = true)
+        .then(() => {
+          node.isLoaded = true
+          node.isLoading = false
+        })
     } else {
       toggleNodeFold(node, shouldBeFolded, deep)
     }

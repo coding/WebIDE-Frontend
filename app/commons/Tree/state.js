@@ -37,6 +37,7 @@ function TreeNodeScope () {
 
   @observable _depth = undefined
   @observable isFolded = true
+  @observable isLoading = false
   @observable isFocused = false
   @observable isHighlighted = false
   @observable index = 0

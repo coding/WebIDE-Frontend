@@ -52,13 +52,14 @@ class TreeNode extends Component {
           onClick={e => selectNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
-          <span className="filetree-node-arrow"
+          {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
+          {!node.isLoading && <span className="filetree-node-arrow"
             onClick={e => openNode(node, null, e.altKey)}>
             {node.isDir && <i className={cx({
               'fa fa-angle-right': node.isFolded,
               'fa fa-angle-down': !node.isFolded,
             })}></i>}
-          </span>
+          </span>}
           <span className="filetree-node-icon">
             <i className={iconStr}></i>
           </span>
@@ -72,16 +73,19 @@ class TreeNode extends Component {
           <ReactCSSTransitionGroup
             transitionName='filetree'
             transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}>
-            {!node.isFolded && node.children.map(childNode =>
-              <TreeNode key={childNode.id}
-                node={childNode}
-                openNode={openNode}
-                selectNode={selectNode}
-                openContextMenu={openContextMenu}
-                onlyDir={onlyDir}
-              />
-            )}
+            transitionLeaveTimeout={300}
+          >
+            {!node.isFolded && node.children.length > 0 && <div>
+              {node.children.map(childNode =>
+                <TreeNode key={childNode.id}
+                  node={childNode}
+                  openNode={openNode}
+                  selectNode={selectNode}
+                  openContextMenu={openContextMenu}
+                  onlyDir={onlyDir}
+                />
+              )}
+            </div>}
           </ReactCSSTransitionGroup>
         </div>}
       </div>

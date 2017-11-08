@@ -30,6 +30,14 @@ $filetree-indent = 1em;
       max-height: 500px;
     }
   }
+  // .filetree-appear {
+  //   max-height: 0;
+  //   overflow: hidden;
+  //   transition: max-height .5s ease-in;
+  //   &.filetree-appear-active {
+  //     max-height: 500px;
+  //   }
+  // }
   .filetree-leave {
     max-height: 500px;
     overflow: hidden;
@@ -61,6 +69,9 @@ $filetree-indent = 1em;
       font-weight: normal;
       cursor: pointer;
     }
+    .fa-spinner {
+      margin-right: 2px;
+    }
   }
 }
 
@@ -68,7 +79,8 @@ $filetree-indent = 1em;
   width: $filetree-indent;
   cursor: pointer;
   text-align: center;
-  margin-right: 2px;
+  margin-right: 6px;
+  padding-left: 4px;
 }
 
 .filetree-node-icon {
