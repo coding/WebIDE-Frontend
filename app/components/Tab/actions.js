@@ -117,7 +117,7 @@ export const insertTabBefore = registerAction(TAB_INSERT_AT,
     const anchorTab = state.tabs.get(beforeTabId)
     const prev = anchorTab.prev
     const insertIndex = (prev) ? (anchorTab.index + prev.index) / 2 : -1
-    tab.tabGroup.addTab(tab, insertIndex)
+    anchorTab.tabGroup.addTab(tab, insertIndex)
   }
 )
 

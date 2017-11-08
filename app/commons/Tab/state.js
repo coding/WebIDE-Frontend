@@ -101,6 +101,8 @@ function TabScope () {
     const activeTab = state.tabs.get(this.activeTabId)
     if (activeTab && activeTab.tabGroupId === this.id) {
       return activeTab
+    } else if (this.tabs.length > 0) {
+      return this.tabs[0]
     }
     return null
   }
@@ -116,9 +118,34 @@ function TabScope () {
   @mapEntity('tabs')
   @action addTab (tab, insertIndex = this.tabs.length) {
     if (!tab) tab = new this.constructor.Tab()
-    if (tab.index === undefined) {
-      tab.index = insertIndex
+    if (tab.tabGroupId === this.id) {
+      if (tab.index === undefined) {
+        tab.index = insertIndex
+      } else if (tab.index === insertIndex) {
+        return
+      } else {
+        this.tabs.map((tabItem) => {
+          if (tab.index > insertIndex) {
+            if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
+              tabItem.index ++
+            }
+          } else {
+            if (tabItem.index <= insertIndex && tabItem.index > tab.index) {
+              tabItem.index --
+            }
+          }
+        })
+        tab.index = insertIndex > 0 ? insertIndex : 0
+      }
+    } else {
+      this.tabs.map((tabItem) => {
+        if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
+          tabItem.index ++
+        }
+      })
+      tab.index = insertIndex > 0 ? insertIndex : 0
     }
+    
     tab.tabGroupId = this.id
     tab.activate()
     return tab
