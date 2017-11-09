@@ -5,6 +5,8 @@ import MarkdownEditor from './components/MarkdownEditor'
 import ImageEditor from './components/ImageEditor'
 import UnknownEditor from './components/UnknownEditor'
 import WelcomeEditor from './components/WelcomeEditor'
+import HtmlEditor from './components/HtmlEditor'
+import config from '../../config'
 
 const EditorWrapper = observer(({ tab }) => {
   const { editor } = tab
@@ -15,6 +17,11 @@ const EditorWrapper = observer(({ tab }) => {
   // keep using the existing instance.
   const key = `editor_${file.path}`
   switch (editorType) {
+    case 'htmlEditor':
+      if (config.staticServingToken) {
+        return React.createElement(HtmlEditor, { editor, key })
+      }
+      return React.createElement(CodeEditor, { editor, key })
     case 'default':
       return React.createElement(CodeEditor, { editor, key })
     case 'editorWithPreview':

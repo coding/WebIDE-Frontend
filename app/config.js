@@ -9,6 +9,7 @@ const config = observable({
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
   packageServer: getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
   wsURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
+  staticServingURL: getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
   runMode: __RUN_MODE__,
   isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
@@ -16,7 +17,17 @@ const config = observable({
   fileExcludePatterns: ['/.git', '/.coding-ide'],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
-  estimatedMap: observable.map({})
+  estimatedMap: observable.map({}),
+  get previewURL () {
+    if (config.staticServingToken && config.spaceKey) {
+      return config.staticServingURL.replace(
+        '{space-key}', config.spaceKey
+      ).replace(
+        '{access-token}', config.staticServingToken
+      )
+    }
+    return ''
+  }
 })
 
 autorun(() => {
