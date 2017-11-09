@@ -192,6 +192,8 @@ class Editor {
         type = 'imageEditor'
       } else if (getTabType(this.file) === 'UNKNOWN') {
         type = 'unknownEditor'
+      } else if (getTabType(this.file) === 'HTML') {
+        type = 'htmlEditor'
       }
     }
     if (typeDetect(this.file.name, 'md')) {

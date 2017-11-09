@@ -1,30 +1,27 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
-import marked from 'marked'
 import { observer } from 'mobx-react'
 import CodeEditor from '../CodeEditor'
 import state from './state'
 import * as actions from './actions'
+import config from '../../../../config'
+import htmlMixin from './htmlMixin'
 
+CodeEditor.use(htmlMixin)
 
-marked.setOptions({
-  highlight: (code) => {
-    require('highlight.js/styles/github-gist.css')
-    return require('highlight.js').highlightAuto(code).value
-  },
-})
-
-const PreviewEditor = (content) => {
-  const makeHTMLComponent = html => React.DOM.div({ dangerouslySetInnerHTML: { __html: html } })
+const PreviewEditor = observer(({ url }) => {
   return (
-    <div name='markdown_preview' className='markdown content'>
-      { makeHTMLComponent(marked(content)) }
-    </div>)
-}
+    <div className='preview-iframe'>
+      <iframe src={url} />
+      {state.isResizing && <div className='preview-iframe-msk'></div> }
+    </div>
+  )
+})
 
 const startResize = (sectionId, e, actions) => {
   if (e.button !== 0) return // do nothing unless left button pressed
       e.preventDefault()
+      state.isResizing = true
       let oX = e.pageX // origin x-distince
       let oY = e.pageY // origin y-distince
       const handleResize = (e) => {
@@ -38,11 +35,12 @@ const startResize = (sectionId, e, actions) => {
       }
 
   const stopResize = () => {
-        window.document.removeEventListener('mousemove', handleResize)
-        window.document.removeEventListener('mouseup', stopResize)
-      }
+    window.document.removeEventListener('mousemove', handleResize)
+    window.document.removeEventListener('mouseup', stopResize)
+    state.isResizing = false
+  }
   window.document.addEventListener('mousemove', handleResize)
-      window.document.addEventListener('mouseup', stopResize)
+  window.document.addEventListener('mouseup', stopResize)
 }
 
 const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions }) => {
@@ -54,10 +52,9 @@ const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions }) => 
 }
 
 @observer
-class MarkdownEditor extends Component {
-
+class HtmlEditor extends Component {
   render () {
-    const { leftGrow, rightGrow, showBigSize, showPreview } = state
+    const { leftGrow, rightGrow, showBigSize, showPreview, previewUniqueId } = state
     const { editor } = this.props
 
     return (<div
@@ -117,27 +114,28 @@ class MarkdownEditor extends Component {
         {
         showPreview ? (
           <div
-          name='preview'
-          id='editor_preview_preview'
-          style={{
-            flexGrow: rightGrow,
-            flexShrink: 0,
-            flexBasis: 0,
-          }}
-        >
-          {PreviewEditor(editor.file.content)}
-        </div>) : null
+            className='htmlPreview'
+            name='preview'
+            id='editor_html_preview'
+            style={{
+              flexGrow: rightGrow,
+              flexShrink: 0,
+              flexBasis: 0,
+            }}
+          >
+            {<PreviewEditor
+              url={`${config.previewURL}${editor.file.path}?r=${previewUniqueId}`}
+            />}
+          </div>) : null
       }
       </div>
     </div>
     )
-
   }
 }
 
-MarkdownEditor.PropTypes = {
+HtmlEditor.PropTypes = {
   tab: PropTypes.object,
-  content: PropTypes.string,
 }
 
-export default MarkdownEditor
+export default HtmlEditor
