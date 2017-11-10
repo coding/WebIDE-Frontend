@@ -1,7 +1,5 @@
 export default function getTabType (node) {
-  if (node.contentType === 'text/html') {
-    return 'HTML'
-  } else if (
+  if (
     /^text\/[^/]+/.test(node.contentType) || (
       node.contentType === 'application/xml'
     ) || (
