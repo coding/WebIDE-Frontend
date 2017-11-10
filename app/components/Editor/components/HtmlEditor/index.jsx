@@ -1,13 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
+import { autorun } from 'mobx'
 import { observer } from 'mobx-react'
 import CodeEditor from '../CodeEditor'
 import state from './state'
 import * as actions from './actions'
 import config from '../../../../config'
-import htmlMixin from './htmlMixin'
+// import htmlMixin from './htmlMixin'
+import uniqueId from 'lodash/uniqueId'
 
-CodeEditor.use(htmlMixin)
+// CodeEditor.use(htmlMixin)
 
 const PreviewEditor = observer(({ url }) => {
   return (
@@ -53,6 +55,14 @@ const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions }) => 
 
 @observer
 class HtmlEditor extends Component {
+  componentDidMount () {
+    autorun(() => {
+      if (this.props.editor.file.isSynced) {
+        state.previewUniqueId = uniqueId()
+      }
+    })
+  }
+
   render () {
     const { leftGrow, rightGrow, showBigSize, showPreview, previewUniqueId } = state
     const { editor } = this.props

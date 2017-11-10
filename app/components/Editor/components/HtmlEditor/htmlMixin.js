@@ -1,5 +1,4 @@
 import state from './state'
-import uniqueId from 'lodash/uniqueId'
 import debounce from 'lodash/debounce'
 
 export default {
@@ -7,8 +6,7 @@ export default {
   getEventListeners () {
     return {
       change: debounce((cm) => {
-        state.previewUniqueId = uniqueId()
-      }, 200),
+      }, 1200),
     }
   },
   componentWillMount () {},
