@@ -192,11 +192,11 @@ class Editor {
         type = 'imageEditor'
       } else if (getTabType(this.file) === 'UNKNOWN') {
         type = 'unknownEditor'
-      } else if (getTabType(this.file) === 'HTML') {
-        type = 'htmlEditor'
       }
     }
-    if (typeDetect(this.file.name, 'md')) {
+    if (this.file.contentType === 'text/html') {
+      type = 'htmlEditor'
+    } else if (typeDetect(this.file.name, 'md')) {
       type = 'editorWithPreview'
     }
     if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
@@ -207,7 +207,7 @@ class Editor {
 
   @computed
   get isCM () {
-    return this.editorType === 'default' || this.editorType === 'editorWithPreview'
+    return this.editorType === 'default' || this.editorType === 'editorWithPreview' || this.editorType === 'htmlEditor'
   }
 
   disposers = []
