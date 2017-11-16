@@ -42,7 +42,8 @@ export const transform = createTransformer(store => ({
   SettingState: toJS(store.SettingState),
 }))
 
-persistStore(store, transform)
+export const persistTask = () => persistStore(store, transform)
+
 
 autorun(() => {
   if (store.debug) {
