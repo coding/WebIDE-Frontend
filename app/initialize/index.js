@@ -9,6 +9,8 @@ import { loadPackagesByType, mountPackagesByType } from '../components/Plugins/a
 import CodingSDK from '../CodingSDK'
 import state from './state'
 import pluginUrls from '../../.plugins.json'
+import { persistTask } from '../mobxStore'
+
 
 function closestTo (arr, key, isPrev) {
   const offsetIndex = isPrev ? -1 : 1
@@ -76,6 +78,11 @@ async function initialize () {
 
   await step(`[${stepNum++}] mount required package`, () => {
     mountPackagesByType('Required')
+    return true
+  })
+
+  await step(`[${stepNum++}] persist Store`, () => {
+    persistTask()
     return true
   })
 

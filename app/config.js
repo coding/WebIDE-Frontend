@@ -19,7 +19,7 @@ const config = observable({
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
   get previewURL () {
-    if (config.staticServingToken && config.spaceKey) {
+    if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(
         '{space-key}', config.spaceKey
       ).replace(
