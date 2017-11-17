@@ -8,6 +8,8 @@ import * as Modal from './Modal'
 import * as Tab from './Tab'
 import * as Notification from './Notification'
 import * as FileTree from './FileTree'
+import * as Tooltip from './Tooltip'
+
 
 export {
   Accordion,
@@ -20,4 +22,5 @@ export {
   MenuBar,
   Notification,
   FileTree,
+  Tooltip
 }
