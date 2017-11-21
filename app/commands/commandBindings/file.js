@@ -93,6 +93,9 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
       )
       if (existingTabs.length) {
         const existingTab = existingTabs[0]
+        if (editor.gitBlame) {
+          existingTab.editor.gitBlame = editor.gitBlame
+        }
         existingTab.activate()
       } else {
         TabStore.createTab({
@@ -178,7 +181,7 @@ const fileCommands = {
             path: activeTab.file.path,
             isSynced: true,
             lastModified: res.lastModified,
-            content,
+            // content,
           })
         })
     }

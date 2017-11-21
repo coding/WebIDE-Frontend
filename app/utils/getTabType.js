@@ -10,7 +10,9 @@ export default function getTabType (node) {
     if (node.contentType === 'image/vnd.adobe.photoshop') {
       return 'UNKNOWN'
     }
-    return 'IMAGE'
+    if (node.contentType === 'image/jpeg' || node.contentType === 'image/png' || node.contentType === 'image/bmp' || node.contentType === 'image/gif') {
+      return 'IMAGE'
+    }
   }
   // Unknown
   return 'UNKNOWN'
