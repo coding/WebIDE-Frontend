@@ -15,5 +15,9 @@
    "deleteMessage": "You're trying to delete {file}",
    "deleteButton": "Delete",
    "overwriteButton": "Overwrite",
-   "totalSelected": "{length} carets ({count} characters selected)"
+   "totalSelected": "{length} carets ({count} characters selected)",
+   "fileToLarge": "Filesize is limit to {filesize} MB",
+   "uploading": "Uploading",
+   "uploadSucceed": "Upload succeed",
+   "uploadFailed": "Upload failed"
 }

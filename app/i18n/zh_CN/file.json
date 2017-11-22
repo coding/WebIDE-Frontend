@@ -15,5 +15,9 @@
    "deleteMessage": "你正在删除 {file}",
    "deleteButton": "删除",
    "overwriteButton": "覆盖",
-   "totalSelected": "{length} 光标 (已选中 {count} 个字符)"
+   "totalSelected": "{length} 光标 (已选中 {count} 个字符)",
+   "fileToLarge": "文件不能超过 {filesize} MB",
+   "uploading": "正在上传",
+   "uploadSucceed": "上传完成",
+   "uploadFailed": "上传失败"
 }

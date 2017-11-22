@@ -26,6 +26,8 @@ export function uploadFile (path, file, option) {
   formdata.append('files', file, file.name)
   request.upload(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, formdata, {
     onUploadProgress: option.onUploadProgress
+  }).catch((res) => {
+    option.onUploadFailed()
   })
 }
 
