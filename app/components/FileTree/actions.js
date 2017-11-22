@@ -12,6 +12,11 @@ import dispatchCommand from 'commands/dispatchCommand'
 import { getTabType } from 'utils'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
+import statusBarState from '../StatusBar/state'
+import { notify, NOTIFY_TYPE } from '../Notification/actions'
+
+const MAX_FILE_SIZE_MB = 10
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024
 
 export const initializeFileTree = registerAction('filetree:init', () => {
   FileStore.fetchProjectRoot()
@@ -120,13 +125,24 @@ export const uploadFilesToPath = (files, path) => {
   const node = state.entities.get(path)
   const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
   _(files).forEach((file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      notify({
+        notifyType: NOTIFY_TYPE.ERROR,
+        message: i18n`file.fileToLarge${{ filesize: MAX_FILE_SIZE_MB }}`
+      })
+      return
+    }
     api.uploadFile(targetDirPath, file, {
       onUploadProgress: (progressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        // updateUploadProgress(percentCompleted)
-        // if (percentCompleted === 100) {
-        //   setTimeout(() => updateUploadProgress(''), 3000)
-        // }
+        statusBarState.setFileUploadInfo({ path: file.name, info: { percentCompleted, size: file.size } })
+      },
+      onUploadFailed: () => {
+        statusBarState.removeFileUploadInfo({ path: file.name })
+        notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: i18n.get('file.uploadFailed') + `: ${file.name}`,
+        })
       }
     })
   })
