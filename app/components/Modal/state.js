@@ -26,7 +26,7 @@ class Modal {
       resolve = rsv
       reject = rjt
     })
-    this.content = content
+    this.content = { ...this.content, ...content }
     this.meta = { promise, resolve, reject }
   }
 }

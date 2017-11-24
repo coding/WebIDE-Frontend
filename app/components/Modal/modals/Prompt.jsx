@@ -28,7 +28,10 @@ class Prompt extends Component {
           placeholder={this.props.placeholder}
         />
         { content.statusMessage ?
-          <div className='message'>{content.statusMessage}</div>
+          <div className='message message-info'>
+            <i className="fa fa-info-circle" aria-hidden="true"></i>
+            {content.statusMessage}
+          </div>
         : null }
       </div>
     )
