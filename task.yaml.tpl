@@ -1,14 +1,12 @@
 apps:
 - script   : npm
   name     : 'main-project'
-  cwd: /Users/zhengxinqi/mycodingjob/webide/WebIDE-Frontend
   args: start
   exec_mode: fork_mode
   exec_interpreter: node
 
 - script   : npm
   name     : 'main-packageList'
-  cwd: /Users/zhengxinqi/mycodingjob/webide/WebIDE-Frontend
   args: run packageList
   exec_mode: fork_mode
   exec_interpreter: node

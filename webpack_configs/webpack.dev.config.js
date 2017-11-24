@@ -1,4 +1,5 @@
 const webpack = require('webpack')
+const path = require('path')
 const merge = require('webpack-merge')
 const str = JSON.stringify
 const commonConfig = require('./common.config.js')
@@ -10,14 +11,16 @@ const fs = require('fs')
 const YAML = require('yamljs')
 
 let getPluginsPorts = ''
+const TASK_YAML = path.resolve(__dirname, '../task.yaml')
 
 try {
-  const data = fs.readFileSync('../task.yaml', 'utf-8')
+  const data = fs.readFileSync(TASK_YAML, 'utf-8')
   getPluginsPorts = YAML.parse(data).apps
   .filter(task => task.name && task.name.split('-')[0] === 'plugin')
   .map(task => task.env ? task.env.PORT || 4000 : 4000)
   console.log(`find ${getPluginsPorts.length} dev ports`, getPluginsPorts.join(','))
 } catch (e) {
+  console.error(e)
 }
 
 const reactHotLoaderPrependEntries = [

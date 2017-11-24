@@ -20,16 +20,23 @@ By design a "WebIDE" is supposed to run on a _server_ and accessed by web, thus 
 
 ## Development
 
-To start development on this repo, run:
+To start development on this repo, 
+first set task.yaml: cp from task.yaml.tpl
+
+Set .env
+
+run:
 ```
 yarn
-yarn start
+npm -g i pm2
+yarn pm2
 ```
 
 If you insist that you don't want yarn, well, you can still run:
 ```
 npm install
-npm start
+npm -g i pm2
+npm run pm2
 ```
 
 If ever encountered any problem, double check to ensure your node version is at v6.x with `node -v`, and re-run `yarn`(`npm install`) to update dependencies before you report any issue.
