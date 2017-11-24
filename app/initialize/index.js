@@ -8,8 +8,8 @@ import i18n from 'utils/createI18n'
 import { loadPackagesByType, mountPackagesByType } from '../components/Plugins/actions'
 import CodingSDK from '../CodingSDK'
 import state from './state'
-import pluginUrls from '../../.plugins.json'
 import { persistTask } from '../mobxStore'
+// import pluginUrls from '../../.plugins.json'
 
 
 function closestTo (arr, key, isPrev) {
@@ -89,9 +89,11 @@ async function initialize () {
   if (config.packageDev) {
     await step(`[${stepNum++}] enable package server hotreload`,
     () => {
-      if (pluginUrls && pluginUrls.length) {
-        pluginUrls.forEach((pluginUrl) => {
-          api.enablePackageHotReload(pluginUrl)
+      const ports = __PACKAGE_PORTS__
+      if (ports && ports.length) {
+        ports.forEach((port) => {
+          const url = `http://ide.test:${port}`
+          api.enablePackageHotReload(url)
         })
       } else {
         api.enablePackageHotReload()
