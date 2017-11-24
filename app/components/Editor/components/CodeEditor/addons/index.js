@@ -21,4 +21,4 @@ import 'codemirror/addon/fold/foldgutter.js'
 // import 'codemirror/addon/hint/show-hint.js'
 
 // lint
-// import 'codemirror/addon/lint/lint.js'
+import '../lib/formatting'
