@@ -42,6 +42,22 @@ const menuBarItems = observable([
       }
     ]
   }, {
+    key: 'edit',
+    name: i18n`menuBarItems.edit.main`,
+    items: [
+      {
+        key: 'format',
+        name: i18n`menuBarItems.edit.format`,
+        icon: '',
+        command: 'edit:toggle_format',
+      }, {
+        key: 'comment',
+        name: i18n`menuBarItems.edit.comment`,
+        icon: '',
+        command: 'edit:toggle_comment',
+      }
+    ]
+  }, {
     key: 'git',
     name: i18n`menuBarItems.git.main`,
     onOpen: onGitMenuOpen,

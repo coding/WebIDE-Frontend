@@ -9,6 +9,11 @@
       "save": "Save",
       "commit": "commit"
    },
+   "edit": {
+      "main": "Edit",
+      "format": "Format",
+      "comment": "Toggle Comment"
+  },
    "git": {
       "rebase": "Rebase",
       "pull": "Pull",

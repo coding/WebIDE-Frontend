@@ -9,6 +9,11 @@
       "save": "保存",
       "commit": "commit"
    },
+   "edit": {
+      "main": "编辑",
+      "format": "格式化代码",
+      "comment": "切换注释"
+   },
    "git": {
       "rebase": "变基",
       "pull": "拉取",

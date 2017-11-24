@@ -29,9 +29,6 @@ function MenuScope (defaultMenuItems=[]) {
                   if (item.key) acc[item.key] = item
                 }, {})
               },
-              get shortcut () {
-                return withModifierKeys(findKeyByValue(this.command))
-              }
             })
           // case 'key':
           // case 'name':
@@ -39,10 +36,16 @@ function MenuScope (defaultMenuItems=[]) {
           // case 'command':
           // case 'isDisabled':
           default:
-            return extendShallowObservable(this, { [keyName]: opts[keyName] })
+            return extendShallowObservable(this, {
+              [keyName]: opts[keyName]
+            })
         }
       })
-      return this
+      return extendShallowObservable(this, {
+        get shortcut () {
+          return withModifierKeys(findKeyByValue(this.command))
+        }
+      })
     }
   }
 
