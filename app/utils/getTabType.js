@@ -3,6 +3,8 @@ export default function getTabType (node) {
     /^text\/[^/]+/.test(node.contentType) || (
       node.contentType === 'application/xml'
     ) || (
+      node.contentType === 'application/x-sh'
+    ) || (
       node.contentType === 'application/xhtml+xml'
     )) {
     return 'TEXT'
