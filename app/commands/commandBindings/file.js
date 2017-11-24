@@ -27,26 +27,6 @@ const nodeToParentDirPath = (node) => {
   return `${pathSplitted.join('/')}/`
 }
 
-function createFileWithContent (content) {
-  return function createFileAtPath (path) {
-    if (content) {
-      return api.writeFile(path, content)
-        .then(Modal.dismissModal)
-        .then(() => path)
-        .catch(err =>
-          Modal.updateModal({ statusMessage: err.msg }).then(createFileAtPath)
-        )
-    }
-    return api.createFile(path, content)
-      .then(Modal.dismissModal)
-      .then(() => path)
-      // if error, try again.
-      .catch(err =>
-        Modal.updateModal({ statusMessage: err.msg }).then(createFileAtPath)
-      )
-  }
-}
-
 function createFolderAtPath (path) {
   return api.createFolder(path)
   .then((data) => {
@@ -110,6 +90,52 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
     })
 }
 
+function createFileWithContent (content) {
+  return function createFileAtPath (path) {
+    if (content) {
+      return api.createFile(path, content)
+        .then((res) => {
+          if (res.code) {
+            throw new Error(res.msg)
+          } else {
+            Modal.dismissModal()
+          }
+        })
+        .then(() => api.writeFile(path, content))
+        .then(() => {
+          api.readFile(path).then((data) => {
+            const { EditorTabState } = mobxStore
+            const activeTab = EditorTabState.activeTab
+            FileStore.loadNodeData(data)
+            TabStore.updateTab({
+              icon: (path && icons.getClassWithColor(path.split('/').pop())) || 'fa fa-file-text-o',
+              id: activeTab.id,
+              editor: { filePath: path },
+            })
+          })
+        })
+        .catch((err) => {
+          Modal.updateModal({ statusMessage: err.message }).then(createFileAtPath)
+        })
+    }
+    return api.createFile(path, content)
+      .then((res) => {
+        if (res.code) {
+          throw new Error(res.msg)
+        } else {
+          Modal.dismissModal()
+        }
+      })
+      .then(() => {
+        openFile({ path })
+      })
+      // if error, try again.
+      .catch((err) => {
+        Modal.updateModal({ statusMessage: err.message }).then(createFileAtPath)
+      })
+  }
+}
+
 const fileCommands = {
   'file:open_file': (c) => { // 在当前 tabgroup 中优先打开已有的 tab
     if (typeof c.data === 'string') {
@@ -138,7 +164,6 @@ const fileCommands = {
       selectionRange: [path.length, defaultValue.length]
     })
     .then(createFile)
-    .then(path => openFile({ path }))
   },
   'file:new_folder': (c) => {
     const node = c.context
@@ -164,16 +189,6 @@ const fileCommands = {
         selectionRange: [1, defaultPath.length]
       })
         .then(createFile)
-        .then((path) => {
-          api.readFile(path).then((data) => {
-            FileStore.loadNodeData(data)
-            TabStore.updateTab({
-              icon: (path && icons.getClassWithColor(path.split('/').pop())) || 'fa fa-file-text-o',
-              id: activeTab.id,
-              editor: { filePath: path },
-            })
-          })
-        })
     } else {
       api.writeFile(activeTab.file.path, content)
         .then((res) => {

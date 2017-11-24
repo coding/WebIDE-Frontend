@@ -2,6 +2,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 import state from './state'
+import _ from 'lodash'
 
 const Tooltip = observer(({ placement, rect, content, show }) => {
   let x, y
@@ -34,7 +35,7 @@ const Tooltip = observer(({ placement, rect, content, show }) => {
 
 const Tooltips = observer(() => (
   <div style={{ color: 'red' }}>
-    {state.entities.map(tooltip => <Tooltip key={tooltip} {...tooltip} />)}
+    {state.entities.map(tooltip => <Tooltip key={_.uniqueId('tooltip_')} {...tooltip} />)}
   </div>
 ))
 
