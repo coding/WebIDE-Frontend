@@ -33,6 +33,7 @@
   },
   "globals": {
     "i18n": false,
+    "__PACKAGE_PORTS__": false,
     "extension": false,
     "__DEV__": false,
     "__PACKAGE_SERVER__": false

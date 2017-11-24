@@ -6,3 +6,4 @@ build
 app/config.js
 *.bak
 coverage/
+task.yaml
