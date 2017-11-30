@@ -44,7 +44,7 @@ async function initialize () {
 
   await step('[1] load required package', async() => {
     try {
-      await loadPackagesByType('Required', state)
+      await loadPackagesByType('Required', state, true)
     } catch (err) {
       return true
     }

@@ -20,7 +20,7 @@ try {
   .map(task => task.env ? task.env.PORT || 4000 : 4000)
   console.log(`find ${getPluginsPorts.length} dev ports`, getPluginsPorts.join(','))
 } catch (e) {
-  console.error(e)
+  console.log('find task error', e && e.message)
 }
 
 const reactHotLoaderPrependEntries = [
