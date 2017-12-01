@@ -73,6 +73,7 @@ class ExtensionList extends Component {
                 }
                 return true
               })
+              .sort(card => card.requirement === 'Required')
               .map((card, idx) => (<Card key={idx} card={card} />))
           }
         </div>
