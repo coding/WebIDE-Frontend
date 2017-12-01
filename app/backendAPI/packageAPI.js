@@ -9,15 +9,6 @@ const { packageServer, packageDev } = config
 
 const io = require('socket.io-client/dist/socket.io.min.js')
 
-export const fetchRequiredPackageList = (type) => {
-  const requirement = type ? `?requirement=${type}` : ''
-  if (packageDev) {
-    return request.get(`${packageServer}/packages/`)
-  }
-  return request.get(`/packages${requirement}`)
-}
-
-
 export const fetchPackageList = (type) => {
   if (packageDev) {
     return request.get(`${packageServer}/packages/`)
@@ -35,7 +26,6 @@ export const fetchPackageInfo = (pkgName, pkgVersion, target) =>
 export const fetchPackageScript = (props) => {
   if (Array.isArray(props)) {
     const concatedUrl = props.reduce((p, v, i) => `${p}${v.pkgName}/${v.pkgVersion}/index.js${i !== props.length - 1 ? ',' : ''}`, '??')
-    console.log('props[]', props[0].target)
     return axios.get(`${packageServer}/packages/${concatedUrl}`).then(res => res.data)
   }
   return axios.get(`${props.target || packageServer}/packages/${props.pkgName}/${props.pkgVersion}/index.js`).then(res => res.data)
