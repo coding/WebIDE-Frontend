@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { request } from '../utils'
-import { PluginRegistry } from 'utils/plugins'
-import config from '../config'
+// import { PluginRegistry } from 'utils/plugins'
 import { fetchPackage } from '../components/Plugins/actions'
+import config from '../config'
+
 const { packageServer, packageDev } = config
 
 
@@ -14,12 +15,15 @@ export const fetchRequiredPackageList = () => {
   }
   return request.get('/packages?requirement=Required')
 }
-export const fetchPackageList = () => {
+
+
+export const fetchPackageList = (type) => {
   if (packageDev) {
     return request.get(`${packageServer}/packages/`)
   }
   if (config.isPlatform) {
-    return request.get(`/workspaces/${config.spaceKey}/packages`)
+    const requirement = type ? `?requirement=${type}` : ''
+    return request.get(`/packages${requirement}`)
   }
   return request.get('/packages')
 }
@@ -27,8 +31,13 @@ export const fetchPackageList = () => {
 export const fetchPackageInfo = (pkgName, pkgVersion, target) =>
   axios.get(`${target || packageServer}/packages/${pkgName}/${pkgVersion}/manifest.json`).then(res => res.data)
 
-export const fetchPackageScript = (pkgName, pkgVersion, target) =>
-  axios.get(`${target || packageServer}/packages/${pkgName}/${pkgVersion}/index.js`).then(res => res.data)
+export const fetchPackageScript = (props) => {
+  if (Array.isArray(props)) {
+    const concatedUrl = props.reduce((p, v) => `${p}${v.pkgName}/${v.pkgVersion}/index.js,`, '??')
+    return axios.get(`${props[0].target || packageServer}/packages/${concatedUrl}`).then(res => res.data)
+  }
+  return axios.get(`${props.target || packageServer}/packages/${props.pkgName}/${props.pkgVersion}/index.js`).then(res => res.data)
+}
 
 export const enablePackageHotReload = (target) => {
   const socket = io.connect(target || packageServer, {
