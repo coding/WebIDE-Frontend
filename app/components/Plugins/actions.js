@@ -7,12 +7,16 @@ import api from '../../backendAPI'
 
 
 export const PLUGIN_REGISTER_VIEW = 'PLUGIN_REGISTER_VIEW'
+export const PLUGIN_UNREGISTER_VIEW = 'PLUGIN_UNREGISTER_VIEW'
 export const PACKAGE_UPDATE_LIST = 'PACKAGE_UPDATE_LIST'
 
 export const updatePackageList = registerAction(PACKAGE_UPDATE_LIST, () => {
   api.fetchPackageList()
   .then((result) => {
-    store.list.replace(result)
+    store.list.replace(result.map(e => {
+      const current = store.list.find(obj => obj.name === e.name)
+      return ({ enabled: current ? current.enabled || false : false, ...e })
+    }))
   })
 })
 
@@ -43,7 +47,7 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
     // @fixme @hackape consider theme situation
     try {
       window.codingPackageJsonp.current = pkgId
-      eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
+      eval(`${script}`) // <- from inside package, `codingPackageJsonp()` is called to export module
       // codingPackageJsonp 注册的可以是单个插件或者插件组, 每个插件的key必须不同
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
       window.codingPackageJsonp.current = ''
@@ -111,14 +115,12 @@ export const fetchPackageGroup = registerAction(FETCH_PACKAGE_GROUP,
 
 export const fetchPackage = registerAction(FETCH_PACKAGE,
 (pkg, type, data) => ({ pkg, type, data }),
-({ pkg, type, data }) => {
-  return api.fetchPackageScript({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })
+({ pkg, type, data }) => api.fetchPackageScript({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })
   .then((script) => {
     localStorage.setItem(pkg.name, script)
     return pkg.name
   })
-  .then(pkgId => togglePackage({ pkgId, shouldEnable: !PluginRegistry.find(pkgId), type, data }))
-})
+  .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type, data })))
 
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
@@ -146,6 +148,21 @@ export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
   plugins.forEach((plugin) => {
     plugin.detaultInstance.pluginWillMount(plugin)
+  })
+}
+
+export const mountPackage = (id, unMount) => {
+  const plugin = PluginRegistry.find(id)
+  if (unMount) {
+    plugin.detaultInstance.pluginWillUnmount(plugin)
+  } else {
+    plugin.detaultInstance.pluginWillMount(plugin)
+  }
+}
+
+export const hydrate = (requiredList) => {
+  requiredList.forEach((element) => {
+    fetchPackage(element).then(({ id }) => mountPackage(id))
   })
 }
 
@@ -188,6 +205,21 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
   })
 })
 
+export const pluginUnRegister = registerAction(PLUGIN_UNREGISTER_VIEW,
+(children, callback = '') => ({ children, callback }),
+({ children, callback }) => {
+  const childrenArray = Array.isArray(children) ? children : [children]
+  childrenArray.forEach((child) => {
+    const { position, key, instanceId } = child
+    const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
+    store.plugins.delete(generateViewId)
+    delete store.views[generateViewId]
+    if (callback) {
+      callback(store.plugins)
+    }
+  })
+}
+)
 
 /**
  * @param  {} position // the position is the plugin inject position
