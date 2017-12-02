@@ -8,8 +8,11 @@ export const confirmResize = registerAction(PANE_CONFIRM_RESIZE,
     rightView: { id: rightViewId, size: rightSize },
   }),
   ({ leftView, rightView }) => {
-    state.panes[leftView.id].size = leftView.size
-    state.panes[rightView.id].size = rightView.size
+    const state2 = require('./state').default
+    state2.panes.get(leftView.id).size = leftView.size
+    state2.panes.get(rightView.id).size = rightView.size
+    // state2.panes[leftView.id].size = leftView.size
+    // state2.panes[rightView.id].size = rightView.size
   }
 )
 

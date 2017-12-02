@@ -153,24 +153,24 @@ export const mv = (from, to, force=false) => {
   const newPath = `${to}/${name}`
   if (from === newPath) return
   api.moveFile(from, newPath, force).then(async (res) => {
-    if (res.code && res.code !== 0) {
-      if (res.msg && res.msg.indexOf('force') !== -1) {
-        const confirmed = await Modal.showModal('Confirm', {
-          header: i18n`file.fileExist`,
-          message: i18n`file.fileForceMove`,
-          okText: i18n`file.overwriteButton`
-        })
-        if (confirmed) {
-          mv(from, to, true)
-        }
-        Modal.dismissModal()
-      } else if (/directory.*exist/.test(res.msg)) {
-        await Modal.showModal('Alert', {
-          header: i18n`file.moveFolderFailed`,
-          message: i18n`file.folderExist`,
-        })
-        Modal.dismissModal()
+    // if (res.code && res.code !== 0) {
+    if (res.msg && res.msg.indexOf('force') !== -1) {
+      const confirmed = await Modal.showModal('Confirm', {
+        header: i18n`file.fileExist`,
+        message: i18n`file.fileForceMove`,
+        okText: i18n`file.overwriteButton`
+      })
+      if (confirmed) {
+        mv(from, to, true)
       }
+      Modal.dismissModal()
+    } else if (/directory.*exist/.test(res.msg)) {
+      await Modal.showModal('Alert', {
+        header: i18n`file.moveFolderFailed`,
+        message: i18n`file.folderExist`,
+      })
+      Modal.dismissModal()
     }
+    // }
   })
 }

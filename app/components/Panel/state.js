@@ -39,7 +39,12 @@ class Panel extends BasePane {
 
   @computed get disableResizeBar () {
     // if a panel is not resizable, then resize bar must be disabled
-    if (!this.resizable) return true
+    
+    const adjacentPanel = this.next //this.prev || 
+
+    if (!adjacentPanel || adjacentPanel.hidden) return true
+
+    if (!this.resizable || this.hidden) return true
     return this._disableResizeBar
   }
   set disableResizeBar (value) {
@@ -83,7 +88,7 @@ const BasePanelLayout = {
                 { ref: 'PANEL_RIGHT', size: 30, contentType: 'EXTENSION_RIGHT', hidden: true },
               ],
             },
-            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: true },
+            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: true, resizable: true },
             { ref: 'BAR_BOTTOM', resizable: false },
           ]
         },

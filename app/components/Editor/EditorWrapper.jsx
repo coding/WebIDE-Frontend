@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { observer } from 'mobx-react'
+import { when } from 'mobx'
 import CodeEditor from './components/CodeEditor'
 import MarkdownEditor from './components/MarkdownEditor'
 import ImageEditor from './components/ImageEditor'
@@ -18,18 +19,15 @@ const EditorWrapper = observer(({ tab }) => {
   const key = `editor_${file.path}`
   switch (editorType) {
     case 'htmlEditor':
-      if (config.staticServingToken) {
-        return React.createElement(HtmlEditor, { editor, key })
-      }
-      return React.createElement(CodeEditor, { editor, key })
+      return React.createElement(HtmlEditor, { editor, key, tab })
     case 'default':
-      return React.createElement(CodeEditor, { editor, key })
+      return React.createElement(CodeEditor, { editor, key, tab })
     case 'editorWithPreview':
-      return React.createElement(MarkdownEditor, { editor, key })
+      return React.createElement(MarkdownEditor, { editor, key, tab })
     case 'imageEditor':
-      return React.createElement(ImageEditor, { path: file.path, key })
+      return React.createElement(ImageEditor, { path: file.path, key, tab })
     default:
-      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key })
+      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab })
   }
 })
 
