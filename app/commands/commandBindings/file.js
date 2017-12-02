@@ -114,8 +114,8 @@ function createFileWithContent (content) {
             })
           })
         })
-        .catch((err) => {
-          Modal.updateModal({ statusMessage: err.message }).then(createFileAtPath)
+        .catch((res) => {
+          Modal.updateModal({ statusMessage: res.response ? res.response.data.msg : res.message }).then(createFileAtPath)
         })
     }
     return api.createFile(path, content)
@@ -130,8 +130,8 @@ function createFileWithContent (content) {
         openFile({ path })
       })
       // if error, try again.
-      .catch((err) => {
-        Modal.updateModal({ statusMessage: err.message }).then(createFileAtPath)
+      .catch((res) => {
+        Modal.updateModal({ statusMessage: res.response ? res.response.data.msg : res.message }).then(createFileAtPath)
       })
   }
 }
