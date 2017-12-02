@@ -42,9 +42,11 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
     // plugin will mount
     // @fixme @hackape consider theme situation
     try {
+      window.codingPackageJsonp.current = pkgId
       eval(script) // <- from inside package, `codingPackageJsonp()` is called to export module
       // codingPackageJsonp 注册的可以是单个插件或者插件组, 每个插件的key必须不同
       const plugin = window.codingPackageJsonp.data // <- then it's access from `codingPackageJsonp.data`
+      window.codingPackageJsonp.current = ''
       const pluginArray = Array.isArray(plugin) ? plugin : [plugin]
       pluginArray
       .sort((pgkA, pgkB) => (pgkA.weight || 0) < (pgkB.weight || 0) ? 1 : -1)
@@ -52,9 +54,10 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         const { Manager = (() => null), key } = plugin
         const manager = new Manager()
         plugin.detaultInstance = manager
-        PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info, loadType: type })
+        const getInfo = store.list.get(key || pkgId) || info || {}
+        PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info: getInfo, loadType: type })
         if (manager.init) {
-            manager.init(data, action)
+          manager.init(data, action)
         }
         if (type === 'reload') {
           manager.pluginWillMount()
@@ -89,37 +92,49 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
 })
 
 export const FETCH_PACKAGE = 'FETCH_PACKAGE'
+export const FETCH_PACKAGE_GROUP = 'FETCH_PACKAGE_GROUP'
+
+
+export const fetchPackageGroup = registerAction(FETCH_PACKAGE_GROUP,
+(groupName, pkgs, type, data) => ({ groupName: `group_${groupName}`, pkgs, type, data }),
+({ groupName, pkgs, type, data }) => {
+  const scriptArguments = pkgs.map((pkg => ({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })))
+  return api.fetchPackageScript(scriptArguments)
+  .then((script) => {
+    localStorage.setItem(groupName, script)
+    codingPackageJsonp.groups[groupName] = pkgs.map(pkg => pkg.name)
+    // Todo: refractor the toggle package model
+    return togglePackage({ pkgId: groupName, shouldEnable: !PluginRegistry.find(groupName), type, data })
+  })
+}
+)
 
 export const fetchPackage = registerAction(FETCH_PACKAGE,
 (pkg, type, data) => ({ pkg, type, data }),
-async ({ pkg, type, data }) => {
-  const pkgInfo = api.fetchPackageInfo(pkg.name, pkg.version, pkg.TARGET)
-  .then(pkg => pkg.codingIdePackage)
-  const pkgScript = api.fetchPackageScript(pkg.name, pkg.version, pkg.TARGET)
-    .then((script) => {
-      localStorage.setItem(pkg.name, script)
-      return pkg.name
-    })
-
-
-  await Promise.all([pkgInfo, pkgScript])
-  .then(async ([info, pkgId]) => {
-    if (PluginRegistry.find(pkgId)) {
-      await togglePackage({ pkgId, info, shouldEnable: false, type, data })
-    }
-    await togglePackage({ pkgId, shouldEnable: true, type, info, data })
+({ pkg, type, data }) => {
+  return api.fetchPackageScript({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })
+  .then((script) => {
+    localStorage.setItem(pkg.name, script)
+    return pkg.name
   })
+  .then(pkgId => togglePackage({ pkgId, shouldEnable: !PluginRegistry.find(pkgId), type, data }))
 })
 
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
+
 // 插件申明加载时机，
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
-  (type, data = {}) => ({ type, data }),
-  ({ type, data }) => {
-    const fetchPackgeListPromise = type === 'Required' ? api.fetchRequiredPackageList() : api.fetchPackageList()
+  // type is the packages type, data is the state data , group is the batch
+  (type, data = {}, group) => ({ type, data, group }),
+  ({ type, data, group }) => {
+    const fetchPackgeListPromise = api.fetchPackageList(type)
     return fetchPackgeListPromise.then(async (list) => {
+      store.list.replace(list)
+      if (group) {
+        return fetchPackageGroup('required', list, type, data)
+      }
       for (const pkg of list) {
         await fetchPackage(pkg, type, data)
       }
@@ -155,6 +170,7 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
     // children 的 shape
     const { position, key, label, view, instanceId, status } = child
     const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
+
     store.plugins.set(generateViewId, observable({
       // 可修改位置
       viewId: generateViewId,
@@ -185,11 +201,11 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
  * @param  {} label
  * @param  {} view}
  * @param  {} callback
- */
+//  */
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
   const extension = PluginRegistry.get(label.key)
-  const view = label.key && getComponent(extension, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
+  const view = label.key && getComponent(extension || {}, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
 
   return pluginRegister({
     position,
