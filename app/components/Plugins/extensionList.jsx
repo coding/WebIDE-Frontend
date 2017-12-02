@@ -1,9 +1,22 @@
 import React, { Component, PropTypes } from 'react'
 import { observer } from 'mobx-react'
-import { togglePackage, updatePackageList } from './actions'
+import { mountPackage, updatePackageList, fetchPackage } from './actions'
 import store from './store'
 
-const Card = ({ card }) => (
+
+function handleRequired (card) {
+  const storeCard = store.list.find(e => e.name === card.name)
+  if (card.enabled) {
+    mountPackage(card.name, true)
+    storeCard.enabled = false
+  } else {
+    fetchPackage(card).then(({ id }) => mountPackage(id))
+    storeCard.enabled = true
+  }
+}
+
+
+const Card = observer(({ card }) => (
   <div className='card'>
     <div className='title'>
       {card.name}
@@ -24,7 +37,7 @@ const Card = ({ card }) => (
         {/* <button>uninstall</button>*/}
         {card.requirement !== 'Required' ? (
           <button
-            onClick={e => togglePackage(card.name, !card.enabled)}
+            onClick={() => handleRequired(card)}
           >
             {card.enabled
               ? 'disable'
@@ -33,7 +46,7 @@ const Card = ({ card }) => (
           ) : null}
       </div>
     </div>
-  </div>)
+  </div>))
 
 Card.propTypes = {
   card: PropTypes.object,
@@ -63,7 +76,6 @@ class ExtensionList extends Component {
         </div>
         <div className='lists'>
           {data
-              .toJS()
               .filter((card) => {
                 if (this.state.searchKey) {
                   if (card.name.includes(this.state.searchKey)) {

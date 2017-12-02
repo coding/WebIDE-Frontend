@@ -63,7 +63,7 @@ http.createServer((req, res) => {
     .then((values) => {
       const result = values.join('')
       res.writeHead(200, commonHeader)
-      res.write(JSON.stringify(result))
+      res.write(result)
       res.end()
     })
     .catch((e) => {

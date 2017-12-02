@@ -8,6 +8,8 @@ import SettingState from './components/Setting/state'
 import FileState from './commons/File/state'
 import EditorState from './components/Editor/state'
 import persistStore from './persist'
+import PluginsState from './components/Plugins/store'
+
 
 const mainStore = localforage.createInstance({
   name: 'mainProject'
@@ -20,6 +22,7 @@ const store = {
   FileTreeState,
   SettingState,
   FileState,
+  PluginsState
 }
 
 const toJS = (store) => {
@@ -40,6 +43,7 @@ export const transform = createTransformer(store => ({
   FileTreeState: toJS(store.FileTreeState),
   FileState: toJS(store.FileState),
   SettingState: toJS(store.SettingState),
+  PluginsState: toJS(store.PluginsState)
 }))
 
 export const persistTask = () => persistStore(store, transform)

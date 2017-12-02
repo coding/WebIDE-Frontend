@@ -3,6 +3,7 @@ import localforage from 'localforage'
 import config from './config'
 import { hydrate as editorTabHydrate } from './components/Tab/actions'
 import { hydrate as settingsHydrate } from './components/Setting/state'
+import { hydrate as pluginsHydrate } from './components/Plugins/actions'
 import fileState, { hydrate as fileHydrate } from './commons/File/state'
 
 
@@ -49,6 +50,7 @@ const hydrateAction = {
   FileState: fileHydrate,
   EditorTabState: editorTabHydrate,
   SettingState: settingsHydrate,
+  PluginsState: pluginsHydrate
 }
 
 function autoRehydrate (store) {

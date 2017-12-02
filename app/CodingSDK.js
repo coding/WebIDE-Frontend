@@ -1,4 +1,4 @@
-import { injectComponent, pluginRegister } from 'components/Plugins/actions'
+import { injectComponent, pluginRegister, pluginUnRegister } from 'components/Plugins/actions'
 import * as position from 'components/Plugins/constants'
 import PluginArea from 'components/Plugins/component'
 
@@ -69,6 +69,7 @@ export default class {
     return ({
       inject: injectComponent,
       register: pluginRegister,
+      unregister: pluginUnRegister,
       PluginArea,
       position,
     })
