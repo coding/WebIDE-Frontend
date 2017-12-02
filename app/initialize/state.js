@@ -39,7 +39,7 @@ const stepCache = observable.map({
     enable: () => config.spaceKey,
     func: () =>
       api.setupWorkspace().then((res) => {
-        if (res.code) {
+        if (res.msg) {
           initializeState.errorInfo = res.msg
           return false
         }

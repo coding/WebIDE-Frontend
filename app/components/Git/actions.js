@@ -131,8 +131,9 @@ export function getTags () {
 export function pull () {
   return (dispatch) => {
     api.gitPull().then((res) => {
-      if (res.code && res.code !== 0) { notify({ message: `Git pull fail: ${res.msg}` }) }
-      else { notify({ message: 'Git pull success.' }) }
+      notify({ message: 'Git pull success.' })
+    }).catch((res) => {
+      notify({ message: `Git pull fail: ${res.response.data.msg}` })
     })
   }
 }
@@ -140,7 +141,9 @@ export function pull () {
 export function push () {
   return (dispatch) => {
     api.gitPushAll().then((res) => {
-      if (res.code && res.code !== 0) { notify({ message: `Git push fail: ${res.msg}` }) } else { notify({ message: 'Git push success.' }) }
+      notify({ message: 'Git push success.' })
+    }).catch((res) => {
+      notify({ message: `Git push fail: ${res.response.data.msg}` })
     })
   }
 }

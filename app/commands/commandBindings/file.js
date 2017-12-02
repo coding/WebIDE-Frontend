@@ -95,7 +95,7 @@ function createFileWithContent (content) {
     if (content) {
       return api.createFile(path, content)
         .then((res) => {
-          if (res.code) {
+          if (res.msg) {
             throw new Error(res.msg)
           } else {
             Modal.dismissModal()
@@ -120,7 +120,7 @@ function createFileWithContent (content) {
     }
     return api.createFile(path, content)
       .then((res) => {
-        if (res.code) {
+        if (res.msg) {
           throw new Error(res.msg)
         } else {
           Modal.dismissModal()
