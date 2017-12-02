@@ -54,7 +54,7 @@ const SideBar = observer(({ side }) => (
 
 SideBar.propTypes = {
   // labels: labelsShape,
-  side: PropTypes,
+  side: PropTypes.string,
   activeViewId: PropTypes.string,
   activateView: PropTypes.func
 }
