@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'

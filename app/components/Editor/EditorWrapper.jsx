@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { when } from 'mobx'
 import CodeEditor from './components/CodeEditor'
@@ -36,7 +37,7 @@ EditorWrapper.propTypes = {
 }
 
 EditorWrapper.contextTypes = {
-  i18n: React.PropTypes.func
+  i18n: PropTypes.func
 }
 
 export default EditorWrapper

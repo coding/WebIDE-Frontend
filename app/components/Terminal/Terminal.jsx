@@ -1,5 +1,6 @@
 // Hence the naming: http://askubuntu.com/questions/111144/are-terminal-and-shell-the-same
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Terminal from 'sh.js'
 import _ from 'lodash';
 import { emitter, E } from 'utils'
