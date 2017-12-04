@@ -11,7 +11,7 @@ import Offline from '../../components/Offline/Offline'
 
 class MenuBar extends Component {
   static propTypes = {
-    items: PropTypes.oneOf(PropTypes.array, PropTypes.object)
+    items: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   }
 
   constructor (props) {

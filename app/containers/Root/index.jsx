@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Provider, connect } from 'react-redux'
 import { Provider as MobxProvider } from 'mobx-react'
 

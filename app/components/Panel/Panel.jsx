@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import cx from 'classnames'
 import PanelAxis from './PanelAxis'

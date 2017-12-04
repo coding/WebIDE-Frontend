@@ -1,5 +1,6 @@
-import _ from 'lodash';
-import React, { Component, PropTypes } from 'react'
+import _ from 'lodash'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { observer, inject } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
