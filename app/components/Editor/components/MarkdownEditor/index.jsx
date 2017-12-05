@@ -83,17 +83,20 @@ class PreviewEditor extends Component {
   }
 
   componentDidUpdate () {
-    this.buildScrollMap()
+    if (this.props.active) {
+      this.buildScrollMap()
+    }
   }
 
   buildScrollMap () {
-    const _scrollMap = []
+    const _scrollMap = {}
     const nonEmptyList = []
     nonEmptyList.push(0)
     _scrollMap[0] = 0
     const linesDOM = Array.from(this.previewDOM.getElementsByClassName('line'))
     const linesCount = linesDOM.length
-    for (let i = 0; i < linesCount; i++) { _scrollMap.push(-1) }
+
+    // for (let i = 0; i < linesCount; i++) { _scrollMap.push(-1) }
     linesDOM.forEach((lineDOM) => {
       const lineNum = lineDOM.dataset.line
       if (lineNum === '') return
@@ -111,7 +114,6 @@ class PreviewEditor extends Component {
       const b = nonEmptyList[pos + 1]
       _scrollMap[i] = Math.round((_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a))
     }
-
     this.props.editor.scrollMap = _scrollMap
   }
 
@@ -193,7 +195,7 @@ class MarkdownEditor extends Component {
   }, 500)
 
   render () {
-    const { editor, tab } = this.props
+    const { editor, tab, active } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
 
     return (<div
@@ -262,7 +264,7 @@ class MarkdownEditor extends Component {
             flexBasis: 0,
           }}
         >
-          <PreviewEditor content={this.state.previewContent} editor={editor} />
+          <PreviewEditor content={this.state.previewContent} editor={editor} active={active} />
         </div>) : null
       }
       </div>

@@ -13,7 +13,7 @@ export default {
         const topLine = Math.round(top / cm.defaultTextHeight()) + 1
         const scrollMap = editor.scrollMap
         const posTo = scrollMap[topLine - 1]
-        if (posTo && editor.previewDOM) {
+        if (posTo && posTo >= 0 && editor.previewDOM) {
           animatedScrollTo(editor.previewDOM.parentElement, posTo, 500)
         }
       },

@@ -10,7 +10,7 @@ import WelcomeEditor from './components/WelcomeEditor'
 import HtmlEditor from './components/HtmlEditor'
 import config from '../../config'
 
-const EditorWrapper = observer(({ tab }) => {
+const EditorWrapper = observer(({ tab, active }) => {
   const { editor } = tab
   const editorType = editor.editorType || 'default'
   const file = editor.file || {}
@@ -20,15 +20,15 @@ const EditorWrapper = observer(({ tab }) => {
   const key = `editor_${file.path}`
   switch (editorType) {
     case 'htmlEditor':
-      return React.createElement(HtmlEditor, { editor, key, tab })
+      return React.createElement(HtmlEditor, { editor, key, tab, active })
     case 'default':
-      return React.createElement(CodeEditor, { editor, key, tab })
+      return React.createElement(CodeEditor, { editor, key, tab, active })
     case 'editorWithPreview':
-      return React.createElement(MarkdownEditor, { editor, key, tab })
+      return React.createElement(MarkdownEditor, { editor, key, tab, active })
     case 'imageEditor':
-      return React.createElement(ImageEditor, { path: file.path, key, tab })
+      return React.createElement(ImageEditor, { path: file.path, key, tab, active })
     default:
-      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab })
+      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab, active })
   }
 })
 

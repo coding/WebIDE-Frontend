@@ -55,7 +55,7 @@ class TabContainer extends Component {
         <TabContent tabGroup={tabGroup} >
           {tabGroup.tabs.length ? tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >
-              <Editor tab={tab} />
+              <Editor tab={tab} active={tab.isActive} />
             </TabContentItem>
           )
           : <TabContentItem tab={{ isActive: true }}>
