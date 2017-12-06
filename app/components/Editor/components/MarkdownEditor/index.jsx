@@ -82,41 +82,6 @@ class PreviewEditor extends Component {
     super(props)
   }
 
-  componentDidUpdate () {
-    if (this.props.active) {
-      this.buildScrollMap()
-    }
-  }
-
-  buildScrollMap () {
-    const _scrollMap = {}
-    const nonEmptyList = []
-    nonEmptyList.push(0)
-    _scrollMap[0] = 0
-    const linesDOM = Array.from(this.previewDOM.getElementsByClassName('line'))
-    const linesCount = linesDOM.length
-
-    // for (let i = 0; i < linesCount; i++) { _scrollMap.push(-1) }
-    linesDOM.forEach((lineDOM) => {
-      const lineNum = lineDOM.dataset.line
-      if (lineNum === '') return
-      if (lineNum !== 0) { nonEmptyList.push(lineNum) }
-      _scrollMap[lineNum] = Math.round(lineDOM.offsetTop) // + offset)
-    })
-    let pos = 0
-    for (let i = 1; i < linesCount; i++) {
-      if (_scrollMap[i] !== -1) {
-        pos++
-        continue
-      }
-
-      const a = nonEmptyList[pos]
-      const b = nonEmptyList[pos + 1]
-      _scrollMap[i] = Math.round((_scrollMap[b] * (i - a) + _scrollMap[a] * (b - i)) / (b - a))
-    }
-    this.props.editor.scrollMap = _scrollMap
-  }
-
   makeHTMLComponent (html) {
     return React.DOM.div({ dangerouslySetInnerHTML: { __html: html } })
   }
@@ -264,7 +229,7 @@ class MarkdownEditor extends Component {
             flexBasis: 0,
           }}
         >
-          <PreviewEditor content={this.state.previewContent} editor={editor} active={active} />
+          <PreviewEditor content={this.state.previewContent} editor={editor} />
         </div>) : null
       }
       </div>
