@@ -1,5 +1,6 @@
 import state from './state'
 // import findByTextContent from './utils'
+import debounce from 'lodash/debounce'
 import marked from 'marked'
 import animatedScrollTo from 'animated-scrollto'
 
@@ -33,6 +34,10 @@ const buildScrollMap = (previewDOM) => {
   return _scrollMap
 }
 
+const debounceScroll = debounce((dom, posTo) => {
+  animatedScrollTo(dom, posTo, 500)
+}, 200, { leading: true })
+
 export default {
   key: 'md_mixin',
   getEventListeners () {
@@ -41,16 +46,32 @@ export default {
         const { editor } = this.props
         if (!editor.previewDOM) return
         const { top, clientHeight } = cm.getScrollInfo()
-        
+        const lineCount = cm.lineCount()
         const topLine = Math.round(top / cm.defaultTextHeight()) + 1
-        if (!editor.scrollMap || editor.previewDOM.offsetHeight !== editor.scrollMap.offsetHeight) {
-          editor.scrollMap = buildScrollMap(editor.previewDOM)
-        }
-        const posTo = editor.scrollMap[topLine - 1]
-        if (posTo && posTo >= 0 && editor.previewDOM) {
-          animatedScrollTo(editor.previewDOM.parentElement, posTo, 500)
+        const bottomLine = Math.round((top + clientHeight) / cm.defaultTextHeight()) + 1
+        if (bottomLine >= lineCount) {
+          debounceScroll(editor.previewDOM.parentElement, editor.previewDOM.offsetHeight)
+        } else {
+          if (!editor.scrollMap || editor.previewDOM.offsetHeight !== editor.scrollMap.offsetHeight) {
+            editor.scrollMap = buildScrollMap(editor.previewDOM)
+          }
+          const posTo = editor.scrollMap[topLine - 1]
+          if (posTo !== undefined && posTo >= 0 && editor.previewDOM) {
+            // animatedScrollTo(editor.previewDOM.parentElement, posTo, 500)
+            debounceScroll(editor.previewDOM.parentElement, posTo)
+          }
         }
       },
+      change: (cm, change) => {
+        const { editor } = this.props
+        if (!editor.previewDOM) return
+        const { top, clientHeight } = cm.getScrollInfo()
+        const lineCount = cm.lineCount()
+        const bottomLine = Math.round((top + clientHeight) / cm.defaultTextHeight()) + 1
+        if (bottomLine >= lineCount) {
+          debounceScroll(editor.previewDOM.parentElement, editor.previewDOM.offsetHeight)
+        }
+      }
     }
   },
   componentWillMount () {},

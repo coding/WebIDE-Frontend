@@ -79,6 +79,7 @@ class Editor {
     // 1. set value
     if (this.content) {
       cm.setValue(this.content)
+      cm.clearHistory()
     }
     if (!this.file) {
       cm.setCursor(cm.posFromIndex(this.content.length))
