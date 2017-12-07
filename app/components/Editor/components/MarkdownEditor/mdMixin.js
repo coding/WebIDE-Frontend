@@ -62,16 +62,16 @@ export default {
           }
         }
       },
-      change: (cm, change) => {
+      change: debounce((cm, change) => {
         const { editor } = this.props
         if (!editor.previewDOM) return
         const { top, clientHeight } = cm.getScrollInfo()
         const lineCount = cm.lineCount()
         const bottomLine = Math.round((top + clientHeight) / cm.defaultTextHeight()) + 1
         if (bottomLine >= lineCount) {
-          debounceScroll(editor.previewDOM.parentElement, editor.previewDOM.offsetHeight)
+          animatedScrollTo(editor.previewDOM.parentElement, editor.previewDOM.offsetHeight, 500)
         }
-      }
+      }, 500)
     }
   },
   componentWillMount () {},
