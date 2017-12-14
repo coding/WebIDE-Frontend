@@ -133,6 +133,21 @@ request.raw = function (options) {
   return axios(options)
 }
 
+request.postJSON = function (url, data, options = {}) {
+  return request({
+    method: 'post',
+    url,
+    data,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(config.isPlatform && {
+        Accept: 'application/vnd.coding.v2+json'
+      })
+    },
+    ...options,
+  })
+}
+
 request.axios = axios
 
 export default request
