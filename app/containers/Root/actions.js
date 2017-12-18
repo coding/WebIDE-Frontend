@@ -22,5 +22,5 @@ export const initState = () => (dispatch) => {
     if (spaceKey) config.spaceKey = spaceKey
   }
   window.ide = ide
-  dispatch({ type: INIT_STATE })
+  // dispatch({ type: INIT_STATE })
 }

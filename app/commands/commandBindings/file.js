@@ -91,6 +91,13 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
     })
 }
 
+function createTab ({ icon, type }) {
+  TabStore.createTab({
+    icon,
+    type,
+  })
+}
+
 function createFileWithContent (content) {
   return function createFileAtPath (path) {
     if (content) {
@@ -268,6 +275,13 @@ const fileCommands = {
   },
 
   // 'file:unsaved_files_list':
+  'file:open_welcome': (c) => {
+    TabStore.createTab({
+      icon: 'fa fa-info-circle',
+      type: 'welcome',
+      title: 'Welcome',
+    })
+  }
 }
 
 export default fileCommands

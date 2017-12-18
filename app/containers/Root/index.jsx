@@ -13,7 +13,7 @@ class Root extends Component {
     dispatch: PropTypes.func
   }
   componentWillMount () {
-    this.props.dispatch(initState()) // initLifecycle_2
+    // this.props.dispatch(initState()) // initLifecycle_2
   }
   render () {
     return <IDE />

@@ -51,7 +51,7 @@ const promiseInterceptor = (promise) => {
 }
 
 const requestInterceptor = request.interceptors.request.use((options) => {
-  if (config.isPlatform && config.spaceKey) {
+  if (config.isPlatform && config.spaceKey && config.spaceKey !== 'default') {
     options.headers['X-Space-Key'] = config.spaceKey
   }
   return options

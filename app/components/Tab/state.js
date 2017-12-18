@@ -19,6 +19,7 @@ class Tab extends BaseTab {
     this.editorProps = props.editor
     this.update(props)
     this.saveFileList()
+    this.type = props.type
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced

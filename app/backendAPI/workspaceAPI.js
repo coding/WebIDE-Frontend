@@ -56,3 +56,7 @@ export function requestCollaborator () {
 export function execShellCommand (command) {
   return request.post(`/tty/${config.spaceKey}/exec`, { command })
 }
+
+export function getWorkspaceList () {
+  return request.get('/workspaces?page=0&size=5&sort=lastModifiedDate,desc')
+}
