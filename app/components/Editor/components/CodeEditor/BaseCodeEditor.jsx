@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Editor } from 'components/Editor/state'
+import { emitter, E } from 'utils'
 
 class BaseCodeEditor extends Component {
   constructor (props) {
@@ -12,6 +13,7 @@ class BaseCodeEditor extends Component {
     this.editor = editor
     this.cm = this.editor.cm
     this.cmDOM = this.cm.getWrapperElement()
+    this.highlight = this.highlight.bind(this)
   }
 
   componentDidMount () {
@@ -21,11 +23,14 @@ class BaseCodeEditor extends Component {
     // `setSize()` and `refresh()` are required to correctly render cm
     cm.setSize('100%', '100%')
     cm.refresh()
-    const scrollLine = this.editor.scrollLine
-    setTimeout(() => {
-      cm.scrollIntoView({ line: scrollLine, ch: 0 })
-      cm.focus()
-    }, 0)
+    // const scrollLine = this.editor.scrollLine
+    // setTimeout(() => {
+    //   cm.scrollIntoView({ line: scrollLine, ch: 0 })
+    //   cm.setCursor({ line: scrollLine, ch: 0 })
+    //   cm.focus()
+    // }, 100)
+    
+    emitter.on(E.FILE_HIGHLIGHT, this.highlight)
   }
 
   render () {
@@ -37,6 +42,17 @@ class BaseCodeEditor extends Component {
   componentWillUnmount () {
     const async = true
     this.editor.destroy(async)
+    emitter.removeListener(E.FILE_HIGHLIGHT, this.highlight)
+  }
+
+  highlight (data) {
+    const { path, lineNumber } = data
+    if (this.editor.file && this.editor.file.path === path) {
+      if (this.breakpointHighlight) {
+        this.cm.removeLineClass(this.breakpointHighlight, 'background', 'breakpoint-highlight')
+      }
+      this.breakpointHighlight = this.cm.addLineClass(lineNumber - 1, 'background', 'breakpoint-highlight')
+    }
   }
 }
 

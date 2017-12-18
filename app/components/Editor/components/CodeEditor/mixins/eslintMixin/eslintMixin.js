@@ -34,7 +34,11 @@ export default {
   },
   componentDidMount () {
     const cm = this.cm
-    cm.setOption('gutters', ['CodeMirror-lint-markers'])
+    const gutters = cm.options.gutters
+    if (gutters.findIndex(item => item === 'CodeMirror-lint-markers') < 0) {
+      cm.setOption('gutters', ['CodeMirror-lint-markers', ...gutters])
+    }
+    // cm.setOption('gutters', ['CodeMirror-lint-markers'])
     cm.setOption('lint', lintOption)
   }
 }

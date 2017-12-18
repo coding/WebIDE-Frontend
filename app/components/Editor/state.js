@@ -80,7 +80,22 @@ class Editor {
     if (this.content) {
       cm.setValue(this.content)
       cm.clearHistory()
+      const scrollLine = this.scrollLine || 0
+      if (scrollLine > 0) {
+        cm.scrollIntoView({ line: scrollLine, ch: 0 })
+        // cm.setCursor({ line: scrollLine - 1, ch: 0 })
+      }
+      cm.focus()
     }
+
+    autorun(() => {
+      const cursorLine = this.cursorLine || 0
+      if (cursorLine > 0) {
+        cm.scrollIntoView({ line: cursorLine - 1, ch: 0 })
+        cm.setCursor({ line: cursorLine - 1, ch: 0 })
+      }
+    })
+
     if (!this.file) {
       cm.setCursor(cm.posFromIndex(this.content.length))
     }

@@ -9,6 +9,7 @@ import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
 import { toJS, when } from 'mobx'
+import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -150,6 +151,11 @@ const fileCommands = {
     } else {
       openFile(c.data)
     }
+  },
+  'file:highlight_line': (c) => {
+    console.log('file:highlight_line', c)
+    // const { path, lineNumber } = c.data
+    emitter.emit(FILE_HIGHLIGHT, c.data)
   },
   'file:new_file': (c) => {
     const node = c.context

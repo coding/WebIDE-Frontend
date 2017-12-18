@@ -62,7 +62,10 @@ export default {
       scroll: (cm) => {
         const { editor } = this.props
         const { top, clientHeight } = cm.getScrollInfo()
-        editor.scrollLine = Math.floor((top + clientHeight) / cm.defaultTextHeight()) - 1
+        editor.update({
+          scrollLine: Math.floor((top + clientHeight) / cm.defaultTextHeight()) - 1
+        })
+        // editor.scrollLine = Math.floor((top + clientHeight) / cm.defaultTextHeight()) - 1
       },
     }
   },
