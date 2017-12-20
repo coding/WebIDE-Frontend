@@ -46,6 +46,7 @@ function createFolderAtPath (path) {
 
 
 export function openFile (obj) {
+  if (!obj.path) return
   // 做一些encoding的调度
   if (FileState.initData.get('_init')) {
     when(() => !FileState.initData.get('_init'), () => {
@@ -276,12 +277,21 @@ const fileCommands = {
 
   // 'file:unsaved_files_list':
   'file:open_welcome': (c) => {
-    TabStore.createTab({
-      icon: 'fa fa-info-circle',
-      type: 'welcome',
-      title: 'Welcome',
-    })
-  }
+    // const activeTabGroup = TabStore.getState().activeTabGroup
+    const existingTabs = TabStore.findTab(
+      tab => tab.type === 'welcome'
+    )
+    if (existingTabs.length) {
+      const existingTab = existingTabs[0]
+      existingTab.activate()
+    } else {
+      TabStore.createTab({
+        icon: 'fa fa-info-circle',
+        type: 'welcome',
+        title: 'Welcome',
+      })
+    }
+  },
 }
 
 export default fileCommands

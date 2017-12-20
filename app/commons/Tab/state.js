@@ -45,7 +45,7 @@ function TabScope () {
   }
 
   @computed get isActive () {
-    return this.tabGroup.activeTab === this
+    return this.tabGroup && this.tabGroup.activeTab === this
   }
 
   @computed get siblings () {
