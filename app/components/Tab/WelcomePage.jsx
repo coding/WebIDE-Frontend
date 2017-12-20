@@ -81,7 +81,7 @@ class WelcomePage extends Component {
         const recentList = []
         res.contents.forEach((ws) => {
           let name = ''
-          if (ws.defaultWorkspace) {
+          if (ws.defaultWorkspace || !ws.project) {
             name = 'Default'
           } else {
             name = `${ws.project.ownerName}/${ws.project.name}`
