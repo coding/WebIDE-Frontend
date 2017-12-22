@@ -126,7 +126,7 @@ class TtySocketClient {
   connect () {
     if (!config.isPlatform) return
     // Need to make sure EVERY ATTEMPT to connect has ensured `fsSocketConnected == true`
-    if (this.socket.connected || this.connectingPromise) return this.connectingPromise
+    if (!this.socket || this.socket.connected || this.connectingPromise) return this.connectingPromise
     let resolve, reject
     this.connectingPromise = new Promise((rsv, rjt) => { resolve = rsv; reject = rjt })
     const dispose = autorun(() => { if (config.fsSocketConnected) resolve(true) })
@@ -163,6 +163,7 @@ class TtySocketClient {
   close () {
     if (config.ttySocketConnected) {
       this.socket.disconnect('manual')
+      TtySocketClient.$$singleton = null
     }
   }
 }

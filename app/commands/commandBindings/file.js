@@ -45,23 +45,23 @@ function createFolderAtPath (path) {
 }
 
 
-export function openFile (obj) {
+export function openFile (obj, callback) {
   if (!obj.path) return
   // 做一些encoding的调度
   if (FileState.initData.get('_init')) {
     when(() => !FileState.initData.get('_init'), () => {
       const { encoding } = FileState.initData.get(obj.path) || {}
-      openFileWithEncoding({ ...obj, encoding })
+      openFileWithEncoding({ ...obj, encoding, callback })
       FileState.initData.set(obj.path, {})
     })
   } else {
     const { encoding } = FileState.initData.get(obj.path) || {}
-    openFileWithEncoding({ ...obj, encoding })
+    openFileWithEncoding({ ...obj, encoding, callback })
     FileState.initData.set(obj.path, {})
   }
 }
 
-export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup = false, encoding }) {
+export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup = false, encoding, callback }) {
   const { encoding: currentEncoding } = FileStore.get(path) || {}
   return api.readFile(path, encoding || currentEncoding)
     .then((data) => {
@@ -79,6 +79,7 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
           existingTab.editor.gitBlame = editor.gitBlame
         }
         existingTab.activate()
+        if (callback) callback()
       } else {
         TabStore.createTab({
           icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
@@ -88,6 +89,9 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
           },
           ...others
         })
+        if (callback) {
+          callback()
+        }
       }
     })
 }
@@ -162,8 +166,10 @@ const fileCommands = {
   },
   'file:highlight_line': (c) => {
     console.log('file:highlight_line', c)
-    // const { path, lineNumber } = c.data
-    emitter.emit(FILE_HIGHLIGHT, c.data)
+    const { path, lineNumber } = c.data
+    openFile({ path, allGroup: true }, () => {
+      emitter.emit(FILE_HIGHLIGHT, c.data)
+    })
   },
   'file:new_file': (c) => {
     const node = c.context

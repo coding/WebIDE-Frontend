@@ -2,7 +2,9 @@ import _ from 'lodash'
 import config from 'config'
 import { autorun, observalbe, runInAction } from 'mobx'
 import { TtySocketClient } from 'backendAPI/websocketClients'
-
+import * as TabActions from 'components/Tab/actions'
+import * as TermActions from './actions'
+import * as SideBar from 'components/Panel/SideBar/actions'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
@@ -50,7 +52,8 @@ class TerminalClient extends TtySocketClient {
       let term
       term = _.find(terms, term => term.id === data.id)
       if (term) {
-        return this.actions.removeTab(term.tabId)
+        this.remove(term)
+        return TermActions.removeTerminal(term.tabId)
       }
     })
 
@@ -125,11 +128,15 @@ class TerminalClient extends TtySocketClient {
 
   remove (removedTerm) {
     _.remove(terms, { id: removedTerm.id })
-    this.socket.emit('term.close', { id: removedTerm.id })
+    if (this.socket) {
+      this.socket.emit('term.close', { id: removedTerm.id })
+    }
     if (terms.length == 0) {
-      this.socket.disconnect()
+      // this.socket.disconnect()
+      this.close()
       if (this.unbindSocketEvent) this.unbindSocketEvent()
       this.socket = null
+      SideBar.hideSidePanelView('SIDEBAR.BOTTOM.terminal')
     }
   }
 

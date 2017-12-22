@@ -7,7 +7,7 @@ import { SIDEBAR } from '../../Plugins/constants'
 export const SIDEBAR_ACTIVATE_VIEW = 'SIDEBAR_ACTIVATE_VIEW'
 export const SIDEBAR_TOGGLE_VIEW = 'SIDEBAR_TOGGLE_VIEW'
 export const SIDEBAR_SHOW_VIEW = 'SIDEBAR_SHOW_VIEW'
-
+export const SIDEBAR_HIDE_VIEW = 'SIDEBAR_HIDE_VIEW'
 
 const positionToPanel = {
   [SIDEBAR.RIGHT]: 'RIGHT',
@@ -30,6 +30,7 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
       }
     })
     targetPanel.show()
+    emitter.emit(E.PANEL_SHOW, targetPanel)
     // 通知插件
     if (targetPlugin.actions.onSidebarActive) {
       targetPlugin.actions.onSidebarActive()
@@ -37,6 +38,7 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
   } else {
     targetPlugin.status.set('active', false)
     targetPanel.hide()
+    emitter.emit(E.PANEL_HIDE, targetPanel)
     // 通知插件
     if (targetPlugin.actions.onSidebarDeactive) {
       targetPlugin.actions.onSidebarDeactive()
@@ -44,8 +46,25 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
   }
 }
 
+const _hideSidePanelView = (viewId) => {
+  setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
+  const targetPlugin = pluginState.plugins.get(viewId) || {}
+  const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[targetPlugin.position]}`)
+  targetPlugin.status.set('active', false)
+  targetPanel.hide()
+  emitter.emit(E.PANEL_HIDE, targetPanel)
+  // 通知插件
+  if (targetPlugin.actions.onSidebarDeactive) {
+    targetPlugin.actions.onSidebarDeactive()
+  }
+}
+
 export const activateSidePanelView = registerAction(SIDEBAR_ACTIVATE_VIEW, (viewId) => {
   _toggleSidePanelView(viewId, true)
+})
+
+export const hideSidePanelView = registerAction(SIDEBAR_HIDE_VIEW, (viewId) => {
+  _hideSidePanelView(viewId)
 })
 
 export const showSidePanelView = registerAction(SIDEBAR_SHOW_VIEW, ({ viewId, shouldShow }) => {

@@ -108,3 +108,15 @@ export function inputPath (inputPath) {
 export const addTerminal = registerAction('terminal:add', () => {
   state.tabGroups.get('terminalGroup').addTab(new Tab())
 })
+
+// 如果没有，添加一个
+export const openTerminal = registerAction('terminal:open', () => {
+  const terminalTabGroup = state.tabGroups.get('terminalGroup')
+  if (terminalTabGroup.tabs.length === 0) {
+    state.tabGroups.get('terminalGroup').addTab(new Tab())
+  }
+})
+
+export const removeTerminal = registerAction('terminal:remove', (tabId) => {
+  state.tabGroups.get('terminalGroup').removeTab(tabId)
+})

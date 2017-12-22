@@ -58,6 +58,7 @@ class Term extends Component {
   componentWillUnmount() {
     emitter.removeListener(E.PANEL_RESIZED, this.onResize)
     emitter.removeListener(E.THEME_CHANGED, this.onTheme)
+    TerminalState.terminalManager.remove(this.terminal)
   }
 
   render() {

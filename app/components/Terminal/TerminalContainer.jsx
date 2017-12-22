@@ -5,6 +5,7 @@ import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import Terminal from './Terminal'
 import { Tab, TabGroup } from './state'
+import { emitter, E } from 'utils'
 
 import * as Actions from './actions'
 
@@ -33,6 +34,16 @@ class TerminalContainer extends Component {
     this.tabGroup.addTab(tab)
   }
 
+  componentDidMount () {
+    emitter.on(E.PANEL_SHOW, this.onShow)
+    emitter.on(E.PANEL_HIDE, this.onHide)
+  }
+
+  componentWillUnmount () {
+    emitter.removeListener(E.PANEL_SHOW, this.onShow)
+    emitter.removeListener(E.PANEL_HIDE, this.onHide)
+  }
+
   render () {
     return (
       <div className='tab-container'>
@@ -48,6 +59,15 @@ class TerminalContainer extends Component {
         </TabContent>
       </div>
     )
+  }
+
+  onShow (panel) {
+    if (panel.id === 'PANEL_BOTTOM') {
+      Actions.openTerminal()
+    }
+  }
+
+  onHide (panel) {
   }
 }
 

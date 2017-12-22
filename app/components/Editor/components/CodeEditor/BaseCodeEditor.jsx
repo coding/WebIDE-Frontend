@@ -51,7 +51,9 @@ class BaseCodeEditor extends Component {
       if (this.breakpointHighlight) {
         this.cm.removeLineClass(this.breakpointHighlight, 'background', 'breakpoint-highlight')
       }
-      this.breakpointHighlight = this.cm.addLineClass(lineNumber - 1, 'background', 'breakpoint-highlight')
+      if (lineNumber > 0) {
+        this.breakpointHighlight = this.cm.addLineClass(lineNumber - 1, 'background', 'breakpoint-highlight')
+      }
     }
   }
 }

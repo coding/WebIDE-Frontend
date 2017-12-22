@@ -40,5 +40,15 @@ export default {
     }
     SideBar.activateSidePanelView('SIDEBAR.BOTTOM.terminal')
     // $d(Tab.createTabInGroup('tab_group_terminal'))
-  }
+  },
+  'tools:terminal:open_panel': (c) => {
+    const terminalGroup = terminalState.tabGroups.get('terminalGroup')
+    if (terminalGroup) {
+      Terminal.openTerminal()
+    }
+    SideBar.activateSidePanelView('SIDEBAR.BOTTOM.terminal')
+  },
+  'tools:terminal:close_panel': (c) => {
+    SideBar.hideSidePanelView('SIDEBAR.BOTTOM.terminal')
+  },
 }
