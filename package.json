@@ -2,7 +2,7 @@
   "name": "coding-web-ide",
   "version": "0.1.0",
   "description": "Coding WebIDE",
-  "main": "index.js",
+  "main": "dist/workstation",
   "private": true,
   "repository": "https://github.com/Coding/WebIDE-Frontend.git",
   "bugs": {
@@ -25,7 +25,9 @@
     "testw": "./node_modules/.bin/jest --config app/js.config.json --watch",
     "i18n": "node .i18nGenerator.js",
     "packageList": "node packageListServer.js",
-    "pm2": "pm2 start task.yaml"
+    "pm2": "pm2 start task.yaml",
+    "clean-dist": "rm -rf dist",
+    "build-lib": "npm run clean-dist && PACKAGE_DEV=false RUN_MODE=platform NODE_ENV=lib PACKAGE_SERVER=http://ide.codelife.me:8000 node_modules/.bin/webpack"
   },
   "keywords": [
     "coding",

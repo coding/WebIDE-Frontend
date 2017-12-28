@@ -1,0 +1,21 @@
+@import 'normalize';
+@import 'ui-variables';
+@import "mixins";
+@import 'scaffolding';
+
+@import "core-ui"
+
+.hidden {display: none !important;}
+
+.ide-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.utilities-container {
+  isolation: isolate;
+  z-index: z(utilities-container);
+}
