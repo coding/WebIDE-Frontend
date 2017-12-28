@@ -74,15 +74,15 @@ async function initialize () {
   })
 
 
-  await step(`[${stepNum++}] mount required package`, () => {
-    mountPackagesByType('Required')
-    return true
-  })
+  // await step(`[${stepNum++}] mount required package`, () => {
+  //   mountPackagesByType('Required')
+  //   return true
+  // })
 
-  await step(`[${stepNum++}] persist Store`, () => {
-    persistTask()
-    return true
-  })
+  // await step(`[${stepNum++}] persist Store`, () => {
+  //   persistTask()
+  //   return true
+  // })
 
   if (config.packageDev) {
     await step(`[${stepNum++}] enable package server hotreload`,
