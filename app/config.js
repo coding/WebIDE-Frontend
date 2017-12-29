@@ -18,6 +18,7 @@ const config = observable({
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
+  nodeEnv: __NODE_ENV__,
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(
@@ -31,7 +32,7 @@ const config = observable({
 })
 
 autorun(() => {
-  if (config.projectName) {
+  if (config.projectName && config.nodeEnv !== 'lib') {
     window.document.title = `${config.projectName} | Coding WebIDE 开启云端开发模式！ -  Coding.net`
   }
 })
