@@ -1,6 +1,6 @@
 {
   "name": "coding-web-ide",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Coding WebIDE",
   "main": "dist/workstation",
   "private": true,
@@ -59,6 +59,7 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
     "eslint-stats": "^1.0.0",
+    "extract-text-webpack-plugin": "2.1.2",
     "file-loader": "^1.1.5",
     "git-revision-webpack-plugin": "^2.4.1",
     "html-webpack-plugin": "^2.28.0",

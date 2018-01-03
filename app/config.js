@@ -18,7 +18,7 @@ const config = observable({
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
-  nodeEnv: __NODE_ENV__,
+  nodeEnv: __NODE_ENV__ || null,
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(

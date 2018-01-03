@@ -64,7 +64,6 @@ async function initialize () {
     }
     return goto(state.keys()[0])*/
     for (const value of state.values()) {
-      console.log('== value ==', value.desc)
       if (checkEnable(value.enable)) {
         await step(`[${stepNum++}] ${value.desc}`, value.func)
       }

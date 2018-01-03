@@ -7,7 +7,12 @@ module.exports = function (paths) {
       rules: [
         {
           test: /\.woff2?\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
-          use: ['file-loader']
+          use: {
+            loader: 'url-loader',
+            options: {
+              limit: 100000
+            }
+          }
           // loader: "url?limit=10000&mimetype=application/font-woff"
         }, {
           test: /\.ttf\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
@@ -18,7 +23,12 @@ module.exports = function (paths) {
           use: ['file-loader']
         }, {
           test: /\.svg\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
-          use: ['file-loader']
+          use: {
+            loader: 'url-loader',
+            options: {
+              limit: 100000
+            }
+          }
           // loader: "url?limit=10000&mimetype=image/svg+xml"
         }, {
           test: /\.styl$/,

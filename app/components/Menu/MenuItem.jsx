@@ -103,7 +103,7 @@ class MenuItem extends Component {
             disabled: isDisabled,
           })}
           onMouseEnter={this.onMouseEnter}
-          onClick={!isDisabled && this.execCommand}
+          onClick={!isDisabled ? this.execCommand : undefined}
           id={item.id}
         >
           {(item.icon || item.iconElement) && (

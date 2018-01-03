@@ -12,7 +12,7 @@ const menuBarItems = observable([
     items: [
       {
         key: 'settings',
-        name: i18n`menuBarItems.meta.main`,
+        name: i18n.get('menuBarItems.meta.main'),
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
         canopen: true
@@ -20,62 +20,62 @@ const menuBarItems = observable([
     ]
   }, {
     key: 'file',
-    name: i18n`menuBarItems.file.main`,
+    name: i18n.get('menuBarItems.file.main'),
     items: [
       {
         key: 'newFile',
-        name: i18n`menuBarItems.file.newFile`,
+        name: i18n.get('menuBarItems.file.newFile'),
         icon: 'fa fa-file-text-o',
         command: 'file:new_file',
         showMore: true
       }, {
         key: 'newFolder',
-        name: i18n`menuBarItems.file.newFolder`,
+        name: i18n.get('menuBarItems.file.newFolder'),
         icon: 'fa fa-folder-o',
         command: 'file:new_folder',
         showMore: true
       }, {
         key: 'save',
-        name: i18n`menuBarItems.file.save`,
+        name: i18n.get('menuBarItems.file.save'),
         icon: 'fa fa-floppy-o',
         command: 'file:save'
       }
     ]
   }, {
     key: 'edit',
-    name: i18n`menuBarItems.edit.main`,
+    name: i18n.get('menuBarItems.edit.main'),
     items: [
       {
         key: 'format',
-        name: i18n`menuBarItems.edit.format`,
+        name: i18n.get('menuBarItems.edit.format'),
         icon: '',
         command: 'edit:toggle_format',
       }, {
         key: 'comment',
-        name: i18n`menuBarItems.edit.comment`,
+        name: i18n.get('menuBarItems.edit.comment'),
         icon: '',
         command: 'edit:toggle_comment',
       }
     ]
   }, {
     key: 'git',
-    name: i18n`menuBarItems.git.main`,
+    name: i18n.get('menuBarItems.git.main'),
     onOpen: onGitMenuOpen,
     items: [
       {
         key: 'commit',
-        name: i18n`menuBarItems.git.commit`,
+        name: i18n.get('menuBarItems.git.commit'),
         icon: 'octicon octicon-git-commit',
         command: 'git:commit',
         showMore: true,
       }, {
         key: 'pull',
-        name: i18n`menuBarItems.git.pull`,
+        name: i18n.get('menuBarItems.git.pull'),
         icon: 'octicon octicon-repo-pull',
         command: 'git:pull'
       }, {
         key: 'push',
-        name: i18n`menuBarItems.git.push`,
+        name: i18n.get('menuBarItems.git.push'),
         icon: 'octicon octicon-repo-push',
         command: 'git:push'
       },
@@ -83,72 +83,72 @@ const menuBarItems = observable([
       {
         key: 'resolveConflicts',
         group: 'conflicts',
-        name: i18n`menuBarItems.git.resolveConflicts`,
+        name: i18n.get('menuBarItems.git.resolveConflicts'),
         command: 'git:resolve_conflicts',
         showMore: true
       },
       divider,
       {
         key: 'stash',
-        name: i18n`menuBarItems.git.stashChanges`,
+        name: i18n.get('menuBarItems.git.stashChanges'),
         command: 'git:stash',
         showMore: true,
       },
       {
         key: 'unstash',
-        name: i18n`menuBarItems.git.unstashChanges`,
+        name: i18n.get('menuBarItems.git.unstashChanges'),
         command: 'git:unstash',
         showMore: true
       },
       {
         key: 'reset',
-        name: i18n`menuBarItems.git.resetHead`,
+        name: i18n.get('menuBarItems.git.resetHead'),
         command: 'git:reset_head',
         showMore: true
       },
       divider,
       {
         key: 'branches',
-        name: i18n`menuBarItems.git.branches`,
+        name: i18n.get('menuBarItems.git.branches'),
         icon: 'octicon octicon-git-branch',
         command: 'global:show_branches',
         showMore: true
       },
       {
         key: 'merge',
-        name: i18n`menuBarItems.git.mergeBranch`,
+        name: i18n.get('menuBarItems.git.mergeBranch'),
         icon: 'octicon octicon-git-merge',
         command: 'git:merge',
         showMore: true
       },
       {
         key: 'tag',
-        name: i18n`menuBarItems.git.tag`,
+        name: i18n.get('menuBarItems.git.tag'),
         command: 'git:tag',
         showMore: true
       },
       divider,
       {
         key: 'rebase',
-        name: i18n`menuBarItems.git.rebase`,
+        name: i18n.get('menuBarItems.git.rebase'),
         command: 'git:rebase:start',
         showMore: true
       },
       {
         key: 'abort',
-        name: i18n`menuBarItems.git.abortRebase`,
+        name: i18n.get('menuBarItems.git.abortRebase'),
         command: 'git:rebase:abort',
         getIsDisabled,
       },
       {
         key: 'continue',
-        name: i18n`menuBarItems.git.continueRebase`,
+        name: i18n.get('menuBarItems.git.continueRebase'),
         command: 'git:rebase:continue',
         getIsDisabled,
       },
       {
         key: 'skipCommit',
-        name: i18n`menuBarItems.git.skipCommit`,
+        name: i18n.get('menuBarItems.git.skipCommit'),
         command: 'git:rebase:skip_commit',
         showMore: true,
         getIsDisabled,
@@ -156,16 +156,16 @@ const menuBarItems = observable([
     ]
   }, {
     key: 'tools',
-    name: i18n`menuBarItems.tools.main`,
+    name: i18n.get('menuBarItems.tools.main'),
     items: [
       {
         key: 'terminal',
-        name: i18n`menuBarItems.tools.terminal`,
+        name: i18n.get('menuBarItems.tools.terminal'),
 
         icon: 'octicon octicon-terminal',
         items: [
           {
-            name: i18n`menuBarItems.tools.newTerminal`,
+            name: i18n.get('menuBarItems.tools.newTerminal'),
             icon: 'octicon octicon-terminal',
             command: 'tools:terminal:new_terminal'
           }

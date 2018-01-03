@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { inject } from 'mobx-react'
 import { NotificationStack } from 'react-notification'
 import * as actions from './actions'
@@ -22,15 +22,21 @@ const activeBarStyleFactory = (index, style) => {
   })
 }
 
-const Notification = ({ notifications }) => {
-  return (
-    <NotificationStack
-      notifications={notifications}
-      onDismiss={notification => actions.removeNotification(notification.key)}
-      barStyleFactory={barStyleFactory}
-      activeBarStyleFactory={activeBarStyleFactory}
-    />
-  )
+class Notification extends Component {
+  constructor (props) {
+    super()
+  }
+  render () {
+    const { notifications } = this.props
+    return (
+      <NotificationStack
+        notifications={notifications}
+        onDismiss={notification => actions.removeNotification(notification.key)}
+        barStyleFactory={barStyleFactory}
+        activeBarStyleFactory={activeBarStyleFactory}
+      />
+    )
+  }
 }
 
 export default inject(() => {
