@@ -24,7 +24,8 @@ function TabScope () {
         tabGroups: mapToJS(this.tabGroups),
         activeTabGroupId: this.activeTabGroupId
       }
-    }
+    },
+    keepOne: false, // 是否保留一个 tab
   })
 
   const mapEntity = mapEntityFactory(state)
@@ -72,6 +73,9 @@ function TabScope () {
   }
 
   @action destroy () {
+    if (state.tabs.size === 1 && state.keepOne) {
+      return
+    }
     this.tabGroup.removeTab(this)
     state.tabs.delete(this.id)
   }

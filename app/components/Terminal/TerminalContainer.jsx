@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
-import Terminal from './Terminal'
+// import Terminal from './Terminal'
+import Terminal from './Xterm'
 import { Tab, TabGroup } from './state'
 import { emitter, E } from 'utils'
 
@@ -46,7 +47,7 @@ class TerminalContainer extends Component {
 
   render () {
     return (
-      <div className='tab-container'>
+      <div className='tab-container terminal-panel'>
         <TabBar tabGroup={this.tabGroup}
           addTab={Actions.addTerminal}
           contextMenuItems={contextMenuItems}/>

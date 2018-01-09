@@ -1,18 +1,66 @@
 .workstation {
-  height: 66px;
+  height: 666px;
   background-color: #252526;
   position: relative;
-  &.restore {
-    height: 160px;
+  font-size: 13px;
+
+  .terminal.xterm {
+    background-color: rgb(0, 0, 0);  
   }
+  
   &.hide {
     display: none;  
   }
+  &.min, &.restore {
+    height: 66px;
+    overflow: hidden;
+
+    .terminal-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      background: #000;
+    }
+    .panel, .panel-container, .panel-axis {
+      position: static;
+    }
+    #MENUBAR {
+      display: none;  
+    }
+  }
+  &.max {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    height: auto;
+
+    .tab-bar > .tab-show-list {
+      margin-right: initial;  
+    }
+  }
+  &.term {
+    height: 66px;
+    overflow: hidden;
+    .tab-bar > .tab-show-list {
+      margin-right: initial;  
+    }
+  }
+  &.restore {
+    height: 160px;
+  }
   .workstation-toolbar {
     position: absolute;
-    right: 8px;
-    top: 8px;
+    right: 4px;
+    top: 2px;
     color: white;
+    z-index: 100;
+    font-size: 12px;
     i {
       margin-left: 4px;
       cursor: pointer;

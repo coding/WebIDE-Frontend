@@ -25,6 +25,7 @@ class Term extends Component {
     if (uiTheme === 'dark') {
       themeName = 'default'
     }
+    _this.props.tab.title = 'Shell'
     var terminal = this.terminal = new Terminal({
       theme: themeName,
       cols: 80,
@@ -37,16 +38,17 @@ class Term extends Component {
     terminal.tabId = this.props.tab.id;
     this.props.tab.terminal = terminal
     terminal.open(this.termDOM);
+    terminal.sizeToFit();
     terminal.id = this.sessionId = _.uniqueId('term_');
-
+    terminalManager.add(terminal);
     terminal.on('resize', (cols, rows) => {
       terminalManager.resize(terminal, cols, rows);
     });
-    setTimeout(() => terminal.sizeToFit(), 0)
+    // TODO autorun this.termDOM
+    setTimeout(() => terminal.sizeToFit(), 2000) // 以防万一 
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
     emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
-
-    terminalManager.add(terminal);
+    
     terminal.on('data', data => {
       terminalManager.getSocket().emit('term.input', {id: terminal.id, input: data})
     });

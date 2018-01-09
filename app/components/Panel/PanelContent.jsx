@@ -9,6 +9,7 @@ import FileTree from '../FileTree'
 import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
 import FileList from '../Tab/fileList'
+import config from '../../config'
 
 
 const PanelContent = ({ panel }) => {
@@ -55,7 +56,7 @@ const PanelContent = ({ panel }) => {
       }
       return (
         <SidePanelContainer side='bottom'>
-          <SidePanelView key='terminal' label={labels.terminal} >
+          <SidePanelView key='terminal' label={labels.terminal} active={config.isLib} >
             <TerminalContainer />
           </SidePanelView>
 

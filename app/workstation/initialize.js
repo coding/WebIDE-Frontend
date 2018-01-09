@@ -26,7 +26,7 @@ function checkEnable (enable) {
   return Boolean(enable)
 }
 
-async function initialize () {
+async function initialize ({ persist }) {
   const step = stepFactory()
   let stepNum = 2
   await step('[0] prepare data', async () => {
@@ -77,11 +77,12 @@ async function initialize () {
   //   mountPackagesByType('Required')
   //   return true
   // })
-
-  // await step(`[${stepNum++}] persist Store`, () => {
-  //   persistTask()
-  //   return true
-  // })
+  if (persist) {
+    await step(`[${stepNum++}] persist Store`, () => {
+      persistTask()
+      return true
+    })
+  }
 
   if (config.packageDev) {
     await step(`[${stepNum++}] enable package server hotreload`,

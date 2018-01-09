@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { Component } from 'react'
 import settings from 'settings'
 import _ from 'lodash'
-import { inject } from 'mobx-react'
+import { inject, observer } from 'mobx-react'
 import moment from 'moment'
 import { autorun } from 'mobx'
 
@@ -28,6 +28,25 @@ const mapStateToProps = () => {
   const languageSetting = settings.general.language
   const language = languageToCode[languageSetting.value]
   return ({ language })
+}
+
+@inject(mapStateToProps) @observer
+class Translate extends Component {
+  constructor (props) {
+    super(props)
+  }
+  render () {
+    const { id, language, template, values, translate } = this.props
+    return (
+      <span id={id}>{this.translate({ language, template, values, translate })}</span>
+    )
+  }
+  translate ({ language, template, values, translate }) {
+    if (values.length === 0) {
+      return template.reduce((p, v) => `${p}${translate(v, language, {})}`, '')
+    }
+    return template.reduce((p, v, i) => `${p}${translate(v, language, values[i] || {})}`, '')
+  }
 }
 
 export class CreateI18n {
@@ -66,10 +85,12 @@ export class CreateI18n {
 
     const TranslateComponent = inject(mapStateToProps)(({ language }) => (
       <span id={template[0]}>{translate(language)}</span>
+      // <Translate id={template[0]}>{translate(language)}</Translate>
     ))
 
     const toString = () => translate(mapStateToProps().language)
-    return React.createElement(TranslateComponent, { toString })
+    // return React.createElement(TranslateComponent, { toString })
+    return <Translate id={template[0]} language={mapStateToProps().language} template={template} values={values} translate={this.translate} />
   }
   getCache (key, value) {
     const language = languageToCode[settings.general.language.value]

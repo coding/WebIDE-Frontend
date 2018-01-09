@@ -25,7 +25,8 @@ return {
     // main: [path.join(PROJECT_ROOT, 'app')],
     // workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
     // vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
-    workstation: ['babel-polyfill', path.join(PROJECT_ROOT, 'app/workstation')],
+    workstation: [path.join(PROJECT_ROOT, 'app/workstation/workstationFull')],
+    terminal: [path.join(PROJECT_ROOT, 'app/workstation/workstation')],
   },
   output: {
     publicPath,

@@ -1,8 +1,10 @@
 import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import { TabStateScope } from 'commons/Tab'
+import config from 'config'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
+state.keepOne = config.isLib
 
 class Tab extends BaseTab {
   constructor (props = {}) {

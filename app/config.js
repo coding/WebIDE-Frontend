@@ -28,11 +28,14 @@ const config = observable({
       )
     }
     return ''
+  },
+  get isLib () {
+    return config.runMode === 'lib'
   }
 })
 
 autorun(() => {
-  if (config.projectName && config.nodeEnv !== 'lib') {
+  if (config.projectName && !config.isLib) {
     window.document.title = `${config.projectName} | Coding WebIDE 开启云端开发模式！ -  Coding.net`
   }
 })

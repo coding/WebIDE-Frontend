@@ -45,7 +45,7 @@ const FormInputGroup = defaultProps((props) => {
         >
           {settingItem.options.map(option =>
             isPlainObject(option) ?
-              <option key={option.value} value={option.value}>{i18n([option.name])}</option>
+              <option key={option.value} value={option.value}>{i18n.get(`${option.name}`)}</option>
             : <option key={option} value={option}>{option}</option>
           )}
         </select>

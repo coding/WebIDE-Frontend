@@ -2,6 +2,7 @@ import _ from 'lodash'
 import extendObservableStrict from 'utils/extendObservableStrict'
 import PaneScope from 'commons/Pane/state'
 import { extendObservable, computed, action } from 'mobx'
+import config from '../../config'
 
 const { state, BasePane } = PaneScope()
 
@@ -88,7 +89,7 @@ const BasePanelLayout = {
                 { ref: 'PANEL_RIGHT', size: 30, contentType: 'EXTENSION_RIGHT', hidden: true },
               ],
             },
-            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: true, resizable: true },
+            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: !config.isLib, resizable: true },
             { ref: 'BAR_BOTTOM', resizable: false },
           ]
         },

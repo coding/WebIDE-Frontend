@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import Root from '../containers/Root'
+import Root from '../containers/Root'
 import initialize from './initialize'
 import { observer } from 'mobx-react'
 import { observable } from 'mobx'
 import cx from 'classnames'
-// import '../styles/main.styl'
+import '../styles/workstation.styl'
 // import initialize from '../initialize'
 // import InitializeContainer from '../containers/Initialize'
-import '../styles/lib.styl'
+// import '../styles/lib.styl'
 import '../styles/dark/index.styl'
 import './styles/workstation.styl'
 import config from '../config'
@@ -34,7 +34,7 @@ class WorkStation extends Component {
   componentDidMount () {
     const that = this
     this.init = async function () {
-      const step = await initialize({ persist: false })
+      const step = await initialize({ persist: true })
       if (step.allSuccess) {
         that.state.allSuccess = true
       }
@@ -48,14 +48,14 @@ class WorkStation extends Component {
     const size = this.state.size
 
     return (
-      <div className={cx('workstation', 'term')}>
-        <TerminalContainer />
-        {/* <div className='workstation-toolbar'>
+      <div className={cx('workstation', size)}>
+        <Root />
+        <div className='workstation-toolbar'>
           <i className='fa fa-window-minimize' onClick={this.handleMin} />
           <i className='fa fa-window-restore' onClick={this.handleRestore} />
           <i className='fa fa-window-maximize' onClick={this.handleMax} />
           <i className='fa fa-window-close-o' onClick={this.handleHide} />
-        </div> */}
+        </div>
       </div>
     )
   }
@@ -75,8 +75,11 @@ class WorkStation extends Component {
   }
 
   handleMax () {
-    // this.state.size = 'max'
-    window.open(`http://ide.codelife.me:8000/ws/${config.spaceKey}`, '_blank')
+    if (this.state.size !== 'max') {
+      this.state.size = 'max'
+      setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
+    }
+    // window.open(`http://ide.codelife.me:8000/ws/${config.spaceKey}`, '_blank')
   }
 
   handleHide () {

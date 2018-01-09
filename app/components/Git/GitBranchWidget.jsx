@@ -11,7 +11,7 @@ import i18n from 'utils/createI18n'
 
 // add withRef to deliver ref to the wrapperedcomponent
 @connect(state => state.GitState.branches,
-  dispatch => bindActionCreators(GitActions, dispatch), null, { withRef: true })
+  dispatch => bindActionCreators(GitActions, dispatch), null, { withRef: false })
 export default class GitBranchWidget extends Component {
   constructor (props) {
     super(props)
@@ -60,22 +60,22 @@ export default class GitBranchWidget extends Component {
 
   makeBrancheMenuItems (localBranches, remoteBranches) {
     if (!localBranches && !remoteBranches) {
-      return [{ name: i18n`git.branchWidget.fetchingBranches`, isDisabled: true }]
+      return [{ name: i18n.get('git.branchWidget.fetchingBranches'), isDisabled: true }]
     }
 
     const localBranchItems = localBranches.map(branch => ({
       name: branch,
       icon: 'fa',
       items: [{
-        name: i18n`git.branchWidget.checkout`,
+        name: i18n.get('git.branchWidget.checkout'),
         command: () => { this.props.checkoutBranch(branch) }
       }, {
-        name: i18n`git.branchWidget.checkoutAsNew`,
+        name: i18n.get('git.branchWidget.checkoutAsNew'),
         command: () => dispatchCommand('git:checkout_new_branch', {
           fromBranch: branch
         })
       }, {
-        name: i18n`git.branchWidget.delete`,
+        name: i18n.get('git.branchWidget.delete'),
         command: () => { this.props.gitDeleteBranch(branch) }
       }]
     }))
@@ -86,28 +86,28 @@ export default class GitBranchWidget extends Component {
         name: remoteBranch,
         icon: 'fa',
         items: [{
-          name: i18n`git.branchWidget.checkout`,
+          name: i18n.get('git.branchWidget.checkout'),
           // @todo: should prompt to input local branch name
           command: () => dispatchCommand('git:checkout_new_branch', {
             fromBranch: remoteBranch,
             toBranch: localBranch
           })
         }, {
-          name: i18n`git.branchWidget.delete`,
+          name: i18n.get('git.branchWidget.delete'),
           command: () => { this.props.gitDeleteBranch(remoteBranch) }
         }]
       }
     })
     return [
-      { name: i18n`git.branchWidget.newBranch`, command: () => dispatchCommand('git:new_branch'),
+      { name: i18n.get('git.branchWidget.newBranch'), command: () => dispatchCommand('git:new_branch'),
         iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
-      { name: i18n`git.branchWidget.synchronize`, command: () => this.props.getFetch(),
+      { name: i18n.get('git.branchWidget.synchronize'), command: () => this.props.getFetch(),
       icon: 'fa' },
       { isDivider: true },
-      { name: i18n`git.branchWidget.localBranches`, isDisabled: true },
+      { name: i18n.get('git.branchWidget.localBranches'), isDisabled: true },
       ...localBranchItems,
       { isDivider: true },
-      { name: i18n`git.branchWidget.remoteBranches`, isDisabled: true },
+      { name: i18n.get('git.branchWidget.remoteBranches'), isDisabled: true },
       ...remoteBranchItems
     ]
   }

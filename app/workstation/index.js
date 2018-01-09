@@ -1,4 +1,3 @@
-import WorkStation from './workstation'
-
+import WorkStation from './workstationFull'
 
 export default WorkStation
