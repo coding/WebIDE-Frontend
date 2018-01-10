@@ -54,6 +54,23 @@ class Term extends Component {
       // fontFamily: 'Menlo, Monaco, "DejaVu Sans Mono", Consolas, "Andale Mono", monospace;',
     })
 
+    terminal.attachCustomKeyEventHandler((e) => {
+      if (e.keyCode === 66 && e.altKey) {
+        terminalManager.getSocket().emit('term.input', { id: terminal.id, input: '\u001bb' }) // x1bb
+        return false
+      } else if (e.keyCode === 70 && e.altKey) {
+        terminalManager.getSocket().emit('term.input', { id: terminal.id, input: '\u001bf' }) // x1bf
+        return false
+      } else if (e.keyCode === 68 && e.altKey) {
+        terminalManager.getSocket().emit('term.input', { id: terminal.id, input: '\u001bd' })
+        return false
+      }
+      if (e.keyCode === 8747 || e.keyCode === 402 || e.keyCode === 8706) {
+        return false
+      }
+      return true
+    })
+
     terminal.setOption('theme', theme)
 
     terminalManager.setActions(TabActions)
