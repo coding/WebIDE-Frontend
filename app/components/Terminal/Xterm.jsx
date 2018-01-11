@@ -64,6 +64,9 @@ class Term extends Component {
       } else if (e.keyCode === 68 && e.altKey) {
         terminalManager.getSocket().emit('term.input', { id: terminal.id, input: '\u001bd' })
         return false
+      } else if (e.keyCode === 8 && e.altKey) {
+        terminalManager.getSocket().emit('term.input', { id: terminal.id, input: '\x1b' + '\x7f' })
+        return false
       }
       if (e.keyCode === 8747 || e.keyCode === 402 || e.keyCode === 8706) {
         return false
