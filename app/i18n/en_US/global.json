@@ -13,5 +13,6 @@
    "connecting": "Connecting",
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
-   "requestCollaborationExpires": "The demo has already expired."
+   "requestCollaborationExpires": "The demo has already expired.",
+   "hasVimium": "Please disable Vimium plugin."
 }

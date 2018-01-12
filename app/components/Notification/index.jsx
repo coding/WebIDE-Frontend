@@ -9,7 +9,9 @@ const barStyleFactory = (index, style) => {
     left: 'initial',
     right: '-100%',
     bottom: 'initial',
-    top: `${2 + index * 4}rem`
+    top: `${2 + index * 4}rem`,
+    fontSize: '12px',
+    padding: '8px',
   })
 }
 
@@ -18,7 +20,9 @@ const activeBarStyleFactory = (index, style) => {
     left: 'initial',
     right: '1rem',
     bottom: 'initial',
-    top: `${2 + index * 4}rem`
+    top: `${2 + index * 4}rem`,
+    fontSize: '12px',
+    padding: '8px',
   })
 }
 
