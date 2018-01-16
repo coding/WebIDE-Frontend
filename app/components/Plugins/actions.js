@@ -133,11 +133,18 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
   ({ type, data, group }) => {
     const fetchPackgeListPromise = api.fetchPackageList(type)
     return fetchPackgeListPromise.then(async (list) => {
-      store.list.replace(list)
-      if (group) {
-        return fetchPackageGroup('required', list, type, data)
+      if (config.isLib) {
+        const filterList = list.filter((item) => {
+          return item.name !== 'platform' && item.name !== 'Debugger' && item.name !== 'collaboration'
+        })
+        store.list.replace(filterList)
+      } else {
+        store.list.replace(list)
       }
-      for (const pkg of list) {
+      if (group) {
+        return fetchPackageGroup('required', store.list, type, data)
+      }
+      for (const pkg of filterList) {
         await fetchPackage(pkg, type, data)
       }
     })

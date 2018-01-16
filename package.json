@@ -1,6 +1,6 @@
 {
   "name": "coding-web-ide",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Coding WebIDE",
   "main": "dist/workstation",
   "private": true,
@@ -27,8 +27,8 @@
     "packageList": "node packageListServer.js",
     "pm2": "pm2 start task.yaml",
     "clean-dist": "rm -rf dist",
-    "build-lib": "npm run clean-dist && PACKAGE_DEV=false RUN_MODE=lib PACKAGE_SERVER=http://ide.codelife.me:8000 node_modules/.bin/webpack",
-    "start-lib": "npm run clean-dist && PACKAGE_DEV=false RUN_MODE=lib NODE_ENV=dev webpack-dev-server --progress --colors"
+    "build-lib": "npm run clean-dist && PACKAGE_DEV=false RUN_MODE=lib BACKEND_URL=http://ide-backend.xiayule.net WS_URL=http://ide-ws.xiayule.net STATIC_SERVING_URL=http://{space-key}-static-{access-token}.xiayule.net PACKAGE_SERVER=http://ide.xiayule.net node_modules/.bin/webpack",
+    "start-lib": "npm run clean-dist && PACKAGE_DEV=false RUN_MODE=lib NODE_ENV=dev BACKEND_URL=http://ide-backend.xiayule.net WS_URL=http://ide-ws.xiayule.net STATIC_SERVING_URL=http://{space-key}-static-{access-token}.xiayule.net PACKAGE_SERVER=http://ide.xiayule.net webpack-dev-server --progress --colors"
   },
   "keywords": [
     "coding",

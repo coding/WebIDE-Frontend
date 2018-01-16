@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { loadPlugin } from 'components/Plugins/actions.js'
 import Root from '../containers/Root'
 import initialize from './initialize'
 import { observer } from 'mobx-react'
@@ -30,6 +31,7 @@ class WorkStation extends Component {
     this.handleHide = this.handleHide.bind(this)
   }
   componentWillMount () {
+    loadPlugin(require('../plugin/index.js').default)
   }
   componentDidMount () {
     const that = this

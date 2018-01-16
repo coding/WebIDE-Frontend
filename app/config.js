@@ -11,7 +11,7 @@ const config = observable({
   wsURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
   staticServingURL: getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
   runMode: __RUN_MODE__,
-  isPlatform: Boolean(__RUN_MODE__),
+  // isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
@@ -31,6 +31,9 @@ const config = observable({
   },
   get isLib () {
     return config.runMode === 'lib'
+  },
+  get isPlatform () {
+    return Boolean(__RUN_MODE__) || config.runMode === 'lib'
   }
 })
 

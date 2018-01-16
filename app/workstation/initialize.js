@@ -39,14 +39,14 @@ async function initialize ({ persist }) {
     return true
   })
 
-  // await step('[1] load required package', async() => {
-  //   try {
-  //     await loadPackagesByType('Required', state, true)
-  //   } catch (err) {
-  //     return true
-  //   }
-  //   return true
-  // })
+  await step('[1] load required package', async() => {
+    try {
+      await loadPackagesByType('Required', state, true)
+    } catch (err) {
+      return true
+    }
+    return true
+  })
 
   await step('=== Run steps in stepCache ===', async() => {
     /*async function goto (key, hasNext = true) {
@@ -73,10 +73,11 @@ async function initialize ({ persist }) {
   })
 
 
-  // await step(`[${stepNum++}] mount required package`, () => {
-  //   mountPackagesByType('Required')
-  //   return true
-  // })
+  await step(`[${stepNum++}] mount required package`, () => {
+    mountPackagesByType('Required')
+    return true
+  })
+
   if (persist) {
     await step(`[${stepNum++}] persist Store`, () => {
       persistTask()
