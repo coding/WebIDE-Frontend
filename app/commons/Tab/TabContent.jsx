@@ -9,11 +9,16 @@ export const TabContent = ({ children }) => (
   </div>
 )
 
-export const TabContentItem = observer(({ tab, children }) => (
-  <div className={cx('tab-content-item', { active: tab.isActive })}>
-    {children}
-  </div>
-))
+export const TabContentItem = observer(({ tab, children }) => {
+  if (tab.isActive && tab.onActive) {
+    tab.onActive()
+  }
+  return (
+    <div className={cx('tab-content-item', { active: tab.isActive })}>
+      {children}
+    </div>
+  )
+})
 
 TabContentItem.propTypes = {
   tab: PropTypes.object.isRequired,

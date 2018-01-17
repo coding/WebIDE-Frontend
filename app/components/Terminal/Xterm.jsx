@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/dist/xterm.css'
@@ -95,6 +94,7 @@ class Term extends Component {
     terminal.on('title', _.debounce((title) => {
       _this.props.tab.title = title
     }, 300))
+    this.props.tab.onActive = this.onActive
   }
 
   componentWillUnmount () {
@@ -115,7 +115,15 @@ class Term extends Component {
   }
 
   onResize () {
-    this.terminal.fit()
+    if (this.termDOM.clientHeight > 0 && this.termDOM.clientWidth > 0) {
+      this.terminal.fit()
+    }
+  }
+
+  onActive () {
+    setTimeout(() => {
+      this.terminal.fit()
+    })
   }
 
   onTheme (nextThemeId) {
