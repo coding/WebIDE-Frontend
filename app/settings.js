@@ -53,7 +53,11 @@ const changeSyntaxTheme = (nextSyntaxThemeId) => {
 const formatLocateName = (name) => {
   const replacedName = name.replace(/-/g, '_')
   const splitNames = replacedName.split('_')
-  return `${splitNames[0].toLowerCase()}_${splitNames[1].toUpperCase()}`
+  if (splitNames[0] === 'en') {
+    return 'en_US'
+  }
+  return 'zh_CN'
+  // return `${splitNames[0].toLowerCase()}_${splitNames[1].toUpperCase()}`
 }
 
 const localeToLangs = {
