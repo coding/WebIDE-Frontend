@@ -1,0 +1,26 @@
+.mask-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .progress {
+    // position: absolute;
+    // left: 25%;
+    // top: 50%;
+    // width: 50%;
+    // margin-top: -15px;
+    noSelect()
+    padding: 10px 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 10;
+    > i {
+      margin-right: 5px;
+    }
+  }
+}

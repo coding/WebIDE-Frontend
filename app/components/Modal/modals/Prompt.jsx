@@ -9,7 +9,9 @@ class Prompt extends Component {
   }
 
   componentDidMount () {
-    setSelectionRange(this.input, ...this.props.content.selectionRange)
+    if (this.props.content.selectionRange) {
+      setSelectionRange(this.input, ...this.props.content.selectionRange)
+    }
   }
 
   render () {
@@ -25,7 +27,7 @@ class Prompt extends Component {
           onChange={e => this.setState({ value: e.target.value })}
           onKeyDown={this.onKeyDown}
           value={this.state.value}
-          placeholder={this.props.placeholder}
+          placeholder={content.placeholder}
         />
         { content.statusMessage ?
           <div className='message message-info'>

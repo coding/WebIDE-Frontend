@@ -45,7 +45,12 @@ class Translate extends Component {
     if (values.length === 0) {
       return template.reduce((p, v) => `${p}${translate(v, language, {})}`, '')
     }
-    return template.reduce((p, v, i) => `${p}${translate(v, language, values[i] || {})}`, '')
+    return template.reduce((p, v, i) => {
+      if (i < values.length) {
+        return `${p}${translate(v, language, values[i] || {})}`
+      }
+      return p
+    }, '')
   }
 }
 

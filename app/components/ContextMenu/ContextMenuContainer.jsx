@@ -13,6 +13,7 @@ const ContextMenuContainer = observer(() => {
       pos={state.pos}
       context={state.contextNode}
       deactivate={store.closeContextMenu}
+      className={state.className}
     />
   )
 })

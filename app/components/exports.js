@@ -9,6 +9,7 @@ import * as Tab from './Tab'
 import * as Notification from './Notification'
 import * as FileTree from './FileTree'
 import * as Tooltip from './Tooltip'
+import * as Mask from './Mask'
 
 
 export {
@@ -22,5 +23,6 @@ export {
   MenuBar,
   Notification,
   FileTree,
-  Tooltip
+  Tooltip,
+  Mask
 }

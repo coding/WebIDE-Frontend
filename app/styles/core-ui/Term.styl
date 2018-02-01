@@ -254,3 +254,46 @@
       height: 100%;
   }
 }
+
+.terminal-panel {
+  .terminal-toolbar {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    color: #FFF;
+  }
+  .tab-bar > .tab-show-list {
+    margin-right: 30px;  
+  }
+  .term-env {
+    position: absolute;
+    top: 28px;
+    right: 0px;
+    // width: 400px;
+    bottom: 0px;
+    overflow: auto;
+    min-width: 500px;
+
+    &.hide {
+      display: none;  
+    }
+
+    .term-env-panel {
+      // height: 100%;
+      // overflow-y: hidden;
+      & > div {
+        height: 100%;
+        position: absolute;
+        right: 0;
+      }
+      .panel-heading {
+        display: none;  
+      }
+      .panel-body {
+        top: 0;
+        scrollBar();
+        z-index: 10;  
+      }
+    }
+  }
+}

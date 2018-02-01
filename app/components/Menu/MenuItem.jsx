@@ -34,6 +34,10 @@ class MenuItem extends Component {
     if (this.props.isActive && !nextProps.isActive) {
       clearTimeout(this.submenuShowTimeout)
       if (this.state.isSubmenuShown) this.setState({ isSubmenuShown: false })
+    } else if (nextProps.isActive && !this.props.isActive) {
+      if (this.props.item.onActive) {
+        this.props.item.onActive()
+      }
     }
   }
 
@@ -139,6 +143,7 @@ MenuItem.propTypes = {
   isActive: PropTypes.bool.isRequired,
   toggleActive: PropTypes.func.isRequired,
   parentMenu: PropTypes.any.isRequired,
+  onActive: PropTypes.func,
 }
 
 MenuItem.contextTypes = MenuContextTypes

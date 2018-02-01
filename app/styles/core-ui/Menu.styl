@@ -100,4 +100,40 @@
 .context-menu {
   position: fixed;
   z-index: z(context-menu);
+  &.top-down.to-right {
+    .menu-item > .menu {
+      top: 0;
+      left: 100%;
+      right: initial;
+      bottom: initial;
+      margin-top: -4px;
+    }
+  }
+  &.top-down.to-left {
+    .menu-item > .menu {
+      top: 0;
+      right: 100%;
+      left: initial;
+      bottom: initial;
+      margin-top: -4px;
+    }
+  }
+  &.bottom-up.to-right {
+    .menu-item > .menu {
+      bottom: 0;
+      left: 100%;
+      right: initial;
+      top: initial;
+      margin-bottom: -4px;
+    }
+  }
+  &.bottom-up.to-left {
+    .menu-item > .menu {
+      bottom: 0;
+      right: 100%;
+      left: initial;
+      top: initial;
+      margin-bottom: -4px;
+    }
+  }
 }

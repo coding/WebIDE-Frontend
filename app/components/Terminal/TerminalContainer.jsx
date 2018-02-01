@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { observer } from 'mobx-react'
+import { observable } from 'mobx'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 // import Terminal from './Terminal'
 import Terminal from './Xterm'
@@ -9,6 +10,9 @@ import { Tab, TabGroup } from './state'
 import { emitter, E } from 'utils'
 
 import * as Actions from './actions'
+import PluginArea from '../Plugins/component'
+import { injectComponent } from '../Plugins/actions'
+import { TERMINAL } from '../Plugins/constants'
 
 const contextMenuItems = [
   {
@@ -30,19 +34,30 @@ const contextMenuItems = [
 class TerminalContainer extends Component {
   constructor (props) {
     super(props)
+    this.state = observable({
+      showEnv: false
+    })
     const tab = new Tab()
     this.tabGroup = new TabGroup({ id: 'terminalGroup' })
     this.tabGroup.addTab(tab)
+
+    this.handleEnv = this.handleEnv.bind(this)
+    this.onEnvHide = this.onEnvHide.bind(this)
   }
 
   componentDidMount () {
     emitter.on(E.PANEL_SHOW, this.onShow)
     emitter.on(E.PANEL_HIDE, this.onHide)
+    emitter.on(E.TERM_ENV_HIDE, this.onEnvHide)
+    injectComponent(TERMINAL.ENV, {
+      key: 'envController',
+    }, () => <div></div>)
   }
 
   componentWillUnmount () {
     emitter.removeListener(E.PANEL_SHOW, this.onShow)
     emitter.removeListener(E.PANEL_HIDE, this.onHide)
+    emitter.removeListener(E.TERM_ENV_HIDE, this.onEnvHide)
   }
 
   render () {
@@ -58,6 +73,15 @@ class TerminalContainer extends Component {
             </TabContentItem>
           )}
         </TabContent>
+        <div className='terminal-toolbar'>
+          <i className='fa fa-desktop' onClick={this.handleEnv} />
+        </div>
+        <div className={cx(
+          'term-env', { hide: !this.state.showEnv }
+          )}
+        >
+          <PluginArea className='term-env-panel' position={TERMINAL.ENV} />
+        </div>
       </div>
     )
   }
@@ -69,6 +93,21 @@ class TerminalContainer extends Component {
   }
 
   onHide (panel) {
+  }
+
+  onEnvHide () {
+    this.state.showEnv = false
+    // emitter.emit(E.TERM_ENV_HIDE)
+  }
+
+  handleEnv (e) {
+    this.state.showEnv = !this.state.showEnv
+    emitter.emit(E.TERM_ENV_SHOW, e)
+    // if (this.state.showEnv) {
+    //   emitter.emit(E.TERM_ENV_SHOW, e)
+    // } else {
+    //   emitter.emit(E.TERM_ENV_HIDE, e)
+    // }
   }
 }
 
