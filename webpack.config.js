@@ -1,6 +1,6 @@
 /*eslint-disable*/
 require('dotenv').config()
-var production = ['production', 'prod'];
+var production = ['production', 'prod', 'qprod'];
 
 // module.exports = (process.env.NODE_ENV && production.indexOf(process.env.NODE_ENV) > -1) ?
 //     require('./webpack_configs/webpack.prod.config.js')
