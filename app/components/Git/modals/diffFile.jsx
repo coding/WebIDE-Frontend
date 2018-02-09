@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
 import { connect } from 'react-redux'
+import { inject, observer } from 'mobx-react'
 import * as GitActions from '../actions'
 const jsdiff = require('diff')
 
@@ -15,6 +16,9 @@ require(['diff_match_patch'], (lib) => {
 })
 import 'codemirror/addon/merge/merge.css'
 
+@inject(state => ({
+  themeName: state.SettingState.settings.appearance.syntax_theme.value,
+}))
 class GitDiffView extends Component {
   static defaultProps = {
     mode: null,
@@ -71,7 +75,7 @@ class GitDiffView extends Component {
   }
 
   render () {
-    const { theme, content } = this.props
+    const { content } = this.props
     const { path, oldRef, newRef } = this.props.content
     let loadDiv = ''
     if (this.state.isLoading) {
@@ -119,6 +123,7 @@ class GitDiffView extends Component {
       origLeft: left,
       value: right,
       lineNumbers: true,
+      theme: this.props.themeName,
       // revertButtons: true,
       readOnly: true
     })

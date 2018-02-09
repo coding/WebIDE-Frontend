@@ -326,13 +326,13 @@ export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
 export function mergeFile (path) {
-  return addModal('GitMergeFile', { path })
+  return dispatch => addModal('GitMergeFile', { path })
 }
 
 export const GIT_DIFF = 'GIT_DIFF'
 export const gitDiff = createAction(GIT_DIFF)
 export function diffFile ({ path, newRef, oldRef }) {
-  return addModal('GitDiffFile', { path, newRef, oldRef })
+  return dispatch => addModal('GitDiffFile', { path, newRef, oldRef })
 }
 
 export function gitFileDiff ({ path, newRef, oldRef }) {

@@ -157,7 +157,7 @@ class GitRebaseStart extends Component {
         onChange={this.handleOntoChange}
         value={this.state.selectedOnto}
       >
-        <option selected value='' disabled>
+        <option value='' disabled>
         -- {i18n.get('git.rebaseStart.selectBranch')} --
       </option>
         {

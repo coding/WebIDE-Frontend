@@ -58,7 +58,7 @@ class GitRebasePrepare extends Component {
             {i18n`git.rebasePrepare.title`}
           </h1>
           <hr />
-          <form className='form-horizontal'>
+          <div className='form-horizontal'>
             <div className='form-group'>
               <div className='col-sm-12'>
                 {i18n`git.rebasePrepare.editCommit`}
@@ -89,7 +89,7 @@ class GitRebasePrepare extends Component {
                 </button>
               </div>
             </div>
-          </form>
+          </div>
           <hr />
           <div className='modal-ops'>
             <button className='btn btn-default' onClick={(e) => {
