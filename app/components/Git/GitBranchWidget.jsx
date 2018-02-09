@@ -11,7 +11,7 @@ import i18n from 'utils/createI18n'
 
 // add withRef to deliver ref to the wrapperedcomponent
 @connect(state => state.GitState.branches,
-  dispatch => bindActionCreators(GitActions, dispatch), null, { withRef: false })
+  dispatch => bindActionCreators(GitActions, dispatch), null, { withRef: true })
 export default class GitBranchWidget extends Component {
   constructor (props) {
     super(props)

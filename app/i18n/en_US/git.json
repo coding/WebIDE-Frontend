@@ -17,6 +17,10 @@
       "fetchingBranches": "Fetching Branches...",
       "localBranches": "Local Branches"
    },
+   "rebaseInput": {
+      "title": "Edit commit message",
+      "resumeRebase": "Resume Rebase"
+   },
    "checkoutModal": {
       "checkoutAsNew": "Checkout New Branch",
       "fromBranch": "From Branch",

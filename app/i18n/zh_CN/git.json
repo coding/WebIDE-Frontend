@@ -18,8 +18,8 @@
       "localBranches": "本地分支"
    },
    "rebaseInput": {
-      "title": "增加rebase",
-      "resumeRebase": "恢复 rebase"
+      "title": "编辑提交信息",
+      "resumeRebase": "继续变基"
    },
    "checkoutModal": {
       "checkoutAsNew": "签出新分支",

@@ -115,7 +115,7 @@ class Term extends Component {
   }
 
   onResize () {
-    if (this.termDOM.clientHeight > 0 && this.termDOM.clientWidth > 0) {
+    if (this.termDOM && this.termDOM.clientHeight > 0 && this.termDOM.clientWidth > 0) {
       this.terminal.fit()
     }
   }
