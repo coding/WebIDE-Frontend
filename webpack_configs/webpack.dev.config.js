@@ -34,6 +34,7 @@ const config = merge(
     entry: {
       main: reactHotLoaderPrependEntries,
       workspaces: reactHotLoaderPrependEntries,
+      login: reactHotLoaderPrependEntries,
     }
   },
   commonConfig({ staticDir: '' }),

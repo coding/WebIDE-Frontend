@@ -12,7 +12,8 @@ module.exports = function (options) {
       port: options.port || 8060,
       historyApiFallback: {
         rewrites: [
-          { from: /\/ws/, to: '/workspace.html'}
+          { from: /\/ws/, to: '/workspace.html' },
+          { from: /\/login/, to: '/login.html' }
         ]
       }
     },
