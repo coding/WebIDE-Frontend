@@ -14,5 +14,8 @@
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired.",
-   "hasVimium": "Please disable Vimium plugin."
+   "hasVimium": "Please disable Vimium plugin.",
+   "noMachine": "No machine error",
+   "tryMachine": "Have a try",
+   "initMachine": "Initializing machine..."
 }

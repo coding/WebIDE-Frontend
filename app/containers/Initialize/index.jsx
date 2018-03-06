@@ -5,6 +5,7 @@ import config from 'config'
 import i18n from 'utils/createI18n'
 import state from './state'
 import api from '../../backendAPI'
+import Login from '../Login'
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -17,6 +18,7 @@ const WORKING_STATE = {
   Maintaining: 'Maintaining',
   Online: 'Online',
   Offline: 'Offline',
+  Login: 'Login',
 }
 
 @observer
@@ -34,6 +36,9 @@ class Initialize extends Component {
     state.status = WORKING_STATE.Created
   }
   render () {
+    if (state.status === 'WORKING_STATE.Login') {
+      return <Login />
+    }
     let errorInfo = null
     if (state.errorInfo) {
       errorInfo = (
@@ -63,7 +68,31 @@ class Initialize extends Component {
           </div>
         )
       } else if (state.errorCode === 403) {
-        if (state.status === 'Rejected') {
+        if (state.status === 'Nomachine') {
+          errorInfo = null
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.noMachine`}
+            </div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              <button className='btn btn-default' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button>
+            </div>
+          )
+        } else if (state.status === 'Initialize') {
+          errorInfo = null
+          info = (
+            <div className='loading-info'>
+              {i18n`global.loadingWorkspace`}
+            </div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              {i18n`global.initMachine`}
+            </div>
+          )
+        } else if (state.status === 'Rejected') {
           requestInfo = (
             <div className='request-info'>
               {i18n`global.requestCollaborationReject`}

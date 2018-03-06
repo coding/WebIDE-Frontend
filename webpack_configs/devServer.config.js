@@ -13,7 +13,7 @@ module.exports = function (options) {
       historyApiFallback: {
         rewrites: [
           { from: /\/ws/, to: '/workspace.html' },
-          { from: /\/login/, to: '/login.html' }
+          { from: /\/account/, to: '/login.html' }
         ]
       }
     },

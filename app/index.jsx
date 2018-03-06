@@ -18,7 +18,7 @@ if (uiTheme === 'base-theme') {
 }
 
 const rootElement = document.getElementById('root')
-render(<InitializeContainer />, rootElement)
+render(<InitializeContainer restartApp={() => startApp(module)} />, rootElement)
 
 async function startApp (module) {
   const step = await initialize()

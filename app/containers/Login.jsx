@@ -11,7 +11,12 @@ class Login extends Component {
             <h1>Coding WebIDE</h1>
             <h2>Coding Anytime Anywhere</h2>
           </div>
-          <button className='btn btn-default' onClick={this.handleCodingLogin} >{i18n`login.loginCoding`}</button>
+          <div className='login-btn'>
+            <button className='btn btn-default' onClick={this.handleCodingLogin} >{i18n`login.loginCoding`}</button>
+          </div>
+          <div className='login-btn'>
+            <button className='btn btn-default' onClick={this.handleTencentLogin} >{i18n`login.loginTencent`}</button>
+          </div>
         </div>
       </div>
     )
@@ -19,7 +24,12 @@ class Login extends Component {
   handleCodingLogin (e) {
     e.preventDefault()
     e.stopPropagation()
+    window.location.href = '/login'
     // window.location.href = `/login?return_url=${window.location.href}`
+  }
+  handleTencentLogin (e) {
+    e.preventDefault()
+    e.stopPropagation()
   }
 }
 
