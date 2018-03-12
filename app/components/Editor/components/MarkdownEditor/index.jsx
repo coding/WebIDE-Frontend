@@ -14,7 +14,7 @@ import mdMixin from './mdMixin'
 CodeEditor.use(mdMixin)
 
 const md = new Remarkable('full', {
-  html:         true,        // Enable HTML tags in source
+  html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
