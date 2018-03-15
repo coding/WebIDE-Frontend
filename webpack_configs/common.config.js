@@ -13,6 +13,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 module.exports = function (options={}) {
   const {
     mainEntryHtmlName = 'workspace.html',
+    accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
@@ -78,6 +79,13 @@ return {
       excludeChunks: ['workspaces', 'main'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
+      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      excludeChunks: ['workspaces', 'main'],
+      filename: (staticDir ? '../' : '') + accountEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/account.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     // https://github.com/kevlened/copy-webpack-plugin

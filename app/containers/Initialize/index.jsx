@@ -6,6 +6,7 @@ import i18n from 'utils/createI18n'
 import state from './state'
 import api from '../../backendAPI'
 import Login from '../Login'
+import Header from '../Header'
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -39,6 +40,7 @@ class Initialize extends Component {
     if (state.status === 'WORKING_STATE.Login') {
       return <Login />
     }
+    let hintInfo = null
     let errorInfo = null
     if (state.errorInfo) {
       errorInfo = (
@@ -71,13 +73,18 @@ class Initialize extends Component {
         if (state.status === 'Nomachine') {
           errorInfo = null
           info = (
-            <div className='loading-info error'>
+            <div className='loading-info'>
               {i18n`global.noMachine`}
             </div>
           )
           requestInfo = (
             <div className='request-info'>
-              <button className='btn btn-default' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button>
+              <button className='btn btn-primary' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button>
+            </div>
+          )
+          hintInfo = (
+            <div className='hint-info'>
+              {i18n`global.tryHint`}
             </div>
           )
         } else if (state.status === 'Initialize') {
@@ -168,12 +175,16 @@ class Initialize extends Component {
     }
 
     return (
-      <div className='initialize-container'>
-        {config.isPlatform && <div className='coding-loading'></div>}
-        {/* <div className='monkey splash-logo'></div> */}
-        {info}
-        {errorInfo}
-        {requestInfo}
+      <div className='login-page'>
+        <div className='initialize-container'>
+          {config.isPlatform && <div className='coding-loading'></div>}
+          {/* <div className='monkey splash-logo'></div> */}
+          {info}
+          {errorInfo}
+          {requestInfo}
+        </div>
+        {hintInfo}
+        <Header />
       </div>
     )
   }
