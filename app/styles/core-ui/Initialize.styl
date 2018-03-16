@@ -150,6 +150,10 @@
     border-radius: 2px;
     background: #FFF;
     width: 340px;
+
+    .login-panel-input input.error {
+      border-color: red;
+    }
     
     // box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
     .login-panel-input {
@@ -262,3 +266,32 @@
     }
     
   }
+
+.around{
+  animation-name:aroundAnimation; /*动画的名称*/
+  transform-origin: center bottom; /*设置动画旋转元素的基点为*/
+  cursor: pointer;
+}
+
+@keyframes aroundAnimation {
+  0%,
+  100%,
+  20%,
+  50%,
+  80% {
+    transition-timing-function: cubic-bezier(0.215,.61,.355,1); 
+    transform: translate3d(0,0,0);
+  }
+  40%,
+  43%{
+    transition-timing-function: cubic-bezier(0.755,0.50,0.855,0.060);
+    transform: translate3d(-20px,0,,0);
+  }
+  70%{
+    transition-timing-function: cubic-bezier(0.755,0.050,0.855,0.060);
+    transform: translate3d(-10px,0px,0);
+  }
+  90%{
+    transform: translate3d(20px,0,0);
+  }
+}

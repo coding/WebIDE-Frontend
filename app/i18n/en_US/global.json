@@ -18,5 +18,9 @@
    "noMachine": "No machine found, \nYou can get a free trial.",
    "tryMachine": "Free Trial",
    "tryHint": "The server is powered by QCloud, each server has 1 core, 1G Memory, own IP.\nYou have one month for free trial, 19 CNY pre-month after.",
-   "initMachine": "Initializing machine..."
+   "initMachine": "Initializing machine...",
+   "tokenError": "Failed to refresh access token, please try again later.",
+   "oauthNotFound": "Oauth account not found",
+   "gotoOauth": "Check oauth account",
+   "oauthOutdate": "Oauth is out of date"
 }

@@ -18,3 +18,12 @@ export function login ({
     remember_me
   })
 }
+
+// 两部验证
+export function loginCode ({
+  code
+}) {
+  return request.post(`/login${location.search ? location.search : '?return_url=/ws/default'}`, {
+    code
+  })
+}

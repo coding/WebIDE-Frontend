@@ -69,6 +69,37 @@ class Initialize extends Component {
             <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
           </div>
         )
+      } else if (state.errorCode === 3021) {
+        errorInfo = null
+        info = (
+          <div className='loading-info'>
+            {i18n`global.tokenError`}
+          </div>
+        )
+      } else if (state.errorCode === 3019) {
+        errorInfo = null
+        info = (
+          <div className='loading-info'>
+            {i18n`global.oauthNotFound`}
+          </div>
+        )
+        requestInfo = (
+          <div className='request-info'>
+            <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button>
+          </div>
+        )
+      } else if (state.errorCode === 1) {
+        errorInfo = null
+        info = (
+          <div className='loading-info'>
+            {i18n`global.oauthOutdate`}
+          </div>
+        )
+        requestInfo = (
+          <div className='request-info'>
+            <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button>
+          </div>
+        )
       } else if (state.errorCode === 403) {
         if (state.status === 'Nomachine') {
           errorInfo = null
