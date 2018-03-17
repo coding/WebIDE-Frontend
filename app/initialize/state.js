@@ -56,7 +56,12 @@ const stepCache = observable.map({
   getSettings: {
     desc: 'Get workspace settings',
     func: () =>
-      api.getSettings().then(settings => config.settings = settings)
+      api.getSettings().then(settings => config.settings = settings).catch((res) => {
+        if (res.msg) {
+          initializeState.errorInfo = res.msg
+        }
+        return false
+      })
   },
   connectSocket: {
     desc: 'Connect websocket',

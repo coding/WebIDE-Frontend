@@ -42,7 +42,19 @@ class Initialize extends Component {
     }
     let hintInfo = null
     let errorInfo = null
+    let icon = null
+    let info = null
+    if (config.isPlatform) {
+      icon = <div className='coding-loading'></div>
+      if (state.iconState === 'warning') {
+        icon = <div className='coding-warning'></div>
+      }
+    }
     if (state.errorInfo) {
+      if (config.isPlatform) {
+        icon = <div className='coding-warning'></div>
+      }
+      
       errorInfo = (
         <div className='loading-error'>
           <i className='fa fa-exclamation-triangle' />
@@ -50,7 +62,7 @@ class Initialize extends Component {
         </div>
       )
     }
-    let info = (
+    info = (
       <div className='loading-info'>
         {i18n`global.loadingWorkspace`}
       </div>
@@ -128,6 +140,17 @@ class Initialize extends Component {
           requestInfo = (
             <div className='request-info'>
               {i18n`global.initMachine`}
+            </div>
+          )
+        } else if (state.status === 'TryWorkstationFailed') {
+          errorInfo = null
+          info = (
+            <div className='loading-info warning'>Error</div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              {/* {i18n`global.initMachineFailed`} */}
+              {state.errorInfo}
             </div>
           )
         } else if (state.status === 'Rejected') {
@@ -208,7 +231,7 @@ class Initialize extends Component {
     return (
       <div className='login-page'>
         <div className='initialize-container'>
-          {config.isPlatform && <div className='coding-loading'></div>}
+          {icon}
           {/* <div className='monkey splash-logo'></div> */}
           {info}
           {errorInfo}

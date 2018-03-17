@@ -15,6 +15,14 @@
   background-size: 92%;
 }
 
+.coding-warning {
+  width: 556px;
+  height: 157px;
+  background: url('~static/icon-monkey-error.svg') center 0 no-repeat;
+  margin: 0 auto;
+  // background-size: 92%;
+}
+
 .initialize-container {
   position: absolute;
   top: 50%;
@@ -32,6 +40,11 @@
     white-space: pre-line;
     &.error {
       color: red;
+    }
+    &.warning {
+      font-size: 16px;
+      color: #FFAE0D;
+      text-align: center;
     }
   }
   .loading-error {
@@ -212,6 +225,14 @@
           a {
             color: #77afed;
           }
+        }
+      }
+      .login-panel-line {
+        display: flex;
+        .captchaPic {
+          height: 42px;
+          margin-left: 16px;
+          cursor: pointer;
         }
       }
     }
