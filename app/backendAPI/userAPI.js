@@ -27,3 +27,7 @@ export function loginCode ({
     code
   })
 }
+
+export function signout () {
+  return request.get('/logout')
+}

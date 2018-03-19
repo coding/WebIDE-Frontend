@@ -238,7 +238,10 @@ class Initialize extends Component {
           {requestInfo}
         </div>
         {hintInfo}
-        <Header />
+        <Header handleSignout={e => {
+          e.preventDefault()
+          api.signout()
+        }} />
       </div>
     )
   }
