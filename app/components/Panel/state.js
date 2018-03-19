@@ -89,7 +89,7 @@ const BasePanelLayout = {
                 { ref: 'PANEL_RIGHT', size: 30, contentType: 'EXTENSION_RIGHT', hidden: true },
               ],
             },
-            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: !config.isLib, resizable: true },
+            { ref: 'PANEL_BOTTOM', size: 25, contentType: 'PANEL_BOTTOM', hidden: false, resizable: true },
             { ref: 'BAR_BOTTOM', resizable: false },
           ]
         },
