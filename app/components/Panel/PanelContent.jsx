@@ -56,7 +56,7 @@ const PanelContent = ({ panel }) => {
       }
       return (
         <SidePanelContainer side='bottom'>
-          <SidePanelView key='terminal' label={labels.terminal} active={config.isLib} >
+          <SidePanelView key='terminal' label={labels.terminal} active >
             <TerminalContainer />
           </SidePanelView>
 
