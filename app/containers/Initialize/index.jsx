@@ -81,6 +81,13 @@ class Initialize extends Component {
             <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
           </div>
         )
+      } else if (state.errorCode === 500) {
+        errorInfo = null
+        info = (
+          <div className='loading-info'>
+            {i18n`global.wsNotExist`}
+          </div>
+        )
       } else if (state.errorCode === 3021) {
         errorInfo = null
         info = (

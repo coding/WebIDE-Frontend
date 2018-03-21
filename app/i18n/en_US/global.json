@@ -21,6 +21,7 @@
    "initMachine": "Initializing machine...",
    "initMachineFailed": "Failed to init machine",
    "tokenError": "Failed to refresh access token, please try again later.",
+   "wsNotExist": "Workspace not exists",
    "oauthNotFound": "Oauth account not found",
    "gotoOauth": "Check oauth account",
    "oauthOutdate": "Oauth is out of date"

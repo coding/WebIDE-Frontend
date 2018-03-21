@@ -21,6 +21,7 @@
    "initMachine": "正在初始化专用主机...",
    "initMachineFailed": "初始化专用主机失败",
    "tokenError": "无法连接腾讯云，请稍后再试",
+   "wsNotExist": "工作空间不存在",
    "oauthNotFound": "未绑定腾讯云账号",
    "gotoOauth": "前往绑定",
    "oauthOutdate": "授权已过期"

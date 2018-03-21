@@ -139,7 +139,7 @@ class FileNode {
 
 state.entities.set(ROOT_PATH, new FileNode({
   path: ROOT_PATH,
-  name: config.projectName,
+  name: config.projectName || 'Home',
   isDir: true,
 }))
 

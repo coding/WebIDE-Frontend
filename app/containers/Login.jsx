@@ -119,7 +119,7 @@ class Login extends Component {
             <div className='login-panel-input'>
               <div className='title'>用户登录</div>
               <div className='login-panel-line'>
-                <input type='text' className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
+                <input type='text' autoFocus className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
               </div>
               <div className='login-panel-line'>
                 <input type='password' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handlePwdChange} placeholder='密码' />
@@ -157,7 +157,7 @@ class Login extends Component {
           <form>
             <div className='login-panel-input'>
               <div className='title'>两步验证</div>
-              <input type='text' className={cx('form-control', { error: this.state.codeError })} onChange={this.handleCodeChange} placeholder='两步验证码' value={this.state.code} />
+              <input type='text' autoFocus className={cx('form-control', { error: this.state.codeError })} onChange={this.handleCodeChange} placeholder='两步验证码' value={this.state.code} />
               
               <button className='btn btn-primary' type='submit' onClick={this.handleCode}>登录</button>
               <div className='links'>
