@@ -14,7 +14,8 @@ module.exports = function (options) {
         rewrites: [
           { from: /\/ws/, to: '/workspace.html' },
           { from: /\/account/, to: '/account.html' },
-          { from: /\/signin/, to: '/login.html' }
+          { from: /\/signin/, to: '/login.html' },
+          { from: /\/intro/, to: '/intro.html' },
         ]
       }
     },

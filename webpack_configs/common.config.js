@@ -15,6 +15,7 @@ module.exports = function (options={}) {
     mainEntryHtmlName = 'workspace.html',
     accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
+    introEntryHtmlName = 'intro.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
   } = options
@@ -26,6 +27,7 @@ return {
     main: [path.join(PROJECT_ROOT, 'app')],
     workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
     login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
+    intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],
     vendor: ['babel-polyfill', 'react', 'react-dom', 'redux', 'react-redux'],
   },
   output: {
@@ -62,30 +64,37 @@ return {
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'login'],
+      excludeChunks: ['workspaces', 'login', 'intro'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['main', 'login'],
+      excludeChunks: ['main', 'login', 'intro'],
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'main'],
+      excludeChunks: ['workspaces', 'main', 'intro'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'main'],
+      excludeChunks: ['workspaces', 'main', 'intro'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/account.html'),
+      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      excludeChunks: ['workspaces', 'main', 'login'],
+      filename: (staticDir ? '../' : '') + introEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/intro.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     // https://github.com/kevlened/copy-webpack-plugin

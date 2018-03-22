@@ -1,0 +1,257 @@
+.intro-page {
+  font-family: PingFangSC-Regular;
+  font-weight: 100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  // display:flex;
+  // align-items:center;
+  justify-content:center;
+  min-height: 560px;
+  background: #323a45;
+  color: #FFF;
+
+  .intro-header {
+    height: 600px;
+    width: 100%;
+    background: #1E2229;
+    text-align: center;
+    h2 {
+      font-size: 48px;
+      color: #FFFFFF;
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 70px;
+      text-shadow: 0 1px 1px #408CFF;
+      padding-top: 150px;
+      margin: 0;
+      font-weight: 100;
+    }
+
+    p {
+      font-size: 16px;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+      text-align: center;
+      line-height: 28px;
+      text-shadow: 0 1px 1px #232F40;
+      width: 860px;
+      margin: 0 auto;
+
+      padding-top: 20px;
+    }
+
+    ul {
+      width: 860px;
+      margin: 0 auto;
+      font-size: 14px;
+      color: #FFFFFF;
+      letter-spacing: 0.88px;
+      margin-top: 60px;
+      display: flex;
+      li {
+        flex: 1;
+        &:before {
+          content: '';
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          background: #0066FF;
+          border-radius: 100px;
+          margin-right: 8px;
+        }
+      }
+    }
+
+    .btn-try {
+      background: #0066FF;
+      font-size: 18px;
+      color: #FFFFFF;
+      line-height: 24px;
+      text-decoration: none;
+      padding: 12px 44px;
+      margin-top: 60px;
+      border-radius: 0;
+    }
+  }
+  .intro-counter {
+    // height: 48px;
+    padding: 80px 0;
+    background: #F7FCFF;
+    font-size: 16px;
+    color: #000000;
+    font-weight: bold;
+    line-height: 48px;
+    .logo {
+      background: url('~static/CloudStudio-Logo-Light.svg') -10px -9px no-repeat;
+      height 20px;
+      width: 161px;
+      display: inline-block;
+      filter: invert(100%);
+      margin: 0 12px;
+      transform: translateY(3px);
+    }
+    .num {
+      font-family: DINAlternate-Bold;
+      font-size: 32px;
+      color: #0066FF;  
+    }
+  }
+  .intro-feature {
+    padding-top: 80px;
+    background: #FFF;
+    
+    h2 {
+      font-size: 48px;
+      color: #000000;
+      letter-spacing: 2px;
+      text-align: center;
+      font-weight: 100;
+      margin: 0;
+      margin-bottom: 60px;
+    }
+    .react-tabs__tab-list {
+      width: (326 * 3)px;
+      border: none;
+      display: flex;
+      margin: 0 auto;
+      .react-tabs__tab {
+        flex: 1;
+        border: none;
+        border-bottom: 2px solid;
+        border-color: rgba(66,80,99,0.30);
+        font-size: 20px;
+        color: #425063;
+        text-align: center;
+        padding-bottom: 18px;
+      }
+      .react-tabs__tab--selected {
+        border-color: #0066FF;
+        color: #0066FF;
+      }
+    }
+    .react-tabs__tab-panel {
+      padding: 60px 0 100px 0;
+      .tab-panel {
+        width: (326 * 3 - 60)px;
+        margin: 0 auto;
+        .tab-panel-img {
+          background: #FFFFFF;
+          box-shadow: 0 0 34px 0 rgba(3,65,157,0.10);
+          width: 460px;
+          height: 340px;
+          padding: 30px;
+          float: left;
+          margin-right: 80px;
+          img {
+            width: 400px;
+            height: 280px;
+          }
+        }
+
+        .tab-panel-intro {
+          font-size: 20px;
+          color: #000000;
+          text-align: left;
+          padding-left: 540px;
+
+          h2 {
+            font-size: 20px;
+            color: #000000;
+            margin: 0;
+            padding-bottom: 16px;
+          }
+          p {
+            font-size: 16px;
+            color: #425063;
+            padding-bottom: 40px;
+          }
+        }
+      }
+    }
+  }
+  .intro-swiper {
+    background: #F7FCFF;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    h2 {
+      font-size: 48px;
+      color: #000000;
+      letter-spacing: 2px;
+      text-align: center;
+      font-weight: 100;
+      margin: 0;
+      margin-bottom: 60px;
+    }
+    .intro-swiper-c {
+      background: #FFFFFF;
+      box-shadow: 0 0 34px 0 rgba(3,65,157,0.10);
+      padding: 30px;
+      width: 980px;
+      margin: 0 auto;
+      text-align: left;
+
+      .swiper-slide {
+        img {
+          width: 920px;
+          height: 527px;
+        }
+        .desc {
+          font-size: 16px;
+          color: #232F40;
+          letter-spacing: 0;
+          padding-top: 20px;
+        }
+        
+      }
+      .swiper-pagination {
+        text-align: right;
+      }
+      .swiper-pagination-fraction, .swiper-pagination-custom, .swiper-container-horizontal > .swiper-pagination-bullets {
+        bottom: 0;  
+      }
+      .swiper-pagination-bullet {
+        background: #CBD0D9;
+        width: 12px;
+        height: 12px;
+        opacity: 1;
+        margin: 0 6px;
+      }
+      .swiper-pagination-bullet-active {
+        background: #76808E;
+      }
+    }
+  }
+
+  .intro-corp {
+    padding: 90px 0;
+    text-align: center;
+    font-size: 16px;
+    color: #232F40;
+    letter-spacing: 0;
+    .logo {
+      background: url('~static/CloudStudio-Logo-Light.svg') -10px -9px no-repeat;
+      height 20px;
+      width: 161px;
+      display: inline-block;
+      filter: invert(100%);
+      margin: 0 12px;
+      // transform: translateY(3px);
+    }
+    .c-logo-icon {
+      width: 92px;
+      height: 25px;
+      display: inline-block;
+      background-image: url(https://imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/portal/css/sprite/global-201803131822.svg);
+      overflow: hidden;
+      text-indent: -10000px;
+      background-position: 0.64% 34.42%;
+      background-size: 269.5652173913044% 960%;
+      background-repeat: no-repeat;
+    }
+
+  }
+}
