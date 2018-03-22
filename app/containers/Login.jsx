@@ -144,7 +144,7 @@ class Login extends Component {
               </div>
             </div>
             <div className='login-panel-tencent'>
-              <a href='https://coding.net/api/oauth/qcloud/rebind?return_url=https://ide.coding.net'>
+              <a href='https://coding.net/api/oauth/qcloud/rebind?return_url=https://studio.coding.net'>
                 <i className='logo-qcloud' />使用腾讯云账号登录
               </a>
             </div>
