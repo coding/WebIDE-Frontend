@@ -64,14 +64,16 @@ return {
       excludeChunks: ['workspaces', 'login'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      favicon: path.join(PROJECT_ROOT, 'static/logo.png'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['main', 'login'],
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      favicon: path.join(PROJECT_ROOT, 'static/logo.png'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',

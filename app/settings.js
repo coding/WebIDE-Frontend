@@ -25,17 +25,17 @@ export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 
 const changeUITheme = (nextThemeId) => {
-  if (!window.themes) window.themes = {}
-  if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
-    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
-    .then((module) => {
-      const currentTheme = window.themes['@current']
-      if (currentTheme && currentTheme.unuse) currentTheme.unuse()
-      window.themes['@current'] = window.themes[nextThemeId] = module
-      module.use()
-      window.themeVariables.replace(window.themes['@current'].locals)
-    })
-  }
+  // if (!window.themes) window.themes = {}
+  // if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
+  //   import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
+  //   .then((module) => {
+  //     const currentTheme = window.themes['@current']
+  //     if (currentTheme && currentTheme.unuse) currentTheme.unuse()
+  //     window.themes['@current'] = window.themes[nextThemeId] = module
+  //     module.use()
+  //     window.themeVariables.replace(window.themes['@current'].locals)
+  //   })
+  // }
 
   const editorTheme = EditorState.options.theme
   if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
@@ -170,13 +170,13 @@ const settings = observable({
     ],
     ui_theme: {
       name: 'settings.appearance.uiTheme',
-      value: 'dark',
+      value: 'base-theme',
       options: UIThemeOptions,
       reaction: changeUITheme,
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: 'material',
+      value: 'default',
       options: SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     },

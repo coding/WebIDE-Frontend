@@ -22,9 +22,7 @@ class WelcomePage extends Component {
   render () {
     return (
       <div className='welcome-page'>
-        <h1>Coding WebIDE</h1>
-        <div className='subtitle'>Coding Anytime Anywhere</div>
-
+        <p></p>
         <h2>Start</h2>
         <div className='block start-block'>
           <div className='link-item'>
@@ -40,7 +38,7 @@ class WelcomePage extends Component {
           {this.renderRecentItem()}
         </div>
 
-        <h2>Help</h2>
+        {/* <h2>Help</h2>
         <div className='block help-block'>
           <div className='link-item'>
             <a href='https://coding.net/help/doc/webide/' target='blank'>Document</a>
@@ -48,7 +46,7 @@ class WelcomePage extends Component {
           <div className='link-item'>
             <a href='https://coding.net/feedback' target='blank'>Feedback</a>
           </div>
-        </div>
+        </div> */}
       </div>
     )
   }

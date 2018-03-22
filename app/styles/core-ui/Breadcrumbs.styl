@@ -1,6 +1,7 @@
 .top-bar {
   display: flex;
   noSelect();
+  background: #51A8F9;
 
   .widget {
     display: flex;
@@ -18,6 +19,7 @@
 
   display: flex;
   height: $breadcrumbs-height + 1px;
+  // border-bottom: 1px solid transparent;
 
   .crumb-node-name {
     line-height: $breadcrumbs-height;
@@ -29,10 +31,6 @@
     padding-left: 10px;
     padding-right: $breadcrumbs-height*0.25 + 10px;
     position: relative;
-
-    i {
-      font-style: normal;
-    }
 
     &:before, &:after {
       display: block;

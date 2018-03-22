@@ -187,15 +187,15 @@ const menubar = [
   }, {
     name: 'Help',
     items: [
-      {
-        name: 'Document',
-        href: 'https://coding.net/help/doc/webide/',
-        icon: 'fa fa-book'
-      }, {
-        name: 'Send Feedback',
-        href: 'https://coding.net/u/coding/p/Coding-Feedback/topic/tag/241717',
-        icon: 'fa fa-envelope-o'
-      }
+      // {
+      //   name: 'Document',
+      //   href: 'https://coding.net/help/doc/webide/',
+      //   icon: 'fa fa-book'
+      // }, {
+      //   name: 'Send Feedback',
+      //   href: 'https://coding.net/u/coding/p/Coding-Feedback/topic/tag/241717',
+      //   icon: 'fa fa-envelope-o'
+      // }
     ]
   }
 ]
