@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import i18n from 'utils/createI18n'
 import Header from './Header'
+import Footer from './Footer'
 import cx from 'classnames'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
@@ -107,8 +108,9 @@ class Intro extends Component {
           </div>
         </div>
         <div className="intro-corp">
-          <div className='logo'></div> 由 <i className="c-logo-icon">腾讯云</i> 提供云计算支持
+          <div className='logo'></div> 由 <i className="c-logo-icon"></i> 提供云计算支持
         </div>
+        <Footer />
       </div>
     )
   }

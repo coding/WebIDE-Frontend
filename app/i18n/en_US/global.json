@@ -17,7 +17,7 @@
    "hasVimium": "Please disable Vimium plugin.",
    "noMachine": "No machine found, \nYou can get a free trial.",
    "tryMachine": "Free Trial",
-   "tryHint": "The server is powered by QCloud, each server has 1 core, 1G Memory, own IP.\nYou have one month for free trial, 19 CNY pre-month after.",
+   "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 19 CNY per-month after.",
    "initMachine": "Initializing machine...",
    "initMachineFailed": "Failed to init machine",
    "tokenError": "Failed to refresh access token, please try again later.",
