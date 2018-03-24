@@ -15,23 +15,26 @@ class Intro extends Component {
     }
   }
   componentDidMount () {
-    
+    import ('./IntroHeader')
   }
   render () {
     return (
       <div className='intro-page'>
-        <Header />
         <div className='intro-header'>
-          <h2>前所未有的开发体验</h2>
-          <p>Cloud Studio 为开发提供了一个永不间断的云端工作站，不管有没有开发经验都可以毫无门槛的体验云端开发的乐趣，支持绝大部分编程语言，包括 HTML5、PHP、Python、Java、Ruby、小程序等等。Cloud Studio 提供了完整的 Linux 环境，并且支持自定义域名指向，动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
-          <ul>
-            <li>随处可用，低门槛</li>
-            <li>无需下载安装程序</li>
-            <li>一键切换开发环境</li>
-            <li>开发资源动态调整</li>
-          </ul>
-          <a href='/ws/default' className='btn btn-try'>立即体验</a>
+          <div id='canvas'></div>
+          <div className='content'>
+            <h2>前所未有的开发体验</h2>
+            <p>Cloud Studio 为开发提供了一个永不间断的云端工作站，不管有没有开发经验都可以毫无门槛的体验云端开发的乐趣，支持绝大部分编程语言，包括 HTML5、PHP、Python、Java、Ruby、小程序等等。Cloud Studio 提供了完整的 Linux 环境，并且支持自定义域名指向，动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
+            <ul>
+              <li>随处可用，低门槛</li>
+              <li>无需下载安装程序</li>
+              <li>一键切换开发环境</li>
+              <li>开发资源动态调整</li>
+            </ul>
+            <a href='/ws/default' className='btn btn-try'>立即体验</a>
+          </div>
         </div>
+        <Header />
         <div className='intro-counter'>
           今天，在 <div className='logo'></div> 上进行在线开发的用户累计使用时间为 <span className='num'>1,040,688,000</span> 秒
         </div>
