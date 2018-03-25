@@ -4,16 +4,45 @@
   height: 100%;
   width: 100%;
   overflow: scroll;
+  text-align: center;
+  .header {
+    background: url('https://dn-coding-net-production-pp.qbox.me/a32c304a-cf34-410f-930f-8675e8a6741d.png') no-repeat;
+    background-size: 650px;
+    background-position: center -284px;
+    height: 140px;
+    margin-bottom: 40px;
+  }
+  .logo {
+    // background: url('~static/CloudStudio-Logo-Light.svg') -10px -9px no-repeat;
+    // height 20px;
+    // width: 161px;
+    display: inline-block;
+    // filter: invert(100%);
+    // margin: 0 12px;
+    transform: translateY(7px);
+
+    background: url('~static/CloudStudio-Logo-Light.svg') -10px -9px no-repeat;
+    background-size: 100% 150%;
+    height: 40px;
+    width: 270px;
+  }
   h1 {
     font-weight: normal;
     padding: 0;
     margin: 0;
+    font-size: 36px;
+    // color: #FFFFFF;
+    letter-spacing: 0;
+    margin-bottom: 16px;
   }
   .subtitle {
-    font-size: 1.4em;
-    padding-top: 10px;
-    color: $text-color-subtle;
-    padding-bottom: 40px;
+    // font-size: 1.4em;
+    // padding-top: 10px;
+    // color: $text-color-subtle;
+    padding-bottom: 36px;
+    font-size: 18px;
+    // color: #FFFFFF;
+    letter-spacing: 0;
   }
   h2 {
     font-weight: normal;
@@ -28,4 +57,77 @@
   .link-item {
     
   }
+  .quick-start {
+    h2 {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    ul {
+      display: inline-block;
+      text-align: center;
+      padding: 0 40px 24px 40px;
+      width: 520px;
+      border-bottom: 1px solid #404040;
+      li {
+        display: inline-block;
+        padding: 0 40px;
+        font-size: 14px;
+        color: #4E98EB;
+        letter-spacing: 0;
+        border-right: 1px solid #404040;
+        &:last-child {
+          border: none;  
+        }
+      }
+    }
+  }
+  .intro {
+    width: 520px;
+    padding: 24px 0;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 1.5em;
+    margin: 0 auto;
+    .demo-links {
+      display: inline-block;
+      text-align: center;
+      padding: 25px 0px 28px 0px;
+      width: 520px;
+      // border-bottom: 1px solid #404040;
+      li {
+        display: inline-block;
+        padding: 0 14px;
+        font-size: 14px;
+        color: #4E98EB;
+        letter-spacing: 0;
+        border-right: 1px solid #404040;
+        &:last-child {
+          border: none;  
+        }
+      }
+    }
+    .btn-list {
+      text-align: center;
+      padding-bottom: 34px;
+      a {
+        display: inline-block;
+        border: 1px solid #979797;
+        border-radius: 2px;
+        font-size: 14px;
+        color: #979797;
+        letter-spacing: 0;
+        padding: 8px 16px;
+        text-decoration: none;
+      }  
+    }
+    .coding-logo {
+      width: 114px;
+      height: 24px;
+      background: url('https://dn-coding-net-production-pp.qbox.me/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png') 0px 0px no-repeat;
+      margin: 0 auto;
+      background-size: cover;
+    }
+  }
+
 }

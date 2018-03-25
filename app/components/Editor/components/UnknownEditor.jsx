@@ -32,7 +32,7 @@ class UnknownEditor extends Component {
     return (
       <div style={{ textAlign: 'center', height: '100%' }} className='unknown-viewer-container' >
         <div className='unknown-viewer-content' >
-          <a href={this.state.fileUrl} target='_blank' >
+          <a href={this.state.fileUrl} target='_blank' rel='noopener noreferrer' >
             <div className='c-download-file folded-corner'>
               <div className='c-cloud'>
                 <i className='fa fa-cloud-download' />
