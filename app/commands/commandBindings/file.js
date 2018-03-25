@@ -292,12 +292,15 @@ const fileCommands = {
       existingTab.activate()
     } else {
       TabStore.createTab({
-        icon: 'fa fa-info-circle',
+        icon: 'fa fa-smile-o',
         type: 'welcome',
         title: 'Welcome',
       })
     }
   },
+  'file:open_about': () => {
+    Modal.showModal({ type: 'About', position: 'center' })
+  }
 }
 
 export default fileCommands

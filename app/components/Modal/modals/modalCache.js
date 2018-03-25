@@ -28,6 +28,7 @@ import {
   GitCheckoutStashView,
   FileSelectorView,
   Form,
+  About,
 } from './index'
 
 
@@ -51,6 +52,7 @@ const modalCache = observable.map({
   Prompt,
   Confirm,
   Alert,
+  About,
   CommandPalette,
   FilePalette,
   Settings: SettingsView,
