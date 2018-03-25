@@ -207,6 +207,12 @@ class Initialize extends Component {
               {i18n`global.loadingWorkspace`}
             </div>
           )
+
+          hintInfo = (
+            <div className='hint-info'>
+              {i18n`global.createHint`}
+            </div>
+          )
         } else if (state.status === WORKING_STATE.Failed) {
           errorInfo = null
           info = (

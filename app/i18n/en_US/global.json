@@ -18,6 +18,7 @@
    "noMachine": "No machine found, \nYou can get a free trial.",
    "tryMachine": "Free Trial",
    "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 19 CNY per-month after.",
+   "createHint": "It may take up to 15 minutes to create your server. Please wait patiently.",
    "initMachine": "Initializing machine...",
    "initMachineFailed": "Failed to init machine",
    "tokenError": "Failed to refresh access token, please try again later.",
