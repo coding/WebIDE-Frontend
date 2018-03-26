@@ -386,8 +386,11 @@
 
     .page-header .logo {
       background: url("https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Images/CloudStudio-Logo-Light.svg") -10px -9px no-repeat;
-      height: 20px;
+      height: 0px;
       width: 161px;
+      padding-top: 20px;
+      overflow: hidden;
+      display: inline-block;
     }
 
     .page-header .nav {
@@ -804,7 +807,7 @@
         </div>
       </div>
       <div class="page-header">
-        <div class="logo"></div>
+        <a href="/" class="logo">Cloud Studio</a>
         <ul class="nav">
           <li>
             <a href="/intro">产品介绍</a>

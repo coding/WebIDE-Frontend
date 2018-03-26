@@ -115,7 +115,7 @@ class User extends Component {
 
 const Header = ({ handleSignout, userProfile }) => (
   <div className='page-header'>
-    <div className='logo'></div>
+    <a href='/' className='logo'>Cloud Studio</a>
     <ul className='nav'>
       <li>
         <a href='/intro'>产品介绍</a>
