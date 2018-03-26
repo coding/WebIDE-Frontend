@@ -7,6 +7,7 @@ import state from './state'
 import api from '../../backendAPI'
 import Login from '../Login'
 import Header from '../Header'
+import { Line } from 'rc-progress'
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -78,7 +79,7 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
-            <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
+            <button className='btn btn-default' onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
           </div>
         )
       } else if (state.errorCode === 500) {
@@ -141,12 +142,22 @@ class Initialize extends Component {
           errorInfo = null
           info = (
             <div className='loading-info'>
-              {i18n`global.loadingWorkspace`}
+              {/* {i18n`global.loadingWorkspace`} */}
+              <div className='loading-progress'>
+                <div className='progress-border'></div>
+                <Line percent={state.progress} strokeWidth='4' trailWidth='4' strokeColor='#5097E8' trailColor='#323a45' />
+              </div>
             </div>
           )
           requestInfo = (
             <div className='request-info'>
               {i18n`global.initMachine`}
+            </div>
+          )
+          hintInfo = (
+            <div className='hint-info'>
+              {i18n`global.createHint`}
+              <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer' >{i18n`global.createCheckHint`}</a>
             </div>
           )
         } else if (state.status === 'TryWorkstationFailed') {
@@ -207,12 +218,6 @@ class Initialize extends Component {
               {i18n`global.loadingWorkspace`}
             </div>
           )
-
-          hintInfo = (
-            <div className='hint-info'>
-              {i18n`global.createHint`}
-            </div>
-          )
         } else if (state.status === WORKING_STATE.Failed) {
           errorInfo = null
           info = (
@@ -222,7 +227,7 @@ class Initialize extends Component {
           )
           requestInfo = (
             <div className='request-info'>
-              <button className="btn btn-default" onClick={this.handleReclone} >{i18n`global.recloneWorkspace`}</button>
+              <button className='btn btn-default' onClick={this.handleReclone} >{i18n`global.recloneWorkspace`}</button>
             </div>
           )
         } else {
