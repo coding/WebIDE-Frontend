@@ -167,8 +167,10 @@ class Initialize extends Component {
           )
           requestInfo = (
             <div className='request-info'>
-              {/* {i18n`global.initMachineFailed`} */}
-              {state.errorInfo}
+              {/* {state.errorInfo} */}
+              <div className='title'>{i18n`global.tencentNoRealName`}</div>
+              
+              <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
             </div>
           )
         } else if (state.status === 'Rejected') {
@@ -232,14 +234,14 @@ class Initialize extends Component {
           )
         } else {
           info = (
-            <div className='loading-info error'>
+            <div className='loading-info'>
               {i18n`global.loadingWorkspaceDenied`}
             </div>
           )
         }
       } else if (state.errorInfo) {
         info = (
-          <div className='loading-info error'>
+          <div className='loading-info'>
             {i18n`global.loadingWorkspaceFailed`}
           </div>
         )

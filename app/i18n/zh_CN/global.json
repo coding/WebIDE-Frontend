@@ -26,5 +26,7 @@
    "wsNotExist": "工作空间不存在",
    "oauthNotFound": "未绑定腾讯云账号",
    "gotoOauth": "前往绑定",
-   "oauthOutdate": "授权已过期"
+   "oauthOutdate": "授权已过期",
+   "tencentNoRealName": "腾讯云账号未通过实名认证",
+   "goRealName": "前往认证"
 }
