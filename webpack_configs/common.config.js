@@ -91,10 +91,7 @@ return {
     }, {
       from: path.join(PROJECT_ROOT, 'node_modules/octicons'),
       to: 'octicons',
-    }]), {
-      from: path.join(PROJECT_ROOT, 'dictionary'),
-      to: 'dictionary'
-    }
+    }])
   ],
   module: {
     rules: [

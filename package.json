@@ -90,7 +90,6 @@
     "classnames": "^2.2.5",
     "clipboard": "^1.6.1",
     "codemirror": "^5.32.0",
-    "codemirror-typo": "^1.0.1",
     "diff": "^3.2.0",
     "diff_match_patch": "^0.1.1",
     "eventemitter3": "^2.0.2",
