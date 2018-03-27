@@ -57,7 +57,7 @@ class WelcomePage extends Component {
                 open: 'README.md',
               })
             }} target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
-            <li><a href='javascript: void(0)' onClick={e => {
+            {/* <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
                 ownerName: 'tanhe123',
                 projectName: 'weapp-template',
@@ -65,7 +65,7 @@ class WelcomePage extends Component {
                 // envId: 'ide-tty-nodejs',
                 open: 'README.md',
               })
-            }} target='_blank' rel='noopener noreferrer'>小程序</a></li>
+            }} target='_blank' rel='noopener noreferrer'>小程序</a></li> */}
           </ul>
 
           <div className='btn-list'>
