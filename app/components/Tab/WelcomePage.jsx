@@ -2,6 +2,8 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import config from 'config'
+import { notify, NOTIFY_TYPE } from '../Notification/actions'
 import { observer, inject } from 'mobx-react'
 import { observable } from 'mobx'
 import dispatchCommand from 'commands/dispatchCommand'
@@ -42,19 +44,21 @@ class WelcomePage extends Component {
             {/* <li><a href='https://coding.net/help/doc/webide/compile.html' target='_blank' rel='noopener noreferrer'>Python 人工智能</a></li> */}
             <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
-                ownerName: 'tanhe123',
+                // ownerName: 'tanhe123',
                 projectName: 'WordPress',
                 isTry: false,
                 open: 'readme.md',
+                templateId: 1,
               })
             }} target='_blank' rel='noopener noreferrer'>PHP 博客</a></li>
             <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
-                ownerName: 'tanhe123',
+                // ownerName: 'tanhe123',
                 projectName: 'JavaDemo',
                 isTry: false,
                 // envId: 'ide-tty-java-maven',
                 open: 'README.md',
+                templateId: 4,
               })
             }} target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
             {/* <li><a href='javascript: void(0)' onClick={e => {
@@ -158,11 +162,53 @@ class WelcomePage extends Component {
         cpuLimit: 1,
         memory: 128,
         storage: 1,
+        ownerName: config.globalKey
       }
     }
-    api.createWorkspace(options).then((res) => {
-      // window.location = `/ws/${res.spaceKey}?open=${options.open}`
-      window.open(`/ws/${res.spaceKey}?open=${options.open}`)
+
+    const projectOptions = {
+      type: 2, // if isProjectPublic then 1 else 2
+      gitEnabled: true,
+      gitReadmeEnabled: false,
+      gitIgnore: 'no',
+      gitLicense: 'no',
+      vcsType: 'git',
+      name: options.projectName,
+      description: 'A demo project',
+      joinTeam: false,
+      teamGK: config.globalKey,
+    }
+    api.createProject(projectOptions).then((projectRes) => {
+      if (projectRes.code === 0) {
+        api.createWorkspace(options).then((res) => {
+          if (!res.code) {
+            // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
+            window.location = `/ws/${res.spaceKey}?open=${options.open}`
+          } else if (res.code === 1103) {
+            window.location = `https://ide.coding.net/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
+          } else {
+            notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
+          }
+        })
+      } else if (projectRes.msg) {
+        if (typeof projectRes.msg === 'object') {
+          notify({ message: Object.values(projectRes.msg)[0], notifyType: NOTIFY_TYPE.ERROR })
+        } else {
+          notify({ message: projectRes.msg, notifyType: NOTIFY_TYPE.ERROR })
+        }
+      } else {
+        notify({ message: `code: ${projectRes.code}`, notifyType: NOTIFY_TYPE.ERROR })
+      }
+    }).catch((projectRes) => {
+      if (projectRes.msg) {
+        if (typeof projectRes.msg === 'object') {
+          notify({ message: Object.values(projectRes.msg)[0], notifyType: NOTIFY_TYPE.ERROR })
+        } else {
+          notify({ message: projectRes.msg, notifyType: NOTIFY_TYPE.ERROR })
+        }
+      } else {
+        notify({ message: `code: ${projectRes.code}`, notifyType: NOTIFY_TYPE.ERROR })
+      }
     })
   }
 }

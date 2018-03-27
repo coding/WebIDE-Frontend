@@ -60,3 +60,7 @@ export function execShellCommand (command) {
 export function getWorkspaceList () {
   return request.get('/workspaces?page=0&size=5&sort=lastModifiedDate,desc')
 }
+
+export function createProject (options) {
+  return request.post('/projects', options, { headers: { Accept: '*/*' } })
+}
