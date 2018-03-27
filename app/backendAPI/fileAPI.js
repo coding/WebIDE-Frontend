@@ -7,6 +7,10 @@ export function fetchPath (path, order, group) {
     path,
     order: true,
     group: true
+  }).then((res) => {
+    return res.filter((item) => {
+      return !item.name.startsWith('.nfs000')
+    })
   })
 }
 
