@@ -56,7 +56,18 @@ const stepCache = observable.map({
   getSettings: {
     desc: 'Get workspace settings',
     func: () =>
-      api.getSettings().then(settings => config.settings = settings).catch((res) => {
+      api.getSettings().then((res) => {
+        if (res.code && res.code === 500) {
+          config.setting = {
+            base64: false,
+            content: '{}',
+            path: '.coding-ide/settings.json'
+          }
+        } else {
+          config.settings = res
+        }
+        return true
+      }).catch((res) => {
         if (res.msg) {
           initializeState.errorInfo = res.msg
         }
