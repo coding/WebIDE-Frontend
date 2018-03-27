@@ -89,11 +89,16 @@ class Initialize extends Component {
             {i18n`global.wsNotExist`}
           </div>
         )
-      } else if (state.errorCode === 3021) {
+      } else if (state.errorCode === 3021 || state.errorCode === 1097 || state.errorCode === 3020) {
         errorInfo = null
         info = (
           <div className='loading-info'>
             {i18n`global.tokenError`}
+          </div>
+        )
+        requestInfo = (
+          <div className='request-info'>
+            <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.rebind`}</button>
           </div>
         )
       } else if (state.errorCode === 3019) {
