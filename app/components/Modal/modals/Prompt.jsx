@@ -28,6 +28,7 @@ class Prompt extends Component {
           onKeyDown={this.onKeyDown}
           value={this.state.value}
           placeholder={content.placeholder}
+          autoFocus
         />
         { content.statusMessage ?
           <div className='message message-info'>

@@ -20,6 +20,9 @@ export default {
   'global:show_branches': () => {
     getComponentByName('GitBranchWidget').toggleActive(true)
   },
+  'global:show_env': () => {
+    SideBar.toggleSidePanelView('SIDEBAR.RIGHT.env')
+  },
   'modal:dismiss': (c) => {
     Modal.dismissModal()
   },
