@@ -3,6 +3,7 @@ import config from 'config'
 import { autorun, observalbe, runInAction } from 'mobx'
 import { TtySocketClient } from 'backendAPI/websocketClients'
 import * as TabActions from 'components/Tab/actions'
+import * as maskActions from 'components/Mask/actions'
 import * as TermActions from './actions'
 import * as SideBar from 'components/Panel/SideBar/actions'
 const WORKSPACE_PATH = '/home/coding/workspace'
@@ -75,6 +76,8 @@ class TerminalClient extends TtySocketClient {
       for (i = j = 0, len = terms.length; j < len; i = ++j) {
         this.openTerm(terms[i])
       }
+      clearTimeout(this.maskTimeout)
+      maskActions.hideMask()
     })
 
     this.socket.on('disconnect', (type) => {
@@ -104,6 +107,10 @@ class TerminalClient extends TtySocketClient {
   }
 
   connectSocket () {
+    this.maskTimeout = setTimeout(() => {
+      maskActions.showMask({ message: 'Preparing Workspace...' })
+    }, 500)
+    
     this.connect()
     if (!this.unbindSocketEvent) this.bindSocketEvent()
   }

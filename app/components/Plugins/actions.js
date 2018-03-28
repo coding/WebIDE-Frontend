@@ -108,7 +108,8 @@ export const fetchPackageGroup = registerAction(FETCH_PACKAGE_GROUP,
     localStorage.setItem(groupName, script)
     codingPackageJsonp.groups[groupName] = pkgs.map(pkg => pkg.name)
     // Todo: refractor the toggle package model
-    return togglePackage({ pkgId: groupName, shouldEnable: !PluginRegistry.find(groupName), type, data })
+    // return togglePackage({ pkgId: groupName, shouldEnable: !PluginRegistry.find(groupName), type, data })
+    return togglePackage({ pkgId: groupName, shouldEnable: true, type, data })
   })
 }
 )

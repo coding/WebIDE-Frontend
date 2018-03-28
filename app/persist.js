@@ -5,7 +5,7 @@ import { hydrate as editorTabHydrate } from './components/Tab/actions'
 import { hydrate as settingsHydrate } from './components/Setting/state'
 import { hydrate as pluginsHydrate } from './components/Plugins/actions'
 import fileState, { hydrate as fileHydrate } from './commons/File/state'
-
+import dispatchCommand from 'commands/dispatchCommand'
 
 const mainStore = localforage.createInstance({
   name: 'mainProject'
@@ -29,6 +29,9 @@ function persistStore (store, transform) {
         mainStore.getItem(`${config.spaceKey}.${config.globalKey}`).then((store) => {
           if (store) {
             autoRehydrate(store)
+          } else {
+            dispatchCommand('file:open_welcome')
+            dispatchCommand('global:show_env')
           }
           fileState.initData.set('_init', false)
           config.hasRehydrated = true
