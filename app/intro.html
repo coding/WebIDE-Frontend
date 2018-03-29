@@ -991,6 +991,10 @@
     })
 
     var mySwiper = new Swiper('.swiper-container', {
+      autoplay: {
+        delay: 10000,
+        disableOnInteraction: false,
+      },
       pagination: {
         el: '.swiper-pagination',
         clickable: true
@@ -1120,7 +1124,7 @@
       }
 
       // Creat cubes
-      for (var i = 0; i < 80; i++) {
+      for (var i = 0; i < 200; i++) {
         var mesh = new THREE.Mesh(geometry, material);
         mesh.position.x = Math.random() * 1400 - 700;
         mesh.position.y = Math.random() * 1400 - 700;
@@ -1147,8 +1151,8 @@
       ////////////////////////////////////
       // Setup Camera
       ////////////////////////////////////
-      camera = new THREE.PerspectiveCamera(60, window.innerWidth / 600, 1, 10000);
-      camera.position.z = 1;
+      camera = new THREE.PerspectiveCamera(30, window.innerWidth / 600, 1, 10000);
+      camera.position.z = 500;
 
       ////////////////////////////////////
       // Lighting
@@ -1170,7 +1174,7 @@
       ////////////////////////////////////
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setClearColor(0x1E2229);
+      renderer.setClearColor(0x101317);
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, 600);
       renderer.sortObjects = false;
@@ -1195,8 +1199,14 @@
 
     function onDocumentMouseMove(event) {
       if ((event.clientY + window.scrollY) < 600) {
-        mouseX = (event.clientX - windowHalfX) * 5;
-        mouseY = (event.clientY - windowHalfY) * 5;
+        mouseX = (event.clientX - windowHalfX) * 3;
+        mouseY = (event.clientY - windowHalfY) * 3;
+        if (mouseX > 1200) {
+          mouseX = 1200;
+        }
+        if (mouseX < -1200) {
+          mouseX = -1200;
+        }
       }
     }
 
