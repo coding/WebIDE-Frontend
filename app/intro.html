@@ -8,9 +8,9 @@
   <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
   <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
   <script src="https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/jquery.min.js"></script>
-  <script src="	https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/three.min.js "></script>
+  <script src=" https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/three.min.js "></script>
   <script src="https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/countUp.min.js"></script>
-  <script src="	  https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/swiper.min.js"></script>
+  <script src="   https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/swiper.min.js"></script>
   <link rel="stylesheet" href="https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Scripts/swiper.min.css">
 
   <style>
@@ -497,7 +497,6 @@
       letter-spacing: 2px;
       text-align: center;
       line-height: 70px;
-      text-shadow: 0 1px 1px #408cff;
       padding-top: 150px;
       margin: 0;
       font-weight: normal;
@@ -510,7 +509,7 @@
       text-align: center;
       line-height: 28px;
       text-shadow: 0 1px 1px #232f40;
-      width: 860px;
+      width: 920px;
       margin: 0 auto;
       padding-top: 20px;
     }
@@ -549,6 +548,13 @@
       margin-top: 60px;
       border-radius: 0;
       display: inline-block;
+      border-radius: 2px;
+      transition: all 0.5s ;
+    }
+
+    .intro-page .intro-header .btn-try:hover {
+      background: #003d99;
+      opacity: 0.8;
     }
 
     .intro-page .intro-counter {
@@ -619,8 +625,9 @@
     }
 
     .intro-page .intro-feature .react-tabs__tab-panel .tab-panel {
-      width: 918px;
+      width: 940px;
       margin: 0 auto;
+      height: 340px;
     }
 
     .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-img {
@@ -642,7 +649,8 @@
       font-size: 20px;
       color: #000;
       text-align: left;
-      padding-left: 540px;
+      float: left;
+      width: 352px;
     }
 
     .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro h2 {
@@ -655,7 +663,13 @@
     .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro p {
       font-size: 16px;
       color: #425063;
-      padding-bottom: 40px;
+      padding-bottom: 28px;
+      margin-bottom: 0;
+    }
+
+    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro h3 {
+      margin: 0;
+      font-size: 20px;
     }
 
     .intro-page .intro-swiper {
@@ -780,6 +794,7 @@
     .user a.btn-primary {
       background: #0066FF;
       color: #FFF;
+      border-radius: 2px;
     }
   </style>
 </head>
@@ -849,7 +864,7 @@
               </div>
             </div>
           </div>
-          <div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="react-tabs-3" aria-labelledby="react-tabs-2">
+          <div class="react-tabs__tab-panel" role="tabpanel" id="react-tabs-3" aria-labelledby="react-tabs-2">
             <div class="tab-panel">
               <div class="tab-panel-img">
                 <img src="https://dn-coding-net-production-pp.qbox.me/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png" alt="feature_2">
@@ -864,7 +879,7 @@
               </div>
             </div>
           </div>
-          <div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="react-tabs-5" aria-labelledby="react-tabs-4">
+          <div class="react-tabs__tab-panel" role="tabpanel" id="react-tabs-5" aria-labelledby="react-tabs-4">
             <div class="tab-panel">
               <div class="tab-panel-img">
                 <img src="https://dn-coding-net-production-pp.qbox.me/cfa1e9da-9246-4da6-896f-009c445fc9fa.png" alt="feature_3">
@@ -992,7 +1007,7 @@
     var countStart = 1040000000;
     var totalCount = 1040688000;
     var timestamp = new Date() / 1000 - 1521809751;
-    var count = new CountUp('countNum', countStart, (totalCount + timestamp), 0, 2.5, options);
+    var count = new CountUp('countNum', countStart, (totalCount + timestamp), 0, 0.1, options);
     if (!count.error) {
       count.start();
     } else {
@@ -1001,7 +1016,7 @@
     setInterval(function () {
       timestamp = new Date() / 1000 - 1521809751;
       count.update(totalCount + (timestamp * 1000));
-    }, 1000)
+    }, 6000)
 
     function logout() {
       $.ajax({
@@ -1092,12 +1107,9 @@
       geometry = new THREE.BoxGeometry(30, 30, 30);
 
       // Set cube color
-      // grey = new THREE.Color(0x0B244E);
-      grey = new THREE.Color(0x06142c);
-      // blue = new THREE.Color(0x0066FF);
-      blue = new THREE.Color(0x04398f);      
-      // light = new THREE.Color(0xD0E3FF);
-      light = new THREE.Color(0x747e8e);
+      grey = new THREE.Color(0x0F141D);
+      blue = new THREE.Color(0x17243E);      
+      light = new THREE.Color(0x2D3442);
       var colors = [grey, blue, light];
 
       for (var i = 0; i < 3; i++) {
@@ -1158,7 +1170,7 @@
       ////////////////////////////////////
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setClearColor(0x101317);
+      renderer.setClearColor(0x1E2229);
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, 600);
       renderer.sortObjects = false;
