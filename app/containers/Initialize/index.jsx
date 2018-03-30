@@ -21,6 +21,7 @@ const WORKING_STATE = {
   Online: 'Online',
   Offline: 'Offline',
   Login: 'Login',
+  RequestColl: 'RequestColl',
 }
 
 @observer
@@ -70,10 +71,10 @@ class Initialize extends Component {
     )
     let requestInfo = null
     if (state.errorCode) {
-      if (state.errorCode === 404) {
+      if (state.errorCode === 403 && state.status === 'RequestColl') {
         errorInfo = null
         info = (
-          <div className='loading-info error'>
+          <div className='loading-info'>
             {i18n`global.loadingWorkspaceDenied`}
           </div>
         )
@@ -185,14 +186,14 @@ class Initialize extends Component {
             </div>
           )
           info = (
-            <div className='loading-info error'>
+            <div className='loading-info'>
               {i18n`global.loadingWorkspaceDenied`}
             </div>
           )
         } else if (state.status === 'Request') {
           errorInfo = null
           info = (
-            <div className='loading-info error'>
+            <div className='loading-info'>
               {i18n`global.loadingWorkspaceDenied`}
             </div>
           )
@@ -209,7 +210,7 @@ class Initialize extends Component {
             </div>
           )
           info = (
-            <div className='loading-info error'>
+            <div className='loading-info'>
               {i18n`global.loadingWorkspaceDenied`}
             </div>
           )
