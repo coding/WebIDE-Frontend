@@ -59,6 +59,9 @@ export default function subscribeToFileChange () {
     client.subscribe(`/topic/ws/${config.spaceKey}/change`, (frame) => {
       const data = JSON.parse(frame.body)
       const node = data.fileInfo
+      if (node.name.startsWith('.nfs000')) {
+        return
+      }
       emitter.emit(FILE_CHANGE, data)
       switch (data.changeType) {
         case 'create':
