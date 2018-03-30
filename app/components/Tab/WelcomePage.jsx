@@ -8,6 +8,7 @@ import { observer, inject } from 'mobx-react'
 import { observable } from 'mobx'
 import dispatchCommand from 'commands/dispatchCommand'
 import api from '../../backendAPI'
+import * as maskActions from 'components/Mask/actions'
 
 @observer
 class WelcomePage extends Component {
@@ -178,19 +179,26 @@ class WelcomePage extends Component {
       joinTeam: false,
       teamGK: config.globalKey,
     }
+    maskActions.showMask({ message: 'Preparing Workspace...' })
     api.createProject(projectOptions).then((projectRes) => {
       if (projectRes.code === 0) {
         api.createWorkspace(options).then((res) => {
           if (!res.code) {
             // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
-            window.location = `/ws/${res.spaceKey}?open=${options.open}`
+            setTimeout(() => {
+              maskActions.hideMask()
+              window.location = `/ws/${res.spaceKey}?open=${options.open}`
+            }, 3000)
           } else if (res.code === 1103) {
-            window.location = `https://ide.coding.net/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
+            maskActions.hideMask()
+            window.location = `/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
           } else {
+            maskActions.hideMask()
             notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
           }
         })
       } else if (projectRes.msg) {
+        maskActions.hideMask()
         if (typeof projectRes.msg === 'object') {
           notify({ message: Object.values(projectRes.msg)[0], notifyType: NOTIFY_TYPE.ERROR })
         } else {
@@ -200,6 +208,7 @@ class WelcomePage extends Component {
         notify({ message: `code: ${projectRes.code}`, notifyType: NOTIFY_TYPE.ERROR })
       }
     }).catch((projectRes) => {
+      maskActions.hideMask()
       if (projectRes.msg) {
         if (typeof projectRes.msg === 'object') {
           notify({ message: Object.values(projectRes.msg)[0], notifyType: NOTIFY_TYPE.ERROR })
