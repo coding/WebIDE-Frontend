@@ -189,14 +189,14 @@ class WelcomePage extends Component {
               maskActions.hideMask()
               window.location = `/ws/${res.spaceKey}?open=${options.open}`
             }, 3000)
-          } else if (res.code === 1103) {
-            maskActions.hideMask()
-            window.location = `/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
           } else {
             maskActions.hideMask()
             notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
           }
         })
+      } else if (projectRes.code === 1103) {
+        maskActions.hideMask()
+        window.location = `/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
       } else if (projectRes.msg) {
         maskActions.hideMask()
         if (typeof projectRes.msg === 'object') {
