@@ -4,13 +4,15 @@ import * as packageAPI from './packageAPI'
 import * as workspaceAPI from './workspaceAPI'
 import * as websocketClients from './websocketClients'
 import * as userAPI from './userAPI'
+import * as projectAPI from './projectAPI'
 
 export default {
   ...fileAPI,
   ...gitAPI,
   ...packageAPI,
   ...workspaceAPI,
-  ...userAPI
+  ...userAPI,
+  ...projectAPI,
 }
 
 export { websocketClients }
