@@ -28,6 +28,7 @@ import {
   GitCheckoutStashView,
   FileSelectorView,
   Form,
+  TemplateSelector,
 } from './index'
 
 
@@ -56,6 +57,7 @@ const modalCache = observable.map({
   Settings: SettingsView,
   FileSelectorView,
   GitDiffFile: GitDiffFileView,
+  TemplateSelector,
 })
 
 window.modalCache = modalCache

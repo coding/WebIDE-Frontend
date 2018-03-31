@@ -48,10 +48,10 @@ export default {
           content: cm.getValue(),
         })
 
-        debounced(() => {
-          changeInterceptor(editor)
-          dispatchCommand('file:save')
-        })
+        // debounced(() => {
+        //   changeInterceptor(editor)
+        //   dispatchCommand('file:save')
+        // })
       },
 
       focus: () => {
