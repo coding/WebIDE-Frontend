@@ -15,6 +15,8 @@ export default function getTabType (node) {
     if (node.contentType === 'image/jpeg' || node.contentType === 'image/png' || node.contentType === 'image/bmp' || node.contentType === 'image/gif') {
       return 'IMAGE'
     }
+  } else if (node.contentType === 'help') {
+    return 'HELP'
   }
   // Unknown
   return 'UNKNOWN'

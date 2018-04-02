@@ -151,7 +151,9 @@ class MarkdownEditor extends Component {
 
   componentDidMount () {
     const dispose = autorun(() => {
-      this.setPreviewContent(this.props.editor.file.content)
+      if (this.props.editor.file) {
+        this.setPreviewContent(this.props.editor.file.content)
+      }
     })
   }
 
@@ -160,8 +162,32 @@ class MarkdownEditor extends Component {
   }, 500)
 
   render () {
-    const { editor, tab, active } = this.props
+    const { editor, tab, active, content } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
+
+    if (tab.tabType === 'help') {
+      return (
+        <div
+          name="markdown_editor_container"
+          style={{
+              display:'flex',
+              width: '100%',
+              height: '100%'
+          }}>
+          <div
+            name="preview"
+            id="editor_preview_preview"
+            style={{
+              flexGrow: rightGrow,
+              flexShrink: 0,
+              flexBasis: 0,
+              backgroundColor: 'white',
+            }}>
+            <PreviewEditor content={content} editor={editor} />
+          </div>
+        </div>
+      )
+    }
 
     return (<div
       name='markdown_editor_container'

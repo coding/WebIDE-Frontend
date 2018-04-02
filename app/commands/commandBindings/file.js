@@ -150,6 +150,15 @@ function createFileWithContent (content) {
 }
 
 const fileCommands = {
+  'file:open_help': (c) => {
+    TabStore.createTab({
+      title: 'Help',
+      icon: 'fa fa-file-o',
+      editor: {
+      },
+      tabType: 'help'
+    })
+  },
   'file:open_file': (c) => { // 在当前 tabgroup 中优先打开已有的 tab
     if (typeof c.data === 'string') {
       openFile({ path: c.data })

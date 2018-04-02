@@ -27,6 +27,7 @@ class Tab extends BaseTab {
   }
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
+    if (is.string(props.tabType)) this.tabType = props.tabType
     if (is.pojo(props.flags)) extendObservable(this.flags, props.flags)
     if (is.string(props.icon)) this.icon = props.icon
     if (is.number(props.index)) this.index = props.index

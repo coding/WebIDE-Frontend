@@ -9,14 +9,22 @@ import UnknownEditor from './components/UnknownEditor'
 import WelcomeEditor from './components/WelcomeEditor'
 import HtmlEditor from './components/HtmlEditor'
 import config from '../../config'
+import helpMD from '../../../static/webide.md'
 
 const EditorWrapper = observer(({ tab, active }) => {
   const { editor } = tab
-  const editorType = editor.editorType || 'default'
+  let editorType = editor.editorType || 'default'
   const file = editor.file || {}
+  let content = ''
   // key is crutial here, it decides whether
   // the component should re-construct or
   // keep using the existing instance.
+
+  if (tab.tabType === 'help') {
+    editorType = 'editorOnlyPreview'
+    content = helpMD
+  }
+
   const key = `editor_${file.path}`
   switch (editorType) {
     case 'htmlEditor':
@@ -25,6 +33,8 @@ const EditorWrapper = observer(({ tab, active }) => {
       return React.createElement(CodeEditor, { editor, key, tab, active })
     case 'editorWithPreview':
       return React.createElement(MarkdownEditor, { editor, key, tab, active })
+    case 'editorOnlyPreview':
+      return React.createElement(MarkdownEditor, { editor, key, content, tab })
     case 'imageEditor':
       return React.createElement(ImageEditor, { path: file.path, key, tab, active })
     default:

@@ -96,6 +96,8 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
     }
   } else if (getTabType(node) === 'TEXT') {
     dispatchCommand('file:open_file', { path: node.path, editor })
+  } else if (getTabType(node) === 'HELP') {
+    dispatchCommand('file:open_help')
   } else {
     TabActions.createTab({
       title: node.name,
@@ -107,6 +109,13 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
     })
   }
 }
+export const openHelp = registerAction('filetree:open_help',
+  () => {},
+  () => {
+    openNodeCommonLogic({ contentType: 'help' })
+  }
+)
+
 export const openNode = registerAction('filetree:open_node',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
