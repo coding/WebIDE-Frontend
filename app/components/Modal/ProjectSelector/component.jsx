@@ -14,6 +14,7 @@ class ProjectSelector extends Component {
       projectId: null,
       projectList: [],
       projectName: null,
+      sync: false,
     }
   }
   componentWillMount () {
@@ -60,6 +61,18 @@ class ProjectSelector extends Component {
       }
     })
   }
+  handleSync = () => {
+    if (!this.state.sync) {
+      this.setState({
+        sync: true
+      })
+      api.syncProject().then((res) => {
+        this.setState({
+          sync: false
+        })
+      })
+    }
+  }
   renderOptions () {
     const state = this.state
     return state.projectList.map((item, i) => {
@@ -82,8 +95,12 @@ class ProjectSelector extends Component {
       <div className='modal-content'>
         <div className="import-plugin-container">
           <div>
-            <h1>
+            <h1 className="import-header">
               { i18n`import.importCoding` }
+              <a href='javascript:void(0)' onClick={this.handleSync} >
+                <i className={cx('fa fa-refresh', { 'fa-pulse': this.state.sync })} />
+                {i18n`import.sync`}
+              </a>
             </h1>
             {/* <hr /> */}
             {/* <p>新建一个插件项目</p> */}

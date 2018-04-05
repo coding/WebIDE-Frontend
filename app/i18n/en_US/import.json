@@ -1,4 +1,5 @@
 {
    "importCoding": "Import from Coding",
-   "projectExist": "Project already exists."
+   "projectExist": "Project already exists.",
+   "sync": "Sync Repo"
 }

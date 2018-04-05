@@ -10,11 +10,13 @@ export function fetchTemplates () {
 }
 
 export function findCodingProject ({ projectName }) {
-  console.log('projectName', projectName)
-  console.log(`ws/find/coding/${config.globalKey}/${projectName}`)
   return request.get(`ws/find/coding/${config.globalKey}/${projectName}`, null, { headers: { Accept: '*/*' } })
 }
 
 export function findExternalProject ({ url }) {
   return request.get(`ws/find/coding/${config.globalKey}`, { url })
+}
+
+export function syncProject () {
+  return request.post('/project/sync')
 }
