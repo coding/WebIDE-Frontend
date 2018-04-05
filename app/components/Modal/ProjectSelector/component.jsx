@@ -66,9 +66,20 @@ class ProjectSelector extends Component {
       this.setState({
         sync: true
       })
-      api.syncProject().then((res) => {
-        this.setState({
-          sync: false
+      api.syncProject().then((syncRes) => {
+        api.fetchProjects().then((res) => {
+          if (res.length > 0) {
+            this.setState({
+              projectList: res,
+              projectId: res[0].projectId,
+              projectName: res[0].name,
+              sync: false
+            })
+          } else {
+            this.setState({
+              sync: false
+            })
+          }
         })
       })
     }
