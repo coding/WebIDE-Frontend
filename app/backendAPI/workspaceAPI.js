@@ -19,6 +19,16 @@ export function createWorkspace (options) {
   return request.post('/workspaces', options)
 }
 
+export function findSpaceKey ({ ownerName, projectName }) {
+  return request.get(`/ws/find/coding/${ownerName}/${projectName}`, null,
+    { headers: { Accept: '*/*' } }
+  ).then(res => res.data)
+}
+
+export function getWorkspace (spaceKey = config.spaceKey) {
+  return request.get(`/workspaces/${spaceKey}`)
+}
+
 export function connectWebsocketClient () {
   return new Promise((resolve) => {
     const fsSocketClient = new FsSocketClient()

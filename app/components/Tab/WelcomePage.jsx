@@ -194,10 +194,37 @@ class WelcomePage extends Component {
             notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
           }
         })
-        // else if (projectRes.code === 1103) {
-        //   maskActions.hideMask()
-        //   window.location = `/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
-        // }
+      } else if (projectRes.code === 1103) {
+        // 如果存在 project
+        // 如果 ws 存在并不是 invalide
+        api.findSpaceKey({ ownerName: config.globalKey, projectName: options.projectName }).then((spaceKey) => {
+          if (spaceKey) {
+            config.spaceKey = spaceKey
+            const redirectUrl = `${window.location.origin}/ws/${config.spaceKey}`
+            // if (window.history.pushState) {
+              // window.history.pushState(null, null, redirectUrl)
+            // } else {
+              // window.location = redirectUrl
+            // }
+            window.location = redirectUrl
+          } else {
+            api.createWorkspace(options).then((res) => {
+              if (!res.code) {
+                // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
+                setTimeout(() => {
+                  maskActions.hideMask()
+                  window.location = `/ws/${res.spaceKey}?open=${options.open}`
+                }, 3000)
+              } else {
+                maskActions.hideMask()
+                notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
+              }
+            })
+          }
+        })
+        // api.getWorkspace()
+        // maskActions.hideMask()
+        // window.location = `/ws/?ownerName=${config.globalKey}&projectName=${options.projectName}`
       } else if (projectRes.msg) {
         maskActions.hideMask()
         if (typeof projectRes.msg === 'object') {
