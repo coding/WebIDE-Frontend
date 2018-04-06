@@ -15,6 +15,7 @@ class ProjectSelector extends Component {
       projectList: [],
       projectName: null,
       sync: false,
+      isLoading: true,
     }
   }
   componentWillMount () {
@@ -26,6 +27,9 @@ class ProjectSelector extends Component {
           projectName: res[0].name,
         })
       }
+      this.setState({
+        isLoading: false
+      })
     })
   }
   handleCreate () {
@@ -102,6 +106,17 @@ class ProjectSelector extends Component {
     })
   }
   render () {
+    let content = null
+    if (this.state.isLoading) {
+      content = (
+        <div className='loading'>
+          <i className='fa fa-spinner fa-pulse fa-spin' />
+          Loading...
+        </div>
+      )
+    } else {
+      content = this.renderOptions()
+    }
     return (
       <div className='modal-content'>
         <div className="import-plugin-container">
@@ -120,7 +135,7 @@ class ProjectSelector extends Component {
               <div className="form-group">
                 <div className='col-sm-12'>
                   <div className='template-list'>
-                    {this.renderOptions()}
+                    {content}
                   </div>
                 </div>
               </div>
