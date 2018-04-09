@@ -10,7 +10,7 @@ const Footer = () => (
           <a href='https://coding.net/privacy' target='_blank' rel='noopener noreferrer'>隐私策略</a> | <a href='https://coding.net/terms' target='_blank' rel='noopener noreferrer'>服务条款</a> | <a href='https://coding.net/security' target='_blank' rel='noopener noreferrer'>安全策略</a>
         </p>
         <p>
-          <a href='/index'>© 2017 Coding.net</a> |
+          <a href='https://coding.net/index'>© 2017 Coding.net</a> |
           <a href='http://www.miitbeian.gov.cn/' target='_blank' rel='noopener noreferrer'>粤ICP备14029750号</a> | 深圳市扣钉网络科技有限公司
         </p>
       </div>
