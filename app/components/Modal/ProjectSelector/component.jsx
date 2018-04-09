@@ -37,10 +37,10 @@ class ProjectSelector extends Component {
   handleCreate () {
     maskActions.showMask({ message: 'Preparing Workspace...' })
     Modal.dismissModal()
-    api.findCodingProject({ projectName: this.state.projectName }).then((res) => {
+    api.findCodingProject({ projectName: this.state.projectName, ownerName: this.state.projectItem.ownerName }).then((res) => {
       if (res.data) {
         maskActions.hideMask()
-        notify({ message: i18n`import.projectExist`, notifyType: NOTIFY_TYPE.ERROR })
+        notify({ message: i18n`import.projectExist`, notifyType: NOTIFY_TYPE.INFO })
       } else {
         api.createWorkspace({
           cpuLimit: 1,

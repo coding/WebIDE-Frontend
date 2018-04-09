@@ -1,5 +1,5 @@
 {
    "importCoding": "从 Coding 导入项目",
-   "projectExist": "项目已经存在",
+   "projectExist": "项目已经被导入",
    "sync": "同步仓库"
 }

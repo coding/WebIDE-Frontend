@@ -9,8 +9,8 @@ export function fetchTemplates () {
   return request.get('/projects?template=true')
 }
 
-export function findCodingProject ({ projectName }) {
-  return request.get(`ws/find/coding/${config.globalKey}/${projectName}`, null, { headers: { Accept: '*/*' } })
+export function findCodingProject ({ projectName, ownerName }) {
+  return request.get(`ws/find/coding/${ownerName}/${projectName}`, null, { headers: { Accept: '*/*' } })
 }
 
 export function findExternalProject ({ url }) {
