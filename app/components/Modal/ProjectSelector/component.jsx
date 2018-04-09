@@ -14,6 +14,7 @@ class ProjectSelector extends Component {
       projectId: null,
       projectList: [],
       projectName: null,
+      projectItem: null,
       sync: false,
       isLoading: true,
     }
@@ -25,6 +26,7 @@ class ProjectSelector extends Component {
           projectList: res,
           projectId: res[0].projectId,
           projectName: res[0].name,
+          projectItem: res[0]
         })
       }
       this.setState({
@@ -45,7 +47,7 @@ class ProjectSelector extends Component {
           memory: 128,
           storage: 1,
           source: 'Coding',
-          ownerName: config.globalKey,
+          ownerName: this.state.projectItem.ownerName,
           projectName: this.state.projectName
         }).then((res) => {
           if (!res.code) {
@@ -59,6 +61,7 @@ class ProjectSelector extends Component {
             notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
           }
         }).catch((e) => {
+          maskActions.hideMask()
           const msg = e.response ? e.response.data.msg : e.message
           notify({ message: msg || `code: ${e.code}`, notifyType: NOTIFY_TYPE.ERROR })
         })
@@ -77,6 +80,7 @@ class ProjectSelector extends Component {
               projectList: res,
               projectId: res[0].projectId,
               projectName: res[0].name,
+              projectItem: res[0],
               sync: false
             })
           } else {
@@ -96,7 +100,8 @@ class ProjectSelector extends Component {
         onClick={e => {
           this.setState({
             projectId: item.projectId,
-            projectName: item.name
+            projectName: item.name,
+            projectItem: item
           })
         }}
         key={item.projectId}
