@@ -122,7 +122,7 @@ class Login extends Component {
         <div className='login-panel'>
           <form>
             <div className='login-panel-input'>
-              <div className='title'>用户登录</div>
+              <div className='title'>CODING 账号登录</div>
               <div className='login-panel-line'>
                 <input type='text' autoFocus className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
               </div>
