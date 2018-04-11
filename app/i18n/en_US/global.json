@@ -29,5 +29,6 @@
    "gotoOauth": "Check oauth account",
    "oauthOutdate": "Oauth is out of date",
    "tencentNoRealName": "Tencent Cloud account needs real name authentication",
-   "goRealName": "Go to Tencent Cloud"
+   "goRealName": "Go to Tencent Cloud",
+   "preparing": "Preparing Workspace..."
 }

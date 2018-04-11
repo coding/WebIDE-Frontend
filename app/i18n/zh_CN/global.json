@@ -29,5 +29,6 @@
    "gotoOauth": "前往绑定",
    "oauthOutdate": "授权已过期",
    "tencentNoRealName": "腾讯云账号未通过实名认证",
-   "goRealName": "前往认证"
+   "goRealName": "前往认证",
+   "preparing": "正在准备工作空间，请稍后..."
 }

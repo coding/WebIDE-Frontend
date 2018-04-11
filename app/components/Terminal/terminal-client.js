@@ -6,6 +6,8 @@ import * as TabActions from 'components/Tab/actions'
 import * as maskActions from 'components/Mask/actions'
 import * as TermActions from './actions'
 import * as SideBar from 'components/Panel/SideBar/actions'
+import i18n from 'utils/createI18n'
+
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
@@ -108,7 +110,7 @@ class TerminalClient extends TtySocketClient {
 
   connectSocket () {
     this.maskTimeout = setTimeout(() => {
-      maskActions.showMask({ message: 'Preparing Workspace...' })
+      maskActions.showMask({ message: i18n`global.preparing` })
     }, 500)
     
     this.connect()
