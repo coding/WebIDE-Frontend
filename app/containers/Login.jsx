@@ -39,6 +39,11 @@ class Login extends Component {
       }
     })
   }
+  handleCaptchaChange = (e) => {
+    this.setState({
+      captcha: e.target.value
+    })
+  }
   handleReCaptcha = (e) => {
     this.setState({
       captchaUrl: `${config.baseURL}/captcha?${new Date().getMilliseconds()}`
@@ -125,7 +130,7 @@ class Login extends Component {
                 <input type='password' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handlePwdChange} placeholder='密码' />
               </div>
               { this.state.captchaUrl && <div className='login-panel-line'>
-                <input type='text' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handleCodeChange} placeholder='验证码' />
+                <input type='text' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handleCaptchaChange} placeholder='验证码' />
                 <img className='captchaPic' src={this.state.captchaUrl} onClick={this.checkCaptcha} />
               </div> }
               <div className='checkbox'>
