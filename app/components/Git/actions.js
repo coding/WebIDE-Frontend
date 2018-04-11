@@ -19,7 +19,6 @@ export function commit () {
     const stagedFiles = GitState.statusFiles.filter(file => file.isStaged)
     const stagedFilesPathList = stagedFiles.toArray().map(stagedFile => stagedFile.path.replace(/^\//, ''))
     const initialCommitMessage = i18n.get('git.commitView.initMessage')
-    console.log(GitState.commitMessage);
     return api.gitCommit({
       files: stagedFilesPathList,
       message: GitState.commitMessage || initialCommitMessage,

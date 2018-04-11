@@ -107,7 +107,7 @@
    },
    "commitView": {
       "nothingCommit": "你的当前工作目录无内容提交",
-      "initMessage": "由 Coding WebIDE 更新，https://ide.coding.net"
+      "initMessage": "由 Cloud Studio 更新，https://studio.coding.net"
    },
    "unStash": {
       "branch": "新建分支并应用",

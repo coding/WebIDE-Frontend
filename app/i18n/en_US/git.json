@@ -107,7 +107,7 @@
    },
    "commitView": {
       "nothingCommit": "Your working directory is clean. Nothing to commit.",
-      "initMessage": "update by Coding WebIDE , https://ide.coding.net"
+      "initMessage": "Updated by Cloud Studio , https://studio.coding.net"
    },
    "unStash": {
       "branch": "Branch",
