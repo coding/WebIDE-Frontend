@@ -17,7 +17,7 @@
    "hasVimium": "Please disable Vimium plugin.",
    "noMachine": "No machine found, \nYou can get a free trial.",
    "tryMachine": "Free Trial",
-   "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 9 CNY per-month after.",
+   "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 9 CNY per-month after (Subjects to Tencent promotions policies).",
    "createHint": "It may take up to 15 minutes to create your server. Please wait patiently.",
    "createCheckHint": "Check the server static on Tencent console",
    "initMachine": "Initializing machine...",
