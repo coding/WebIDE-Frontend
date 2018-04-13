@@ -10,7 +10,7 @@ import api from '../../backendAPI'
 import Login from '../Login'
 import Header from '../Header'
 import { Line } from 'rc-progress'
-import Tip from './Tip';
+import Tip from './tip';
 
 const WORKING_STATE = {
   Created: 'Created',
