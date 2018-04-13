@@ -11,13 +11,14 @@
    "onSocketError": "file socket is error",
    "requestCollaboration": "Request collaboration",
    "connecting": "Connecting",
+   "checkingUserinfo": "Checking user info...",
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired.",
    "hasVimium": "Please disable Vimium plugin.",
    "noMachine": "No machine found, \nYou can get a free trial.",
    "tryMachine": "Free Trial",
-   "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 19 CNY per-month after.",
+   "tryHint": "The server is powered by Tencent Cloud, each server has 1 core, 1G memory, public IP address.\nFree trial for one month, 9 CNY per-month after (Subjects to Tencent promotions policies).",
    "createHint": "It may take up to 15 minutes to create your server. Please wait patiently.",
    "createCheckHint": "Check the server static on Tencent console",
    "initMachine": "Initializing machine...",
@@ -29,5 +30,6 @@
    "gotoOauth": "Check oauth account",
    "oauthOutdate": "Oauth is out of date",
    "tencentNoRealName": "Tencent Cloud account needs real name authentication",
-   "goRealName": "Go to Tencent Cloud"
+   "goRealName": "Go to Tencent Cloud",
+   "preparing": "Preparing Workspace..."
 }

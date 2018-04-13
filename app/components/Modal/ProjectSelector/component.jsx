@@ -35,7 +35,7 @@ class ProjectSelector extends Component {
     })
   }
   handleCreate () {
-    maskActions.showMask({ message: 'Preparing Workspace...' })
+    maskActions.showMask({ message: i18n`global.preparing` })
     Modal.dismissModal()
     api.findCodingProject({ projectName: this.state.projectName, ownerName: this.state.projectItem.ownerName }).then((res) => {
       if (res.data) {

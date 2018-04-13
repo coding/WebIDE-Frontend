@@ -30,7 +30,7 @@ const Alert = (props) => {
         </div>
       </div>
       <div className='links'>
-        <a href='/intro' className='link-item'>产品介绍</a>
+        <a href='/intro' className='link-item' target='_blank' rel='noopener noreferrer'>产品介绍</a>
         <a href='https://coding.net/help/doc/webide' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
         <a href='https://coding.net/u/coding/p/Coding-Feedback/topic/tag/241717' className='link-item' target='_blank' rel='noopener noreferrer'>意见反馈</a>
       </div>

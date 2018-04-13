@@ -22,7 +22,7 @@ const finalReducer = composeReducers(
 
 const enhancer = compose(
   applyMiddleware(thunkMiddleware, emitterMiddleware),
-  window.devToolsExtension ? window.devToolsExtension({
+  (window.devToolsExtension && __DEV__) ? window.devToolsExtension({
     serialize: {
       replacer: (key, value) => {
         if (key === 'editor') return {}

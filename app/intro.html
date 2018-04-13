@@ -391,6 +391,9 @@
       padding-top: 20px;
       overflow: hidden;
       display: inline-block;
+      z-index: 1;
+      transition-delay: 0.4s;
+      transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
     }
 
     .page-header .nav {
@@ -538,6 +541,14 @@
       margin-right: 8px;
     }
 
+    .mobile-nav-btn {
+      display: none;
+    }
+
+    .intro-page .intro-header .content .content-tips {
+      display: none;
+    }
+
     .intro-page .intro-header .btn-try {
       background: #06f;
       font-size: 18px;
@@ -562,8 +573,10 @@
       background: #f7fcff;
       font-size: 16px;
       color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-weight: bold;
-      line-height: 48px;
     }
 
     .intro-page .intro-counter .logo {
@@ -580,6 +593,7 @@
       font-family: DINAlternate-Bold;
       font-size: 32px;
       color: #06f;
+      margin-left: 8px;
     }
 
     .intro-page .intro-feature {
@@ -602,6 +616,60 @@
       border: none;
       display: flex;
       margin: 0 auto;
+    }
+
+    .intro-feature .tabs-mobile {
+      display: none;
+    }
+
+    .tab-item-container {
+      margin-bottom: 60px;
+    }
+
+    .intro-feature .tabs-mobile .tab-item-container h3 {
+      font-family: PingFangSC-Regular;
+      width: 300px;
+      font-size: 20px;
+      color: #0066FF;
+      text-align: center;
+      padding-bottom: 16px;
+      margin: 0 auto;
+      border-bottom: 2px solid #0066FF;
+    }
+
+    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-panel {
+      background: #FFFFFF;
+      box-shadow: 0 0 20px 0 rgba(3,65,157,0.10);
+      padding: 10px;
+      width: 320px;
+      height: 230px;
+      margin: 24px auto;
+    }
+
+    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-panel img {
+      width: 300px;
+      height: 210px;
+    }
+
+    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-intro {
+      width: 300px;
+      margin: 0 auto;      
+    }
+
+    .tab-item-container .tab-mobile-intro h4 {
+      font-family: PingFangSC-Medium;
+      font-size: 20px;
+      color: #000000;
+      margin: 0px;
+      text-align: left;
+    }
+
+    .tab-item-container .tab-mobile-intro p {
+      font-family: PingFangSC-Regular;
+      font-size: 16px;
+      color: #425063;
+      text-align: left;
+      margin-bottom: 26px;
     }
 
     .intro-page .intro-feature .react-tabs__tab-list .react-tabs__tab {
@@ -796,6 +864,227 @@
       color: #FFF;
       border-radius: 2px;
     }
+
+    .mobile-record {
+      display: none;
+    }
+  </style>
+
+  <style>
+    @media (max-width: 834px) {
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .page-header .nav {
+        display: none;
+      }
+      .page-header .user {
+        display: none !important;
+      }
+
+      .page-header .mobile-nav-btn {
+        width: 30px;
+        height: 30px;
+        padding: 0px;
+        border: none;
+        background-color: transparent;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        outline: none;
+        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+      }
+      
+      .page-header .mobile-nav-btn > span {
+        width: 22px;
+        height: 2px;
+        background-color: #FFFFFF;
+        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+        transition-delay: 0s;
+      }
+
+      .intro-page .intro-header .content h2 {
+        font-size: 54px;
+        width: 300px;
+        margin: 0 auto;
+        padding-top: 98px;
+        font-family: PingFangSC-Medium;
+        letter-spacing: 2.25px;
+        line-height: 70px;
+      }
+      .intro-page .intro-header .content p {
+        box-sizing: content-box;
+        width: 300px;
+        font-size: 13px;
+        line-height: 20px;
+      }
+      .intro-page .intro-header .content ul {
+        width: 300px;
+        flex-flow: row wrap;
+        margin-top: 20px;
+      }
+      .intro-page .intro-header .content ul li {
+        margin-top: 10px;
+        width: 50%;
+        flex: auto;
+      }
+      .intro-page .intro-header .content a {
+        display: none;
+      }
+      .intro-page .intro-header .content .content-tips {
+        display: inline-block;
+        opacity: 0.5;
+        margin-top: 32px;
+        font-family: PingFangSC-Medium;
+        font-size: 13px;
+        color: #FFFFFF;
+        letter-spacing: 1px;
+        text-align: center;
+        line-height: 40px;
+      }
+
+      .intro-page .intro-counter {
+        height: 183px;
+        padding: 30px 44px;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .intro-feature .react-tabs {
+        display: none;
+      }
+      .intro-feature .tabs-mobile {
+        display: block;
+      }
+
+      .intro-page .intro-swiper .intro-swiper-c {
+        width: 320px;
+        padding: 10px;
+      }
+
+      .intro-page .intro-swiper .intro-swiper-c .swiper-slide img {
+        width: 300px;
+        height: 171px;
+      }
+
+      .record_img_info {
+        display: none;
+      }
+
+      .mobile-record {
+        width: 100%;
+        height: 132px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .mobile-record img {
+        width: 284px;
+        max-width: 284px;
+        position: initial !important;
+      }
+
+      .intro-page .intro-corp {
+        padding: 40px 0px 30px 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .intro-page .intro-corp span {
+        margin-top: 16px;
+        display: inline-block;
+      }
+
+      .intro-page .intro-corp .c-surrpot {
+        margin-top: 20px;
+      }
+      .record-info-mobile {
+        width: 293px;
+        height: 36px;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #FFFFFF;
+        letter-spacing: 0;
+        text-align: center;
+        line-height: 18px;
+      }
+
+      .record-info-mobile > p {
+        margin: 0px;
+      }
+
+      .record-info-mobile > p > a {
+        text-decoration: none;
+        color: #FFFFFF;
+      }
+
+      .counter-logo-mobile {
+        height: 48px;
+        line-height: 48px;
+      }
+
+      .counter-text-mobile {
+        height: 38px;
+        line-height: 38px;
+      }
+
+      .counter-count-mobile {
+        height: 38px;
+        line-height: 38px;
+      }
+
+      .btn-rotate-to {
+        z-index: 10;
+        transform: rotate(90deg);
+        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
+      }
+      .rotate-line-to-t {
+        margin-bottom: 0px !important;
+        transform: translateY(5px) rotate(45deg);
+        transition-delay: 0.2s;
+      }
+      .rotate-line-to-b {
+        transform: translateY(3px) rotate(-45deg);
+        transition-delay: 0.2s;
+      }
+
+      .menu-show {
+        background-color: #000 !important;
+      }
+
+      .mobile-intro-menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
+        transition: all 0.3s ease-in;
+        transition-delay: 0.25s;
+        justify-content: flex-end;
+        height: 0px;
+      }
+
+      .mobile-intro-menu a {
+        padding-left: 20px;
+        padding-right: 20px;
+        line-height: 60px;
+        display: block;
+        text-decoration: none;
+        color: #333;
+        text-align: left;
+      }
+    }
   </style>
 </head>
 
@@ -819,7 +1108,12 @@
             <li>开发资源动态调整</li>
           </ul>
           <a href="/ws/default" class="btn btn-try">立即体验</a>
+          <span class="content-tips">需使用桌面版体验</span>
         </div>
+        <section class="mobile-intro-menu">
+          <a href="/intro">产品介绍</a>
+          <a href="https://coding.net/help/doc/webide" target="_blank" rel="noopener noreferrer">帮助</a>
+        </section>
       </div>
       <div class="page-header">
         <a href="/" class="logo">Cloud Studio</a>
@@ -834,13 +1128,21 @@
         <div class="user" id="user">
 
         </div>
+        <button class="mobile-nav-btn">
+          <span style="margin-bottom: 6px"></span>
+          <span></span>
+        </button>
       </div>
       <div class="intro-counter">
-        在
-        <div class="logo"></div>
-        上进行在线开发的用户累计使用时间为
-        <span class="num" id="countNum">1,040,688,000</span>
-        秒
+        <div class="counter-logo-mobile">
+          在
+          <div class="logo"></div>
+        </div>
+        <div class="counter-text-mobile">上进行在线开发的用户累计使用时间为</div>
+        <div class="counter-count-mobile">
+          <span class="num" id="countNum">1,040,688,000</span>
+          秒
+        </div>
       </div>
       <div class="intro-feature">
         <h2>独一无二的特性</h2>
@@ -895,6 +1197,48 @@
             </div>
           </div>
         </div>
+        <section class="tabs-mobile">
+          <div class="tab-item-container">
+            <h3>多环境切换</h3>
+            <div class="tab-mobile-panel">
+              <img src="https://dn-coding-net-production-pp.qbox.me/5f892a55-9e72-4a2b-a834-92c883deebd0.png" alt="feature_1">
+            </div>
+            <div class="tab-mobile-intro">
+              <h4>一键切换开发环境</h4>
+              <p>告别繁琐的开发环境准备工作，一键切换各种预置的开发环境。</p>
+              <h4>保存与分享环境</h4>
+              <p>对开发环境进行改动或升级后，可保存当前开发环境以便随时切换。在环境列表中可查看与切换项目成员保存的开发环境，新成员即刻上手开发。</p>
+            </div>
+          </div>
+          <div class="tab-item-container">
+            <h3>协同编辑</h3>
+            <div class="tab-mobile-panel">
+              <img src="https://dn-coding-net-production-pp.qbox.me/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png" alt="feature_2">
+            </div>
+            <div class="tab-mobile-intro">
+              <h4>多人协作</h4>
+              <p>支持主动申请和被动邀请，多人同时编辑一个工作空间</p>
+              <h4>多光标输入</h4>
+              <p>多个多人同时编辑同一文件，多光标显示，输入内容一目了然。</p>
+              <h4>聊天室</h4>
+              <p>侧边栏聊天室，让实时沟通更便捷。</p>
+            </div>
+          </div>
+          <div class="tab-item-container">
+            <h3>全功能 Terminal</h3>
+            <div class="tab-mobile-panel">
+              <img src="https://dn-coding-net-production-pp.qbox.me/cfa1e9da-9246-4da6-896f-009c445fc9fa.png" alt="feature_3">
+            </div>
+            <div class="tab-mobile-intro">
+              <h4>支持 Unicode 宽字符</h4>
+              <p>完美支持宽字符的输入和显示。</p>
+              <h4>完善的 Web 终端模拟器</h4>
+              <p>兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持。</p>
+              <h4>提供 root 权限</h4>
+              <p>默认用户 sudo 免密码，用户可以自由安装偏好的软件包。</p>
+            </div>
+          </div>
+        </section>
       </div>
       <div class="intro-swiper">
         <h2>完整的云端 IDE</h2>
@@ -916,10 +1260,12 @@
       </div>
       <div class="intro-corp">
         <div class="logo"></div>
-        <!-- react-text: 59 -->由
+        <!-- react-text: 59 -->
+        <span>由</span>
         <!-- /react-text -->
         <i class="c-logo-icon"></i>
-        <!-- react-text: 61 -->提供云计算支持
+        <!-- react-text: 61 -->
+        <span class="c-surrpot">提供云计算支持</span>
         <!-- /react-text -->
       </div>
       <div id="global_footer">
@@ -948,6 +1294,22 @@
               </p>
             </div>
           </div>
+          <section class="mobile-record">
+            <a href="https://coding.net/index">
+              <img src="https://dn-coding-net-production-pp.qbox.me/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png">
+            </a>
+            <div class="record-info-mobile">
+              <p style="margin-top: 10px">
+                <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
+                <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
+                <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
+              </p>
+              <p>
+                <a href="https://coding.net/index">© 2017 Coding.net</a>
+                <a href="http://www.miitbeian.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备14029750号</a>
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -988,6 +1350,24 @@
 
       selected = $(this).addClass('react-tabs__tab--selected').attr('aria-controls');
       $('#' + selected).addClass('react-tabs__tab-panel--selected');
+    })
+
+    $('.mobile-nav-btn').click(function () {
+      let topLine = $('.mobile-nav-btn span')[0];
+      let bottomLine = $('.mobile-nav-btn span')[1];
+      if ($('.mobile-nav-btn').hasClass('btn-rotate-to')) {
+        $('.mobile-nav-btn').removeClass('btn-rotate-to');
+        $(topLine).removeClass('rotate-line-to-t menu-show');
+        $(bottomLine).removeClass('rotate-line-to-b menu-show');
+        $('.mobile-intro-menu').css('height', 0);
+        $('.page-header .logo').css('filter', 'invert(0%)');
+      } else {
+        $('.mobile-nav-btn').addClass('btn-rotate-to');
+        $(topLine).addClass('rotate-line-to-t menu-show');
+        $(bottomLine).addClass('rotate-line-to-b menu-show');
+        $('.mobile-intro-menu').css('height', 180);
+        $('.page-header .logo').css('filter', 'invert(100%)');
+      }
     })
 
     var mySwiper = new Swiper('.swiper-container', {

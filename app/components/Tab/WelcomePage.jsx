@@ -9,6 +9,8 @@ import { observable } from 'mobx'
 import dispatchCommand from 'commands/dispatchCommand'
 import api from '../../backendAPI'
 import * as maskActions from 'components/Mask/actions'
+// import { openWindow } from 'utils'
+import i18n from 'utils/createI18n'
 
 @observer
 class WelcomePage extends Component {
@@ -43,7 +45,9 @@ class WelcomePage extends Component {
           <ul className='demo-links'>
             {/* <li><a href='https://coding.net/help/doc/webide/online-editing.html' target='_blank' rel='noopener noreferrer'>HTML5 应用</a></li> */}
             {/* <li><a href='https://coding.net/help/doc/webide/compile.html' target='_blank' rel='noopener noreferrer'>Python 人工智能</a></li> */}
-            <li><a href='javascript: void(0)' onClick={e => {
+            <li><a href='https://studio.coding.net/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li>
+            <li><a href='https://studio.coding.net/ws/?projectName=JavaDemo&open=README.md&templateId=4' target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
+            {/* <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
                 // ownerName: 'tanhe123',
                 projectName: 'WordPress',
@@ -61,7 +65,7 @@ class WelcomePage extends Component {
                 open: 'README.md',
                 templateId: 4,
               })
-            }} target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
+            }} target='_blank' rel='noopener noreferrer'>Java 应用</a></li> */}
             {/* <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
                 ownerName: 'tanhe123',
@@ -75,7 +79,7 @@ class WelcomePage extends Component {
 
           <div className='btn-list'>
             <a href='https://coding.net/help/doc/webide/' target='_blank' rel='noopener noreferrer'>帮助文档</a>
-            {/* <a href='https://coding.net/help/doc/webide/' target='_blank' rel='noopener noreferrer'>视频教程</a> */}
+            <a href='https://coding.net/help/doc/cloud-studio/video.html' target='_blank' rel='noopener noreferrer'>视频教程</a>
           </div>
           
           <div className='coding-logo'></div>
@@ -179,7 +183,7 @@ class WelcomePage extends Component {
       joinTeam: false,
       teamGK: config.globalKey,
     }
-    maskActions.showMask({ message: 'Preparing Workspace...' })
+    maskActions.showMask({ message: i18n`global.preparing` })
     api.createProject(projectOptions).then((projectRes) => {
       if (projectRes.code === 0) {
         api.createWorkspace(options).then((res) => {
@@ -188,6 +192,7 @@ class WelcomePage extends Component {
             setTimeout(() => {
               maskActions.hideMask()
               window.location = `/ws/${res.spaceKey}?open=${options.open}`
+              // openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
             }, 3000)
           } else {
             maskActions.hideMask()
@@ -199,14 +204,18 @@ class WelcomePage extends Component {
         // 如果 ws 存在并不是 invalide
         api.findSpaceKey({ ownerName: config.globalKey, projectName: options.projectName }).then((spaceKey) => {
           if (spaceKey) {
-            config.spaceKey = spaceKey
-            const redirectUrl = `${window.location.origin}/ws/${config.spaceKey}`
-            // if (window.history.pushState) {
-              // window.history.pushState(null, null, redirectUrl)
-            // } else {
-              // window.location = redirectUrl
-            // }
-            window.location = redirectUrl
+            // config.spaceKey = spaceKey
+            if (spaceKey !== config.spaceKey) {
+              const redirectUrl = `${window.location.origin}/ws/${spaceKey}`
+              // if (window.history.pushState) {
+                // window.history.pushState(null, null, redirectUrl)
+              // } else {
+                // window.location = redirectUrl
+              // }
+              // openWindow(redirectUrl)
+              window.location = redirectUrl
+            }
+            maskActions.hideMask()
           } else {
             api.createWorkspace(options).then((res) => {
               if (!res.code) {
@@ -214,6 +223,7 @@ class WelcomePage extends Component {
                 setTimeout(() => {
                   maskActions.hideMask()
                   window.location = `/ws/${res.spaceKey}?open=${options.open}`
+                  // openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
                 }, 3000)
               } else {
                 maskActions.hideMask()

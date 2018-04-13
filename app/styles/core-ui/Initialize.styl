@@ -192,6 +192,63 @@
   // }
 }
 
+.prompt-container {
+  position: absolute;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.browser-prompt {
+  height: 50px;
+  margin: 0 auto;
+  display: inline-flex;
+  top: 0px;
+  color: #333;
+  font-size: 12px;
+  line-height: 50px;
+  padding: 0px 15px;
+  border-radius: 2px;
+  background-color: #e6e6e6;
+  box-shadow: 0 0 20px 0 rgba(3,65,157,0.10);
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  transform: translateY(-120px);
+  animation: 0.25s cubic-bezier(0.25, 0.01, 0.165, 0.99) browserPromptAnimation;
+  animation-fill-mode: forwards
+
+  .browser-prompt:first-child {
+    border-radius: 0px 0px 2px 2px;
+  }
+
+  p {
+    margin: 0px;
+  }
+
+  a {
+    color: #2D59A2;
+    text-decoration: none;
+  }
+
+  .close {
+    font-size: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-style: normal;
+    cursor: pointer;
+    margin-left: 20px;
+    padding: 5px;
+    color: #6e6e6e;
+  }
+  .close:hover {
+    color: #333;
+  }
+}
+
 .login-page {
   font-family: PingFangSC-Regular;
   position: absolute;
@@ -349,6 +406,7 @@
     right: 0;
     padding: 24px;
     display: flex;
+    -webkit-font-smoothing: antialiased;
     .logo {
       background: url('~static/CloudStudio-Logo-Light.svg') -10px -9px no-repeat;
       height: 0px;
@@ -440,5 +498,15 @@
   }
   90%{
     transform: translate3d(20px,0,0);
+  }
+}
+
+
+@keyframes browserPromptAnimation {
+  from {
+    transform: translateY(-120px);
+  }
+  to {
+    transform: translateY(0px);
   }
 }
