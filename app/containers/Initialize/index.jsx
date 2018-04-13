@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { loadPlugin } from 'components/Plugins/actions.js'
+import Prompt from 'components/Prompt/Prompt'
 import { observer } from 'mobx-react'
 import config from 'config'
 import i18n from 'utils/createI18n'
+import browserDetect from 'utils/browserDetect'
 import state from './state'
 import api from '../../backendAPI'
 import Login from '../Login'
@@ -26,9 +28,47 @@ const WORKING_STATE = {
 
 @observer
 class Initialize extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      prompts: [],
+    }
+  }
   componentWillMount () {
     loadPlugin(require('../../plugin/index.js').default)
   }
+
+  componentDidMount () {
+    let id = 0
+    const browserVersion = browserDetect()
+    const promptMessage = []
+    const { prompts } = this.state
+
+    if (!localStorage.getItem('visited')) {
+      promptMessage.push({
+        content: <p>WebIDE 现已全面升级为 Cloud Studio, 使用旧版 IDE 请点击 <a href='https://ide.coding.net' target='_blank' rel='noopener noreferrer'>WebIDE</a> </p>,
+        id: `global-prompt-${id++}`
+      })
+      localStorage.setItem('visited', true)
+    }
+
+    if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
+      promptMessage.push({
+        content: <p>检测到您的浏览器为 {browserVersion}，为保障用户体验，推荐使用 Chrome 或 Safari 浏览器访问。</p>,
+        id: `global-prompt-${id++}`
+      })
+    }
+
+    this.setState({
+      prompts: [...prompts, ...promptMessage]
+    })
+  }
+
+  handleClosePrompt = (id) => {
+    const { prompts } = this.state
+    this.setState({ prompts: prompts.filter(prompt => prompt.id !== id) })
+  }
+
   handleRequest = () => {
     api.requestCollaborator()
     state.errorCode = 403
@@ -263,8 +303,10 @@ class Initialize extends Component {
       }
     }
 
+    const { prompts } = this.state
     return (
       <div className='login-page'>
+        <Prompt prompts={prompts} handleClose={this.handleClosePrompt} />
         <div className='initialize-container'>
           {icon}
           {/* <div className='monkey splash-logo'></div> */}
