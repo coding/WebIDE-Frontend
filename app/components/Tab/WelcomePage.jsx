@@ -79,7 +79,7 @@ class WelcomePage extends Component {
 
           <div className='btn-list'>
             <a href='https://coding.net/help/doc/webide/' target='_blank' rel='noopener noreferrer'>帮助文档</a>
-            {/* <a href='https://coding.net/help/doc/webide/' target='_blank' rel='noopener noreferrer'>视频教程</a> */}
+            <a href='https://coding.net/help/doc/cloud-studio/video.html' target='_blank' rel='noopener noreferrer'>视频教程</a>
           </div>
           
           <div className='coding-logo'></div>
