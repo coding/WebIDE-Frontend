@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { createTransformer, toJS, extendObservable, observable, computed, action } from 'mobx'
+import { createTransformer, toJS, extendObservable, observable, computed, action, when } from 'mobx'
 import config from 'config'
 import { syncFile } from './actions'
 
@@ -137,11 +137,13 @@ class FileNode {
   }
 }
 
-state.entities.set(ROOT_PATH, new FileNode({
-  path: ROOT_PATH,
-  name: config.projectName || 'Home',
-  isDir: true,
-}))
+when(() => config.projectName, () => {
+  state.entities.set(ROOT_PATH, new FileNode({
+    path: ROOT_PATH,
+    name: config.projectName,
+    isDir: true,
+  }))
+})
 
 function hydrate (json) {
   const { entities } = json
