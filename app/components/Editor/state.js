@@ -13,8 +13,8 @@ import { findModeByFile, findModeByMIME, findModeByName } from './components/Cod
 const typeDetect = (title, types) => {
   // title is the filename
   // typeArray is the suffix
-  if (!Array.isArray(types)) return title.endsWith(`.${types}`)
-  return types.reduce((p, v) => p || title.endsWith(`.${v}`), false)
+  if (!Array.isArray(types)) return title.toLowerCase().endsWith(`.${types}`)
+  return types.reduce((p, v) => p || title.toLowerCase().endsWith(`.${v}`), false)
 }
 
 const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
@@ -212,7 +212,7 @@ class Editor {
     }
     if (this.file.contentType === 'text/html') {
       type = 'htmlEditor'
-    } else if (typeDetect(this.file.name, 'md')) {
+    } else if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
       type = 'editorWithPreview'
     }
     if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
