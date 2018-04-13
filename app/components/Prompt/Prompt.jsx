@@ -13,7 +13,7 @@ class Prompts extends Component {
             style={{ animationDelay: `${idx * 0.2}s` }}
           >
             {prompt.content}
-            <i className='btn close' onClick={() => handleClose(prompt.id)}>×</i>
+            <i className='btn close' onClick={() => handleClose(prompt.id, prompt.type)}>×</i>
           </div>
         ))}
       </div>
