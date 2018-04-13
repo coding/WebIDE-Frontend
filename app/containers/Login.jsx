@@ -117,6 +117,20 @@ class Login extends Component {
   }
   render () {
     let loginForm = null
+    let tencentLogin = null
+    if (self != top) {    
+      tencentLogin = (
+        <a href='https://cloud.tencent.com/open/authorize?scope=login&app_id=100000788006&redirect_url=https%3A%2F%2Fcoding.net%2Fapi%2Foauth%2Fqcloud%2Fstudio_login' target='_top' >
+          <i className='logo-qcloud' />使用腾讯云账号登录
+        </a>
+      )
+    } else {
+      tencentLogin = (
+        <a href='https://coding.net/api/oauth/qcloud/rebind?return_url=https://studio.coding.net'>
+          <i className='logo-qcloud' />使用腾讯云账号登录
+        </a>
+      )
+    }
     if (this.state.mode === 'login') {
       loginForm = (
         <div className='login-panel'>
@@ -124,10 +138,10 @@ class Login extends Component {
             <div className='login-panel-input'>
               <div className='title'>CODING 账号登录</div>
               <div className='login-panel-line'>
-                <input type='text' autoFocus className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
+                <input type='text' autoComplete='username' autoFocus className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
               </div>
               <div className='login-panel-line'>
-                <input type='password' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handlePwdChange} placeholder='密码' />
+                <input type='password' autoComplete='current-password' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handlePwdChange} placeholder='密码' />
               </div>
               { this.state.captchaUrl && <div className='login-panel-line'>
                 <input type='text' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handleCaptchaChange} placeholder='验证码' />
@@ -149,9 +163,7 @@ class Login extends Component {
               </div>
             </div>
             <div className='login-panel-tencent'>
-              <a href='https://coding.net/api/oauth/qcloud/rebind?return_url=https://studio.coding.net'>
-                <i className='logo-qcloud' />使用腾讯云账号登录
-              </a>
+              {tencentLogin}
             </div>
           </form>
         </div>
@@ -171,9 +183,7 @@ class Login extends Component {
               </div>
             </div>
             <div className='login-panel-tencent'>
-              <a href='https://coding.net/api/oauth/qcloud/rebind?return_url=https://ide.coding.net'>
-                <i className='logo-qcloud' />使用腾讯云账号登录
-              </a>
+              {tencentLogin}
             </div>
           </form>
         </div>

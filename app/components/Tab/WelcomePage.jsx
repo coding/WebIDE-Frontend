@@ -9,7 +9,7 @@ import { observable } from 'mobx'
 import dispatchCommand from 'commands/dispatchCommand'
 import api from '../../backendAPI'
 import * as maskActions from 'components/Mask/actions'
-import { openWindow } from 'utils'
+// import { openWindow } from 'utils'
 import i18n from 'utils/createI18n'
 
 @observer
@@ -191,8 +191,8 @@ class WelcomePage extends Component {
             // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
             setTimeout(() => {
               maskActions.hideMask()
-              // window.location = `/ws/${res.spaceKey}?open=${options.open}`
-              openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
+              window.location = `/ws/${res.spaceKey}?open=${options.open}`
+              // openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
             }, 3000)
           } else {
             maskActions.hideMask()
@@ -212,8 +212,8 @@ class WelcomePage extends Component {
               // } else {
                 // window.location = redirectUrl
               // }
-              openWindow(redirectUrl)
-              // window.location = redirectUrl
+              // openWindow(redirectUrl)
+              window.location = redirectUrl
             }
             maskActions.hideMask()
           } else {
@@ -222,8 +222,8 @@ class WelcomePage extends Component {
                 // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
                 setTimeout(() => {
                   maskActions.hideMask()
-                  // window.location = `/ws/${res.spaceKey}?open=${options.open}`
-                  openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
+                  window.location = `/ws/${res.spaceKey}?open=${options.open}`
+                  // openWindow(`/ws/${res.spaceKey}?open=${options.open}`)
                 }, 3000)
               } else {
                 maskActions.hideMask()
