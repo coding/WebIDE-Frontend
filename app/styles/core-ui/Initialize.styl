@@ -99,6 +99,42 @@
   text-align: center;
   font-size: 12px;
   color: #84898F;
+  .tip-info {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    .tip-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 2px;
+      background-color: #fff;
+    }
+    .tip-img {
+      width: 92px;
+      height: 40px;
+      margin-right: 10px;
+      background: url('~static/do-you-know.png') no-repeat;
+      background-size: 100%;
+    }
+    .tip-box {
+      height: 30px;
+      padding: 0 15px;
+      border-left: 1px solid #ccc;
+      overflow: hidden;
+      .tip-slide {
+        transform: translateY(0);
+        transition: transform 1s ease;
+      }
+      .tip-item {
+        height: 30px;
+        line-height: 30px;
+        text-align: left;
+        color: #333;
+      }
+    }
+  }
   a {
     color: #FFF;
   }
@@ -184,6 +220,24 @@
       opacity: 0.8;
       background: #0B0B0B;  
     }
+  }
+  .login-pop {
+    display: none;
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #99433E;
+    background-color: #eedbdb;
+    position: absolute;
+    top: 10px;
+    left: calc(50% - 150px);
+    z-index: 100;
+  }
+  .login-pop.active {
+    display: block;
   }
   
   .login-panel {
