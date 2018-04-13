@@ -11,6 +11,7 @@
    "onSocketError": "已断线",
    "requestCollaboration": "申请协作",
    "connecting": "连接",
+   "checkingUserinfo": "正在查询用户信息...",
    "loadingWorkspace": "正在加载工作空间...",
    "reloadWorkspace": "重新加载",
    "requestCollaborationExpires": "试用已经结束",

@@ -64,11 +64,20 @@ class Initialize extends Component {
         </div>
       )
     }
-    info = (
-      <div className='loading-info'>
-        {i18n`global.loadingWorkspace`}
-      </div>
-    )
+    if (state.userChecked) {
+      info = (
+        <div className='loading-info'>
+          {i18n`global.loadingWorkspace`}
+        </div>
+      )
+    } else {
+      info = (
+        <div className='loading-info'>
+          {i18n`global.checkingUserinfo`}
+        </div>
+      )
+    }
+    
     let requestInfo = null
     if (state.errorCode) {
       if (state.errorCode === 403 && state.status === 'RequestColl') {

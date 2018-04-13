@@ -11,6 +11,7 @@
    "onSocketError": "file socket is error",
    "requestCollaboration": "Request collaboration",
    "connecting": "Connecting",
+   "checkingUserinfo": "Checking user info...",
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired.",
