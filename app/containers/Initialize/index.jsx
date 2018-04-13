@@ -10,6 +10,7 @@ import api from '../../backendAPI'
 import Login from '../Login'
 import Header from '../Header'
 import { Line } from 'rc-progress'
+import Tip from './Tip';
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -35,7 +36,9 @@ class Initialize extends Component {
     }
   }
   componentWillMount () {
-    loadPlugin(require('../../plugin/index.js').default)
+    loadPlugin(require('../../plugin/index.js').default);
+    //state.errorCode = 403;
+    //state.status = 'Initialize';
   }
 
   componentDidMount () {
@@ -79,7 +82,7 @@ class Initialize extends Component {
     state.status = WORKING_STATE.Created
   }
   render () {
-    if (state.status === 'WORKING_STATE.Login') {
+    if (state.status === WORKING_STATE.Login) {
       return <Login />
     }
     let hintInfo = null
@@ -211,6 +214,7 @@ class Initialize extends Component {
           )
           hintInfo = (
             <div className='hint-info'>
+              <Tip />
               {i18n`global.createHint`}
               <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer' >{i18n`global.createCheckHint`}</a>
             </div>

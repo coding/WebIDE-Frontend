@@ -9,16 +9,21 @@ import config from 'config'
 class Login extends Component {
   constructor (props) {
     super(props)
+    this.timer = null;
     this.state = {
       password: '',
-      email: '',
+      account: '',
       captcha: '',
       remember_me: false,
       code: '',
       mode: 'login',
+      accountError: false,
       pwdError: false,
+      captchaError: false,
       captchaUrl: '',
       codeError: false,
+      errHint: '',
+      popUp: false,
     }
   }
   componentDidMount () {
@@ -41,22 +46,20 @@ class Login extends Component {
   }
   handleCaptchaChange = (e) => {
     this.setState({
-      captcha: e.target.value
+      captcha: e.target.value,
+      captchaError: false,
     })
   }
-  handleReCaptcha = (e) => {
+  handleAccountChange = (e) => {
     this.setState({
-      captchaUrl: `${config.baseURL}/captcha?${new Date().getMilliseconds()}`
-    })
-  }
-  handleEmailChange = (e) => {
-    this.setState({
-      email: e.target.value
+      account: e.target.value,
+      accountError: false,
     })
   }
   handlePwdChange = (e) => {
     this.setState({
-      password: e.target.value
+      password: e.target.value,
+      pwdError: false,
     })
   }
   handleRemembarChange = (e) => {
@@ -69,9 +72,9 @@ class Login extends Component {
     e.stopPropagation()
     api.login({
       password: this.state.password,
-      email: this.state.email,
+      email: this.state.account,
       captcha: this.state.captcha,
-      remember_me: this.state.remember_me
+      remember_me: this.state.remember_me,
     }).then((res) => {
       if (res.code === 3205) {
         this.setState({
@@ -80,11 +83,24 @@ class Login extends Component {
       } else if (res.code === 0) {
         console.log('Login Succeed.')
       } else {
-        this.setState({
-          errHint: res.msg,
-          pwdError: true,
-        })
-        this.checkCaptcha()
+        if (/\（(.+)\）/.test(res.msg)) {
+          this.setState({
+            errHint: res.msg,
+            accountError: true,
+          });
+        } else if (res.msg === '你输入的图片验证码有误') {
+          this.setState({
+            errHint: res.msg,
+            captchaError: true,
+          });
+        } else {
+          this.setState({
+            errHint: res.msg,
+            pwdError: true,
+          });
+        }
+        this.popUp();
+        this.checkCaptcha();
       }
     })
   }
@@ -92,28 +108,41 @@ class Login extends Component {
     e.preventDefault()
     e.stopPropagation()
     this.setState({
-      code: e.target.value
+      code: e.target.value,
+      codeError: false,
     })
   }
   handleCode = (e) => {
     e.preventDefault()
     e.stopPropagation()
     if (this.state.code) {
-      this.setState({
-        codeError: false
-      })
       api.loginCode({ code: this.state.code }).then((res) => {
         if (res.code) {
           this.setState({
-            codeError: true
-          })
+            errHint: '两步验证码错误',
+            codeError: true,
+          });
+          this.popUp();
         }
       })
     } else {
       this.setState({
-        codeError: true
-      })
+        errHint: '请输入两步验证码',
+        codeError: true,
+      });
+      this.popUp();
     }
+  }
+  popUp() {
+    this.setState({
+      popUp: true
+    });
+    this.timer = setTimeout(() => {
+      this.setState({popUp: false});
+    }, 3000);
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
   render () {
     let loginForm = null
@@ -138,21 +167,18 @@ class Login extends Component {
             <div className='login-panel-input'>
               <div className='title'>CODING 账号登录</div>
               <div className='login-panel-line'>
-                <input type='text' autoComplete='username' autoFocus className='form-control' onChange={this.handleEmailChange} placeholder='用户名／手机／邮箱' value={this.state.email} />
+                <input type='text' autoComplete='username' autoFocus className={cx('form-control', { error: this.state.accountError})} onChange={this.handleAccountChange} placeholder='用户名／手机／邮箱' />
               </div>
               <div className='login-panel-line'>
                 <input type='password' autoComplete='current-password' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handlePwdChange} placeholder='密码' />
               </div>
               { this.state.captchaUrl && <div className='login-panel-line'>
-                <input type='text' className={cx('form-control', { error: this.state.pwdError })} onChange={this.handleCaptchaChange} placeholder='验证码' />
+                <input type='text' className={cx('form-control', { error: this.state.captchaError })} onChange={this.handleCaptchaChange} placeholder='验证码' />
                 <img className='captchaPic' src={this.state.captchaUrl} onClick={this.checkCaptcha} />
               </div> }
               <div className='checkbox'>
                 <label>
-                  <input type='checkbox'
-                    onChange={this.handleRemembarChange}
-                    checked={this.state.remember_me}
-                  />
+                  <input type='checkbox' onChange={this.handleRemembarChange} checked={this.state.remember_me} />
                   记住我
                 </label>
               </div>
@@ -174,7 +200,7 @@ class Login extends Component {
           <form>
             <div className='login-panel-input'>
               <div className='title'>两步验证</div>
-              <input type='text' autoFocus className={cx('form-control', { error: this.state.codeError })} onChange={this.handleCodeChange} placeholder='两步验证码' value={this.state.code} />
+              <input type='text' autoFocus className={cx('form-control', { error: this.state.codeError })} onChange={this.handleCodeChange} placeholder='两步验证码' />
               
               <button className='btn btn-primary' type='submit' onClick={this.handleCode}>登录</button>
               <div className='links'>
@@ -208,9 +234,10 @@ class Login extends Component {
           {loginForm}
         </div>
         <Header />
+        <div className={cx('login-pop', { active: this.state.popUp})}>{this.state.errHint}</div>
       </div>
     )
   }
 }
 
-export default Login
+export default Login;
