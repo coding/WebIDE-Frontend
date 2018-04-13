@@ -110,8 +110,8 @@ class TerminalClient extends TtySocketClient {
 
   connectSocket () {
     this.maskTimeout = setTimeout(() => {
-      maskActions.showMask({ message: i18n`global.preparing` })
-    }, 500)
+      maskActions.showMask({ message: i18n`global.preparing`, countdown: 20 })
+    }, 600)
     
     this.connect()
     if (!this.unbindSocketEvent) this.bindSocketEvent()
