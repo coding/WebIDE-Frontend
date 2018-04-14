@@ -93,14 +93,16 @@ return {
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/maintain.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
