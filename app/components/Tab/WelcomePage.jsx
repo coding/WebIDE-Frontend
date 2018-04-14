@@ -29,7 +29,7 @@ class WelcomePage extends Component {
       <div className='welcome-page'>
         <div className='header'>
         </div>
-        <h1>欢迎使用 <div className='logo'></div></h1>
+        <h1>欢迎使用 <div className='logo'><span className='beta'>beta</span></div></h1>
         <div className='subtitle'>您将获得前所未有的云端开发体验</div>
         <div className='quick-start'>
           <h2>快速入门</h2>
