@@ -121,7 +121,7 @@ const Header = ({ handleSignout, userProfile }) => (
         <a href='/intro'>产品介绍</a>
       </li>
       <li>
-        <a href='https://coding.net/help/doc/webide' target='_blank' rel='noopener noreferrer'>帮助</a>
+        <a href='https://coding.net/help/doc/cloud_studio' target='_blank' rel='noopener noreferrer'>帮助</a>
       </li>
     </ul>
     <User />

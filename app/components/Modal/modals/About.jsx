@@ -31,8 +31,8 @@ const Alert = (props) => {
       </div>
       <div className='links'>
         <a href='/intro' className='link-item' target='_blank' rel='noopener noreferrer'>产品介绍</a>
-        <a href='https://coding.net/help/doc/webide' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
-        <a href='https://coding.net/u/coding/p/Coding-Feedback/topic/tag/241717' className='link-item' target='_blank' rel='noopener noreferrer'>意见反馈</a>
+        <a href='https://coding.net/help/doc/cloud_studio' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
+        <a href='https://coding.net/u/coding/p/cloud-studio-feedback/git?public=true7' className='link-item' target='_blank' rel='noopener noreferrer'>意见反馈</a>
       </div>
       Copyright @ 2015-2018. All Rights Reserved. 扣钉网络 版权所有
     </div>
