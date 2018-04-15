@@ -5,6 +5,7 @@ const state = observable({
   operatingMessage: '',
   countdown: 0,
   progress: 0,
+  type: null,
 })
 
 export default state

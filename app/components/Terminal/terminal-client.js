@@ -110,8 +110,21 @@ class TerminalClient extends TtySocketClient {
 
   connectSocket () {
     this.maskTimeout = setTimeout(() => {
-      maskActions.showMask({ message: i18n`global.preparing`, countdown: 20 })
+      if (!localStorage.getItem('firstEnter')) {
+        maskActions.showMask({ message: i18n`global.preparingFirst`, countdown: 20 })
+        localStorage.setItem('firstEnter', true)
+      } else {
+        maskActions.showMask({ message: i18n`global.preparing`, countdown: 20 })
+      }
     }, 600)
+
+    this.changeMaskTimeout = setTimeout(() => {
+      maskActions.showMask({ type: 'switch' })
+      // Modal.showModal('Alert', {
+      //   header: i18n`global.ttyConnectFailed`,
+      //   message: '',
+      // })
+    }, 60000)
     
     this.connect()
     if (!this.unbindSocketEvent) this.bindSocketEvent()

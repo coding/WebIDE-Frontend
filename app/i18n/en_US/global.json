@@ -31,5 +31,7 @@
    "oauthOutdate": "Oauth is out of date",
    "tencentNoRealName": "Tencent Cloud account needs real name authentication",
    "goRealName": "Go to Tencent Cloud",
-   "preparing": "Preparing Workspace..."
+   "preparing": "Preparing Workspace...",
+   "preparingFirst": "Preparing Workspace...",
+   "ttyConnectFailed": "Cannot connect to current environment, please try others"
 }
