@@ -35,7 +35,6 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
       }
     })
     targetPanel.show()
-    console.log(targetPanel)
     emitter.emit(E.PANEL_SHOW, targetPanel)
     // 通知插件
     if (targetPlugin.actions.onSidebarActive) {
