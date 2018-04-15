@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import cx from 'classnames'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
@@ -8,6 +10,7 @@ import PluginArea from '../../components/Plugins/component'
 import { MENUBAR } from '../../components/Plugins/constants'
 import { injectComponent } from '../../components/Plugins/actions'
 import Offline from '../../components/Offline/Offline'
+import { getCurrentBranch } from '../Git/actions'
 
 class MenuBar extends Component {
   static propTypes = {
@@ -71,6 +74,8 @@ class MenuBar extends Component {
   }
 }
 
+@connect(null,
+  dispatch => bindActionCreators({ getCurrentBranch }, dispatch), null, { withRef: true })
 class MenuBarItem extends Component {
   constructor (props) {
     super(props)
@@ -81,6 +86,9 @@ class MenuBarItem extends Component {
     if (!this.props.isActive && nextProps.isActive) {
       const onOpen = isFunction(nextProps.onOpen) ? nextProps.onOpen : () => null
       const onOpenPromise = onOpen()
+      if (isFunction(nextProps.onOpen)) {
+        this.props.getCurrentBranch()
+      }
       if (onOpenPromise && isFunction(onOpenPromise.then)) {
         onOpenPromise.then(menuContext => this.setState({ menuContext }))
       }
