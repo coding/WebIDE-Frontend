@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { emitter, E } from 'utils'
+import i18n from 'utils/createI18n'
 import GitGraph from './GitGraph'
 import state from './state'
 import { CommitsCrawler, fetchCommits, fetchRefs } from './actions'
@@ -116,7 +117,7 @@ class GitGraphTable extends Component {
         onScroll={this.onVerticalScroll}
       >
         {currentBranch === '' || currentBranch === undefined ? (
-          <p className='git-logs-no-init'>当前项目未 Git 初始化，请先在终端中执行 git init</p>
+          <p className='git-logs-no-init'>{i18n`git.initPrompt`}</p>
         ) : (
           <div className='git-logs-table'>
             <div className='git-graph-wrapper'>
