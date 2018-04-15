@@ -79,6 +79,7 @@ class TerminalClient extends TtySocketClient {
         this.openTerm(terms[i])
       }
       clearTimeout(this.maskTimeout)
+      clearTimeout(this.changeMaskTimeout)
       maskActions.hideMask()
     })
 
