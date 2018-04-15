@@ -138,5 +138,6 @@
       "onto": "Onto",
       "showRemoteTags": "Show Remote Branches",
       "selectBranch": "select a branch"
-   }
+   },
+   "initPrompt": "The current project is not initialized Git, please execute git init in the terminal."
 }

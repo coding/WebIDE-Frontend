@@ -140,6 +140,7 @@ export function gitLogs (params = {}) {
       message: c.shortMessage,
       date: new Date(c.commitTime * 1000),
     })))
+    .catch(() => {})
 }
 
 export function gitRefs () {

@@ -19,11 +19,16 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
   setTimeout(() => emitter.emit(E.PANEL_RESIZED), 0)
   const targetPlugin = pluginState.plugins.get(viewId) || {}
   const targetPanel = panelState.panels.get(`PANEL_${positionToPanel[targetPlugin.position]}`)
-
   // 如果强制 show，或者当前 targetPlugin 不是 active 状态
   if (shouldShow || !targetPlugin.status.get('active')) {
     pluginState.plugins.forEach((plugin) => {
       if (plugin === targetPlugin) {
+        if (viewId === 'SIDEBAR.BOTTOM.gitGraph') {
+          emitter.emit(E.GITGRAPH_SHOW)
+        } else if (viewId === 'SIDEBAR.BOTTOM.terminal') {
+          emitter.emit(E.TERMINAL_SHOW)
+        }
+
         plugin.status.set('active', true)
       } else if (plugin.position === targetPlugin.position) {
         plugin.status.set('active', false)
