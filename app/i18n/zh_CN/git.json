@@ -139,5 +139,5 @@
       "showRemoteTags": "显示远程标签",
       "selectBranch": "选择一个分支"
    },
-   "initPrompt": "当前项目未初始化Git，请在终端中执行git init"
+   "initPrompt": "当前项目未初始化 Git，请在终端中执行 git init"
 }
