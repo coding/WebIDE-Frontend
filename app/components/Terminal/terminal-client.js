@@ -112,10 +112,10 @@ class TerminalClient extends TtySocketClient {
   connectSocket () {
     this.maskTimeout = setTimeout(() => {
       if (!localStorage.getItem('firstEnter')) {
-        maskActions.showMask({ message: i18n`global.preparingFirst`, countdown: 20 })
+        maskActions.showMask({ message: i18n`global.preparingFirst`, countdown: 60 })
         localStorage.setItem('firstEnter', true)
       } else {
-        maskActions.showMask({ message: i18n`global.preparing`, countdown: 20 })
+        maskActions.showMask({ message: i18n`global.preparing`, countdown: 60 })
       }
     }, 600)
 
