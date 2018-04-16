@@ -63,6 +63,7 @@ export default class GitBranchWidget extends Component {
       return [{ name: i18n.get('git.branchWidget.fetchingBranches'), isDisabled: true }]
     }
 
+    const { current } = this.props
     const localBranchItems = localBranches.map(branch => ({
       name: branch,
       icon: 'fa',
@@ -99,10 +100,18 @@ export default class GitBranchWidget extends Component {
       }
     })
     return [
-      { name: i18n.get('git.branchWidget.newBranch'), command: () => dispatchCommand('git:new_branch'),
-        iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>) },
-      { name: i18n.get('git.branchWidget.synchronize'), command: () => this.props.getFetch(),
-      icon: 'fa' },
+      {
+        name: i18n.get('git.branchWidget.newBranch'),
+        command: () => dispatchCommand('git:new_branch'),
+        iconElement: (<span style={{ marginRight: '0.3em' }}>+</span>),
+        isDisabled: current === '' || current === undefined
+      },
+      {
+        name: i18n.get('git.branchWidget.synchronize'),
+        command: () => this.props.getFetch(),
+        icon: 'fa',
+        isDisabled: current === '' || current === undefined
+      },
       { isDivider: true },
       { name: i18n.get('git.branchWidget.localBranches'), isDisabled: true },
       ...localBranchItems,

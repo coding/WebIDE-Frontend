@@ -1098,7 +1098,7 @@
           </div>
         </div>
         <div class="content">
-          <h2>前所未有的开发体验</h2>
+          <h2>服务器正在维护中</h2>
           <p>Cloud Studio 为开发者提供了一个永不间断的云端工作站，不管有没有开发经验都可以毫无门槛的体验云端开发的乐趣，支持绝大部分编程语言，包括 HTML5、PHP、Python、Java、Ruby、C/C++、.NET 小程序等等。Cloud
             Studio 提供了完整的 Linux 环境，并且支持自定义域名指向，动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
           <ul>
@@ -1107,7 +1107,6 @@
             <li>一键切换开发环境</li>
             <li>开发资源动态调整</li>
           </ul>
-          <a href="/ws/default" class="btn btn-try">立即体验</a>
           <span class="content-tips">需使用桌面版体验</span>
         </div>
         <section class="mobile-intro-menu">
@@ -1133,7 +1132,7 @@
           <span></span>
         </button>
       </div>
-      <div class="intro-counter">
+      <!-- <div class="intro-counter">
         <div class="counter-logo-mobile">
           在
           <div class="logo"></div>
@@ -1143,7 +1142,7 @@
           <span class="num" id="countNum">1,040,688,000</span>
           秒
         </div>
-      </div>
+      </div> -->
       <div class="intro-feature">
         <h2>独一无二的特性</h2>
         <div class="react-tabs" data-tabs="true">
@@ -1382,25 +1381,25 @@
       loop: true
     })
 
-    var options = {
-      useEasing: true,
-      useGrouping: true,
-      separator: ',',
-      decimal: '.',
-    };
-    var countStart = 1040000000;
-    var totalCount = 1040688000;
-    var timestamp = new Date() / 1000 - 1521809751;
-    var count = new CountUp('countNum', countStart, (totalCount + timestamp), 0, 0.1, options);
-    if (!count.error) {
-      count.start();
-    } else {
-      console.error(count.error);
-    }
-    setInterval(function () {
-      timestamp = new Date() / 1000 - 1521809751;
-      count.update(totalCount + (timestamp * 1000));
-    }, 6000)
+    // var options = {
+    //   useEasing: true,
+    //   useGrouping: true,
+    //   separator: ',',
+    //   decimal: '.',
+    // };
+    // var countStart = 1040000000;
+    // var totalCount = 1040688000;
+    // var timestamp = new Date() / 1000 - 1521809751;
+    // var count = new CountUp('countNum', countStart, (totalCount + timestamp), 0, 0.1, options);
+    // if (!count.error) {
+    //   count.start();
+    // } else {
+    //   console.error(count.error);
+    // }
+    // setInterval(function () {
+    //   timestamp = new Date() / 1000 - 1521809751;
+    //   count.update(totalCount + (timestamp * 1000));
+    // }, 6000)
 
     function logout() {
       $.ajax({

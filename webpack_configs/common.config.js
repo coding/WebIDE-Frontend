@@ -16,6 +16,7 @@ module.exports = function (options={}) {
     accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
+    maintainEntryHtmlName = 'maintain.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
   } = options
@@ -92,9 +93,18 @@ return {
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
-      excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
+      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/maintain.html'),
       favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
     }),
     // https://github.com/kevlened/copy-webpack-plugin

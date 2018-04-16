@@ -4,6 +4,7 @@ import cx from 'classnames'
 import MenuSheet from './MenuSheet'
 import MenuContextTypes from './MenuContextTypes'
 import { isFunction, isBoolean } from 'utils/is'
+import { connect } from 'react-redux'
 
 const handleMenuItemCommand = (command, menuContext) => {
   if (typeof command === 'function') {
@@ -29,7 +30,6 @@ class MenuItem extends Component {
   componentWillReceiveProps (nextProps) {
     // if has no submenu, noop
     if (!this.props.item.items) return
-
     // isActive transits from true to false
     if (this.props.isActive && !nextProps.isActive) {
       clearTimeout(this.submenuShowTimeout)
@@ -92,13 +92,14 @@ class MenuItem extends Component {
 
 
   render () {
-    const { item, isActive } = this.props
+    const { item, isActive, currentBranch } = this.props
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
 
     // when submenu is focused, onMouseLeave from parent <MenuSheet> won't trigger lost of <MenuItem> activity (which normally will)
     const submenuIsFocused = this.submenu && this.context.getFocus() === this.submenu
     const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
-      : isFunction(item.getIsDisabled) && item.getIsDisabled(this.context.menuContext)
+      : isFunction(item.getIsDisabled) ? item.getIsDisabled(this.context.menuContext)
+      : isFunction(item.isNotGitProject) && item.isNotGitProject(currentBranch)
     return (
       <li className='menu-item' ref={r => this.nodeDOM = r}>
         <div
@@ -144,8 +145,12 @@ MenuItem.propTypes = {
   toggleActive: PropTypes.func.isRequired,
   parentMenu: PropTypes.any.isRequired,
   onActive: PropTypes.func,
+  currentBranch: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 }
 
 MenuItem.contextTypes = MenuContextTypes
 
-export default MenuItem
+export default connect(
+  state => ({ currentBranch: state.GitState.branches.current }),
+  {}
+)(MenuItem)

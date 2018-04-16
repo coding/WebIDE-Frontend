@@ -30,7 +30,7 @@ const _state = {
   statusFiles: Map(),
   commitMessage: '',
   branches: {
-    current: 'master',
+    current: '',
     failed: '' // 没有切换成功的
   },
   tags: [],

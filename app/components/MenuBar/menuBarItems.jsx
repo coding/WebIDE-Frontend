@@ -7,7 +7,7 @@ const divider = { isDivider: true }
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className='menu-bar-item-logo' ></div>),
+    name: (<div className='menu-bar-item-logo' ><span className='beta'>beta</span></div>),
     className: 'coding-logo',
     items: [
       {
@@ -68,16 +68,19 @@ const menuBarItems = observable([
         icon: 'octicon octicon-git-commit',
         command: 'git:commit',
         showMore: true,
+        isNotGitProject
       }, {
         key: 'pull',
         name: i18n`menuBarItems.git.pull`,
         icon: 'octicon octicon-repo-pull',
-        command: 'git:pull'
+        command: 'git:pull',
+        isNotGitProject
       }, {
         key: 'push',
         name: i18n`menuBarItems.git.push`,
         icon: 'octicon octicon-repo-push',
-        command: 'git:push'
+        command: 'git:push',
+        isNotGitProject
       },
       divider,
       {
@@ -85,7 +88,8 @@ const menuBarItems = observable([
         group: 'conflicts',
         name: i18n`menuBarItems.git.resolveConflicts`,
         command: 'git:resolve_conflicts',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       divider,
       {
@@ -93,18 +97,21 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.git.stashChanges`,
         command: 'git:stash',
         showMore: true,
+        isNotGitProject
       },
       {
         key: 'unstash',
         name: i18n`menuBarItems.git.unstashChanges`,
         command: 'git:unstash',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       {
         key: 'reset',
         name: i18n`menuBarItems.git.resetHead`,
         command: 'git:reset_head',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       divider,
       {
@@ -112,27 +119,31 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.git.branches`,
         icon: 'octicon octicon-git-branch',
         command: 'global:show_branches',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       {
         key: 'merge',
         name: i18n`menuBarItems.git.mergeBranch`,
         icon: 'octicon octicon-git-merge',
         command: 'git:merge',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       {
         key: 'tag',
         name: i18n`menuBarItems.git.tag`,
         command: 'git:tag',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       divider,
       {
         key: 'rebase',
         name: i18n`menuBarItems.git.rebase`,
         command: 'git:rebase:start',
-        showMore: true
+        showMore: true,
+        isNotGitProject
       },
       {
         key: 'abort',
@@ -184,5 +195,9 @@ function onGitMenuOpen () {
 
 function getIsDisabled (menuContext) {
   return (isRebasing.indexOf(menuContext.rebaseState) === -1)
+}
+
+function isNotGitProject (branch) {
+  return branch === '' || branch === undefined
 }
 export default menuBarItems

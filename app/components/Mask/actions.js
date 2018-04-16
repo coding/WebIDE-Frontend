@@ -1,10 +1,11 @@
 import { registerAction } from 'utils/actions'
 import state from './state'
 
-export const showMask = registerAction('mask:show_mask', ({ message = 'Working...', countdown = 0 }) => {
+export const showMask = registerAction('mask:show_mask', ({ message = 'Working...', countdown = 0, type }) => {
   state.operating = true
   state.operatingMessage = message
   state.countdown = countdown
+  state.type = type
   clearInterval(state.progressInterval)
   state.progress = 0
   state.progressInterval = setInterval(() => {
@@ -14,11 +15,11 @@ export const showMask = registerAction('mask:show_mask', ({ message = 'Working..
   }, 600)
 })
 
-export const hideMask = registerAction('mask:hide_mask', () => {
+export const hideMask = registerAction('mask:hide_mask', (time = 1000) => {
   clearInterval(state.progressInterval)
   state.progress = 100
   setTimeout(() => {
     state.operating = false
     state.operatingMessage = ''
-  }, 1000)
+  }, time)
 })
