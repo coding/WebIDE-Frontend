@@ -14,7 +14,9 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   })
   const tabs = Object.values(json.tabs)
   if (tabs.length === 0) {
-    dispatchCommand('file:open_welcome')
+    // setTimeout(() => {
+      // dispatchCommand('file:open_welcome')
+    // }, 1000)
     dispatchCommand('global:show_env')
   }
   const openTabs = tabs.map((tabValue) => {

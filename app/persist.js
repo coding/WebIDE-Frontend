@@ -30,7 +30,9 @@ function persistStore (store, transform) {
           if (store) {
             autoRehydrate(store)
           } else {
-            dispatchCommand('file:open_welcome')
+            // setTimeout(() => {
+              // dispatchCommand('file:open_welcome')
+            // }, 1000)
             dispatchCommand('global:show_env')
           }
           fileState.initData.set('_init', false)

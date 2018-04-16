@@ -125,7 +125,7 @@ class TerminalClient extends TtySocketClient {
       //   header: i18n`global.ttyConnectFailed`,
       //   message: '',
       // })
-    }, 60000)
+    }, 300000)
     
     this.connect()
     if (!this.unbindSocketEvent) this.bindSocketEvent()
