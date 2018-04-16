@@ -3,6 +3,7 @@ import { GitBranchWidget } from 'components/Git'
 import { dispatchCommand } from 'commands'
 import { EditorWidgets } from 'components/Editor'
 import { observer } from 'mobx-react'
+import configState from '../../config'
 import UploadWidgets from './UploadWidgets'
 
 const StatusBar = observer(({ messages=[] }) => {
@@ -10,6 +11,7 @@ const StatusBar = observer(({ messages=[] }) => {
     <div className='status-bar'>
       <div className='status-widget-container left'>
         <div className='status-bar-menu-item toggle-layout fa fa-desktop' onClick={e => dispatchCommand('view:toggle_bars')} ></div>
+        <div className='status-bar-space-key'>{configState.spaceKey}</div>
       </div>
       <UploadWidgets />
       <div className='status-messages'>
