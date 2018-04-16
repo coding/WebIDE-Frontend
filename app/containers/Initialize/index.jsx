@@ -33,11 +33,11 @@ class Initialize extends Component {
     this.state = {
       prompts: [],
     }
+    //state.errorCode = 403;
+    //state.status = 'Initialize';
   }
   componentWillMount () {
     loadPlugin(require('../../plugin/index.js').default);
-    //state.errorCode = 403;
-    //state.status = 'Initialize';
   }
 
   handleRequest = () => {
