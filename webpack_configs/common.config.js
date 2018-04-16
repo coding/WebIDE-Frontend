@@ -9,6 +9,8 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
+// const ICO_PATH = path.join(PROJECT_ROOT, 'static/favicon.ico')
+// const ICO_PATH = 'https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Images/favicon.ico'
 
 module.exports = function (options={}) {
   const {
@@ -68,28 +70,28 @@ return {
       excludeChunks: ['workspaces', 'login'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['main', 'login'],
       filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces', 'main'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces', 'main'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/account.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
@@ -97,7 +99,7 @@ return {
       // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
@@ -105,7 +107,7 @@ return {
       // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/maintain.html'),
-      favicon: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+      // favicon: ICO_PATH,
     }),
     // https://github.com/kevlened/copy-webpack-plugin
     new CopyWebpackPlugin([{
