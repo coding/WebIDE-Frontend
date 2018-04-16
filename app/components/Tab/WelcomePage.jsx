@@ -34,9 +34,9 @@ class WelcomePage extends Component {
         <div className='quick-start'>
           <h2>快速入门</h2>
           <ul>
-            <li><a href='https://coding.net/help/doc/cloud_studio/online-editing.html' target='_blank' rel='noopener noreferrer'>在线编辑</a></li>
-            <li><a href='https://coding.net/help/doc/cloud_studio/compile.html' target='_blank' rel='noopener noreferrer'>编译运行</a></li>
-            <li><a href='https://coding.net/help/doc/cloud_studio/co-operation.html' target='_blank' rel='noopener noreferrer'>协同开发</a></li>
+            <li><a href='https://coding.net/help/doc/cloud-studio/online-editing.html' target='_blank' rel='noopener noreferrer'>在线编辑</a></li>
+            <li><a href='https://coding.net/help/doc/cloud-studio/compile.html' target='_blank' rel='noopener noreferrer'>编译运行</a></li>
+            <li><a href='https://coding.net/help/doc/cloud-studio/co-operation.html' target='_blank' rel='noopener noreferrer'>协同开发</a></li>
           </ul>
         </div>
         <div className='intro'>
