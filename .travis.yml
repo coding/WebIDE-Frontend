@@ -24,7 +24,7 @@ script:
 - yarn run build
 - docker build -f Dockerfile -t $REPO:$COMMIT .
 - if [ "$TRAVIS_BRANCH" == "master" ]; then docker tag $REPO:$COMMIT $REPO:latest; fi
-- echo $PASSWORD | docker login -u $DOCKER_USER --password-stdin
+- echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 - docker push $REPO
 
 before_cache:
