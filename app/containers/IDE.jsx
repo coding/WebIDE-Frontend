@@ -6,6 +6,7 @@ import Utilities from './Utilities'
 import hasVimium from 'utils/hasVimium'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 import i18n from 'utils/createI18n'
+import GlobalPrompt from './GlobalPrompt'
 
 class IDE extends Component {
   constructor (props) {
@@ -32,6 +33,7 @@ class IDE extends Component {
     if (!this.state.isReady) return null
     return (
       <div className='ide-container'>
+        <GlobalPrompt />
         <PanelsContainer />
         <Utilities />
       </div>

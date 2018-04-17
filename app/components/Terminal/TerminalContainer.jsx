@@ -46,7 +46,7 @@ class TerminalContainer extends Component {
   }
 
   componentDidMount () {
-    emitter.on(E.PANEL_SHOW, this.onShow)
+    emitter.on(E.TERMINAL_SHOW, this.onShow)
     emitter.on(E.PANEL_HIDE, this.onHide)
     emitter.on(E.TERM_ENV_HIDE, this.onEnvHide)
     injectComponent(TERMINAL.ENV, {
@@ -55,7 +55,7 @@ class TerminalContainer extends Component {
   }
 
   componentWillUnmount () {
-    emitter.removeListener(E.PANEL_SHOW, this.onShow)
+    emitter.removeListener(E.TERMINAL_SHOW, this.onShow)
     emitter.removeListener(E.PANEL_HIDE, this.onHide)
     emitter.removeListener(E.TERM_ENV_HIDE, this.onEnvHide)
   }
@@ -86,10 +86,8 @@ class TerminalContainer extends Component {
     )
   }
 
-  onShow (panel) {
-    if (panel.id === 'PANEL_BOTTOM') {
-      Actions.openTerminal()
-    }
+  onShow () {
+    Actions.openTerminal()
   }
 
   onHide (panel) {

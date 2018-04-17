@@ -24,6 +24,10 @@ const _toggleSidePanelView = (viewId, shouldShow) => {
   if (shouldShow || !targetPlugin.status.get('active')) {
     pluginState.plugins.forEach((plugin) => {
       if (plugin === targetPlugin) {
+        if (viewId === 'SIDEBAR.BOTTOM.terminal') {
+          emitter.emit(E.TERMINAL_SHOW)
+        }
+
         plugin.status.set('active', true)
       } else if (plugin.position === targetPlugin.position) {
         plugin.status.set('active', false)

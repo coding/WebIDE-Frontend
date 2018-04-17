@@ -15,12 +15,13 @@
 
 .initialize-container {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   .loading-info {
     margin-top: 20px;
@@ -85,5 +86,74 @@
     border-radius: 6px;
     background: #FFF;
     box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
+  }
+}
+
+.prompt-container {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%,0);
+  top: 0px;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+
+  .browser-prompt {
+    height: 50px;
+    margin: 0 auto;
+    display: inline-flex;
+    top: 0px;
+    color: #333;
+    font-size: 12px;
+    line-height: 50px;
+    padding: 0px 15px;
+    border-radius: 2px;
+    background-color: #e6e6e6;
+    box-shadow: 0 0 20px 0 rgba(3,65,157,0.10);
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    transform: translateY(-120px);
+    animation: 0.25s cubic-bezier(0.25, 0.01, 0.165, 0.99) browserPromptAnimation;
+    animation-fill-mode: forwards
+
+    .browser-prompt:first-child {
+      border-radius: 0px 0px 2px 2px;
+    }
+
+    p {
+      margin: 0px;
+    }
+
+    a {
+      color: #2D59A2;
+      text-decoration: none;
+    }
+
+    .close {
+      font-size: 18px;
+      line-height: 18px;
+      text-align: center;
+      font-style: normal;
+      cursor: pointer;
+      margin-left: 20px;
+      padding: 5px;
+      color: #6e6e6e;
+    }
+    .close:hover {
+      color: #333;
+    }
+  }
+}
+
+@keyframes browserPromptAnimation {
+  from {
+    transform: translateY(-120px);
+  }
+  to {
+    transform: translateY(0px);
   }
 }
