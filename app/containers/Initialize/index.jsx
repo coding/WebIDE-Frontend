@@ -5,6 +5,7 @@ import config from 'config'
 import i18n from 'utils/createI18n'
 import state from './state'
 import api from '../../backendAPI'
+import GlobalPrompt from '../GlobalPrompt'
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -140,6 +141,7 @@ class Initialize extends Component {
 
     return (
       <div className='initialize-container'>
+        <GlobalPrompt />
         {config.isPlatform && <div className='coding-loading'></div>}
         {/* <div className='monkey splash-logo'></div> */}
         {info}
