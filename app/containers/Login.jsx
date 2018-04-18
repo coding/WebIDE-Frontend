@@ -219,7 +219,7 @@ class Login extends Component {
       <div className='login-page'>
         <div className='login-bg'>
           <VideoCover videoOptions={{
-            src: '//webide-1255989204.cos.ap-chengdu.myqcloud.com/DemoVideo/ide-login.mp4',
+            src: '//studio-res.coding.net/DemoVideo/ide-login.mp4',
             autoPlay: true,
             loop: true,
             // ref: (videoRef) => {

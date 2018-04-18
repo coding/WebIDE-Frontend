@@ -10,7 +10,7 @@ const gitRevisionPlugin = new GitRevisionPlugin()
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 // const ICO_PATH = path.join(PROJECT_ROOT, 'static/favicon.ico')
-// const ICO_PATH = 'https://webide-1255989204.cos.ap-chengdu.myqcloud.com/StudioWebResource/Images/favicon.ico'
+// const ICO_PATH = '//studio-res.coding.net/StudioWebResource/Images/favicon.ico'
 
 module.exports = function (options={}) {
   const {
