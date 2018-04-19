@@ -105,11 +105,25 @@ class Initialize extends Component {
         )
       } else if (state.errorCode === 500) {
         errorInfo = null
-        info = (
-          <div className='loading-info'>
-            {i18n`global.wsNotExist`}
-          </div>
-        )
+        if (state.errorInfo.includes('could not create workspace, the workspace number you owned is limited to')) {
+          const limit = state.errorInfo.substring(state.errorInfo.length - 1)
+          info = (
+            <div className='loading-info'>
+              {i18n`global.workspaceLimit${{ limit }}`}
+            </div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              <button className='btn btn-primary' onClick={() => window.location.href = '/ws/default'} >{i18n`global.returnDefault`}</button>
+            </div>
+          )
+        } else {
+          info = (
+            <div className='loading-info'>
+              {i18n`global.wsNotExist`}
+            </div>
+          )
+        }
       } else if (state.errorCode === 3021 || state.errorCode === 1097 || state.errorCode === 3020) {
         errorInfo = null
         info = (

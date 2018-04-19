@@ -33,5 +33,9 @@
    "goRealName": "Go to Tencent Cloud",
    "preparing": "Preparing Workspace...",
    "preparingFirst": "Preparing Workspace...",
-   "ttyConnectFailed": "Cannot connect to current environment, please try others"
+   "ttyConnectFailed": "Cannot connect to current environment, please try others",
+   "workspaceLimit": "You can only create {limit} workspaces.",
+   "returnDefault": "return default workspace",
+   "projectPublic": "Public",
+   "projectPrivate": "Private"
 }

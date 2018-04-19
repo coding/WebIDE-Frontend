@@ -1,3 +1,2 @@
-import ProjectSelector from './component'
-
-export default ProjectSelector
+export ProjectSelector from './component'
+export ProjectCreator from './create'

@@ -30,6 +30,7 @@ import {
   Form,
   About,
   ProjectSelector,
+  ProjectCreator,
 } from './index'
 
 
@@ -60,6 +61,7 @@ const modalCache = observable.map({
   FileSelectorView,
   GitDiffFile: GitDiffFileView,
   ProjectSelector,
+  ProjectCreator,
 })
 
 window.modalCache = modalCache
