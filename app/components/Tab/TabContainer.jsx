@@ -7,7 +7,7 @@ import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import Editor from 'components/Editor'
 import { TablessCodeEditor } from 'components/Editor/components/CodeEditor'
 import i18n from 'utils/createI18n'
-import WelcomePage from './WelcomePage'
+import WelcomePage from './WelcomePage';
 
 const contextMenuItems = [
   {

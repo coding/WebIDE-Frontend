@@ -158,22 +158,22 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions'],
+  _keys: ['general', 'appearance', 'editor', 'keymap'/*, 'extensions'*/],
   get items () {
     return this._keys.map(key => this[key])
   },
   appearance: new DomainSetting({
     _keys: [
-      'ui_theme',
+      //'ui_theme',
       'syntax_theme',
       'font_size'
     ],
-    ui_theme: {
-      name: 'settings.appearance.uiTheme',
-      value: 'base-theme',
-      options: UIThemeOptions,
-      reaction: changeUITheme,
-    },
+    // ui_theme: {
+    //   name: 'settings.appearance.uiTheme',
+    //   value: 'base-theme',
+    //   options: UIThemeOptions,
+    //   reaction: changeUITheme,
+    // },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
       value: 'default',
@@ -192,10 +192,13 @@ const settings = observable({
     },
   }),
 
-  extensions: new DomainSetting({}),
+  //extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'exclude_files'],
+    _keys: [
+        //'language',
+        'exclude_files',
+    ],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',

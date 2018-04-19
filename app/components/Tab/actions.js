@@ -14,7 +14,7 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   })
   const tabs = Object.values(json.tabs)
   if (tabs.length === 0) {
-    dispatchCommand('file:open_welcome')
+    dispatchCommand('file:open_help')
   }
   const openTabs = tabs.map((tabValue) => {
     const { path, editor, ...others } = tabValue

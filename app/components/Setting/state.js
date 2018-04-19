@@ -14,13 +14,13 @@ export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 
 const state = observable({
   activeTabId: 'GENERAL',
-  tabIds: ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP', 'EXTENSIONS'],
+  tabIds: ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP'/*, 'EXTENSIONS'*/],
   tabNames: {
     GENERAL: i18n`settings.tabs.general`,
     APPEARANCE: i18n`settings.tabs.appearance`,
     EDITOR: i18n`settings.tabs.editor`,
     KEYMAP: i18n`settings.tabs.keymap`,
-    EXTENSIONS: i18n`settings.tabs.extensions`,
+    //EXTENSIONS: i18n`settings.tabs.extensions`,
   },
   get activeTab () {
     return settings[this.activeTabId.toLowerCase()]
