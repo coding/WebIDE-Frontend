@@ -204,6 +204,17 @@ const fileCommands = {
       selectionRange: [path.length, defaultValue.length],
     }).then(createFolderAtPath)
   },
+  'file:generate_unit_test': (c) => {
+      const node = c.context;
+      const path = node.path || '';
+      console.log(path);
+      api.createTestFile(path);
+  },
+  'file:run_unit_test': (c) => {
+      const node = c.context;
+      const path = node.path || '';
+      api.runTestFile(path);
+  },
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab

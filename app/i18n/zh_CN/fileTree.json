@@ -2,6 +2,8 @@
    "contextMenu": {
       "newFile": "新建文件...",
       "newFolder": "新建文件夹...",
+      "generateUnitTest": "生成单元测试",
+      "runUnitTest": "运行单元测试",
       "delete": "删除...",
       "rename": "重命名...",
       "download": "下载",

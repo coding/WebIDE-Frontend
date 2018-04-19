@@ -20,9 +20,31 @@ function openContextMenuFactory (items, margin, className) {
   return (e, context) => openContextMenu(e, context, getContextMenuItems(context), margin, className)
 }
 
+const regJava = /\.java$/;
+const regTest = /\.test$/;
+
 const openContextMenu = createAction(OPEN_CONTEXT_MENU, (e, context, items = [], margin = { x: 0, y: 0, relative: false }, className = '') => {
   e.stopPropagation()
   e.preventDefault()
+  const menuItems = [...items];
+  // java文件才有生成测试文件菜单
+  if (!regJava.test(context.path.toLowerCase())) {
+      for (let i = 0, n = menuItems.length; i < n; i++) {
+          const item = menuItems[i];
+          if (item && item.command === 'file:generate_unit_test') {
+              menuItems.splice(i, 1);
+          }
+      }
+  }
+  // 单元测试文件才能运行单元测试
+  if (!regTest.test(context.path.toLowerCase())) {
+      for (let i = 0, n = menuItems.length; i < n; i++) {
+          const item = menuItems[i];
+          if (item && item.command === 'file:run_unit_test') {
+              menuItems.splice(i, 1);
+          }
+      }
+  }
   let pos = { x: e.clientX + margin.x, y: e.clientY + margin.y }
   if (margin.relative) {
     const rect = e.target.getBoundingClientRect()
@@ -32,7 +54,7 @@ const openContextMenu = createAction(OPEN_CONTEXT_MENU, (e, context, items = [],
     isActive: true,
     pos,
     contextNode: context,
-    items,
+    items: menuItems,
     className
   }
 })

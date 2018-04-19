@@ -16,13 +16,24 @@ const items = [
     command: 'file:new_folder',
 
   },
+  {
+      name: i18n`fileTree.contextMenu.generateUnitTest`,
+      icon: 'fa fa-file-code-o',
+      command: 'file:generate_unit_test',
+  },
+  {
+      name: i18n`fileTree.contextMenu.runUnitTest`,
+      icon: 'fa fa-bug',
+      command: 'file:run_unit_test',
+  },
   divider,
   {
     name: i18n`fileTree.contextMenu.delete`,
     icon: 'fa fa-trash-o',
     command: 'file:delete',
     id: 'filetree_menu_delete',
-  }, {
+  },
+  {
     name: i18n`fileTree.contextMenu.rename`,
     icon: 'fa',
     command: 'file:rename',
