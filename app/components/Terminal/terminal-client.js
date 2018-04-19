@@ -7,6 +7,7 @@ import * as maskActions from 'components/Mask/actions'
 import * as TermActions from './actions'
 import * as SideBar from 'components/Panel/SideBar/actions'
 import i18n from 'utils/createI18n'
+import { emitter, E } from 'utils'
 
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
@@ -78,9 +79,16 @@ class TerminalClient extends TtySocketClient {
       for (i = j = 0, len = terms.length; j < len; i = ++j) {
         this.openTerm(terms[i])
       }
+      // if (!localStorage.getItem('firstEnter')) {
+      //   localStorage.setItem('firstEnter', true)
+      // }
       clearTimeout(this.maskTimeout)
       clearTimeout(this.changeMaskTimeout)
-      maskActions.hideMask()
+      if (localStorage.getItem('firstEnter')) {
+        maskActions.hideMask()
+      } else {
+        emitter.emit(E.SOCKET_CONNECT)
+      }
     })
 
     this.socket.on('disconnect', (type) => {
@@ -113,7 +121,6 @@ class TerminalClient extends TtySocketClient {
     this.maskTimeout = setTimeout(() => {
       if (!localStorage.getItem('firstEnter')) {
         maskActions.showMask({ message: i18n`global.preparingFirst`, countdown: 60 })
-        localStorage.setItem('firstEnter', true)
       } else {
         maskActions.showMask({ message: i18n`global.preparing`, countdown: 60 })
       }
