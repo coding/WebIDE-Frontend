@@ -4,6 +4,7 @@ import TopBar from '../TopBar'
 import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import GitGraph from 'components/Git/GitGraph'
+import GitHistory from 'components/Git/GitHistoryView'
 import TerminalContainer from '../Terminal'
 import { UnitTestContainer } from '../UnitTest'
 import FileTree from '../FileTree'
@@ -68,6 +69,10 @@ const PanelContent = ({ panel }) => {
 
           <SidePanelView key='unitTest' label={labels.unitTest}>
             <UnitTestContainer />
+          </SidePanelView>
+          
+          <SidePanelView key='gitHistory' label={labels.gitHistory} >
+            <GitHistory />
           </SidePanelView>
         </SidePanelContainer>
       )

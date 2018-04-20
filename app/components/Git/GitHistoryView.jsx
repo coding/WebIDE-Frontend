@@ -9,6 +9,7 @@ import cx from 'classnames'
 import ContextMenu from '../ContextMenu'
 import { emitter, E } from 'utils'
 import i18n from 'utils/createI18n'
+import mobxStore from 'mobxStore'
 
 
 const items = [
@@ -29,6 +30,11 @@ const items = [
     name: <span className='clipboard'>{i18n`git.historyView.copyRevision`}</span>,
     // icon: 'fa fa-clipboard',
     icon: '',
+  }, {
+    name: i18n`git.branchWidget.checkout`,
+    // icon: 'fa fa-clipboard',
+    icon: '',
+    command: 'git:checkout_shortName'
   }
 ]
 
@@ -320,13 +326,20 @@ History.propTypes = {
   closeContextMenu: PropTypes.func,
   openContextMenu: PropTypes.func,
 }
-
+// Breadcrumbs = inject(state => {
+//   const activeTab = state.EditorTabState.activeTab
+//   const currentPath = activeTab && activeTab.file ? activeTab.file.path : ''
+//   let fileNode = state.FileTreeState.entities.get(currentPath)
+//   if (!fileNode) fileNode = state.FileTreeState.root // fallback to rootNode
+//   return { fileNode }
+// })(Breadcrumbs)
 History = connect(
   state => {
+    const focusedNodes = mobxStore.FileTreeState.entities.values().filter(node => node.isFocused)
     // const focusedNodes = Object.values(state.FileTreeState.entities).filter(node => node.isFocused)
     const history = state.GitState.history
     return {
-      focusedNode: null, //focusedNodes[0],
+      focusedNode: focusedNodes[0],
       history,
     }
   },
