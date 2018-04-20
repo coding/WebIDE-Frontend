@@ -112,24 +112,24 @@ export function searchFile (value, includeNonProjectItems = false) {
   })
 }
 
-export function createTestFile(path) {
-    return request({
-        method: 'POST',
-        url: `/workspaces/${config.spaceKey}/generate`,
-        data: {
-            sourceFile: path,
-            framework: 1,
-        }
-    })
+export function createTestFile (path) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/unit_test/generate`,
+    data: {
+      sourceFile: path,
+      framework: 1,
+    }
+  })
 }
 
-export function runTestFile(path) {
-    return request({
-        method: 'POST',
-        url: `/workspaces/${config.spaceKey}/generate`,
-        data: {
-            sourceFile: path,
-            framework: 1,
-        }
-    })
+export function runTestFile (path) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/unit_test/run`,
+    data: {
+      sourceFile: path,
+      framework: 1,
+    }
+  })
 }

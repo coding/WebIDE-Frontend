@@ -2,7 +2,8 @@
    "bottom": {
       "terminal": "终端",
       "gitGraph": "项目网络",
-      "history": "版本历史"
+      "history": "版本历史",
+      "testOutput": "单元测试"
    },
    "left": {
       "project": "文件树",

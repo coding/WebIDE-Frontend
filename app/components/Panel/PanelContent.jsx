@@ -5,6 +5,7 @@ import StatusBar from '../StatusBar'
 import PanesContainer from '../Pane'
 import GitGraph from 'components/Git/GitGraph'
 import TerminalContainer from '../Terminal'
+import { UnitTestContainer } from '../UnitTest'
 import FileTree from '../FileTree'
 import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
@@ -53,6 +54,7 @@ const PanelContent = ({ panel }) => {
         terminal: { text: i18n`panel.bottom.terminal`, icon: 'octicon octicon-terminal', weight: 2 },
         gitGraph: { text: i18n`panel.bottom.gitGraph`, icon: 'octicon octicon-git-commit' },
         gitHistory: { text: i18n`panel.bottom.history`, icon: 'octicon octicon-history' },
+        unitTest: { text: i18n`panel.bottom.testOutput`, icon: 'octicon octicon-history' },
       }
       return (
         <SidePanelContainer side='bottom'>
@@ -62,6 +64,10 @@ const PanelContent = ({ panel }) => {
 
           <SidePanelView key='gitGraph' label={labels.gitGraph} >
             <GitGraph />
+          </SidePanelView>
+
+          <SidePanelView key='unitTest' label={labels.unitTest}>
+            <UnitTestContainer />
           </SidePanelView>
         </SidePanelContainer>
       )
