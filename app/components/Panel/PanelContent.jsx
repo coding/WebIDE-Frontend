@@ -54,7 +54,7 @@ const PanelContent = ({ panel }) => {
         terminal: { text: i18n`panel.bottom.terminal`, icon: 'octicon octicon-terminal', weight: 2 },
         gitGraph: { text: i18n`panel.bottom.gitGraph`, icon: 'octicon octicon-git-commit' },
         gitHistory: { text: i18n`panel.bottom.history`, icon: 'octicon octicon-history' },
-        unitTest: { text: i18n`panel.bottom.testOutput`, icon: 'octicon octicon-history' },
+        unitTest: { text: i18n`panel.bottom.testOutput`, icon: 'octicon octicon-bug' },
       }
       return (
         <SidePanelContainer side='bottom'>
