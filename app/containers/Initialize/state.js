@@ -8,5 +8,6 @@ const state = observable({
   iconState: 'loading', // 'loading', 'warning', 'error'
   progress: 0,
   userChecked: false,
+  checkStep: 0, // 0 用户信息，current 1 腾讯云绑定 2 小主机信息 3 完成
 })
 export default state

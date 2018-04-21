@@ -75,16 +75,28 @@ class Initialize extends Component {
         </div>
       )
     }
-    if (state.userChecked) {
+    if (state.checkStep === 0) {
       info = (
         <div className='loading-info'>
-          {i18n`global.loadingWorkspace`}
+          {i18n`global.checkingUserinfo`}
+        </div>
+      )
+    } else if (state.checkStep === 1) {
+      info = (
+        <div className='loading-info'>
+          {i18n`global.checkingTencent`}
+        </div>
+      )
+    } else if (state.checkStep === 2) {
+      info = (
+        <div className='loading-info'>
+          {i18n`global.checkingWorkstation`}
         </div>
       )
     } else {
       info = (
         <div className='loading-info'>
-          {i18n`global.checkingUserinfo`}
+          {i18n`global.loadingWorkspace`}
         </div>
       )
     }
@@ -212,6 +224,12 @@ class Initialize extends Component {
               <div className='title'>{i18n`global.tencentNoRealName`}</div>
               
               <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
+            </div>
+          )
+          hintInfo = (
+            <div className='hint-info'>
+              <Tip />
+              {i18n`global.tencentNoRealNameHint`}
             </div>
           )
         } else if (state.status === 'Rejected') {
