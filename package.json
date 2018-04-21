@@ -93,7 +93,7 @@
     "diff": "^3.2.0",
     "diff_match_patch": "^0.1.1",
     "eventemitter3": "^2.0.2",
-    "file-icons-js": "git@git.coding.net:azurewind/file-icons-js.git",
+    "file-icons-js": "https://git.coding.net/azurewind/file-icons-js.git",
     "filesize": "^3.5.6",
     "fixed-data-table-2": "^0.7.17",
     "font-awesome": "^4.7.0",
