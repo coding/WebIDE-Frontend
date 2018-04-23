@@ -27,6 +27,10 @@
       "autoCompletion": "自动补全",
       "snippets": "代码片段"
    },
+   "terminal": {
+      "main": "终端",
+      "theme": "主题"
+   },
    "keymap": {
     "main": "快捷键",
     "keyboardMode": "编辑器键盘模式"
@@ -50,6 +54,7 @@
       "appearance": "样式",
       "editor": "编辑器",
       "keymap": "快捷键",
-      "extensions": "插件中心"
+      "extensions": "插件中心",
+      "terminal": "终端"
    }
 }

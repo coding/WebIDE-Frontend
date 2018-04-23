@@ -2,7 +2,7 @@ import isObject from 'lodash/isObject'
 import { observable, reaction, extendObservable, computed, action } from 'mobx'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
-import emitter, { THEME_CHANGED } from 'utils/emitter'
+import emitter, { THEME_CHANGED, TERM_THEME_CHANGE, TERM_FONTSIZE_CHANGE } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
 window.themeVariables = observable.map({})
@@ -158,7 +158,7 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'appearance', 'editor', 'keymap'/*, 'extensions'*/],
+  _keys: ['general', 'appearance', 'editor', 'terminal', 'keymap'/*, 'extensions'*/],
   get items () {
     return this._keys.map(key => this[key])
   },
@@ -301,6 +301,28 @@ const settings = observable({
       name: 'settings.editor.snippets',
       value: false
     }
+  }),
+
+  terminal: new DomainSetting({
+    _keys: [
+      'theme',
+      'font_size'
+    ],
+    theme: {
+      name: 'settings.terminal.theme',
+      value: 'bright',
+      options: ['bright', 'dark'],
+      reaction (value) {
+        emitter.emit(TERM_THEME_CHANGE, value)
+      }
+    },
+    font_size: {
+      name: 'settings.appearance.fontSize',
+      value: 12,
+      reaction (value) {
+        emitter.emit(TERM_FONTSIZE_CHANGE, value)
+      }
+    },
   }),
 
   keymap: new DomainSetting({

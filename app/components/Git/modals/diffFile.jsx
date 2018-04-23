@@ -45,7 +45,15 @@ class GitDiffView extends Component {
           isLoading: false,
         })
         const diffPatch = res.diff
-        if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
+        if (oldRef === '~~unstaged~~') {
+          this.props.gitReadFile({ ref: newRef, path })
+            .then((res) => {
+              this.props.readFile({ path })
+              .then((res2) => {
+                this.initDiff(res.content, res2.content)
+              })
+            })
+        } else if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
           this.props.gitReadFile({ ref: newRef, path })
             .then((res) => {
               this.initDiff('', res.content)

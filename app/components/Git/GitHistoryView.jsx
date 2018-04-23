@@ -78,6 +78,7 @@ class History extends Component {
     this.fetchHistory = this.fetchHistory.bind(this)
     this._onRowDoubleClick = this._onRowDoubleClick.bind(this)
     this._onRowContextMenu = this._onRowContextMenu.bind(this)
+    this.onShow = this.onShow.bind(this)
   }
 
   componentWillMount () {
@@ -86,10 +87,12 @@ class History extends Component {
   componentDidMount () {
     this.fetchHistory({ reset: true })
     this.fitHistoryTable()
+    emitter.on(E.PANEL_SHOW, this.onShow)
   }
 
   componentWillUnmount () {
     emitter.removeListener(E.PANEL_RESIZED, this.fitHistoryTable)
+    emitter.removeListener(E.PANEL_SHOW, this.onShow)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -103,8 +106,14 @@ class History extends Component {
       })
       this.fitHistoryTable()
     }
-    if (nextProps.focusedNode && nextProps.focusedNode.path !== this.state.path) {
-      this.state.path = nextProps.focusedNode ? nextProps.focusedNode.path : '/'
+    // if (nextProps.focusedNode && nextProps.focusedNode.path !== this.state.path) {
+    //   this.state.path = nextProps.focusedNode ? nextProps.focusedNode.path : '/'
+    //   this.fetchHistory({ reset: true })
+    // }
+  }
+
+  onShow (panel) {
+    if (panel.id === 'PANEL_BOTTOM') {
       this.fetchHistory({ reset: true })
     }
   }
@@ -335,11 +344,12 @@ History.propTypes = {
 // })(Breadcrumbs)
 History = connect(
   state => {
-    const focusedNodes = mobxStore.FileTreeState.entities.values().filter(node => node.isFocused)
+    // const focusedNodes = mobxStore.FileTreeState.entities.values().filter(node => node.isFocused)
     // const focusedNodes = Object.values(state.FileTreeState.entities).filter(node => node.isFocused)
     const history = state.GitState.history
     return {
-      focusedNode: focusedNodes[0],
+      // focusedNode: focusedNodes[0],
+      focusedNode: mobxStore.FileTreeState.root,
       history,
     }
   },

@@ -39,14 +39,16 @@ class Term extends Component {
     _this.props.tab.title = 'Shell'
     const terminalManager = new TerminalManager()
     TerminalState.terminalManager = terminalManager
-    const uiTheme = SettingState.settings.appearance.ui_theme.value
+    // const uiTheme = SettingState.settings.appearance.ui_theme.value
+    const uiTheme = SettingState.settings.terminal.theme.value
     let theme = BRIGHT_THEME
     if (uiTheme === 'dark') {
       theme = DARK_THEME
     }
+    const fontSize = SettingState.settings.terminal.font_size.value
 
     const terminal = this.terminal = new Terminal({
-      fontSize: 12,
+      fontSize,
       // theme: themeName,
       cols: 80,
       rows: 24,
@@ -86,7 +88,9 @@ class Term extends Component {
       terminalManager.resize(terminal, cols, rows)
     })
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
-    emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
+    // emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
+    emitter.on(E.TERM_THEME_CHANGE, this.onTheme.bind(this))
+    emitter.on(E.TERM_FONTSIZE_CHANGE, this.onFontsize.bind(this))
 
     terminal.on('data', (data) => {
       terminalManager.getSocket().emit('term.input', { id: terminal.id, input: data })
@@ -99,7 +103,9 @@ class Term extends Component {
 
   componentWillUnmount () {
     emitter.removeListener(E.PANEL_RESIZED, this.onResize)
-    emitter.removeListener(E.THEME_CHANGED, this.onTheme)
+    // emitter.removeListener(E.THEME_CHANGED, this.onTheme)
+    emitter.removeListener(E.TERM_THEME_CHANGE, this.onTheme)
+    emitter.removeListener(E.TERM_FONTSIZE_CHANGE, this.onFontsize)
     TerminalState.terminalManager.remove(this.terminal)
   }
 
@@ -132,6 +138,9 @@ class Term extends Component {
       theme = DARK_THEME
     }
     this.terminal.setOption('theme', theme)
+  }
+  onFontsize (nextFontSize) {
+    this.terminal.setOption('fontSize', nextFontSize)
   }
 }
 

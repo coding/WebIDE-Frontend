@@ -27,6 +27,10 @@
       "autoCompletion": "Live Auto Completion",
       "snippets": "Snippets"
    },
+   "terminal": {
+      "main": "Terminal",
+      "theme": "Theme"
+   },
    "keymap": {
     "main": "Keymap Setting",
     "keyboardMode": "Editor Keyboard Mode"
@@ -50,6 +54,7 @@
       "appearance": "Appearance",
       "editor": "Editor",
       "keymap": "Keymap",
-      "extensions": "Extensions"
+      "extensions": "Extensions",
+      "terminal": "Terminal"
    }
 }
