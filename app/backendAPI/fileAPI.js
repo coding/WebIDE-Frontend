@@ -115,7 +115,18 @@ export function searchFile (value, includeNonProjectItems = false) {
 export function createTestFile (path) {
   return request({
     method: 'POST',
-    url: `/workspaces/${config.spaceKey}/unit_test/generate`,
+    url: `/workspaces/${config.spaceKey}/generate/unitTest`,
+    data: {
+      sourceFile: path,
+      framework: 1,
+    }
+  })
+}
+
+export function createClassFile (path) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/generate/classes`,
     data: {
       sourceFile: path,
       framework: 1,
@@ -126,7 +137,7 @@ export function createTestFile (path) {
 export function runTestFile (path) {
   return request({
     method: 'POST',
-    url: `/workspaces/${config.spaceKey}/unit_test/run`,
+    url: `/workspaces/${config.spaceKey}/run/unitTest`,
     data: {
       sourceFile: path,
       framework: 1,

@@ -35,12 +35,16 @@ const openContextMenu = createAction(
     const path = context.path.toLowerCase()
     // java文件才有生成测试文件菜单
     if (!regJava.test(path)) {
-      menuItems = menuItems.filter(item => item.command !== 'file:generate_unit_test')
+      menuItems = menuItems.filter(item => item.command !== 'file:generate_unit_test' && item.command !== 'file:generate_class' && item.command !== 'file:run_unit_test')
+    } else {
+      // 单元测试文件才能运行单元测试
+      if (!regTest.test(path)) {
+        menuItems = menuItems.filter(item => item.command !== 'file:run_unit_test')
+      } else {
+        menuItems = menuItems.filter(item => item.command !== 'file:generate_class' && item.command !== 'file:generate_unit_test')
+      }
     }
-    // 单元测试文件才能运行单元测试
-    if (!regTest.test(path)) {
-      menuItems = menuItems.filter(item => item.command !== 'file:run_unit_test')
-    }
+    
 
     let pos = { x: e.clientX + margin.x, y: e.clientY + margin.y }
     if (margin.relative) {

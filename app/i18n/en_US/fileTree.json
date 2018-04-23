@@ -3,6 +3,7 @@
       "newFile": "New File...",
       "newFolder": "New Folder...",
       "generateUnitTest": "Generate Unit Test",
+      "generateClass": "Generate Class File",
       "runUnitTest": "Run Unit Test",
       "delete": "Delete...",
       "rename": "Rename...",

@@ -211,6 +211,11 @@ const fileCommands = {
     const path = node.path || ''
     api.createTestFile(path)
   },
+  'file:generate_class': (c) => {
+    const node = c.context
+    const path = node.path || ''
+    api.createClassFile(path)
+  },
   'file:run_unit_test': (c) => {
     const node = c.context
     const path = node.path || ''

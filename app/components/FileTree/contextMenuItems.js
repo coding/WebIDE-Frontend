@@ -22,6 +22,11 @@ const items = [
     command: 'file:generate_unit_test',
   },
   {
+    name: i18n`fileTree.contextMenu.generateClass`,
+    icon: 'fa fa-file-code-o',
+    command: 'file:generate_class',
+  },
+  {
     name: i18n`fileTree.contextMenu.runUnitTest`,
     icon: 'fa fa-bug',
     command: 'file:run_unit_test',
