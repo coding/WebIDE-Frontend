@@ -93,11 +93,18 @@ export default {
   },
   'git:history:compare': (c) => {
     const focusedNode = c.context.focusedNode
-    $d(Git.diffFile({
-      path: focusedNode.path,
-      newRef: c.context.shortName,
-      oldRef: `${c.context.shortName}^`
-    }))
+    if (!focusedNode || focusedNode.isDir) {
+      $d(Git.gitCommitDiff({
+        rev: c.context.shortName,
+        title: 'Show Commit'
+      }))
+    } else {
+      $d(Git.diffFile({
+        path: focusedNode.path,
+        newRef: c.context.shortName,
+        oldRef: `${c.context.shortName}^`
+      }))
+    }
   },
   'git:history:compare_local': (c) => {
     const focusedNode = c.context.focusedNode
@@ -120,5 +127,10 @@ export default {
       title: 'Show Commit',
       oldRef: `${c.context.shortName}^`
     }))
-  }
+  },
+  'git:checkout_shortName': (c) => {
+    $d(Git.checkoutBranch(
+      c.context.shortName
+    ))
+  },
 }

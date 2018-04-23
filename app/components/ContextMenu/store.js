@@ -14,28 +14,48 @@ handleAction(OPEN_CONTEXT_MENU, ({ isActive, pos, contextNode, items, className 
 
 function openContextMenuFactory (items, margin, className) {
   if (!isFunction(items) && !isArray(items)) {
-    throw Error('Invalid arg passed to \'openContextMenuFactory\', require arg of Function or Array type')
+    throw Error(
+      "Invalid arg passed to 'openContextMenuFactory', require arg of Function or Array type"
+    )
   }
-  const getContextMenuItems = isFunction(items) ? items : (() => items)
-  return (e, context) => openContextMenu(e, context, getContextMenuItems(context), margin, className)
+  const getContextMenuItems = isFunction(items) ? items : () => items
+  return (e, context) =>
+    openContextMenu(e, context, getContextMenuItems(context), margin, className)
 }
 
-const openContextMenu = createAction(OPEN_CONTEXT_MENU, (e, context, items = [], margin = { x: 0, y: 0, relative: false }, className = '') => {
-  e.stopPropagation()
-  e.preventDefault()
-  let pos = { x: e.clientX + margin.x, y: e.clientY + margin.y }
-  if (margin.relative) {
-    const rect = e.target.getBoundingClientRect()
-    pos = { x: rect.x + rect.width + margin.x, y: rect.y + rect.height + margin.y }
+const regJava = /\.java$/
+const regTest = /test\.java$/
+
+const openContextMenu = createAction(
+  OPEN_CONTEXT_MENU,
+  (e, context, items = [], margin = { x: 0, y: 0, relative: false }, className = '') => {
+    e.stopPropagation()
+    e.preventDefault()
+    let menuItems = [...items]
+    const path = context.path.toLowerCase()
+    // java文件才有生成测试文件菜单
+    if (!regJava.test(path)) {
+      menuItems = menuItems.filter(item => item.command !== 'file:generate_unit_test')
+    }
+    // 单元测试文件才能运行单元测试
+    if (!regTest.test(path)) {
+      menuItems = menuItems.filter(item => item.command !== 'file:run_unit_test')
+    }
+
+    let pos = { x: e.clientX + margin.x, y: e.clientY + margin.y }
+    if (margin.relative) {
+      const rect = e.target.getBoundingClientRect()
+      pos = { x: rect.x + rect.width + margin.x, y: rect.y + rect.height + margin.y }
+    }
+    return {
+      isActive: true,
+      pos,
+      contextNode: context,
+      items: menuItems,
+      className
+    }
   }
-  return {
-    isActive: true,
-    pos,
-    contextNode: context,
-    items,
-    className
-  }
-})
+)
 
 const CLOSE_CONTEXT_MENU = 'menu:close_context_menu'
 const closeContextMenu = registerAction(CLOSE_CONTEXT_MENU, () => {
@@ -50,7 +70,7 @@ const store = {
 
   openContextMenuFactory,
   openContextMenu,
-  closeContextMenu,
+  closeContextMenu
 }
 
 export default store

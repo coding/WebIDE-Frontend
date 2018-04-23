@@ -164,16 +164,16 @@ const settings = observable({
   },
   appearance: new DomainSetting({
     _keys: [
-      //'ui_theme',
+      // 'ui_theme',
       'syntax_theme',
       'font_size'
     ],
-    // ui_theme: {
-    //   name: 'settings.appearance.uiTheme',
-    //   value: 'base-theme',
-    //   options: UIThemeOptions,
-    //   reaction: changeUITheme,
-    // },
+    ui_theme: {
+      name: 'settings.appearance.uiTheme',
+      value: 'base-theme',
+      options: UIThemeOptions,
+      reaction: changeUITheme,
+    },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
       value: 'default',

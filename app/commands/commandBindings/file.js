@@ -5,11 +5,13 @@ import * as Modal from '../../components/Modal/actions'
 import TabStore from 'components/Tab/store'
 import FileState from 'commons/File/state'
 import FileStore from 'commons/File/store'
+import { state as unitTestState } from 'components/UnitTest'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
 import { toJS, when } from 'mobx'
 import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
+import { activateSidePanelView } from 'components/Panel/SideBar/actions'
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -203,6 +205,21 @@ const fileCommands = {
       defaultValue,
       selectionRange: [path.length, defaultValue.length],
     }).then(createFolderAtPath)
+  },
+  'file:generate_unit_test': (c) => {
+    const node = c.context
+    const path = node.path || ''
+    api.createTestFile(path)
+  },
+  'file:run_unit_test': (c) => {
+    const node = c.context
+    const path = node.path || ''
+    api.runTestFile(path)
+      .then((data) => {
+        unitTestState.testOutput = data
+        activateSidePanelView('SIDEBAR.BOTTOM.unitTest')
+      })
+      .catch(() => {})
   },
   'file:save': (c) => {
     const { EditorTabState } = mobxStore

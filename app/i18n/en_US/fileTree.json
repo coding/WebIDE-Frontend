@@ -2,6 +2,8 @@
    "contextMenu": {
       "newFile": "New File...",
       "newFolder": "New Folder...",
+      "generateUnitTest": "Generate Unit Test",
+      "runUnitTest": "Run Unit Test",
       "delete": "Delete...",
       "rename": "Rename...",
       "download": "Download",
