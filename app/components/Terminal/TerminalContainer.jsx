@@ -35,7 +35,8 @@ class TerminalContainer extends Component {
   constructor (props) {
     super(props)
     this.state = observable({
-      showEnv: false
+      showEnv: false,
+      fullScreenActiveContent: false,
     })
     const tab = new Tab()
     this.tabGroup = new TabGroup({ id: 'terminalGroup' })
@@ -54,6 +55,13 @@ class TerminalContainer extends Component {
     }, () => <div></div>)
   }
 
+  handleFullScreen = (value) => {
+    const { fullScreenActiveContent } = this.state
+    this.setState({
+      fullScreenActiveContent: value || !fullScreenActiveContent
+    })
+  }
+
   componentWillUnmount () {
     emitter.removeListener(E.TERMINAL_SHOW, this.onShow)
     emitter.removeListener(E.PANEL_HIDE, this.onHide)
@@ -61,11 +69,14 @@ class TerminalContainer extends Component {
   }
 
   render () {
+    const { fullScreenActiveContent } = this.state
     return (
-      <div className='tab-container terminal-panel'>
+      <div className={cx('tab-container terminal-panel', { fullscreen: fullScreenActiveContent })}>
         <TabBar tabGroup={this.tabGroup}
           addTab={Actions.addTerminal}
-          contextMenuItems={contextMenuItems}/>
+          handleFullScreen={this.handleFullScreen}
+          contextMenuItems={contextMenuItems}
+        />
         <TabContent tabGroup={this.tabGroup} >
           {this.tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >

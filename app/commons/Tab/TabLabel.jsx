@@ -6,7 +6,7 @@ import { dnd } from 'utils'
 import { defaultProps } from 'utils/decorators'
 import { dispatch } from '../../store'
 
-let TabLabel = observer(({tab, removeTab, activateTab, openContextMenu}) => {
+let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClickHandler }) => {
   const tabLabelId = `tab_label_${tab.id}`
   return (
     <li className={cx('tab-label', {
@@ -17,6 +17,12 @@ let TabLabel = observer(({tab, removeTab, activateTab, openContextMenu}) => {
       data-droppable='TABLABEL'
       draggable='true'
       onClick={e => activateTab(tab.id)}
+      onDoubleClick={() => {
+        if (!tab.isActive) {
+          activateTab(tab.id)
+        }
+        dbClickHandler()
+      }}
       onDragStart={e => {
         // Chrome 下直接执行 dragStart 会导致立即又出发了 window.dragend, 添加 timeout 以避免无法拖动的情况
         setTimeout(() => dnd.dragStart({ type: 'TAB', id: tab.id }), 0)
@@ -39,6 +45,7 @@ TabLabel.propTypes = {
   removeTab: PropTypes.func.isRequired,
   activateTab: PropTypes.func.isRequired,
   openContextMenu: PropTypes.func.isRequired,
+  dbClickHandler: PropTypes.func.isRequired,
 }
 
 TabLabel = defaultProps(props => ({

@@ -80,6 +80,19 @@ export const removeNode = registerAction('filetree:remove_node', (node) => {
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu
 
+export const syncDirectory = registerAction('filetree:sync_file', (node) => {
+  if (node.isDir) {
+    node.isLoaded = false
+    node.isLoading = true
+    FileStore.fetchPath(node.path)
+      .then(data => FileStore.loadNodeData(data))
+      .then(() => {
+        node.isLoading = false
+        node.isLoaded = true
+      })
+  }
+})
+
 const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep = false) {
   if (node.isDir) {
     if (!node.isLoaded) {

@@ -6,6 +6,7 @@
       "rename": "Rename...",
       "download": "Download",
       "upload": "Upload",
-      "gitBlame": "Git Blame"
+      "gitBlame": "Git Blame",
+      "sync": "Synchronize files"
    }
 }

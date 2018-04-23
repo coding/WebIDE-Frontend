@@ -1,4 +1,4 @@
-import { gitBlameNode } from './actions'
+import { gitBlameNode, syncDirectory } from './actions'
 import i18n from 'utils/createI18n'
 
 const divider = { isDivider: true }
@@ -44,6 +44,14 @@ const items = [
     },
     getIsHidden: ctx => !ctx.isDir,
 
+  },
+  {
+    name: i18n`fileTree.contextMenu.sync`,
+    icon: 'fa fa-refresh',
+    command: (c) => {
+      syncDirectory(c)
+    },
+    getIsHidden: ctx => !ctx.isDir,
   },
   divider,
   {

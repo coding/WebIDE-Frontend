@@ -10,6 +10,7 @@ import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
 import FileList from '../Tab/fileList'
 import config from '../../config'
+import FileTreeToolBar from 'components/FileTreeToolBar'
 
 
 const PanelContent = ({ panel }) => {
@@ -41,6 +42,7 @@ const PanelContent = ({ panel }) => {
       return (
         <SidePanelContainer side='left'>
           <SidePanelView key='project' label={{ text: i18n`panel.left.project`, icon: 'octicon octicon-file-submodule', weight: 2 }} active>
+            <FileTreeToolBar />
             <FileTree />
           </SidePanelView>
           <SidePanelView key='working' label={{ text: i18n`panel.left.working`, icon: 'fa fa-folder-open-o' }}>

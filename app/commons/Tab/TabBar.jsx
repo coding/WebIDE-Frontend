@@ -20,6 +20,8 @@ class TabBar extends Component {
     contextMenuItems: PropTypes.array.isRequired,
     addTab: PropTypes.func,
     closePane: PropTypes.func,
+    fullScreenActiveContent: PropTypes.bool,
+    handleFullScreen: PropTypes.func,
   };
 
   constructor (props) {
@@ -37,18 +39,25 @@ class TabBar extends Component {
       tabGroup,
       addTab,
       contextMenuItems,
+      fullScreenActiveContent,
+      handleFullScreen,
     } = this.props
-
     const tabBarId = `tab_bar_${tabGroup.id}`
+
     return (
       <div id={tabBarId}
         className='tab-bar'
         data-droppable='TABBAR'
-        onDoubleClick={addTab}
       >
         <ul className='tab-labels'>
           {tabGroup.tabs.map(tab =>
-            <TabLabel tab={tab} key={tab.id} openContextMenu={this.openContextMenu} />
+            <TabLabel
+              tab={tab}
+              key={tab.id}
+              openContextMenu={this.openContextMenu}
+              isFullScreen={fullScreenActiveContent}
+              dbClickHandler={handleFullScreen}
+            />
           )}
         </ul>
         {dnd.target.id === tabBarId ? <div className='tab-label-insert-pos' /> : null}
@@ -57,6 +66,7 @@ class TabBar extends Component {
             <path fillRule='evenodd' d='M12 9H7v5H5V9H0V7h5V2h2v5h5z' />
           </svg>
         </div>
+        <div onDoubleClick={addTab} className='tab-dbclick-area' />
         <div className='tab-show-list'
           onClick={(e) => { e.stopPropagation(); this.setState({ showDropdownMenu: true }) }}
         >

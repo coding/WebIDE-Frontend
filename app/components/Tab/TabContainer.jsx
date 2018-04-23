@@ -44,18 +44,35 @@ class TabContainer extends Component {
     closePane: PropTypes.func,
   };
 
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      fullScreenActiveContent: false,
+    }
+  }
+
+  handleFullScreen = (value) => {
+    const { fullScreenActiveContent } = this.state
+    this.setState({
+      fullScreenActiveContent: value || !fullScreenActiveContent
+    })
+  }
+
   render () {
     const { tabGroup, closePane } = this.props
+    const { fullScreenActiveContent } = this.state
     if (!tabGroup) return null
     return (
-      <div className='tab-container'>
+      <div className={cx('tab-container', { fullscreen: fullScreenActiveContent })}>
         <TabBar tabGroup={tabGroup}
           contextMenuItems={contextMenuItems}
           closePane={closePane}
+          handleFullScreen={this.handleFullScreen}
         />
         <TabContent tabGroup={tabGroup} >
           {tabGroup.tabs.length ? tabGroup.tabs.map(tab =>
-            <TabContentItem key={tab.id} tab={tab} >
+            <TabContentItem key={tab.id} tab={tab}>
               {this.renderContent(tab)}
             </TabContentItem>
           )
