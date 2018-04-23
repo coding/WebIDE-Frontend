@@ -8,10 +8,11 @@ class UnitTestContainer extends Component {
     if (state.testOutput) {
       return (
         <div className='unit-test-output'>
-          <div className='sum'>
+          {state.testOutput}
+          {/* <div className='sum'>
             错误 {state.testOutput.count.value} | 跳过 {state.testOutput.ignoreCount.value} | 运行时间 {state.testOutput.runTime.value}
           </div>
-          {JSON.stringify(state.testOutput.failures)}
+          {JSON.stringify(state.testOutput.failures)} */}
         </div>
       )
     }
