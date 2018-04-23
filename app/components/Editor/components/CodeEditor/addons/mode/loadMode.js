@@ -164,6 +164,23 @@ export default function loadMode (mode) {
       return import(
         'codemirror/mode/htmlembedded/htmlembedded.js'
       )
+    case 'application/x-jsp':
+    case 'application/x-aspx':
+      {
+        const tasks = [
+          import('codemirror/mode/htmlembedded/htmlembedded.js'),
+          import('codemirror/mode/clike/clike.js')
+        ]
+        return Promise.all(tasks)
+      }
+    case 'application/x-erb':
+      {
+        const tasks = [
+          import('codemirror/mode/htmlembedded/htmlembedded.js'),
+          import('codemirror/mode/ruby/ruby.js')
+        ]
+        return Promise.all(tasks)
+      }
     case 'htmlmixed':
       return import(
         'codemirror/mode/htmlmixed/htmlmixed.js'
