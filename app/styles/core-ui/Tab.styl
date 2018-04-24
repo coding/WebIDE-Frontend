@@ -8,6 +8,14 @@ $tab-control-width = $tab-height*0.5;
   height: 100%;
 }
 
+.fullscreen {
+  position: fixed;
+  left: 26px;
+  top: 22px;
+  z-index: 500;
+  background-color: #1e1e1e;
+}
+
 .tab-content {
   flex: 1 0 auto;
   position: relative;
@@ -50,6 +58,12 @@ $tab-control-width = $tab-height*0.5;
     // https://www.w3.org/TR/css-flexbox-1/#auto-margins
     margin-left: auto;
     margin-bottom: 4px;
+  }
+
+
+  .tab-dbclick-area {
+    flex: 1;
+    height: 100%;  
   }
 
   .tab-add-btn {

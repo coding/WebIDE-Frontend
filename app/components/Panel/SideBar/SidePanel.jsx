@@ -32,7 +32,8 @@ class SidePanelContainer extends Component {
         style={{ height: '100%' }}
         position={SIDEBAR[side.toUpperCase()]}
         getChildView={(plugin, view) => (
-          <SidePanelViewContent key={plugin.viewId}
+          <SidePanelViewContent
+            key={plugin.viewId}
             view={view}
             isActive={plugin.status.get('active')}
           />
@@ -72,9 +73,9 @@ class SidePanelViewContent extends Component {
   }
 }
 // const SidePanelViewContent = ({ isActive, view }) =>
-  // <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
-    // {view}
-  // </div>
+// <div style={{ height: '100%', display: isActive ? 'block' : 'none' }}>
+// {view}
+// </div>
 
 SidePanelViewContent.propTypes = {
   isActive: PropTypes.bool,
@@ -82,17 +83,17 @@ SidePanelViewContent.propTypes = {
 }
 
 class SidePanelView extends Component {
-  constructor (props) {
-    super(props)
-  }
-
   render () {
-    return this.props.children
+    const { children } = this.props
+    return Array.isArray(this.props.children) ? (
+      <div style={{ height: '100%' }}>{children.map(child => child)}</div>
+    ) : (
+      children
+    )
   }
 }
 SidePanelView.propTypes = {
   children: PropTypes.node
 }
-
 
 export { SidePanelContainer, SidePanelView }

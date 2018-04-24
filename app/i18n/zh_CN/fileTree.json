@@ -6,6 +6,7 @@
       "rename": "重命名...",
       "download": "下载",
       "upload": "上传",
-      "gitBlame": "查看历史"
+      "gitBlame": "查看历史",
+      "sync": "同步文件"
    }
 }

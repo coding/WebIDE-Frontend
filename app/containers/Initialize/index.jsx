@@ -37,7 +37,15 @@ class Initialize extends Component {
     //state.status = 'Initialize';
   }
   componentWillMount () {
-    loadPlugin(require('../../plugin/index.js').default);
+    loadPlugin(require('../../plugin/index.js').default)
+    api.getWorkspaceList()
+      .then((response) => {
+        const { contents } = response
+        const firstFlag = localStorage.getItem('firstEnter')
+        if (contents.length >= 1 && !firstFlag) {
+          localStorage.setItem('firstEnter', true)
+        }
+      })
   }
 
   handleRequest = () => {
