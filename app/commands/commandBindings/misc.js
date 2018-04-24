@@ -4,6 +4,7 @@ import * as SideBar from 'components/Panel/SideBar/actions'
 import terminalState from 'components/Terminal/state'
 import * as Terminal from 'components/Terminal/actions'
 import * as FileTree from 'components/FileTree/actions'
+import api from '../../backendAPI'
 
 const getComponentByName = name => window.refs[name].getWrappedInstance()
 export default {
@@ -51,6 +52,12 @@ export default {
   },
   'tools:terminal:close_panel': (c) => {
     SideBar.hideSidePanelView('SIDEBAR.BOTTOM.terminal')
+  },
+  'tools:package': (c) => {
+    api.generatePackage();
+  },
+  'tools:pluginUpload': (c) => {
+    Modal.showModal({ type: 'PluginUpload' });
   },
   'help:docs:open_docs': (c) => {
     FileTree.openHelp()

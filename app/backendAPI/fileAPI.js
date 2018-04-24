@@ -144,3 +144,13 @@ export function runTestFile (path) {
     }
   })
 }
+
+export function generatePackage (path) {
+  return request({
+    method: 'POST',
+    url: `/workspaces/${config.spaceKey}/generate/package`,
+    data: {
+      packageMethod: 1,
+    }
+  })
+}

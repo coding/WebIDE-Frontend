@@ -34,7 +34,9 @@
    "tools": {
       "main": "工具",
       "terminal": "终端",
-      "newTerminal": "新建"
+      "newTerminal": "新建",
+      "package": "打包",
+      "pluginUpload": "插件上传"
    },
    "switch": "切换到 v1 版本"
 }

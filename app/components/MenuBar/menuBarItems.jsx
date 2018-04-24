@@ -161,7 +161,6 @@ const menuBarItems = observable([
       {
         key: 'terminal',
         name: i18n`menuBarItems.tools.terminal`,
-
         icon: 'octicon octicon-terminal',
         items: [
           {
@@ -170,6 +169,14 @@ const menuBarItems = observable([
             command: 'tools:terminal:new_terminal'
           }
         ]
+      }, {
+        key: 'package',
+        name: i18n`menuBarItems.tools.package`,
+        command: 'tools:package'
+      }, {
+        key: 'pluginUpload',
+        name: i18n`menuBarItems.tools.pluginUpload`,
+        command: 'tools:pluginUpload'
       }
     ]
   }
