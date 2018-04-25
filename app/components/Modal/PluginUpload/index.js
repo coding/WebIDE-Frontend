@@ -75,8 +75,10 @@ class PluginUpload extends Component {
                                     <input className="form-control dependency" type="text" onChange={this.dependencyHandle} value={this.state.dependency} />
                                 </div>
                                 <div className="form-group">
-                                    <input className="form-control plugin" type="text" value={this.state.plugin} readOnly />
                                     <button className="btn btn-default" onClick={this.generateFileSelector}>选择插件</button>
+                                    <br/>
+                                    <br/>
+                                    <input className="form-control plugin" type="text" value={this.state.plugin} readOnly />
                                 </div>
                             </div>
                         </div>
@@ -85,21 +87,10 @@ class PluginUpload extends Component {
                 <div className="control">
                     <button className="btn btn-default" onClick={this.prevStep} disabled={this.state.step === 1}>上一步</button>
                     <button className="btn btn-default" onClick={this.nextStep} disabled={this.state.step === 2}>下一步</button>
-                    <button className="btn btn-primary" onClick={this.submit} disabled={!this.state.submitable}>完成</button>
+                    <button className="btn btn-primary" onClick={this.submit} disabled={!this.state.submitable}>上传</button>
                 </div>
             </div>
         )
-    }
-
-    generateFileSelector() {
-        Modal.addModal('FileSelectorView', {
-            title: '请选择文件',
-            onlyDir: false,
-        }).then(node => {
-            this.setState({
-                plugin: node.id,
-            });
-        });
     }
 
     prevStep() {
@@ -224,6 +215,17 @@ class PluginUpload extends Component {
                 submitable: false,
             });
         }
+    }
+
+    generateFileSelector() {
+        Modal.addModal('FileSelectorView', {
+            title: '请选择文件',
+            onlyDir: false,
+        }).then(node => {
+            this.setState({
+                plugin: node.id,
+            });
+        });
     }
 
     submit() {
