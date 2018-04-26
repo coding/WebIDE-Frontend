@@ -25,12 +25,12 @@ class FileTreeToolBar extends Component {
       <div className='file-tree-tool-container'>
         <i
           className='icon fa fa-refresh'
-          title={i18n`fileTreeTool.tools.sync`}
+          title={i18n.get('fileTreeTool.tools.sync')}
           onClick={this.fetchPathByRoot}
         />
         <i
           className='icon fa fa-window-restore'
-          title={i18n`fileTreeTool.tools.collapse`}
+          title={i18n.get('fileTreeTool.tools.collapse')}
           onClick={this.foldedAll}
         />
       </div>
