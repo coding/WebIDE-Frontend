@@ -89,9 +89,9 @@ export const syncDirectory = registerAction('filetree:sync_file', (node, deep = 
       .then((data) => {
         if (deep) {
           data.forEach((d) => {
-            if (d.isDir && !isFileExcluded(d.path) && d.filesCount > 0) {
+            if (d.isDir && !isFileExcluded(d.path) && (d.filesCount > 0 || d.directoriesCount > 0)) {
               const fileNode = state.entities.get(d.path)
-              fileNode && syncDirectory(fileNode, true)
+              fileNode && fileNode.isLoaded && syncDirectory(fileNode, true)
             }
           })
         }
