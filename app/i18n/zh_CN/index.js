@@ -1,4 +1,4 @@
-const contents = ['menuBarItems', 'settings', 'file', 'panel', 'tab', 'git', 'fileTree', 'global', 'modal', 'login', 'import']
+const contents = ['menuBarItems', 'settings', 'file', 'panel', 'tab', 'git', 'fileTree', 'global', 'modal', 'login', 'import', 'fileTreeTool']
 
 export default contents.reduce((p, v) => {
   p[v] = require(`./${v}.json`)

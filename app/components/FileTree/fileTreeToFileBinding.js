@@ -3,7 +3,7 @@ import minimatch from 'minimatch'
 import { reaction } from 'mobx'
 import is from 'utils/is'
 
-function isFileExcluded (filePath) {
+export function isFileExcluded (filePath) {
   if (filePath === '') return false
   return config.fileExcludePatterns.reduce((isMatched, pattern) => {
     if (isMatched) return true

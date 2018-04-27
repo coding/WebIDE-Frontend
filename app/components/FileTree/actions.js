@@ -6,11 +6,12 @@ import * as TabActions from 'components/Tab/actions'
 import * as Modal from 'components/Modal/actions'
 import contextMenuStore from 'components/ContextMenu/store'
 import state, { FileTreeNode } from './state'
-import bindToFile from './fileTreeToFileBinding'
+import bindToFile, { isFileExcluded } from './fileTreeToFileBinding'
 import FileTreeContextMenuItems from './contextMenuItems'
 import dispatchCommand from 'commands/dispatchCommand'
 import { getTabType } from 'utils'
 import i18n from 'utils/createI18n'
+import is from 'utils/is'
 import icons from 'file-icons-js'
 import statusBarState from '../StatusBar/state'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
@@ -80,17 +81,40 @@ export const removeNode = registerAction('filetree:remove_node', (node) => {
 export const openContextMenu = contextMenuStore.openContextMenuFactory(FileTreeContextMenuItems)
 export const closeContextMenu = contextMenuStore.closeContextMenu
 
-export const syncDirectory = registerAction('filetree:sync_file', (node) => {
+export const syncDirectory = registerAction('filetree:sync_file', (node, deep = false) => {
   if (node.isDir) {
     node.isLoaded = false
     node.isLoading = true
     FileStore.fetchPath(node.path)
-      .then(data => FileStore.loadNodeData(data))
+      .then((data) => {
+        if (deep) {
+          data.forEach((d) => {
+            if (d.isDir && !isFileExcluded(d.path) && (d.filesCount > 0 || d.directoriesCount > 0)) {
+              const fileNode = state.entities.get(d.path)
+              fileNode && fileNode.isLoaded && syncDirectory(fileNode, true)
+            }
+          })
+        }
+        return FileStore.loadNodeData(data)
+      })
       .then(() => {
         node.isLoading = false
         node.isLoaded = true
       })
   }
+})
+
+
+export const syncAllDirectoryByPath = registerAction('filetree:sync_all_dir', (rootPath) => {
+  if (!is.string(rootPath)) return false
+
+  const rootNode = state.entities.get(rootPath)
+
+  if (rootNode.isDir) {
+    syncDirectory(rootNode, true)
+  }
+
+  return true
 })
 
 const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep = false) {
