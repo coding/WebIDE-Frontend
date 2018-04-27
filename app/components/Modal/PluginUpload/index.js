@@ -314,25 +314,35 @@ class PluginUpload extends Component {
         } else {
             this.setState({bigTip: ''});
         }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const div = this.refs.big;
-            const img = document.createElement('img');
-            const value = e.target.result;
-            img.src = value;
-            div.appendChild(img);
-            this.setState({big: value});
-            if (this.varifyForm(value, 'big')) {
-                this.setState({
-                    submitable: true,
-                });
-            } else {
-                this.setState({
-                    submitable: false,
-                });
-            }
+        this.setState({big: file});
+        if (this.varifyForm(file, 'big')) {
+            this.setState({
+                submitable: true,
+            });
+        } else {
+            this.setState({
+                submitable: false,
+            });
         }
+        // const reader = new FileReader();
+        // reader.readAsDataURL(file);
+        // reader.onload = (e) => {
+        //     const div = this.refs.big;
+        //     const img = document.createElement('img');
+        //     const value = e.target.result;
+        //     img.src = value;
+        //     div.appendChild(img);
+        //     this.setState({big: value});
+        //     if (this.varifyForm(value, 'big')) {
+        //         this.setState({
+        //             submitable: true,
+        //         });
+        //     } else {
+        //         this.setState({
+        //             submitable: false,
+        //         });
+        //     }
+        // }
     }
 
     smallLogoHandle(e) {
@@ -343,25 +353,35 @@ class PluginUpload extends Component {
         } else {
             this.setState({smallTip: ''});
         }
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const div = this.refs.small;
-            const img = document.createElement('img');
-            const value = e.target.result;
-            img.src = value;
-            div.appendChild(img);
-            this.setState({small: value});
-            if (this.varifyForm(value, 'small')) {
-                this.setState({
-                    submitable: true,
-                });
-            } else {
-                this.setState({
-                    submitable: false,
-                });
-            }
+        this.setState({small: file});
+        if (this.varifyForm(file, 'small')) {
+            this.setState({
+                submitable: true,
+            });
+        } else {
+            this.setState({
+                submitable: false,
+            });
         }
+        // const reader = new FileReader();
+        // reader.readAsDataURL(file);
+        // reader.onload = (e) => {
+        //     const div = this.refs.small;
+        //     const img = document.createElement('img');
+        //     const value = e.target.result;
+        //     img.src = value;
+        //     div.appendChild(img);
+        //     this.setState({small: value});
+        //     if (this.varifyForm(value, 'small')) {
+        //         this.setState({
+        //             submitable: true,
+        //         });
+        //     } else {
+        //         this.setState({
+        //             submitable: false,
+        //         });
+        //     }
+        // }
     }
 
     generateFileSelector() {
