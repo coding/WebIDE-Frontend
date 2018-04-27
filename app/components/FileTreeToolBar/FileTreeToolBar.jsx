@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import { toggleNodeFold, initializeFileTree } from 'components/FileTree/actions'
+import { toggleNodeFold, syncAllDirectoryByPath } from 'components/FileTree/actions'
+import { syncFile } from 'commons/File/actions'
 import FileTreeState from 'components/FileTree/state'
 import i18n from 'utils/createI18n'
 
@@ -17,7 +18,7 @@ class FileTreeToolBar extends Component {
   }
 
   fetchPathByRoot = () => {
-    initializeFileTree()
+    syncAllDirectoryByPath('')
   }
 
   render () {
