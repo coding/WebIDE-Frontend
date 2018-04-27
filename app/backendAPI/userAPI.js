@@ -2,7 +2,9 @@ import config from '../config'
 import { request } from '../utils'
 
 export function hasCaptcha () {
-  return request.get('/login/captcha')
+  return request.get('/login/captcha', null,
+    { headers: { Accept: '*/*' } }
+  )
 }
 
 export function login ({
