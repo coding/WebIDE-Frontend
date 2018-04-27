@@ -1,32 +1,45 @@
 import React, { Component } from 'react';
 import { actions as Modal } from '../index';
 import FileSelector from '../FileSelector';
+import { notify, NOTIFY_TYPE } from '../../Notification/actions';
+import api from '../../../backendAPI';
 
 class PluginUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
             step: 1,
+            accountVerified: false,
             account: '',
             password: '',
-            submitter: '',
-            department: '',
             name: '',
-            description: '',
+            code: '',
+            version: '',
+            intro: '',
+            type: 1,
             dependency: '',
-            plugin: '',
+            big: '',
+            small: '',
+            bigTip: '',
+            smallTip: '',
+            plugins: [],
             submitable: false,
         };
+        this.form = ['account', 'password', 'name', 'version', 'intro', 'big', 'small', 'plugins'];
         this.prevStep = this.prevStep.bind(this);
         this.nextStep = this.nextStep.bind(this);
         this.accountHandle = this.accountHandle.bind(this);
         this.passwordHandle = this.passwordHandle.bind(this);
-        this.submitterHandle = this.submitterHandle.bind(this);
-        this.departmentHandle = this.departmentHandle.bind(this);
         this.nameHandle = this.nameHandle.bind(this);
-        this.descriptionHandle = this.descriptionHandle.bind(this);
+        this.codeHandle = this.codeHandle.bind(this);
+        this.versionHandle = this.versionHandle.bind(this);
+        this.introHandle = this.introHandle.bind(this);
+        this.typeHandle = this.typeHandle.bind(this);
         this.dependencyHandle = this.dependencyHandle.bind(this);
+        this.bigLogoHandle = this.bigLogoHandle.bind(this);
+        this.smallLogoHandle = this.smallLogoHandle.bind(this);
         this.generateFileSelector = this.generateFileSelector.bind(this);
+        this.deletePluginTag = this.deletePluginTag.bind(this);
         this.submit = this.submit.bind(this);
     }
 
@@ -40,11 +53,11 @@ class PluginUpload extends Component {
                             <div className="title-desc">请输入插件商城的用户名和密码</div>
                             <div className="form">
                                 <div className="form-group">
-                                    <label>用户名:</label>
+                                    <label><span className="dot">*</span>用户名:</label>
                                     <input className="form-control account" type="text" onChange={this.accountHandle} value={this.state.account} />
                                 </div>
                                 <div className="form-group">
-                                    <label>密码:</label>
+                                    <label><span className="dot">*</span>密码:</label>
                                     <input className="form-control password" type="password" onChange={this.passwordHandle} value={this.state.password} />
                                 </div>
                             </div>
@@ -55,30 +68,57 @@ class PluginUpload extends Component {
                             <div className="title-desc">请填写插件信息并上传</div>
                             <div className="form">
                                 <div className="form-group">
-                                    <label>提交人:</label>
-                                    <input className="form-control submitter" type="text" onChange={this.submitterHandle} value={this.state.submitter} />
-                                </div>
-                                <div className="form-group">
-                                    <label>所属部门:</label>
-                                    <input className="form-control department" type="text" onChange={this.departmentHandle} value={this.state.department} />
-                                </div>
-                                <div className="form-group">
-                                    <label>插件名称:</label>
+                                    <label><span className="dot">*</span>插件名称:</label>
                                     <input className="form-control name" type="text" onChange={this.nameHandle} value={this.state.name} />
                                 </div>
                                 <div className="form-group">
-                                    <label>插件介绍:</label>
-                                    <input className="form-control description" type="text" onChange={this.descriptionHandle} value={this.state.description} />
+                                    <label>插件编码:</label>
+                                    <input className="form-control code" type="text" onChange={this.codeHandle} value={this.state.code} />
+                                </div>
+                                <div className="form-group">
+                                    <label><span className="dot">*</span>版本号:</label>
+                                    <input className="form-control version" type="text" onChange={this.versionHandle} value={this.state.version} />
+                                </div>
+                                <div className="form-group">
+                                    <label><span className="dot">*</span>插件介绍:</label>
+                                    <input className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro} />
+                                </div>
+                                <div className="form-group">
+                                    <label><span className="dot">*</span>插件类型:</label>
+                                    <select className="form-control" onChange={this.typeHandle} value={this.state.type.name}>
+                                        {
+                                            this.types.map(item => <option key={item.id}>{item.name}</option>)
+                                        }
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label>依赖插件:</label>
                                     <input className="form-control dependency" type="text" onChange={this.dependencyHandle} value={this.state.dependency} />
                                 </div>
-                                <div className="form-group">
-                                    <button className="btn btn-default" onClick={this.generateFileSelector}>选择插件</button>
+                                <div className="form-group type">
+                                    <span className="dot">*</span>
+                                    <button className="btn btn-default" onClick={this.generateFileSelector}>选择插件(最多两项)</button>
                                     <br/>
                                     <br/>
-                                    <input className="form-control plugin" type="text" value={this.state.plugin} readOnly />
+                                    <div className="plugin-tag-box">
+                                        {
+                                            this.state.plugins.map((value, index) => <PluginTag key={index} name={value} delete={this.deletePluginTag} />)
+                                        }
+                                    </div>
+                                </div>
+                                <div className="form-group upload-logo">
+                                    <div className="upload-item">
+                                        <label><span className="dot">*</span>上传插件大图(250*150):</label>
+                                        <input className="form-control big" type="file" onChange={this.bigLogoHandle} accept="image/*" />
+                                        <div className="logo-wrap big-wrap" ref="big"></div>
+                                        <div className="logo-tip">{this.state.bigTip}</div>
+                                    </div>
+                                    <div className="upload-item">
+                                        <label><span className="dot">*</span>上传插件小图(24*24):</label>
+                                        <input className="form-control small" type="file" onChange={this.smallLogoHandle} accept="image/*" />
+                                        <div className="logo-wrap small-wrap" ref="small"></div>
+                                        <div className="logo-tip">{this.state.smallTip}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -93,6 +133,46 @@ class PluginUpload extends Component {
         )
     }
 
+    componentWillMount() {
+        // api.getPluginType().then(res => {
+        //     console.log(res);
+        // });
+        this.types = [
+            {
+                id: 1,
+                name: '海洋',
+            },
+            {
+                id: 2,
+                name: '陆地水文',
+            },
+            {
+                id: 3,
+                name: '雷达',
+            },
+            {
+                id: 4,
+                name: '卫星',
+            },
+            {
+                id: 5,
+                name: '数值预报',
+            },
+            {
+                id: 6,
+                name: '灾害预警',
+            },
+            {
+                id: 7,
+                name: '地面',
+            },
+            {
+                id: 8,
+                name: '高空',
+            },
+        ];
+    }
+
     prevStep() {
         this.setState({
             step: 1,
@@ -100,8 +180,25 @@ class PluginUpload extends Component {
     }
 
     nextStep() {
-        this.setState({
-            step: 2,
+        if (this.state.accountVerified) {
+            this.setState({
+                step: 2,
+            });
+            return;
+        }
+        api.checkGuoruiLogin({
+            username: this.state.account,
+            password: this.state.password,
+        }).then((res) => {
+            if (res.code && res.code === 1) {
+                this.setState({
+                    step: 2,
+                    accountVerified: true,
+                });
+                notify({message: '登录成功'});
+            } else {
+                notify({message: '用户名或者密码错误，请重新登录'});
+            }
         });
     }
 
@@ -110,7 +207,7 @@ class PluginUpload extends Component {
         this.setState({
             account: value,
         });
-        if (value && this.state.password && this.state.submitter && this.state.department && this.state.name && this.state.description && this.state.dependency && this.state.plugin) {
+        if (this.varifyForm(value, 'account')) {
             this.setState({
                 submitable: true,
             });
@@ -126,39 +223,7 @@ class PluginUpload extends Component {
         this.setState({
             password: value,
         });
-        if (value && this.state.account && this.state.submitter && this.state.department && this.state.name && this.state.description && this.state.dependency && this.state.plugin) {
-            this.setState({
-                submitable: true,
-            });
-        } else {
-            this.setState({
-                submitable: false,
-            });
-        }
-    }
-
-    submitterHandle(e) {
-        const value = e.target.value.trim();
-        this.setState({
-            submitter: value,
-        });
-        if (value && this.state.account && this.state.password && this.state.department && this.state.name && this.state.description && this.state.dependency && this.state.plugin) {
-            this.setState({
-                submitable: true,
-            });
-        } else {
-            this.setState({
-                submitable: false,
-            });
-        }
-    }
-
-    departmentHandle(e) {
-        const value = e.target.value.trim();
-        this.setState({
-            department: value,
-        });
-        if (value && this.state.account && this.state.password && this.state.submitter && this.state.name && this.state.description && this.state.dependency && this.state.plugin) {
+        if (this.varifyForm(value, 'password')) {
             this.setState({
                 submitable: true,
             });
@@ -174,7 +239,7 @@ class PluginUpload extends Component {
         this.setState({
             name: value,
         });
-        if (value && this.state.account && this.state.password && this.state.submitter && this.state.department && this.state.description && this.state.dependency && this.state.plugin) {
+        if (this.varifyForm(value, 'name')) {
             this.setState({
                 submitable: true,
             });
@@ -185,12 +250,19 @@ class PluginUpload extends Component {
         }
     }
 
-    descriptionHandle(e) {
+    codeHandle(e) {
         const value = e.target.value.trim();
         this.setState({
-            description: value,
+            code: value,
         });
-        if (value && this.state.account && this.state.password && this.state.submitter && this.state.department && this.state.name && this.state.dependency && this.state.plugin) {
+    }
+
+    versionHandle(e) {
+        const value = e.target.value.trim();
+        this.setState({
+            version: value,
+        });
+        if (this.varifyForm(value, 'version')) {
             this.setState({
                 submitable: true,
             });
@@ -199,6 +271,32 @@ class PluginUpload extends Component {
                 submitable: false,
             });
         }
+    }
+
+    introHandle(e) {
+        const value = e.target.value.trim();
+        this.setState({
+            intro: value,
+        });
+        if (this.varifyForm(value, 'intro')) {
+            this.setState({
+                submitable: true,
+            });
+        } else {
+            this.setState({
+                submitable: false,
+            });
+        }
+    }
+
+    typeHandle(e) {
+        const value = e.target.value.trim();
+        const item = this.types.filter((item) => {
+            return item.name === value;
+        })[0];
+        this.setState({
+            type: item,
+        });
     }
 
     dependencyHandle(e) {
@@ -206,14 +304,63 @@ class PluginUpload extends Component {
         this.setState({
             dependency: value,
         });
-        if (value && this.state.account && this.state.password && this.state.submitter && this.state.department && this.state.name && this.state.description && this.state.plugin) {
-            this.setState({
-                submitable: true,
-            });
+    }
+
+    bigLogoHandle(e) {
+        const file = e.target.files[0];
+        if (file.size > 102400) {
+            this.setState({bigTip: '插件大图不能大于100K，请重新上传'});
+            return;
         } else {
-            this.setState({
-                submitable: false,
-            });
+            this.setState({bigTip: ''});
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const div = this.refs.big;
+            const img = document.createElement('img');
+            const value = e.target.result;
+            img.src = value;
+            div.appendChild(img);
+            this.setState({big: value});
+            if (this.varifyForm(value, 'big')) {
+                this.setState({
+                    submitable: true,
+                });
+            } else {
+                this.setState({
+                    submitable: false,
+                });
+            }
+        }
+    }
+
+    smallLogoHandle(e) {
+        const file = e.target.files[0];
+        if (file.size > 10240) {
+            this.setState({smallTip: '插件小图不能大于10K，请重新上传'});
+            return;
+        } else {
+            this.setState({smallTip: ''});
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const div = this.refs.small;
+            const img = document.createElement('img');
+            const value = e.target.result;
+            img.src = value;
+            div.appendChild(img);
+            this.setState({small: value});
+            if (this.varifyForm(value, 'small')) {
+                this.setState({
+                    submitable: true,
+                });
+            } else {
+                this.setState({
+                    submitable: false,
+                });
+            }
         }
     }
 
@@ -222,14 +369,106 @@ class PluginUpload extends Component {
             title: '请选择文件',
             onlyDir: false,
         }).then(node => {
+            const tags = this.state.plugins;
+            const item = node.id;
+            if (tags.length === 2 || tags.includes(item)) {
+                return;
+            }
+            tags.push(item);
             this.setState({
-                plugin: node.id,
+                plugins: tags,
             });
+            if (this.varifyForm(tags, 'plugins')) {
+                this.setState({
+                    submitable: true,
+                });
+            } else {
+                this.setState({
+                    submitable: false,
+                });
+            }
         });
     }
 
+    deletePluginTag(name) {
+        const tags = this.state.plugins;
+        for (let i = 0, n = tags.length; i < n; i++) {
+            if (tags[i] === name) {
+                tags.splice(i, 1);
+                this.setState({
+                    plugins: tags,
+                });
+                if (this.varifyForm(tags, 'plugins')) {
+                    this.setState({
+                        submitable: true,
+                    });
+                } else {
+                    this.setState({
+                        submitable: false,
+                    });
+                }
+                break;
+            }
+        }
+    }
+
+    varifyForm(value, exclude) {
+        for (let key in this.state) {
+            if (!this.state.hasOwnProperty(key)) {
+                continue;
+            }
+            if (this.form.includes(key)) {
+                if (key === exclude) {
+                    continue;
+                }
+                if (!this.state[key] || this.state[key].length === 0) {
+                    return false;
+                }
+            }
+        }
+        if (!value || value.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
     submit() {
-        console.log(this.state);
+        api.uploadPlugin({
+            username: this.state.account,
+            password: this.state.password,
+            name: this.state.name,
+            code: this.state.code,
+            version: this.state.version,
+            intro: this.state.intro,
+            type: this.state.type.id,
+            dependence: this.state.dependency,
+            jarPath: this.state.plugins.join(','),
+            bigLogo: this.state.big,
+            smallLogo: this.state.small,
+        }).then(res => {
+            console.log(res);
+        });
+        //notify({ message: 'biu' });
+    }
+}
+
+class PluginTag extends Component {
+    constructor(props) {
+        super(props);
+        this.delete = this.delete.bind(this);
+    }
+
+    render() {
+        return (
+            <div className="plugin-tag">
+                <span className="tag-name">{this.props.name}</span>
+                <span className="tag-close" onClick={this.delete}><i className="fa fa-close"></i></span>
+            </div>
+        );
+    }
+
+    delete() {
+        this.props.delete(this.props.name);
     }
 }
 

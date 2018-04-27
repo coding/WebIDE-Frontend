@@ -154,3 +154,47 @@ export function generatePackage (path) {
     }
   })
 }
+
+export function getPluginType () {
+    return request({
+        method: 'GET',
+        url: 'http://120.25.161.29:8080/pluginStore/externalInterface/getTypeList',
+    })
+}
+
+export function checkGuoruiLogin (user) {
+    return request({
+        method: 'POST',
+        url: `/remote/${config.spaceKey}/checklogin`,
+        data: {
+            username: user.username,
+            password: user.password,
+        },
+    })
+}
+
+export function uploadPlugin (data) {
+    return request({
+        method: 'POST',
+        url: `/remote/${config.spaceKey}/upload`,
+        data,
+    });
+    // const formdata = new FormData()
+    // formdata.append('username', data.username)
+    // formdata.append('password', data.password)
+    // formdata.append('name', data.name)
+    // formdata.append('code', data.code)
+    // formdata.append('version', data.version)
+    // formdata.append('intro', data.intro)
+    // formdata.append('type', data.type)
+    // formdata.append('dependence', data.dependence)
+    // formdata.append('jarPath', data.jarPath)
+    // formdata.append('bigLogo', data.bigLogo)
+    // formdata.append('smallLogo', data.smallLogo)
+    // console.log(formdata);
+    // return request({
+    //     method: 'POST',
+    //     url: `/remote/${config.spaceKey}/upload`,
+    //     data: formdata,
+    // })
+}
