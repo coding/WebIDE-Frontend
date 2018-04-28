@@ -158,7 +158,7 @@ export function generatePackage (path) {
 export function getPluginType () {
     return request({
         method: 'GET',
-        url: 'http://120.25.161.29:8080/pluginStore/externalInterface/getTypeList',
+        url: `/remote/getTypeList`,
     })
 }
 

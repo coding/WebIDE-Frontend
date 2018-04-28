@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { actions as Modal } from '../index';
 import FileSelector from '../FileSelector';
+import { dispatchCommand } from '../../../commands';
 import { notify, NOTIFY_TYPE } from '../../Notification/actions';
 import api from '../../../backendAPI';
 
@@ -16,7 +17,7 @@ class PluginUpload extends Component {
             code: '',
             version: '',
             intro: '',
-            type: {id: 1, name: '海洋'},
+            type: '',
             dependency: '',
             big: '',
             small: '',
@@ -88,7 +89,7 @@ class PluginUpload extends Component {
                                     <label><span className="dot">*</span>插件类型:</label>
                                     <select className="form-control" onChange={this.typeHandle} value={this.state.type.name}>
                                         {
-                                            this.types.map(item => <option key={item.id}>{item.name}</option>)
+                                            this.pluginTypeList.map(item => <option key={item.id}>{item.name}</option>)
                                         }
                                     </select>
                                 </div>
@@ -98,7 +99,7 @@ class PluginUpload extends Component {
                                 </div>
                                 <div className="form-group type">
                                     <span className="dot">*</span>
-                                    <button className="btn btn-default" onClick={this.generateFileSelector}>选择插件(最多两项)</button>
+                                    <button className="btn btn-default" onClick={this.generateFileSelector}>选择插件(可多次选择)</button>
                                     <br/>
                                     <br/>
                                     <div className="plugin-tag-box">
@@ -110,13 +111,13 @@ class PluginUpload extends Component {
                                 <div className="form-group upload-logo">
                                     <div className="upload-item">
                                         <label><span className="dot">*</span>上传插件大图(250*150):</label>
-                                        <input className="form-control big" type="file" onChange={this.bigLogoHandle} accept="image/*" />
+                                        <input className="form-control big" type="file" onChange={this.bigLogoHandle} accept="image/png,image/jpg,image/jpeg" />
                                         <div className="logo-wrap big-wrap" ref="big"></div>
                                         <div className="logo-tip">{this.state.bigTip}</div>
                                     </div>
                                     <div className="upload-item">
                                         <label><span className="dot">*</span>上传插件小图(24*24):</label>
-                                        <input className="form-control small" type="file" onChange={this.smallLogoHandle} accept="image/*" />
+                                        <input className="form-control small" type="file" onChange={this.smallLogoHandle} accept="image/png,image/jpg,image/jpeg" />
                                         <div className="logo-wrap small-wrap" ref="small"></div>
                                         <div className="logo-tip">{this.state.smallTip}</div>
                                     </div>
@@ -135,43 +136,20 @@ class PluginUpload extends Component {
     }
 
     componentWillMount() {
-        // api.getPluginType().then(res => {
-        //     console.log(res);
-        // });
-        this.types = [
-            {
-                id: 1,
-                name: '海洋',
-            },
-            {
-                id: 2,
-                name: '陆地水文',
-            },
-            {
-                id: 3,
-                name: '雷达',
-            },
-            {
-                id: 4,
-                name: '卫星',
-            },
-            {
-                id: 5,
-                name: '数值预报',
-            },
-            {
-                id: 6,
-                name: '灾害预警',
-            },
-            {
-                id: 7,
-                name: '地面',
-            },
-            {
-                id: 8,
-                name: '高空',
-            },
-        ];
+        api.getPluginType().then(res => {
+            if (res && res.pluginTypeList) {
+                const pluginTypeList = res.pluginTypeList;
+                const list = [];
+                for (let i = 0, n = pluginTypeList.length; i < n; i++) {
+                    const item = pluginTypeList[i];
+                    list.push({id: item.ID, name: item.TYPE_NAME});
+                }
+                this.pluginTypeList = list;
+                this.setState({type: this.pluginTypeList[0]});
+            } else {
+                notify({message: res.msg || '获取插件类型失败'});
+            }
+        });
     }
 
     prevStep() {
@@ -298,7 +276,7 @@ class PluginUpload extends Component {
 
     typeHandle(e) {
         const value = e.target.value.trim();
-        const item = this.types.filter((item) => {
+        const item = this.pluginTypeList.filter((item) => {
             return item.name === value;
         })[0];
         this.setState({
@@ -376,9 +354,10 @@ class PluginUpload extends Component {
             title: '请选择文件',
             onlyDir: false,
         }).then(node => {
+            dispatchCommand('modal:dismiss');
             const tags = this.state.plugins;
             const item = node.id;
-            if (tags.length === 2 || tags.includes(item)) {
+            if (tags.includes(item)) {
                 return;
             }
             tags.push(item);
@@ -453,8 +432,12 @@ class PluginUpload extends Component {
         formdata.append('bigLogo', this.state.big);
         formdata.append('smallLogo', this.state.small);
         api.uploadPlugin(formdata).then(res => {
-            console.log(res);
-            notify({message: '上传成功'});
+            if (res.code === 1) {
+                notify({message: '上传成功'});
+                dispatchCommand('modal:dismiss');
+            } else {
+                notify({message: res.msg});
+            }
         });
     }
 }

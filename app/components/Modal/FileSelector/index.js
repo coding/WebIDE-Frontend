@@ -36,7 +36,7 @@ class FileSelector extends Component {
 
         <div className='footer modal-ops'>
           <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n`modal.cancelButton`}</button>
-          <button className='btn btn-primary' onClick={e => {meta.resolve(FileTreeState.focusedNodes[0]);dispatchCommand('modal:dismiss');}} disabled={!FileTreeState.focusedNodes[0]}>{content.okText || i18n`modal.okButton`}</button>        
+          <button className='btn btn-primary' onClick={e => meta.resolve(FileTreeState.focusedNodes[0])} disabled={!FileTreeState.focusedNodes[0]}>{content.okText || i18n`modal.okButton`}</button>
         </div>
       </div>
     )
