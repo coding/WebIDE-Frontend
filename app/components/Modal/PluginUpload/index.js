@@ -83,7 +83,8 @@ class PluginUpload extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label><span className="dot">*</span>插件介绍:</label>
-                                    <input className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro} />
+                                    <textarea className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro}></textarea>
+                                    {/*<input className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro} />*/}
                                 </div>
                                 <div className="form-group">
                                     <label><span className="dot">*</span>插件类型:</label>
@@ -95,7 +96,8 @@ class PluginUpload extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label>依赖插件:</label>
-                                    <input className="form-control dependency" type="text" onChange={this.dependencyHandle} value={this.state.dependency} />
+                                    <textarea className="form-control dependency" onChange={this.dependencyHandle} value={this.state.dependency}></textarea>
+                                    {/*<input className="form-control dependency" type="text" onChange={this.dependencyHandle} value={this.state.dependency} />*/}
                                 </div>
                                 <div className="form-group type">
                                     <span className="dot">*</span>
@@ -400,13 +402,7 @@ class PluginUpload extends Component {
 
     verifyForm(value, exclude) {
         for (let key in this.state) {
-            if (!this.state.hasOwnProperty(key)) {
-                continue;
-            }
-            if (this.form.includes(key)) {
-                if (key === exclude) {
-                    continue;
-                }
+            if (this.state.hasOwnProperty(key) && this.form.includes(key) && key !== exclude) {
                 if (!this.state[key] || this.state[key].length === 0) {
                     return false;
                 }
