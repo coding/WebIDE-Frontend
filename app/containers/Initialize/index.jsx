@@ -237,12 +237,13 @@ class Initialize extends Component {
               <div className='title'>{i18n`global.tencentNoRealName`}</div>
               
               <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
+              <p>&nbsp;</p>
+              <p>{i18n`global.tencentNoRealNameHint`}</p>
             </div>
           )
           hintInfo = (
             <div className='hint-info'>
               <Tip />
-              {i18n`global.tencentNoRealNameHint`}
             </div>
           )
         } else if (state.status === 'Rejected') {
