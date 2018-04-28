@@ -154,3 +154,25 @@ export function generatePackage (path) {
     }
   })
 }
+
+export function getPluginType () {
+    return request({
+        method: 'GET',
+        url: `/remote/getTypeList`,
+    })
+}
+
+export function checkGuoruiLogin (user) {
+    return request({
+        method: 'POST',
+        url: `/remote/${config.spaceKey}/checklogin`,
+        data: {
+            username: user.username,
+            password: user.password,
+        },
+    })
+}
+
+export function uploadPlugin (formdata) {
+    return request.upload(`/remote/${config.spaceKey}/upload`, formdata);
+}
