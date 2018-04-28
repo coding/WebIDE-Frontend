@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { actions as Modal } from '../index';
 import FileSelector from '../FileSelector';
 import { dispatchCommand } from '../../../commands';
-import { notify, NOTIFY_TYPE } from '../../Notification/actions';
+import { notify } from '../../Notification/actions';
 import api from '../../../backendAPI';
 
 class PluginUpload extends Component {
@@ -84,7 +84,6 @@ class PluginUpload extends Component {
                                 <div className="form-group">
                                     <label><span className="dot">*</span>插件介绍:</label>
                                     <textarea className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro}></textarea>
-                                    {/*<input className="form-control intro" type="text" onChange={this.introHandle} value={this.state.intro} />*/}
                                 </div>
                                 <div className="form-group">
                                     <label><span className="dot">*</span>插件类型:</label>
@@ -97,7 +96,6 @@ class PluginUpload extends Component {
                                 <div className="form-group">
                                     <label>依赖插件:</label>
                                     <textarea className="form-control dependency" onChange={this.dependencyHandle} value={this.state.dependency}></textarea>
-                                    {/*<input className="form-control dependency" type="text" onChange={this.dependencyHandle} value={this.state.dependency} />*/}
                                 </div>
                                 <div className="form-group type">
                                     <span className="dot">*</span>

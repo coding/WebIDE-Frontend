@@ -24,3 +24,4 @@ export GitCheckoutStashView from '../../Git/modals/checkoutStash'
 export FileSelectorView from '../FileSelector'
 export TemplateSelector from '../TemplateSelector'
 export PluginUploadView from '../PluginUpload'
+export GeneratePackageView from '../GeneratePackage';
