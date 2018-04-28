@@ -54,7 +54,7 @@ export default {
     SideBar.hideSidePanelView('SIDEBAR.BOTTOM.terminal')
   },
   'tools:package': (c) => {
-    api.generatePackage();
+    Modal.showModal({ type: 'GeneratePackage' });
   },
   'tools:pluginUpload': (c) => {
     Modal.showModal({ type: 'PluginUpload' });

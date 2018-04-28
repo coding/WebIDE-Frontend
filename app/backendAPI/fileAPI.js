@@ -151,6 +151,7 @@ export function generatePackage (path) {
     url: `/workspaces/${config.spaceKey}/generate/package`,
     data: {
       packageMethod: 1,
+      classPath: path,
     }
   })
 }
