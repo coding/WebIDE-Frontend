@@ -16,7 +16,7 @@ class PluginUpload extends Component {
             code: '',
             version: '',
             intro: '',
-            type: 1,
+            type: {id: 1, name: '海洋'},
             dependency: '',
             big: '',
             small: '',
@@ -30,6 +30,7 @@ class PluginUpload extends Component {
         this.nextStep = this.nextStep.bind(this);
         this.accountHandle = this.accountHandle.bind(this);
         this.passwordHandle = this.passwordHandle.bind(this);
+        this.accountEnterHandle = this.accountEnterHandle.bind(this);
         this.nameHandle = this.nameHandle.bind(this);
         this.codeHandle = this.codeHandle.bind(this);
         this.versionHandle = this.versionHandle.bind(this);
@@ -58,7 +59,7 @@ class PluginUpload extends Component {
                                 </div>
                                 <div className="form-group">
                                     <label><span className="dot">*</span>密码:</label>
-                                    <input className="form-control password" type="password" onChange={this.passwordHandle} value={this.state.password} />
+                                    <input className="form-control password" type="password" onChange={this.passwordHandle} onKeyUp={this.accountEnterHandle} value={this.state.password} />
                                 </div>
                             </div>
                         </div>
@@ -207,7 +208,7 @@ class PluginUpload extends Component {
         this.setState({
             account: value,
         });
-        if (this.varifyForm(value, 'account')) {
+        if (this.verifyForm(value, 'account')) {
             this.setState({
                 submitable: true,
             });
@@ -223,7 +224,7 @@ class PluginUpload extends Component {
         this.setState({
             password: value,
         });
-        if (this.varifyForm(value, 'password')) {
+        if (this.verifyForm(value, 'password')) {
             this.setState({
                 submitable: true,
             });
@@ -234,12 +235,18 @@ class PluginUpload extends Component {
         }
     }
 
+    accountEnterHandle(e) {
+        if (e.keyCode === 13) {
+            this.nextStep();
+        }
+    }
+
     nameHandle(e) {
         const value = e.target.value.trim();
         this.setState({
             name: value,
         });
-        if (this.varifyForm(value, 'name')) {
+        if (this.verifyForm(value, 'name')) {
             this.setState({
                 submitable: true,
             });
@@ -262,7 +269,7 @@ class PluginUpload extends Component {
         this.setState({
             version: value,
         });
-        if (this.varifyForm(value, 'version')) {
+        if (this.verifyForm(value, 'version')) {
             this.setState({
                 submitable: true,
             });
@@ -278,7 +285,7 @@ class PluginUpload extends Component {
         this.setState({
             intro: value,
         });
-        if (this.varifyForm(value, 'intro')) {
+        if (this.verifyForm(value, 'intro')) {
             this.setState({
                 submitable: true,
             });
@@ -314,35 +321,25 @@ class PluginUpload extends Component {
         } else {
             this.setState({bigTip: ''});
         }
-        this.setState({big: file});
-        if (this.varifyForm(file, 'big')) {
-            this.setState({
-                submitable: true,
-            });
-        } else {
-            this.setState({
-                submitable: false,
-            });
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const div = this.refs.big;
+            const img = document.createElement('img');
+            const data = e.target.result;
+            img.src = data;
+            div.appendChild(img);
+            this.setState({big: file});
+            if (this.verifyForm(file, 'big')) {
+                this.setState({
+                    submitable: true,
+                });
+            } else {
+                this.setState({
+                    submitable: false,
+                });
+            }
         }
-        // const reader = new FileReader();
-        // reader.readAsDataURL(file);
-        // reader.onload = (e) => {
-        //     const div = this.refs.big;
-        //     const img = document.createElement('img');
-        //     const value = e.target.result;
-        //     img.src = value;
-        //     div.appendChild(img);
-        //     this.setState({big: value});
-        //     if (this.varifyForm(value, 'big')) {
-        //         this.setState({
-        //             submitable: true,
-        //         });
-        //     } else {
-        //         this.setState({
-        //             submitable: false,
-        //         });
-        //     }
-        // }
     }
 
     smallLogoHandle(e) {
@@ -353,35 +350,25 @@ class PluginUpload extends Component {
         } else {
             this.setState({smallTip: ''});
         }
-        this.setState({small: file});
-        if (this.varifyForm(file, 'small')) {
-            this.setState({
-                submitable: true,
-            });
-        } else {
-            this.setState({
-                submitable: false,
-            });
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const div = this.refs.small;
+            const img = document.createElement('img');
+            const data = e.target.result;
+            img.src = data;
+            div.appendChild(img);
+            this.setState({small: file});
+            if (this.verifyForm(file, 'small')) {
+                this.setState({
+                    submitable: true,
+                });
+            } else {
+                this.setState({
+                    submitable: false,
+                });
+            }
         }
-        // const reader = new FileReader();
-        // reader.readAsDataURL(file);
-        // reader.onload = (e) => {
-        //     const div = this.refs.small;
-        //     const img = document.createElement('img');
-        //     const value = e.target.result;
-        //     img.src = value;
-        //     div.appendChild(img);
-        //     this.setState({small: value});
-        //     if (this.varifyForm(value, 'small')) {
-        //         this.setState({
-        //             submitable: true,
-        //         });
-        //     } else {
-        //         this.setState({
-        //             submitable: false,
-        //         });
-        //     }
-        // }
     }
 
     generateFileSelector() {
@@ -398,7 +385,7 @@ class PluginUpload extends Component {
             this.setState({
                 plugins: tags,
             });
-            if (this.varifyForm(tags, 'plugins')) {
+            if (this.verifyForm(tags, 'plugins')) {
                 this.setState({
                     submitable: true,
                 });
@@ -418,7 +405,7 @@ class PluginUpload extends Component {
                 this.setState({
                     plugins: tags,
                 });
-                if (this.varifyForm(tags, 'plugins')) {
+                if (this.verifyForm(tags, 'plugins')) {
                     this.setState({
                         submitable: true,
                     });
@@ -432,7 +419,7 @@ class PluginUpload extends Component {
         }
     }
 
-    varifyForm(value, exclude) {
+    verifyForm(value, exclude) {
         for (let key in this.state) {
             if (!this.state.hasOwnProperty(key)) {
                 continue;
@@ -453,22 +440,22 @@ class PluginUpload extends Component {
     }
 
     submit() {
-        api.uploadPlugin({
-            username: this.state.account,
-            password: this.state.password,
-            name: this.state.name,
-            code: this.state.code,
-            version: this.state.version,
-            intro: this.state.intro,
-            type: this.state.type.id,
-            dependence: this.state.dependency,
-            jarPath: this.state.plugins.join(','),
-            bigLogo: this.state.big,
-            smallLogo: this.state.small,
-        }).then(res => {
+        const formdata = new FormData();
+        formdata.append('username', this.state.account);
+        formdata.append('password', this.state.password);
+        formdata.append('jarName', this.state.name);
+        formdata.append('code', this.state.code);
+        formdata.append('version', this.state.version);
+        formdata.append('intro', this.state.intro);
+        formdata.append('type', this.state.type.id);
+        formdata.append('dependence', this.state.dependency);
+        formdata.append('jarPath', this.state.plugins.join(','));
+        formdata.append('bigLogo', this.state.big);
+        formdata.append('smallLogo', this.state.small);
+        api.uploadPlugin(formdata).then(res => {
             console.log(res);
+            notify({message: '上传成功'});
         });
-        //notify({ message: 'biu' });
     }
 }
 

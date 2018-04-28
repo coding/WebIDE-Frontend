@@ -173,29 +173,6 @@ export function checkGuoruiLogin (user) {
     })
 }
 
-export function uploadPlugin (data) {
-    // return request({
-    //     method: 'POST',
-    //     url: `/remote/${config.spaceKey}/upload`,
-    //     data,
-    // });
-    const formdata = new FormData();
-    formdata.append('username', data.username);
-    formdata.append('password', data.password);
-    formdata.append('jarName', data.name);
-    formdata.append('code', data.code);
-    formdata.append('version', data.version);
-    formdata.append('intro', data.intro);
-    formdata.append('type', data.type);
-    formdata.append('dependence', data.dependence);
-    formdata.append('jarPath', data.jarPath);
-    formdata.append('bigLogo', data.bigLogo);
-    formdata.append('smallLogo', data.smallLogo);
-    console.log(formdata.get('jarPath'));
-    // return request({
-    //     method: 'POST',
-    //     url: `/remote/${config.spaceKey}/upload`,
-    //     data: formdata,
-    // })
+export function uploadPlugin (formdata) {
     return request.upload(`/remote/${config.spaceKey}/upload`, formdata);
 }
