@@ -486,10 +486,19 @@ export const updateCommitDiff = createAction(GIT_COMMIT_DIFF)
 export function gitCommitDiff ({ rev, title, oldRef }) {
   return dispatch => api.gitCommitDiff({ rev }).then((res) => {
     const files = res.map((item) => {
-      const file = {
-        status: item.changeType,
-        name: item.newPath,
-        oldPath: item.newPath
+      let file = {}
+      if (item.newPath === '/dev/null') {
+        file = {
+          status: item.changeType,
+          name: item.oldPath,
+          oldPath: item.oldPath
+        }
+      } else {
+        file = {
+          status: item.changeType,
+          name: item.newPath,
+          oldPath: item.newPath
+        }
       }
       return file
     })

@@ -114,7 +114,7 @@ class _GitFileTreeNode extends Component {
                 'fa-folder-o': node.isDir,
                 'fa-pencil-square': node.status == 'MODIFIED' || node.status == 'CHANGED' || node.status == 'MODIFY',
                 'fa-plus-square': node.status == 'UNTRACKED' || node.status == 'ADD',
-                'fa-minus-square': node.status == 'MISSING',
+                'fa-minus-square': node.status == 'MISSING' || node.status == 'DELETE',
                 'fa-exclamation-circle': node.status == 'CONFLICTION'
               })}></i>
             </span>
