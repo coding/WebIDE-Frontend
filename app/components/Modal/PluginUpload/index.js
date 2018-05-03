@@ -14,7 +14,6 @@ class PluginUpload extends Component {
             account: '',
             password: '',
             name: '',
-            code: '',
             version: '',
             intro: '',
             type: '',
@@ -33,7 +32,6 @@ class PluginUpload extends Component {
         this.passwordHandle = this.passwordHandle.bind(this);
         this.accountEnterHandle = this.accountEnterHandle.bind(this);
         this.nameHandle = this.nameHandle.bind(this);
-        this.codeHandle = this.codeHandle.bind(this);
         this.versionHandle = this.versionHandle.bind(this);
         this.introHandle = this.introHandle.bind(this);
         this.typeHandle = this.typeHandle.bind(this);
@@ -72,10 +70,6 @@ class PluginUpload extends Component {
                                 <div className="form-group">
                                     <label><span className="dot">*</span>插件名称:</label>
                                     <input className="form-control name" type="text" onChange={this.nameHandle} value={this.state.name} />
-                                </div>
-                                <div className="form-group">
-                                    <label>插件编码:</label>
-                                    <input className="form-control code" type="text" onChange={this.codeHandle} value={this.state.code} />
                                 </div>
                                 <div className="form-group">
                                     <label><span className="dot">*</span>版本号:</label>
@@ -233,13 +227,6 @@ class PluginUpload extends Component {
                 submitable: false,
             });
         }
-    }
-
-    codeHandle(e) {
-        const value = e.target.value.trim();
-        this.setState({
-            code: value,
-        });
     }
 
     versionHandle(e) {
@@ -417,7 +404,6 @@ class PluginUpload extends Component {
         formdata.append('username', this.state.account);
         formdata.append('password', this.state.password);
         formdata.append('jarName', this.state.name);
-        formdata.append('code', this.state.code);
         formdata.append('version', this.state.version);
         formdata.append('intro', this.state.intro);
         formdata.append('type', this.state.type.id);
