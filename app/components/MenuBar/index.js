@@ -4,7 +4,7 @@ import MenuBar from './MenuBar'
 import menuBarItems from './menuBarItems'
 import state from './state'
 
-const MenuBarContainer = observer((() => <MenuBar items={state.items} />))
+const MenuBarContainer = observer(() => <MenuBar items={state.items} />)
 
 export default MenuBarContainer
 export { menuBarItems }
