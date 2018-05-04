@@ -268,10 +268,9 @@ const fileCommands = {
 
     if (confirmed) {
       api.deleteFile(c.context.path)
-        .then((node) => {
-            FileStore.removeNode(node);
-            notify({ message: i18n`file.deleteNotifySuccess` });
-        })
+        .then((node) =>
+          notify({ message: i18n`file.deleteNotifySuccess` });
+        )
         .catch(err =>
           notify({ message: i18n`file.deleteNotifyFailed${err.msg}` })
         )
