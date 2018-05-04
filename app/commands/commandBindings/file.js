@@ -81,6 +81,7 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
         existingTab.activate()
         if (callback) callback()
       } else {
+        console.log(TabStore.createTab)
         TabStore.createTab({
           icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
           editor: {
