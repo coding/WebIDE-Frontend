@@ -80,8 +80,7 @@ export class CreateI18n {
       if (transfer) {
         return formatFunc ? formatFunc(transfer) : transfer
       }
-      return variables;
-      //return variable.slice(1, -1)
+      return variable.slice(1, -1)
     })
   }
   i18nComponent (template = [], ...values) {
