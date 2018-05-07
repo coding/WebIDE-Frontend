@@ -1,5 +1,4 @@
 import { request, qs } from '../utils'
-import config from '../config'
 import axios from 'axios'
 
 export function fetchPath (path, order, group) {

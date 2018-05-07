@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { measure } from '@pinyin/measure'
 
+// import * as monaco from 'monaco-editor'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/browser/controller/coreCommands'
 import 'monaco-editor/esm/vs/editor/contrib/find/findController'
@@ -28,6 +30,8 @@ self.MonacoEnvironment = {
 
 function noop () {}
 
+const Div = measure('div')
+
 class MonacoEditor extends React.Component {
   constructor (props) {
     super(props)
@@ -38,6 +42,7 @@ class MonacoEditor extends React.Component {
       require('monaco-editor/esm/vs/language/typescript/monaco.contribution')
     } else if (props.language === 'css') {
       require('monaco-editor/esm/vs/language/css/monaco.contribution')
+      require('monaco-editor/esm/vs/basic-languages/css/css.contribution')
     } else {
       require(`monaco-editor/esm/vs/basic-languages/${props.language}/${
         props.language
@@ -47,10 +52,13 @@ class MonacoEditor extends React.Component {
 
   componentDidMount () {
     this.afterViewInit()
+
+    if (this.editor) {
+      window.addEventListener('resize', this.handleResize)
+    }
   }
 
   componentDidUpdate (prevProps) {
-    const context = this.props.context || window
     if (this.props.value !== this.currentValue) {
       // Always refer to the latest value
       this.currentValue = this.props.value
@@ -77,6 +85,11 @@ class MonacoEditor extends React.Component {
 
   componentWillUnmount () {
     this.destroyMonaco()
+  }
+
+  handleResize = () => {
+    if (!this.editor) return
+    this.editor.layout()
   }
 
   editorWillMount () {
@@ -166,7 +179,6 @@ class MonacoEditor extends React.Component {
   initMonaco () {
     const value = this.props.value !== null ? this.props.value : this.props.defaultValue
     const { language, theme, options } = this.props
-    const context = this.props.context || window
     if (this.containerElement && typeof monaco !== 'undefined') {
       // Before initializing monaco editor
       this.editorWillMount(monaco)
@@ -200,7 +212,13 @@ class MonacoEditor extends React.Component {
       height: fixedHeight
     }
 
-    return <div ref={this.assignRef} style={style} className='react-monaco-editor-container' />
+    return (<Div
+      style={{ width: '100%', height: '100%' }}
+      onWidthChange={this.handleResize}
+      onHeightChange={this.handleResize}
+    >
+      <div className='react-monaco-editor-container' ref={this.assignRef} style={style} />
+    </Div>)
   }
 }
 

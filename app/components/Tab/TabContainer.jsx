@@ -90,7 +90,7 @@ class TabContainer extends Component {
     if (tab.type === 'welcome') {
       return <WelcomePage />
     }
-    return <Editor tab={tab} active={tab.isActive} />
+    return <MonacoEditor tab={tab} active={tab.isActive} />
   }
 }
 
