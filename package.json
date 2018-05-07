@@ -84,6 +84,7 @@
     "yamljs": "^0.3.0"
   },
   "dependencies": {
+    "@pinyin/measure": "^0.0.3",
     "animated-scrollto": "^1.1.0",
     "axios": "^0.15.3",
     "bootstrap-styl": "^5.0.7",

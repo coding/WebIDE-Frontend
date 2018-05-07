@@ -2,6 +2,51 @@
 # yarn lockfile v1
 
 
+"@pinyin/maybe@0.0.5", "@pinyin/maybe@^0.0.5":
+  version "0.0.5"
+  resolved "http://registry.npm.taobao.org/@pinyin/maybe/download/@pinyin/maybe-0.0.5.tgz#eee1cde80b1391695c719cd095c8f1e4fb4b242e"
+
+"@pinyin/measure@^0.0.3":
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/@pinyin/measure/download/@pinyin/measure-0.0.3.tgz#ad74cce6c012055002dfc1ac60748e5843b81184"
+  dependencies:
+    "@pinyin/maybe" "0.0.5"
+    "@pinyin/react" "0.0.3"
+    "@pinyin/types" "0.0.2"
+    "@types/react" "^16.3.13"
+    "@types/react-dom" "^16.0.5"
+    hoist-non-react-statics "^2.5.0"
+    resize-observer-polyfill "^1.5.0"
+
+"@pinyin/react@0.0.3":
+  version "0.0.3"
+  resolved "http://registry.npm.taobao.org/@pinyin/react/download/@pinyin/react-0.0.3.tgz#1a430acfc608a0957084eb54d5b79352f703fe0b"
+  dependencies:
+    "@pinyin/maybe" "^0.0.5"
+    "@pinyin/types" "^0.0.2"
+    tslib "^1.9.0"
+
+"@pinyin/types@0.0.2", "@pinyin/types@^0.0.2":
+  version "0.0.2"
+  resolved "http://registry.npm.taobao.org/@pinyin/types/download/@pinyin/types-0.0.2.tgz#3f7227f426245764d32ff38934b0e3d7ba4abecf"
+
+"@types/node@*":
+  version "10.0.3"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.0.3.tgz#1f89840c7aac2406cc43a2ecad98fc02a8e130e4"
+
+"@types/react-dom@^16.0.5":
+  version "16.0.5"
+  resolved "http://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.0.5.tgz#a757457662e3819409229e8f86795ff37b371f96"
+  dependencies:
+    "@types/node" "*"
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@^16.3.13":
+  version "16.3.13"
+  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.3.13.tgz#47d466462b774556c1174ea0eda22c0578643362"
+  dependencies:
+    csstype "^2.2.0"
+
 abab@^1.0.3:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/abab/download/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"
@@ -1874,6 +1919,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   dependencies:
     cssom "0.3.x"
 
+csstype@^2.2.0:
+  version "2.4.2"
+  resolved "http://registry.npm.taobao.org/csstype/download/csstype-2.4.2.tgz#158e36c69566bf968da63d0ba14eda1c20e8643a"
+
 d@1:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/d/download/d-1.0.0.tgz#754bb5bfe55451da69a58b94d45f4c5b0462d58f"
@@ -3153,6 +3202,10 @@ hoek@2.x.x:
 hoist-non-react-statics@^1.0.3, hoist-non-react-statics@^1.2.0:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-1.2.0.tgz#aa448cf0986d55cc40773b17174b7dd066cb7cfb"
+
+hoist-non-react-statics@^2.5.0:
+  version "2.5.0"
+  resolved "http://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -5718,6 +5771,10 @@ reselect@^2.5.4:
   version "2.5.4"
   resolved "http://registry.npm.taobao.org/reselect/download/reselect-2.5.4.tgz#b7d23fdf00b83fa7ad0279546f8dbbbd765c7047"
 
+resize-observer-polyfill@^1.5.0:
+  version "1.5.0"
+  resolved "http://registry.npm.taobao.org/resize-observer-polyfill/download/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
+
 resolve-from@^1.0.0:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/resolve-from/download/resolve-from-1.0.1.tgz#26cbfe935d1aeeeabb29bc3fe5aeb01e93d44226"
@@ -6424,6 +6481,10 @@ trim-right@^1.0.1:
 tryit@^1.0.1:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/tryit/download/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
+
+tslib@^1.9.0:
+  version "1.9.0"
+  resolved "http://registry.npm.taobao.org/tslib/download/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
 tty-browserify@0.0.0:
   version "0.0.0"
