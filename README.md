@@ -3,6 +3,10 @@
 
 This repo contains frontend code of the Coding WebIDE Community Edition. Please refer to the [WebIDE](https://github.com/Coding/WebIDE) repo for instruction on running the whole project.
 
+----
+### WebIDE is now upgraded to Cloud Studio，welcome to our new homepage https://studio.coding.net/
+----
+
 ## Requirement
 
 The repo is written in ES2015, to avoid complications once and for all, please make sure your environment have the right version of node. We use:
