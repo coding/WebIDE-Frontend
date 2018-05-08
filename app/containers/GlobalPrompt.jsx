@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import Prompt from 'components/Prompt/Prompt'
 import { browserDetect } from 'utils'
+import config from 'config'
+import i18n from 'utils/createI18n'
 
 class GlobalPrompt extends Component {
   constructor (props) {
@@ -38,6 +40,21 @@ class GlobalPrompt extends Component {
           <p>
             检测到您的浏览器为 {browserVersion}，为保障用户体验，推荐使用 Chrome 或 Safari
             浏览器访问。
+          </p>
+        ),
+        id: `global-prompt-${id++}`,
+        type: 'compatibility'
+      })
+    }
+    console.log('config.willExpire', config.willExpire)
+    if (config.willExpire) {
+      promptMessage.push({
+        content: (
+          <p>
+            {i18n`global.machineOutofDateSoon`}
+            <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
+            {i18n`global.and`}
+            <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,

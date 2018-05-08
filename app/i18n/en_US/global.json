@@ -40,5 +40,11 @@
    "workspaceLimit": "You can only create {limit} workspaces.",
    "returnDefault": "return default workspace",
    "projectPublic": "Public",
-   "projectPrivate": "Private"
+   "projectPrivate": "Private",
+   "machineOutofDate": "Trial of machine has expired",
+   "renewals": "Renewal Machine",
+   "renewalsHint": "There may be a delay of a few minutes after the renewal is completed. Please refresh later",
+   "actHint": "receive Tencent Cloud Coupon",
+   "machineOutofDateSoon": "Trial of machine will expire soon, you can ",
+   "and": " and "
 }

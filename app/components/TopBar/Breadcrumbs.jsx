@@ -5,7 +5,11 @@ import icons from 'file-icons-js'
 
 let Breadcrumbs = observer(({ fileNode }) => {
   const pathComps = fileNode.path.split('/')
-  const rootCrumb = {path: '/', name: config.projectName || 'Home', isDir: true}
+  let rootName = config.projectName || 'Home'
+  if (config.isDefault) {
+    rootName = 'Home'
+  }
+  const rootCrumb = {path: '/', name: rootName, isDir: true}
   const crumbs = pathComps.map(( pathComp, idx, pathComps ) => {
     if (pathComp === '') return rootCrumb
     return {

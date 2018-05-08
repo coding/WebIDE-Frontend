@@ -149,6 +149,27 @@ class Initialize extends Component {
             </div>
           )
         }
+      } else if (state.errorCode === 2001) { // 已经过期
+        errorInfo = null
+        info = (
+          <div className='loading-info'>
+            {i18n`global.machineOutofDate`}
+          </div>
+        )
+        requestInfo = (
+          <div className='request-info'>
+            <a href='https://console.cloud.tencent.com/lighthosting' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
+            <div className='link'>
+              <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
+            </div>
+          </div>
+        )
+        hintInfo = (
+          <div className='hint-info'>
+            <Tip />
+            {i18n`global.renewalsHint`}
+          </div>
+        )
       } else if (state.errorCode === 3021 || state.errorCode === 1097 || state.errorCode === 3020) {
         errorInfo = null
         info = (
@@ -231,16 +252,26 @@ class Initialize extends Component {
           info = (
             <div className='loading-info warning'>Error</div>
           )
-          requestInfo = (
-            <div className='request-info'>
-              {/* {state.errorInfo} */}
-              <div className='title'>{i18n`global.tencentNoRealName`}</div>
-              
-              <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
-              <p>&nbsp;</p>
-              <p>{i18n`global.tencentNoRealNameHint`}</p>
-            </div>
-          )
+          if (state.errorInfo.startsWith('(50005)')) {
+            requestInfo = (
+              <div className='request-info'>
+                {/* {state.errorInfo} */}
+                <div className='title'>{i18n`global.tencentNoRealName`}</div>
+                
+                <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
+                <p>&nbsp;</p>
+                <p>{i18n`global.tencentNoRealNameHint`}</p>
+              </div>
+            )
+          } else {
+            requestInfo = (
+              <div className='request-info'>
+                {/* {state.errorInfo} */}
+                <div className='title'>{state.errorInfo.replace('联系客服', '联系腾讯客服')}</div>
+              </div>
+            )
+          }
+          
           hintInfo = (
             <div className='hint-info'>
               <Tip />
