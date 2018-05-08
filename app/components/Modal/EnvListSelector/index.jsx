@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import settings from 'settings'
+
 import { defaultEnvList } from '../../../backendAPI/envListAPI'
 import getSvg from '../../../../static'
+import { dismissModal } from '../actions'
+
+const language = settings.general.language.value
 
 const EnvItem = ({ node, handleClick }) => {
   let createdDate
@@ -19,6 +24,12 @@ const EnvItem = ({ node, handleClick }) => {
     }
     createdDate = `${year}-${month}-${date}`
   }
+
+  if (node.name === 'default') {
+    node.description = ' Ubuntu 14.04.4'
+    node.descriptionCN = ' Ubuntu 14.04.4'
+  }
+
   return (
     <div className='env-item-modal' onClick={() => handleClick(node.name)}>
       <div className='env-item-heading'>
@@ -32,7 +43,7 @@ const EnvItem = ({ node, handleClick }) => {
             <i className='fa fa-clock-o'> {createdDate}</i>
           </div>
         ) : (
-          <div>{node.description}</div>
+          <div>{language === 'English' ? node.description : node.descriptionCN}</div>
         )}
       </div>
     </div>
@@ -60,7 +71,8 @@ class EnvListSelector extends Component {
 
 
   handleClick = (name) => {
-    console.log(name)
+    this.props.meta.resolve(name)
+    dismissModal()
   }
 
   renderEnvItems = list => (
