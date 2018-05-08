@@ -79,6 +79,7 @@ class EnvListSelector extends Component {
     return (
       <div className='modal-content' style={{ width: 640 }}>
         <div className='env-list-selector-header'>{message}</div>
+        <div className='fixed-line' />
         <div className='env-list-content'>
           {/* <p className='env-list-little-header'>共享环境</p>*/}
           <p className='env-list-little-header'>预置环境</p>
