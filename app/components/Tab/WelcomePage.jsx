@@ -78,7 +78,7 @@ class WelcomePage extends Component {
           </ul>
 
           <div className='btn-list'>
-            <a href='https://coding.net/help/doc/cloud_studio' target='_blank' rel='noopener noreferrer'>帮助文档</a>
+            <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>帮助文档</a>
             <a href='https://coding.net/help/doc/cloud-studio/video.html' target='_blank' rel='noopener noreferrer'>视频教程</a>
           </div>
           
@@ -102,7 +102,7 @@ class WelcomePage extends Component {
         {/* <h2>Help</h2>
         <div className='block help-block'>
           <div className='link-item'>
-            <a href='https://coding.net/help/doc/cloud_studio' target='_blank' rel='noopener noreferrer'>Document</a>
+            <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>Document</a>
           </div>
           <div className='link-item'>
             <a href='https://coding.net/feedback' target='_blank' rel='noopener noreferrer'>Feedback</a>
