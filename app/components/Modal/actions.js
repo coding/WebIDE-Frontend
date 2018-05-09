@@ -37,7 +37,6 @@ const modalPayloadCreator = (modalConfig, content) => {
 export const MODAL_SHOW = 'MODAL_SHOW'
 export const showModal = registerAction(MODAL_SHOW, modalPayloadCreator,
   (modalConfig) => {
-    // const { content: { position } } = modalConfig
     const modal = new Modal({ ...modalConfig, isActive: true })
     state.stack.replace([modal])
     return modal.meta.promise
