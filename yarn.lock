@@ -3027,6 +3027,10 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
+glob-to-regexp@^0.3.0:
+  version "0.3.0"
+  resolved "http://registry.npm.taobao.org/glob-to-regexp/download/glob-to-regexp-0.3.0.tgz#8c5a1494d2066c570cc3bfe4496175acc4d502ab"
+
 glob@7.0.x:
   version "7.0.6"
   resolved "http://registry.npm.taobao.org/glob/download/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
@@ -4452,6 +4456,10 @@ moment@^2.18.1:
   version "2.18.1"
   resolved "http://registry.npm.taobao.org/moment/download/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
+monaco-editor-core@^0.12.0:
+  version "0.12.0"
+  resolved "http://registry.npm.taobao.org/monaco-editor-core/download/monaco-editor-core-0.12.0.tgz#185c4233907582b78472fe30bad13af7ad6e8d8e"
+
 monaco-editor@^0.10.0:
   version "0.10.1"
   resolved "http://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.10.1.tgz#8c96c4f15b6b5258bf92cbde93cad8a7e3007e14"
@@ -4459,6 +4467,15 @@ monaco-editor@^0.10.0:
 monaco-editor@^0.12.0:
   version "0.12.0"
   resolved "http://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.12.0.tgz#cd8621017526b57746245104d764bbf52ad42283"
+
+monaco-languageclient@^0.6.3:
+  version "0.6.3"
+  resolved "http://registry.npm.taobao.org/monaco-languageclient/download/monaco-languageclient-0.6.3.tgz#ab652a9ac6803dc93414f601e32421b1bef20aac"
+  dependencies:
+    glob-to-regexp "^0.3.0"
+    monaco-editor-core "^0.12.0"
+    vscode-base-languageclient "^0.0.1-alpha.5"
+    vscode-languageserver-types "^3.7.0"
 
 mousetrap@^1.6.1:
   version "1.6.1"
@@ -6706,6 +6723,32 @@ vm-browserify@0.0.4:
   resolved "http://registry.npm.taobao.org/vm-browserify/download/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
+
+vscode-base-languageclient@^0.0.1-alpha.5:
+  version "0.0.1-alpha.5"
+  resolved "http://registry.npm.taobao.org/vscode-base-languageclient/download/vscode-base-languageclient-0.0.1-alpha.5.tgz#2a908a7bc6fe7d60574c103f669c656354818e7e"
+  dependencies:
+    vscode-jsonrpc "^3.2.0"
+    vscode-languageserver-types "^3.2.0"
+    vscode-uri "^1.0.0"
+
+vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0:
+  version "3.6.1"
+  resolved "http://registry.npm.taobao.org/vscode-jsonrpc/download/vscode-jsonrpc-3.6.1.tgz#3f9b8f902077da27f1ffd37c7317a77bd4696a49"
+
+vscode-languageserver-types@^3.2.0, vscode-languageserver-types@^3.7.0:
+  version "3.7.1"
+  resolved "http://registry.npm.taobao.org/vscode-languageserver-types/download/vscode-languageserver-types-3.7.1.tgz#4835d1c1811f91dd5c92e9446e5b29edd2216969"
+
+vscode-uri@^1.0.0:
+  version "1.0.3"
+  resolved "http://registry.npm.taobao.org/vscode-uri/download/vscode-uri-1.0.3.tgz#631bdbf716dccab0e65291a8dc25c23232085a52"
+
+vscode-ws-jsonrpc@^0.0.1-alpha.5:
+  version "0.0.1-alpha.5"
+  resolved "http://registry.npm.taobao.org/vscode-ws-jsonrpc/download/vscode-ws-jsonrpc-0.0.1-alpha.5.tgz#1ca66667940b5b19730a6a1d6150be506a808c61"
+  dependencies:
+    vscode-jsonrpc "^3.3.0"
 
 walker@~1.0.5:
   version "1.0.7"

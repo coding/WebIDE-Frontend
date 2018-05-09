@@ -110,6 +110,7 @@
     "mobx-react": "^4.1.5",
     "moment": "^2.18.1",
     "monaco-editor": "^0.12.0",
+    "monaco-languageclient": "^0.6.3",
     "mousetrap": "^1.6.1",
     "octicons": "4.4.0",
     "prop-types": "^15.5.10",
@@ -135,6 +136,7 @@
     "sockjs-client": "^1.1.1",
     "stompjs": "^2.3.3",
     "styled-components": "^2.1.2",
+    "vscode-ws-jsonrpc": "^0.0.1-alpha.5",
     "xterm": "^3.0.1"
   }
 }
