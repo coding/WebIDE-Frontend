@@ -249,9 +249,10 @@ class Initialize extends Component {
           )
         } else if (state.status === 'TryWorkstationFailed') {
           errorInfo = null
-          info = (
-            <div className='loading-info warning'>Error</div>
-          )
+          info = null
+          // info = (
+          //   <div className='loading-info warning'>Error</div>
+          // )
           if (state.errorInfo.startsWith('(50005)')) {
             requestInfo = (
               <div className='request-info'>
