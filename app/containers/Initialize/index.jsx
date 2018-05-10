@@ -179,6 +179,7 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
+            {/* <button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.rebind`}</button> */}
             <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.rebind`}</button>
           </div>
         )
@@ -191,7 +192,8 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
-            <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button>
+            <button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>
+            {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
           </div>
         )
       } else if (state.errorCode === 1) {
