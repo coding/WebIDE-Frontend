@@ -31,8 +31,8 @@ import {
   About,
   ProjectSelector,
   ProjectCreator,
+  BindQcloudView,
 } from './index'
-
 
 const modalCache = observable.map({
   Form,
@@ -62,6 +62,7 @@ const modalCache = observable.map({
   GitDiffFile: GitDiffFileView,
   ProjectSelector,
   ProjectCreator,
+  BindQcloud: BindQcloudView,
 })
 
 window.modalCache = modalCache

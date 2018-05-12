@@ -40,3 +40,7 @@ export function getUserProfile () {
     { headers: { Accept: '*/*' } }
   )
 }
+
+export function bindQcloud (data) {
+  return request.post(`/oauth/qcloud/bind_with_authentication/`, data)
+}
