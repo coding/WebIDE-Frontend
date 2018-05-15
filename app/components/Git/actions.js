@@ -140,7 +140,15 @@ export function pull () {
 export function push () {
   return (dispatch) => {
     api.gitPushAll().then((res) => {
-      notify({ message: 'Git push success.' })
+      if (res.nothingToPush) {
+        notify({ message: 'Git push fail: nothing to push.' });
+        return;
+      }
+      if (res.ok) {
+        notify({ message: 'Git push success.' });
+      } else {
+        notify({ message: `Git push fail: ${res.updates[0].status}` });
+      }
     }).catch((res) => {
       notify({ message: `Git push fail: ${res.response.data.msg}` })
     })

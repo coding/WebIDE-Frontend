@@ -26,10 +26,7 @@ export function gitPull () {
 }
 
 export function gitPushAll () {
-  return request.post(`/git/${config.spaceKey}/push?all=true`).then((res) => {
-    if (res.ok || res.nothingToPush) return true
-    if (!res.ok) return false
-  })
+  return request.post(`/git/${config.spaceKey}/push?all=true`)
 }
 export function gitFetch () {
   return request.post(`/git/${config.spaceKey}/fetch`)
