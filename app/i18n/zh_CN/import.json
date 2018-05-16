@@ -1,5 +1,6 @@
 {
    "importCoding": "从 Coding 导入项目",
+   "importGit": "从git地址导入",
    "projectExist": "项目已经被导入",
    "sync": "同步仓库"
 }
