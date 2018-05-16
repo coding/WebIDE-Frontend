@@ -1,6 +1,9 @@
 {
    "importCoding": "Import from Coding",
    "importGit": "Import from Git",
+   "fetchKeyFailed": "Failed to get the public key, close the modal and reload",
+   "beforeKey": "Only support SSH protocol currently, please ensure the",
+   "afterKey": "added to trust list of the target repository",
    "projectExist": "Project already exists.",
    "sync": "Sync Repo"
 }

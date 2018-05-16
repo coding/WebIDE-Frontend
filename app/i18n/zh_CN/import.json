@@ -1,6 +1,9 @@
 {
    "importCoding": "从 Coding 导入项目",
    "importGit": "从git地址导入",
+   "fetchKeyFailed": "获取公钥失败，请关闭弹窗重新加载",
+   "beforeKey": "目前只支持 SSH 协议，请确保将",
+   "afterKey": "添加到了目标仓库的信任列表",
    "projectExist": "项目已经被导入",
    "sync": "同步仓库"
 }

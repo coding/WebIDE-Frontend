@@ -25,4 +25,4 @@ export GitCheckoutStashView from '../../Git/modals/checkoutStash'
 export FileSelectorView from '../FileSelector'
 export { ProjectSelector, ProjectCreator } from '../ProjectSelector'
 export BindQcloudView from '../BindQcloud';
-export GitProjectFromGit from '../../Git/modals/projectFromGit';
+export ImportFromGit from '../ImportFromGit';
