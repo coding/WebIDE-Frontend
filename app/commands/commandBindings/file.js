@@ -81,7 +81,6 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
         existingTab.activate()
         if (callback) callback()
       } else {
-        console.log(TabStore.createTab)
         TabStore.createTab({
           icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
           editor: {
@@ -223,7 +222,22 @@ const fileCommands = {
     }
   },
 
-
+  'file:save_monaco': (context) => {
+    const { data } = context
+    const { EditorTabState } = mobxStore
+    const activeTab = EditorTabState.activeTab
+    if (activeTab.file) {
+      api.writeFile(activeTab.file.path, data)
+        .then((res) => {
+          FileStore.updateFile({
+            path: activeTab.file.path,
+            isSynced: true,
+            lastModified: res.lastModified,
+            // content,
+          })
+        })
+    }
+  },
   'file:rename': (c) => {
     const node = c.context
     const oldPath = node.path

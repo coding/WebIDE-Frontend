@@ -4460,6 +4460,10 @@ monaco-editor-core@^0.12.0:
   version "0.12.0"
   resolved "http://registry.npm.taobao.org/monaco-editor-core/download/monaco-editor-core-0.12.0.tgz#185c4233907582b78472fe30bad13af7ad6e8d8e"
 
+monaco-editor-webpack-plugin@^1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-1.1.0.tgz#017fd2edb916ce9411f690e2e3d4f931509ea474"
+
 monaco-editor@^0.10.0:
   version "0.10.1"
   resolved "http://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.10.1.tgz#8c96c4f15b6b5258bf92cbde93cad8a7e3007e14"
@@ -5595,6 +5599,10 @@ rechoir@^0.6.2:
   resolved "http://registry.npm.taobao.org/rechoir/download/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
   dependencies:
     resolve "^1.1.6"
+
+reconnecting-websocket@^3.2.2:
+  version "3.2.2"
+  resolved "http://registry.npm.taobao.org/reconnecting-websocket/download/reconnecting-websocket-3.2.2.tgz#8097514e926e9855e03c39e76efa2e3d1f371bee"
 
 redbox-react@^1.2.5:
   version "1.3.6"

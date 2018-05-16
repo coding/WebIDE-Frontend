@@ -7,7 +7,7 @@ import CodeEditor from './CodeEditor'
 const EditorWrapper = observer(({ tab, active }) => {
   // if (!active) return null
 
-  const { editor } = tab
+  const { editor, editorInfo } = tab
   const editorType = editor.editorType || 'default'
   const file = editor.file || {}
   // key is crutial here, it decides whether
@@ -16,13 +16,13 @@ const EditorWrapper = observer(({ tab, active }) => {
   const key = `editor_${file.path}`
   switch (editorType) {
     case 'htmlEditor':
-      return React.createElement(CodeEditor, { editor, key, tab, active })
+      return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active })
     case 'default':
-      return React.createElement(CodeEditor, { editor, key, tab, active })
+      return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active })
     case 'editorWithPreview':
-      return React.createElement(CodeEditor, { editor, key, tab, active })
+      return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active })
     case 'imageEditor':
-      return React.createElement(CodeEditor, { path: file.path, key, tab, active })
+      return <div>this is a image.</div>
     default:
       return React.createElement(CodeEditor, { path: file.path, size: file.size, key, tab, active })
   }

@@ -7,6 +7,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const merge = require('webpack-merge')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
+const MonacoWebpackPlugin = require('./monaco-editor-webpack-plugin')
+const initMonacoPluginConfig = require('./monaco-editor-webpack-plugin/initialOptions')
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 // const ICO_PATH = path.join(PROJECT_ROOT, 'static/favicon.ico')
@@ -48,6 +50,12 @@ return {
   },
   resolveLoader: {
     modules: [ path.resolve(__dirname, "./loaders/"), "node_modules" ]
+  },
+  node: {
+    fs: 'empty',
+    child_process: 'empty',
+    net: 'empty',
+    crypto: 'empty',
   },
   plugins: [
     gitRevisionPlugin,
@@ -118,7 +126,8 @@ return {
     }, {
       from: path.join(PROJECT_ROOT, 'node_modules/octicons'),
       to: 'octicons',
-    }])
+    }]),
+    new MonacoWebpackPlugin(initMonacoPluginConfig)
   ],
   module: {
     rules: [

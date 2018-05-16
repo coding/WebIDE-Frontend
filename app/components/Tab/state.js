@@ -5,6 +5,9 @@ import { TabStateScope } from 'commons/Tab'
 import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
 
+// monaco-editor
+import MonacoEditorState, { EditorInfo } from 'components/MonacoEditor/state'
+
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 
 const FileListState = observable({
@@ -20,7 +23,6 @@ class Tab extends BaseTab {
     this.update(props)
     this.saveFileList()
     this.type = props.type
-    debugger
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
@@ -48,6 +50,14 @@ class Tab extends BaseTab {
       this.editor = new Editor(props.editor)
     } else {
       this.editor = new Editor(props.editor)
+    }
+
+    // monaco-editor
+    if (this.editorInfo) {
+      this.editorInfo.destroy()
+      this.editorInfo = new EditorInfo(props.editor)
+    } else {
+      this.editorInfo = new EditorInfo(props.editor)
     }
     this.saveFileList()
   }
@@ -86,6 +96,12 @@ class Tab extends BaseTab {
     // return EditorState.entities.values().find(editor => editor.tabId === this.id)
     return EditorState.entities.get(this.editorId)
   }
+
+  @observable editorInfoid = null
+  @computed get editorInfo () {
+    return EditorState.entities.get(this.editorInfoid)
+  }
+
   set editor (editor) {
     if (editor) {
       editor.tabId = this.id
@@ -94,8 +110,16 @@ class Tab extends BaseTab {
     return editor
   }
 
+  set editorInfo (editorInfo) {
+    if (editorInfo) {
+      editorInfo.tabId = this.id
+      this.editorInfoid = editorInfo.id
+    }
+    return editorInfo
+  }
+
   @computed get file () {
-    return this.editor ? this.editor.file : null
+    return this.editorInfo ? this.editorInfo.file : null
   }
 }
 

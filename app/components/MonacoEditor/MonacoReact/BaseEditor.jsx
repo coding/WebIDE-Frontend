@@ -1,196 +1,56 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
+import * as monaco from 'monaco-editor'
 
-// import * as monaco from 'monaco-editor'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import 'monaco-editor/esm/vs/editor/browser/controller/coreCommands'
-import 'monaco-editor/esm/vs/editor/contrib/find/findController'
-
-self.MonacoEnvironment = {
-  getWorkerUrl (moduleId, label) {
-    // if (label === 'json') {
-    //   return './json.worker.bundle.js'
-    // }
-    // if (label === 'css') {
-    //   return './css.worker.bundle.js'
-    // }
-    // if (label === 'html') {
-    //   return './html.worker.bundle.js'
-    // }
-    // if (label === 'typescript' || label === 'javascript') {
-    //   return './ts.worker.bundle.js'
-    // }
-    return './editor.worker.bundle.js'
-  }
-}
-
-// import 'monaco-editor/esm/vs/editor/edcore.main'
-// import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import dispatchCommand from 'commands/dispatchCommand'
 
 function noop () {}
 
 const Div = measure('div')
+const debounced = debounce(func => func(), 1000)
+
 
 class MonacoEditor extends React.Component {
   constructor (props) {
     super(props)
+
+    const { editorInfo } = props
+    this.editor = editorInfo
+    this.editorElement = editorInfo.monacoElement
     this.containerElement = undefined
     this.currentValue = props.value
-
-    if (props.language === 'javascript') {
-      require('monaco-editor/esm/vs/language/typescript/monaco.contribution')
-    } else if (props.language === 'css') {
-      require('monaco-editor/esm/vs/language/css/monaco.contribution')
-      require('monaco-editor/esm/vs/basic-languages/css/css.contribution')
-    } else {
-      require(`monaco-editor/esm/vs/basic-languages/${props.language}/${
-        props.language
-      }.contribution`)
-    }
   }
 
   componentDidMount () {
-    this.afterViewInit()
+    if (!this.containerElement) return
+    this.containerElement.appendChild(this.editorElement)
+    const { monacoEditor } = this.editor
+    monacoEditor.onDidChangeModelContent((event) => {
+      const value = monacoEditor.getValue()
 
-    if (this.editor) {
-      window.addEventListener('resize', this.handleResize)
-    }
-  }
-
-  componentDidUpdate (prevProps) {
-    if (this.props.value !== this.currentValue) {
-      // Always refer to the latest value
-      this.currentValue = this.props.value
-      // Consider the situation of rendering 1+ times before the editor mounted
-      if (this.editor) {
-        this.__prevent_trigger_change_event = true
-        this.editor.setValue(this.currentValue)
-        this.__prevent_trigger_change_event = false
-      }
-    }
-    if (prevProps.language !== this.props.language) {
-      monaco.editor.setModelLanguage(this.editor.getModel(), this.props.language)
-    }
-    if (prevProps.theme !== this.props.theme) {
-      monaco.editor.setTheme(this.props.theme)
-    }
-    if (
-      this.editor &&
-      (this.props.width !== prevProps.width || this.props.height !== prevProps.height)
-    ) {
-      this.editor.layout()
-    }
-  }
-
-  componentWillUnmount () {
-    this.destroyMonaco()
-  }
-
-  handleResize = () => {
-    if (!this.editor) return
-    this.editor.layout()
-  }
-
-  editorWillMount () {
-    const { editorWillMount } = this.props
-    editorWillMount(monaco)
-  }
-
-  editorDidMount (editor) {
-    this.props.editorDidMount(editor, monaco)
-    editor.onDidChangeModelContent((event) => {
-      const value = editor.getValue()
-
-      // Always refer to the latest value
       this.currentValue = value
 
-      // Only invoking when user input changed
-      if (!this.__prevent_trigger_change_event) {
-        this.props.onChange(value, event)
-      }
+      // if (!this.__prevent_trigger_change_event) {
+      //   this.props.onChange(value, event)
+      // }
+
+      // debounced(() => {
+      //   dispatchCommand('file:save_monaco', this.currentValue)
+      // })
     })
+   
   }
 
-  afterViewInit = () => {
-    const context = this.props.context || window
-    if (monaco !== undefined) {
-      this.initMonaco()
-      return
-    }
-    const { requireConfig } = this.props
 
-    const loaderUrl = requireConfig.url || 'vs/loader.js'
+  // componentWillUnmount () {
+  //   this.destroyMonaco()
+  // }
 
-    const onGotAmdLoader = () => {
-      if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
-        if (requireConfig.paths && requireConfig.paths.vs) {
-          // will need to switch to nodeRequire here
-          context.require.config(requireConfig)
-        }
-      }
-
-      // Load monaco
-      if (context.require) {
-        context.require(['vs/editor/editor.main'], () => {
-          this.initMonaco()
-        })
-      }
-
-      // Call the delayed callbacks when AMD loader has been loaded
-      if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
-        context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = false
-        const loaderCallbacks = context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__
-
-        if (loaderCallbacks && loaderCallbacks.length) {
-          let currentCallback = loaderCallbacks.shift()
-
-          while (currentCallback) {
-            currentCallback.fn.call(currentCallback.context)
-            currentCallback = loaderCallbacks.shift()
-          }
-        }
-      }
-    }
-
-    // Load AMD loader if necessary
-    if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
-      // We need to avoid loading multiple loader.js when there are multiple editors loading
-      // concurrently, delay to call callbacks except the first one
-      // eslint-disable-next-line max-len
-      context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ =
-        context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ || []
-      context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__.push({
-        context: this,
-        fn: onGotAmdLoader
-      })
-    } else if (typeof context.require === 'undefined') {
-      const loaderScript = context.document.createElement('script')
-      loaderScript.type = 'text/javascript'
-      loaderScript.src = loaderUrl
-      loaderScript.addEventListener('load', onGotAmdLoader)
-      context.document.body.appendChild(loaderScript)
-      context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = true
-    } else {
-      onGotAmdLoader()
-    }
-  }
-
-  initMonaco () {
-    const value = this.props.value !== null ? this.props.value : this.props.defaultValue
-    const { language, theme, options } = this.props
-    if (this.containerElement && typeof monaco !== 'undefined') {
-      // Before initializing monaco editor
-      this.editorWillMount(monaco)
-      this.editor = monaco.editor.create(this.containerElement, {
-        value,
-        language,
-        theme: theme || 'vs-dark',
-        ...options
-      })
-      // After initializing monaco editor
-      this.editorDidMount(this.editor)
-    }
+  handleResize = () => {
+    if (!this.editor.monacoEditor) return
+    this.editor.monacoEditor.layout()
   }
 
   destroyMonaco () {
@@ -226,15 +86,6 @@ MonacoEditor.propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   value: PropTypes.string,
-  defaultValue: PropTypes.string,
-  language: PropTypes.string,
-  theme: PropTypes.string,
-  options: PropTypes.object,
-  editorDidMount: PropTypes.func,
-  editorWillMount: PropTypes.func,
-  onChange: PropTypes.func,
-  requireConfig: PropTypes.object,
-  context: PropTypes.object // eslint-disable-line react/require-default-props
 }
 
 MonacoEditor.defaultProps = {
