@@ -29,6 +29,7 @@ class Mask extends Component {
 
   firstEnterHandler = () => {
     localStorage.setItem('firstEnter', true)
+    this.setState({ connected: false })
     maskActions.hideMask()
   }
 

@@ -20,3 +20,7 @@ export function findExternalProject ({ url }) {
 export function syncProject () {
   return request.post('/project/sync')
 }
+
+export function queryCodingProject ({ source = 'coding', projectName }) {
+  return request.get(`/queryCodingProject`, { source, projectName })
+}

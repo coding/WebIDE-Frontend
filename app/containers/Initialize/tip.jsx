@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 const tips = [
     {
         id: 0,
-        label: '代码编辑器支持Vim键盘模式，可在「设置->快捷键」中修改'
+        label: '代码编辑器支持 Vim 键盘模式，可在「设置->快捷键」中修改'
     },
     {
         id: 1,
-        label: 'Coding还有移动客户端，功能同样很强大哦'
+        label: 'Coding 还有移动客户端，功能同样很强大哦'
     },
     {
         id: 2,
