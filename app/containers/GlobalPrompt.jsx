@@ -46,15 +46,16 @@ class GlobalPrompt extends Component {
         type: 'compatibility'
       })
     }
-    console.log('config.willExpire', config.willExpire)
     if (config.willExpire) {
       promptMessage.push({
         content: (
           <p>
             {i18n`global.machineOutofDateSoon`}
-            <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
-            {i18n`global.and`}
+            <span className='important'>{i18n`global.outofDateSoon`}</span>
+            {i18n`global.machineOutofDateSoon2`}
             <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
+            {i18n`global.and`}
+            <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,
