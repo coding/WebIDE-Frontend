@@ -24,3 +24,7 @@ export function syncProject () {
 export function queryCodingProject ({ source = 'coding', projectName }) {
   return request.get(`/queryCodingProject`, { source, projectName })
 }
+
+export function showPublicSshKey() {
+  return request.get('user/public_key', null, { headers: { Accept: 'application/vnd.coding.v1+json' } });
+}

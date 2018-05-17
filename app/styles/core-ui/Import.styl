@@ -53,7 +53,7 @@
   }
   .loading {
     text-align: center;
-    padding-top: 118px;  
+    padding-top: 118px;
     i {
       margin-right: 4px;
     }
@@ -65,4 +65,56 @@
   height: 200px;
   padding: 10px;
   line-height: 1.4;
+}
+
+.import-from-git {
+  box-sizing: border-box;
+  width: 600px;
+  padding: 20px;
+  .form {
+    width: 100%;
+    margin: 10px 0;
+    position: relative;
+    input {
+      width: 100%;
+    }
+    .warn {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f00;
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translate(0, -50%);
+    }
+  }
+  .tip {
+    line-height: 1.5;
+    .link {
+      color: #18f;
+      cursor: pointer;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+  }
+  .box {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    line-height: 1.4;
+    border-radius: 2px;
+    color: #666;
+    box-shadow: 0 0 2px rgba(0, 0, 0, .7) inset;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    cursor: text;
+  }
+  .control {
+    display: flex;
+    justify-content: flex-end;
+    .btn {
+      margin-left: 20px;
+    }
+  }
 }
