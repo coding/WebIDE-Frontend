@@ -99,7 +99,7 @@ class User extends Component {
 //             <img src={userProfile.avatar} alt={userProfile.name} />
 //           </a>
 //           <div className="dropdown">
-          
+
 //           </div>
 //         </div>
 //       </div>

@@ -99,6 +99,7 @@ class ImportFromGit extends Component {
       notify({ message: `Import failed: ${cloneRes.msg}` });
       return;
     }
+    //window.open(`${window.location.host}/ws/${cloneRes.data.spaceKey}`, '_blank');
     const data = cloneRes.data;
     const wsRes = await api.createWorkspace({
       cpuLimit: 1,
@@ -110,7 +111,8 @@ class ImportFromGit extends Component {
     });
     console.log('ws', wsRes);
     if (wsRes.code === 0) {
-      window.open(`${window.location.href}/ws/default`, '_self');
+      window.open(`${window.location.host}/ws/${cloneRes.data.spaceKey}`, '_self');
+      //window.open(`${window.location.href}/ws/default`, '_self');
     } else {
       notify({ message: `Import failed: ${wsRes.msg}` });
     }
