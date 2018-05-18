@@ -143,3 +143,7 @@ export function gitLogs (params = {}) {
 export function gitRefs () {
   return request.get(`/git/${config.spaceKey}/refs`)
 }
+
+export function gitClone (data) {
+  return request.post('ws/clone', data, { headers: { Accept: 'application/vnd.coding.v1+json' } });
+}

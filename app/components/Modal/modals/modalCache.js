@@ -32,6 +32,7 @@ import {
   ProjectSelector,
   ProjectCreator,
   BindQcloudView,
+  ImportFromGit,
 } from './index'
 
 const modalCache = observable.map({
@@ -63,6 +64,7 @@ const modalCache = observable.map({
   ProjectSelector,
   ProjectCreator,
   BindQcloud: BindQcloudView,
+  ImportFromGit,
 })
 
 window.modalCache = modalCache
