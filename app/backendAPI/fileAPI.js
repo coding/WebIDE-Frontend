@@ -21,7 +21,8 @@ export function downloadFile (path, shouldPacked) {
     path,
     inline: false
   })}`
-  window.open(url, '_blank')
+  // window.open(url, '_blank')
+  request.download(url, path.split('/').pop())
 }
 
 export function uploadFile (path, file, option) {
