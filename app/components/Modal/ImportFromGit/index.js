@@ -87,35 +87,19 @@ class ImportFromGit extends Component {
     this.handleImport();
   }
 
-  async handleImport() {
-    const cloneRes = await api.gitClone({
+  handleImport() {
+    api.gitClone({
       url: this.state.url,
       cpuLimit: 1,
       memory: 128,
       storage: 1,
+    }).then(res => {
+      if (res.data) {
+        window.open(`/ws/${res.data.spaceKey}`, '_self');
+      } else {
+        notify({ message: `Import failed: ${cloneRes.msg}` });
+      }
     });
-    console.log('clone', cloneRes);
-    if (cloneRes.code !== 0) {
-      notify({ message: `Import failed: ${cloneRes.msg}` });
-      return;
-    }
-    //window.open(`${window.location.host}/ws/${cloneRes.data.spaceKey}`, '_blank');
-    const data = cloneRes.data;
-    const wsRes = await api.createWorkspace({
-      cpuLimit: 1,
-      memory: 128,
-      storage: 1,
-      source: data.projectSource,
-      ownerName: data.ownerName,
-      projectName: data.projectName,
-    });
-    console.log('ws', wsRes);
-    if (wsRes.code === 0) {
-      window.open(`${window.location.host}/ws/${cloneRes.data.spaceKey}`, '_self');
-      //window.open(`${window.location.href}/ws/default`, '_self');
-    } else {
-      notify({ message: `Import failed: ${wsRes.msg}` });
-    }
   }
 }
 
