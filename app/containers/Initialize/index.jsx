@@ -159,6 +159,12 @@ class Initialize extends Component {
         }
       } else if (state.errorCode === 2001) { // 已经过期
         errorInfo = null
+        let tencentLink = 'https://console.cloud.tencent.com/lighthosting'
+        config.serverInfo.hostStrId = 'lh-1vj4b3ry'
+        if (config.serverInfo.hostStrId) {
+          const { hostStrId, hostId } = config.serverInfo
+          tencentLink = `https://console.cloud.tencent.com/lighthosting/detail/${hostStrId}/overview/${hostId}`
+        }
         info = (
           <div className='loading-info'>
             {i18n`global.machineOutofDate`}
@@ -166,7 +172,7 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
-            <a href='https://console.cloud.tencent.com/lighthosting' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
+            <a href={tencentLink} className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
             <div className='link'>
               <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
             </div>
