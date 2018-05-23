@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Clipboard from 'clipboard';
 import api from '../../../backendAPI';
 import { dispatchCommand } from '../../../commands';
 import { notify } from 'components/Notification/actions';
@@ -27,13 +28,25 @@ class ImportFromGit extends Component {
           {this.state.showWarn ? <span className="warn">!</span> : ''}
         </div>
         <div className="tip">
-          {i18n.get('import.beforeKey')}
-          &nbsp;
-          <span className="link" onClick={this.handleKey}>SSH key</span>
-          &nbsp;
-          {i18n.get('import.afterKey')}
+          <span>
+            {i18n.get('import.beforeKey')}
+            &nbsp;
+            <span className="link" onClick={this.handleKey}>SSH key</span>
+            &nbsp;
+            {i18n.get('import.afterKey')}
+          </span>
+          <span></span>
         </div>
-        {this.state.showKey ? <div className="box">{this.state.key}</div> : ''}
+        {
+          this.state.showKey
+          ?
+          <div className="box">
+            <i className="clipboard fa fa-copy"></i>
+            {this.state.key}
+          </div>
+          :
+          ''
+        }
         <div className="control">
           <button className="btn btn-default" onClick={this.handleCancel}>{i18n.get('modal.cancelButton')}</button>
           <button className="btn btn-primary" onClick={this.handleSubmit}>{i18n.get('modal.okButton')}</button>
@@ -49,6 +62,15 @@ class ImportFromGit extends Component {
       } else {
         this.setState({ key: i18n.get('import.fetchKeyFailed') });
       }
+    });
+    const clipboard = new Clipboard('.clipboard', {
+      text: trigger => trigger.parentElement.innerText,
+    });
+    clipboard.on('success', (e) => {
+      notify({message: i18n.get('import.copyKeySuccess')});
+    });
+    clipboard.on('error', (e) => {
+      notify({message: i18n.get('import.copyKeyFailed')});
     });
   }
 
@@ -97,8 +119,10 @@ class ImportFromGit extends Component {
       if (res.data) {
         window.open(`/ws/${res.data.spaceKey}`, '_self');
       } else {
-        notify({ message: `Import failed: ${cloneRes.msg}` });
+        notify({ message: `Import failed: ${res.msg}` });
       }
+    }).catch(res => {
+      notify({ message: `Import failed: ${res.msg}` });
     });
   }
 }

@@ -347,6 +347,8 @@ class Initialize extends Component {
           info = (
             <div className='loading-info error'>
               {i18n`global.loadingWorkspaceCloneFailed`}
+              <br />
+              {i18n.get('global.checkSSHKey')}
             </div>
           )
           requestInfo = (
