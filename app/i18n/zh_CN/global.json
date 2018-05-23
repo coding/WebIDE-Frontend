@@ -1,6 +1,7 @@
 {
    "loadingWorkspaceCloning": "正在 Clone 项目代码...",
    "loadingWorkspaceCloneFailed": "Clone 代码失败",
+   "checkSSHKey": "请检查是否已经将 SSH Key 添加到目标仓库的信任列表",
    "offline": "离线",
    "recloneWorkspace": "重新 Clone 代码",
    "requestingCollaboration": "等待所有者授权",

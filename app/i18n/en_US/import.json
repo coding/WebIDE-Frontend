@@ -4,6 +4,8 @@
    "fetchKeyFailed": "Failed to get the public key, close the modal and reload",
    "beforeKey": "Only support SSH protocol currently, please ensure the",
    "afterKey": "added to trust list of the target repository",
+   "copyKeySuccess": "Copy SSH key success",
+   "copyKeyFailed": "Copy SSH key failed",
    "projectExist": "Project already exists.",
    "sync": "Sync Repo"
 }

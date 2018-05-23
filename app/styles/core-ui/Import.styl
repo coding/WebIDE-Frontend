@@ -70,7 +70,6 @@
 .import-from-git {
   box-sizing: border-box;
   width: 600px;
-  padding: 20px;
   .form {
     width: 100%;
     margin: 10px 0;
@@ -89,6 +88,7 @@
     }
   }
   .tip {
+    margin-bottom: 10px;
     line-height: 1.5;
     .link {
       color: #18f;
@@ -100,7 +100,7 @@
   }
   .box {
     width: 100%;
-    padding: 10px;
+    padding: 20px 10px 10px;
     margin: 10px 0;
     line-height: 1.4;
     border-radius: 2px;
@@ -109,6 +109,19 @@
     white-space: pre-wrap;
     word-wrap: break-word;
     cursor: text;
+    position: relative;
+    &:hover .clipboard {
+      display: block;
+    }
+    .clipboard {
+      display: none;
+      font-size: 16px;
+      color: #6ec83f;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
   }
   .control {
     display: flex;

@@ -1,6 +1,7 @@
 {
    "loadingWorkspaceCloning": "Now cloning code...",
    "loadingWorkspaceCloneFailed": "Clone failed",
+   "checkSSHKey": "Please check if you have added SSH Key to the trust list of the target repository",
    "offline": "Offline",
    "recloneWorkspace": "Try clone again",
    "requestingCollaboration": "Warping",
