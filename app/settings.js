@@ -15,7 +15,7 @@ if (config.isLib) {
   uiOptions = [
     { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
   ]
-} else  {
+} else {
   uiOptions = [
     { name: 'settings.appearance.uiThemeOption.baseTheme', value: 'base-theme' },
     { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
@@ -223,6 +223,7 @@ const settings = observable({
       'tab_width',
       'trim_trailing_whitespace',
       'insert_final_newline',
+      'enable_new_editor',
       // 'auto_save',
       // 'auto_wrap',
       // 'live_auto_completion',
@@ -280,6 +281,13 @@ const settings = observable({
       value: false,
       reaction (value) {
         if (EditorState) EditorState.options.insertFinalNewline = value
+      }
+    },
+    enable_new_editor: {
+      name: 'settings.editor.enableNewEditor',
+      value: true,
+      reaction (value) {
+        if (EditorState) EditorState.options.enableNewEditor = value
       }
     },
     auto_save: {

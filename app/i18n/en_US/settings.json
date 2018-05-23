@@ -19,6 +19,7 @@
       "charset": "Charset",
       "indentStyle": "Indent Style",
       "indentSize": "Indent Size",
+      "enableNewEditor": "Enable new Editor",
       "tabWidth": "Tab Width",
       "trimTrailingWhitespace": "Trim Trailing Whitespace",
       "insertFinalNewline": "Insert Final Newline",
