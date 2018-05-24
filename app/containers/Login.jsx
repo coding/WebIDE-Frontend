@@ -45,6 +45,9 @@ class Login extends Component {
       const suffix = searchUrl.slice(11);
       const url = suffix.indexOf('&') === -1 ? `${suffix}?hasJump=true` : `${suffix.replace('&', '?')}&hasJump=true`;
       window.open(url, '_self');
+    } else {
+      const url = searchUrl ? `${window.location.origin}/ws/default?${searchUrl}&hasJump=true` : `${window.location.origin}/ws/default?hasJump=true`;
+      window.open(url, '_self');
     }
   }
   checkCaptcha = () => {
