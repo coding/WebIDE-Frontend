@@ -4,6 +4,8 @@ import getCookie from './utils/getCookie'
 const config = observable({
   projectName: '',
   spaceKey: '',
+  globalKey: '',
+  userProfile: {},
   requiredExtensions: [],
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,

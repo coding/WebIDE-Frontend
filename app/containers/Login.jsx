@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import { autorun } from 'mobx';
 import VideoCover from 'react-video-cover'
 import i18n from 'utils/createI18n'
 import api from '../backendAPI'
 import Header from './Header'
 import cx from 'classnames'
 import config from 'config'
+
+const searchUrl = window.location.search.slice(1);
 
 class Login extends Component {
   constructor (props) {
@@ -27,7 +30,22 @@ class Login extends Component {
     }
   }
   componentDidMount () {
-    this.checkCaptcha()
+    this.checkCaptcha();
+    autorun(() => {
+      if (config.globalKey) {
+        this.handleUrl();
+      }
+    });
+  }
+  handleUrl() {
+    if (searchUrl.indexOf('hasJump') !== -1) {
+      return;
+    }
+    if (searchUrl.startsWith('return_url')) {
+      const suffix = searchUrl.slice(11);
+      const url = suffix.indexOf('&') === -1 ? `${suffix}?hasJump=true` : `${suffix.replace('&', '?')}&hasJump=true`;
+      window.open(url, '_self');
+    }
   }
   checkCaptcha = () => {
     api.hasCaptcha().then((res) => {
@@ -147,7 +165,7 @@ class Login extends Component {
   render () {
     let loginForm = null
     let tencentLogin = null
-    if (self != top) {    
+    if (self != top) {
       tencentLogin = (
         <a href='https://cloud.tencent.com/open/authorize?scope=login&app_id=100000788006&redirect_url=https%3A%2F%2Fcoding.net%2Fapi%2Foauth%2Fqcloud%2Fstudio_login' target='_top' >
           <i className='logo-qcloud' />使用腾讯云账号登录
@@ -201,7 +219,7 @@ class Login extends Component {
             <div className='login-panel-input'>
               <div className='title'>两步验证</div>
               <input type='text' autoFocus className={cx('form-control', { error: this.state.codeError })} onChange={this.handleCodeChange} placeholder='两步验证码' />
-              
+
               <button className='btn btn-primary' type='submit' onClick={this.handleCode}>登录</button>
               <div className='links'>
                 <a href='https://coding.net/twofa/close'>关闭两步验证</a>
