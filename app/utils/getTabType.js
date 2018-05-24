@@ -1,21 +1,13 @@
+const applicationTypes = ['application/xml', 'application/x-sh', 'application/xhtml+xml'];
+const imageTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/gif', 'image/webp', 'image/x-icon', 'image/tiff', 'image/x-tga', 'image/vnd.fpx', 'image/vnd.dxf'];
+
 export default function getTabType (node) {
-  if (
-    /^text\/[^/]+/.test(node.contentType) || (
-      node.contentType === 'application/xml'
-    ) || (
-      node.contentType === 'application/x-sh'
-    ) || (
-      node.contentType === 'application/xhtml+xml'
-    )) {
-    return 'TEXT'
-  } else if (/^image\/[^/]+/.test(node.contentType)) {
-    if (node.contentType === 'image/vnd.adobe.photoshop') {
-      return 'UNKNOWN'
-    }
-    if (node.contentType === 'image/jpeg' || node.contentType === 'image/png' || node.contentType === 'image/bmp' || node.contentType === 'image/gif') {
-      return 'IMAGE'
-    }
+  const type = node.contentType;
+  if (type.indexOf('text') !== -1 || applicationTypes.includes(type)) {
+    return 'TEXT';
+  } else if (imageTypes.includes(type)) {
+    return 'IMAGE';
+  } else {
+    return 'UNKNOWN';
   }
-  // Unknown
-  return 'UNKNOWN'
 }
