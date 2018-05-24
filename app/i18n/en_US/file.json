@@ -19,5 +19,6 @@
    "fileToLarge": "Filesize is limit to {filesize} MB",
    "uploading": "Uploading",
    "uploadSucceed": "Upload succeed",
-   "uploadFailed": "Upload failed"
+   "uploadFailed": "Upload failed",
+   "preparingDownload": "Preparing files..."
 }
