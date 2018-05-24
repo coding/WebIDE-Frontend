@@ -1149,7 +1149,7 @@
         </div>
         <div class="counter-text-mobile">上进行在线开发的用户累计使用时间为</div>
         <div class="counter-count-mobile">
-          <span class="num" id="countNum">1,040,688,000</span>
+          <span class="num" id="countNum">-,---,---,---</span>
           秒
         </div>
       </div>
@@ -1289,6 +1289,7 @@
             </a>
             <div class="record_info">
               <p>
+                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a> | 
                 <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
                 <!-- react-text: 70 -->|
                 <!-- /react-text -->
@@ -1313,6 +1314,7 @@
             </a>
             <div class="record-info-mobile">
               <p style="margin-top: 10px">
+                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a>
                 <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
                 <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
                 <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
@@ -1401,10 +1403,10 @@
       separator: ',',
       decimal: '.',
     };
-    var countStart = 1040000000;
-    var totalCount = 1040688000;
+    var countStart = 1521809751;
+    var totalCount = 1521809751;
     var timestamp = new Date() / 1000 - 1521809751;
-    var count = new CountUp('countNum', countStart, (totalCount + timestamp), 0, 0.1, options);
+    var count = new CountUp('countNum', countStart, (totalCount + timestamp * 1000), 0, 0.1, options);
     if (!count.error) {
       count.start();
     } else {
