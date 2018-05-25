@@ -61,7 +61,7 @@ export function openFile (obj, callback) {
   }
 }
 
-export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup = false, encoding, callback }) {
+export function openFileWithEncoding ({ path, contentType, editor = {}, others = {}, allGroup = false, encoding, callback }) {
   const { encoding: currentEncoding } = FileStore.get(path) || {}
   return api.readFile(path, encoding || currentEncoding)
     .then((data) => {
@@ -83,11 +83,12 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
       } else {
         TabStore.createTab({
           icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
+          contentType,
           editor: {
             ...editor,
             filePath: path,
           },
-          ...others
+          ...others,
         })
         if (callback) {
           callback()

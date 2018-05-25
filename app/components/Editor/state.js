@@ -34,6 +34,7 @@ state.entities.observe((change) => {
 class Editor {
   constructor (props = {}) {
     this.id = props.id || uniqueId('editor_')
+    this.contentType = props.contentType
     state.entities.set(this.id, this)
     this.update(props)
     if (!props.filePath || this.isCM) {
@@ -201,29 +202,26 @@ class Editor {
 
   @computed
   get editorType () {
-    let type = 'default'
-    if (!this.file) return type
-    if (this.file.contentType) {
-      if (getTabType(this.file) === 'IMAGE') {
-        type = 'imageEditor'
-      } else if (getTabType(this.file) === 'UNKNOWN') {
-        type = 'unknownEditor'
-      }
+    const contentType = getTabType(this.contentType);
+    switch (contentType) {
+      case 'TEXT':
+        return 'textEditor';
+      case 'HTML':
+        return 'htmlEditor';
+      case 'MARKDOWN':
+        return 'markdownEditor';
+      case 'IMAGE':
+        return 'imageEditor';
+      case 'UNKNOWN':
+        return 'unknownEditor';
+      default:
+        return 'unknownEditor';
     }
-    if (this.file.contentType === 'text/html') {
-      type = 'htmlEditor'
-    } else if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
-      type = 'editorWithPreview'
-    }
-    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
-      type = 'imageEditor'
-    }
-    return type
   }
 
   @computed
   get isCM () {
-    return this.editorType === 'default' || this.editorType === 'editorWithPreview' || this.editorType === 'htmlEditor'
+    return ['textEditor', 'markdownEditor', 'htmlEditor'].includes(this.editorType);
   }
 
   disposers = []

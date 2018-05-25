@@ -131,12 +131,13 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
     } else {
       toggleNodeFold(node, shouldBeFolded, deep)
     }
-  } else if (getTabType(node) === 'TEXT') {
-    dispatchCommand('file:open_file', { path: node.path, editor })
+  } else if (['TEXT', 'HTML', 'MARKDOWN'].includes(getTabType(node.contentType))) {
+    dispatchCommand('file:open_file', { path: node.path, editor, contentType: node.contentType })
   } else {
     TabActions.createTab({
       title: node.name,
       icon: icons.getClassWithColor(node.name) || 'fa fa-file-text-o',
+      contentType: node.contentType,
       editor: {
         ...editor,
         filePath: node.path,

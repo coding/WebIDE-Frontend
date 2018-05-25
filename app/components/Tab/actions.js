@@ -14,14 +14,11 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   })
   const tabs = Object.values(json.tabs)
   if (tabs.length === 0) {
-    // setTimeout(() => {
-      // dispatchCommand('file:open_welcome')
-    // }, 1000)
     dispatchCommand('global:show_env')
   }
   const openTabs = tabs.map((tabValue) => {
-    const { path, editor, ...others } = tabValue
-    const option = { path, editor, others }
+    const { path, editor, contentType, ...others } = tabValue
+    const option = { path, editor, contentType, others }
     return openFile(option)
   })
   Promise.all(openTabs).then(() => {
