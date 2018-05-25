@@ -13,8 +13,9 @@ const FileListState = observable({
 
 class Tab extends BaseTab {
   constructor (props = {}) {
-    super()
+    super(props)
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
+    this.contentType = props.contentType
     state.tabs.set(this.id, this)
     this.editorProps = props.editor
     this.update(props)
@@ -44,10 +45,8 @@ class Tab extends BaseTab {
     props.editor.tabId = this.id
     if (this.editor) {
       this.editor.destroy()
-      this.editor = new Editor(props.editor)
-    } else {
-      this.editor = new Editor(props.editor)
     }
+    this.editor = new Editor({...props.editor, contentType: props.contentType})
     this.saveFileList()
   }
 
