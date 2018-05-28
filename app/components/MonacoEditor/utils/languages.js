@@ -6,4 +6,6 @@ export default {
   csharp: ['cs'],
   php: ['php'],
   json: ['json'],
+  xml: ['xml', 'project'],
+  go: ['go'],
 }

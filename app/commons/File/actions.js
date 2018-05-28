@@ -3,6 +3,7 @@ import { registerAction } from 'utils/actions'
 import is from 'utils/is'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
+import config from 'config'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
@@ -35,7 +36,16 @@ export const loadNodeData = registerAction('fs:load_node_data',
 )
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
-  fetchPath('/').then(loadNodeData)
+  fetchPath('/').then((data) => {
+    for (let i = 0; i < data.length; i += 1) {
+      const language = config.supportLangServer.find(l => l.file === data[i].name)
+      if (language) {
+        config.mainLanguage = language.lang
+        break
+      }
+    }
+    return loadNodeData(data)
+  })
 )
 
 export const removeNode = registerAction('fs:remove_node', (node) => {

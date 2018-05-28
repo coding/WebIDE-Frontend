@@ -21,12 +21,21 @@ class MonacoEditor extends React.Component {
     this.editorElement = editorInfo.monacoElement
     this.containerElement = undefined
     this.currentValue = props.value
+    this.state = {
+      mount: false,
+    }
   }
 
   componentDidMount () {
     if (!this.containerElement) return
     this.containerElement.appendChild(this.editorElement)
+    this.setState({
+      mount: true,
+    })
     const { monacoEditor } = this.editor
+    // if (this.initLanguageServer) {
+    //   this.initLanguageServer(this.props)
+    // }
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
 
@@ -36,13 +45,20 @@ class MonacoEditor extends React.Component {
       //   this.props.onChange(value, event)
       // }
 
-      // debounced(() => {
-      //   dispatchCommand('file:save_monaco', this.currentValue)
-      // })
+      debounced(() => {
+        dispatchCommand('file:save_monaco', this.currentValue)
+      })
     })
-   
-  }
 
+    monacoEditor.onDidChangeCursorPosition((event) => {
+      this.selections = monacoEditor.getSelections
+      const { position: { lineNumber, column } } = event
+      this.cursorPosition = {
+        line: lineNumber + 1,
+        col: column + 1,
+      }
+    })
+  }
 
   // componentWillUnmount () {
   //   this.destroyMonaco()
@@ -99,7 +115,7 @@ MonacoEditor.defaultProps = {
   editorDidMount: noop,
   editorWillMount: noop,
   onChange: noop,
-  requireConfig: {}
+  requireConfig: {},
 }
 
 export default MonacoEditor

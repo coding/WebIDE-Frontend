@@ -8,6 +8,9 @@ import Editor from 'components/Editor'
 import MonacoEditor from 'components/MonacoEditor'
 import { TablessCodeEditor } from 'components/Editor/components/CodeEditor'
 import i18n from 'utils/createI18n'
+import config from 'config'
+import URI from 'vscode-uri'
+import { Workspace, WorkspaceFolder } from 'components/MonacoEditor/CloudStudioLanguageClient/MonacoWrokSpace'
 import WelcomePage from './WelcomePage'
 
 const contextMenuItems = [
@@ -51,6 +54,22 @@ class TabContainer extends Component {
     this.state = {
       fullScreenActiveContent: false,
     }
+
+    this.workspaceFolder = new WorkspaceFolder(
+      {
+        uri: `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`,
+        index: 0,
+        name: config.spaceKey
+      }
+    )
+    this.workspace = new Workspace(
+      config.spaceKey,
+      'CloudStudioWorkSpace',
+      [this.workspaceFolder],
+      URI.parse(`/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`),
+      0,
+    )
+    console.log(this.workspace)
   }
 
   handleFullScreen = (value) => {

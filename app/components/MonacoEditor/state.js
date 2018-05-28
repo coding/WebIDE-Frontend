@@ -8,6 +8,7 @@ import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { findModeByExtension } from 'components/Editor/components/CodeEditor/addons/mode/findMode'
+import config from 'config'
 
 import initialOptions from './monacoDefaultOptions'
 
@@ -36,10 +37,10 @@ const typeDetect = (title, types) => {
 class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
+    this.IDEWSURI = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
-    // this.mode = 
     if (!props.filepath || this.isMonaco) {
       this.createMonacoEditorInstance()
     }
@@ -49,11 +50,17 @@ class EditorInfo {
     this.monacoElement = document.createElement('div')
     this.monacoElement.style.width = '100%'
     this.monacoElement.style.height = '100%'
+    // let model
+    // if (monaco.editor.getModel(`file://${this.IDEWSURI}${this.filePath}`)) {
+    //   model = monaco.editor.getModel(`file://${this.IDEWSURI}${this.filePath}`)
+    // } else {
+    //   model = monaco.editor.createModel(`file://${this.IDEWSURI}${this.filePath}`)
+    // }
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       model: monaco.editor.createModel(this.content || '', this.mode),
     })
-
+    // console.log(monacoEditor)
     // const model = monaco.editor.createModel(this.content || '', this.mode, '')
     // if (this.content) {
     //   debugger
@@ -85,7 +92,8 @@ class EditorInfo {
   }
 
   @computed get mode () {
-    return findModeByExtension(this.filePath.split('.').pop()).name.toLocaleLowerCase()
+    const mode = findModeByExtension(this.filePath.split('.').pop())
+    return !!mode ? mode.name.toLocaleLowerCase() : ''
   }
 
   setMode (mode) {

@@ -4,6 +4,7 @@ import getCookie from './utils/getCookie'
 const config = observable({
   projectName: '',
   spaceKey: '',
+  mainLanguage: '',
   requiredExtensions: [],
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
@@ -14,7 +15,12 @@ const config = observable({
   // isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
-  fileExcludePatterns: ['/.git', '/.coding-ide'],
+  fileExcludePatterns: ['/.git', '/.coding-ide', '/.classpath', '/.project', '/.settings'],
+  supportLangServer: [
+    { lang: 'java', file: 'pom.xml' },
+    { lang: 'javascript', file: 'package.json' },
+    { lang: 'typescript', file: 'package.json' },
+  ],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),

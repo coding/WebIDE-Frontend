@@ -1,42 +1,40 @@
-import {
-  BaseLanguageClient,
-  CloseAction,
-  ErrorAction,
-  createConnection,
-} from 'monaco-languageclient'
+import { CloseAction, ErrorAction } from 'monaco-languageclient'
+// import { workspace as vscodeWorkSpace } from 'vscode'
+import { createConnection } from 'vscode-base-languageclient/lib/connection'
+import { BaseLanguageClient } from 'vscode-base-languageclient/lib/base'
 
-const ReconnectingWebSocket = require('reconnecting-websocket')
-
-export function createLanguageClient (connection, services) {
+import io from 'socket.io-client'
+// console.log(vscodeWorkSpace)
+export function createLanguageClient (workspace, services, connection, language) {
   return new BaseLanguageClient({
-    name: 'Sample Language Client For Monaco',
+    name: 'java',
     clientOptions: {
-      // use a language id as a document selector
-      documentSelector: ['typescript'],
-      // disable the default error handler
-      errorHandler: {
-        error: () => ErrorAction.Continue,
-        closed: () => CloseAction.DoNotRestart,
+      commands: undefined,
+      documentSelector: [
+        { scheme: 'file', language: 'java' },
+        { scheme: 'jdt', language: 'java' },
+        { scheme: 'untitled', language: 'java' }
+      ],
+      synchronize: {},
+      initializationFailedHandler: (err) => {
+        const detail = err instanceof Error ? err.message : ''
+        console.log(detail)
       },
+      diagnosticCollectionName: language,
     },
     services,
-    // create a language client connection from the JSON RPC connection on demand
     connectionProvider: {
       get: (errorHandler, closeHandler) =>
         Promise.resolve(createConnection(connection, errorHandler, closeHandler)),
     },
-  });
+  })
 }
 
 
 export function createWebSocket (url) {
   const socketOptions = {
-    maxReconnectionDelay: 10000,
-    minReconnectionDelay: 1000,
-    reconnectionDelayGrowFactor: 1.3,
-    connectionTimeout: 10000,
-    maxRetries: Infinity,
-    debug: false,
+    reconnection: false,
+    reconnectionDelay: 10000,
   }
-  return new ReconnectingWebSocket(url, undefined, socketOptions)
+  return io(url, socketOptions)
 }
