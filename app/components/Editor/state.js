@@ -10,13 +10,6 @@ import overrideDefaultOptions from './codemirrorDefaultOptions'
 import { loadMode } from './components/CodeEditor/addons/mode'
 import { findModeByFile, findModeByMIME, findModeByName } from './components/CodeEditor/addons/mode/findMode'
 
-const typeDetect = (title, types) => {
-  // title is the filename
-  // typeArray is the suffix
-  if (!Array.isArray(types)) return title.toLowerCase().endsWith(`.${types}`)
-  return types.reduce((p, v) => p || title.toLowerCase().endsWith(`.${v}`), false)
-}
-
 const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
 const state = observable({

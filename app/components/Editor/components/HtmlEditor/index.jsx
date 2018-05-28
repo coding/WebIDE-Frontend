@@ -73,7 +73,7 @@ class HtmlEditor extends Component {
 
   componentDidMount () {
     autorun(() => {
-      if (this.props.tab.file.isSynced) {
+      if (this.props.tab.file && this.props.tab.file.isSynced) {
         this.props.tab.previewUniqueId = uniqueId()
       }
     })

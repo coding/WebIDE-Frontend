@@ -138,10 +138,11 @@ function createFileWithContent (content) {
           throw new Error(res.msg)
         } else {
           Modal.dismissModal()
+          return res;
         }
       })
-      .then(() => {
-        openFile({ path })
+      .then(res => {
+        openFile({ path, contentType: res.contentType })
       })
       // if error, try again.
       .catch((res) => {
@@ -166,7 +167,6 @@ const fileCommands = {
     }
   },
   'file:highlight_line': (c) => {
-    console.log('file:highlight_line', c)
     const { path, lineNumber } = c.data
     openFile({ path, allGroup: true }, () => {
       emitter.emit(FILE_HIGHLIGHT, c.data)
