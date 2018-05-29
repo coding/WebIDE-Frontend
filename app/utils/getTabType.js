@@ -2,7 +2,7 @@ const applicationTypes = ['application/xml', 'application/x-sh', 'application/xh
 const imageTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/gif', 'image/webp', 'image/x-icon', 'image/tiff', 'image/x-tga', 'image/vnd.fpx', 'image/vnd.dxf'];
 
 export default function getTabType (type = '') {
-  if (typeof type === 'undefined') {
+  if (!type) {
     return 'TEXT';
   } else if (type === 'text/x-web-markdown') {
     return 'MARKDOWN';

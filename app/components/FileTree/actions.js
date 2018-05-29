@@ -64,6 +64,7 @@ export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
     if (!node.isDir) return
+    console.log(node.isFolded)
     const isFolded = _.isBoolean(shouldBeFolded) ? shouldBeFolded : !node.isFolded
     node.toggleFold(isFolded)
     if (deep) {
@@ -95,9 +96,9 @@ export const syncDirectory = registerAction('filetree:sync_file', (node, deep = 
             }
           })
         }
-        return FileStore.loadNodeData(data)
+        FileStore.loadNodeData(data)
       })
-      .then(() => {
+      .then(res => {
         node.isLoading = false
         node.isLoaded = true
       })
@@ -106,15 +107,13 @@ export const syncDirectory = registerAction('filetree:sync_file', (node, deep = 
 
 
 export const syncAllDirectoryByPath = registerAction('filetree:sync_all_dir', (rootPath) => {
-  if (!is.string(rootPath)) return false
-
-  const rootNode = state.entities.get(rootPath)
-
-  if (rootNode.isDir) {
-    syncDirectory(rootNode, true)
+  if (!is.string(rootPath)) {
+    return false;
   }
-
-  return true
+  const rootNode = state.entities.get(rootPath);
+  if (rootNode.isDir) {
+    syncDirectory(rootNode, true);
+  }
 })
 
 const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep = false) {
