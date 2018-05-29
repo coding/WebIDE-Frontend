@@ -23,6 +23,7 @@ const lib = {
   axios: require('axios'),
   localforage: require('localforage'),
   styled: require('styled-components'),
+  clipboard: require('clipboard'),
 }
 
 export { app, lib }

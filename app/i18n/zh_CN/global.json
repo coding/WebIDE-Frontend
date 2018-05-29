@@ -40,5 +40,11 @@
    "workspaceLimit": "您最多只能创建 {limit} 个工作空间",
    "returnDefault": "返回默认工作空间",
    "projectPublic": "公开",
-   "projectPrivate": "私有"
+   "projectPrivate": "私有",
+   "machineOutofDate": "专用主机的试用期已经结束了",
+   "renewals": "前往续费",
+   "renewalsHint": "续费完成之后可能会有几分钟的延时，请稍后刷新重试",
+   "actHint": "领取腾讯云优惠券",
+   "machineOutofDateSoon": "专用主机的试用期即将结束，您可以 ",
+   "and": " 然后 "
 }
