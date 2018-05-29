@@ -1,9 +1,12 @@
-import { extendObservable } from 'mobx'
+import { extendObservable, when } from 'mobx'
 import mobxStore from 'mobxStore'
 import { createAction, handleActions, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
 import { openFile } from '../../commands/commandBindings/file'
 import dispatchCommand from 'commands/dispatchCommand'
+import LanguageState, { LanguageClient } from './LanguageClientState'
+import config from 'config'
+import { findLangueByExt } from 'components/MonacoEditor/utils/findLanguage'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
@@ -38,6 +41,15 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
 export const createTab = registerAction(TAB_CREATE,
   (tabProps) => {
     const tab = new Tab(tabProps)
+    const { editor: { filePath } } = tabProps
+    const ext = filePath.split('.').pop()
+    const language = findLangueByExt(ext) ? findLangueByExt(ext).language : ''
+    when(() => config.mainLanguage !== '', () => {
+      if (!LanguageState.clients.get(language) && language !== '' && language === config.mainLanguage) {
+        const languageClient = new LanguageClient(language)
+        LanguageState.clients.set(language, languageClient)
+      }
+    })
   },
 )
 

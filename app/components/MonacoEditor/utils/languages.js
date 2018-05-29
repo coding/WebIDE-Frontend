@@ -1,11 +1,5 @@
-export default {
-  javascript: ['js', 'jsx', 'mjs'],
-  typescript: ['ts', 'tsx'],
-  java: ['java'],
-  css: ['css'],
-  csharp: ['cs'],
-  php: ['php'],
-  json: ['json'],
-  xml: ['xml', 'project'],
-  go: ['go'],
-}
+export default [
+  { exts: ['js', 'jsx', 'mjs'], language: 'javascript' },
+  { exts: ['ts', 'tsx'], language: 'typescript' },
+  { exts: ['java'], language: 'java' },
+]

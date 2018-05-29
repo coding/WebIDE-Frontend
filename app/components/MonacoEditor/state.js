@@ -9,6 +9,7 @@ import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { findModeByExtension } from 'components/Editor/components/CodeEditor/addons/mode/findMode'
 import config from 'config'
+import { toDefinition } from 'components/MonacoEditor/actions'
 
 import initialOptions from './monacoDefaultOptions'
 
@@ -42,46 +43,40 @@ class EditorInfo {
     EditorState.entities.set(this.id, this)
     this.update(props)
     if (!props.filepath || this.isMonaco) {
-      this.createMonacoEditorInstance()
+      this.createMonacoEditorInstance(props)
     }
   }
 
-  createMonacoEditorInstance () {
+  createMonacoEditorInstance (props) {
     this.monacoElement = document.createElement('div')
     this.monacoElement.style.width = '100%'
     this.monacoElement.style.height = '100%'
-    // let model
-    // if (monaco.editor.getModel(`file://${this.IDEWSURI}${this.filePath}`)) {
-    //   model = monaco.editor.getModel(`file://${this.IDEWSURI}${this.filePath}`)
-    // } else {
-    //   model = monaco.editor.createModel(`file://${this.IDEWSURI}${this.filePath}`)
-    // }
+
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       model: monaco.editor.createModel(this.content || '', this.mode),
+    }, {
+      editorService: {
+        openEditor: toDefinition
+      }
     })
-    // console.log(monacoEditor)
-    // const model = monaco.editor.createModel(this.content || '', this.mode, '')
-    // if (this.content) {
-    //   debugger
-    //   const newModel =
-    //   try {
-    // monacoEditor.setModel(model)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // }
+
+    monacoEditor.onDidChangeCursorPosition((event) => {
+      this.selections = monacoEditor.getSelections
+      const { position: { lineNumber, column } } = event
+      this.cursorPosition = {
+        line: lineNumber + 1,
+        col: column + 1,
+      }
+    })
+
+    if (props.selection) {
+      this.selection = props.selection
+      monacoEditor.setSelection(props.selection)
+    }
+
     monacoEditor._editorInfo = this
     this.monacoEditor = monacoEditor
-
-    // this.monacoEditor.onDidChangeCursorPosition((event) => {
-    //   this.selections = this.monacoEditor.getSelections
-    //   const { position: { lineNumber, column } } = event
-    //   this.cursorPosition = {
-    //     line: lineNumber + 1,
-    //     col: column + 1,
-    //   }
-    // })
   }
 
   @observable selections = []

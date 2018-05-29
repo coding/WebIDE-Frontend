@@ -79,6 +79,10 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
           existingTab.editor.gitBlame = editor.gitBlame
         }
         existingTab.activate()
+        if (editor.selection) {
+          existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
+          existingTab.editorInfo.monacoEditor.focus()
+        }
         if (callback) callback()
       } else {
         TabStore.createTab({
