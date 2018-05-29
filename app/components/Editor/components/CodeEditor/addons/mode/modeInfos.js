@@ -54,7 +54,7 @@ const modeInfos = [
   { name: 'HTTP', mime: 'message/http', mode: 'http' },
   { name: 'IDL', mime: 'text/x-idl', mode: 'idl', ext: ['pro'] },
   { name: 'Pug', mime: 'text/x-pug', mode: 'pug', ext: ['jade', 'pug'], alias: ['jade'] },
-  { name: 'Java', mime: 'text/x-java', mode: 'clike', ext: ['java'] },
+  { name: 'Java', mime: 'text/x-java', mode: 'clike', ext: ['java', 'class'] },
   { name: 'Java Server Pages', mime: 'application/x-jsp', mode: 'application/x-jsp', ext: ['jsp'], alias: ['jsp'] },
   { name: 'JavaScript',
     mimes: ['text/javascript', 'text/ecmascript', 'application/javascript', 'application/x-javascript', 'application/ecmascript'],

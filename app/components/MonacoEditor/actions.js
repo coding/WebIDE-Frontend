@@ -10,6 +10,7 @@ import { openFile } from 'commands/commandBindings/file'
 import { FileListState } from 'components/Tab/state'
 import { activateTab } from 'components/Tab/actions'
 import languageState from 'components/Tab/LanguageClientState'
+import FileStore from 'commons/File/store'
 
 const INMEMORY = 'inmemory'
 const JDT = 'jdt'
@@ -23,7 +24,7 @@ export const toDefinition = registerAction('monaco:goto_definition', ({ options,
   const { path, scheme } = resource
   const { selection } = options
   if (scheme === INMEMORY) return false
-
+  console.log(options)
   if (scheme !== JDT) {
     const relativePath = path.substring(config.__WORKSPACE_URI__.length)
     const fileTreeNode = FileTreeState.entities.get(relativePath)
@@ -38,9 +39,26 @@ export const toDefinition = registerAction('monaco:goto_definition', ({ options,
     }
   } else {
     const languageClient = languageState.clients.get(config.mainLanguage)
+    const fileName = resource.path.split('/').pop()
     languageClient.client.sendRequest(java, { uri: resource._formatted })
       .then((data) => {
-        console.log(data)
+        FileStore.loadNodeData({
+          base64: false,
+          content: data,
+          path: fileName,
+          name: fileName,
+        })
+      })
+      .then(() => {
+        createTab({
+          title: fileName,
+          icon: 'fa fa-file-o',
+          editor: {
+            selection,
+            readOnly: true,
+            filePath: fileName,
+          },
+        })
       })
   }
   // console.log(FileTreeState.entities.get(relativePath))

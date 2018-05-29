@@ -12,7 +12,7 @@ export function createLanguageClient (connection, services) {
     name: 'Sample Language Client For Monaco',
     clientOptions: {
       // use a language id as a document selector
-      documentSelector: ['java'],
+      documentSelector: ['java', 'class'],
       // disable the default error handler
       errorHandler: {
         error: () => ErrorAction.Continue,

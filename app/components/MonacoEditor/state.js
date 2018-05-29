@@ -54,6 +54,7 @@ class EditorInfo {
 
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
+      ...props,
       model: monaco.editor.createModel(this.content || '', this.mode),
     }, {
       editorService: {
