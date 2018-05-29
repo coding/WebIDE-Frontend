@@ -12,6 +12,13 @@ import { findModeByFile, findModeByMIME, findModeByName } from './components/Cod
 
 const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
+const typeDetect = (title, types) => {
+  // title is the filename
+  // typeArray is the suffix
+  if (!Array.isArray(types)) return title.toLowerCase().endsWith(`.${types}`)
+  return types.reduce((p, v) => p || title.toLowerCase().endsWith(`.${v}`), false)
+}
+
 const state = observable({
   entities: observable.map({}),
   options: observable.shallow(defaultOptions),
@@ -196,6 +203,12 @@ class Editor {
   @computed
   get editorType () {
     const contentType = getTabType(this.contentType);
+    if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
+      return 'markdownEditor';
+    }
+    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
+      return 'imageEditor';
+    }
     switch (contentType) {
       case 'TEXT':
         return 'textEditor';
