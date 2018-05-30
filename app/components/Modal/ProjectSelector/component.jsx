@@ -1,163 +1,135 @@
-import React, { Component } from 'react'
-import api from '../../../backendAPI'
-import cx from 'classnames'
-import * as Modal from 'components/Modal/actions'
-import i18n from 'utils/createI18n'
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
-import config from 'config'
-import * as maskActions from 'components/Mask/actions'
+import React, { Component } from 'react';
+import api from '../../../backendAPI';
+import * as Modal from 'components/Modal/actions';
+import i18n from 'utils/createI18n';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import * as maskActions from 'components/Mask/actions';
 
 class ProjectSelector extends Component {
   constructor (props) {
-    super(props)
+    super(props);
     this.state = {
-      projectId: null,
-      projectList: [],
-      projectName: null,
-      projectItem: null,
-      sync: false,
+      allRepos: [],
+      displayRepos: [],
+      activeRepo: {},
       isLoading: true,
+    };
+  }
+
+  componentDidMount () {
+    this.handleFetch();
+  }
+
+  handleFetch = () => {
+    this.setState({ isLoading: true });
+    api.syncProject().then(syncRes => {
+      api.fetchProjects().then(res => {
+        if (res.length > 0) {
+          this.setState({
+            allRepos: res,
+            displayRepos: res,
+            activeRepo: res[0],
+          });
+        }
+        this.setState({ isLoading: false });
+      }).catch(res => {
+        this.setState({ isLoading: false });
+        notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+      });
+    }).catch(res => {
+      this.setState({ isLoading: false });
+      notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+    });
+  }
+
+  handleSearch = (e) => {
+    const s = e.target.value;
+    if (!s) {
+      this.setState({ displayRepos: this.state.allRepos });
+      return;
     }
+    const result = this.state.allRepos.filter(repo => repo.name.includes(s));
+    this.setState({ displayRepos: result });
   }
-  componentWillMount () {
-    api.fetchProjects().then((res) => {
-      if (res.length > 0) {
-        this.setState({
-          projectList: res,
-          projectId: res[0].projectId,
-          projectName: res[0].name,
-          projectItem: res[0]
-        })
-      }
-      this.setState({
-        isLoading: false
-      })
-    })
-  }
-  handleCreate () {
-    maskActions.showMask({ message: i18n`global.preparing` })
-    Modal.dismissModal()
-    api.findCodingProject({ projectName: this.state.projectName, ownerName: this.state.projectItem.ownerName }).then((res) => {
+
+  handleCreate = () => {
+    const { activeRepo } = this.state;
+    maskActions.showMask({ message: i18n`global.preparing` });
+    Modal.dismissModal();
+    api.findCodingProject({
+      projectName: activeRepo.name,
+      ownerName: activeRepo.ownerName,
+    }).then(res => {
       if (res.data) {
-        maskActions.hideMask()
-        notify({ message: i18n`import.projectExist`, notifyType: NOTIFY_TYPE.INFO })
+        maskActions.hideMask();
+        notify({ message: i18n`import.projectExist`, notifyType: NOTIFY_TYPE.INFO });
       } else {
         api.createWorkspace({
           cpuLimit: 1,
           memory: 128,
           storage: 1,
           source: 'Coding',
-          ownerName: this.state.projectItem.ownerName,
-          projectName: this.state.projectName
-        }).then((res) => {
+          ownerName: activeRepo.ownerName,
+          projectName: activeRepo.name,
+        }).then(res => {
           if (!res.code) {
-            // window.open(`/ws/${res.spaceKey}?open=${options.open}`)
             setTimeout(() => {
-              maskActions.hideMask()
-              window.location = `/ws/${res.spaceKey}`
-            }, 3000)
+              maskActions.hideMask();
+              window.location = `/ws/${res.spaceKey}`;
+            }, 3000);
           } else {
-            maskActions.hideMask()
-            notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR })
+            maskActions.hideMask();
+            notify({ message: res.msg || `code: ${res.code}`, notifyType: NOTIFY_TYPE.ERROR });
           }
-        }).catch((e) => {
-          maskActions.hideMask()
-          const msg = e.response ? e.response.data.msg : e.message
-          notify({ message: msg || `code: ${e.code}`, notifyType: NOTIFY_TYPE.ERROR })
-        })
+        }).catch(e => {
+          maskActions.hideMask();
+          const msg = e.response ? e.response.data.msg : e.message;
+          notify({ message: msg || `code: ${e.code}`, notifyType: NOTIFY_TYPE.ERROR });
+        });
       }
-    })
+    });
   }
-  handleSync = () => {
-    if (!this.state.sync) {
-      this.setState({
-        sync: true
-      })
-      api.syncProject().then((syncRes) => {
-        api.fetchProjects().then((res) => {
-          if (res.length > 0) {
-            this.setState({
-              projectList: res,
-              projectId: res[0].projectId,
-              projectName: res[0].name,
-              projectItem: res[0],
-              sync: false
-            })
-          } else {
-            this.setState({
-              sync: false
-            })
-          }
-        })
-      })
-    }
-  }
-  renderOptions () {
-    const state = this.state
-    return state.projectList.map((item, i) => {
-      return <div className={cx(
-        'template-item', { selected: item.projectId === state.projectId })}
-        onClick={e => {
-          this.setState({
-            projectId: item.projectId,
-            projectName: item.name,
-            projectItem: item
-          })
-        }}
-        key={item.projectId}
-      >
-        <i className='fa fa-archive' />
-        {item.name}</div>
-    })
-  }
-  render () {
-    let content = null
-    if (this.state.isLoading) {
-      content = (
-        <div className='loading'>
-          <i className='fa fa-spinner fa-pulse fa-spin' />
-          Loading...
-        </div>
-      )
-    } else {
-      content = this.renderOptions()
-    }
-    return (
-      <div className='modal-content'>
-        <div className="import-plugin-container">
-          <div>
-            <h1 className="import-header">
-              { i18n`import.importCoding` }
-              <a href='javascript:void(0)' onClick={this.handleSync} >
-                <i className={cx('fa fa-refresh', { 'fa-pulse': this.state.sync })} />
-                {i18n`import.sync`}
-              </a>
-            </h1>
-            {/* <hr /> */}
-            {/* <p>新建一个插件项目</p> */}
 
-            <div className="form-horizontal">
-              <div className="form-group">
-                <div className='col-sm-12'>
-                  <div className='template-list'>
-                    {content}
-                  </div>
-                </div>
+  handleCancel = () => Modal.dismissModal();
+
+  setActiveRepo = (repo) => this.setState({ activeRepo: repo });
+
+  render () {
+    const { isLoading, displayRepos, activeRepo } = this.state;
+    return (
+      <div className="import-from-coding">
+        <div className="title">{i18n`import.importCoding`}</div>
+        <input className="form-control" type="text" onChange={this.handleSearch} />
+        <div className="main">
+          <div className="repos">
+            {
+              isLoading
+              ?
+              <div className="loading">
+                <i className="fa fa-spinner fa-pulse fa-spin"></i>
+                  <span>Loading...</span>
               </div>
-            </div>
-            {/* <hr /> */}
-            <div className='modal-ops'>
-              <button className='btn btn-default' onClick={e => Modal.dismissModal()}>{i18n`modal.cancelButton`}</button>
-              {/* <button className='btn btn-default' disabled={step === 1} onClick={e => this.back()}>上一步</button> */}
-              {/* <button className='btn btn-default' disabled={step === maxStep} onClick={e => this.next()}>下一步</button> */}
-              <button className='btn btn-primary' disabled={!this.state.projectId} onClick={e => this.handleCreate()}>{i18n`modal.okButton`}</button>
-            </div>
+              :
+              displayRepos.map(repo => <Repo key={repo.projectId} repo={repo} activeRepo={activeRepo} setActiveRepo={this.setActiveRepo} />)
+            }
           </div>
         </div>
-
+        <div className="control">
+          <button className="btn btn-default" onClick={this.handleCancel}>{i18n`modal.cancelButton`}</button>
+          <button className="btn btn-primary" disabled={!activeRepo.projectId} onClick={this.handleCreate}>{i18n`modal.okButton`}</button>
+        </div>
       </div>
     )
   }
 }
 
-export default ProjectSelector
+function Repo({ repo, activeRepo, setActiveRepo }) {
+  return (
+    <div className={repo.projectId === activeRepo.projectId ? 'repo active' : 'repo'} onClick={() => setActiveRepo(repo)}>
+      <i className='octicon octicon-repo'></i>
+      <span>{repo.name}</span>
+    </div>
+  )
+}
+
+export default ProjectSelector;
