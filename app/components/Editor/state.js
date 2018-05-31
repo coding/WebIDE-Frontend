@@ -203,6 +203,9 @@ class Editor {
   @computed
   get editorType () {
     const contentType = getTabType(this.contentType);
+    if (!this.file) {
+      return 'textEditor';
+    }
     if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
       return 'markdownEditor';
     }
