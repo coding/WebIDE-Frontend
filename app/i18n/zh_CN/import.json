@@ -3,7 +3,7 @@
    "importGit": "从git地址导入",
    "fetchKeyFailed": "获取公钥失败，请关闭弹窗重新加载",
    "beforeKey": "目前只支持 SSH 协议，请确保将",
-   "afterKey": "添加到了目标账户的公钥列表",
+   "afterKey": "添加到代码仓库所属账户的账户公钥列表",
    "copyKeySuccess": "复制 SSH key 成功",
    "copyKeyFailed": "复制 SSH key 失败",
    "projectExist": "项目已经被导入",
