@@ -139,6 +139,7 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
       editor: {
         ...editor,
         filePath: node.path,
+        size: node.size
       },
     })
   }

@@ -35,7 +35,6 @@ class UnknownEditor extends Component {
   }
 
   render () {
-    console.log('this.props.size', this.props.size)
     return (
       <div style={{ textAlign: 'center', height: '100%' }} className='unknown-viewer-container' >
         <div className='unknown-viewer-content' onClick={this.handleDownload} >
@@ -51,7 +50,7 @@ class UnknownEditor extends Component {
           {/* </a> */}
         </div>
         <div className='unknown-file-info'>
-          {`${this.props.path} - ${filesize(this.props.size)}`}
+          {`${this.props.path} - ${filesize(this.props.tab.editor.size)}`}
         </div>
       </div>
     )
