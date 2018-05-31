@@ -64,7 +64,6 @@ export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
     if (!node.isDir) return
-    console.log(node.isFolded)
     const isFolded = _.isBoolean(shouldBeFolded) ? shouldBeFolded : !node.isFolded
     node.toggleFold(isFolded)
     if (deep) {
