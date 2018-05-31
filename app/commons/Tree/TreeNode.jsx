@@ -8,12 +8,6 @@ import icons from 'file-icons-js'
 
 @observer
 class TreeNode extends Component {
-  constructor (props) {
-    super(props);
-    this.timer = null;
-    this.debounce = true;
-  }
-
   handleOpenNode(node) {
     if (!node.isDir) {
       this.props.openNode(node);
