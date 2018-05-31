@@ -3,7 +3,7 @@
    "importGit": "Import from Git",
    "fetchKeyFailed": "Failed to get the public key, close the modal and reload",
    "beforeKey": "Only support SSH protocol currently, please ensure the",
-   "afterKey": "added to trust list of the target repository",
+   "afterKey": "added to SSH key list of the target account.",
    "copyKeySuccess": "Copy SSH key success",
    "copyKeyFailed": "Copy SSH key failed",
    "projectExist": "Project already exists.",

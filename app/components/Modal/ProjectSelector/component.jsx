@@ -92,7 +92,7 @@ class ProjectSelector extends Component {
 
   handleCancel = () => Modal.dismissModal();
 
-  setActiveRepo = (repo) => this.setState({ activeRepo: repo });
+  setActiveRepo = repo => this.setState({ activeRepo: repo });
 
   render () {
     const { isLoading, displayRepos, activeRepo } = this.state;

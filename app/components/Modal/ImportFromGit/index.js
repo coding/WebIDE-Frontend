@@ -13,10 +13,6 @@ class ImportFromGit extends Component {
       key: '',
       showKey: false,
     };
-    this.handleUrl = this.handleUrl.bind(this);
-    this.handleEnter = this.handleEnter.bind(this);
-    this.handleKey = this.handleKey.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   render() {
@@ -74,7 +70,7 @@ class ImportFromGit extends Component {
     });
   }
 
-  handleUrl(e) {
+  handleUrl = (e) => {
     const value = e.target.value;
     if (!value) {
       return;
@@ -87,21 +83,21 @@ class ImportFromGit extends Component {
     this.setState({ url: value });
   }
 
-  handleKey() {
+  handleKey = () => {
     this.setState({ showKey: !this.state.showKey });
   }
 
-  handleCancel() {
+  handleCancel = () => {
     dispatchCommand('modal:dismiss');
   }
 
-  handleEnter(e) {
+  handleEnter = (e) => {
     if (e.keyCode === 13) {
       this.handleSubmit();
     }
   }
 
-  handleSubmit() {
+  handleSubmit = () => {
     if (this.state.showWarn) {
       return;
     }
@@ -109,7 +105,7 @@ class ImportFromGit extends Component {
     this.handleImport();
   }
 
-  handleImport() {
+  handleImport = () => {
     api.gitClone({
       url: this.state.url,
       cpuLimit: 1,
