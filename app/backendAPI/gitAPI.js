@@ -26,10 +26,7 @@ export function gitPull () {
 }
 
 export function gitPushAll () {
-  return request.post(`/git/${config.spaceKey}/push?all=true`).then((res) => {
-    if (res.ok || res.nothingToPush) return true
-    if (!res.ok) return false
-  })
+  return request.post(`/git/${config.spaceKey}/push?all=true`)
 }
 export function gitFetch () {
   return request.post(`/git/${config.spaceKey}/fetch`)
@@ -145,4 +142,8 @@ export function gitLogs (params = {}) {
 
 export function gitRefs () {
   return request.get(`/git/${config.spaceKey}/refs`)
+}
+
+export function gitClone (data) {
+  return request.post('ws/clone', data, { headers: { Accept: 'application/vnd.coding.v1+json' } });
 }

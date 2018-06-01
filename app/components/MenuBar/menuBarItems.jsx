@@ -3,6 +3,7 @@ import api from 'backendAPI'
 import { showModal } from 'components/Modal/actions'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
+import config from 'config'
 
 const divider = { isDivider: true }
 const menuBarItems = observable([
@@ -51,7 +52,7 @@ const menuBarItems = observable([
             position: 'center',
           })
         },
-        getIsDisabled: () => !localStorage.getItem('enableNewEditor')
+        getIsDisabled: () => !config.enableNewEditor
       }
     ]
   }, {

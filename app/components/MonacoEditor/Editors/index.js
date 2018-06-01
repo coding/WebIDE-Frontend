@@ -11,7 +11,7 @@ const EditorWrapper = observer(({ tab, active }) => {
   // if (!active) return null
 
   const { editor, editorInfo } = tab
-  const editorType = editor.editorType || 'default'
+  const editorType = editorInfo.editorType || 'default'
   const file = editor.file || {}
   // key is crutial here, it decides whether
   // the component should re-construct or
@@ -20,12 +20,14 @@ const EditorWrapper = observer(({ tab, active }) => {
   switch (editorType) {
     case 'htmlEditor':
       return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active, language: '' })
-    case 'default':
+    case 'textEditor':
       return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active, language: config.mainLanguage })
-    case 'editorWithPreview':
+    case 'markdownEditor':
       return React.createElement(MarkDownEditor, { editor, editorInfo, key, tab, active, language: config.mainLanguage })
     case 'imageEditor':
       return React.createElement(ImageEditor, { path: file.path, key, tab, active })
+    case 'unknownEditor':
+      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab, active })
     default:
       return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab, active })
   }

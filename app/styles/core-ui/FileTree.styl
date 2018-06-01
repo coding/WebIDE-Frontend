@@ -1,9 +1,57 @@
 $filetree-indent = 1em;
 
+.file-tree-tool-container {
+  .sync {
+    margin-right: 12px;
+    color: #ccc;
+  }
+  .sync.active {
+    transform: rotate(180deg);
+    transition: transform .3s;
+  }
+  .collapse {
+    display: inline-block;
+    width: 14px;
+    height: 13px;
+    cursor: pointer;
+    position: relative;
+    .up {
+      width: 10px;
+      height: 8px;
+      border: 2px solid #ccc;
+      border-radius: 2px;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .down {
+      width: 10px;
+      height: 8px;
+      border: 2px solid #ccc;
+      border-radius: 2px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  .collapse.active {
+    .up {
+      top: 2px;
+      right: 2px;
+      transition: top .1s, right .1s;
+    }
+    .down {
+      bottom: 2px;
+      left: 2px;
+      transition: bottom .1s, left .1s;
+    }
+  }
+}
+
 .filetree-container {
   scrollBar();
   noSelect();
-  height: 100%;
+  height: calc(100% - 22px);
   overflow: auto;
 
   // ✝ this is where magic happens to let the max[widthOf(children)]

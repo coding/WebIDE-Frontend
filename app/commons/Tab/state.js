@@ -32,54 +32,55 @@ function TabScope () {
 
   class Tab {
 
-  @observable _title = i18n.get('tab.makeDropdownMenuItems.untitledTab')
-  @computed
-    get title () { return this._title }
-    set title (v) { return this._title = v }
+    @observable _title = i18n.get('tab.makeDropdownMenuItems.untitledTab')
+    @computed
+      get title () { return this._title }
+      set title (v) { return this._title = v }
 
-  @observable index = 0
-  @observable tabGroupId = ''
-  @observable flags = {}
+    @observable index = 0
+    @observable tabGroupId = ''
+    @observable flags = {}
+    @observable type = ''
 
-  @computed get tabGroup () {
-    return state.tabGroups.get(this.tabGroupId)
-  }
-
-  @computed get isActive () {
-    return this.tabGroup && this.tabGroup.activeTab === this
-  }
-
-  @computed get siblings () {
-    return this.tabGroup.tabs
-  }
-
-  @computed get next () {
-    return this.siblings[this.index + 1]
-  }
-
-  @computed get prev () {
-    return this.siblings[this.index - 1]
-  }
-
-    getAdjacent (checkNextFirst) {
-      const adjacent = checkNextFirst ?
-      (this.next || this.prev) : (this.prev || this.next)
-      return adjacent
+    @computed get tabGroup () {
+      return state.tabGroups.get(this.tabGroupId)
     }
 
-  @action activate () {
-    this.tabGroup.activeTabId = this.id
-    this.tabGroup.activate()
-  }
-
-  @action destroy () {
-    if (state.tabs.size === 1 && state.keepOne) {
-      return
+    @computed get isActive () {
+      return this.tabGroup && this.tabGroup.activeTab === this
     }
-    this.tabGroup.removeTab(this)
-    state.tabs.delete(this.id)
+
+    @computed get siblings () {
+      return this.tabGroup.tabs
+    }
+
+    @computed get next () {
+      return this.siblings[this.index + 1]
+    }
+
+    @computed get prev () {
+      return this.siblings[this.index - 1]
+    }
+
+      getAdjacent (checkNextFirst) {
+        const adjacent = checkNextFirst ?
+        (this.next || this.prev) : (this.prev || this.next)
+        return adjacent
+      }
+
+    @action activate () {
+      this.tabGroup.activeTabId = this.id
+      this.tabGroup.activate()
+    }
+
+    @action destroy () {
+      if (state.tabs.size === 1 && state.keepOne) {
+        return
+      }
+      this.tabGroup.removeTab(this)
+      state.tabs.delete(this.id)
+    }
   }
-}
 
   autorun(() => {
     state.tabGroups.forEach((tabGroup) => {
@@ -149,7 +150,7 @@ function TabScope () {
       })
       tab.index = insertIndex > 0 ? insertIndex : 0
     }
-    
+
     tab.tabGroupId = this.id
     tab.activate()
     return tab

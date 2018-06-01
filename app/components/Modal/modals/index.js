@@ -25,3 +25,5 @@ export GitCheckoutStashView from '../../Git/modals/checkoutStash'
 export FileSelectorView from '../FileSelector'
 export LanguageServerConfig from '../LanguageServerConfig'
 export { ProjectSelector, ProjectCreator } from '../ProjectSelector'
+export BindQcloudView from '../BindQcloud';
+export ImportFromGit from '../ImportFromGit';

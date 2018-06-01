@@ -8,8 +8,21 @@ import icons from 'file-icons-js'
 
 @observer
 class TreeNode extends Component {
-  constructor (props) {
-    super(props)
+  handleOpenNode(node) {
+    if (!node.isDir) {
+      this.props.openNode(node);
+    }
+  }
+
+  handleToggleFolder(node, e) {
+    e.stopPropagation();
+    this.props.openNode(node, null, e.altKey);
+  }
+
+  componentDidUpdate() {
+    if (this.props.node.isFocused && this.nodeDOM) {
+      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
+    }
   }
 
   render () {
@@ -48,13 +61,13 @@ class TreeNode extends Component {
       >
         <div className={cx('filetree-node', { focus: node.isFocused })}
           ref={r => this.nodeDOM = r}
-          onDoubleClick={e => openNode(node)}
+          onDoubleClick={e => this.handleOpenNode(node)}
           onClick={e => selectNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
           {!node.isLoading && <span className="filetree-node-arrow"
-            onClick={e => openNode(node, null, e.altKey)}>
+            onClick={e => this.handleToggleFolder(node, e)}>
             {node.isDir && <i className={cx({
               'fa fa-angle-right': node.isFolded,
               'fa fa-angle-down': !node.isFolded,
@@ -90,12 +103,6 @@ class TreeNode extends Component {
         </div>}
       </div>
     )
-  }
-
-  componentDidUpdate () {
-    if (this.props.node.isFocused && this.nodeDOM) {
-      this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
-    }
   }
 }
 

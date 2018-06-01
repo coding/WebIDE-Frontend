@@ -85,7 +85,7 @@
       color: #FFF;
     }
     .title {
-      margin-bottom: 20px;  
+      margin-bottom: 20px;
     }
     a {
       // color: #5097E8;
@@ -98,7 +98,7 @@
       a {
         color: #5097E8;
         &:hover {
-          text-decoration: underline;  
+          text-decoration: underline;
         }
       }
     }
@@ -201,9 +201,73 @@
   //     margin-bottom: 10px;
   //     button {
   //       width: 100%;
-  //     }  
+  //     }
   //   }
   // }
+}
+
+.bind-qcloud-modal {
+  width: 400px;
+  padding: 30px;
+  color: #000;
+  background-color: #fff;
+  border-radius: 3px;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 100;
+  .title {
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 18px;
+    color: #222d3e;
+  }
+  .warn {
+    margin-bottom: 15px;
+    text-align: left;
+    font-size: 14px;
+    color: #77808c;
+    font-weight: 400;
+  }
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color .5s ease;
+  }
+  input:focus {
+    border-color: #1455c5;
+  }
+  .submit {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 15px;
+    color: #fff;
+    background-color: #222d3e;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+  }
+  .submit:hover {
+    background-color: #616c7e;
+  }
+  .submit:active {
+    background-color: #222d3e;
+  }
+  .cancel {
+    width: 100%;
+    height: 40px;
+    background-color: #fff;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+  }
 }
 
 .prompt-container {
@@ -225,7 +289,7 @@
   display: inline-flex;
   top: 0px;
   color: #333;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 50px;
   padding: 0px 15px;
   border-radius: 2px;
@@ -246,8 +310,12 @@
     margin: 0px;
   }
 
+  .important {
+    color: red;
+  }
+  
   a {
-    color: #2D59A2;
+    color: #337ab7;
     text-decoration: none;
   }
 
@@ -292,7 +360,7 @@
       right: 0;
       bottom: 0;
       opacity: 0.8;
-      background: #0B0B0B;  
+      background: #0B0B0B;
     }
   }
   .login-pop {
@@ -313,7 +381,7 @@
   .login-pop.active {
     display: block;
   }
-  
+
   .login-panel {
     border-radius: 2px;
     background: #FFF;
@@ -322,7 +390,7 @@
     .login-panel-input input.error {
       border-color: red;
     }
-    
+
     // box-shadow: 0 4px 20px 1px rgba(0, 0, 0, .3);
     .login-panel-input {
       padding: 30px;
@@ -354,7 +422,7 @@
         }
         label {
           font-weight: normal;
-          
+
         }
       }
       .btn {
@@ -394,7 +462,7 @@
     .login-panel-tencent {
       border-top: 1px solid #D8DDE4;
       padding: 20px;
-      
+
 
       .logo-qcloud {
           background: url('~static/tencentcloud-logo.svg') 0 0 no-repeat;
@@ -501,7 +569,7 @@
   20%,
   50%,
   80% {
-    transition-timing-function: cubic-bezier(0.215,.61,.355,1); 
+    transition-timing-function: cubic-bezier(0.215,.61,.355,1);
     transform: translate3d(0,0,0);
   }
   40%,

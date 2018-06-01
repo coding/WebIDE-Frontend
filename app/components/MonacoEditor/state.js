@@ -8,7 +8,6 @@ import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { findModeByExtension } from 'components/Editor/components/CodeEditor/addons/mode/findMode'
-import config from 'config'
 import { toDefinition } from 'components/MonacoEditor/actions'
 
 import initialOptions from './monacoDefaultOptions'
@@ -38,7 +37,7 @@ const typeDetect = (title, types) => {
 class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
-    this.IDEWSURI = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    this.contentType = props.contentType
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
@@ -160,29 +159,35 @@ class EditorInfo {
 
   @computed
   get editorType () {
-    let type = 'default'
-    if (!this.file) return type
-    if (this.file.contentType) {
-      if (getTabType(this.file) === 'IMAGE') {
-        type = 'imageEditor'
-      } else if (getTabType(this.file) === 'UNKNOWN') {
-        type = 'unknownEditor'
-      }
+    const contentType = getTabType(this.contentType)
+    if (!this.file) {
+      return 'textEditor'
     }
-    if (this.file.contentType === 'text/html') {
-      type = 'htmlEditor'
-    } else if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
-      type = 'editorWithPreview'
+    if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
+      return 'markdownEditor'
     }
-    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
-      type = 'imageEditor'
+    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
+      return 'imageEditor'
     }
-    return type
+    switch (contentType) {
+      case 'TEXT':
+        return 'textEditor'
+      case 'HTML':
+        return 'htmlEditor'
+      case 'MARKDOWN':
+        return 'markdownEditor'
+      case 'IMAGE':
+        return 'imageEditor'
+      case 'UNKNOWN':
+        return 'unknownEditor'
+      default:
+        return 'unknownEditor'
+    }
   }
 
   @computed
   get isMonaco () {
-    return this.editorType === 'default' || this.editorType === 'editorWithPreview' || this.editorType === 'htmlEditor'
+    return ['textEditor', 'markdownEditor', 'htmlEditor'].includes(this.editorType)
   }
 
   disports = []

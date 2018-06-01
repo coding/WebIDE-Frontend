@@ -1,6 +1,7 @@
 {
    "loadingWorkspaceCloning": "正在 Clone 项目代码...",
    "loadingWorkspaceCloneFailed": "Clone 代码失败",
+   "checkSSHKey": "请检查是否已经将 SSH Key 添加到目标仓库的信任列表，添加后请重试",
    "offline": "离线",
    "recloneWorkspace": "重新 Clone 代码",
    "requestingCollaboration": "等待所有者授权",
@@ -44,7 +45,9 @@
    "machineOutofDate": "专用主机的试用期已经结束了",
    "renewals": "前往续费",
    "renewalsHint": "续费完成之后可能会有几分钟的延时，请稍后刷新重试",
-   "actHint": "领取腾讯云优惠券",
-   "machineOutofDateSoon": "专用主机的试用期即将结束，您可以 ",
-   "and": " 然后 "
+   "actHint": "(领取腾讯云优惠券)",
+   "outofDateSoon": "即将到期",
+   "machineOutofDateSoon": "您的专用主机",
+   "machineOutofDateSoon2": "，请立即",
+   "and": "。"
 }

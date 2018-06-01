@@ -23,4 +23,3 @@ export const TabContentItem = observer(({ tab, children }) => {
 TabContentItem.propTypes = {
   tab: PropTypes.object.isRequired,
 }
-

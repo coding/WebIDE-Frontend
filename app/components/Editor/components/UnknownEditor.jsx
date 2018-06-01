@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import filesize from 'filesize'
 import config from 'config'
+import api from '../../../backendAPI'
 
 class UnknownEditor extends Component {
   constructor (props) {
@@ -12,6 +13,7 @@ class UnknownEditor extends Component {
     }
     this.getFileUrl = this.getFileUrl.bind(this)
     this.getFileExt = this.getFileExt.bind(this)
+    this.handleDownload = this.handleDownload.bind(this)
   }
 
   getFileUrl () {
@@ -28,11 +30,15 @@ class UnknownEditor extends Component {
     }
   }
 
+  handleDownload () {
+    api.downloadFile(this.props.path, false)
+  }
+
   render () {
     return (
       <div style={{ textAlign: 'center', height: '100%' }} className='unknown-viewer-container' >
-        <div className='unknown-viewer-content' >
-          <a href={this.state.fileUrl} target='_blank' rel='noopener noreferrer' >
+        <div className='unknown-viewer-content' onClick={this.handleDownload} >
+          {/* <a href={this.state.fileUrl} target='_blank' rel='noopener noreferrer' > */}
             <div className='c-download-file folded-corner'>
               <div className='c-cloud'>
                 <i className='fa fa-cloud-download' />
@@ -41,10 +47,10 @@ class UnknownEditor extends Component {
                 {this.state.fileExt}
               </div>
             </div>
-          </a>
+          {/* </a> */}
         </div>
         <div className='unknown-file-info'>
-          {`${this.props.path} - ${filesize(this.props.size)}`}
+          {`${this.props.path} - ${filesize(this.props.tab.editor.size)}`}
         </div>
       </div>
     )

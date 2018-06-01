@@ -189,11 +189,11 @@ const menubar = [
     items: [
       {
         name: 'Document',
-        href: 'https://coding.net/help/doc/cloud_studio',
+        href: 'https://coding.net/help/doc/cloud-studio',
         icon: 'fa fa-book'
       }, {
         name: 'Send Feedback',
-        href: 'https://coding.net/u/coding/p/cloud-studio-feedback/git?public=true',
+        href: 'https://coding.net/u/coding/p/cloud-studio-feedback/topic',
         icon: 'fa fa-envelope-o'
       }
     ]

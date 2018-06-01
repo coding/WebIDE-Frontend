@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import getTabType from 'utils/getTabType'
 import assignProps from 'utils/assignProps'
-import { reaction, observe, observable, computed, action, autorun, extendObservable } from 'mobx'
+import { observe, observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -10,14 +10,14 @@ import overrideDefaultOptions from './codemirrorDefaultOptions'
 import { loadMode } from './components/CodeEditor/addons/mode'
 import { findModeByFile, findModeByMIME, findModeByName } from './components/CodeEditor/addons/mode/findMode'
 
+const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
+
 const typeDetect = (title, types) => {
   // title is the filename
   // typeArray is the suffix
   if (!Array.isArray(types)) return title.toLowerCase().endsWith(`.${types}`)
   return types.reduce((p, v) => p || title.toLowerCase().endsWith(`.${v}`), false)
 }
-
-const defaultOptions = { ...CodeMirror.defaults, ...overrideDefaultOptions }
 
 const state = observable({
   entities: observable.map({}),
@@ -34,6 +34,7 @@ state.entities.observe((change) => {
 class Editor {
   constructor (props = {}) {
     this.id = props.id || uniqueId('editor_')
+    this.contentType = props.contentType
     state.entities.set(this.id, this)
     this.update(props)
     if (!props.filePath || this.isCM) {
@@ -65,34 +66,26 @@ class Editor {
       if (content !== cm.getValue()) cm.setValue(content)
     }))
 
-    this.disposers.push(reaction(() => {
-      if (this.tab && this.tab.isActive) return this.tab
-    }, (activeTab) => {
-      if (!activeTab) return
-      if (activeTab.editor && activeTab.editor.cm) {
-        setTimeout(() => {
-          activeTab.editor.cm.refresh()
-          activeTab.editor.cm.focus()
-        }, 1)
-      }
-    }))
     // 1. set value
     if (this.content) {
       cm.setValue(this.content)
       cm.clearHistory()
-      const scrollLine = this.scrollLine || 0
-      if (scrollLine > 0) {
-        cm.scrollIntoView({ line: scrollLine, ch: 0 })
-        // cm.setCursor({ line: scrollLine - 1, ch: 0 })
-      }
-      cm.focus()
     }
 
+    // autorun(() => {
+    //   const cursorLine = this.cursorLine || 0
+    //   if (cursorLine > 0) {
+    //     cm.scrollIntoView({ line: cursorLine - 1, ch: 0 })
+    //     cm.setCursor({ line: cursorLine - 1, ch: 0 })
+    //   }
+    // })
+
     autorun(() => {
-      const cursorLine = this.cursorLine || 0
-      if (cursorLine > 0) {
-        cm.scrollIntoView({ line: cursorLine - 1, ch: 0 })
-        cm.setCursor({ line: cursorLine - 1, ch: 0 })
+      if (this.tab && this.tab.isActive && this.tab.editor && this.tab.editor.cm) {
+        setTimeout(() => {
+          this.tab.editor.cm.refresh();
+          this.tab.editor.cm.focus();
+        }, 0);
       }
     })
 
@@ -201,29 +194,35 @@ class Editor {
 
   @computed
   get editorType () {
-    let type = 'default'
-    if (!this.file) return type
-    if (this.file.contentType) {
-      if (getTabType(this.file) === 'IMAGE') {
-        type = 'imageEditor'
-      } else if (getTabType(this.file) === 'UNKNOWN') {
-        type = 'unknownEditor'
-      }
+    const contentType = getTabType(this.contentType);
+    if (!this.file) {
+      return 'textEditor';
     }
-    if (this.file.contentType === 'text/html') {
-      type = 'htmlEditor'
-    } else if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
-      type = 'editorWithPreview'
+    if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
+      return 'markdownEditor';
     }
-    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif'])) {
-      type = 'imageEditor'
+    if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
+      return 'imageEditor';
     }
-    return type
+    switch (contentType) {
+      case 'TEXT':
+        return 'textEditor';
+      case 'HTML':
+        return 'htmlEditor';
+      case 'MARKDOWN':
+        return 'markdownEditor';
+      case 'IMAGE':
+        return 'imageEditor';
+      case 'UNKNOWN':
+        return 'unknownEditor';
+      default:
+        return 'unknownEditor';
+    }
   }
 
   @computed
   get isCM () {
-    return this.editorType === 'default' || this.editorType === 'editorWithPreview' || this.editorType === 'htmlEditor'
+    return ['textEditor', 'markdownEditor', 'htmlEditor'].includes(this.editorType);
   }
 
   disposers = []

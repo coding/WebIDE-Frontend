@@ -10,6 +10,8 @@ import Header from '../Header'
 import GlobalPrompt from '../GlobalPrompt'
 import { Line } from 'rc-progress'
 import Tip from './tip';
+import Utilities from '../Utilities';
+import * as Modal from 'components/Modal/actions';
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -33,6 +35,7 @@ class Initialize extends Component {
     this.state = {
       prompts: [],
     }
+    this.handleBindQcloud = this.handleBindQcloud.bind(this);
     //state.errorCode = 403;
     //state.status = 'Initialize';
   }
@@ -57,6 +60,11 @@ class Initialize extends Component {
     api.triggerCloneTask()
     state.status = WORKING_STATE.Created
   }
+
+  handleBindQcloud() {
+    Modal.showModal({ type: 'BindQcloud' });
+  }
+
   render () {
     if (state.status === WORKING_STATE.Login) {
       return <Login />
@@ -75,7 +83,7 @@ class Initialize extends Component {
       if (config.isPlatform) {
         icon = <div className='coding-warning'></div>
       }
-      
+
       errorInfo = (
         <div className='loading-error'>
           <i className='fa fa-exclamation-triangle' />
@@ -108,7 +116,7 @@ class Initialize extends Component {
         </div>
       )
     }
-    
+
     let requestInfo = null
     if (state.errorCode) {
       if (state.errorCode === -1 || state.errorCode === -2) {
@@ -151,6 +159,12 @@ class Initialize extends Component {
         }
       } else if (state.errorCode === 2001) { // 已经过期
         errorInfo = null
+        let tencentLink = 'https://console.cloud.tencent.com/lighthosting'
+        config.serverInfo.hostStrId = 'lh-1vj4b3ry'
+        if (config.serverInfo.hostStrId) {
+          const { hostStrId, hostId } = config.serverInfo
+          tencentLink = `https://console.cloud.tencent.com/lighthosting/detail/${hostStrId}/overview/${hostId}`
+        }
         info = (
           <div className='loading-info'>
             {i18n`global.machineOutofDate`}
@@ -158,7 +172,7 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
-            <a href='https://console.cloud.tencent.com/lighthosting' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
+            <a href={tencentLink} className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
             <div className='link'>
               <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
             </div>
@@ -179,6 +193,7 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
+            {/* <button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.rebind`}</button> */}
             <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.rebind`}</button>
           </div>
         )
@@ -191,7 +206,9 @@ class Initialize extends Component {
         )
         requestInfo = (
           <div className='request-info'>
-            <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button>
+            <button className='btn btn-primary' onClick={this.handleBindQcloud}>{i18n`global.gotoOauth`}</button>
+            {/*<button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>*/}
+            {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
           </div>
         )
       } else if (state.errorCode === 1) {
@@ -249,15 +266,16 @@ class Initialize extends Component {
           )
         } else if (state.status === 'TryWorkstationFailed') {
           errorInfo = null
-          info = (
-            <div className='loading-info warning'>Error</div>
-          )
+          info = null
+          // info = (
+          //   <div className='loading-info warning'>Error</div>
+          // )
           if (state.errorInfo.startsWith('(50005)')) {
             requestInfo = (
               <div className='request-info'>
                 {/* {state.errorInfo} */}
                 <div className='title'>{i18n`global.tencentNoRealName`}</div>
-                
+
                 <a href='https://console.cloud.tencent.com/developer' className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.goRealName`}</a>
                 <p>&nbsp;</p>
                 <p>{i18n`global.tencentNoRealNameHint`}</p>
@@ -271,7 +289,7 @@ class Initialize extends Component {
               </div>
             )
           }
-          
+
           hintInfo = (
             <div className='hint-info'>
               <Tip />
@@ -329,6 +347,8 @@ class Initialize extends Component {
           info = (
             <div className='loading-info error'>
               {i18n`global.loadingWorkspaceCloneFailed`}
+              <br />
+              {i18n.get('global.checkSSHKey')}
             </div>
           )
           requestInfo = (
@@ -367,6 +387,7 @@ class Initialize extends Component {
           e.preventDefault()
           api.signout()
         }} />
+        <Utilities />
       </div>
     )
   }

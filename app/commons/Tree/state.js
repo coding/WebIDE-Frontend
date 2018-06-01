@@ -31,153 +31,153 @@ function TreeNodeScope () {
       state.entities.set(this.id, this)
     }
 
-  @protectedObservable _name = ''
-  @protectedObservable _isDir = false
-  @protectedObservable _parentId = undefined
+    @protectedObservable _name = ''
+    @protectedObservable _isDir = false
+    @protectedObservable _parentId = undefined
 
-  @observable _depth = undefined
-  @observable isFolded = true
-  @observable isLoading = false
-  @observable isFocused = false
-  @observable isHighlighted = false
-  @observable index = 0
+    @observable _depth = undefined
+    @observable isFolded = true
+    @observable isLoading = false
+    @observable isFocused = false
+    @observable isHighlighted = false
+    @observable index = 0
 
-  @computed get isShadowRoot () {
-    return this.id === SHADOW_ROOT_NODE
-  }
+    @computed get isShadowRoot () {
+      return this.id === SHADOW_ROOT_NODE
+    }
 
-  @computed get parent () {
-    let parent
-    if (typeof this.parentId === 'string') parent = state.entities.get(this.parentId)
-    // don't allow recurse to self
-    if (this.id === SHADOW_ROOT_NODE) return null
-    if (parent === this) { throw Error(`Node ${this.id} is parent of itself...`) }
-    return parent || state.shadowRoot
-  }
-    set parent (parent) { this.parentId = parent.id }
+    @computed get parent () {
+      let parent
+      if (typeof this.parentId === 'string') parent = state.entities.get(this.parentId)
+      // don't allow recurse to self
+      if (this.id === SHADOW_ROOT_NODE) return null
+      if (parent === this) { throw Error(`Node ${this.id} is parent of itself...`) }
+      return parent || state.shadowRoot
+    }
+      set parent (parent) { this.parentId = parent.id }
 
-  @computed get depth () {
-    if (this._depth !== undefined) return this._depth
-    if (this.isShadowRoot) return -1
-    return this.parent.depth + 1
-  }
+    @computed get depth () {
+      if (this._depth !== undefined) return this._depth
+      if (this.isShadowRoot) return -1
+      return this.parent.depth + 1
+    }
 
-  @computed get children () {
-    return state.entities.values()
-      .filter(node => node.parent === this)
-      .sort(this.constructor.nodeSorter)
-  }
+    @computed get children () {
+      return state.entities.values()
+        .filter(node => node.parent === this)
+        .sort(this.constructor.nodeSorter)
+    }
 
-  @computed get siblings () {
-    return this.parent.children
-  }
+    @computed get siblings () {
+      return this.parent.children
+    }
 
-  @computed get prev () {
-    return this.siblings[this.index - 1]
-  }
+    @computed get prev () {
+      return this.siblings[this.index - 1]
+    }
 
-  @computed get next () {
-    if (this.isShadowRoot) return this
-    return this.siblings[this.index + 1]
-  }
+    @computed get next () {
+      if (this.isShadowRoot) return this
+      return this.siblings[this.index + 1]
+    }
 
-  @computed get firstChild () {
-    return this.children[0]
-  }
+    @computed get firstChild () {
+      return this.children[0]
+    }
 
-  @computed get lastChild () {
-    return this.children[this.children.length - 1]
-  }
+    @computed get lastChild () {
+      return this.children[this.children.length - 1]
+    }
 
-  @computed get lastVisibleDescendant () {
-    const lastChild = this.lastChild
-    if (!lastChild) return this
-    if (!lastChild.isDir) return lastChild
-    if (lastChild.isFolded) return lastChild
-    return lastChild.lastVisibleDescendant
-  }
+    @computed get lastVisibleDescendant () {
+      const lastChild = this.lastChild
+      if (!lastChild) return this
+      if (!lastChild.isDir) return lastChild
+      if (lastChild.isFolded) return lastChild
+      return lastChild.lastVisibleDescendant
+    }
 
-  @computed get getPrev () {
-    if (this.isShadowRoot) return this
-    const prevNode = this.prev
-    if (prevNode) {
-      if (!prevNode.isDir || prevNode.isFolded) return prevNode
-      if (prevNode.lastChild) {
-        return prevNode.lastVisibleDescendant
+    @computed get getPrev () {
+      if (this.isShadowRoot) return this
+      const prevNode = this.prev
+      if (prevNode) {
+        if (!prevNode.isDir || prevNode.isFolded) return prevNode
+        if (prevNode.lastChild) {
+          return prevNode.lastVisibleDescendant
+        }
+        return prevNode
       }
-      return prevNode
-    }
-    return this.parent
-  }
-
-  @computed get getNext () {
-    if (this.isDir && !this.isFolded) {
-      if (this.firstChild) return this.firstChild
-    } else if (this.isShadowRoot) {
-      return this
+      return this.parent
     }
 
-    const nextNode = this.next
-    if (nextNode) return nextNode
-    return this.parent.next
-  }
+    @computed get getNext () {
+      if (this.isDir && !this.isFolded) {
+        if (this.firstChild) return this.firstChild
+      } else if (this.isShadowRoot) {
+        return this
+      }
 
-  @action forEachDescendant (handler) {
-    if (!this.isDir) return
-    this.children.forEach((childNode, i) => {
-      handler(childNode, i)
-      childNode.forEachDescendant(handler)
-    })
-  }
+      const nextNode = this.next
+      if (nextNode) return nextNode
+      return this.parent.next
+    }
 
-  @action focus () {
-    if (this.isShadowRoot) return
-    this.isFocused = true
-  }
+    @action forEachDescendant (handler) {
+      if (!this.isDir) return
+      this.children.forEach((childNode, i) => {
+        handler(childNode, i)
+        childNode.forEachDescendant(handler)
+      })
+    }
 
-  @action unfocus () {
-    this.isFocused = false
-  }
+    @action focus () {
+      if (this.isShadowRoot) return
+      this.isFocused = true
+    }
 
-  @action fold () {
-    if (!this.isDir || this.isFolded) return
-    this.isFolded = true
-  }
+    @action unfocus () {
+      this.isFocused = false
+    }
 
-  @action unfold () {
-    if (!this.isDir || !this.isFolded) return
-    this.isFolded = false
-  }
+    @action fold () {
+      if (!this.isDir || this.isFolded) return
+      this.isFolded = true
+    }
 
-  @action toggleFold (shouldBeFolded) {
-    if (shouldBeFolded) {
-      this.fold()
-    } else {
-      this.unfold()
+    @action unfold () {
+      if (!this.isDir || !this.isFolded) return
+      this.isFolded = false
+    }
+
+    @action toggleFold (shouldBeFolded) {
+      if (shouldBeFolded) {
+        this.fold()
+      } else {
+        this.unfold()
+      }
+    }
+
+    @action highlight () {
+      if (!this.isDir || this.isHighlighted) return
+      this.isHighlighted = true
+    }
+
+    @action unhighlight () {
+      if (!this.isDir || !this.isHighlighted) return
+      this.isHighlighted = false
+    }
+
+    @action exile () {
+      this.originalParentId = this._parentId
+      this._parentId = NOWHERE_LAND
+    }
+
+    @action welcome () {
+      if (this._parentId !== NOWHERE_LAND) return
+      this._parentId = this.originalParentId
+      delete this.originalParentId
     }
   }
-
-  @action highlight () {
-    if (!this.isDir || this.isHighlighted) return
-    this.isHighlighted = true
-  }
-
-  @action unhighlight () {
-    if (!this.isDir || !this.isHighlighted) return
-    this.isHighlighted = false
-  }
-
-  @action exile () {
-    this.originalParentId = this._parentId
-    this._parentId = NOWHERE_LAND
-  }
-
-  @action welcome () {
-    if (this._parentId !== NOWHERE_LAND) return
-    this._parentId = this.originalParentId
-    delete this.originalParentId
-  }
-}
 
   const shadowRootNode = new TreeNode({
     id: SHADOW_ROOT_NODE,

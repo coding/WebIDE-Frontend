@@ -1,6 +1,7 @@
 {
    "loadingWorkspaceCloning": "Now cloning code...",
    "loadingWorkspaceCloneFailed": "Clone failed",
+   "checkSSHKey": "Please check if you have added SSH Key to the trust list of the target repository, and retry after adding",
    "offline": "Offline",
    "recloneWorkspace": "Try clone again",
    "requestingCollaboration": "Warping",
@@ -44,7 +45,9 @@
    "machineOutofDate": "Trial of machine has expired",
    "renewals": "Renewal Machine",
    "renewalsHint": "There may be a delay of a few minutes after the renewal is completed. Please refresh later",
-   "actHint": "receive Tencent Cloud Coupon",
-   "machineOutofDateSoon": "Trial of machine will expire soon, you can ",
-   "and": " and "
+   "actHint": "(Tencent Cloud Coupon)",
+   "outofDateSoon": "expire soon",
+   "machineOutofDateSoon": "Trial of machine will ",
+   "machineOutofDateSoon2": ", please ",
+   "and": ". "
 }

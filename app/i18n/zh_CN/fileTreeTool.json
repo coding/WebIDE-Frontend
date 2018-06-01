@@ -1,6 +1,4 @@
 {
-  "tools": {
-    "sync": "同步文件",
-    "collapse": "全部收起"
-  }
+  "sync": "同步文件",
+  "collapse": "全部收起"
 }

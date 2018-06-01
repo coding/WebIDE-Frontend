@@ -61,7 +61,7 @@ export function openFile (obj, callback) {
   }
 }
 
-export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup = false, encoding, callback }) {
+export function openFileWithEncoding ({ path, contentType, editor = {}, others = {}, allGroup = false, encoding, callback }) {
   const { encoding: currentEncoding } = FileStore.get(path) || {}
   return api.readFile(path, encoding || currentEncoding)
     .then((data) => {
@@ -87,11 +87,12 @@ export function openFileWithEncoding ({ path, editor = {}, others = {}, allGroup
       } else {
         TabStore.createTab({
           icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
+          contentType,
           editor: {
             ...editor,
             filePath: path,
           },
-          ...others
+          ...others,
         })
         if (callback) {
           callback()
@@ -141,10 +142,11 @@ function createFileWithContent (content) {
           throw new Error(res.msg)
         } else {
           Modal.dismissModal()
+          return res;
         }
       })
-      .then(() => {
-        openFile({ path })
+      .then(res => {
+        openFile({ path, contentType: res.contentType })
       })
       // if error, try again.
       .catch((res) => {
@@ -169,7 +171,6 @@ const fileCommands = {
     }
   },
   'file:highlight_line': (c) => {
-    console.log('file:highlight_line', c)
     const { path, lineNumber } = c.data
     openFile({ path, allGroup: true }, () => {
       emitter.emit(FILE_HIGHLIGHT, c.data)

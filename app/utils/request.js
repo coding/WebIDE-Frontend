@@ -1,4 +1,5 @@
 import axios from 'axios'
+import FileSaver from 'file-saver'
 import './promise.prototype.finalCatch'
 import qs from './qs'
 import config from '../config'
@@ -146,6 +147,18 @@ request.postJSON = function (url, data, options = {}) {
       })
     },
     ...options,
+  })
+}
+
+request.download = function (url, filename, params, options = {}) {
+  return request({
+    method: 'get',
+    responseType: 'blob',
+    url,
+    params,
+    ...options,
+  }).then((response) => {
+    FileSaver.saveAs(response, filename)
   })
 }
 

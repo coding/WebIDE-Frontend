@@ -1,5 +1,6 @@
 import { request, qs } from '../utils'
 import axios from 'axios'
+import * as maskActions from 'components/Mask/actions'
 
 export function fetchPath (path, order, group) {
   return request.get(`/workspaces/${config.spaceKey}/files`, {
@@ -14,13 +15,27 @@ export function fetchPath (path, order, group) {
 }
 
 export function downloadFile (path, shouldPacked) {
+  let filePath = path || config.projectName || 'Home'
+  if (shouldPacked) {
+    filePath += '.tar.gz'
+  }
+  // if (config.isDefault) {
+  //   filePath = 'Home.tar.gz'
+  // }
   const packOrRaw = shouldPacked ? 'pack' : 'raw'
   let url = `${config.baseURL}/workspaces/${config.spaceKey}/${packOrRaw}`
   url += `?${qs.stringify({
     path,
     inline: false
   })}`
-  window.open(url, '_blank')
+  // window.open(url, '_blank')
+  const downloadTimeout = setTimeout(() => {
+    maskActions.showMask({ message: i18n`file.preparingDownload`, countdown: 60 })
+  }, 600)
+  request.download(url, filePath.split('/').pop()).then((res) => {
+    clearTimeout(downloadTimeout)
+    maskActions.hideMask()
+  })
 }
 
 export function uploadFile (path, file, option) {
