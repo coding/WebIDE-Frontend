@@ -139,6 +139,7 @@
     "sockjs-client": "^1.1.1",
     "stompjs": "^2.3.3",
     "styled-components": "^2.1.2",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "vscode": "^1.1.18",
     "vscode-base-languageclient": "^0.0.1-alpha.5",
     "vscode-uri": "^1.0.3",
