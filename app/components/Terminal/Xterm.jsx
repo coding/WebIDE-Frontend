@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { reaction, autorun } from 'mobx'
 import PropTypes from 'prop-types'
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
@@ -32,6 +33,7 @@ const BRIGHT_THEME = {
 class Term extends Component {
   constructor (props) {
     super(props)
+    this.afterInit = this.props.afterInit;
   }
 
   componentDidMount () {
@@ -51,6 +53,18 @@ class Term extends Component {
       cols: 80,
       rows: 24,
       // fontFamily: 'Menlo, Monaco, "DejaVu Sans Mono", Consolas, "Andale Mono", monospace;',
+    })
+
+    autorun(() => {
+      const props = this.props;
+      // 初始加载时不执行，否则跟编辑器光标冲突
+      // afterInit用来判断是否是初始加载
+      if (props.tab && props.tab.isActive && this.afterInit) {
+        setTimeout(() => terminal.focus(), 0)
+      }
+      if (!this.afterInit) {
+        this.afterInit = true;
+      }
     })
 
     terminal.attachCustomKeyEventHandler((e) => {
