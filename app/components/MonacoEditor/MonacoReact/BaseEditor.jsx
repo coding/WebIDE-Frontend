@@ -12,9 +12,12 @@ import {
   DidChangeWatchedFilesNotification,
 } from 'vscode-base-languageclient/lib/protocol'
 
+import TabStore from 'components/Tab/store'
+import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
 import dispatchCommand from 'commands/dispatchCommand'
 import { findLangueByExt } from '../utils/findLanguage'
+import { EditorInfo } from '../state';
 
 function noop () {}
 
@@ -26,8 +29,9 @@ class MonacoEditor extends React.Component {
   constructor (props) {
     super(props)
 
-    const { editorInfo } = props
-    const fileExt = editorInfo.file.path.split('.').pop()
+    let { editorInfo } = props
+    if (!editorInfo) editorInfo = new EditorInfo()
+    const fileExt = editorInfo.filePath ? editorInfo.filePath.split('.').pop() : ''
     this.language = findLangueByExt(fileExt) ? findLangueByExt(fileExt).language : ''
     this.editor = editorInfo
     this.editorElement = editorInfo.monacoElement
@@ -45,13 +49,20 @@ class MonacoEditor extends React.Component {
       mount: true,
     })
     const { monacoEditor } = this.editor
+    const { tab } = this.props
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
 
       this.currentValue = value
-      debounced(() => {
-        dispatchCommand('file:save_monaco', this.currentValue)
-      })
+      if (this.editor.file && tab) {
+        FileStore.updateFile({
+          id: this.editor.file.id,
+          content: value,
+        })
+        debounced(() => {
+          dispatchCommand('file:save')
+        })
+      }
     })
 
     when(() => languageState.clients.get(this.language), () => {
@@ -83,16 +94,10 @@ class MonacoEditor extends React.Component {
 
       if (this.editor.selection) {
         monacoEditor.setSelection(this.editor.selection)
-        monacoEditor.focus()
       }
       const { client, openeduri } = languageClient
       if (client && client.state === 3 && this.props.active) {
-        if (languageClient.openeduri.get(path)) {
-          // 当前文件已发送过 didOpen 消息
-          client.sendRequest(DocumentSymbolRequest.type, {
-            uri: `file://${languageClient._WORKSPACE_}${path}`
-          })
-        } else if (!openeduri.get(path)) {
+        if (!languageClient.openeduri.get(path)) {
           client.sendRequest(DidOpenTextDocumentNotification.type, {
             textDocument: {
               uri: `file://${languageClient._WORKSPACE_}${path}`,

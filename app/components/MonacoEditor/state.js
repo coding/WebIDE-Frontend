@@ -42,7 +42,7 @@ class EditorInfo {
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
-    if (!props.filepath || this.isMonaco) {
+    if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
   }
@@ -88,6 +88,7 @@ class EditorInfo {
   }
 
   @computed get mode () {
+    if (!this.filePath) return ''
     const mode = findModeByExtension(this.filePath.split('.').pop())
     return !!mode ? mode.name.toLocaleLowerCase() : ''
   }

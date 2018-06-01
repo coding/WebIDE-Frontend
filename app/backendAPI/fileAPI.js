@@ -36,7 +36,6 @@ export function uploadFile (path, file, option) {
 
 
 export function writeFile (path, content, base64) {
-  console.log('【自动保存】')
   return request({
     method: 'PUT',
     url: `/workspaces/${config.spaceKey}/files`,

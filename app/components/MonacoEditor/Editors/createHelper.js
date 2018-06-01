@@ -3,18 +3,18 @@ import { CloseAction, ErrorAction } from 'monaco-languageclient'
 import { createConnection } from 'vscode-base-languageclient/lib/connection'
 import { BaseLanguageClient } from 'vscode-base-languageclient/lib/base'
 
+import config from 'config'
+import { documentSelectors } from '../utils/languages'
+import SockJS from 'sockjs-client'
 import io from 'socket.io-client'
-// console.log(vscodeWorkSpace)
+
 export function createLanguageClient (workspace, services, connection, language) {
+  const currentDocumentSelector = documentSelectors.find(v => v.lang === config.mainLanguage)
   return new BaseLanguageClient({
-    name: 'java',
+    name: `[${config.mainLanguage}-langServer]`,
     clientOptions: {
       commands: undefined,
-      documentSelector: [
-        { scheme: 'file', language: 'java' },
-        { scheme: 'jdt', language: 'java' },
-        { scheme: 'untitled', language: 'java' }
-      ],
+      documentSelector: currentDocumentSelector.selectors,
       synchronize: {},
       initializationFailedHandler: (err) => {
         const detail = err instanceof Error ? err.message : ''
@@ -30,11 +30,19 @@ export function createLanguageClient (workspace, services, connection, language)
   })
 }
 
+const path = '/ide-ws/javalsp'
 
-export function createWebSocket (url) {
+const url = 'http://test.coding.ide'
+
+export function createWebSocket () {
   const socketOptions = {
     reconnection: false,
     reconnectionDelay: 10000,
+    path: `${path}/${config.spaceKey}`,
+    transports: ['websocket'],
+    query: {
+      ws: config.spaceKey
+    }
   }
-  return io(url, socketOptions)
+  return io.connect(url, socketOptions)
 }

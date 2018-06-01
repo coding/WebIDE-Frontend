@@ -5,8 +5,11 @@ import cx from 'classnames'
 import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import MonacoEditor from 'components/MonacoEditor'
+import Editor from 'components/Editor'
 import { TablessCodeEditor } from 'components/Editor/components/CodeEditor'
+import MonacoTablessEditor from 'components/MonacoEditor/Editors/MonacoTablessEditor'
 import i18n from 'utils/createI18n'
+import config from 'config'
 import WelcomePage from './WelcomePage'
 const contextMenuItems = [
   {
@@ -75,7 +78,7 @@ class TabContainer extends Component {
             </TabContentItem>
           )
           : <TabContentItem tab={{ isActive: true }}>
-              <TablessCodeEditor tabGroupId={tabGroup.id} />
+              {config.enableNewEditor ? <MonacoTablessEditor tabGroupId={tabGroup.id} /> : <TablessCodeEditor tabGroupId={tabGroup.id} /> }
             </TabContentItem>
           }
         </TabContent>
@@ -87,7 +90,9 @@ class TabContainer extends Component {
     if (tab.type === 'welcome') {
       return <WelcomePage />
     }
-    return <MonacoEditor tab={tab} active={tab.isActive} />
+    return config.enableNewEditor
+      ? <MonacoEditor tab={tab} active={tab.isActive} />
+      : <Editor tab={tab} active={tab.isActive} />
   }
 }
 

@@ -2,11 +2,12 @@ import isObject from 'lodash/isObject'
 import { observable, reaction, extendObservable, computed, action } from 'mobx'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
-import emitter, { THEME_CHANGED } from 'utils/emitter'
+import emitter, { THEME_CHANGED, STORAGE_CHANGE } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
 window.themeVariables = observable.map({})
 
+const localStorage = window.localStorage
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
 
@@ -285,9 +286,13 @@ const settings = observable({
     },
     enable_new_editor: {
       name: 'settings.editor.enableNewEditor',
-      value: true,
+      value: JSON.parse(localStorage.getItem('enableNewEditor')),
       reaction (value) {
-        if (EditorState) EditorState.options.enableNewEditor = value
+        if (value !== config.enableNewEditor) {
+          config.enableNewEditor = value
+          if (EditorState) EditorState.options.enableNewEditor = value
+          localStorage.setItem('enableNewEditor', value)
+        }
       }
     },
     auto_save: {

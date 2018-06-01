@@ -1,10 +1,13 @@
 import { observable, autorun } from 'mobx'
 import getCookie from './utils/getCookie'
 
+const localStorage = window.localStorage
+
 const config = observable({
   projectName: '',
   spaceKey: '',
   mainLanguage: '',
+  enableNewEditor: true,
   requiredExtensions: [],
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
@@ -18,9 +21,9 @@ const config = observable({
   ttySocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide', '/.classpath', '/.project', '/.settings'],
   supportLangServer: [
-    { lang: 'java', file: 'pom.xml' },
-    { lang: 'javascript', file: 'package.json' },
-    { lang: 'typescript', file: 'package.json' },
+    { lang: 'java', files: ['pom.xml', 'settings.gradle'], file: 'pom.xml' },
+    { lang: 'javascript', files: ['package.json'], file: 'package.json' },
+    { lang: 'typescript', files: ['package.json'], file: 'package.json' },
   ],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,

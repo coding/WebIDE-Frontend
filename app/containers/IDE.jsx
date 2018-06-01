@@ -4,6 +4,7 @@ import { initializeFileTree } from '../components/FileTree/actions'
 import PanelsContainer from '../components/Panel'
 import Utilities from './Utilities'
 import hasVimium from 'utils/hasVimium'
+import emitter, { STORAGE_CHANGE } from 'utils/emitter'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import GlobalPrompt from './GlobalPrompt'
@@ -17,6 +18,12 @@ class IDE extends Component {
   componentWillMount () {  // initLifecycle_3: IDE specific init
     initializeFileTree() // @fixme: this is related to the quirk in filetree state
     this.setState({ isReady: true })
+    if (!localStorage.getItem('enableNewEditor')) {
+      localStorage.setItem('enableNewEditor', false)
+    }
+    emitter.on(STORAGE_CHANGE, () => {
+      window.location.reload()
+    })
   }
 
   componentDidMount () {

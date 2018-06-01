@@ -7,6 +7,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 import LanguageState, { LanguageClient } from './LanguageClientState'
 import config from 'config'
 import { findLangueByExt } from 'components/MonacoEditor/utils/findLanguage'
+import { createLanguageClient } from 'components/MonacoEditor/actions'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
@@ -41,15 +42,24 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
 export const createTab = registerAction(TAB_CREATE,
   (tabProps) => {
     const tab = new Tab(tabProps)
-    const { editor: { filePath } } = tabProps
-    const ext = filePath.split('.').pop()
-    const language = findLangueByExt(ext) ? findLangueByExt(ext).language : ''
-    when(() => config.mainLanguage !== '', () => {
-      if (!LanguageState.clients.get(language) && language !== '' && language === config.mainLanguage) {
-        const languageClient = new LanguageClient(language)
-        LanguageState.clients.set(language, languageClient)
+    if (config.enableNewEditor) {
+      const { editor } = tabProps
+      if (editor.filePath) {
+        const { filePath } = editor
+        const ext = filePath.split('.').pop()
+        const language = findLangueByExt(ext) ? findLangueByExt(ext).language : ''
+        when(() => config.mainLanguage !== '', () => {
+          /**
+           * 创建新的tab（打开新文件）时
+           * 判断文件是否与项目默认语言相同且还没有开启语言服务
+           * 项目默认语言只能通过语言服务菜单设定 或当前项目根目录下有项目相关构建工具的文件 （pom.xml/package.json）
+           */
+          if (!LanguageState.clients.get(language) && language !== '' && language === config.mainLanguage) {
+            createLanguageClient(language)
+          }
+        })
       }
-    })
+    }
   },
 )
 

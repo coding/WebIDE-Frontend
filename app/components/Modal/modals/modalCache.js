@@ -31,6 +31,7 @@ import {
   About,
   ProjectSelector,
   ProjectCreator,
+  LanguageServerConfig,
 } from './index'
 
 
@@ -62,6 +63,7 @@ const modalCache = observable.map({
   GitDiffFile: GitDiffFileView,
   ProjectSelector,
   ProjectCreator,
+  LanguageServerConfig,
 })
 
 window.modalCache = modalCache
