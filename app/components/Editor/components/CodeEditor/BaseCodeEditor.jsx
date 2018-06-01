@@ -16,7 +16,7 @@ class BaseCodeEditor extends Component {
     this.highlight = this.highlight.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const cm = this.cm
     this.dom.appendChild(this.cmDOM)
 
@@ -29,7 +29,7 @@ class BaseCodeEditor extends Component {
     //   cm.setCursor({ line: scrollLine, ch: 0 })
     //   cm.focus()
     // }, 100)
-    
+
     emitter.on(E.FILE_HIGHLIGHT, this.highlight)
   }
 

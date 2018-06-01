@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
 import getTabType from 'utils/getTabType'
 import assignProps from 'utils/assignProps'
-import { reaction, observe, observable, computed, action, autorun, extendObservable } from 'mobx'
+import { observe, observable, computed, action, autorun, extendObservable } from 'mobx'
 import CodeMirror from 'codemirror'
 import FileStore from 'commons/File/store'
 import TabStore from 'components/Tab/store'
@@ -66,34 +66,26 @@ class Editor {
       if (content !== cm.getValue()) cm.setValue(content)
     }))
 
-    this.disposers.push(reaction(() => {
-      if (this.tab && this.tab.isActive) return this.tab
-    }, (activeTab) => {
-      if (!activeTab) return
-      if (activeTab.editor && activeTab.editor.cm) {
-        setTimeout(() => {
-          activeTab.editor.cm.refresh()
-          activeTab.editor.cm.focus()
-        }, 1)
-      }
-    }))
     // 1. set value
     if (this.content) {
       cm.setValue(this.content)
       cm.clearHistory()
-      const scrollLine = this.scrollLine || 0
-      if (scrollLine > 0) {
-        cm.scrollIntoView({ line: scrollLine, ch: 0 })
-        // cm.setCursor({ line: scrollLine - 1, ch: 0 })
-      }
-      cm.focus()
     }
 
+    // autorun(() => {
+    //   const cursorLine = this.cursorLine || 0
+    //   if (cursorLine > 0) {
+    //     cm.scrollIntoView({ line: cursorLine - 1, ch: 0 })
+    //     cm.setCursor({ line: cursorLine - 1, ch: 0 })
+    //   }
+    // })
+
     autorun(() => {
-      const cursorLine = this.cursorLine || 0
-      if (cursorLine > 0) {
-        cm.scrollIntoView({ line: cursorLine - 1, ch: 0 })
-        cm.setCursor({ line: cursorLine - 1, ch: 0 })
+      if (this.tab && this.tab.isActive && this.tab.editor && this.tab.editor.cm) {
+        setTimeout(() => {
+          this.tab.editor.cm.refresh();
+          this.tab.editor.cm.focus();
+        }, 0);
       }
     })
 

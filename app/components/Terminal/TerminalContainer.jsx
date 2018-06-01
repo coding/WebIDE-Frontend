@@ -34,6 +34,7 @@ const contextMenuItems = [
 class TerminalContainer extends Component {
   constructor (props) {
     super(props)
+    this.afterInit = false;
     this.state = observable({
       showEnv: false,
       fullScreenActiveContent: false,
@@ -47,6 +48,9 @@ class TerminalContainer extends Component {
   }
 
   componentDidMount () {
+    // 帮助xterm判断是不是初始加载
+    // xterm初始加载时不能聚焦
+    this.afterInit = true;
     emitter.on(E.TERMINAL_SHOW, this.onShow)
     emitter.on(E.PANEL_HIDE, this.onHide)
     emitter.on(E.TERM_ENV_HIDE, this.onEnvHide)
@@ -80,7 +84,7 @@ class TerminalContainer extends Component {
         <TabContent tabGroup={this.tabGroup} >
           {this.tabGroup.tabs.map(tab =>
             <TabContentItem key={tab.id} tab={tab} >
-              <Terminal tab={tab} />
+              <Terminal tab={tab} afterInit={this.afterInit} />
             </TabContentItem>
           )}
         </TabContent>
