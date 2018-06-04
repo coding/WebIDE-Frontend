@@ -99,7 +99,7 @@ class ProjectSelector extends Component {
     return (
       <div className="import-from-coding">
         <div className="title">{i18n`import.importCoding`}</div>
-        <input className="form-control" type="text" onChange={this.handleSearch} />
+        <input className="form-control" type="text" placeholder={i18n.get('import.placeholder')} onChange={this.handleSearch} />
         <div className="main">
           <div className="repos">
             {
@@ -107,7 +107,7 @@ class ProjectSelector extends Component {
               ?
               <div className="loading">
                 <i className="fa fa-spinner fa-pulse fa-spin"></i>
-                  <span>Loading...</span>
+                  <span>{i18n`global.loading`}</span>
               </div>
               :
               displayRepos.map(repo => <Repo key={repo.projectId} repo={repo} activeRepo={activeRepo} setActiveRepo={this.setActiveRepo} />)

@@ -1,10 +1,12 @@
 import _ from 'lodash'
 import React, { Component } from 'react'
+import icons from 'file-icons-js';
 import api from '../../../backendAPI'
 import store, { dispatch as $d } from '../../../store'
 import * as TabActions from 'components/Tab/actions'
 import cx from 'classnames'
 import dispatchCommand from 'commands/dispatchCommand'
+import i18n from 'utils/createI18n';
 
 const debounced = _.debounce(function (func) { func() }, 1000)
 
@@ -71,6 +73,11 @@ class FilePalette extends Component {
     dispatchCommand('modal:dismiss')
   }
 
+  renderIcon(item) {
+    const arr = item.path.split('/');
+    return icons.getClassWithColor(arr[arr.length - 1]) || 'fa fa-file-text-o';
+  }
+
   renderItem (item, itemIdx) {
     if (this.state.inputValue === '') return <i>{item.path}</i>
     const that = this
@@ -83,11 +90,12 @@ class FilePalette extends Component {
   }
 
   render () {
+    const { items, selectedItemIndex, includeNonProjectItems } = this.state;
     return (
       <div className="modal-content">
         <input
           type="text"
-          className="command-palette-input"
+          className="form-control command-palette-input"
           onChange={this.handleInputChange}
           autoFocus
           onKeyDown={this._onKeyDown}
@@ -95,20 +103,26 @@ class FilePalette extends Component {
         <input
           type="checkbox"
           id="includeNonProjectItems"
-          checked={this.state.includeNonProjectItems}
+          checked={includeNonProjectItems}
           onChange={this.handleExcludeChange}
         />
         <label htmlFor="includeNonProjectItems">
           Include non-project items
         </label>
-
-        <ul className='command-palette-items'>
-          {this.state.items.map( (item, itemIdx) =>
-            <li className={cx({selected: itemIdx == this.state.selectedItemIndex})}
-              onClick={e=>this.openFile(itemIdx)}
-              key={itemIdx} >{ this.renderItem(item, itemIdx) }</li>
-          )}
-        </ul>
+        <div className="command-palette-board">
+          <ul className='command-palette-items'>
+            {
+              items.map((item, itemIdx) =>
+                <li className={cx({ selected: itemIdx == selectedItemIndex })}
+                  onClick={e => this.openFile(itemIdx)}
+                  key={itemIdx} >
+                  <i className={`icon ${this.renderIcon(item)}`}></i>
+                  {this.renderItem(item, itemIdx)}
+                </li>
+              )
+            }
+          </ul>
+        </div>
       </div>
     )
   }

@@ -1,19 +1,40 @@
 .command-palette-input {
   margin-tb: 10px;
+  border-radius: 2px;
 }
-
+.command-palette-board {
+  height: 400px;
+  padding: 8px 0;
+  margin-top: 10px;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+}
 .command-palette-items {
-  i, em {font-style: normal;}
-  em {
-    font-weight: bold;
-    color: $text-color-highlight;
-  }
-
+  height: 100%;
+  overflow: auto;
   li {
-    padding: 10px 10px;
-    margin-lr: -10px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 3px;
+    line-height: 22px;
+    background-color: #444;
+    .icon {
+      margin-right: 8px;
+    }
+    i {
+      font-style: normal;
+    }
+    em {
+      font-style: normal;
+      color: $ui-site-color-2;
+    }
     &.selected {
-      background-color: $background-color-highlight;
+      color: #fff;
+      background-color: $ui-site-color-2;
+      em {
+        color: #fff;
+      }
     }
   }
 }
