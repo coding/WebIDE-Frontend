@@ -5,7 +5,6 @@ export Form from './Form'
 export About from './About'
 export { GitCommitView } from '../../Git'
 export { CommandPalette } from '../../../commands'
-export { FilePalette } from '../FilePalette'
 export GitStashView from '../../Git/modals/stash'
 export GitUnstashView from '../../Git/modals/unstash'
 export GitResetView from '../../Git/modals/reset'
@@ -24,5 +23,6 @@ export GitCheckoutView from '../../Git/modals/checkout'
 export GitCheckoutStashView from '../../Git/modals/checkoutStash'
 export FileSelectorView from '../FileSelector'
 export { ProjectSelector, ProjectCreator } from '../ProjectSelector'
+export FilePalette from '../FilePalette';
 export BindQcloudView from '../BindQcloud';
 export ImportFromGit from '../ImportFromGit';

@@ -107,7 +107,7 @@ class ProjectSelector extends Component {
               ?
               <div className="loading">
                 <i className="fa fa-spinner fa-pulse fa-spin"></i>
-                  <span>{i18n`global.loading`}</span>
+                <span>{i18n`global.loading`}</span>
               </div>
               :
               displayRepos.map(repo => <Repo key={repo.projectId} repo={repo} activeRepo={activeRepo} setActiveRepo={this.setActiveRepo} />)
