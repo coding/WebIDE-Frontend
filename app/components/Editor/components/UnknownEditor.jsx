@@ -50,7 +50,7 @@ class UnknownEditor extends Component {
           {/* </a> */}
         </div>
         <div className='unknown-file-info'>
-          {`${this.props.path} - ${filesize(this.props.tab.editor.size)}`}
+          {`${this.props.path} - ${filesize(this.props.size)}`}
         </div>
       </div>
     )

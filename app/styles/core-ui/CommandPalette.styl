@@ -1,19 +1,56 @@
-.command-palette-input {
-  margin-tb: 10px;
-}
-
-.command-palette-items {
-  i, em {font-style: normal;}
-  em {
-    font-weight: bold;
-    color: $text-color-highlight;
+.file-palette-modal {
+  .search {
+    margin-bottom: 10px;
+    border-radius: 2px;
   }
-
-  li {
-    padding: 10px 10px;
-    margin-lr: -10px;
-    &.selected {
-      background-color: $background-color-highlight;
+  .include-ingore {
+    margin-right: 5px;
+  }
+  .board {
+    height: 420px;
+    padding: 8px 0;
+    margin-top: 10px;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    .files {
+      height: 100%;
+      overflow: auto;
+      .file {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0 20px;
+        margin-bottom: 3px;
+        line-height: 24px;
+        background-color: #444;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        &.selected {
+          color: #fff;
+          background-color: $ui-site-color-2;
+          .highlight {
+            color: #fff;
+          }
+        }
+        .icon {
+          margin-right: 8px;
+        }
+        .highlight {
+          color: $ui-site-color-2;
+        }
+      }
+      .spinner {
+        margin-top: 180px;
+        text-align: center;
+        font-size: 14px;
+        i {
+          margin-right: 5px;
+        }
+      }
     }
   }
 }
