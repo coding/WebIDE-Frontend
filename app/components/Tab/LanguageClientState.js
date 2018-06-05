@@ -5,7 +5,11 @@ import config from 'config'
 import {
   ShutdownRequest,
   ExitNotification,
+  DidOpenTextDocumentNotification,
+  DidCloseTextDocumentNotification,
+  DidChangeWatchedFilesNotification,
 } from 'vscode-base-languageclient/lib/protocol'
+import { JAVA_CLASS_PATH_REQUEST } from 'components/MonacoEditor/languageRequestTypes'
 import { createLanguageClient, createWebSocket } from 'components/MonacoEditor/Editors/createHelper'
 
 const languageState = observable({
@@ -30,7 +34,7 @@ export class LanguageClient {
    */
   initialize = () => {
     this.socket = createWebSocket(`http://test.coding.ide/ide-ws/javalsp/sockjs/${config.spaceKey}?ws=${config.spaceKey}`)
-    const ioToWebSocket = {
+    this.ioToWebSocket = {
       send: (message) => {
         this.socket.emit('message', { message })
       },
@@ -38,29 +42,55 @@ export class LanguageClient {
       onclose: this.socket.onclose,
       close: this.socket.close,
     }
-    const services = createMonacoServices(null, { rootUri: `file://${this._WORKSPACE_}` })
+    this.services = createMonacoServices(null, { rootUri: `file://${this._WORKSPACE_}` })
     /**
      * monaco-langclient中给socket对象添加了onopen事件
      * 连接成功以后手动触发onopen
      * onmessage同理
      */
     this.socket.on('connect', () => {
-      ioToWebSocket.onopen()
+      this.ioToWebSocket.onopen()
     })
 
-    this.socket.on('message', ({ uri, data }) => {
-      ioToWebSocket.onmessage({ data })
+    this.socket.on('message', ({ data }) => {
+      this.ioToWebSocket.onmessage({ data })
     })
 
+
+    this.start()
+  }
+
+  start = () => {
     listen({
-      webSocket: ioToWebSocket,
+      webSocket: this.ioToWebSocket,
       onConnection: (connection) => {
-        this.client = createLanguageClient(this._WORKSPACE_, services, connection, this.curLanguage)
+        this.client = createLanguageClient(
+          this._WORKSPACE_,
+          this.services,
+          connection,
+          this.curLanguage
+        )
         const disposable = this.client.start()
         connection.onClose(() => disposable.dispose())
       },
     })
   }
+
+  openTextDocument = params =>
+    this.client.sendRequest(DidOpenTextDocumentNotification.type, params)
+
+  closeTextDocument = params =>
+    this.client.sendRequest(DidCloseTextDocumentNotification.type, params)
+
+  changeWatchedFiles = params =>
+    this.client.sendRequest(DidChangeWatchedFilesNotification.type, params)
+
+  fetchJavaClassContent = params =>
+    this.client.sendRequest(JAVA_CLASS_PATH_REQUEST, params)
+
+  shutdown = () => this.client.sendRequest(ShutdownRequest.type)
+
+  exit = () => this.client.sendRequest(ExitNotification.type)
 
   /**
    * 关闭语言服务
@@ -70,8 +100,8 @@ export class LanguageClient {
    * 并删除语言服务客户端实例
    */
   destory = () => {
-    this.client.sendRequest(ShutdownRequest.type)
-      .then(this.client.sendRequest(ExitNotification.type))
+    this.shutdown()
+      .then(this.exit)
       .then(() => {
         this.socket.close()
         languageState.clients.delete(this.language)

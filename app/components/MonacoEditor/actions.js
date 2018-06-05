@@ -1,5 +1,4 @@
 import { when } from 'mobx'
-import Uri from 'vscode-uri'
 import { registerAction } from 'utils/actions'
 import FileTreeState from 'components/FileTree/state'
 import config from 'config'
@@ -11,7 +10,6 @@ import { activateTab } from 'components/Tab/actions'
 import LanguageState, { LanguageClient } from 'components/Tab/LanguageClientState'
 
 import { supportLangServer } from './utils/languages'
-import { JAVA_CLASS_PATH_REQUEST } from './languageRequestTypes'
 
 const INMEMORY = 'inmemory'
 const JDT = 'jdt'
@@ -49,7 +47,7 @@ export const toDefinition = registerAction('monaco:goto_definition', ({ options,
     if (tabItem) {
       activateTab(`fake_${fileName}`)
     } else {
-      languageClient.client.sendRequest(JAVA_CLASS_PATH_REQUEST, { uri: formattedUri })
+      languageClient.fetchJavaClassContent({ uri: formattedUri })
         .then((data) => {
           createTab({
             title: fileName,

@@ -54,11 +54,11 @@ class MonacoEditor extends React.Component {
       const value = monacoEditor.getValue()
 
       this.currentValue = value
+      FileStore.updateFile({
+        id: this.editor.file.id,
+        content: value,
+      })
       if (this.editor.file && tab) {
-        FileStore.updateFile({
-          id: this.editor.file.id,
-          content: value,
-        })
         debounced(() => {
           dispatchCommand('file:save')
         })
@@ -98,7 +98,7 @@ class MonacoEditor extends React.Component {
       const { client, openeduri } = languageClient
       if (client && client.state === 3 && this.props.active) {
         if (!languageClient.openeduri.get(path)) {
-          client.sendRequest(DidOpenTextDocumentNotification.type, {
+          languageClient.openTextDocument({
             textDocument: {
               uri: `file://${languageClient._WORKSPACE_}${path}`,
               languageId: this.language,
@@ -106,12 +106,27 @@ class MonacoEditor extends React.Component {
               version: 1,
             }
           })
-          client.sendRequest(DidChangeWatchedFilesNotification.type, {
+          // client.sendRequest(DidOpenTextDocumentNotification.type, {
+          //   textDocument: {
+          //     uri: `file://${languageClient._WORKSPACE_}${path}`,
+          //     languageId: this.language,
+          //     text: content,
+          //     version: 1,
+          //   }
+          // })
+
+          languageClient.changeWatchedFiles({
             changes: [{
               uri: `file://${languageClient._WORKSPACE_}/pom.xml`,
               type: 2
             }]
           })
+          // client.sendRequest(DidChangeWatchedFilesNotification.type, {
+          //   changes: [{
+          //     uri: `file://${languageClient._WORKSPACE_}/pom.xml`,
+          //     type: 2
+          //   }]
+          // })
           openeduri.set(path, content)
         }
       }
@@ -125,14 +140,19 @@ class MonacoEditor extends React.Component {
     const { client, openeduri } = languageClient
     // 组件卸载后发送 didClose消息
     if (languageClient && openeduri.get(path)) {
-      client.sendRequest(
-        DidCloseTextDocumentNotification.type,
-        {
-          textDocument: {
-            uri: `${languageClient._WORKSPACE_}${path}`,
-          }
+      // client.sendRequest(
+      //   DidCloseTextDocumentNotification.type,
+      //   {
+      //     textDocument: {
+      //       uri: `${languageClient._WORKSPACE_}${path}`,
+      //     }
+      //   }
+      // )
+      languageClient.closeTextDocument({
+        textDocument: {
+          uri: `${languageClient._WORKSPACE_}${path}`,
         }
-      )
+      })
       languageClient.openeduri.delete(path)
     }
   }
