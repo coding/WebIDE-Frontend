@@ -8,17 +8,6 @@ import icons from 'file-icons-js'
 
 @observer
 class TreeNode extends Component {
-  handleOpenNode(node) {
-    if (!node.isDir) {
-      this.props.openNode(node);
-    }
-  }
-
-  handleToggleFolder(node, e) {
-    e.stopPropagation();
-    this.props.openNode(node, null, e.altKey);
-  }
-
   componentDidUpdate() {
     if (this.props.node.isFocused && this.nodeDOM) {
       this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
@@ -61,23 +50,24 @@ class TreeNode extends Component {
       >
         <div className={cx('filetree-node', { focus: node.isFocused })}
           ref={r => this.nodeDOM = r}
-          onDoubleClick={e => this.handleOpenNode(node)}
           onClick={e => selectNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
           {!node.isLoading && <span className="filetree-node-arrow"
-            onClick={e => this.handleToggleFolder(node, e)}>
+            onClick={e => openNode(node, null, e.altKey)}>
             {node.isDir && <i className={cx({
               'fa fa-angle-right': node.isFolded,
               'fa fa-angle-down': !node.isFolded,
             })}></i>}
           </span>}
-          <span className="filetree-node-icon">
-            <i className={iconStr}></i>
-          </span>
-          <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
-            {node.name || config.projectName}
+          <span onDoubleClick={e => openNode(node)}>
+            <span className="filetree-node-icon">
+              <i className={iconStr}></i>
+            </span>
+            <span className={`filetree-node-label git-${node.gitStatus ? node.gitStatus.toLowerCase() : 'none'}`}>
+              {node.name || config.projectName}
+            </span>
           </span>
         </div>
         {node.isDir &&
