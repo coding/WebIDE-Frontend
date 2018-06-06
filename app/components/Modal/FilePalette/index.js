@@ -7,6 +7,7 @@ import i18n from 'utils/createI18n';
 class FilePalette extends Component {
   constructor(props) {
     super(props);
+    console.log(this)
     this.scrollLength = 15;
     this.timer = null;
     this.debounce = true;
@@ -131,7 +132,7 @@ class FilePalette extends Component {
       );
     }
     return fileList.map((file, index) =>
-      <li className={`file ${index === seletedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={index}>
+      <li className={`file ${index === seletedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={file.path}>
         <i className={`icon ${this.renderIcon(file)}`}></i>
         <span>{this.renderFile(file)}</span>
       </li>
