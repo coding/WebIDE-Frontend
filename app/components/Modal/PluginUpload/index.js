@@ -23,24 +23,10 @@ class PluginUpload extends Component {
             bigTip: '',
             smallTip: '',
             plugins: [],
+            dependenceFile: '',
             submitable: false,
         };
         this.form = ['account', 'password', 'name', 'version', 'intro', 'big', 'small', 'plugins'];
-        this.prevStep = this.prevStep.bind(this);
-        this.nextStep = this.nextStep.bind(this);
-        this.accountHandle = this.accountHandle.bind(this);
-        this.passwordHandle = this.passwordHandle.bind(this);
-        this.accountEnterHandle = this.accountEnterHandle.bind(this);
-        this.nameHandle = this.nameHandle.bind(this);
-        this.versionHandle = this.versionHandle.bind(this);
-        this.introHandle = this.introHandle.bind(this);
-        this.typeHandle = this.typeHandle.bind(this);
-        this.dependencyHandle = this.dependencyHandle.bind(this);
-        this.bigLogoHandle = this.bigLogoHandle.bind(this);
-        this.smallLogoHandle = this.smallLogoHandle.bind(this);
-        this.generateFileSelector = this.generateFileSelector.bind(this);
-        this.deletePluginTag = this.deletePluginTag.bind(this);
-        this.submit = this.submit.bind(this);
     }
 
     render() {
@@ -116,6 +102,10 @@ class PluginUpload extends Component {
                                         <div className="logo-tip">{this.state.smallTip}</div>
                                     </div>
                                 </div>
+                                <div className="form-group upload-dependence">
+                                    <label><span className="dot">*</span>上传依赖</label>
+                                    <input className="form-control" type="file" onChange={this.dependenceHandle} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -146,13 +136,13 @@ class PluginUpload extends Component {
         });
     }
 
-    prevStep() {
+    prevStep = () => {
         this.setState({
             step: 1,
         });
     }
 
-    nextStep() {
+    nextStep = () => {
         if (this.state.accountVerified) {
             this.setState({
                 step: 2,
@@ -175,7 +165,7 @@ class PluginUpload extends Component {
         });
     }
 
-    accountHandle(e) {
+    accountHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             account: value,
@@ -191,7 +181,7 @@ class PluginUpload extends Component {
         }
     }
 
-    passwordHandle(e) {
+    passwordHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             password: value,
@@ -207,13 +197,13 @@ class PluginUpload extends Component {
         }
     }
 
-    accountEnterHandle(e) {
+    accountEnterHandle = (e) => {
         if (e.keyCode === 13) {
             this.nextStep();
         }
     }
 
-    nameHandle(e) {
+    nameHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             name: value,
@@ -229,7 +219,7 @@ class PluginUpload extends Component {
         }
     }
 
-    versionHandle(e) {
+    versionHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             version: value,
@@ -245,7 +235,7 @@ class PluginUpload extends Component {
         }
     }
 
-    introHandle(e) {
+    introHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             intro: value,
@@ -261,7 +251,7 @@ class PluginUpload extends Component {
         }
     }
 
-    typeHandle(e) {
+    typeHandle = (e) => {
         const value = e.target.value.trim();
         const item = this.pluginTypeList.filter((item) => {
             return item.name === value;
@@ -271,14 +261,14 @@ class PluginUpload extends Component {
         });
     }
 
-    dependencyHandle(e) {
+    dependencyHandle = (e) => {
         const value = e.target.value.trim();
         this.setState({
             dependency: value,
         });
     }
 
-    bigLogoHandle(e) {
+    bigLogoHandle = (e) => {
         const file = e.target.files[0];
         if (file.size > 102400) {
             this.setState({bigTip: '插件大图不能大于100K，请重新上传'});
@@ -307,7 +297,7 @@ class PluginUpload extends Component {
         }
     }
 
-    smallLogoHandle(e) {
+    smallLogoHandle = (e) => {
         const file = e.target.files[0];
         if (file.size > 10240) {
             this.setState({smallTip: '插件小图不能大于10K，请重新上传'});
@@ -336,7 +326,14 @@ class PluginUpload extends Component {
         }
     }
 
-    generateFileSelector() {
+    dependenceHandle = (e) => {
+        const file = e.target.files[0];
+        this.setState({
+            dependenceFile: file,
+        });
+    }
+
+    generateFileSelector = () => {
         Modal.addModal('FileSelectorView', {
             title: '请选择文件',
             onlyDir: false,
@@ -363,7 +360,7 @@ class PluginUpload extends Component {
         });
     }
 
-    deletePluginTag(name) {
+    deletePluginTag = (name) => {
         const tags = this.state.plugins;
         for (let i = 0, n = tags.length; i < n; i++) {
             if (tags[i] === name) {
@@ -399,7 +396,7 @@ class PluginUpload extends Component {
         return true;
     }
 
-    submit() {
+    submit = () => {
         const formdata = new FormData();
         formdata.append('username', this.state.account);
         formdata.append('password', this.state.password);
@@ -411,6 +408,8 @@ class PluginUpload extends Component {
         formdata.append('jarPath', this.state.plugins.join(','));
         formdata.append('bigLogo', this.state.big);
         formdata.append('smallLogo', this.state.small);
+        formdata.append('dependenceJar', this.state.dependenceFile);
+        formdata.append('pluginSource', 2);
         api.uploadPlugin(formdata).then(res => {
             if (res.code === 1) {
                 notify({message: '上传成功'});
@@ -423,11 +422,6 @@ class PluginUpload extends Component {
 }
 
 class PluginTag extends Component {
-    constructor(props) {
-        super(props);
-        this.delete = this.delete.bind(this);
-    }
-
     render() {
         return (
             <div className="plugin-tag">
@@ -437,7 +431,7 @@ class PluginTag extends Component {
         );
     }
 
-    delete() {
+    delete = () => {
         this.props.delete(this.props.name);
     }
 }
