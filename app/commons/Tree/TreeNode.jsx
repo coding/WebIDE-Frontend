@@ -19,15 +19,22 @@ class TreeNode extends Component {
     if (!node || node.parentId === undefined) return null
     if (onlyDir && !node.isDir) return null
     let iconStr = ''
-    if (node.isRoot) {
-      iconStr = 'fa fa-briefcase'
-    } else if (node.isDir && !node.isRoot && node.isFolded) {
-      iconStr = 'fa fa-folder-o'
-    } else if (node.isDir && !node.isRoot && !node.isFolded) {
-      iconStr = 'fa fa-folder-open-o'
-    } else if (!node.isDir) {
-      iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o'
+    if (!node.isDir) {
+      iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o';
+    } else if (node.isFolded) {
+      iconStr = 'fa fa-folder-o';
+    } else if (!node.isFolded) {
+      iconStr = 'fa fa-folder-open-o';
     }
+    // if (node.isRoot) {
+    //   iconStr = 'fa fa-briefcase'
+    // } else if (node.isDir && !node.isRoot && node.isFolded) {
+    //   iconStr = 'fa fa-folder-o'
+    // } else if (node.isDir && !node.isRoot && !node.isFolded) {
+    //   iconStr = 'fa fa-folder-open-o'
+    // } else if (!node.isDir) {
+    //   iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o'
+    // }
     return (
       <div id={node.id}
         className={cx('filetree-node-container', {
@@ -56,10 +63,7 @@ class TreeNode extends Component {
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
           {!node.isLoading && <span className="filetree-node-arrow"
             onClick={e => openNode(node, null, e.altKey)}>
-            {node.isDir && <i className={cx({
-              'fa fa-angle-right': node.isFolded,
-              'fa fa-angle-down': !node.isFolded,
-            })}></i>}
+            {node.isDir && <i className={cx({ 'fa fa-caret-right': node.isFolded, 'fa fa-caret-down': !node.isFolded })}></i>}
           </span>}
           <span onDoubleClick={e => openNode(node)}>
             <span className="filetree-node-icon">
