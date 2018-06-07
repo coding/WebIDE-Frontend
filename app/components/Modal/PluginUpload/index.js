@@ -103,7 +103,7 @@ class PluginUpload extends Component {
                                     </div>
                                 </div>
                                 <div className="form-group upload-dependence">
-                                    <label><span className="dot">*</span>上传依赖</label>
+                                    <label>上传依赖</label>
                                     <input className="form-control" type="file" onChange={this.dependenceHandle} />
                                 </div>
                             </div>
