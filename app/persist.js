@@ -19,7 +19,7 @@ function persistStore (store, transform) {
   autorunAsync(() => {
     const customTransform = transform || createTransformer(store => mobxToJS(store))
     const transformedStore = customTransform(store)
-        // 初次等spacekey出现存
+    // 初次等spacekey出现存
     if (config.spaceKey && !mainStore._config.storeName) {
       mainStore.config({ storeName: config.spaceKey })
     } else if (mainStore._config.storeName && (config.globalKey || !config.isPlatform)) {
