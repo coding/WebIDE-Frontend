@@ -7,8 +7,8 @@ import getTabType from 'utils/getTabType'
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
-import { findModeByExtension } from 'components/Editor/components/CodeEditor/addons/mode/findMode'
 import { toDefinition } from 'components/MonacoEditor/actions'
+import { findLanguageByextensions } from './utils/findLanguage'
 
 import initialOptions from './monacoDefaultOptions'
 
@@ -37,10 +37,11 @@ const typeDetect = (title, types) => {
 class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
-    this.contentType = props.contentType
+    this.contentType = props.contentType || 'TEXT'
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
+    this.uri = this.filePath || `inmemory://model/${this.id}`
     if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
@@ -51,10 +52,16 @@ class EditorInfo {
     this.monacoElement.style.width = '100%'
     this.monacoElement.style.height = '100%'
 
+
+    if (this.filePath) {
+      this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
+    }
+  
+    const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       ...props,
-      model: monaco.editor.createModel(this.content || '', this.mode),
+      model: model || monaco.editor.createModel(this.content || '', this.mode, monaco.Uri.parse(`inmemory://model/${this.id}`)),
     }, {
       editorService: {
         openEditor: toDefinition
@@ -62,10 +69,10 @@ class EditorInfo {
     })
 
     monacoEditor.onDidChangeCursorPosition((event) => {
-      this.selections = monacoEditor.getSelections
+      this.selections = monacoEditor.getSelections()
       const { position: { lineNumber, column } } = event
       this.cursorPosition = {
-        line: lineNumber + 1,
+        ln: lineNumber + 1,
         col: column + 1,
       }
     })
@@ -79,21 +86,26 @@ class EditorInfo {
     this.monacoEditor = monacoEditor
   }
 
+  @observable languageMode = ''
+
   @observable selections = []
-  @observable cursorPosition = { line: 1, column: 1 }
+  @observable cursorPosition = { ln: 1, col: 1 }
 
   setCursor (...args) {
     // TODO
   }
 
   @computed get mode () {
-    if (!this.filePath) return ''
-    const mode = findModeByExtension(this.filePath.split('.').pop())
-    return !!mode ? mode.name.toLocaleLowerCase() : ''
+    if (!this.filePath) return 'plaintext'
+    return this.languageMode
   }
 
   setMode (mode) {
-    // TODO
+    if (mode !== this.languageMode) {
+      const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
+      this.languageMode = mode
+      monaco.editor.setModelLanguage(model, mode)
+    }
   }
 
   setEncoding (encoding) {

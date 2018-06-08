@@ -9,8 +9,8 @@ import ImageEditor from 'components/Editor/components/ImageEditor'
 
 const EditorWrapper = observer(({ tab, active }) => {
   // if (!active) return null
-
   const { editor, editorInfo } = tab
+  // console.log(editorInfo)
   const editorType = editorInfo.editorType || 'default'
   const file = editor.file || {}
   // key is crutial here, it decides whether

@@ -8,6 +8,7 @@ import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
+import config from 'config'
 import { toJS, when } from 'mobx'
 import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
 
@@ -203,7 +204,9 @@ const fileCommands = {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const content = activeTab ? activeTab.editor.cm.getValue() : ''
+    const isMonaco = config.enableNewEditor
+
+    const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
 
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)

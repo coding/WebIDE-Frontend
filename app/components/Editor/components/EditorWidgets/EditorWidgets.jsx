@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
+import config from 'config'
 import ModeWidget from './ModeWidget'
 import LineWidget from './LineWidget'
 import LinterWidget from './LinterWidget'
@@ -8,7 +9,7 @@ import EncodingWidget from './EncodingWidget'
 @inject(({ EditorTabState }) => {
   const activeTab = EditorTabState.activeTab
   if (!activeTab || !activeTab.editor) return { editor: null }
-  return { editor: activeTab.editor }
+  return { editor: config.enableNewEditor ? activeTab.editorInfo : activeTab.editor }
 })
 @observer
 class EditorWidgets extends Component {

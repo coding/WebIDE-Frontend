@@ -1,7 +1,6 @@
-// import { Component } from 'react'
-import TabStore from 'components/Tab/store'
+import { Component } from 'react'
 import MonacoEditor from '../MonacoReact/BaseEditor'
-
+import TabStore from 'components/Tab/store'
 class MonacoTablessEditor extends MonacoEditor {
   componentDidMount () {
     super.componentDidMount()
@@ -21,6 +20,15 @@ class MonacoTablessEditor extends MonacoEditor {
       })
     }
   }
+
+  componentWillUnmount () {
+    if (this.dispose) {
+      this.dispose.dispose()
+    }
+  }
+  // render () {
+  //   return <div>welcome cloud studio</div>
+  // }
 }
 
 export default MonacoTablessEditor

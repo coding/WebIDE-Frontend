@@ -63,7 +63,7 @@ const menuBarItems = observable([
         key: 'format',
         name: i18n`menuBarItems.edit.format`,
         icon: '',
-        command: 'edit:toggle_format',
+        command: config.enableNewEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
       }, {
         key: 'comment',
         name: i18n`menuBarItems.edit.comment`,

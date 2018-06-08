@@ -1,8 +1,8 @@
 import registerAction from 'utils/actions/registerAction'
 // import state from './state'
 
-export const MARKDOWN_EDITOR_RESIZE = 'EDITOR_RESIZE'
-export const editorResize = registerAction(MARKDOWN_EDITOR_RESIZE,
+export const MARKDOWN_EDITOR_RESIZE_MONACO = 'EDITOR_RESIZE_MONACO'
+export const editorResize = registerAction(MARKDOWN_EDITOR_RESIZE_MONACO,
   (__, dX, dY, state) => ({ dX, dY, state }),
   ({ dX, dY, state }) => {
     const leftDom = document.getElementById('editor_preview_markdown_editor')
@@ -12,12 +12,14 @@ export const editorResize = registerAction(MARKDOWN_EDITOR_RESIZE,
   }
 )
 
-export const MARKDOWN_EDITOR_TOGGLE_PREVIEW = 'MARKDOWN_EDITOR_TOGGLE_PREVIEW'
-export const togglePreview = registerAction(MARKDOWN_EDITOR_TOGGLE_PREVIEW,
+export const MARKDOWN_EDITOR_TOGGLE_PREVIEW_MONACO = 'MARKDOWN_EDITOR_TOGGLE_PREVIEW_MONACO'
+export const togglePreview = registerAction(MARKDOWN_EDITOR_TOGGLE_PREVIEW_MONACO,
   ({ state }) => state.showPreview = !state.showPreview
 )
 
-export const MARKDOWN_EDITOR_TOGGLE_SIZE = 'MARKDOWN_EDITOR_TOGGLE_SIZE'
-export const togglePreviewSize = registerAction(MARKDOWN_EDITOR_TOGGLE_SIZE,
-  ({ state }) => state.showBigSize = !state.showBigSize
+export const MARKDOWN_EDITOR_TOGGLE_SIZE_MONACO = 'MARKDOWN_EDITOR_TOGGLE_SIZE_MONACO'
+export const togglePreviewSize = registerAction(MARKDOWN_EDITOR_TOGGLE_SIZE_MONACO,
+  ({ state }) => {
+    state.showBigSize = !state.showBigSize
+  }
 )

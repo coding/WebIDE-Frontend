@@ -162,7 +162,6 @@ class MarkdownEditor extends Component {
   render () {
     const { editor, tab, active, editorInfo } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
-
     return (<div
       name='markdown_editor_container'
       style={{
@@ -181,8 +180,8 @@ class MarkdownEditor extends Component {
         {(showPreview && !showBigSize) ? (<i className='fa fa-expand' style={{ color: '#999' }}
           onClick={() => actions.togglePreviewSize({ state: tab })}
         ></i>) : ((showPreview) ? (
-             <i className='fa fa-compress' style={{ color: '#999' }} onClick={() => actions.togglePreviewSize({ state: tab })} />
-           ) : null)
+          <i className='fa fa-compress' style={{ color: '#999' }} onClick={() => actions.togglePreviewSize({ state: tab })} />
+          ) : null)
         }
         {!showPreview ? <i className='fa fa-eye' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} /> :
         <i className='fa fa-eye-slash' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} />
@@ -198,28 +197,26 @@ class MarkdownEditor extends Component {
         {
         (!showBigSize || (showBigSize && !showPreview)) ? (
           <div
-        name='editor'
-        id='editor_preview_markdown_editor'
-        style={{
-          flexGrow: leftGrow,
-          flexShrink: 0,
-          flexBasis: 0,
-        }}
-      >
-        {React.createElement(CodeEditor, { editor, editorInfo })}
-      </div>) : null
-    }
-        { (showPreview && !showBigSize) ? (
-        <ResizeBar
-            sectionId={'editor_preview_markdown'}
-            parentFlexDirection={'row'}
-            startResize={startResize}
-            actions={actions}
-            state={tab}
-          />) : null
-      }
-        {
-        showPreview ? (
+            name='editor'
+            id='editor_preview_markdown_editor'
+            style={{
+              flexGrow: leftGrow,
+              flexShrink: 0,
+              flexBasis: 0,
+            }}
+          >
+            {React.createElement(CodeEditor, { editor, editorInfo })}
+          </div>) : null
+        }
+          {(showPreview && !showBigSize) ? (
+            <ResizeBar
+              sectionId={'editor_preview_markdown'}
+              parentFlexDirection={'row'}
+              startResize={startResize}
+              actions={actions}
+              state={tab}
+            />) : null}
+        {showPreview ? (
           <div
           name='preview'
           id='editor_preview_preview'
@@ -230,10 +227,9 @@ class MarkdownEditor extends Component {
           }}
         >
           <PreviewEditor content={this.state.previewContent} editor={editor} />
-        </div>) : null
-      }
+        </div>) : null}
+        </div>
       </div>
-    </div>
     )
 
   }

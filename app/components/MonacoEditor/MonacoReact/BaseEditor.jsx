@@ -2,22 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
-import { when } from 'mobx'
+import { when, autorun } from 'mobx'
 import { observer } from 'mobx-react'
 import * as monaco from 'monaco-editor'
-import {
-  DidOpenTextDocumentNotification,
-  DocumentSymbolRequest,
-  DidCloseTextDocumentNotification,
-  DidChangeWatchedFilesNotification,
-} from 'vscode-base-languageclient/lib/protocol'
 
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
 import dispatchCommand from 'commands/dispatchCommand'
 import { findLangueByExt } from '../utils/findLanguage'
-import { EditorInfo } from '../state';
+import { EditorInfo } from '../state'
+import initialOptions from '../monacoDefaultOptions'
 
 function noop () {}
 
@@ -54,11 +49,11 @@ class MonacoEditor extends React.Component {
       const value = monacoEditor.getValue()
 
       this.currentValue = value
-      FileStore.updateFile({
-        id: this.editor.file.id,
-        content: value,
-      })
       if (this.editor.file && tab) {
+        FileStore.updateFile({
+          id: this.editor.file.id,
+          content: value,
+        })
         debounced(() => {
           dispatchCommand('file:save')
         })
@@ -87,6 +82,7 @@ class MonacoEditor extends React.Component {
           'java',
           monaco.Uri.parse(`file://${languageClient._WORKSPACE_}${path}`)
         )
+        this.uri = `file://${languageClient._WORKSPACE_}${path}`
       }
     // console.log(monaco.editor.getModel(`file://${IDEWSURI}${OPENEDFILEURI}`))
     // const model = monaco.editor.createModel(file.content, 'java', monaco.Uri.parse(`file://${IDEWSURI}${OPENEDFILEURI}`))
@@ -106,14 +102,6 @@ class MonacoEditor extends React.Component {
               version: 1,
             }
           })
-          // client.sendRequest(DidOpenTextDocumentNotification.type, {
-          //   textDocument: {
-          //     uri: `file://${languageClient._WORKSPACE_}${path}`,
-          //     languageId: this.language,
-          //     text: content,
-          //     version: 1,
-          //   }
-          // })
 
           languageClient.changeWatchedFiles({
             changes: [{
@@ -121,15 +109,14 @@ class MonacoEditor extends React.Component {
               type: 2
             }]
           })
-          // client.sendRequest(DidChangeWatchedFilesNotification.type, {
-          //   changes: [{
-          //     uri: `file://${languageClient._WORKSPACE_}/pom.xml`,
-          //     type: 2
-          //   }]
-          // })
+
           openeduri.set(path, content)
         }
       }
+    })
+
+    autorun(() => {
+      this.editor.monacoEditor.updateOptions(initialOptions)
     })
   }
 

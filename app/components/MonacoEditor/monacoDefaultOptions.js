@@ -1,12 +1,14 @@
-export default {
+import { observable } from 'mobx'
+
+export default observable({
   lineNumbers: true,
   selectOnLineNumbers: true,
-  glyphMargin: true,
   roundedSelection: true,
   minimap: {
     enabled: true,
     renderCharacters: false,
   },
+  fontSize: 13,
   contextmenu: false,
   theme: 'vs-dark'
-}
+})

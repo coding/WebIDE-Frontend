@@ -23,7 +23,8 @@ const languageState = observable({
 export class LanguageClient {
   constructor (language) {
     this.language = language
-    this._WORKSPACE_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    this._ROOT_URI_ = config._WORKSPACE_FOLDER_
+    this._WORKSPACE_ = config._ROOT_URI_
     this.openeduri = new observable.map({})
     this.initialize()
   }
@@ -42,7 +43,7 @@ export class LanguageClient {
       onclose: this.socket.onclose,
       close: this.socket.close,
     }
-    this.services = createMonacoServices(null, { rootUri: `file://${this._WORKSPACE_}` })
+    this.services = createMonacoServices(null, { rootUri: `file://${this._ROOT_URI_}` })
     /**
      * monaco-langclient中给socket对象添加了onopen事件
      * 连接成功以后手动触发onopen

@@ -18,12 +18,6 @@ class IDE extends Component {
   componentWillMount () {  // initLifecycle_3: IDE specific init
     initializeFileTree() // @fixme: this is related to the quirk in filetree state
     this.setState({ isReady: true })
-    if (!localStorage.getItem('enableNewEditor')) {
-      localStorage.setItem('enableNewEditor', false)
-    }
-    emitter.on(STORAGE_CHANGE, () => {
-      window.location.reload()
-    })
   }
 
   componentDidMount () {

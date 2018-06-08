@@ -1,9 +1,23 @@
 import languages, { supportLangServer } from './languages'
+import modeInfos from './modeInfos'
 
 function findLangueByExt (ext) {
   return languages.find(l => l.exts.some(e => e === ext))
 }
 
+function findLanguageByextensions (ext) {
+  let currentExt = ext
+  if (!currentExt.startsWith('.')) currentExt = `.${currentExt}`
+  for (let i = 0; i < modeInfos.length; i++) {
+    const info = modeInfos[i]
+    if (info.extensions) {
+      for (let j = 0; j < info.extensions.length; j++) {
+        if (info.extensions[j] === currentExt) return info
+      }
+    }
+  }
+  return { id: 'plaintext' }
+}
 /**
  * 根据文件列表粗略判断当前项目语言，以启动相应的语言服务器
  * @param data 指定目录下文件列表
@@ -23,5 +37,6 @@ function findLanguageByFileName (data) {
 
 export {
   findLangueByExt,
-  findLanguageByFileName
+  findLanguageByFileName,
+  findLanguageByextensions
 }

@@ -1,16 +1,26 @@
 import isObject from 'lodash/isObject'
-import { observable, reaction, extendObservable, computed, action } from 'mobx'
+import { observable, reaction, extendObservable, computed, action, autorun } from 'mobx'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED, STORAGE_CHANGE } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
-import { isBoolean } from 'util';
+import { isBoolean } from 'util'
+import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
+
 window.themeVariables = observable.map({})
 
 const localStorage = window.localStorage
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
+
+if (JSON.parse(localStorage.getItem('enableNewEditor')) === null) {
+  localStorage.setItem('enableNewEditor', false)
+}
+
+emitter.on(STORAGE_CHANGE, () => {
+  // window.location.reload()
+})
 
 let uiOptions = []
 if (config.isLib) {
@@ -25,8 +35,14 @@ if (config.isLib) {
 }
 export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
+export const monacoThemeOptions = ['vs-dark']
 
 const changeUITheme = (nextThemeId) => {
+  if (nextThemeId === 'base-theme') {
+    monacoConfig.theme = 'vs-light'
+  } else {
+    monacoConfig.theme = 'vs-dark'
+  }
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
     import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
@@ -178,14 +194,15 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: 'material',
-      options: SyntaxThemeOptions,
+      value: config.enableNewEditor ? 'vs-dark' : 'material',
+      options: config.enableNewEditor ? monacoThemeOptions : SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     },
     font_size: {
       name: 'settings.appearance.fontSize',
       value: 13,
       reaction (value) {
+        monacoConfig.fontSize = value
         dynamicStyle.set('codemirror font size',
         `.CodeMirror {
           font-size: ${value}px;
@@ -289,7 +306,8 @@ const settings = observable({
       name: 'settings.editor.enableNewEditor',
       value: JSON.parse(localStorage.getItem('enableNewEditor')) || false,
       reaction (value) {
-        if (value !== config.enableNewEditor && isBoolean(value)) {
+        const prevValue = JSON.parse(localStorage.getItem('enableNewEditor')) || false
+        if (value !== prevValue && isBoolean(value)) {
           config.enableNewEditor = value
           if (EditorState) EditorState.options.enableNewEditor = value
           localStorage.setItem('enableNewEditor', value)
@@ -319,7 +337,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: config.enableNewEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
