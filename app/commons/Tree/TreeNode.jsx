@@ -8,17 +8,6 @@ import icons from 'file-icons-js'
 
 @observer
 class TreeNode extends Component {
-  handleOpenNode(node) {
-    if (!node.isDir) {
-      this.props.openNode(node);
-    }
-  }
-
-  handleToggleFolder(node, e) {
-    e.stopPropagation();
-    this.props.openNode(node, null, e.altKey);
-  }
-
   componentDidUpdate() {
     if (this.props.node.isFocused && this.nodeDOM) {
       this.nodeDOM.scrollIntoViewIfNeeded && this.nodeDOM.scrollIntoViewIfNeeded()
@@ -30,15 +19,22 @@ class TreeNode extends Component {
     if (!node || node.parentId === undefined) return null
     if (onlyDir && !node.isDir) return null
     let iconStr = ''
-    if (node.isRoot) {
-      iconStr = 'fa fa-briefcase'
-    } else if (node.isDir && !node.isRoot && node.isFolded) {
-      iconStr = 'fa fa-folder-o'
-    } else if (node.isDir && !node.isRoot && !node.isFolded) {
-      iconStr = 'fa fa-folder-open-o'
-    } else if (!node.isDir) {
-      iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o'
+    if (!node.isDir) {
+      iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o';
+    } else if (node.isFolded) {
+      iconStr = 'fa fa-folder-o';
+    } else if (!node.isFolded) {
+      iconStr = 'fa fa-folder-open-o';
     }
+    // if (node.isRoot) {
+    //   iconStr = 'fa fa-briefcase'
+    // } else if (node.isDir && !node.isRoot && node.isFolded) {
+    //   iconStr = 'fa fa-folder-o'
+    // } else if (node.isDir && !node.isRoot && !node.isFolded) {
+    //   iconStr = 'fa fa-folder-open-o'
+    // } else if (!node.isDir) {
+    //   iconStr = icons.getClassWithColor(node.name) || 'fa fa-file-text-o'
+    // }
     return (
       <div id={node.id}
         className={cx('filetree-node-container', {
@@ -61,17 +57,15 @@ class TreeNode extends Component {
       >
         <div className={cx('filetree-node', { focus: node.isFocused })}
           ref={r => this.nodeDOM = r}
-          onDoubleClick={e => this.handleOpenNode(node)}
           onClick={e => selectNode(node)}
+          onDoubleClick={e => openNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
           {!node.isLoading && <span className="filetree-node-arrow"
-            onClick={e => this.handleToggleFolder(node, e)}>
-            {node.isDir && <i className={cx({
-              'fa fa-angle-right': node.isFolded,
-              'fa fa-angle-down': !node.isFolded,
-            })}></i>}
+            onDoubleClick={e => e.stopPropagation()}
+            onClick={e => openNode(node, null, e.altKey)}>
+            {node.isDir && <i className={cx({ 'fa fa-caret-right': node.isFolded, 'fa fa-caret-down': !node.isFolded })}></i>}
           </span>}
           <span className="filetree-node-icon">
             <i className={iconStr}></i>

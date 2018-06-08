@@ -1,5 +1,6 @@
 {
    "importCoding": "Import from Coding",
+   "placeholder": "Enter keywords to retrieval project",
    "importGit": "Import from Git",
    "fetchKeyFailed": "Failed to get the public key, close the modal and reload",
    "beforeKey": "Only support SSH protocol currently, please ensure the",

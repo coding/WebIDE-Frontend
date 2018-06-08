@@ -16,12 +16,13 @@ class ImportFromGit extends Component {
   }
 
   render() {
+    const { url, key, showKey, showWarn } = this.state;
     return (
       <div className="import-from-git">
         <div className="title">{i18n.get('import.importGit')}</div>
         <div className="form">
           <input className="form-control" type="text" onChange={this.handleUrl} onKeyUp={this.handleEnter} />
-          {this.state.showWarn ? <span className="warn">!</span> : ''}
+          {showWarn ? <span className="warn">!</span> : ''}
         </div>
         <div className="tip">
           <span>
@@ -34,18 +35,18 @@ class ImportFromGit extends Component {
           <span></span>
         </div>
         {
-          this.state.showKey
+          showKey
           ?
           <div className="box">
             <i className="clipboard fa fa-copy"></i>
-            {this.state.key}
+            {key}
           </div>
           :
           ''
         }
         <div className="control">
           <button className="btn btn-default" onClick={this.handleCancel}>{i18n.get('modal.cancelButton')}</button>
-          <button className="btn btn-primary" onClick={this.handleSubmit}>{i18n.get('modal.okButton')}</button>
+          <button className="btn btn-primary" disabled={!url || showWarn} onClick={this.handleSubmit}>{i18n.get('modal.okButton')}</button>
         </div>
       </div>
     );

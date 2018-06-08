@@ -49,5 +49,6 @@
    "outofDateSoon": "expire soon",
    "machineOutofDateSoon": "Trial of machine will ",
    "machineOutofDateSoon2": ", please ",
-   "and": ". "
+   "and": ". ",
+   "loading": "Loading in progress, please wait"
 }
