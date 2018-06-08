@@ -7,7 +7,6 @@ import i18n from 'utils/createI18n';
 class FilePalette extends Component {
   constructor(props) {
     super(props);
-    console.log(this)
     this.scrollLength = 15;
     this.timer = null;
     this.debounce = true;
