@@ -131,7 +131,7 @@ class FilePalette extends Component {
       );
     }
     return fileList.map((file, index) =>
-      <li className={`file ${index === seletedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={index}>
+      <li className={`file ${index === seletedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={file.path}>
         <i className={`icon ${this.renderIcon(file)}`}></i>
         <span>{this.renderFile(file)}</span>
       </li>
