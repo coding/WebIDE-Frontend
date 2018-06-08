@@ -9,11 +9,13 @@ import {
   DidCloseTextDocumentNotification,
   DidChangeWatchedFilesNotification,
 } from 'vscode-base-languageclient/lib/protocol'
-import { JAVA_CLASS_PATH_REQUEST } from 'components/MonacoEditor/languageRequestTypes'
+import { JAVA_CLASS_PATH_REQUEST, LANGUAGE_STATUS } from 'components/MonacoEditor/languageRequestTypes'
 import { createLanguageClient, createWebSocket } from 'components/MonacoEditor/Editors/createHelper'
 
 const languageState = observable({
-  clients: new observable.map({})
+  clients: new observable.map({}),
+  status: '',
+  message: '',
 })
 
 /**
@@ -71,6 +73,15 @@ export class LanguageClient {
           connection,
           this.curLanguage
         )
+        this.client.onReady()
+          .then(() => {
+            this.client.onNotification(LANGUAGE_STATUS, (report) => {
+              if (report.type === 'Starting') {
+                languageState.status = report.type
+                languageState.message = report.message
+              }
+            })
+          })
         const disposable = this.client.start()
         connection.onClose(() => disposable.dispose())
       },
