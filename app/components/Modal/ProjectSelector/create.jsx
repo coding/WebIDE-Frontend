@@ -6,9 +6,10 @@ import i18n from 'utils/createI18n'
 class Create extends Component {
   constructor (props) {
     super(props)
+    // 1是公开项目，2是私有项目，目前已砍掉公开项目
+    this.type = 2;
     this.state = {
       value: props.content.defaultValue || '',
-      type: 1,
     }
   }
 
@@ -34,12 +35,6 @@ class Create extends Component {
           placeholder={content.placeholder}
           autoFocus
         />
-        <div className='modal-radio' onChange={e => this.setState({
-          type: e.target.value
-        })}>
-          <input type='radio' name='project' value='1' defaultChecked />{i18n`global.projectPublic`}
-          <input type='radio' name='project' value='2' />{i18n`global.projectPrivate`}
-        </div>
         { content.statusMessage ?
           <div className='message message-info'>
             <i className='fa fa-info-circle' aria-hidden='true' />
@@ -49,7 +44,7 @@ class Create extends Component {
         <div className='footer modal-ops'>
           <button className='btn btn-primary'
             onClick={() => {
-              meta.resolve({ projectName: this.state.value, type: this.state.type })
+              meta.resolve({ projectName: this.state.value, type: this.type })
               dismissModal()
             }}
           >{content.okText || i18n`modal.okButton`}</button>
@@ -59,7 +54,7 @@ class Create extends Component {
   }
 
   confirm (value) {
-    this.props.meta.resolve({ projectName: value, type: this.state.type })
+    this.props.meta.resolve({ projectName: value, type: this.type })
   }
 
   cancel = () => {

@@ -88,15 +88,12 @@ class TerminalContainer extends Component {
             </TabContentItem>
           )}
         </TabContent>
-        <div className='terminal-toolbar'>
+        {/*<div className='terminal-toolbar'>
           <i className='fa fa-desktop' onClick={this.handleEnv} />
         </div>
-        <div className={cx(
-          'term-env', { hide: !this.state.showEnv }
-          )}
-        >
+        <div className={cx('term-env', { hide: !this.state.showEnv })}>
           <PluginArea className='term-env-panel' position={TERMINAL.ENV} />
-        </div>
+        </div>*/}
       </div>
     )
   }
