@@ -8,6 +8,7 @@ import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
+import config from 'config'
 import { toJS, when } from 'mobx'
 import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
 
@@ -79,6 +80,10 @@ export function openFileWithEncoding ({ path, contentType, editor = {}, others =
           existingTab.editor.gitBlame = editor.gitBlame
         }
         existingTab.activate()
+        if (editor.selection) {
+          existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
+          existingTab.editorInfo.monacoEditor.focus()
+        }
         if (callback) callback()
       } else {
         TabStore.createTab({
@@ -199,7 +204,9 @@ const fileCommands = {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const content = activeTab ? activeTab.editor.cm.getValue() : ''
+    const isMonaco = config.enableNewEditor
+
+    const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
 
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
@@ -223,7 +230,22 @@ const fileCommands = {
     }
   },
 
-
+  'file:save_monaco': (context) => {
+    const { data } = context
+    const { EditorTabState } = mobxStore
+    const activeTab = EditorTabState.activeTab
+    if (activeTab.file) {
+      api.writeFile(activeTab.file.path, data)
+        .then((res) => {
+          FileStore.updateFile({
+            path: activeTab.file.path,
+            isSynced: true,
+            lastModified: res.lastModified,
+            // content,
+          })
+        })
+    }
+  },
   'file:rename': (c) => {
     const node = c.context
     const oldPath = node.path

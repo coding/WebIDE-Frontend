@@ -3,6 +3,8 @@ import { registerAction } from 'utils/actions'
 import is from 'utils/is'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
+import config from 'config'
+import { findLanguageByFileName } from 'components/MonacoEditor/utils/findLanguage'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
@@ -35,7 +37,11 @@ export const loadNodeData = registerAction('fs:load_node_data',
 )
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
-  fetchPath('/').then(loadNodeData)
+  fetchPath('/').then((data) => {
+    const mainLanguage = findLanguageByFileName(data)
+    config.mainLanguage = mainLanguage
+    return loadNodeData(data)
+  })
 )
 
 export const removeNode = registerAction('fs:remove_node', (node) => {

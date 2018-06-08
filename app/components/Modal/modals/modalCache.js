@@ -31,6 +31,7 @@ import {
   About,
   ProjectSelector,
   ProjectCreator,
+  LanguageServerConfig,
   BindQcloudView,
   ImportFromGit,
 } from './index'
@@ -63,6 +64,7 @@ const modalCache = observable.map({
   GitDiffFile: GitDiffFileView,
   ProjectSelector,
   ProjectCreator,
+  LanguageServerConfig,
   BindQcloud: BindQcloudView,
   ImportFromGit,
 })

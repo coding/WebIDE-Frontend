@@ -1,22 +1,34 @@
 import { observable, autorun } from 'mobx'
 import getCookie from './utils/getCookie'
 
+const localStorage = window.localStorage
+
 const config = observable({
   projectName: '',
   spaceKey: '',
+  mainLanguage: '',
+  enableNewEditor: JSON.parse(localStorage.getItem('enableNewEditor')),
   globalKey: '',
   userProfile: {},
   requiredExtensions: [],
+  _WORKSPACE_FOLDER_: '',
+  _ROOT_URI_: '',
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
   packageServer: getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
   wsURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
   staticServingURL: getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
   runMode: __RUN_MODE__,
+  __WORKSPACE_URI__: '',
   // isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
+  supportLangServer: [
+    { lang: 'java', files: ['pom.xml', 'settings.gradle'], file: 'pom.xml' },
+    { lang: 'javascript', files: ['package.json'], file: 'package.json' },
+    { lang: 'typescript', files: ['package.json'], file: 'package.json' },
+  ],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
@@ -44,6 +56,13 @@ const config = observable({
 autorun(() => {
   if (config.projectName && !config.isLib) {
     window.document.title = `${config.projectName} | Cloud Studio 开启云端开发模式！ -  Coding.net`
+  }
+})
+
+autorun(() => {
+  if (config.spaceKey !== '') {
+    config._WORKSPACE_FOLDER_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
   }
 })
 

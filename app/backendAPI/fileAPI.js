@@ -1,5 +1,4 @@
 import { request, qs } from '../utils'
-import config from '../config'
 import axios from 'axios'
 import * as maskActions from 'components/Mask/actions'
 

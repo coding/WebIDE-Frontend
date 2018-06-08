@@ -8,6 +8,32 @@ const getCurrentCM = () => {
   return cm
 }
 
+const getCurrentMonaco = () => {
+  const { EditorTabState } = mobxStore
+  const activeTab = EditorTabState.activeTab
+  const monaco = activeTab ? activeTab.editorInfo.monacoEditor : null
+  return monaco
+}
+
+
+export const formatMonacoCode = registerAction('edit:toggle_format_monaco', () => {
+  const monaco = getCurrentMonaco()
+  monaco.trigger('format', 'editor.action.formatDocument')
+  // debugger
+  // if (!monaco) return
+  // const action = monaco.getAction('editor.action.format')
+  // if (action) {
+  //   action.run()
+  // }
+  // let range = { from: cm.getCursor(true), to: cm.getCursor(false) }
+  // if (range.from.ch === range.to.ch && range.from.line === range.to.line) {
+  //   cm.execCommand('selectAll')
+  //   range = { from: cm.getCursor(true), to: cm.getCursor(false) }
+  // }
+  // cm.autoFormatRange(range.from, range.to)
+})
+
+
 export const formatCode = registerAction('edit:toggle_format', () => {
   const cm = getCurrentCM()
   if (!cm) return
