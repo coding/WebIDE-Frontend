@@ -1,33 +1,65 @@
-import { extendObservable } from 'mobx'
+import { when } from 'mobx'
 import mobxStore from 'mobxStore'
-import { createAction, handleActions, registerAction } from 'utils/actions'
+import { createAction, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
-import { openFile } from '../../commands/commandBindings/file'
 import dispatchCommand from 'commands/dispatchCommand'
+import TabState from 'components/Tab/state';
+import FileState from 'commons/File/state';
+import FileStore from 'commons/File/store';
+import api from '../../backendAPI';
+import icons from 'file-icons-js';
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
 
 export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
-  Object.values(json.tabGroups).forEach((tabGroupsValue) => {
-    createGroup(tabGroupsValue.id)
-  })
-  const tabs = Object.values(json.tabs)
+  const tabs = Object.values(json.tabs).sort((a, b) => a.index - b.index);
+  const tabGroups = Object.values(json.tabGroups);
+  tabGroups.forEach((tabGroupsValue) => createGroup(tabGroupsValue.id));
   if (tabs.length === 0) {
     dispatchCommand('global:show_env')
+    return;
   }
-  const openTabs = tabs.map((tabValue) => {
-    const { path, editor, contentType, ...others } = tabValue
-    const option = { path, editor, contentType, others }
-    return openFile(option)
-  })
-  Promise.all(openTabs).then(() => {
-    Object.values(json.tabGroups).forEach((tabGroupsValue) => {
-      if (tabGroupsValue.activeTabId) {
-        setTimeout(() => {
-          activateTab(tabGroupsValue.activeTabId)
-        }, 1)
-      }
+  when(() => !FileState.initData.get('_init'), () => {
+    const mountedTabIds = [];
+    const openTabs = tabs.map((tabValue) => {
+      const { path, editor, contentType, ...others } = tabValue
+      const { encoding } = FileState.initData.get(path) || {}
+      return api.readFile(path, encoding).then(data => {
+        FileStore.loadNodeData(data)
+        createTab({
+          icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
+          contentType,
+          editor: {
+            ...editor,
+            filePath: path,
+          },
+          ...others,
+        })
+        const thisTabId = Object.values(TabState.tabs._data).map(tab => tab.value.id).pop();
+        let hasFindIndex = false;
+        mountedTabIds.push(thisTabId);
+        for (let i = 0, n = tabs.length; i < n; i++) {
+          const curTabId = tabs[i].id;
+          if (hasFindIndex && mountedTabIds.includes(curTabId)) {
+            insertTabBefore(thisTabId, curTabId);
+            break;
+          }
+          if (thisTabId === curTabId) {
+            hasFindIndex = true;
+          }
+        }
+        return data;
+      });
+    });
+    Promise.all(openTabs).then(data => {
+      Object.values(tabGroups).forEach((tabGroupsValue) => {
+        if (tabGroupsValue.activeTabId) {
+          setTimeout(() => {
+            activateTab(tabGroupsValue.activeTabId)
+          }, 1)
+        }
+      })
     })
   })
 })

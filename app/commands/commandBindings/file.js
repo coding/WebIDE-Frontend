@@ -8,7 +8,6 @@ import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
-import { toJS, when } from 'mobx'
 import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
 
 const nodeToNearestDirPath = (node) => {
@@ -44,21 +43,28 @@ function createFolderAtPath (path) {
   )
 }
 
+// export function openFile (obj, callback) {
+//   if (!obj.path) return
+//   // 做一些encoding的调度
+//   if (FileState.initData.get('_init')) {
+//     when(() => !FileState.initData.get('_init'), () => {
+//       const { encoding } = FileState.initData.get(obj.path) || {}
+//       openFileWithEncoding({ ...obj, encoding, callback })
+//       FileState.initData.set(obj.path, {})
+//     })
+//   } else {
+//     const { encoding } = FileState.initData.get(obj.path) || {}
+//     openFileWithEncoding({ ...obj, encoding, callback })
+//     FileState.initData.set(obj.path, {})
+//   }
+// }
 
-export function openFile (obj, callback) {
+export function openFile(obj, callback) {
   if (!obj.path) return
   // 做一些encoding的调度
-  if (FileState.initData.get('_init')) {
-    when(() => !FileState.initData.get('_init'), () => {
-      const { encoding } = FileState.initData.get(obj.path) || {}
-      openFileWithEncoding({ ...obj, encoding, callback })
-      FileState.initData.set(obj.path, {})
-    })
-  } else {
-    const { encoding } = FileState.initData.get(obj.path) || {}
-    openFileWithEncoding({ ...obj, encoding, callback })
-    FileState.initData.set(obj.path, {})
-  }
+  const { encoding } = FileState.initData.get(obj.path) || {}
+  openFileWithEncoding({ ...obj, encoding, callback })
+  FileState.initData.set(obj.path, {})
 }
 
 export function openFileWithEncoding ({ path, contentType, editor = {}, others = {}, allGroup = false, encoding, callback }) {
