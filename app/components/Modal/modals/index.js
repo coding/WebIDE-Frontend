@@ -22,6 +22,7 @@ export GitCommitDiffView from '../../Git/modals/commitDiff'
 export GitCheckoutView from '../../Git/modals/checkout'
 export GitCheckoutStashView from '../../Git/modals/checkoutStash'
 export FileSelectorView from '../FileSelector'
+export LanguageServerConfig from '../LanguageServerConfig'
 export { ProjectSelector, ProjectCreator } from '../ProjectSelector'
 export FilePalette from '../FilePalette';
 export BindQcloudView from '../BindQcloud';

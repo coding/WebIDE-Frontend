@@ -1,7 +1,9 @@
 import React from 'react'
 import api from 'backendAPI'
+import { showModal } from 'components/Modal/actions'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
+import config from 'config'
 
 const divider = { isDivider: true }
 const menuBarItems = observable([
@@ -39,6 +41,18 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.file.save`,
         icon: 'fa fa-floppy-o',
         command: 'file:save'
+      }, {
+        isDivider: true
+      }, {
+        key: 'lspSetting',
+        name: '语言服务器设定',
+        command: () => {
+          showModal({
+            type: 'LanguageServerConfig',
+            position: 'center',
+          })
+        },
+        getIsDisabled: () => !config.enableNewEditor
       }
     ]
   }, {
@@ -49,7 +63,7 @@ const menuBarItems = observable([
         key: 'format',
         name: i18n`menuBarItems.edit.format`,
         icon: '',
-        command: 'edit:toggle_format',
+        command: config.enableNewEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
       }, {
         key: 'comment',
         name: i18n`menuBarItems.edit.comment`,

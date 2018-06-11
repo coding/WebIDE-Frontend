@@ -19,6 +19,7 @@
       "charset": "编码",
       "indentStyle": "缩进风格",
       "indentSize": "缩进空格数",
+      "enableNewEditor": "启用新版编辑器",
       "tabWidth": "Tab 宽度",
       "trimTrailingWhitespace": "删除行尾空格",
       "insertFinalNewline": "文件结尾插入空白行",

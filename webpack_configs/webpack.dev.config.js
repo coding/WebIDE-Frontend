@@ -3,6 +3,7 @@ const path = require('path')
 const merge = require('webpack-merge')
 const str = JSON.stringify
 const commonConfig = require('./common.config.js')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const devServer = require('./devServer.config')
 const stylesheet = require('./stylesheet.config')

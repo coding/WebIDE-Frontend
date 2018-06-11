@@ -10,7 +10,7 @@ import * as Notification from './Notification'
 import * as FileTree from './FileTree'
 import * as Tooltip from './Tooltip'
 import * as Mask from './Mask'
-
+import * as MonacoEditor from './MonacoEditor'
 
 export {
   Accordion,
@@ -24,5 +24,6 @@ export {
   Notification,
   FileTree,
   Tooltip,
-  Mask
+  Mask,
+  MonacoEditor,
 }
