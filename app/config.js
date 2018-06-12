@@ -1,5 +1,7 @@
 import { observable, autorun, reaction, when } from 'mobx'
 import getCookie from './utils/getCookie'
+import serverConfig from 'serverConfig'
+console.log('json', serverConfig)
 
 const localStorage = window.localStorage
 
