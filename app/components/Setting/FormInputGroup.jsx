@@ -54,7 +54,7 @@ const FormInputGroup = defaultProps((props) => {
     return (
       <div className='form-group'>
         <div className='checkbox'>
-          <label>
+          <label style={{ lineHeight: '20px' }}>
             <input type='checkbox'
               disabled={settingItem.disabled}
               onChange={updateSettingItem}

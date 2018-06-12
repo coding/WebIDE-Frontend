@@ -8,6 +8,7 @@ export default observable({
     enabled: true,
     renderCharacters: false,
   },
+  tabSize: 4,
   fontSize: 13,
   contextmenu: false,
   theme: 'vs-dark'

@@ -75,10 +75,20 @@ export class LanguageClient {
         )
         this.client.onReady()
           .then(() => {
+            let ready = false
             this.client.onNotification(LANGUAGE_STATUS, (report) => {
-              if (report.type === 'Starting') {
-                languageState.status = report.type
+              languageState.status = report.type
+              if (report.type === 'Starting' && !ready) {
                 languageState.message = report.message
+              }
+
+              if (report.type === 'Started' && !ready) {
+                languageState.message = 'Language service is ready'
+                ready = true
+              }
+
+              if (report.type === 'Error') {
+                languageState.message = 'Error'
               }
             })
           })

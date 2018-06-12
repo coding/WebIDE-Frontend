@@ -42,7 +42,7 @@ export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {
   Object.keys(json).forEach((tabItem) => {
     Object.keys(json[tabItem]).forEach((item) => {
       const stateRef = state.settings[tabItem][item]
-      if (stateRef && stateRef.value) {
+      if (stateRef && stateRef.value && !stateRef.nopersist) {
         stateRef.value = json[tabItem][item]
       }
     })

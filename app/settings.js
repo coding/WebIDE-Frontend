@@ -1,11 +1,10 @@
 import isObject from 'lodash/isObject'
-import { observable, reaction, extendObservable, computed, action, autorun } from 'mobx'
+import { observable, reaction, extendObservable, computed, action } from 'mobx'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
-import emitter, { THEME_CHANGED, STORAGE_CHANGE } from 'utils/emitter'
+import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
-import { isBoolean } from 'util'
 import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
 
 window.themeVariables = observable.map({})
@@ -17,10 +16,6 @@ import('components/Editor/state').then(res => EditorState = res.default)
 if (JSON.parse(localStorage.getItem('enableNewEditor')) === null) {
   localStorage.setItem('enableNewEditor', false)
 }
-
-emitter.on(STORAGE_CHANGE, () => {
-  // window.location.reload()
-})
 
 let uiOptions = []
 if (config.isLib) {
@@ -151,6 +146,9 @@ class DomainSetting {
       if (item.tempValue !== undefined) {
         item.value = item.tempValue
         item.tempValue = undefined
+        if (item.onConfirm && is.function(item.onConfirm)) {
+          item.onConfirm(item.value)
+        }
       }
     })
   }
@@ -214,7 +212,7 @@ const settings = observable({
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'exclude_files'],
+    _keys: ['language', 'exclude_files', 'enable_new_editor'],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -230,6 +228,20 @@ const settings = observable({
       reaction (value) {
         config.fileExcludePatterns = value.split(',')
       }
+    },
+    enable_new_editor: {
+      name: 'settings.general.enableNewEditor',
+      value: config.enableNewEditor,
+      reaction () {
+      },
+      nopersist: true,
+      onConfirm (value) {
+        config.enableNewEditor = value
+        localStorage.setItem('enableNewEditor', value)
+        setTimeout(() => {
+          window.location.reload()
+        }, 100)
+      }
     }
   }),
 
@@ -242,7 +254,6 @@ const settings = observable({
       'tab_width',
       'trim_trailing_whitespace',
       'insert_final_newline',
-      'enable_new_editor',
       // 'auto_save',
       // 'auto_wrap',
       // 'live_auto_completion',
@@ -264,6 +275,7 @@ const settings = observable({
     },
     indent_style: {
       name: 'settings.editor.indentStyle',
+      disabled: true,
       value: 'space',
       options: [{ name: 'Space', value: 'space' }, { name: 'Tab', value: 'tab' }],
       reaction (value) {
@@ -273,6 +285,7 @@ const settings = observable({
     indent_size: {
       name: 'settings.editor.indentSize',
       value: 4,
+      disabled: config.enableNewEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
@@ -282,15 +295,18 @@ const settings = observable({
     tab_width: {
       name: 'settings.editor.tabWidth',
       value: 4,
+      disabled: config.enableNewEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
+        monacoConfig.tabSize = value
         if (EditorState) EditorState.options.tabSize = value
       }
     },
     trim_trailing_whitespace: {
       name: 'settings.editor.trimTrailingWhitespace',
       value: false,
+      disabled: config.enableNewEditor,
       reaction (value) {
         if (EditorState) EditorState.options.trimTrailingWhitespace = value
       }
@@ -298,20 +314,9 @@ const settings = observable({
     insert_final_newline: {
       name: 'settings.editor.insertFinalNewline',
       value: false,
+      disabled: config.enableNewEditor,
       reaction (value) {
         if (EditorState) EditorState.options.insertFinalNewline = value
-      }
-    },
-    enable_new_editor: {
-      name: 'settings.editor.enableNewEditor',
-      value: JSON.parse(localStorage.getItem('enableNewEditor')) || false,
-      reaction (value) {
-        const prevValue = JSON.parse(localStorage.getItem('enableNewEditor')) || false
-        if (value !== prevValue && isBoolean(value)) {
-          config.enableNewEditor = value
-          if (EditorState) EditorState.options.enableNewEditor = value
-          localStorage.setItem('enableNewEditor', value)
-        }
       }
     },
     auto_save: {

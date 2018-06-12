@@ -9,6 +9,7 @@
          "english": "English",
          "chinese": "Chinese"
       },
+      "enableNewEditor": "Enable new Editor",
       "hideFiles": "Hide Files"
    },
    "editor": {
