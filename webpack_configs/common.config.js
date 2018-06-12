@@ -103,7 +103,7 @@ return {
     ]
   },
   externals: {
-    serverConfig: JSON.stringify(require(path.join(PROJECT_ROOT, (staticDir ? '' : 'static'), 'config.json')))
+    serverConfig: JSON.stringify(require(path.join(PROJECT_ROOT, 'static', 'config.json')))
   }
 }
 }
