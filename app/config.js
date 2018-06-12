@@ -1,5 +1,7 @@
 import { observable, autorun } from 'mobx'
 import getCookie from './utils/getCookie'
+import serverConfig from 'serverConfig'
+console.log('json', serverConfig)
 
 const config = observable({
   projectName: '',

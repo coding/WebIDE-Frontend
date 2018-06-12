@@ -101,6 +101,9 @@ return {
         use: ['raw-loader']
       }
     ]
+  },
+  externals: {
+    serverConfig: JSON.stringify(require(path.join(PROJECT_ROOT, (staticDir || 'static'), '/config.json')))
   }
 }
 }
