@@ -5,7 +5,7 @@ import config from 'config'
 import io from 'socket.io-client'
 import { documentSelectors } from '../utils/languages'
 
-export function createLanguageClient (workspace, services, connection, language) {
+export function createLanguageClient (services, connection, language) {
   const currentDocumentSelector = documentSelectors.find(v => v.lang === config.mainLanguage)
   return new BaseLanguageClient({
     name: `[${config.mainLanguage}-langServer]`,
@@ -32,7 +32,8 @@ const [host, serverpath] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring
 
 export function createWebSocket () {
   const socketOptions = {
-    reconnection: false,
+    reconnection: true,
+    reconnectionAttempts: 5,
     reconnectionDelay: 10000,
     path: `${serverpath}/javalsp/${config.spaceKey}`,
     transports: ['websocket'],

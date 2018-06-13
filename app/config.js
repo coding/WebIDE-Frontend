@@ -1,4 +1,4 @@
-import { observable, autorun } from 'mobx'
+import { observable, autorun, reaction } from 'mobx'
 import getCookie from './utils/getCookie'
 
 const localStorage = window.localStorage
@@ -11,7 +11,7 @@ const config = observable({
   globalKey: '',
   userProfile: {},
   requiredExtensions: [],
-  _WORKSPACE_FOLDER_: '',
+  _WORKSPACE_SUB_FOLDER_: '',
   _ROOT_URI_: '',
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
@@ -62,8 +62,12 @@ autorun(() => {
 
 autorun(() => {
   if (config.spaceKey !== '') {
-    config._WORKSPACE_FOLDER_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
-    config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    config.__WORKSPACE_URI__ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    config.mainLanguage = localStorage.getItem(`${config.spaceKey}-mainLanguage`) || ''
+    config._WORKSPACE_SUB_FOLDER_ = localStorage.getItem(`${config.spaceKey}-_WORKSPACE_SUB_FOLDER_`) || ''
+    config._ROOT_URI_ = config._WORKSPACE_SUB_FOLDER_ === ''
+    ? `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    : `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir/${config._WORKSPACE_SUB_FOLDER_}`
   }
 })
 

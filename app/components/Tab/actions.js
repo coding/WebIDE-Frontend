@@ -1,4 +1,4 @@
-import { extendObservable, when } from 'mobx'
+import { reaction, when } from 'mobx'
 import mobxStore from 'mobxStore'
 import { createAction, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
@@ -8,7 +8,7 @@ import FileState from 'commons/File/state';
 import FileStore from 'commons/File/store';
 import api from '../../backendAPI';
 import icons from 'file-icons-js';
-import LanguageState, { LanguageClient } from './LanguageClientState'
+import LanguageState from './LanguageClientState'
 import config from 'config'
 import { findLangueByExt } from 'components/MonacoEditor/utils/findLanguage'
 import { createLanguageClient } from 'components/MonacoEditor/actions'
