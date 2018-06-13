@@ -13,21 +13,22 @@ import * as Actions from './actions'
 import PluginArea from '../Plugins/component'
 import { injectComponent } from '../Plugins/actions'
 import { TERMINAL } from '../Plugins/constants'
+import i18n from 'utils/createI18n'
 
 const contextMenuItems = [
   {
-    name: 'Close',
+    name: i18n`tab.contextMenu.close`,
     icon: '',
     command: 'tab:close'
   }, {
-    name: 'Close Others',
+    name: i18n`tab.contextMenu.closeOthers`,
     icon: '',
     command: 'tab:close_other'
   }, {
-    name: 'Close All',
+    name: i18n`tab.contextMenu.closeAll`,
     icon: '',
     command: 'tab:close_all'
-  },
+  }
 ]
 
 @observer

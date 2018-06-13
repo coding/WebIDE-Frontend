@@ -5,15 +5,15 @@ import * as PaneActions from 'components/Pane/actions'
 
 export default {
   'tab:close': (c) => {
-    Tab.removeTab(c.context.id)
+    Tab.removeTab(c.context)
   },
 
   'tab:close_other': (c) => {
-    Tab.removeOtherTab(c.context.id)
+    Tab.removeOtherTab(c.context)
   },
 
   'tab:close_all': (c) => {
-    Tab.removeAllTab(c.context.id)
+    Tab.removeAllTab(c.context)
   },
 
   'tab:split_v': (c) => {
