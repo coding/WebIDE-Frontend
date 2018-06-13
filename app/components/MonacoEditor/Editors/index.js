@@ -12,7 +12,7 @@ const EditorWrapper = observer(({ tab, active }) => {
   const { editor, editorInfo } = tab
   // console.log(editorInfo)
   const editorType = editorInfo.editorType || 'default'
-  if (editorType !== 'imageEditor' && editorType !== 'unknownEditor' && !editor.content) {
+  if (tab.file && tab.file.isEditorLoading) {
     return (
       <div className="editor-spinner">
         <i className="fa fa-spinner fa-pulse"></i>
