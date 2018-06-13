@@ -1,5 +1,5 @@
 import uniqueId from 'lodash/uniqueId'
-import { observable, computed, action, extendObservable } from 'mobx'
+import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
 
 import assignProps from 'utils/assignProps'
@@ -66,6 +66,10 @@ class EditorInfo {
         openEditor: toDefinition
       }
     })
+    this.disposers.push(observe(this, 'content', (change) => {
+      const content = change.newValue || ''
+      if (content !== monacoEditor.getValue()) monacoEditor.setValue(content)
+    }))
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
@@ -215,9 +219,9 @@ class EditorInfo {
     return ['textEditor', 'markdownEditor', 'htmlEditor'].includes(this.editorType)
   }
 
-  disports = []
+  disposers = []
   dispose () {
-    // TODO
+    this.disposers.forEach(disposer => disposer && disposer())
   }
 
   destroy (async) {
