@@ -57,6 +57,7 @@ class FileNode {
   @observable isSynced = true
   @observable gitStatus = 'NONE'
   @observable size = 0
+  @observable isEditorLoading = false
 
   @observable _name = undefined
   @computed

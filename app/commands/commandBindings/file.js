@@ -80,7 +80,7 @@ export function initOpenFile(tabs, tabGroups) {
     })
     tabs.map((tabValue) => {
       const { path, editor, contentType, ...others } = tabValue
-      FileStore.loadNodeData(tabValue)
+      FileStore.loadNodeData({ ...tabValue, isEditorLoading: true })
       TabStore.createTab({
         icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
         contentType,
@@ -92,7 +92,7 @@ export function initOpenFile(tabs, tabGroups) {
       })
       const { encoding } = FileState.initData.get(path) || {}
       api.readFile(path, encoding).then(data => {
-        FileStore.loadNodeData(data)
+        FileStore.loadNodeData({ ...data, isEditorLoading: false })
         FileState.initData.set(path, {})
       })
     })
@@ -121,6 +121,7 @@ export function openFile (obj, callback) {
       tab => tab.file && tab.file.path === path && (tab.tabGroup === activeTabGroup || allGroup)
     )
     if (existingTabs.length) {
+      console.log('======================')
       const existingTab = existingTabs[0]
       if (editor.gitBlame) {
         existingTab.editor.gitBlame = editor.gitBlame

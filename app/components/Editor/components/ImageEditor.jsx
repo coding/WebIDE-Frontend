@@ -40,8 +40,8 @@ class ImageEditor extends Component {
   render () {
     if (!this.state.imageUrl) {
       return (
-        <div className='image-editor-loading'>
-          <i className='fa fa-spinner fa-pulse fa-3x fa-fw' />
+        <div className="editor-spinner">
+          <i className="fa fa-spinner fa-pulse"></i>
         </div>
       )
     }
