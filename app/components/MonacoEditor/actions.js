@@ -3,10 +3,9 @@ import { registerAction } from 'utils/actions'
 import FileTreeState from 'components/FileTree/state'
 import config from 'config'
 import dispatchCommand from 'commands/dispatchCommand'
-import { createTab } from 'components/Tab/actions'
+import { createTab, activateTab } from 'components/Tab/actions'
 import { openFile } from 'commands/commandBindings/file'
 import TabState from 'components/Tab/state'
-import { activateTab } from 'components/Tab/actions'
 import LanguageState, { LanguageClient } from 'components/Tab/LanguageClientState'
 
 import { supportLangServer } from './utils/languages'
@@ -18,9 +17,9 @@ when(() => config.spaceKey !== '', () => {
   config.__WORKSPACE_URI__ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
 })
 
-export const toDefinition = registerAction('monaco:goto_definition', ({ options, resource }) => {
-  const { path, scheme, query, fsPath, authority } = resource
-  const { selection } = options
+export const toDefinition = registerAction('monaco:goto_definition', (params) => {
+  const { resource } = params
+  const { path, scheme } = resource
   if (scheme === INMEMORY) return false
   if (scheme !== JDT) {
     const relativePath = path.substring(config.__WORKSPACE_URI__.length)
@@ -29,10 +28,10 @@ export const toDefinition = registerAction('monaco:goto_definition', ({ options,
       // 已打开过
       dispatchCommand('file:open_file', {
         path: fileTreeNode.path,
-        editor: { filePath: relativePath, selection },
+        editor: { filePath: relativePath, selection: params.options && params.options.selection },
       })
     } else {
-      openFile({ path: relativePath, editor: { filePath: relativePath, selection } })
+      openFile({ path: relativePath, editor: { filePath: relativePath, selection: params.options && params.options.selection } })
     }
   } else {
     const languageClient = LanguageState.clients.get(config.mainLanguage)

@@ -5,7 +5,7 @@ export default [
 ]
 
 export const supportLangServer = [
-  { lang: 'Java', files: ['pom.xml', 'settings.gradle'], file: 'pom.xml' },
+  { lang: 'Java', files: ['pom.xml', 'settings.gradle', 'build.gradle'], file: 'pom.xml' },
   // { lang: 'JavaScript', files: ['package.json'], file: 'package.json' },
   // { lang: 'TypeScript', files: ['package.json'], file: 'package.json' },
 ]

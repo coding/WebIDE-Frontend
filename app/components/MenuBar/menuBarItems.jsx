@@ -47,7 +47,7 @@ const menuBarItems = observable([
         isDivider: true
       }, {
         key: 'lspSetting',
-        name: '语言服务器设定',
+        name: i18n`menuBarItems.file.lspSettings`,
         command: () => {
           showModal({
             type: 'LanguageServerConfig',

@@ -25,10 +25,11 @@ const languageState = observable({
 export class LanguageClient {
   constructor (language) {
     this.language = language
-    this._ROOT_URI_ = config._WORKSPACE_FOLDER_
     this._WORKSPACE_ = config._ROOT_URI_
     this.openeduri = new observable.map({})
     this.initialize()
+
+    // reaction(() => config.)
   }
 
   /**
@@ -36,7 +37,7 @@ export class LanguageClient {
    * 会发送 initialize 消息对服务端进行初始化
    */
   initialize = () => {
-    this.socket = createWebSocket(`http://test.coding.ide/ide-ws/javalsp/sockjs/${config.spaceKey}?ws=${config.spaceKey}`)
+    this.socket = createWebSocket()
     this.ioToWebSocket = {
       send: (message) => {
         this.socket.emit('message', { message })
@@ -45,7 +46,7 @@ export class LanguageClient {
       onclose: this.socket.onclose,
       close: this.socket.close,
     }
-    this.services = createMonacoServices(null, { rootUri: `file://${this._ROOT_URI_}` })
+    this.services = createMonacoServices(null, { rootUri: `file://${this._WORKSPACE_}` })
     /**
      * monaco-langclient中给socket对象添加了onopen事件
      * 连接成功以后手动触发onopen
@@ -68,7 +69,6 @@ export class LanguageClient {
       webSocket: this.ioToWebSocket,
       onConnection: (connection) => {
         this.client = createLanguageClient(
-          this._WORKSPACE_,
           this.services,
           connection,
           this.curLanguage
@@ -123,8 +123,8 @@ export class LanguageClient {
    */
   destory = () => {
     this.shutdown()
-      .then(this.exit)
       .then(() => {
+        this.exit()
         this.socket.close()
         languageState.clients.delete(this.language)
       })

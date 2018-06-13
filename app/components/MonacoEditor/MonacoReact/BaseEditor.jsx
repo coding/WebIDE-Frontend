@@ -6,7 +6,6 @@ import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
 import * as monaco from 'monaco-editor'
 
-import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
 import dispatchCommand from 'commands/dispatchCommand'
@@ -32,9 +31,6 @@ class MonacoEditor extends React.Component {
     this.editorElement = editorInfo.monacoElement
     this.containerElement = undefined
     this.currentValue = props.value
-    this.state = {
-      mount: false,
-    }
 
     const model = monaco.editor.getModel(this.editor.uri)
 
@@ -60,9 +56,6 @@ class MonacoEditor extends React.Component {
   componentDidMount () {
     if (!this.containerElement) return
     this.containerElement.appendChild(this.editorElement)
-    this.setState({
-      mount: true,
-    })
     const { monacoEditor } = this.editor
     const { tab } = this.props
     monacoEditor.onDidChangeModelContent((event) => {

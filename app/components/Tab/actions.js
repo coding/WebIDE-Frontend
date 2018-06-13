@@ -1,4 +1,4 @@
-import { extendObservable, when } from 'mobx'
+import { reaction, when } from 'mobx'
 import mobxStore from 'mobxStore'
 import { createAction, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'

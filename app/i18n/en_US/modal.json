@@ -2,5 +2,7 @@
   "pwdRequired": "Login password required",
   "dangerousOperation": "This is a dangerous operation that requires authentication!",
   "okButton": "OK",
+  "projectType": "Project Type",
+  "sourceFolder": "Source Folder",
   "cancelButton": "Cancel"
 }

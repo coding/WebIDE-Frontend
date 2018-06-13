@@ -7,7 +7,8 @@
       "newFile": "新建文件",
       "newFolder": "新建文件夹",
       "save": "保存",
-      "commit": "commit"
+      "commit": "commit",
+      "lspSettings": "语言服务器设定"
    },
    "edit": {
       "main": "编辑",

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import { observer } from 'mobx-react'
 import { trim } from 'lodash'
 import { dispatchCommand } from 'commands'
 import config from 'config'
 import { addModal } from 'components/Modal/actions'
+import i18n from 'utils/createI18n'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 import LanguageStae from 'components/Tab/LanguageClientState'
 import { createLanguageClient } from 'components/MonacoEditor/actions'
@@ -10,15 +12,19 @@ import { createLanguageClient } from 'components/MonacoEditor/actions'
 class LanguageServerConfig extends Component {
   state = {
     language: config.mainLanguage,
-    path: '',
+    path: config._WORKSPACE_SUB_FOLDER_,
   }
 
   handleSourceChange = (e) => {
-    this.setState({ path: e.target.value })
+    this.setState({
+      path: e.target.value
+    })
   }
 
   handleChangeMainlanguage = (e) => {
-    this.setState({ language: e.target.value })
+    this.setState({
+      language: e.target.value
+    })
   }
 
   handleSelectSource = () => {
@@ -38,26 +44,27 @@ class LanguageServerConfig extends Component {
     if (client) {
       client.destory()
     }
-    config._WORKSPACE_FOLDER_ = `${config._WORKSPACE_FOLDER_}/${this.state.path}`
     config.mainLanguage = this.state.language
+    config._WORKSPACE_SUB_FOLDER_ = this.state.path
+    window.localStorage.setItem(`${config.spaceKey}-mainLanguage`, this.state.language)
+    window.localStorage.setItem(`${config.spaceKey}-_WORKSPACE_SUB_FOLDER_`, this.state.path)
     createLanguageClient(this.state.language)
     dispatchCommand('modal:dismiss')
   }
 
   render () {
-    const { language } = this.state
     return (<div className='project-config-container'>
-      <h2>语言服务器设置</h2>
+      <h2>{i18n`menuBarItems.file.lspSettings`}</h2>
       <div className='form-group'>
-        <label>Project Type</label>
-        <select className='form-control' onChange={this.handleChangeMainlanguage} value={language}>
+        <label>{i18n`modal.projectType`}</label>
+        <select className='form-control' onChange={this.handleChangeMainlanguage} value={this.state.language}>
           <option key='plane text' value=''>Blank</option>
           {supportLangServer.map(l =>
             <option key={l.lang} value={l.lang}>{l.lang}</option>)}
         </select>
       </div>
       <div className='form-group'>
-        <label>Source Folder</label>
+        <label>{i18n`modal.sourceFolder`}</label>
         <div className='form-line'>
           <input className='form-control'
             type='text'
