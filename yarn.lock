@@ -2361,11 +2361,7 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
-electron-to-chromium@^1.2.7:
-  version "1.3.7"
-  resolved "http://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.7.tgz#9fb75a2417f28114425d364de118d1cfd681432b"
-
-electron-to-chromium@^1.3.47:
+electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.47:
   version "1.3.48"
   resolved "http://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.48.tgz#d3b0d8593814044e092ece2108fc3ac9aea4b900"
 
@@ -7620,9 +7616,9 @@ vscode-base-languageclient@^0.0.1-alpha.5:
     vscode-languageserver-types "^3.2.0"
     vscode-uri "^1.0.0"
 
-vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0:
-  version "3.6.1"
-  resolved "http://registry.npm.taobao.org/vscode-jsonrpc/download/vscode-jsonrpc-3.6.1.tgz#3f9b8f902077da27f1ffd37c7317a77bd4696a49"
+"vscode-jsonrpc@https://github.com/SakuraAsh/vscode-jsonrpc-coding.git":
+  version "3.6.2"
+  resolved "https://github.com/SakuraAsh/vscode-jsonrpc-coding.git#f04672d0e167199ef46eba07777be00451b4296f"
 
 vscode-languageserver-types@^3.2.0, vscode-languageserver-types@^3.7.0:
   version "3.7.1"
