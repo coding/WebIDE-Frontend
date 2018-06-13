@@ -13,6 +13,13 @@ import config from '../../config'
 const EditorWrapper = observer(({ tab, active }) => {
   const { editor } = tab
   const editorType = editor.editorType
+  if (editorType !== 'imageEditor' && editorType !== 'unknownEditor' && !editor.content) {
+    return (
+      <div className="editor-spinner">
+        <i className="fa fa-spinner fa-pulse"></i>
+      </div>
+    )
+  }
   const file = editor.file || {}
   // key is crutial here, it decides whether
   // the component should re-construct or

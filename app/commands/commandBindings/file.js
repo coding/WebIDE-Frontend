@@ -3,6 +3,7 @@ import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as Modal from '../../components/Modal/actions'
 import TabStore from 'components/Tab/store'
+import TabState from 'components/Tab/state'
 import FileState from 'commons/File/state'
 import FileStore from 'commons/File/store'
 import { notify } from '../../components/Notification/actions'
@@ -61,58 +62,89 @@ function createFolderAtPath (path) {
 //   }
 // }
 
-export function openFile(obj, callback) {
-  if (!obj.path) return
-  // 做一些encoding的调度
-  const { encoding } = FileState.initData.get(obj.path) || {}
-  openFileWithEncoding({ ...obj, encoding, callback })
-  FileState.initData.set(obj.path, {})
-}
-
-export function openFileWithEncoding ({ path, contentType, editor = {}, others = {}, allGroup = false, encoding, callback }) {
-  const { encoding: currentEncoding } = FileStore.get(path) || {}
-  return api.readFile(path, encoding || currentEncoding)
-    .then((data) => {
-      FileStore.loadNodeData(data)
-      return data
-    })
-    .then(() => {
-      const activeTabGroup = TabStore.getState().activeTabGroup
-      const existingTabs = TabStore.findTab(
-        tab => tab.file && tab.file.path === path && (tab.tabGroup === activeTabGroup || allGroup)
-      )
-      if (existingTabs.length) {
-        const existingTab = existingTabs[0]
-        if (editor.gitBlame) {
-          existingTab.editor.gitBlame = editor.gitBlame
-        }
-        existingTab.activate()
-        if (editor.selection) {
-          existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
-          existingTab.editorInfo.monacoEditor.focus()
-        }
-        if (callback) callback()
-      } else {
-        TabStore.createTab({
-          icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
-          contentType,
-          editor: {
-            ...editor,
-            filePath: path,
-          },
-          ...others,
-        })
-        if (callback) {
-          callback()
+export function initOpenFile(tabs, tabGroups) {
+  when(() => !FileState.initData.get('_init'), () => {
+    const openedTabs = Object.values(TabState.tabs._data);
+    tabs = tabs.filter(tab => {
+      let flag = true;
+      for (let i = 0, n = openedTabs.length; i < n; i++) {
+        const cc = openedTabs[i];
+        const path = cc.value.file ? cc.value.file.path : '';
+        if (tab.path === path) {
+          flag = false;
         }
       }
+      if (flag) {
+        return tab;
+      }
     })
+    tabs.map((tabValue) => {
+      const { path, editor, contentType, ...others } = tabValue
+      FileStore.loadNodeData(tabValue)
+      TabStore.createTab({
+        icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
+        contentType,
+        editor: {
+          ...editor,
+          filePath: path,
+        },
+        ...others,
+      })
+      const { encoding } = FileState.initData.get(path) || {}
+      api.readFile(path, encoding).then(data => {
+        FileStore.loadNodeData(data)
+        FileState.initData.set(path, {})
+      })
+    })
+    tabGroups.forEach((tabGroupsValue) => {
+      if (tabGroupsValue.activeTabId) {
+        setTimeout(() => {
+          TabStore.activateTab(tabGroupsValue.activeTabId)
+        }, 1)
+      }
+    })
+  })
 }
 
-function createTab ({ icon, type }) {
-  TabStore.createTab({
-    icon,
-    type,
+export function openFile (obj, callback) {
+  const { path, contentType, editor = {}, others = {}, allGroup = false } = obj;
+  if (!path) return
+  const { encoding } = FileState.initData.get(path) || {}
+  const { encoding: currentEncoding } = FileStore.get(path) || {}
+  return api.readFile(path, encoding || currentEncoding).then((data) => {
+    FileStore.loadNodeData(data)
+    FileState.initData.set(path, {})
+    return data
+  }).then(() => {
+    const activeTabGroup = TabStore.getState().activeTabGroup
+    const existingTabs = TabStore.findTab(
+      tab => tab.file && tab.file.path === path && (tab.tabGroup === activeTabGroup || allGroup)
+    )
+    if (existingTabs.length) {
+      const existingTab = existingTabs[0]
+      if (editor.gitBlame) {
+        existingTab.editor.gitBlame = editor.gitBlame
+      }
+      existingTab.activate()
+      if (editor.selection) {
+        existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
+        existingTab.editorInfo.monacoEditor.focus()
+      }
+      if (callback) callback()
+    } else {
+      TabStore.createTab({
+        icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
+        contentType,
+        editor: {
+          ...editor,
+          filePath: path,
+        },
+        ...others,
+      })
+      if (callback) {
+        callback()
+      }
+    }
   })
 }
 

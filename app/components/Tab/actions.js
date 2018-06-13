@@ -3,11 +3,7 @@ import mobxStore from 'mobxStore'
 import { createAction, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
 import dispatchCommand from 'commands/dispatchCommand'
-import TabState from 'components/Tab/state';
-import FileState from 'commons/File/state';
-import FileStore from 'commons/File/store';
-import api from '../../backendAPI';
-import icons from 'file-icons-js';
+import { initOpenFile } from '../../commands/commandBindings/file'
 import LanguageState, { LanguageClient } from './LanguageClientState'
 import config from 'config'
 import { findLangueByExt } from 'components/MonacoEditor/utils/findLanguage'
@@ -24,48 +20,7 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
     dispatchCommand('global:show_env')
     return;
   }
-  when(() => !FileState.initData.get('_init'), () => {
-    const mountedTabIds = [];
-    const openTabs = tabs.map((tabValue) => {
-      const { path, editor, contentType, ...others } = tabValue
-      const { encoding } = FileState.initData.get(path) || {}
-      return api.readFile(path, encoding).then(data => {
-        FileStore.loadNodeData(data)
-        createTab({
-          icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
-          contentType,
-          editor: {
-            ...editor,
-            filePath: path,
-          },
-          ...others,
-        })
-        const thisTabId = Object.values(TabState.tabs._data).map(tab => tab.value.id).pop();
-        let hasFindIndex = false;
-        mountedTabIds.push(thisTabId);
-        for (let i = 0, n = tabs.length; i < n; i++) {
-          const curTabId = tabs[i].id;
-          if (hasFindIndex && mountedTabIds.includes(curTabId)) {
-            insertTabBefore(thisTabId, curTabId);
-            break;
-          }
-          if (thisTabId === curTabId) {
-            hasFindIndex = true;
-          }
-        }
-        return data;
-      });
-    });
-    Promise.all(openTabs).then(data => {
-      Object.values(tabGroups).forEach((tabGroupsValue) => {
-        if (tabGroupsValue.activeTabId) {
-          setTimeout(() => {
-            activateTab(tabGroupsValue.activeTabId)
-          }, 1)
-        }
-      })
-    })
-  })
+  return initOpenFile(tabs, tabGroups)
 })
 
 export const createTab = registerAction(TAB_CREATE,
