@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
-import { when, autorun } from 'mobx'
+import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
 import * as monaco from 'monaco-editor'
 
-import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
 import dispatchCommand from 'commands/dispatchCommand'
@@ -32,24 +31,40 @@ class MonacoEditor extends React.Component {
     this.editorElement = editorInfo.monacoElement
     this.containerElement = undefined
     this.currentValue = props.value
-    this.state = {
-      mount: false,
-    }
+
+    const model = monaco.editor.getModel(this.editor.uri)
+
+    reaction(() => initialOptions.theme, (theme) => {
+      monaco.editor.setTheme(theme)
+    })
+
+    reaction(() => initialOptions.tabSize, (tabSize) => {
+      if (model) {
+        model.updateOptions({
+          tabSize
+        })
+      }
+    })
+
+    autorun(() => {
+      if (this.editor.monacoEditor) {
+        this.editor.monacoEditor.updateOptions(initialOptions)
+      }
+    })
   }
 
   componentDidMount () {
     if (!this.containerElement) return
     this.containerElement.appendChild(this.editorElement)
-    this.setState({
-      mount: true,
-    })
     const { monacoEditor } = this.editor
     const { tab } = this.props
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
 
       this.currentValue = value
+
       if (this.editor.file && tab) {
+        this.editor.file.isSynced = false
         FileStore.updateFile({
           id: this.editor.file.id,
           content: value,
@@ -75,17 +90,15 @@ class MonacoEditor extends React.Component {
        *  Stopped, // 5
        * }
        */
-      let model = monaco.editor.getModel(`file://${languageClient._WORKSPACE_}${path}`)
+      let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)
       if (!model) {
         model = monaco.editor.createModel(
           content,
           'java',
-          monaco.Uri.parse(`file://${languageClient._WORKSPACE_}${path}`)
+          monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
         )
-        this.uri = `file://${languageClient._WORKSPACE_}${path}`
+        this.uri = `file://${languageClient._ROOT_URI_}${path}`
       }
-    // console.log(monaco.editor.getModel(`file://${IDEWSURI}${OPENEDFILEURI}`))
-    // const model = monaco.editor.createModel(file.content, 'java', monaco.Uri.parse(`file://${IDEWSURI}${OPENEDFILEURI}`))
       monacoEditor.setModel(model)
 
       if (this.editor.selection) {
@@ -96,27 +109,16 @@ class MonacoEditor extends React.Component {
         if (!languageClient.openeduri.get(path)) {
           languageClient.openTextDocument({
             textDocument: {
-              uri: `file://${languageClient._WORKSPACE_}${path}`,
+              uri: `file://${languageClient._ROOT_URI_}${path}`,
               languageId: this.language,
               text: content,
               version: 1,
             }
           })
 
-          languageClient.changeWatchedFiles({
-            changes: [{
-              uri: `file://${languageClient._WORKSPACE_}/pom.xml`,
-              type: 2
-            }]
-          })
-
           openeduri.set(path, content)
         }
       }
-    })
-
-    autorun(() => {
-      this.editor.monacoEditor.updateOptions(initialOptions)
     })
   }
 
@@ -124,20 +126,12 @@ class MonacoEditor extends React.Component {
     const languageClient = languageState.clients.get(this.language)
     if (!languageClient) return
     const { path } = this.editor.file
-    const { client, openeduri } = languageClient
+    const { openeduri } = languageClient
     // 组件卸载后发送 didClose消息
     if (languageClient && openeduri.get(path)) {
-      // client.sendRequest(
-      //   DidCloseTextDocumentNotification.type,
-      //   {
-      //     textDocument: {
-      //       uri: `${languageClient._WORKSPACE_}${path}`,
-      //     }
-      //   }
-      // )
       languageClient.closeTextDocument({
         textDocument: {
-          uri: `${languageClient._WORKSPACE_}${path}`,
+          uri: `${languageClient._ROOT_URI_}${path}`,
         }
       })
       languageClient.openeduri.delete(path)

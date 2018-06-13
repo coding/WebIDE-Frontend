@@ -39,7 +39,9 @@ export const loadNodeData = registerAction('fs:load_node_data',
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
     const mainLanguage = findLanguageByFileName(data)
-    config.mainLanguage = mainLanguage
+    if ((!config.mainLanguage || config.mainLanguage !== '') && mainLanguage !== '') {
+      config.mainLanguage = mainLanguage
+    }
     return loadNodeData(data)
   })
 )

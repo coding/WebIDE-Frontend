@@ -1,6 +1,7 @@
 import React from 'react'
 import api from 'backendAPI'
 import { showModal } from 'components/Modal/actions'
+import tabState from 'components/Tab/state'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
@@ -40,12 +41,13 @@ const menuBarItems = observable([
         key: 'save',
         name: i18n`menuBarItems.file.save`,
         icon: 'fa fa-floppy-o',
-        command: 'file:save'
+        command: 'file:save',
+        getIsDisabled: () => tabState.tabs.size === 0
       }, {
         isDivider: true
       }, {
         key: 'lspSetting',
-        name: '语言服务器设定',
+        name: i18n`menuBarItems.file.lspSettings`,
         command: () => {
           showModal({
             type: 'LanguageServerConfig',

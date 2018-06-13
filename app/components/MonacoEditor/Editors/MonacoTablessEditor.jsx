@@ -13,6 +13,7 @@ class MonacoTablessEditor extends MonacoEditor {
             tabGroup: { id: this.props.tabGroupId },
             editor: {
               content: monacoEditor.getValue(),
+              autoFocus: true,
               ...this.editor,
             },
           })

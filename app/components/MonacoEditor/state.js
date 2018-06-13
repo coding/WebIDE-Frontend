@@ -52,11 +52,10 @@ class EditorInfo {
     this.monacoElement.style.width = '100%'
     this.monacoElement.style.height = '100%'
 
-
     if (this.filePath) {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
-  
+
     const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
@@ -67,6 +66,20 @@ class EditorInfo {
         openEditor: toDefinition
       }
     })
+    /**
+     * tablesseditor 新建 tab 自动聚焦光标位置
+     */
+    if (props.autoFocus) {
+      const docLength = props.content.length
+      const { lineNumber, column } = model.getPositionAt(docLength)
+      monacoEditor.setSelection({
+        startLineNumber: lineNumber,
+        startColumn: column,
+        endLineNumber: lineNumber,
+        endColumn: column
+      })
+      monacoEditor.focus()
+    }
 
     monacoEditor.onDidChangeCursorPosition((event) => {
       this.selections = monacoEditor.getSelections()

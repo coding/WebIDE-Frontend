@@ -2,5 +2,7 @@
   "pwdRequired": "需要登录密码",
   "dangerousOperation": "这是一个危险操作，需要进行身份验证！",
   "okButton": "确定",
+  "projectType": "项目类型",
+  "sourceFolder": "源代码目录",
   "cancelButton": "取消"
 }

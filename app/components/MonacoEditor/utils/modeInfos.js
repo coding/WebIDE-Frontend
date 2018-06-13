@@ -76,7 +76,7 @@ export default [{
   "mimetypes": ["text/html", "text/x-jshtm", "text/template", "text/ng-template"]
 }, {
   "id": "ini",
-  "extensions": [".ini", ".properties", ".gitconfig"],
+  "extensions": [".ini", ".properties", ".gitconfig", ".editorconfig"],
   "filenames": ["config", ".gitattributes", ".gitconfig", ".editorconfig"],
   "aliases": ["Ini", "ini"]
 }, {
