@@ -10,6 +10,6 @@ export default observable({
   },
   tabSize: 4,
   fontSize: 13,
-  contextmenu: true,
+  contextmenu: false,
   theme: 'vs-dark'
 })
