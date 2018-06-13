@@ -92,27 +92,27 @@ export const createTab = registerAction(TAB_CREATE,
   },
 )
 
-export const removeTab = registerAction('tab:remove', (tabId) => {
-  const tab = state.tabs.get(tabId)
+export const removeTab = registerAction('tab:remove', (tab) => {
+  // const tab = state.tabs.get(tabId)
   tab.destroy()
 })
 
-export const removeOtherTab = registerAction('tab:remove_other', (tabId) => {
-  const tab = state.tabs.get(tabId)
+export const removeOtherTab = registerAction('tab:remove_other', (tab) => {
+  // const tab = state.tabs.get(tabId)
   tab.activate()
   tab.tabGroup.tabs.forEach((eachTab) => {
     if (eachTab !== tab) eachTab.destroy()
   })
 })
 
-export const removeAllTab = registerAction('tab:remove_all', (tabId) => {
-  const tab = state.tabs.get(tabId)
+export const removeAllTab = registerAction('tab:remove_all', (tab) => {
+  // const tab = state.tabs.get(tabId)
   tab.tabGroup.tabs.forEach(tab => tab.destroy())
 })
 
 
-export const activateTab = registerAction('tab:activate', (tabId) => {
-  const tab = state.tabs.get(tabId)
+export const activateTab = registerAction('tab:activate', (tab) => {
+  // const tab = state.tabs.get(tabId)
   if (tab && tab.activate) {
     tab.activate()
   }
