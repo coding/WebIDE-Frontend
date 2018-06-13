@@ -12,6 +12,13 @@ const EditorWrapper = observer(({ tab, active }) => {
   const { editor, editorInfo } = tab
   // console.log(editorInfo)
   const editorType = editorInfo.editorType || 'default'
+  if (editorType !== 'imageEditor' && editorType !== 'unknownEditor' && !editor.content) {
+    return (
+      <div className="editor-spinner">
+        <i className="fa fa-spinner fa-pulse"></i>
+      </div>
+    )
+  }
   const file = editor.file || {}
   // key is crutial here, it decides whether
   // the component should re-construct or
