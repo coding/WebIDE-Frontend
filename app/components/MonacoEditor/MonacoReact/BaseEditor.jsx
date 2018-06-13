@@ -90,14 +90,14 @@ class MonacoEditor extends React.Component {
        *  Stopped, // 5
        * }
        */
-      let model = monaco.editor.getModel(`file://${languageClient._WORKSPACE_}${path}`)
+      let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)
       if (!model) {
         model = monaco.editor.createModel(
           content,
           'java',
-          monaco.Uri.parse(`file://${languageClient._WORKSPACE_}${path}`)
+          monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
         )
-        this.uri = `file://${languageClient._WORKSPACE_}${path}`
+        this.uri = `file://${languageClient._ROOT_URI_}${path}`
       }
       monacoEditor.setModel(model)
 
@@ -109,7 +109,7 @@ class MonacoEditor extends React.Component {
         if (!languageClient.openeduri.get(path)) {
           languageClient.openTextDocument({
             textDocument: {
-              uri: `file://${languageClient._WORKSPACE_}${path}`,
+              uri: `file://${languageClient._ROOT_URI_}${path}`,
               languageId: this.language,
               text: content,
               version: 1,
@@ -131,7 +131,7 @@ class MonacoEditor extends React.Component {
     if (languageClient && openeduri.get(path)) {
       languageClient.closeTextDocument({
         textDocument: {
-          uri: `${languageClient._WORKSPACE_}${path}`,
+          uri: `${languageClient._ROOT_URI_}${path}`,
         }
       })
       languageClient.openeduri.delete(path)

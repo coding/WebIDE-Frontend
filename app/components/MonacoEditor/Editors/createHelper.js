@@ -7,7 +7,6 @@ import { documentSelectors } from '../utils/languages'
 
 export function createLanguageClient (services, connection, language) {
   const currentDocumentSelector = documentSelectors.find(v => v.lang === config.mainLanguage)
-  console.log(config.mainLanguage)
   return new BaseLanguageClient({
     name: `[${config.mainLanguage}-langServer]`,
     clientOptions: {

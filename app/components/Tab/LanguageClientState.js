@@ -25,11 +25,16 @@ const languageState = observable({
 export class LanguageClient {
   constructor (language) {
     this.language = language
-    this._WORKSPACE_ = config._ROOT_URI_
+    /**
+     * 初始化传给语言服务的rooturi和文件uri路径不同
+     * 初始化的uri可能会包含设置的项目路径
+     * 文件uri本身已包含了项目路径，所以分两个。。。
+     */
+    this.__WORKSPACE_URI__ = config._ROOT_URI_
+    this._ROOT_URI_ = config.__WORKSPACE_URI__
     this.openeduri = new observable.map({})
+    this.DESTROYED = false
     this.initialize()
-
-    // reaction(() => config.)
   }
 
   /**
@@ -46,7 +51,7 @@ export class LanguageClient {
       onclose: this.socket.onclose,
       close: this.socket.close,
     }
-    this.services = createMonacoServices(null, { rootUri: `file://${this._WORKSPACE_}` })
+    this.services = createMonacoServices(null, { rootUri: `file://${this.__WORKSPACE_URI__}` })
     /**
      * monaco-langclient中给socket对象添加了onopen事件
      * 连接成功以后手动触发onopen
@@ -124,6 +129,7 @@ export class LanguageClient {
   destory = () => {
     this.shutdown()
       .then(() => {
+        this.DESTROYED = true
         this.exit()
         this.socket.close()
         languageState.clients.delete(this.language)

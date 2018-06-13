@@ -82,7 +82,7 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
  */
 export const createLanguageClient = registerAction('language:create_client', (language) => {
   const currentClient = LanguageState.clients.get(language)
-  if (currentClient || !supportLangServer.some(l => l.lang === language)) {
+  if ((currentClient && !currentClient.DESTROYED) || !supportLangServer.some(l => l.lang === language)) {
     return false
   }
 

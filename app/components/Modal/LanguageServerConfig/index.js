@@ -6,9 +6,10 @@ import config from 'config'
 import { addModal } from 'components/Modal/actions'
 import i18n from 'utils/createI18n'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
-import LanguageStae from 'components/Tab/LanguageClientState'
+import LanguageState from 'components/Tab/LanguageClientState'
 import { createLanguageClient } from 'components/MonacoEditor/actions'
 
+@observer
 class LanguageServerConfig extends Component {
   state = {
     language: config.mainLanguage,
@@ -40,14 +41,15 @@ class LanguageServerConfig extends Component {
   }
 
   handleCommit = () => {
-    const client = LanguageStae.clients.get(config.mainLanguage)
+    const client = LanguageState.clients.get(config.mainLanguage)
     if (client) {
       client.destory()
     }
-    config.mainLanguage = this.state.language
-    config._WORKSPACE_SUB_FOLDER_ = this.state.path
     window.localStorage.setItem(`${config.spaceKey}-mainLanguage`, this.state.language)
     window.localStorage.setItem(`${config.spaceKey}-_WORKSPACE_SUB_FOLDER_`, this.state.path)
+    config._WORKSPACE_SUB_FOLDER_ = this.state.path
+    config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir/${config._WORKSPACE_SUB_FOLDER_}`
+    config.mainLanguage = this.state.language
     createLanguageClient(this.state.language)
     dispatchCommand('modal:dismiss')
   }

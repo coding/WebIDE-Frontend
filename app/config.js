@@ -62,9 +62,12 @@ autorun(() => {
 
 autorun(() => {
   if (config.spaceKey !== '') {
-    config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    config.__WORKSPACE_URI__ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
     config.mainLanguage = localStorage.getItem(`${config.spaceKey}-mainLanguage`) || ''
     config._WORKSPACE_SUB_FOLDER_ = localStorage.getItem(`${config.spaceKey}-_WORKSPACE_SUB_FOLDER_`) || ''
+    config._ROOT_URI_ = config._WORKSPACE_SUB_FOLDER_ === ''
+    ? `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
+    : `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir/${config._WORKSPACE_SUB_FOLDER_}`
   }
 })
 
