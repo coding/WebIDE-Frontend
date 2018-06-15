@@ -95,9 +95,6 @@ return {
     rules: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' }
     ]
-  },
-  externals: {
-    serverConfig: JSON.stringify(require(path.join(PROJECT_ROOT, 'static', 'config.json')))
   }
 }
 }
