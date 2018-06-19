@@ -1,7 +1,7 @@
 import { observable, autorun, reaction, when } from 'mobx'
 import getCookie from './utils/getCookie'
 const localStorage = window.localStorage
-const serverConfig = window.serverConfig
+const serverConfig = __DEV__ ? {} : window.serverConfig
 const config = observable({
   projectName: '',
   spaceKey: '',
