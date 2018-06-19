@@ -1,6 +1,6 @@
 import { observable, autorun } from 'mobx'
 import getCookie from './utils/getCookie'
-const serverConfig = window.serverConfig
+const serverConfig = __DEV__ ? {} : window.serverConfig
 const config = observable({
   projectName: '',
   spaceKey: '',
