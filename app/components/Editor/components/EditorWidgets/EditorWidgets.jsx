@@ -9,7 +9,7 @@ import EncodingWidget from './EncodingWidget'
 @inject(({ EditorTabState }) => {
   const activeTab = EditorTabState.activeTab
   if (!activeTab || !activeTab.editor) return { editor: null }
-  return { editor: config.enableNewEditor ? activeTab.editorInfo : activeTab.editor }
+  return { editor: !config.switchOldEditor ? activeTab.editorInfo : activeTab.editor }
 })
 @observer
 class EditorWidgets extends Component {

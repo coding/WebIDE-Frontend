@@ -26,7 +26,7 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
 export const createTab = registerAction(TAB_CREATE,
   (tabProps) => {
     const tab = new Tab(tabProps)
-    if (config.enableNewEditor) {
+    if (!config.switchOldEditor) {
       const { editor } = tabProps
       if (editor.filePath) {
         const { filePath } = editor
