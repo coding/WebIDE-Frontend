@@ -19,9 +19,14 @@ const menuBarItems = observable([
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
         canopen: true
-      }
-    ]
-  }, {
+      }, {
+        key: 'about',
+        name: i18n`menuBarItems.meta.about`,
+        icon: 'fa fa-info-circle',
+        command: 'file:open_about'
+      }]
+  },{},
+  {
     key: 'file',
     name: i18n`menuBarItems.file.main`,
     items: [
