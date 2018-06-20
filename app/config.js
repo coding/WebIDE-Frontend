@@ -3,10 +3,6 @@ import getCookie from './utils/getCookie'
 
 const localStorage = window.localStorage
 
-if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
-  localStorage.setItem('switchOldEditor', false)
-}
-
 const config = observable({
   projectName: '',
   spaceKey: '',
