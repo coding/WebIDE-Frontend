@@ -6,6 +6,7 @@ import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
 import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
+import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 
 window.themeVariables = observable.map({})
 
@@ -13,8 +14,8 @@ const localStorage = window.localStorage
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
 
-if (JSON.parse(localStorage.getItem('enableNewEditor')) === null) {
-  localStorage.setItem('enableNewEditor', false)
+if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
+  localStorage.setItem('switchOldEditor', false)
 }
 
 let uiOptions = []
@@ -174,7 +175,7 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions'],
+  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions', 'languageserver'],
   get items () {
     return this._keys.map(key => this[key])
   },
@@ -192,8 +193,8 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: config.enableNewEditor ? 'vs-dark' : 'material',
-      options: config.enableNewEditor ? monacoThemeOptions : SyntaxThemeOptions,
+      value: config.switchOldEditor ? 'vs-dark' : 'material',
+      options: config.switchOldEditor ? monacoThemeOptions : SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     },
     font_size: {
@@ -230,14 +231,14 @@ const settings = observable({
       }
     },
     enable_new_editor: {
-      name: 'settings.general.enableNewEditor',
-      value: config.enableNewEditor,
+      name: 'settings.general.switchOldEditor',
+      value: config.switchOldEditor,
       reaction () {
       },
       nopersist: true,
       onConfirm (value) {
-        config.enableNewEditor = value
-        localStorage.setItem('enableNewEditor', value)
+        config.switchOldEditor = value
+        localStorage.setItem('switchOldEditor', value)
         setTimeout(() => {
           window.location.reload()
         }, 100)
@@ -285,7 +286,7 @@ const settings = observable({
     indent_size: {
       name: 'settings.editor.indentSize',
       value: 4,
-      disabled: config.enableNewEditor,
+      disabled: config.switchOldEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
@@ -295,7 +296,7 @@ const settings = observable({
     tab_width: {
       name: 'settings.editor.tabWidth',
       value: 4,
-      disabled: config.enableNewEditor,
+      disabled: config.switchOldEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
@@ -306,7 +307,7 @@ const settings = observable({
     trim_trailing_whitespace: {
       name: 'settings.editor.trimTrailingWhitespace',
       value: false,
-      disabled: config.enableNewEditor,
+      disabled: config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.trimTrailingWhitespace = value
       }
@@ -314,7 +315,7 @@ const settings = observable({
     insert_final_newline: {
       name: 'settings.editor.insertFinalNewline',
       value: false,
-      disabled: config.enableNewEditor,
+      disabled: config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.insertFinalNewline = value
       }
@@ -342,7 +343,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: config.enableNewEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
@@ -360,6 +361,18 @@ const settings = observable({
           default:
             EditorState.options.keyMap = 'default'
         }
+      }
+    }
+  }),
+  languageserver: new DomainSetting({
+    _keys: ['projectType'],
+    requireConfirm: true,
+    projectType: {
+      name: 'modal.projectType',
+      value: 'Blank',
+      options: ['Blank', ...supportLangServer.map(v => v.lang)],
+      reaction (value) {
+        console.log(value)
       }
     }
   })

@@ -243,7 +243,7 @@ const fileCommands = {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const isMonaco = config.enableNewEditor
+    const isMonaco = !config.switchOldEditor
 
     const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
 

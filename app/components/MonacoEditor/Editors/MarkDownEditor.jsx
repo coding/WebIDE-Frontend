@@ -205,7 +205,7 @@ class MarkdownEditor extends Component {
               flexBasis: 0,
             }}
           >
-            {React.createElement(CodeEditor, { editor, editorInfo, tab })}
+            <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
           </div>) : null
         }
           {(showPreview && !showBigSize) ? (
