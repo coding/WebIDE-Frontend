@@ -121,7 +121,6 @@ export function openFile (obj, callback) {
       tab => tab.file && tab.file.path === path && (tab.tabGroup === activeTabGroup || allGroup)
     )
     if (existingTabs.length) {
-      console.log('======================')
       const existingTab = existingTabs[0]
       if (editor.gitBlame) {
         existingTab.editor.gitBlame = editor.gitBlame
