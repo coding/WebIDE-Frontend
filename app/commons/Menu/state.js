@@ -43,7 +43,7 @@ function MenuScope (defaultMenuItems=[]) {
       })
       return extendShallowObservable(this, {
         get shortcut () {
-          return withModifierKeys(findKeyByValue(this.command))
+          return withModifierKeys(findKeyByValue(this.cmd || this.command))
         }
       })
     }
