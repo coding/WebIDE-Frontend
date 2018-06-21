@@ -7,7 +7,7 @@ const config = observable({
   projectName: '',
   spaceKey: '',
   mainLanguage: '',
-  enableNewEditor: Boolean(JSON.parse(localStorage.getItem('enableNewEditor'))),
+  switchOldEditor: Boolean(JSON.parse(localStorage.getItem('switchOldEditor'))),
   globalKey: '',
   userProfile: {},
   requiredExtensions: [],

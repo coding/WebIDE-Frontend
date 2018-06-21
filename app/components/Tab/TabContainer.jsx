@@ -78,7 +78,7 @@ class TabContainer extends Component {
             </TabContentItem>
           )
           : <TabContentItem tab={{ isActive: true }}>
-              {config.enableNewEditor ? <MonacoTablessEditor tabGroupId={tabGroup.id} /> : <TablessCodeEditor tabGroupId={tabGroup.id} /> }
+              {!config.switchOldEditor ? <MonacoTablessEditor tabGroupId={tabGroup.id} /> : <TablessCodeEditor tabGroupId={tabGroup.id} /> }
             </TabContentItem>
           }
         </TabContent>
@@ -90,7 +90,7 @@ class TabContainer extends Component {
     if (tab.type === 'welcome') {
       return <WelcomePage />
     }
-    return config.enableNewEditor
+    return !config.switchOldEditor
       ? <MonacoEditor tab={tab} active={tab.isActive} />
       : <Editor tab={tab} active={tab.isActive} />
   }

@@ -9,7 +9,7 @@
          "english": "英语",
          "chinese": "中文"
       },
-      "enableNewEditor": "试用新版编辑器",
+      "switchOldEditor": "切回旧版编辑器",
       "hideFiles": "隐藏文件"
    },
    "editor": {
@@ -51,6 +51,10 @@
       "appearance": "样式",
       "editor": "编辑器",
       "keymap": "快捷键",
-      "extensions": "插件中心"
+      "extensions": "插件中心",
+      "languageserver": "语言服务器"
+   },
+   "languageserver": {
+     "main": "语言服务器设置"
    }
 }

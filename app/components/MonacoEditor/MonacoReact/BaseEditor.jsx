@@ -19,7 +19,7 @@ const Div = measure('div')
 const debounced = debounce(func => func(), 1000)
 
 @observer
-class MonacoEditor extends React.Component {
+class MonacoEditor extends React.PureComponent {
   constructor (props) {
     super(props)
 

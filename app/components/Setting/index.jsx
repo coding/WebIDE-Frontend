@@ -6,6 +6,7 @@ import ExtensionList from '../Plugins/extensionList'
 import SettingForm from './SettingForm'
 import KeymapSetting from './KeymapSetting'
 import EditorSetting from './EditorSetting'
+import LanguageServerSetting from './LanguageServerSetting'
 
 const ExtensionSetting = () => (
   <div>
@@ -28,6 +29,8 @@ const DomainSetting = ({ content, domainKey, component }) => {
       return <KeymapSetting content={content} />
     case 'EXTENSIONS':
       return <ExtensionSetting />
+    case 'LANGUAGESERVER':
+      return <LanguageServerSetting content={content} header={i18n`settings.languageserver.main`} />
   }
 }
 

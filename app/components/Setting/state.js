@@ -21,6 +21,7 @@ const state = observable({
     EDITOR: i18n`settings.tabs.editor`,
     KEYMAP: i18n`settings.tabs.keymap`,
     EXTENSIONS: i18n`settings.tabs.extensions`,
+    LANGUAGESERVER: i18n`settings.tabs.languageserver`,
   },
   get activeTab () {
     return settings[this.activeTabId.toLowerCase()]

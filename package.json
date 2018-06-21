@@ -16,7 +16,7 @@
     "start-platform": "RUN_MODE=platform webpack-dev-server --port=8060 --progress --colors",
     "start": "webpack-dev-server --progress --colors",
     "clean": "rm -rf build",
-    "build": "npm run clean && node_modules/.bin/webpack && npm run after-build",
+    "build": "npm run clean && node --max_old_space_size=4096 node_modules/.bin/webpack && npm run after-build",
     "after-build": "node cdn.js",
     "lint-stats": "eslint --format node_modules/eslint-stats/byError.js app",
     "lint": "eslint app",
