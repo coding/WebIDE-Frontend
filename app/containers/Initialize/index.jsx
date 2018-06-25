@@ -51,17 +51,30 @@ class Initialize extends Component {
     let requestInfo = null
     if (state.errorCode) {
       if (state.errorCode === 404) {
-        errorInfo = null
-        info = (
-          <div className='loading-info error'>
-            {i18n`global.loadingWorkspaceDenied`}
-          </div>
-        )
-        requestInfo = (
-          <div className='request-info'>
-            <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
-          </div>
-        )
+        if (state.errorInfo.includes('auditing')) {
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
+          errorInfo = (
+            <div className='request-info'>
+              {state.errorInfo}
+            </div>
+          )
+        } else {
+          errorInfo = null
+          info = (
+            <div className='loading-info error'>
+              {i18n`global.loadingWorkspaceDenied`}
+            </div>
+          )
+          requestInfo = (
+            <div className='request-info'>
+              <button className="btn btn-default" onClick={this.handleRequest} >{i18n`global.requestCollaboration`}</button>
+            </div>
+          )
+        }
       } else if (state.errorCode === 403) {
         if (state.status === 'Rejected') {
           requestInfo = (
