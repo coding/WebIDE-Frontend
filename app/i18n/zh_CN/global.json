@@ -14,5 +14,6 @@
    "loadingWorkspace": "正在加载工作区",
    "reloadWorkspace": "重新加载",
    "requestCollaborationExpires": "试用已经结束",
-   "hasVimium": "请禁用 Vimium 插件以避免按键冲突"
+   "hasVimium": "请禁用 Vimium 插件以避免按键冲突",
+   "resourceAuditRejected": "您的资源申请未审批通过"
 }

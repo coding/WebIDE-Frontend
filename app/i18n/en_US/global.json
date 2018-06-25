@@ -14,5 +14,6 @@
    "loadingWorkspace": "Loading workspace...",
    "reloadWorkspace": "Retry",
    "requestCollaborationExpires": "The demo has already expired.",
-   "hasVimium": "Please disable Vimium plugin."
+   "hasVimium": "Please disable Vimium plugin.",
+   "resourceAuditRejected": "Your resource application has not been approved"
 }
