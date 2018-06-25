@@ -16,6 +16,7 @@ module.exports = function (options) {
           { from: /\/account/, to: '/account.html' },
           { from: /\/signin/, to: '/login.html' },
           { from: /\/intro/, to: '/intro.html' },
+          { from: /\/changelog/, to: '/changelog.html' },
           { from: /\/maintain/, to: '/maintain.html' },
         ]
       }

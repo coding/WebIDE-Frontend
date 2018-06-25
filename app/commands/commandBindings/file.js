@@ -360,6 +360,20 @@ const fileCommands = {
       })
     }
   },
+  'file:open_changelog': () => {
+    const existingTabs = TabStore.findTab(
+      tab => tab.type === 'changelog'
+    )
+    if (existingTabs.length) {
+      const existingTab = existingTabs[0]
+      existingTab.activate()
+    } else {
+      TabStore.createTab({
+        type: 'changelog',
+        title: 'Changelog',
+      })
+    }
+  },
   'file:open_about': () => {
     Modal.showModal({ type: 'About', position: 'center' })
   }
