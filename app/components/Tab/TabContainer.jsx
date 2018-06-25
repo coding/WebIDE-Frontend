@@ -11,6 +11,8 @@ import MonacoTablessEditor from 'components/MonacoEditor/Editors/MonacoTablessEd
 import i18n from 'utils/createI18n'
 import config from 'config'
 import WelcomePage from './WelcomePage'
+import Changelog from './Changelog'
+
 const contextMenuItems = [
   {
     name: i18n`tab.contextMenu.close`,
@@ -89,6 +91,9 @@ class TabContainer extends Component {
   renderContent (tab) {
     if (tab.type === 'welcome') {
       return <WelcomePage />
+    }
+    if (tab.type === 'changelog') {
+      return <Changelog />
     }
     return !config.switchOldEditor
       ? <MonacoEditor tab={tab} active={tab.isActive} />

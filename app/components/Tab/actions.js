@@ -8,6 +8,9 @@ import LanguageState from './LanguageClientState'
 import config from 'config'
 import { findLangueByExt } from 'components/MonacoEditor/utils/findLanguage'
 import { createLanguageClient } from 'components/MonacoEditor/actions'
+import version from '../../../static/changelog/version.md'
+
+const versionID = 'Coding_Cloud_Studio_Version'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
@@ -16,6 +19,15 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   const tabs = Object.values(json.tabs).sort((a, b) => a.index - b.index);
   const tabGroups = Object.values(json.tabGroups);
   tabGroups.forEach((tabGroupsValue) => createGroup(tabGroupsValue.id));
+  // Load changelog tab
+  const currentVersion = localStorage.getItem(versionID)
+  if (!currentVersion || currentVersion !== version) {
+    localStorage.setItem(versionID, version)
+    setTimeout(() => {
+      dispatchCommand('file:open_changelog')
+    }, 100)
+  }
+
   if (tabs.length === 0) {
     dispatchCommand('global:show_env')
     return;

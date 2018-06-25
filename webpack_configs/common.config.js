@@ -20,6 +20,7 @@ module.exports = function (options={}) {
     accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
+    changelogEntryHtmlName = 'changelog.html',
     maintainEntryHtmlName = 'maintain.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
@@ -113,6 +114,14 @@ return {
       title: 'Coding WebIDE',
       inject: false,
       // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+      // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/maintain.html'),
       // favicon: ICO_PATH,
@@ -131,7 +140,8 @@ return {
   ],
   module: {
     rules: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
+      { test: /\.md$/, use: ['raw-loader'] }
     ]
   }
 }
