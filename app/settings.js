@@ -156,7 +156,7 @@ class DomainSetting {
       if (settingItem.reaction && is.function(settingItem.reaction)) {
         reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
           name: settingItem.name || key,
-          fireImmediately: true,
+          fireImmediately: false,
           delay: 1,
         })
       }
