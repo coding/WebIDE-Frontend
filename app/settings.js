@@ -377,7 +377,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: !config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
