@@ -53,9 +53,13 @@
       "editor": "Editor",
       "keymap": "Keymap",
       "extensions": "Extensions",
-      "languageserver": "LanguageServer"
+      "languageserver": "LanguageServer",
+      "projectsetting": "ProjectSetting"
    },
    "languageserver": {
       "main": "Language Server Setting"
+   },
+   "projectsetting": {
+     "main": "Project Setting"
    }
 }

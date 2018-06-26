@@ -52,9 +52,13 @@
       "editor": "编辑器",
       "keymap": "快捷键",
       "extensions": "插件中心",
-      "languageserver": "语言服务器"
+      "languageserver": "语言服务器",
+      "projectsetting": "项目设置"
    },
    "languageserver": {
      "main": "语言服务器设置"
+   },
+   "projectsetting": {
+     "main": "项目设置"
    }
 }
