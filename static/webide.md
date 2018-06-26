@@ -62,29 +62,20 @@ WebIDE 支持图片和pdf 的双击预览。
  
 当你完成代码编辑后可以点击菜单栏的 “Repository” - > “Commit” ， 选择要提交的文件，提交到本地的代码库。
 
-![图片](https://dn-coding-net-production-pp.qbox.me/78fbf09c-b6e6-4020-a82f-daa1c55bc3fe.png) 
-
 #### 3.4.3 分支修改
 
 如果需要创建或者修改本地和远程分支，点击菜单栏的“Repository” - > “Branches”，或者点击右下角的分支图标，默认是“Master”。
 
 右下角会弹出如下图的选项，对于本地和远端仓库的操作如Push，Pull ，默认都是操作本地和远端的仓库。
 
- ![图片](https://dn-coding-net-production-pp.qbox.me/656ca53b-83aa-411b-b051-39380965392c.png) 
-
-
 #### 3.4.4 Push 提交远端仓库
 
 当你的代码需要提交到远端Git仓库时候，点击菜单栏的“Repository” - > “Push” ，确认本地和远端的分支。
-
- ![图片](https://dn-coding-net-production-pp.qbox.me/6e32e236-d9a4-468e-be9c-c16816f9a02d.png) 
 
 #### 3.4.5 Pull 从远端仓库拉取到本地
 
 当你的远端代码仓库领先于IDE的本地代码仓库时，需要将远端仓库的代码拉取到本地，点击菜单栏的“Repository” - > “Pull” ，会将代码拉取到本地设置的分支。
 
-
- ![图片](https://dn-coding-net-production-pp.qbox.me/c389a9bc-aa96-40eb-b440-a776e6391ed3.png) 
 
 ### 3.5 环境管理&分享 ###
 
@@ -100,9 +91,6 @@ WebIDE 支持图片和pdf 的双击预览。
 #### 3.5.3 如何保存环境 ###
 鼠标浮动过去，点击“Save As” 可以将当前环境保存起来, 这样项目成员就可以在进入这个项目的时候使用相同的环境进行了。“Reset” 就是将当前的环境重置到，初始环境，慎重使用。 
 “Save As” 后结果如下：
-
-
-![图片](https://dn-coding-net-production-pp.qbox.me/15415d4d-0f86-4555-9333-41b74e328538.png) 
 
 
 #### 3.5.4 如何切换和分享环境 
@@ -122,11 +110,8 @@ WebIDE 的终端是一个完成的 Ubuntu Linux Shell 环境，用户可以在�
 #### 3.6.2 如何打开终端 Terminal
  
 1. 点击“Terminal” 打开终端 Tab 
-  ![图片](https://dn-coding-net-production-pp.qbox.me/874e33fa-ead9-4f30-8c6f-1a408a354fe9.png) 
   
 2. 点击菜单栏 “Tools” -> “New Terminal”
- 
-  ![图片](https://dn-coding-net-production-pp.qbox.me/65e2b062-c972-4620-8dc0-d9280233294d.png) 
 
 
 ### 3.7 软件安装###
@@ -158,8 +143,6 @@ WebIDE 的终端是一个完成的 Ubuntu Linux Shell 环境，用户可以在�
 #### 3.7.2 创建外部访问链接( Generate Access Url )
 
 WebIDE 支持为编写好的程序创建一个外部可以访问的链接，有效期 1 个小时，点击菜单的 Tools -> Generate Access Url 如下图。
-
-![图片](https://dn-coding-net-production-pp.qbox.me/543dfde7-8bf0-49a8-95c8-80c33f18c106.png) 
 
 设置你需要绑定的端口，需要跟程序运行监听的端口一致, 如上面的8080，点击链接访问页面。
                                         
