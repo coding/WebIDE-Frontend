@@ -62,20 +62,22 @@ const FormInputGroup = defaultProps((props) => {
             />
             <strong>{i18n([settingItem.name])}</strong>
           </label>
-
         </div>
       </div>)
   }
   return (
     <div className='form-group'>
       <label>{i18n([settingItem.name])}</label>
-      <input className='form-control'
-        type={isNumber(settingItem.value) ? 'number' : 'text'}
-        min='1'
-        onChange={updateSettingItem}
-        value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
-        disabled={settingItem.disabled}
-      />
+      <div className='form-line'>
+        <input className='form-control'
+          type={isNumber(settingItem.value) ? 'number' : 'text'}
+          min='1'
+          onChange={updateSettingItem}
+          value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
+          disabled={settingItem.disabled}
+        />
+        {settingItem.extra && React.createElement(settingItem.extra, { onChange: value => settingItem.tempValue = value })}
+      </div>
     </div>)
 }))
 export default FormInputGroup

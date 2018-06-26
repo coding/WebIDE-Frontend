@@ -4,5 +4,6 @@
   "okButton": "OK",
   "projectType": "Project Type",
   "sourceFolder": "Source Folder",
+  "libraryFolder": "Library Folder",
   "cancelButton": "Cancel"
 }
