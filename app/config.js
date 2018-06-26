@@ -1,4 +1,4 @@
-import { observable, autorun, reaction } from 'mobx'
+import { observable, autorun, reaction, when } from 'mobx'
 import getCookie from './utils/getCookie'
 
 const localStorage = window.localStorage
@@ -6,12 +6,12 @@ const localStorage = window.localStorage
 const config = observable({
   projectName: '',
   spaceKey: '',
-  mainLanguage: '',
+  mainLanguage: 'Blank',
   switchOldEditor: Boolean(JSON.parse(localStorage.getItem('switchOldEditor'))),
   globalKey: '',
   userProfile: {},
   requiredExtensions: [],
-  _WORKSPACE_SUB_FOLDER_: '',
+  _WORKSPACE_SUB_FOLDER_: '/',
   _ROOT_URI_: '',
   baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
@@ -36,6 +36,7 @@ const config = observable({
   nodeEnv: __NODE_ENV__ || null,
   isDefault: false,
   willExpire: false,
+  rehydrated: false,
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(
@@ -63,11 +64,7 @@ autorun(() => {
 autorun(() => {
   if (config.spaceKey !== '') {
     config.__WORKSPACE_URI__ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
-    config.mainLanguage = localStorage.getItem(`${config.spaceKey}-mainLanguage`) || ''
-    config._WORKSPACE_SUB_FOLDER_ = localStorage.getItem(`${config.spaceKey}-_WORKSPACE_SUB_FOLDER_`) || ''
-    config._ROOT_URI_ = config._WORKSPACE_SUB_FOLDER_ === ''
-    ? `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
-    : `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir/${config._WORKSPACE_SUB_FOLDER_}`
+    config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
   }
 })
 

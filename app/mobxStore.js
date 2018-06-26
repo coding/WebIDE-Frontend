@@ -25,25 +25,25 @@ const store = {
   PluginsState
 }
 
-const toJS = (store) => {
-  if (store.toJS) {
-    return store.toJS()
+const toJS = (subStore) => {
+  if (subStore.toJS) {
+    return subStore.toJS()
   }
-  return mobxToJS(store)
+  return mobxToJS(subStore)
 }
 
 extendObservable(store, {
   debug: false,
 })
 
-export const transform = createTransformer(store => ({
-  PanelState: toJS(store.PanelState),
-  PaneState: toJS(store.PaneState),
-  EditorTabState: toJS(store.EditorTabState),
-  FileTreeState: toJS(store.FileTreeState),
-  FileState: toJS(store.FileState),
-  SettingState: toJS(store.SettingState),
-  PluginsState: toJS(store.PluginsState)
+export const transform = createTransformer(mobxStore => ({
+  PanelState: toJS(mobxStore.PanelState),
+  PaneState: toJS(mobxStore.PaneState),
+  EditorTabState: toJS(mobxStore.EditorTabState),
+  FileTreeState: toJS(mobxStore.FileTreeState),
+  FileState: toJS(mobxStore.FileState),
+  SettingState: toJS(mobxStore.SettingState),
+  PluginsState: toJS(mobxStore.PluginsState)
 }))
 
 export const persistTask = () => persistStore(store, transform)

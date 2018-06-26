@@ -1,5 +1,6 @@
 import flattenDeep from 'lodash/flattenDeep'
 import { registerAction } from 'utils/actions'
+import settings from 'settings'
 import is from 'utils/is'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
@@ -41,6 +42,7 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
     const mainLanguage = findLanguageByFileName(data)
     if ((!config.mainLanguage || config.mainLanguage !== '') && mainLanguage !== '') {
       config.mainLanguage = mainLanguage
+      settings.languageserver.projectType.value = mainLanguage
     }
     return loadNodeData(data)
   })

@@ -29,6 +29,8 @@ const DomainSetting = ({ content, domainKey, component }) => {
       return <KeymapSetting content={content} />
     case 'EXTENSIONS':
       return <ExtensionSetting />
+    case 'PROJECTSETTING':
+      return <LanguageServerSetting content={content} header={i18n`settings.projectsetting.main`} />
     case 'LANGUAGESERVER':
       return <LanguageServerSetting content={content} header={i18n`settings.languageserver.main`} />
   }

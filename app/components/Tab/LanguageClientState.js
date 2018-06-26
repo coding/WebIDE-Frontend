@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { observable, when } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
 import config from 'config'
 import {
@@ -8,6 +8,8 @@ import {
   DidCloseTextDocumentNotification,
   DidChangeWatchedFilesNotification,
 } from 'vscode-base-languageclient/lib/protocol'
+
+import { createLanguageClient as createClient } from 'components/MonacoEditor/actions'
 import { JAVA_CLASS_PATH_REQUEST, LANGUAGE_STATUS } from 'components/MonacoEditor/languageRequestTypes'
 import { createLanguageClient, createWebSocket, createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
 
@@ -125,14 +127,33 @@ export class LanguageClient {
    * 并删除语言服务客户端实例
    */
   destory = () => {
-    this.shutdown()
+    if (this.client.state >= 4) {
+      return Promise.resolve(true)
+    }
+    return this.shutdown()
       .then(() => {
         this.DESTROYED = true
         this.exit()
         this.socket.close()
         languageState.clients.delete(this.language)
+        return Promise.resolve(true)
+      })
+      .catch((err) => {
+        throw new Error(err)
       })
   }
 }
 
 export default languageState
+
+function autoConnect () {
+  setTimeout(() => {
+    if (!languageState.clients.get(config.mainLanguage)
+      && config.mainLanguage !== 'Blank'
+      && !config.switchOldEditor) {
+      createClient(config.mainLanguage)
+    }
+  }, 1000)
+}
+
+when(() => config.rehydrated, autoConnect)
