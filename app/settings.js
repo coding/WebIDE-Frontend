@@ -310,7 +310,7 @@ const settings = observable({
     },
     indent_style: {
       name: 'settings.editor.indentStyle',
-      disabled: true,
+      disabled: !config.switchOldEditor,
       value: 'space',
       options: [{ name: 'Space', value: 'space' }, { name: 'Tab', value: 'tab' }],
       reaction (value) {
