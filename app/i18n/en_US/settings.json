@@ -41,7 +41,8 @@
          "dark": "Dark"
       },
       "syntaxTheme": "Syntax Theme",
-      "fontSize": "Editor Font Size"
+      "fontSize": "Editor Font Size",
+      "termFontSize": "Termininal Font Size"
    },
    "extension": {
       "main": "Extension Setting",
