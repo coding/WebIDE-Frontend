@@ -40,7 +40,8 @@
          "dark": "黑色"
       },
       "syntaxTheme": "代码着色",
-      "fontSize": "编辑器字号"
+      "fontSize": "编辑器字号",
+      "termFontSize": "终端字号"
    },
    "extension": {
       "main": "插件中心",
