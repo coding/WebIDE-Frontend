@@ -7616,7 +7616,7 @@ vscode-base-languageclient@^0.0.1-alpha.5:
     vscode-languageserver-types "^3.2.0"
     vscode-uri "^1.0.0"
 
-vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0:
+vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0, vscode-jsonrpc@^3.6.2:
   version "3.6.2"
   resolved "http://registry.npm.taobao.org/vscode-jsonrpc/download/vscode-jsonrpc-3.6.2.tgz#3b5eef691159a15556ecc500e9a8a0dd143470c8"
 
@@ -7624,9 +7624,20 @@ vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0:
   version "3.6.2"
   resolved "https://github.com/SakuraAsh/vscode-jsonrpc-coding.git#f04672d0e167199ef46eba07777be00451b4296f"
 
+vscode-languageserver-protocol@^3.8.1:
+  version "3.8.1"
+  resolved "http://registry.npm.taobao.org/vscode-languageserver-protocol/download/vscode-languageserver-protocol-3.8.1.tgz#ee3ce042f7f49f559a6a552e3f505001fa565154"
+  dependencies:
+    vscode-jsonrpc "^3.6.2"
+    vscode-languageserver-types "^3.8.1"
+
 vscode-languageserver-types@^3.2.0, vscode-languageserver-types@^3.7.0:
   version "3.7.1"
   resolved "http://registry.npm.taobao.org/vscode-languageserver-types/download/vscode-languageserver-types-3.7.1.tgz#4835d1c1811f91dd5c92e9446e5b29edd2216969"
+
+vscode-languageserver-types@^3.8.1:
+  version "3.8.2"
+  resolved "http://registry.npm.taobao.org/vscode-languageserver-types/download/vscode-languageserver-types-3.8.2.tgz#2550b8d852195328a735c56dbf4e72b8da31613f"
 
 vscode-uri@^1.0.0, vscode-uri@^1.0.3:
   version "1.0.3"
