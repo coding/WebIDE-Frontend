@@ -5,14 +5,12 @@ const str = JSON.stringify
 const commonConfig = require('./common.config.js')
 
 const stylesheet = require('./stylesheet.config')
-const uglify = require('./uglify.config')
 
 module.exports = merge(
   commonConfig({
     staticDir: process.env.RUN_MODE ? 'rs2' : 'rs',
   }),
   stylesheet(),
-  uglify(),
   {
     plugins: [
       new webpack.DefinePlugin({
@@ -25,6 +23,7 @@ module.exports = merge(
         __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || process.env.HTML_BASE_URL || ''),
         __NODE_ENV__: str(process.env.NODE_ENV || ''),
       }),
+      new webpack.optimize.UglifyJsPlugin()
     ]
   }
 )
