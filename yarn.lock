@@ -7616,6 +7616,10 @@ vscode-base-languageclient@^0.0.1-alpha.5:
     vscode-languageserver-types "^3.2.0"
     vscode-uri "^1.0.0"
 
+vscode-jsonrpc@^3.2.0, vscode-jsonrpc@^3.3.0:
+  version "3.6.2"
+  resolved "http://registry.npm.taobao.org/vscode-jsonrpc/download/vscode-jsonrpc-3.6.2.tgz#3b5eef691159a15556ecc500e9a8a0dd143470c8"
+
 "vscode-jsonrpc@https://github.com/SakuraAsh/vscode-jsonrpc-coding.git":
   version "3.6.2"
   resolved "https://github.com/SakuraAsh/vscode-jsonrpc-coding.git#f04672d0e167199ef46eba07777be00451b4296f"

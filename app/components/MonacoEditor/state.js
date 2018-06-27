@@ -66,10 +66,13 @@ class EditorInfo {
         openEditor: toDefinition
       }
     })
-    this.disposers.push(observe(this, 'content', (change) => {
+
+    const disposer = observe(this, 'content', (change) => {
       const content = change.newValue || ''
       if (content !== monacoEditor.getValue()) monacoEditor.setValue(content)
-    }))
+      disposer()
+    })
+    this.disposers.push(disposer)
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */

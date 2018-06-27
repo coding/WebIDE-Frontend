@@ -1,11 +1,31 @@
-import isObject from 'lodash/isObject'
-import { observable, reaction, extendObservable, computed, action } from 'mobx'
+import isObject from 'lodash//isPlainObject'
+import { observable, reaction, extendObservable, computed, action, when } from 'mobx'
+import { trim } from 'lodash'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
 import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
+import FolderSelector from 'components/Setting/FolderSelector'
+import { supportLangServer } from 'components/MonacoEditor/utils/languages'
+import { dismissModal } from 'components/Modal/actions'
+// import { projectState } from 'components/Setting/state'
+
+let LanguageState
+import('components/Tab/LanguageClientState').then(res => LanguageState = res.default)
+
+let createLanguageClient
+import('components/MonacoEditor/actions')
+  .then(res => createLanguageClient = res.createLanguageClient)
+
+let putProjectType
+import('components/Setting/actions')
+  .then(res => putProjectType = res.putProjectType)
+
+let projectState
+import('components/Setting/state')
+  .then(res => projectState = res.projectState)
 
 window.themeVariables = observable.map({})
 
@@ -13,8 +33,13 @@ const localStorage = window.localStorage
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
 
-if (JSON.parse(localStorage.getItem('enableNewEditor')) === null) {
-  localStorage.setItem('enableNewEditor', false)
+const typeOptions = [
+  { name: 'Blank', value: 'blank' },
+  { name: 'Java', value: 'javac' }
+]
+
+if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
+  localStorage.setItem('switchOldEditor', false)
 }
 
 let uiOptions = []
@@ -120,6 +145,10 @@ class DomainSetting {
       if (config.requireConfirm) {
         settingItem.tempValue = undefined
       }
+
+      if (config.confirmCallBack) {
+        this.confirmCallBack = config.confirmCallBack
+      }
     })
     extendObservable(this, config)
     // fixme: this is due to late resolve of EditorState
@@ -151,6 +180,12 @@ class DomainSetting {
         }
       }
     })
+
+    if (this.confirmCallBack) {
+      const values = this.items.map(item => item.tempValue || item.value)
+      this.confirmCallBack(values)
+    }
+    dismissModal()
   }
 
   @action.bound
@@ -174,7 +209,7 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions'],
+  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions', 'languageserver'],
   get items () {
     return this._keys.map(key => this[key])
   },
@@ -192,8 +227,8 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: config.enableNewEditor ? 'vs-dark' : 'material',
-      options: config.enableNewEditor ? monacoThemeOptions : SyntaxThemeOptions,
+      value: !config.switchOldEditor ? 'vs-dark' : 'material',
+      options: !config.switchOldEditor ? monacoThemeOptions : SyntaxThemeOptions,
       reaction: changeSyntaxTheme,
     },
     font_size: {
@@ -230,14 +265,14 @@ const settings = observable({
       }
     },
     enable_new_editor: {
-      name: 'settings.general.enableNewEditor',
-      value: config.enableNewEditor,
+      name: 'settings.general.switchOldEditor',
+      value: config.switchOldEditor,
       reaction () {
       },
       nopersist: true,
       onConfirm (value) {
-        config.enableNewEditor = value
-        localStorage.setItem('enableNewEditor', value)
+        config.switchOldEditor = value
+        localStorage.setItem('switchOldEditor', value)
         setTimeout(() => {
           window.location.reload()
         }, 100)
@@ -285,7 +320,7 @@ const settings = observable({
     indent_size: {
       name: 'settings.editor.indentSize',
       value: 4,
-      disabled: config.enableNewEditor,
+      disabled: !config.switchOldEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
@@ -295,7 +330,7 @@ const settings = observable({
     tab_width: {
       name: 'settings.editor.tabWidth',
       value: 4,
-      disabled: config.enableNewEditor,
+      disabled: !config.switchOldEditor,
       options: [1, 2, 3, 4, 5, 6, 7, 8],
       reaction (value) {
         value = Number(value)
@@ -306,7 +341,7 @@ const settings = observable({
     trim_trailing_whitespace: {
       name: 'settings.editor.trimTrailingWhitespace',
       value: false,
-      disabled: config.enableNewEditor,
+      disabled: !config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.trimTrailingWhitespace = value
       }
@@ -314,7 +349,7 @@ const settings = observable({
     insert_final_newline: {
       name: 'settings.editor.insertFinalNewline',
       value: false,
-      disabled: config.enableNewEditor,
+      disabled: !config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.insertFinalNewline = value
       }
@@ -342,7 +377,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: config.enableNewEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
@@ -362,7 +397,101 @@ const settings = observable({
         }
       }
     }
-  })
+  }),
+  languageserver: new DomainSetting({
+    _keys: ['projectType', 'sourcePath'],
+    requireConfirm: true,
+    confirmCallBack ([lang, path]) {
+      if (lang !== config.mainLanguage) {
+        const client = LanguageState.clients.get(config.mainLanguage)
+        if (client) {
+          client.destory()
+        }
+        config.mainLanguage = lang
+      }
+      if (path !== '/') {
+        config._WORKSPACE_SUB_FOLDER_ = path
+        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+      }
+      const client = LanguageState.clients.get(lang)
+      if (client) {
+        client.destory()
+          .then(() => {
+            createLanguageClient(lang)
+          })
+          .catch((err) => {
+            console.log(err.messsage)
+          })
+      } else {
+        createLanguageClient(lang)
+      }
+    },
+    projectType: {
+      name: 'modal.projectType',
+      value: 'Blank',
+      options: ['Blank', ...supportLangServer.map(v => v.lang)],
+      reaction (value) {
+        if (value !== config.mainLanguage) {
+          config.mainLanguage = value
+        }
+      },
+    },
+    sourcePath: {
+      name: 'modal.sourceFolder',
+      value: '/',
+      extra: FolderSelector,
+      reaction (value) {
+        config._WORKSPACE_SUB_FOLDER_ = value
+        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${value}`
+      },
+    }
+  }),
+  projectsetting: new DomainSetting({
+    _keys: ['projectType', 'sourcePath', 'library'],
+    requireConfirm: true,
+    projectType: {
+      name: 'modal.projectType',
+      value: 'blank',
+      options: typeOptions,
+      reaction () {
+      },
+    },
+    sourcePath: {
+      name: 'modal.sourceFolder',
+      value: '/src/main/java',
+      extra: FolderSelector,
+      reaction () {
+      },
+    },
+    library: {
+      name: 'modal.libraryFolder',
+      value: '/lib',
+      extra: FolderSelector,
+      reaction () {
+      },
+    },
+    confirmCallBack ([type, source, library]) {
+      const projectConfigDto = {
+        type,
+      }
+      if (type === 'blank') {
+        projectConfigDto.attributes = {
+          'java.source.folder': [],
+          'java.library.folder': [],
+        }
+      } else {
+        projectConfigDto.attributes = {
+          'java.source.folder': trim(source, '/').split(','),
+          'java.library.folder': trim(library, '/').split(','),
+        }
+      }
+
+      putProjectType(projectConfigDto)
+    }
+  }),
+  // classpathsetting: new DomainSetting({
+    // _keys: ['project']
+  // })
 })
 
 // for backward compatibility

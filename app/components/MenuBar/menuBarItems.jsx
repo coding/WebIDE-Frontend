@@ -1,6 +1,5 @@
 import React from 'react'
 import api from 'backendAPI'
-import { showModal } from 'components/Modal/actions'
 import tabState from 'components/Tab/state'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
@@ -19,9 +18,14 @@ const menuBarItems = observable([
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
         canopen: true
-      }
-    ]
-  }, {
+      }, {
+        key: 'about',
+        name: i18n`menuBarItems.meta.about`,
+        icon: 'fa fa-info-circle',
+        command: 'file:open_about'
+      }]
+  },{},
+  {
     key: 'file',
     name: i18n`menuBarItems.file.main`,
     items: [
@@ -43,18 +47,6 @@ const menuBarItems = observable([
         icon: 'fa fa-floppy-o',
         command: 'file:save',
         getIsDisabled: () => tabState.tabs.size === 0
-      }, {
-        isDivider: true
-      }, {
-        key: 'lspSetting',
-        name: i18n`menuBarItems.file.lspSettings`,
-        command: () => {
-          showModal({
-            type: 'LanguageServerConfig',
-            position: 'center',
-          })
-        },
-        getIsDisabled: () => !config.enableNewEditor
       }
     ]
   }, {
@@ -65,7 +57,7 @@ const menuBarItems = observable([
         key: 'format',
         name: i18n`menuBarItems.edit.format`,
         icon: '',
-        command: config.enableNewEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
+        command: !config.switchOldEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
       }, {
         key: 'comment',
         name: i18n`menuBarItems.edit.comment`,

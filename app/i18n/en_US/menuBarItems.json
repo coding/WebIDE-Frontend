@@ -1,6 +1,7 @@
 {
    "meta": {
-      "main": "Settings"
+      "main": "Settings",
+      "about": "About"
    },
    "file": {
       "main": "File",

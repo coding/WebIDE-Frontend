@@ -9,7 +9,7 @@
          "english": "English",
          "chinese": "Chinese"
       },
-      "enableNewEditor": "Enable new Editor",
+      "switchOldEditor": "Switching old Editor",
       "hideFiles": "Hide Files"
    },
    "editor": {
@@ -20,7 +20,7 @@
       "charset": "Charset",
       "indentStyle": "Indent Style",
       "indentSize": "Indent Size",
-      "enableNewEditor": "Enable new Editor",
+      "switchOldEditor": "Enable new Editor",
       "tabWidth": "Tab Width",
       "trimTrailingWhitespace": "Trim Trailing Whitespace",
       "insertFinalNewline": "Insert Final Newline",
@@ -52,6 +52,14 @@
       "appearance": "Appearance",
       "editor": "Editor",
       "keymap": "Keymap",
-      "extensions": "Extensions"
+      "extensions": "Extensions",
+      "languageserver": "LanguageServer",
+      "projectsetting": "ProjectSetting"
+   },
+   "languageserver": {
+      "main": "Language Server Setting"
+   },
+   "projectsetting": {
+     "main": "Project Setting"
    }
 }

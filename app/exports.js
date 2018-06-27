@@ -6,7 +6,8 @@ const app = {
   utils: require('utils/exports'),
   config: require('./config'),
   settings: require('./settings'),
-  settingFormState: require('components/Setting/state')
+  settingFormState: require('components/Setting/state'),
+  settingActions: require('components/Setting/actions')
 }
 
 const lib = {

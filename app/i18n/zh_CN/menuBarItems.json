@@ -1,6 +1,7 @@
 {
    "meta": {
-      "main": "设置"
+      "main": "设置",
+      "about": "关于"
    },
    "file": {
       "main": "文件",

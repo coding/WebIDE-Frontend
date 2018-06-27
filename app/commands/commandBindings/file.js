@@ -243,7 +243,7 @@ const fileCommands = {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const isMonaco = config.enableNewEditor
+    const isMonaco = !config.switchOldEditor
 
     const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
 
@@ -357,6 +357,20 @@ const fileCommands = {
         icon: 'fa fa-smile-o',
         type: 'welcome',
         title: 'Welcome',
+      })
+    }
+  },
+  'file:open_changelog': () => {
+    const existingTabs = TabStore.findTab(
+      tab => tab.type === 'changelog'
+    )
+    if (existingTabs.length) {
+      const existingTab = existingTabs[0]
+      existingTab.activate()
+    } else {
+      TabStore.createTab({
+        type: 'changelog',
+        title: 'Changelog',
       })
     }
   },
