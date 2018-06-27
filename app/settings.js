@@ -417,19 +417,24 @@ const settings = observable({
         }
         config.mainLanguage = lang
       }
+      const prevFolder = config._ROOT_URI_
       if (path !== '/') {
         config._WORKSPACE_SUB_FOLDER_ = path
         config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
       }
       const client = LanguageState.clients.get(lang)
+
+      /**
+       * lsp 支持多根目录，目前仅允许一个目录被 lsp 分析
+       * 修改源码目录后，发送 workSpaceFoldersChange 请求，替换根目录为新的目录
+       */
       if (client) {
-        client.destory()
-          .then(() => {
-            createLanguageClient(lang)
-          })
-          .catch((err) => {
-            console.log(err.messsage)
-          })
+        client.workSpaceFoldersChange({
+          event: {
+            added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+            removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+          }
+        })
       } else {
         createLanguageClient(lang)
       }
