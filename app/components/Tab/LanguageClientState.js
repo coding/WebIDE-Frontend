@@ -1,4 +1,4 @@
-import { observable, when } from 'mobx'
+import { observable, when, reaction } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
 import config from 'config'
 import {
@@ -146,14 +146,21 @@ export class LanguageClient {
 
 export default languageState
 
-function autoConnect () {
+// function autoConnect () {
+//   setTimeout(() => {
+//     if (!languageState.clients.get(config.mainLanguage)
+//       && config.mainLanguage !== 'Blank'
+//       && !config.switchOldEditor) {
+//       createClient(config.mainLanguage)
+//     }
+//   }, 1000)
+// }
+
+reaction(() => config.mainLanguage, (lang) => {
   setTimeout(() => {
-    if (!languageState.clients.get(config.mainLanguage)
-      && config.mainLanguage !== 'Blank'
-      && !config.switchOldEditor) {
-      createClient(config.mainLanguage)
+    if (!languageState.clients.get(lang)) {
+      createClient(lang)
     }
   }, 1000)
-}
-
-when(() => config.rehydrated, autoConnect)
+})
+// when(() => config.rehydrated, autoConnect)

@@ -156,7 +156,7 @@ class DomainSetting {
       if (settingItem.reaction && is.function(settingItem.reaction)) {
         reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
           name: settingItem.name || key,
-          fireImmediately: true,
+          fireImmediately: false,
           delay: 1,
         })
       }
@@ -385,7 +385,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: !config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
