@@ -1,7 +1,8 @@
 import uniqueId from 'lodash/uniqueId'
-import { observe, observable, computed, action, extendObservable } from 'mobx'
+import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 
+import config from 'config'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import TabStore from 'components/Tab/store'
