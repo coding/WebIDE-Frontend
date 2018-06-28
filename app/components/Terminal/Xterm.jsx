@@ -101,6 +101,9 @@ class Term extends Component {
     })
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
     emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
+    emitter.on(E.TERM_FONTSIZE_CHANGED, val => {
+      terminal.setOption('fontSize', val)
+    })
 
     terminal.on('data', (data) => {
       terminalManager.getSocket().emit('term.input', { id: terminal.id, input: data })

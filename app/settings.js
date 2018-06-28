@@ -3,7 +3,7 @@ import { observable, reaction, extendObservable, computed, action, when } from '
 import { trim } from 'lodash'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
-import emitter, { THEME_CHANGED } from 'utils/emitter'
+import emitter, { THEME_CHANGED, TERM_FONTSIZE_CHANGED } from 'utils/emitter'
 import is from 'utils/is'
 import dynamicStyle from 'utils/dynamicStyle'
 import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
@@ -217,7 +217,8 @@ const settings = observable({
     _keys: [
       'ui_theme',
       'syntax_theme',
-      'font_size'
+      'font_size',
+      'terminial_font_size'
     ],
     ui_theme: {
       name: 'settings.appearance.uiTheme',
@@ -240,6 +241,13 @@ const settings = observable({
         `.CodeMirror {
           font-size: ${value}px;
         }`)
+      }
+    },
+    terminial_font_size: {
+      name: 'settings.appearance.termFontSize',
+      value: 12,
+      reaction (value) {
+        emitter.emit(TERM_FONTSIZE_CHANGED, value)
       }
     },
   }),
