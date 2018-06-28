@@ -58,9 +58,11 @@ class MonacoEditor extends React.PureComponent {
     this.containerElement.appendChild(this.editorElement)
     const { monacoEditor } = this.editor
     const { tab } = this.props
+    if (this.props.active) {
+      monacoEditor.focus()
+    }
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
-
       this.currentValue = value
 
       if (this.editor.file && tab) {
@@ -122,7 +124,14 @@ class MonacoEditor extends React.PureComponent {
     })
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.active && nextProps.active !== this.props.active) {
+      this.editor.monacoEditor.focus()
+    }
+  }
+
   componentWillUnmount () {
+    this.editor.destroy()
     const languageClient = languageState.clients.get(this.language)
     if (!languageClient) return
     const { path } = this.editor.file

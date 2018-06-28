@@ -14,19 +14,7 @@ import initialOptions from './monacoDefaultOptions'
 
 const state = observable({
   entities: observable.map({}),
-  options: observable.map({
-    lineNumbers: true,
-    selectOnLineNumbers: true,
-    glyphMargin: true,
-    roundedSelection: true,
-    language: 'javascript',
-    minimap: {
-      enabled: true,
-      renderCharacters: false,
-    },
-    contextmenu: false,
-    theme: 'vs-dark',
-  }),
+  options: observable.map({}),
 })
 
 const typeDetect = (title, types) => {
@@ -67,12 +55,12 @@ class EditorInfo {
       }
     })
 
-    const disposer = observe(this, 'content', (change) => {
+    this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
-      if (content !== monacoEditor.getValue()) monacoEditor.setValue(content)
-      disposer()
-    })
-    this.disposers.push(disposer)
+      if (content !== monacoEditor.getValue()) {
+        monacoEditor.setValue(content)
+      }
+    }))
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
@@ -228,6 +216,7 @@ class EditorInfo {
   }
 
   destroy (async) {
+    this.monacoEditor.dispose()
     if (async) {
       setTimeout(() => {
         if (this.tab) return
