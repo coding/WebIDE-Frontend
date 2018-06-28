@@ -166,21 +166,10 @@ export class LanguageClient {
 
 export default languageState
 
-// function autoConnect () {
-//   setTimeout(() => {
-//     if (!languageState.clients.get(config.mainLanguage)
-//       && config.mainLanguage !== 'Blank'
-//       && !config.switchOldEditor) {
-//       createClient(config.mainLanguage)
-//     }
-//   }, 1000)
-// }
-
 reaction(() => config.mainLanguage, (lang) => {
   setTimeout(() => {
-    if (!languageState.clients.get(lang)) {
+    if (!languageState.clients.get(lang) && !config.switchOldEditor) {
       createClient(lang)
     }
   }, 1000)
 })
-// when(() => config.rehydrated, autoConnect)

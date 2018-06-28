@@ -35,7 +35,6 @@ export const fetchProjectType = function () {
     if (res.estimated) {
       state.projectResolve = res.estimations
     } else {
-      console.log(res)
       settings.projectsetting.projectType.value = res.type
       settings.projectsetting.sourcePath.value = res.attributes['java.source.folder'][0]
       settings.projectsetting.library.value = res.attributes['java.library.folder'][0]
