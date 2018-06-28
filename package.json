@@ -135,7 +135,7 @@
     "reselect": "^2.5.4",
     "sh.js": "git+https://github.com/vangie/sh.js#v1.2.28",
     "socket.io-client": "^1.7.3",
-    "socket.io-client-legacy": "git+https://github.com/Coding/socket.io-client.git#0.9.18",
+    "socket.io-client-legacy": "git+https://github.com/Coding/socket.io-client#0.9.18",
     "sockjs-client": "^1.1.1",
     "stompjs": "^2.3.3",
     "styled-components": "^2.1.2",
