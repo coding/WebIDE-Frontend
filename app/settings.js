@@ -87,7 +87,9 @@ const changeUITheme = (nextThemeId) => {
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  if (config.switchOldEditor && !nextSyntaxThemeId.startsWith('vs')) {
+    if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  }
 }
 
 const formatLocateName = (name) => {
