@@ -25,6 +25,12 @@ class ResetRemote extends Component {
       })
   }
 
+  keyDown = (e) => {
+    if (e.keyCode === 108 || e.keyCode === 13) {
+      this.handleCommit()
+    }
+  }
+
   render () {
     return (
       <div>
@@ -37,12 +43,13 @@ class ResetRemote extends Component {
               onChange={this.handleChangeAddress}
               placeholder='e.g. git@github.com:Author/Porject.git'
               value={this.state.address}
+              onKeyDown={this.keyDown}
             />
           </div>
         </div>
         <div className='modal-ops settings-content-controls'>
-          <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>Cancel</button>
-          <button className='btn btn-primary' onClick={this.handleCommit}>Commit</button>
+          <button className='btn btn-default' onClick={e => dispatchCommand('modal:dismiss')}>{i18n.get('modal.cancelButton')}</button>
+          <button className='btn btn-primary' onClick={this.handleCommit}>{i18n.get('modal.okButton')}</button>
         </div>
       </div>
     )
