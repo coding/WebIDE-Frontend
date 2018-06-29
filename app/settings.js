@@ -58,10 +58,12 @@ export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'mate
 export const monacoThemeOptions = ['vs-dark']
 
 const changeUITheme = (nextThemeId) => {
-  if (nextThemeId === 'base-theme') {
-    monacoConfig.theme = 'vs-light'
-  } else {
-    monacoConfig.theme = 'vs-dark'
+  if (!config.switchOldEditor) {
+    if (nextThemeId === 'base-theme') {
+      monacoConfig.theme = 'vs-light'
+    } else {
+      monacoConfig.theme = 'vs-dark'
+    }
   }
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
