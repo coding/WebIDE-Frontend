@@ -58,10 +58,12 @@ export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'mate
 export const monacoThemeOptions = ['vs-dark']
 
 const changeUITheme = (nextThemeId) => {
-  if (nextThemeId === 'base-theme') {
-    monacoConfig.theme = 'vs-light'
-  } else {
-    monacoConfig.theme = 'vs-dark'
+  if (!config.switchOldEditor) {
+    if (nextThemeId === 'base-theme') {
+      monacoConfig.theme = 'vs-light'
+    } else {
+      monacoConfig.theme = 'vs-dark'
+    }
   }
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
@@ -85,7 +87,9 @@ const changeUITheme = (nextThemeId) => {
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  if (config.switchOldEditor && !nextSyntaxThemeId.startsWith('vs')) {
+    if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  }
 }
 
 const formatLocateName = (name) => {
