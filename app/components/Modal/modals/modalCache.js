@@ -34,6 +34,7 @@ import {
   LanguageServerConfig,
   BindQcloudView,
   ImportFromGit,
+  ResetRemote,
 } from './index'
 
 const modalCache = observable.map({
@@ -67,6 +68,7 @@ const modalCache = observable.map({
   LanguageServerConfig,
   BindQcloud: BindQcloudView,
   ImportFromGit,
+  ResetRemote,
 })
 
 window.modalCache = modalCache

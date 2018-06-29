@@ -31,7 +31,9 @@
       "main": "Git",
       "push": "Push",
       "tag": "Tag",
-      "mergeBranch": "Merge Branch"
+      "mergeBranch": "Merge Branch",
+      "init": "Initialize",
+      "remote": "Reset Remote"
    },
    "tools": {
       "main": "Tools",

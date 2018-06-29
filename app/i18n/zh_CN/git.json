@@ -139,5 +139,9 @@
       "showRemoteTags": "显示远程标签",
       "selectBranch": "选择一个分支"
    },
+   "resetRemote": {
+     "title": "重设远端",
+     "remoteAddress": "请输入远端地址"
+   },
    "initPrompt": "当前项目未初始化 Git，请在终端中执行 git init"
 }

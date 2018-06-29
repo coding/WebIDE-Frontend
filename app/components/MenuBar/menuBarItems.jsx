@@ -71,6 +71,20 @@ const menuBarItems = observable([
     onOpen: onGitMenuOpen,
     items: [
       {
+        key: 'remote',
+        name: i18n`menuBarItems.git.remote`,
+        command: 'git:remote',
+        showMore: true,
+        isNotGitProject,
+      },
+      {
+        key: 'init',
+        name: i18n`menuBarItems.git.init`,
+        icon: 'octicon octicon-repo',
+        command: 'git:initialize',
+        showMore: true,
+      },
+      {
         key: 'commit',
         name: i18n`menuBarItems.git.commit`,
         icon: 'octicon octicon-git-commit',

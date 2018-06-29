@@ -147,3 +147,11 @@ export function gitRefs () {
 export function gitClone (data) {
   return request.post('ws/clone', data, { headers: { Accept: 'application/vnd.coding.v1+json' } });
 }
+
+export function gitInit () {
+  return request.post(`/git/${config.spaceKey}/init`)
+}
+
+export function gitRemote (url) {
+  return request.post(`/git/${config.spaceKey}/remote`, { url })
+}
