@@ -24,7 +24,7 @@ module.exports = merge(
         __PACKAGE_DEV__: false,
         __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || process.env.HTML_BASE_URL || ''),
         __NODE_ENV__: str(process.env.NODE_ENV || ''),
-        __CHANGELOG_PATH__: '',
+        __CHANGELOG_PATH__: str(''),
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         }
