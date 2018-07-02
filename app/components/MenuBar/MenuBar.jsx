@@ -75,7 +75,7 @@ class MenuBar extends Component {
 }
 
 @connect(null,
-  dispatch => bindActionCreators({ getCurrentBranch }, dispatch), null, { withRef: true })
+  dispatch => ({ dispatch }), null, { withRef: true })
 class MenuBarItem extends Component {
   constructor (props) {
     super(props)
@@ -84,11 +84,9 @@ class MenuBarItem extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (!this.props.isActive && nextProps.isActive) {
+      const { dispatch } = this.props
       const onOpen = isFunction(nextProps.onOpen) ? nextProps.onOpen : () => null
-      const onOpenPromise = onOpen()
-      if (isFunction(nextProps.onOpen)) {
-        this.props.getCurrentBranch()
-      }
+      const onOpenPromise = onOpen(dispatch)
       if (onOpenPromise && isFunction(onOpenPromise.then)) {
         onOpenPromise.then(menuContext => this.setState({ menuContext }))
       }
