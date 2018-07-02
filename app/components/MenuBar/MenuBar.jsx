@@ -75,10 +75,7 @@ class MenuBar extends Component {
 }
 
 @connect(null,
-  dispatch => ({
-    ...bindActionCreators({ getCurrentBranch }, dispatch),
-    dispatch
-  }), null, { withRef: true })
+  dispatch => ({ dispatch }), null, { withRef: true })
 class MenuBarItem extends Component {
   constructor (props) {
     super(props)
