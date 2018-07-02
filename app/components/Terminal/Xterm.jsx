@@ -48,7 +48,7 @@ class Term extends Component {
     }
 
     const terminal = this.terminal = new Terminal({
-      fontSize: 12,
+      fontSize: SettingState.settings.appearance.terminal_font_size.value || 12,
       // theme: themeName,
       cols: 80,
       rows: 24,

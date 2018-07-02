@@ -222,7 +222,7 @@ const settings = observable({
       'ui_theme',
       'syntax_theme',
       'font_size',
-      'terminial_font_size'
+      'terminal_font_size'
     ],
     ui_theme: {
       name: 'settings.appearance.uiTheme',
@@ -247,7 +247,7 @@ const settings = observable({
         }`)
       }
     },
-    terminial_font_size: {
+    terminal_font_size: {
       name: 'settings.appearance.termFontSize',
       value: 12,
       reaction (value) {
