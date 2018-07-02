@@ -31,6 +31,7 @@ class MonacoEditor extends React.PureComponent {
     this.editorElement = editorInfo.monacoElement
     this.containerElement = undefined
     this.currentValue = props.value
+    this.didmount = false
 
     const model = monaco.editor.getModel(this.editor.uri)
 
@@ -58,9 +59,12 @@ class MonacoEditor extends React.PureComponent {
     this.containerElement.appendChild(this.editorElement)
     const { monacoEditor } = this.editor
     const { tab } = this.props
+    if (this.props.active) {
+      monacoEditor.focus()
+    }
+    this.didmount = true
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
-
       this.currentValue = value
 
       if (this.editor.file && tab) {
@@ -75,66 +79,77 @@ class MonacoEditor extends React.PureComponent {
       }
     })
 
-    when(() => languageState.clients.get(this.language), () => {
+    autorun(() => {
       const languageClient = languageState.clients.get(this.language)
-      const { path, content } = this.editor.file
+      if (languageClient) {
+        const { path, content } = this.editor.file
+        /**
+         * client 状态
+         * enum ClientState {
+         *  Initial, // 0
+         *  Starting, // 1
+         *  StartFailed, // 2
+         *  Running, // 3
+         *  Stopping, // 4
+         *  Stopped, // 5
+         * }
+         */
+        let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)
+        if (!model) {
+          model = monaco.editor.createModel(
+            content,
+            'java',
+            monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
+          )
+          this.editor.model = model
+          this.uri = `file://${languageClient._ROOT_URI_}${path}`
+          const tmpModel = monaco.editor.getModel(`inmemory://model/${this.editor.id}`)
+          tmpModel.dispose()
+        }
+        monacoEditor.setModel(model)
 
-      /**
-       * client 状态
-       * enum ClientState {
-       *  Initial, // 0
-       *  Starting, // 1
-       *  StartFailed, // 2
-       *  Running, // 3
-       *  Stopping, // 4
-       *  Stopped, // 5
-       * }
-       */
-      let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)
-      if (!model) {
-        model = monaco.editor.createModel(
-          content,
-          'java',
-          monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
-        )
-        this.uri = `file://${languageClient._ROOT_URI_}${path}`
-      }
-      monacoEditor.setModel(model)
-
-      if (this.editor.selection) {
-        monacoEditor.setSelection(this.editor.selection)
-      }
-      const { client, openeduri } = languageClient
-      if (client && client.state === 3 && this.props.active) {
-        if (!languageClient.openeduri.get(path)) {
-          languageClient.openTextDocument({
-            textDocument: {
-              uri: `file://${languageClient._ROOT_URI_}${path}`,
-              languageId: this.language,
-              text: content,
-              version: 1,
-            }
-          })
-
-          openeduri.set(path, content)
+        if (this.editor.selection) {
+          monacoEditor.setSelection(this.editor.selection)
+        }
+        const { client, openeduri } = languageClient
+        if (client && client.state === 3 && this.props.active && this.didmount) {
+          if (!openeduri.get(path)) {
+            languageClient.openTextDocument({
+              textDocument: {
+                uri: `file://${languageClient._ROOT_URI_}${path}`,
+                languageId: this.language,
+                text: content,
+                version: 1,
+              }
+            })
+            openeduri.set(path, content)
+          }
         }
       }
     })
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.active && nextProps.active !== this.props.active) {
+      this.editor.monacoEditor.focus()
+    }
+  }
+
   componentWillUnmount () {
+    this.editor.destroy()
     const languageClient = languageState.clients.get(this.language)
     if (!languageClient) return
     const { path } = this.editor.file
     const { openeduri } = languageClient
     // 组件卸载后发送 didClose消息
     if (languageClient && openeduri.get(path)) {
+      this.didmount = false
+      languageClient.openeduri.delete(path)
       languageClient.closeTextDocument({
         textDocument: {
-          uri: `${languageClient._ROOT_URI_}${path}`,
+          uri: `file://${languageClient._ROOT_URI_}${path}`,
         }
       })
-      languageClient.openeduri.delete(path)
     }
   }
 

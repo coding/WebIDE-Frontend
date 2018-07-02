@@ -27,3 +27,4 @@ export { ProjectSelector, ProjectCreator } from '../ProjectSelector'
 export FilePalette from '../FilePalette';
 export BindQcloudView from '../BindQcloud';
 export ImportFromGit from '../ImportFromGit';
+export ResetRemote from '../ResetRemote'

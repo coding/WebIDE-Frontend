@@ -40,7 +40,7 @@ extraKeys['Tab'] = function betterTab (cm) {
 
 // precisely, these are the default options that we want to override
 const options = {
-  theme: 'default',
+  theme: 'material',
   autofocus: false,
   lineNumbers: true,
   lint: null,

@@ -1,6 +1,7 @@
 import React from 'react'
 import api from 'backendAPI'
 import tabState from 'components/Tab/state'
+import { updateCurrentBranch } from 'components/Git/actions'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
@@ -70,6 +71,20 @@ const menuBarItems = observable([
     name: i18n`menuBarItems.git.main`,
     onOpen: onGitMenuOpen,
     items: [
+      {
+        key: 'remote',
+        name: i18n`menuBarItems.git.remote`,
+        command: 'git:remote',
+        showMore: true,
+        isNotGitProject,
+      },
+      {
+        key: 'init',
+        name: i18n`menuBarItems.git.init`,
+        icon: 'octicon octicon-repo',
+        command: 'git:initialize',
+        showMore: true,
+      },
       {
         key: 'commit',
         name: i18n`menuBarItems.git.commit`,
@@ -197,8 +212,14 @@ const menuBarItems = observable([
 const isRebasing = ['REBASING', 'REBASING_REBASING',
   'REBASING_MERGE', 'REBASING_INTERACTIVE']
 
-function onGitMenuOpen () {
-  return api.gitRebaseState().then(rebaseState => ({ rebaseState }))
+function onGitMenuOpen (dispatch) {
+  const gitStateTask = api.gitCurrentBranch()
+  const rebaseStateTask = api.gitRebaseState().then(rebaseState => ({ rebaseState }))
+  return Promise.all([gitStateTask, rebaseStateTask])
+    .then(([name, rebaseState]) => {
+      dispatch(updateCurrentBranch(name))
+      return rebaseState
+    })
 }
 
 function getIsDisabled (menuContext) {

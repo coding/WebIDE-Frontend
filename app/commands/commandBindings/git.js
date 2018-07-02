@@ -1,9 +1,21 @@
+import * as NotificationActions from 'components/Notification/actions'
 import store, { dispatch as $d } from '../../store'
 import api from '../../backendAPI'
 import * as Git from '../../components/Git/actions'
 import * as Modal from '../../components/Modal/actions'
 
 export default {
+  'git:remote': () => {
+    Modal.showModal({ type: 'ResetRemote' })
+  },
+  'git:initialize': () => {
+    api.gitInit()
+      .then((data) => {
+        NotificationActions.notify({
+          message: data.msg
+        })
+      })
+  },
   'git:commit': (c) => {
     api.gitStatus().then(({ files, clean }) => {
       $d(Git.updateStatus({ files, isClean: clean }))

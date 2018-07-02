@@ -1,7 +1,8 @@
 import uniqueId from 'lodash/uniqueId'
-import { observe, observable, computed, action, extendObservable } from 'mobx'
+import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 
+import config from 'config'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import TabStore from 'components/Tab/store'
@@ -14,19 +15,7 @@ import initialOptions from './monacoDefaultOptions'
 
 const state = observable({
   entities: observable.map({}),
-  options: observable.map({
-    lineNumbers: true,
-    selectOnLineNumbers: true,
-    glyphMargin: true,
-    roundedSelection: true,
-    language: 'javascript',
-    minimap: {
-      enabled: true,
-      renderCharacters: false,
-    },
-    contextmenu: false,
-    theme: 'vs-dark',
-  }),
+  options: observable.map({}),
 })
 
 const typeDetect = (title, types) => {
@@ -67,12 +56,12 @@ class EditorInfo {
       }
     })
 
-    const disposer = observe(this, 'content', (change) => {
+    this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
-      if (content !== monacoEditor.getValue()) monacoEditor.setValue(content)
-      disposer()
-    })
-    this.disposers.push(disposer)
+      if (content !== monacoEditor.getValue()) {
+        monacoEditor.setValue(content)
+      }
+    }))
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
@@ -228,6 +217,7 @@ class EditorInfo {
   }
 
   destroy (async) {
+    this.monacoEditor.dispose()
     if (async) {
       setTimeout(() => {
         if (this.tab) return

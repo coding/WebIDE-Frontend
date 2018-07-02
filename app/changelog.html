@@ -1000,7 +1000,7 @@
     }
 
     function renderMD (callback) {
-      $.get('../static/changelog/changelog.md', function(data, status) {
+      $.get("<%= webpackConfig.output.publicPath + __CHANGELOG_PATH__ +  'changelog.md' %>", function(data, status) {
         var html = marked.parse(data);
         // console.log(html);
         $('.changelog-detail').html(html);

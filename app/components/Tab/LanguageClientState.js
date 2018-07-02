@@ -1,4 +1,4 @@
-import { observable, when } from 'mobx'
+import { observable, reaction } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
 import config from 'config'
 import {
@@ -7,7 +7,9 @@ import {
   DidOpenTextDocumentNotification,
   DidCloseTextDocumentNotification,
   DidChangeWatchedFilesNotification,
-} from 'vscode-base-languageclient/lib/protocol'
+  DidChangeWorkspaceFoldersNotification,
+  WorkspaceFoldersRequest,
+} from 'vscode-languageserver-protocol'
 
 import { createLanguageClient as createClient } from 'components/MonacoEditor/actions'
 import { JAVA_CLASS_PATH_REQUEST, LANGUAGE_STATUS } from 'components/MonacoEditor/languageRequestTypes'
@@ -19,6 +21,17 @@ const languageState = observable({
   message: '',
 })
 
+
+/** 客户端状态
+  enum ClientState {
+    Initial,     0
+    Starting,    1
+    StartFailed, 2
+    Running,     3
+    Stopping,    4
+    Stopped      5
+  }
+ */
 /**
  * 语言服务器客户端
  * 控制本地及服务端语言服务生命周期
@@ -35,6 +48,7 @@ export class LanguageClient {
     this._ROOT_URI_ = config.__WORKSPACE_URI__
     this.openeduri = new observable.map({})
     this.DESTROYED = false
+    this.client = null
     this.initialize()
   }
 
@@ -103,21 +117,27 @@ export class LanguageClient {
     })
   }
 
+  workSpaceFolder = params =>
+    this.client.sendRequest(WorkspaceFoldersRequest.type, params)
+
+  workSpaceFoldersChange = params =>
+    this.client.sendNotification(DidChangeWorkspaceFoldersNotification.type, params)
+
   openTextDocument = params =>
-    this.client.sendRequest(DidOpenTextDocumentNotification.type, params)
+    this.client.sendNotification(DidOpenTextDocumentNotification.type, params)
 
   closeTextDocument = params =>
-    this.client.sendRequest(DidCloseTextDocumentNotification.type, params)
+    this.client.sendNotification(DidCloseTextDocumentNotification.type, params)
 
   changeWatchedFiles = params =>
-    this.client.sendRequest(DidChangeWatchedFilesNotification.type, params)
+    this.client.sendNotification(DidChangeWatchedFilesNotification.type, params)
 
   fetchJavaClassContent = params =>
     this.client.sendRequest(JAVA_CLASS_PATH_REQUEST, params)
 
   shutdown = () => this.client.sendRequest(ShutdownRequest.type)
 
-  exit = () => this.client.sendRequest(ExitNotification.type)
+  exit = () => this.client.sendNotification(ExitNotification.type)
 
   /**
    * 关闭语言服务
@@ -146,14 +166,10 @@ export class LanguageClient {
 
 export default languageState
 
-function autoConnect () {
+reaction(() => config.mainLanguage, (lang) => {
   setTimeout(() => {
-    if (!languageState.clients.get(config.mainLanguage)
-      && config.mainLanguage !== 'Blank'
-      && !config.switchOldEditor) {
-      createClient(config.mainLanguage)
+    if (!languageState.clients.get(lang) && !config.switchOldEditor) {
+      createClient(lang)
     }
   }, 1000)
-}
-
-when(() => config.rehydrated, autoConnect)
+})

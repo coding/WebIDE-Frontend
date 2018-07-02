@@ -58,10 +58,12 @@ export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'mate
 export const monacoThemeOptions = ['vs-dark']
 
 const changeUITheme = (nextThemeId) => {
-  if (nextThemeId === 'base-theme') {
-    monacoConfig.theme = 'vs-light'
-  } else {
-    monacoConfig.theme = 'vs-dark'
+  if (!config.switchOldEditor) {
+    if (nextThemeId === 'base-theme') {
+      monacoConfig.theme = 'vs-light'
+    } else {
+      monacoConfig.theme = 'vs-dark'
+    }
   }
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
@@ -85,7 +87,9 @@ const changeUITheme = (nextThemeId) => {
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  if (config.switchOldEditor && !nextSyntaxThemeId.startsWith('vs')) {
+    if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  }
 }
 
 const formatLocateName = (name) => {
@@ -156,7 +160,7 @@ class DomainSetting {
       if (settingItem.reaction && is.function(settingItem.reaction)) {
         reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
           name: settingItem.name || key,
-          fireImmediately: true,
+          fireImmediately: false,
           delay: 1,
         })
       }
@@ -318,7 +322,7 @@ const settings = observable({
     },
     indent_style: {
       name: 'settings.editor.indentStyle',
-      disabled: true,
+      disabled: !config.switchOldEditor,
       value: 'space',
       options: [{ name: 'Space', value: 'space' }, { name: 'Tab', value: 'tab' }],
       reaction (value) {
@@ -385,7 +389,7 @@ const settings = observable({
     keyboard_mode: {
       name: 'settings.keymap.keyboardMode',
       value: 'Default',
-      options: config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
+      options: !config.switchOldEditor ? ['Default'] : ['Default', 'Sublime', 'Vim', 'Emacs'],
       reaction (value) {
         if (!EditorState) return
         const keyboardMode = value.toLowerCase()
@@ -417,19 +421,24 @@ const settings = observable({
         }
         config.mainLanguage = lang
       }
+      const prevFolder = config._ROOT_URI_
       if (path !== '/') {
         config._WORKSPACE_SUB_FOLDER_ = path
         config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
       }
       const client = LanguageState.clients.get(lang)
+
+      /**
+       * lsp 支持多根目录，目前仅允许一个目录被 lsp 分析
+       * 修改源码目录后，发送 workSpaceFoldersChange 请求，替换根目录为新的目录
+       */
       if (client) {
-        client.destory()
-          .then(() => {
-            createLanguageClient(lang)
-          })
-          .catch((err) => {
-            console.log(err.messsage)
-          })
+        client.workSpaceFoldersChange({
+          event: {
+            added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+            removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+          }
+        })
       } else {
         createLanguageClient(lang)
       }

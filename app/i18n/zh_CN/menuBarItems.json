@@ -31,7 +31,9 @@
       "main": "版本",
       "push": "推送",
       "tag": "标签",
-      "mergeBranch": "合并分支"
+      "mergeBranch": "合并分支",
+      "init": "初始化",
+      "remote": "重设远端"
    },
    "tools": {
       "main": "工具",

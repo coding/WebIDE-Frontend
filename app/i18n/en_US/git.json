@@ -139,5 +139,9 @@
       "showRemoteTags": "Show Remote Branches",
       "selectBranch": "select a branch"
    },
+   "resetRemote": {
+     "title": "Reset the Remote",
+     "remoteAddress": "Please input Remote address"
+   },
    "initPrompt": "The current project is not initialized Git, please execute git init in the terminal."
 }
