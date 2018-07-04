@@ -2,17 +2,14 @@ import _ from 'lodash'
 import api from 'backendAPI'
 import { registerAction } from 'utils/actions'
 import FileStore from 'commons/File/store'
-import * as TabActions from 'components/Tab/actions'
 import * as Modal from 'components/Modal/actions'
 import contextMenuStore from 'components/ContextMenu/store'
 import state, { FileTreeNode } from './state'
 import bindToFile, { isFileExcluded } from './fileTreeToFileBinding'
 import FileTreeContextMenuItems from './contextMenuItems'
 import dispatchCommand from 'commands/dispatchCommand'
-import { getTabType } from 'utils'
 import i18n from 'utils/createI18n'
 import is from 'utils/is'
-import icons from 'file-icons-js'
 import statusBarState from '../StatusBar/state'
 import { notify, NOTIFY_TYPE } from '../Notification/actions'
 
@@ -31,7 +28,6 @@ export const selectNode = registerAction('filetree:select_node',
     const offset = node
     if (typeof offset === 'number') {
       node = undefined
-
       if (offset === 1) {
         const curNode = state.focusedNodes[state.focusedNodes.length - 1]
         if (curNode) node = curNode.getNext
@@ -39,15 +35,12 @@ export const selectNode = registerAction('filetree:select_node',
         const curNode = state.focusedNodes[0]
         if (curNode) node = curNode.getPrev
       }
-
       if (!node || node.isShadowRoot) node = state.root
     }
-
     if (!multiSelect) {
       state.root.unfocus()
       state.shadowRoot.forEachDescendant(childNode => childNode.unfocus())
     }
-
     node.focus()
   }
 )
@@ -129,21 +122,11 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
     } else {
       toggleNodeFold(node, shouldBeFolded, deep)
     }
-  } else if (['TEXT', 'HTML', 'MARKDOWN'].includes(getTabType(node.contentType))) {
-    dispatchCommand('file:open_file', { path: node.path, editor, contentType: node.contentType })
   } else {
-    TabActions.createTab({
-      title: node.name,
-      icon: icons.getClassWithColor(node.name) || 'fa fa-file-text-o',
-      contentType: node.contentType,
-      editor: {
-        ...editor,
-        filePath: node.path,
-        size: node.size
-      },
-    })
+    dispatchCommand('file:open_file', { path: node.path, editor, contentType: node.contentType })
   }
 }
+
 export const openNode = registerAction('filetree:open_node',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
