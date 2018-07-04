@@ -15,7 +15,6 @@
   "scripts": {
     "start-platform": "RUN_MODE=platform webpack-dev-server --port=8060 --progress --colors ",
     "start": "webpack-dev-server --mode development --progress --colors --public",
-    "build:dll": "npm run clean && webpack --config webpack_configs/webpack.dll.config.js --mode production",
     "clean": "rm -rf build",
     "build": "npm run clean && node_modules/.bin/webpack --mode production --max_old_space_size=4096 && npm run after-build",
     "after-build": "node cdn.js",
