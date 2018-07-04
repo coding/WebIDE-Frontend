@@ -10,6 +10,8 @@ const uglify = require('./uglify.config')
 module.exports = merge(
   commonConfig({
     staticDir: process.env.RUN_MODE ? 'rs2' : 'rs',
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].chunk.js',
   }),
   stylesheet(),
   uglify(),
