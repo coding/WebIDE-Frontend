@@ -13,9 +13,6 @@ const HappyPack = require('happypack')
 const os = require('os')
 
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-// const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
-
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 // const ICO_PATH = path.join(PROJECT_ROOT, 'static/favicon.ico')
 // const ICO_PATH = '//studio-res.coding.net/StudioWebResource/Images/favicon.ico'
@@ -73,16 +70,6 @@ return {
       __VERSION__: str(gitRevisionPlugin.commithash() + '@' + gitRevisionPlugin.version()),
       __PUBLIC_PATH__: str(publicPath),
     }),
-    // new CommonsChunkPlugin({
-    //   name: 'vendor',
-    //   filename: 'vendor.[chunkhash].js',
-    //   minChunks: Infinity
-    // }),
-    // new CommonsChunkPlugin({
-    //   name: 'webpackRuntime',
-    //   chunks: ['vendor', 'workspaces'],
-    //   filename: 'webpackRuntime.[hash].js'
-    // }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       excludeChunks: ['workspaces', 'login'],

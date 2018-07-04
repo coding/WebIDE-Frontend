@@ -75,19 +75,6 @@ const config = merge(
       __CHANGELOG_PATH__: str('changelog/')
     }),
     new HardSourceWebpackPlugin()
-    // new webpack.DllReferencePlugin({
-    //   context: process.cwd(),
-    //   manifest: require('../build/main.manifest.json'),
-    // }),
-    // new HtmlIncludeAssetsPlugin({
-    //   assets: ['./build/main.dll.js'],
-    //   append: false
-    // })
-    // new CopyWebpackPlugin([{
-    //   context: __dirname,
-    //   from: '../', 
-    //   to: 'js/'
-    // }]),
   ]
   },
   devServer({ port: 8060 }),
