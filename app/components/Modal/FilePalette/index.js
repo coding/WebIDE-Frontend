@@ -17,7 +17,7 @@ class FilePalette extends Component {
       isLoading: false,
       keyword: '',
       scrollIndex: this.scrollLength - 1,
-      seletedIndex: 0,
+      selectedIndex: 0,
       includeIngore: false,
     };
   }
@@ -78,11 +78,11 @@ class FilePalette extends Component {
     const fileBowl = this.state.filePool.filter(file => file.path.includes(keyword));
     const fileList = fileBowl.slice(0, this.scrollLength);
     const len = this.scrollLength < fileBowl.length ? this.scrollLength - 1 : fileBowl.length - 1;
-    this.setState({ fileBowl, fileList, seletedIndex: 0, scrollIndex: len });
+    this.setState({ fileBowl, fileList, selectedIndex: 0, scrollIndex: len });
   }
 
   openFile = (index) => {
-    const node = this.state.fileList[index || this.state.seletedIndex];
+    const node = this.state.fileList[index || this.state.selectedIndex];
     if (!node) {
       return;
     }
@@ -121,7 +121,7 @@ class FilePalette extends Component {
   }
 
   renderFiles = () => {
-    const { isLoading, fileList, seletedIndex } = this.state;
+    const { isLoading, fileList, selectedIndex } = this.state;
     if (isLoading) {
       return (
         <li className="spinner">
@@ -131,7 +131,7 @@ class FilePalette extends Component {
       );
     }
     return fileList.map((file, index) =>
-      <li className={`file ${index === seletedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={file.path}>
+      <li className={`file ${index === selectedIndex ? 'selected' : ''}`} onClick={e => this.openFile(index)} key={file.path}>
         <i className={`icon ${this.renderIcon(file)}`}></i>
         <span>{this.renderFile(file)}</span>
       </li>
@@ -139,36 +139,36 @@ class FilePalette extends Component {
   }
 
   handleGoDown() {
-    let { fileBowl, fileList, seletedIndex, scrollIndex } = this.state;
+    let { fileBowl, selectedIndex, scrollIndex } = this.state;
     const len = this.scrollLength < fileBowl.length ? this.scrollLength - 1 : fileBowl.length - 1;
-    if (scrollIndex === fileBowl.length - 1 && seletedIndex === len) {
+    if (scrollIndex === fileBowl.length - 1 && selectedIndex === len) {
       return;
     }
-    seletedIndex++;
-    if (seletedIndex === this.scrollLength) {
-      seletedIndex = this.scrollLength - 1;
+    selectedIndex++;
+    if (selectedIndex === this.scrollLength) {
+      selectedIndex = this.scrollLength - 1;
       scrollIndex++;
       const fileList = fileBowl.slice(scrollIndex - this.scrollLength + 1, scrollIndex + 1);
-      this.setState({ fileList, seletedIndex, scrollIndex });
+      this.setState({ fileList, selectedIndex, scrollIndex });
     } else {
-      this.setState({ seletedIndex });
+      this.setState({ selectedIndex });
     }
   }
 
   handleGoUp() {
-    let { fileBowl, fileList, seletedIndex, scrollIndex } = this.state;
+    let { fileBowl, selectedIndex, scrollIndex } = this.state;
     const len = this.scrollLength < fileBowl.length ? this.scrollLength - 1 : fileBowl.length - 1;
-    if (scrollIndex === len && seletedIndex === 0) {
+    if (scrollIndex === len && selectedIndex === 0) {
       return;
     }
-    seletedIndex--;
-    if (seletedIndex < 0) {
-      seletedIndex = 0;
+    selectedIndex--;
+    if (selectedIndex < 0) {
+      selectedIndex = 0;
       scrollIndex--;
       const fileList = fileBowl.slice(scrollIndex - this.scrollLength + 1, scrollIndex + 1);
-      this.setState({ fileList, seletedIndex, scrollIndex });
+      this.setState({ fileList, selectedIndex, scrollIndex });
     } else {
-      this.setState({ seletedIndex });
+      this.setState({ selectedIndex });
     }
   }
 
@@ -188,10 +188,6 @@ class FilePalette extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timer);
-  }
-
-  aa = (e) => {
-    console.log(e);
   }
 
   render() {
