@@ -3,8 +3,7 @@ const path = require('path')
 const merge = require('webpack-merge')
 const str = JSON.stringify
 const commonConfig = require('./common.config.js')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const devServer = require('./devServer.config')
 const stylesheet = require('./stylesheet.config')
 
@@ -39,7 +38,11 @@ const config = merge(
       // intro: reactHotLoaderPrependEntries,
     }
   },
-  commonConfig({ staticDir: '' }),
+  commonConfig({
+    staticDir: '',
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[hash].chunk.js',
+  }),
   /*
    * See: https://webpack.js.org/configuration/devtool/#devtool
    * devtool                       | build | rebuild | quality                       | production
@@ -71,6 +74,7 @@ const config = merge(
       __NODE_ENV__: str(process.env.NODE_ENV || ''),
       __CHANGELOG_PATH__: str('changelog/')
     }),
+    new HardSourceWebpackPlugin()
   ]
   },
   devServer({ port: 8060 }),

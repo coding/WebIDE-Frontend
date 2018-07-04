@@ -3,7 +3,9 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 module.exports = function (options) {
   return {
     plugins: [
-      new UglifyJSPlugin()
+      new UglifyJSPlugin({
+        parallel: true
+      })
     ]
   }
 }
