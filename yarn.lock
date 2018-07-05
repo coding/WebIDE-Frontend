@@ -236,14 +236,14 @@
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
     "@babel/plugin-syntax-do-expressions" "7.0.0-beta.51"
 
-"@babel/plugin-proposal-export-default-from@7.0.0-beta.51", "@babel/plugin-proposal-export-default-from@^7.0.0-beta.51":
+"@babel/plugin-proposal-export-default-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-proposal-export-default-from/download/@babel/plugin-proposal-export-default-from-7.0.0-beta.51.tgz#3286004155b4c5148207298fcb2224ea535e508c"
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
     "@babel/plugin-syntax-export-default-from" "7.0.0-beta.51"
 
-"@babel/plugin-proposal-export-namespace-from@7.0.0-beta.51", "@babel/plugin-proposal-export-namespace-from@^7.0.0-beta.51":
+"@babel/plugin-proposal-export-namespace-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-proposal-export-namespace-from/download/@babel/plugin-proposal-export-namespace-from-7.0.0-beta.51.tgz#979a3c5951cf4caf78e4ce061c51b9fcfc275dbf"
   dependencies:
@@ -372,7 +372,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
 
-"@babel/plugin-syntax-export-namespace-from@7.0.0-beta.51", "@babel/plugin-syntax-export-namespace-from@^7.0.0-beta.51":
+"@babel/plugin-syntax-export-namespace-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-syntax-export-namespace-from/download/@babel/plugin-syntax-export-namespace-from-7.0.0-beta.51.tgz#c8f2b9a8058d1493ba93d1495aaa1d007e6a598b"
   dependencies:

@@ -23,8 +23,13 @@ class FilePalette extends Component {
   }
 
   componentDidMount() {
-    if (window.FilePaletteStorage) {
-      this.setState({ filePool: window.FilePaletteStorage, fileList: window.FilePaletteStorage });
+    const storage = window.FilePaletteStorage;
+    if (storage) {
+      this.setState({
+        filePool: storage,
+        fileBowl: storage,
+        fileList: storage,
+      });
       return;
     }
     this.searchFiles();
@@ -75,7 +80,7 @@ class FilePalette extends Component {
   }
 
   handleFilter(keyword) {
-    const fileBowl = this.state.filePool.filter(file => file.path.includes(keyword));
+    const fileBowl = this.state.filePool.filter(file => file.path.toLowerCase().includes(keyword.toLowerCase()));
     const fileList = fileBowl.slice(0, this.scrollLength);
     const len = this.scrollLength < fileBowl.length ? this.scrollLength - 1 : fileBowl.length - 1;
     this.setState({ fileBowl, fileList, selectedIndex: 0, scrollIndex: len });
