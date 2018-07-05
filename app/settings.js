@@ -250,6 +250,13 @@ const settings = observable({
     terminal_font_size: {
       name: 'settings.appearance.termFontSize',
       value: 12,
+      minValue: 12,
+      validator: (e) => {
+        let val = e.target.value;
+        if (parseInt(val) < 12 || !val) {
+          e.target.value = 12;
+        }
+      },
       reaction (value) {
         emitter.emit(TERM_FONTSIZE_CHANGED, value)
       }

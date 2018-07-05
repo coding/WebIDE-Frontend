@@ -71,8 +71,9 @@ const FormInputGroup = defaultProps((props) => {
       <div className='form-line'>
         <input className='form-control'
           type={isNumber(settingItem.value) ? 'number' : 'text'}
-          min='1'
+          min={settingItem.minValue || '1'}
           onChange={updateSettingItem}
+          onInput={settingItem.validator}
           value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
           disabled={settingItem.disabled}
         />
