@@ -14,9 +14,9 @@
   },
   "scripts": {
     "start-platform": "RUN_MODE=platform webpack-dev-server --port=8060 --progress --colors ",
-    "start": "webpack-dev-server --mode development --progress --colors --public --max_old_space_size=4096",
+    "start": "node --max_old_space_size=4096 node_modules/.bin/webpack-dev-server --mode development --progress --colors --public",
     "clean": "rm -rf build",
-    "build": "npm run clean && node_modules/.bin/webpack --mode production --max_old_space_size=4096 && npm run after-build",
+    "build": "npm run clean && node --max_old_space_size=4096 node_modules/.bin/webpack --mode production && npm run after-build",
     "after-build": "node cdn.js",
     "lint-stats": "eslint --format node_modules/eslint-stats/byError.js app",
     "lint": "eslint app",
