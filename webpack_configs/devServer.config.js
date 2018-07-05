@@ -8,6 +8,7 @@ module.exports = function (options) {
     devServer: {
       hot: true,
       inline: true,
+      disableHostCheck: true,
       host: options.host || '0.0.0.0',
       port: options.port || 8060,
       historyApiFallback: {

@@ -194,20 +194,18 @@ class MarkdownEditor extends Component {
           height: '100%'
         }}
       >
-        {
-        (!showBigSize || (showBigSize && !showPreview)) ? (
-          <div
-            name='editor'
-            id='editor_preview_markdown_editor'
-            style={{
-              flexGrow: leftGrow,
-              flexShrink: 0,
-              flexBasis: 0,
-            }}
-          >
-            <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
-          </div>) : null
-        }
+      <div
+        name='editor'
+        id='editor_preview_markdown_editor'
+        style={{
+          flexGrow: leftGrow,
+          flexShrink: 0,
+          flexBasis: 0,
+          display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none'
+        }}
+      >
+        <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
+      </div>
           {(showPreview && !showBigSize) ? (
             <ResizeBar
               sectionId={'editor_preview_markdown'}

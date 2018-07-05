@@ -2,9 +2,9 @@ const webpack = require('webpack')
 const path = require('path')
 const merge = require('webpack-merge')
 const str = JSON.stringify
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const commonConfig = require('./common.config.js')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const devServer = require('./devServer.config')
 const stylesheet = require('./stylesheet.config')
 
@@ -29,6 +29,13 @@ const reactHotLoaderPrependEntries = [
   'webpack-dev-server/client?http://ide.test:8060',
   'webpack/hot/only-dev-server',
 ]
+const PROJECT_ROOT = path.resolve(__dirname, '..')
+
+const mainEntryHtmlName = 'workspace.html'
+const accountEntryHtmlName = 'account.html'
+const loginEntryHtmlName = 'login.html'
+
+const staticDir = ''
 
 const config = merge(
   {
@@ -39,7 +46,11 @@ const config = merge(
       // intro: reactHotLoaderPrependEntries,
     }
   },
-  commonConfig({ staticDir: '' }),
+  commonConfig({
+    staticDir,
+    filename: '[name].[hash].js',
+    chunkFilename: '[name].[hash].chunk.js',
+  }),
   /*
    * See: https://webpack.js.org/configuration/devtool/#devtool
    * devtool                       | build | rebuild | quality                       | production
@@ -59,6 +70,30 @@ const config = merge(
    */
   { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      multihtmlCatch: true,
+      excludeChunks: ['workspaces', 'login'],
+      filename: (staticDir ? '../' : '') + mainEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/index.html'),
+      // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      multihtmlCatch: true,
+      excludeChunks: ['workspaces', 'main'],
+      filename: (staticDir ? '../' : '') + accountEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/account.html'),
+      // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      multihtmlCatch: true,
+      excludeChunks: ['workspaces', 'main'],
+      filename: (staticDir ? '../' : '') + loginEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/login.html'),
+      // favicon: ICO_PATH,
+    }),
     new webpack.DefinePlugin({
       __DEV__: true,
       __RUN_MODE__: str(process.env.RUN_MODE || ''),
@@ -71,6 +106,7 @@ const config = merge(
       __NODE_ENV__: str(process.env.NODE_ENV || ''),
       __CHANGELOG_PATH__: str('changelog/')
     }),
+    new HardSourceWebpackPlugin()
   ]
   },
   devServer({ port: 8060 }),
