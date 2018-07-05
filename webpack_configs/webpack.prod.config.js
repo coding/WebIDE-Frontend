@@ -7,9 +7,21 @@ const commonConfig = require('./common.config.js')
 const stylesheet = require('./stylesheet.config')
 const uglify = require('./uglify.config')
 
+const mainEntryHtmlName = 'workspace.html'
+const accountEntryHtmlName = 'account.html'
+const loginEntryHtmlName = 'login.html'
+const introEntryHtmlName = 'intro.html'
+const changelogEntryHtmlName = 'changelog.html'
+const maintainEntryHtmlName = 'maintain.html'
+const workspacesEntryHtmlName = 'index.html'
+
+const PROJECT_ROOT = path.resolve(__dirname, '..')
+
+const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
+
 module.exports = merge(
   commonConfig({
-    staticDir: process.env.RUN_MODE ? 'rs2' : 'rs',
+    staticDir,
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
   }),
@@ -17,6 +29,58 @@ module.exports = merge(
   uglify(),
   {
     plugins: [
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        excludeChunks: ['workspaces', 'login'],
+        filename: (staticDir ? '../' : '') + mainEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/index.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        excludeChunks: ['main', 'login'],
+        filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        excludeChunks: ['workspaces', 'main'],
+        filename: (staticDir ? '../' : '') + loginEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/login.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        excludeChunks: ['workspaces', 'main'],
+        filename: (staticDir ? '../' : '') + accountEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/account.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+        filename: (staticDir ? '../' : '') + introEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/intro.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+        filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+        // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+        filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/maintain.html'),
+        // favicon: ICO_PATH,
+      }),
       new webpack.DefinePlugin({
         __DEV__: false,
         __RUN_MODE__: str(process.env.RUN_MODE || ''),

@@ -236,14 +236,14 @@
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
     "@babel/plugin-syntax-do-expressions" "7.0.0-beta.51"
 
-"@babel/plugin-proposal-export-default-from@7.0.0-beta.51", "@babel/plugin-proposal-export-default-from@^7.0.0-beta.51":
+"@babel/plugin-proposal-export-default-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-proposal-export-default-from/download/@babel/plugin-proposal-export-default-from-7.0.0-beta.51.tgz#3286004155b4c5148207298fcb2224ea535e508c"
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
     "@babel/plugin-syntax-export-default-from" "7.0.0-beta.51"
 
-"@babel/plugin-proposal-export-namespace-from@7.0.0-beta.51", "@babel/plugin-proposal-export-namespace-from@^7.0.0-beta.51":
+"@babel/plugin-proposal-export-namespace-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-proposal-export-namespace-from/download/@babel/plugin-proposal-export-namespace-from-7.0.0-beta.51.tgz#979a3c5951cf4caf78e4ce061c51b9fcfc275dbf"
   dependencies:
@@ -372,7 +372,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
 
-"@babel/plugin-syntax-export-namespace-from@7.0.0-beta.51", "@babel/plugin-syntax-export-namespace-from@^7.0.0-beta.51":
+"@babel/plugin-syntax-export-namespace-from@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/plugin-syntax-export-namespace-from/download/@babel/plugin-syntax-export-namespace-from-7.0.0-beta.51.tgz#c8f2b9a8058d1493ba93d1495aaa1d007e6a598b"
   dependencies:
@@ -907,6 +907,10 @@
   resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.3.13.tgz#47d466462b774556c1174ea0eda22c0578643362"
   dependencies:
     csstype "^2.2.0"
+
+"@types/tapable@1.0.2":
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.2.tgz#e13182e1b69871a422d7863e11a4a6f5b814a4bd"
 
 "@webassemblyjs/ast@1.5.12":
   version "1.5.12"
@@ -1717,7 +1721,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@^3.5.1:
+bluebird@^3.4.7, bluebird@^3.5.1:
   version "3.5.1"
   resolved "http://registry.npm.taobao.org/bluebird/download/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -4581,16 +4585,27 @@ html-webpack-include-assets-plugin@^1.0.4:
     minimatch "^3.0.4"
     slash "^1.0.0"
 
-html-webpack-plugin@3.2.0:
-  version "3.2.0"
-  resolved "http://registry.npm.taobao.org/html-webpack-plugin/download/html-webpack-plugin-3.2.0.tgz#b01abbd723acaaa7b37b6af4492ebda03d9dd37b"
+html-webpack-plugin-for-multihtml@^2.30.2:
+  version "2.30.2"
+  resolved "http://registry.npm.taobao.org/html-webpack-plugin-for-multihtml/download/html-webpack-plugin-for-multihtml-2.30.2.tgz#820c934a44a14c67f4455f8b5862bbcf8f60de0e"
   dependencies:
+    bluebird "^3.4.7"
     html-minifier "^3.2.3"
     loader-utils "^0.2.16"
     lodash "^4.17.3"
     pretty-error "^2.0.2"
-    tapable "^1.0.0"
     toposort "^1.0.0"
+
+html-webpack-plugin@^4.0.0-alpha:
+  version "4.0.0-alpha"
+  resolved "http://registry.npm.taobao.org/html-webpack-plugin/download/html-webpack-plugin-4.0.0-alpha.tgz#b2c7b6d4885a209c999dfce3ffb9866e2c8c0eaa"
+  dependencies:
+    "@types/tapable" "1.0.2"
+    html-minifier "^3.2.3"
+    loader-utils "^1.1.0"
+    lodash "^4.17.10"
+    pretty-error "^2.0.2"
+    tapable "^1.0.0"
     util.promisify "1.0.0"
 
 htmlparser2@^3.9.1:
@@ -5851,11 +5866,11 @@ lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "http://registry.npm.taobao.org/lodash.uniq/download/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.14.2, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@~4.17.2:
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.14.2, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@~4.17.2:
   version "4.17.4"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@^4.15.0, lodash@^4.17.5:
+lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.3, lodash@^4.17.5:
   version "4.17.10"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -8952,8 +8967,8 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     safe-regex "^1.1.0"
 
 toposort@^1.0.0:
-  version "1.0.3"
-  resolved "http://registry.npm.taobao.org/toposort/download/toposort-1.0.3.tgz#f02cd8a74bd8be2fc0e98611c3bacb95a171869c"
+  version "1.0.7"
+  resolved "http://registry.npm.taobao.org/toposort/download/toposort-1.0.7.tgz#2e68442d9f64ec720b8cc89e6443ac6caa950029"
 
 tough-cookie@^2.3.2, tough-cookie@~2.3.3:
   version "2.3.4"

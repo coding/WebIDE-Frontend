@@ -1,3 +1,4 @@
 node_modules/*
 static/*
 ＊.spec.js
+webpack_configs
