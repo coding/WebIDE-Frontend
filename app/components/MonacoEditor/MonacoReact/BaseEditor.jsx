@@ -4,7 +4,7 @@ import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
 import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
@@ -86,12 +86,12 @@ class MonacoEditor extends React.PureComponent {
         /**
          * client 状态
          * enum ClientState {
-         *  Initial, // 0
-         *  Starting, // 1
-         *  StartFailed, // 2
-         *  Running, // 3
-         *  Stopping, // 4
-         *  Stopped, // 5
+         *  Initial,      // 0
+         *  Starting,     // 1
+         *  StartFailed,  // 2
+         *  Running,      // 3
+         *  Stopping,     // 4
+         *  Stopped,      // 5
          * }
          */
         let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)

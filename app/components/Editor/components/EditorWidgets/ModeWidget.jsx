@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import config from 'config'
 import cx from 'classnames'
 import modeInfos from 'components/Editor/components/CodeEditor/addons/mode/modeInfos'
