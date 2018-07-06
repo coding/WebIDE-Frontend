@@ -66,21 +66,16 @@ module.exports = function(options = {}) {
     optimization: {
       splitChunks: {
         cacheGroups: {
-          commons: {
-            chunks: "initial",
-            minChunks: 2,
-            maxInitialRequests: 5, // The default limit is too small to showcase the effect
-            minSize: 0 // This is example is too small to create commons chunks
-          },
           vendors: {
-            test: /node_modules/,
-            chunks: "initial",
-            name: "vendors",
-            priority: 10,
-            enforce: true
-          }
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            minSize: 30000,
+            minChunks: 1,
+            chunks: 'initial',
+            priority: 1
+          },
         }
-      }
+      },
     },
     plugins: [
       gitRevisionPlugin,
