@@ -73,7 +73,7 @@ const FormInputGroup = defaultProps((props) => {
           type={isNumber(settingItem.value) ? 'number' : 'text'}
           min={settingItem.minValue || '1'}
           onChange={updateSettingItem}
-          onInput={settingItem.validator}
+          onBlur={settingItem.validator}
           value={settingItem.tempValue === undefined ? settingItem.value : settingItem.tempValue}
           disabled={settingItem.disabled}
         />
