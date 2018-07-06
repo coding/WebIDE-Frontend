@@ -102,6 +102,7 @@ class Term extends Component {
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
     emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
     emitter.on(E.TERM_FONTSIZE_CHANGED, val => {
+      if (val < 12) val = 12
       terminal.setOption('fontSize', val)
     })
 

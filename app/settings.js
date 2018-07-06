@@ -252,9 +252,9 @@ const settings = observable({
       value: 12,
       minValue: 12,
       validator: (e) => {
-        let val = e.target.value;
-        if (parseInt(val) < 12 || !val) {
-          e.target.value = 12;
+        const input = e.target;
+        if (input.value < 12) {
+          input.value = 12;
         }
       },
       reaction (value) {
