@@ -39,8 +39,7 @@ module.exports = function(options = {}) {
       workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
       login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
       // intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],
-      babel: ['@babel/polyfill'],
-      vendor: ['react', 'react-dom', 'redux', 'react-redux']
+      vendor: ['@babel/polyfill', 'react', 'react-dom', 'redux', 'react-redux']
     },
     output: {
       publicPath,
@@ -66,24 +65,19 @@ module.exports = function(options = {}) {
     },
     optimization: {
       splitChunks: {
-        chunks: 'all',
         cacheGroups: {
           commons: {
-            name: 'commons',
-            chunks: 'initial',
-            minChunks: 2
+            chunks: "initial",
+            minChunks: 2,
+            maxInitialRequests: 5, // The default limit is too small to showcase the effect
+            minSize: 0 // This is example is too small to create commons chunks
           },
           vendors: {
-            chunks: 'initial',
-            name: 'vendors',
-            test: /node_modules\//,
-            minChunks: 5,
+            test: /node_modules/,
+            chunks: "initial",
+            name: "vendors",
             priority: 10,
-          },
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true
+            enforce: true
           }
         }
       }

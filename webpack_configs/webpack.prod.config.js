@@ -32,7 +32,7 @@ module.exports = merge(
     plugins: [
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
-        excludeChunks: ['workspaces', 'login'],
+        excludeChunks: ['main', 'login', 'workspaces'],
         filename: (staticDir ? '../' : '') + mainEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/index.html'),
         // favicon: ICO_PATH,
