@@ -32,6 +32,7 @@ module.exports = merge(
     plugins: [
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
+        multihtmlCatch: true,
         excludeChunks: ['workspaces', 'login'],
         filename: (staticDir ? '../' : '') + mainEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/index.html'),
@@ -39,13 +40,15 @@ module.exports = merge(
       }),
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
-        excludeChunks: ['main', 'login'],
-        filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
-        template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
+        multihtmlCatch: true,
+        excludeChunks: ['workspaces', 'main'],
+        filename: (staticDir ? '../' : '') + accountEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/account.html'),
         // favicon: ICO_PATH,
       }),
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
+        multihtmlCatch: true,
         excludeChunks: ['workspaces', 'main'],
         filename: (staticDir ? '../' : '') + loginEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/login.html'),
@@ -53,9 +56,9 @@ module.exports = merge(
       }),
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
-        excludeChunks: ['workspaces', 'main'],
-        filename: (staticDir ? '../' : '') + accountEntryHtmlName,
-        template: path.join(PROJECT_ROOT, 'app/account.html'),
+        excludeChunks: ['main', 'login'],
+        filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
         // favicon: ICO_PATH,
       }),
       new HtmlWebpackPlugin({
@@ -82,6 +85,7 @@ module.exports = merge(
         template: path.join(PROJECT_ROOT, 'app/maintain.html'),
         // favicon: ICO_PATH,
       }),
+      // new webpack.HashedModuleIdsPlugin(),
       new webpack.DefinePlugin({
         __DEV__: false,
         __RUN_MODE__: str(process.env.RUN_MODE || ''),
