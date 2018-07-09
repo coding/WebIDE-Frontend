@@ -4,7 +4,7 @@ import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
 import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import * as monaco from 'monaco-editor'
 
 import FileStore from 'commons/File/store'
 import languageState from 'components/Tab/LanguageClientState'
