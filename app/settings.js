@@ -291,10 +291,21 @@ const settings = observable({
       nopersist: true,
       onConfirm (value) {
         config.switchOldEditor = value
+        /* eslint-disable */
+        const syntax_theme = settings.appearance.syntax_theme.value
+        const ui_theme = settings.appearance.ui_theme.value
+        if (!!value) {
+          if (ui_theme === 'dark' && syntax_theme !== 'material') {
+            settings.appearance.syntax_theme.value = 'material'
+          } else if (ui_theme === 'base-theme' && syntax_theme !== 'default') {
+            settings.appearance.syntax_theme.value = 'default'
+          }
+        }
+        /* eslint-enable */
         localStorage.setItem('switchOldEditor', value)
         setTimeout(() => {
           window.location.reload()
-        }, 100)
+        }, 200)
       }
     }
   }),

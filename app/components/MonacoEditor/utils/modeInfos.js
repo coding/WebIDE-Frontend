@@ -1,7 +1,8 @@
+
 /* eslint-disable */
-export default [{
+const modeInfos = [{
   "id": "plaintext",
-  "extensions": [".txt", ".gitignore"],
+  "extensions": [".txt", ".gitignore", ".prefs"],
   "aliases": ["Plain Text", "text"],
   "mimetypes": ["text/plain"]
 }, {
@@ -199,3 +200,16 @@ export default [{
   "aliases": ["YAML", "yaml", "YML", "yml"],
   "mimetypes": ["application/x-yaml"]
 }]
+
+function mergeExtensions () {
+  return modeInfos.reduce((pre, cur) => {
+    if (cur.extensions && cur.extensions.length > 0) {
+      pre = pre.concat(cur.extensions)
+    }
+    return pre;
+  }, []);
+}
+
+export default modeInfos
+
+export const extensions = mergeExtensions()
