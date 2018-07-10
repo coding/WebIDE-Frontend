@@ -61,7 +61,7 @@ class Menu extends Component {
 
   onMouseLeave = () => {
     if (this.context.getFocus() === this) {
-      this.setState({ activeItemIndex: -2 })
+      this.setState({ activeItemIndex: -2 });
     }
   }
 

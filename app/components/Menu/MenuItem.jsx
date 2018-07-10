@@ -95,8 +95,6 @@ class MenuItem extends Component {
     const { item, isActive, currentBranch } = this.props
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
 
-    // when submenu is focused, onMouseLeave from parent <MenuSheet> won't trigger lost of <MenuItem> activity (which normally will)
-    const submenuIsFocused = this.submenu && this.context.getFocus() === this.submenu
     const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
       : isFunction(item.getIsDisabled) ? item.getIsDisabled(this.context.menuContext)
       : isFunction(item.isNotGitProject) && item.isNotGitProject(currentBranch)
@@ -104,7 +102,7 @@ class MenuItem extends Component {
       <li className='menu-item' ref={r => this.nodeDOM = r}>
         <div
           className={cx('menu-item-container', {
-            active: isActive || submenuIsFocused,
+            active: isActive,
             disabled: isDisabled,
           })}
           onMouseEnter={this.onMouseEnter}
@@ -122,7 +120,7 @@ class MenuItem extends Component {
           : null }
           {item.items && <div className='menu-item-triangle'>▶</div>}
         </div>
-        {item.items && ((isActive && this.state.isSubmenuShown) || submenuIsFocused) &&
+        {item.items && (isActive && this.state.isSubmenuShown) &&
           <MenuSheet isSubmenu
             ref={this.onSubmenuMount}
             items={item.items}
