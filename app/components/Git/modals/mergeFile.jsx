@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { dispatchCommand } from '../../../commands'
 import cx from 'classnames'
+import { inject } from 'mobx-react'
 import { connect } from 'react-redux'
 import * as GitActions from '../actions'
 import i18n from 'utils/createI18n'
@@ -16,6 +17,9 @@ require(['diff_match_patch'], (lib) => {
 })
 import 'codemirror/addon/merge/merge.css'
 
+@inject(state => ({
+  themeName: state.SettingState.settings.appearance.syntax_theme.value,
+}))
 class GitMergeView extends Component {
   static defaultProps = {
     mode: null,
@@ -95,6 +99,7 @@ class GitMergeView extends Component {
       origLeft: data.local,
       orig: data.remote,
       value: data.base,
+      theme: this.props.themeName,
       revertButtons: true,
     })
     this.mergeView.wrap.style.height = '100%'

@@ -24,7 +24,7 @@ const modeInfos = [{
   "mimetypes": ["text/javascript"]
 }, {
   "id": "bat",
-  "extensions": [".bat", ".cmd"],
+  "extensions": [".bat", ".cmd", ".sh"],
   "aliases": ["Batch", "bat"]
 }, {
   "id": "coffeescript",
