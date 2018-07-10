@@ -13,6 +13,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       active: tab.isActive,
       modified: tab.flags.modified
     })}
+      title={tab.editorProps && tab.editorProps.filePath}
       id={tabLabelId}
       data-droppable='TABLABEL'
       draggable='true'

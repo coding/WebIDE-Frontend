@@ -42,6 +42,7 @@ class TabBar extends Component {
       fullScreenActiveContent,
       handleFullScreen,
     } = this.props
+
     const tabBarId = `tab_bar_${tabGroup.id}`
 
     return (
