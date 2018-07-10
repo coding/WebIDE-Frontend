@@ -31,7 +31,7 @@ class GitCommitView extends PureComponent {
     toggleStaging: PropTypes.func,
     gitFileDiff: PropTypes.func,
     gitReadFile: PropTypes.func,
-    readFile: PropTypes.func,
+    readFile: PropTypes.func
   }
 
   state = {
@@ -62,29 +62,25 @@ class GitCommitView extends PureComponent {
         const newRef = 'HEAD'
         const oldRef = '~~unstaged~~'
         this.setState({ loading: true, original: '', modified: '' })
-        gitFileDiff({ path: filePath, newRef, oldRef })
-        .then((res) => {
+        gitFileDiff({ path: filePath, newRef, oldRef }).then((res) => {
           const diffPatch = res.diff
-            if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
-              gitReadFile({ ref: newRef, path: filePath })
-                .then((gitRes) => {
-                  this.showDiffView(gitRes.content, '', filePath)
-                })
-            } else if (oldRef && oldRef !== '~~unstaged~~') {
-              gitReadFile({ ref: oldRef, path: filePath })
-                .then((gitRes) => {
-                  const original = gitRes.content
-                  const modified = jsdiff.applyPatch(original, diffPatch)
-                  this.showDiffView(original, modified, filePath)
-                })
-            } else {
-              readFile({ path: filePath })
-                .then((fileRes) => {
-                  const modified = fileRes.content
-                  const original = jsdiff.applyPatch(modified, diffPatch)
-                  this.showDiffView(original, modified, filePath)
-                })
-            }
+          if (diffPatch === '' || diffPatch.split('\n')[3] === '--- /dev/null') {
+            gitReadFile({ ref: newRef, path: filePath }).then((gitRes) => {
+              this.showDiffView(gitRes.content, '', filePath)
+            })
+          } else if (oldRef && oldRef !== '~~unstaged~~') {
+            gitReadFile({ ref: oldRef, path: filePath }).then((gitRes) => {
+              const original = gitRes.content
+              const modified = jsdiff.applyPatch(original, diffPatch)
+              this.showDiffView(original, modified, filePath)
+            })
+          } else {
+            readFile({ path: filePath }).then((fileRes) => {
+              const modified = fileRes.content
+              const original = jsdiff.applyPatch(modified, diffPatch)
+              this.showDiffView(original, modified, filePath)
+            })
+          }
         })
       } else {
         this.setState({ unknowFile: true })
@@ -97,12 +93,18 @@ class GitCommitView extends PureComponent {
       loading: false,
       original,
       modified,
-      path,
+      path
     })
   }
 
   render () {
-    const { isWorkingDirClean, updateCommitMessage, commit, statusFiles, toggleStaging } = this.props
+    const {
+      isWorkingDirClean,
+      updateCommitMessage,
+      commit,
+      statusFiles,
+      toggleStaging
+    } = this.props
     const { loading, original, modified, path, unknowFile } = this.state
     const initialCommitMessage = i18n.get('git.commitView.initMessage')
     return isWorkingDirClean ? (
@@ -117,14 +119,14 @@ class GitCommitView extends PureComponent {
             handleClick={this.handleClickFile}
           />
           {unknowFile && <Container>{i18n`git.commitView.nnableToPreview`}</Container>}
-          {!unknowFile && (loading ? <Container className='loading'>
-            <i className='fa fa-spinner fa-spin' />
-          </Container>
-          : <DiffView
-            original={original}
-            modified={modified}
-            path={path}
-          />)}
+          {!unknowFile &&
+            (loading ? (
+              <Container className='loading'>
+                <i className='fa fa-spinner fa-spin' />
+              </Container>
+            ) : (
+              <DiffView original={original} modified={modified} path={path} />
+            ))}
         </div>
         <hr />
         <div className='git-commit-footer'>

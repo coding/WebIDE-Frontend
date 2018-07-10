@@ -11,32 +11,37 @@ const Label = styled.span`
 `
 
 const SingleFileNode = ({ item, toggleStaging, handleClick, active }) => (
-  <div className={cx('filetree-node filetree-node-container', { 'active': !!active })}>
-    <span
-      className='filetree-node-checkbox'
-      onClick={e => toggleStaging(item)}
-    >
-      <i className={cx('fa', {
-        'fa-check-square': !item.isDir && item.isStaged,
-        'fa-square-o': !item.isDir && !item.isStaged
-      })}
+  <div className={cx('filetree-node filetree-node-container', { active: !!active })}>
+    <span className='filetree-node-checkbox' onClick={e => toggleStaging(item)}>
+      <i
+        className={cx('fa', {
+          'fa-check-square': !item.isDir && item.isStaged,
+          'fa-square-o': !item.isDir && !item.isStaged
+        })}
       />
     </span>
     <span className='filetree-node-icon'>
-      <i className={cx('fa file-status-indicator', item.status.toLowerCase(), {
-        'fa-folder-o': item.isDir,
-        'fa-pencil-square': item.status === 'MODIFIED' || item.status === 'CHANGED' || item.status === 'MODIFY',
-        'fa-plus-square': item.status === 'UNTRACKED' || item.status === 'ADD',
-        'fa-minus-square': item.status === 'MISSING',
-        'fa-exclamation-circle': item.status === 'CONFLICTION'
-      })}
+      <i
+        className={cx('fa file-status-indicator', item.status.toLowerCase(), {
+          'fa-folder-o': item.isDir,
+          'fa-pencil-square':
+            item.status === 'MODIFIED' || item.status === 'CHANGED' || item.status === 'MODIFY',
+          'fa-plus-square': item.status === 'UNTRACKED' || item.status === 'ADD',
+          'fa-minus-square': item.status === 'MISSING',
+          'fa-exclamation-circle': item.status === 'CONFLICTION'
+        })}
       />
     </span>
-    <Label onClick={() => handleClick(item.path)}>
-      {item.path}
-    </Label>
+    <Label onClick={() => handleClick(item.path)}>{item.path}</Label>
   </div>
 )
+
+SingleFileNode.propTypes = {
+  item: PropTypes.object,
+  toggleStaging: PropTypes.func,
+  handleClick: PropTypes.func,
+  active: PropTypes.bool
+}
 
 class CommitFileList extends PureComponent {
   static propTypes = {
@@ -52,13 +57,15 @@ class CommitFileList extends PureComponent {
 
     return (
       <div className='git-commit-files git-filetree-container'>
-        {unStagedFiles.map(item => (<SingleFileNode
-          item={item}
-          key={item.path}
-          active={active === item.path}
-          toggleStaging={toggleStaging}
-          handleClick={handleClick}
-        />))}
+        {unStagedFiles.map(item => (
+          <SingleFileNode
+            item={item}
+            key={item.path}
+            active={active === item.path}
+            toggleStaging={toggleStaging}
+            handleClick={handleClick}
+          />
+        ))}
       </div>
     )
   }
