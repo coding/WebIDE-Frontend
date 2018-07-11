@@ -136,7 +136,7 @@ class MonacoEditor extends React.PureComponent {
   }
 
   componentWillUnmount () {
-    this.editor.destroy()
+    // this.editor.destroy()
     const languageClient = languageState.clients.get(this.language)
     if (!languageClient) return
     const { path } = this.editor.file
