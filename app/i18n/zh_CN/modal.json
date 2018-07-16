@@ -5,5 +5,7 @@
   "projectType": "项目类型",
   "sourceFolder": "源代码目录",
   "libraryFolder": "库文件目录",
-  "cancelButton": "取消"
+  "cancelButton": "取消",
+  "nextButton": "下一步",
+  "prevButton": "上一步"
 }

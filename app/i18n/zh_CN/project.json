@@ -1,0 +1,9 @@
+{
+  "createWorkspace": "新建工作空间",
+  "createEmptyWorkspace": "新建空工作空间",
+  "createBlank": "空项目",
+  "createFromCoding": "从 Coding 导入",
+  "createFromGitServer": "从 Git 导入",
+  "emptyHeader": "将会在 Coding 创建一个项目",
+  "wsPlaceholder": "请输入项目名"
+}

@@ -5,5 +5,7 @@
   "projectType": "Project Type",
   "sourceFolder": "Source Folder",
   "libraryFolder": "Library Folder",
-  "cancelButton": "Cancel"
+  "cancelButton": "Cancel",
+  "nextButton": "Next",
+  "prevButton": "Previous"
 }
