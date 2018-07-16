@@ -33,26 +33,21 @@ class ImportFromCoding extends PureComponent {
   handleFetch = () => {
     this.setState({ isLoading: true })
     syncProject()
-      .then(() => {
-        fetchProjects()
-          .then((res) => {
-            if (res.length > 0) {
-              this.setState({
-                allRepos: res,
-                displayRepos: res
-              })
-              this.props.setActiveRepo(res[0])
-            }
-            this.setState({ isLoading: false })
+      .then(fetchProjects)
+      .then((res) => {
+        if (res.length > 0) {
+          this.setState({
+            allRepos: res,
+            displayRepos: res
           })
-          .catch((res) => {
-            this.setState({ isLoading: false })
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg })
-          })
+          this.props.setActiveRepo(res[0])
+        }
       })
       .catch((res) => {
-        this.setState({ isLoading: false })
         notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg })
+      })
+      .finally(() => {
+        this.setState({ isLoading: false })
       })
   }
 
