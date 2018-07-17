@@ -44,7 +44,7 @@ const state = observable({
       editor: getSettingValueHelper(settings.editor),
       general: getSettingValueHelper(settings.general),
       appearance: getSettingValueHelper(settings.appearance),
-      languageserver: getSettingValueHelper(settings.languageserver),
+      // languageserver: getSettingValueHelper(settings.languageserver),
     }
   },
 })
