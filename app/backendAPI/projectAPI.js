@@ -25,6 +25,10 @@ export function queryCodingProject ({ source = 'coding', projectName }) {
   return request.get(`/queryCodingProject`, { source, projectName })
 }
 
-export function showPublicSshKey() {
+export function showPublicSshKey () {
   return request.get('user/public_key', null, { headers: { Accept: 'application/vnd.coding.v1+json' } });
+}
+
+export function createProject (options) {
+  return request.post('/projects', options, { headers: { Accept: '*/*' } });
 }
