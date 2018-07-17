@@ -258,7 +258,7 @@ class CreateProject extends PureComponent {
                   onChange={() => this.handleChangeType(item.type)}
                   checked={type === item.type}
                 />
-                <label htmlFor={`ws-${item.type}`} style={{ marginLeft: 10 }}>
+                <label htmlFor={`ws-${item.type}`} style={{ marginLeft: 10, cursor: 'pointer' }}>
                   {item.name}
                 </label>
               </p>
