@@ -86,8 +86,8 @@ class CreateProject extends PureComponent {
   state = {
     step: 0,
 
-    types: [radioGroup[0].items[0].type, radioGroup[1].items[1].type, radioGroup[2].items[0].type],
-    // ws with git
+    types: [radioGroup[0].items[0].type, radioGroup[1].items[0].type, radioGroup[2].items[0].type],
+    // empty ws
     projectName: '',
 
     // empty ws
@@ -113,11 +113,9 @@ class CreateProject extends PureComponent {
     })
   }
 
-  makeTitle = () => {
+  makeStepThreeTitle = () => {
     const { step, types } = this.state
     switch (types[step - 1]) {
-      case 'CreateEmptyWs':
-        return i18n`project.createEmptyWorkspace`
       case 'createWorkspace':
         return i18n`project.createBlank`
       case 'Git':
@@ -125,13 +123,13 @@ class CreateProject extends PureComponent {
       case 'importCoding':
         return i18n`import.importCoding`
       default:
-        return radioGroup[step].title
+        return ''
     }
   }
 
   makeRadioGroup = () => {
     const { step, types } = this.state
-    if ((step === 2 && types[1] === 'Git') || (step === 1 && types[0] === 'CreateEmptyWs')) return null
+    if (step === 2 && types[1] === 'Git') return null
     return radioGroup[step].items.map(item => (
       <p key={item.type}>
         <input
@@ -148,18 +146,9 @@ class CreateProject extends PureComponent {
   }
 
   makeProjectCreator = () => {
-    const { step, types, projectName, activeRepo, url, showWarn, emptyName } = this.state
+    const { step, types, projectName, activeRepo, url, showWarn } = this.state
 
     switch (types[step - 1]) {
-      case 'CreateEmptyWs':
-        return (
-          <CreateEmptyWs
-            submit={this.submit}
-            projectName={emptyName}
-            title={i18n`project.emptyNotGitHeader`}
-            onChange={this.handleChangeEmptyProjectName}
-          />
-        )
       case 'createWorkspace':
         return (
           <CreateEmptyWs
@@ -192,17 +181,11 @@ class CreateProject extends PureComponent {
 
   makePrimaryBtnText = () => {
     const { types, step } = this.state
-    return (step === 1 && types[0] === 'CreateEmptyWs')
+    return (step === 0 && types[0] === 'CreateEmptyWs')
       || step === 3
       || (step === 2 && types[1] === 'Git')
       ? i18n`modal.okButton`
       : i18n`modal.nextButton`
-  }
-
-  handleChangeEmptyProjectName = (data) => {
-    this.setState({
-      emptyName: typeof data === 'object' ? data.target.value : data
-    })
   }
 
   handleChangeProjectName = (data) => {
@@ -212,8 +195,7 @@ class CreateProject extends PureComponent {
   }
 
   handleCreateEmptyWs = () => {
-    const { emptyName } = this.state
-    window.location = `/ws/?projectName=${emptyName}&templateId=5`
+    window.location = '/ws/?projectName=empty-template&templateId=5'
   }
 
   handleCreateWorkSpace = () => {
@@ -319,7 +301,7 @@ class CreateProject extends PureComponent {
     if (this.submitStatus()) return
     dismissModal()
 
-    if (step === 1 && types[0] === 'CreateEmptyWs') {
+    if (step === 0 && types[0] === 'CreateEmptyWs') {
       this.handleCreateEmptyWs()
     } else {
       switch (types[step - 1]) {
@@ -339,10 +321,8 @@ class CreateProject extends PureComponent {
   }
 
   submitStatus = () => {
-    const { step, types, url, projectName, activeRepo, showWarn, emptyName } = this.state
+    const { step, types, url, projectName, activeRepo, showWarn } = this.state
     switch (types[step - 1]) {
-      case 'CreateEmptyWs':
-        return emptyName === ''
       case 'createWorkspace':
         return projectName === ''
       case 'importCoding':
@@ -360,7 +340,7 @@ class CreateProject extends PureComponent {
     // const currentType = radioGroup.find(item => item.type === type)
     return (
       <div className='import-from-coding'>
-        <p className='title'>{this.makeTitle()}</p>
+        <p className='title'>{step < 3 ? radioGroup[step].title : this.makeStepThreeTitle()}</p>
         {step < 3 && this.makeRadioGroup()}
         {this.makeProjectCreator()}
         <hr />
@@ -380,7 +360,7 @@ class CreateProject extends PureComponent {
           <button
             className='btn btn-primary'
             onClick={() => {
-              if ((step === 1 && types[0] === 'CreateEmptyWs')
+              if ((step === 0 && types[step] === 'CreateEmptyWs')
               || step === 3
               || (step === 2 && types[1] === 'Git')
               ) {
