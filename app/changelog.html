@@ -611,6 +611,7 @@
       text-decoration: none;
       line-height: 30px;
       display: inline-block;
+      text-align: center;
     }
 
     .user a.btn-primary {
@@ -1000,7 +1001,7 @@
     }
 
     function renderMD (callback) {
-      $.get("<%= webpackConfig.output.publicPath + __CHANGELOG_PATH__ +  'changelog.md' %>", function(data, status) {
+      $.get("<%= __CHANGELOG_PATH__ +  'changelog.md' %>", function(data, status) {
         var html = marked.parse(data);
         // console.log(html);
         $('.changelog-detail').html(html);
