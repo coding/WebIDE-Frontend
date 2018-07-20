@@ -27,7 +27,7 @@ const menuBarItems = observable([
         icon: 'fa fa-info-circle',
         command: 'file:open_about'
       }]
-  },{},
+  },
   {
     key: 'file',
     name: i18n`menuBarItems.file.main`,
