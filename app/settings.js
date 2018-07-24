@@ -1,6 +1,6 @@
 import isObject from 'lodash//isPlainObject'
-import { observable, reaction, extendObservable, computed, action, when } from 'mobx'
-import { trim } from 'lodash'
+import { observable, reaction, extendObservable, computed, action, autorun } from 'mobx'
+import { trim, capitalize } from 'lodash'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED, TERM_FONTSIZE_CHANGED } from 'utils/emitter'
@@ -10,6 +10,7 @@ import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
 import FolderSelector from 'components/Setting/FolderSelector'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 import { dismissModal } from 'components/Modal/actions'
+import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
 // import { projectState } from 'components/Setting/state'
 
 let LanguageState
@@ -291,10 +292,21 @@ const settings = observable({
       nopersist: true,
       onConfirm (value) {
         config.switchOldEditor = value
+        /* eslint-disable */
+        const syntax_theme = settings.appearance.syntax_theme.value
+        const ui_theme = settings.appearance.ui_theme.value
+        if (!!value) {
+          if (ui_theme === 'dark' && syntax_theme !== 'material') {
+            settings.appearance.syntax_theme.value = 'material'
+          } else if (ui_theme === 'base-theme' && syntax_theme !== 'default') {
+            settings.appearance.syntax_theme.value = 'default'
+          }
+        }
+        /* eslint-enable */
         localStorage.setItem('switchOldEditor', value)
         setTimeout(() => {
           window.location.reload()
-        }, 100)
+        }, 200)
       }
     }
   }),
@@ -433,6 +445,7 @@ const settings = observable({
         config._WORKSPACE_SUB_FOLDER_ = path
         config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
       }
+      setLanguageServerOne({ type: lang, srcPath: path })
       const client = LanguageState.clients.get(lang)
 
       /**
@@ -453,6 +466,7 @@ const settings = observable({
     projectType: {
       name: 'modal.projectType',
       value: 'Blank',
+      nopersist: true,
       options: ['Blank', ...supportLangServer.map(v => v.lang)],
       reaction (value) {
         if (value !== config.mainLanguage) {
@@ -463,6 +477,7 @@ const settings = observable({
     sourcePath: {
       name: 'modal.sourceFolder',
       value: '/',
+      nopersist: true,
       extra: FolderSelector,
       reaction (value) {
         config._WORKSPACE_SUB_FOLDER_ = value
@@ -543,6 +558,17 @@ reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules }
     editorConfig.keys.forEach((key) => {
       settings.editor[key].disabled = false
     })
+  }
+})
+
+autorun(() => {
+  if (config.spaceKey !== '' && config.spaceKey !== 'default') {
+    fetchLanguageServerSetting(config.spaceKey)
+      .then((res) => {
+        const { type, srcPath } = res.data.default
+        settings.languageserver.projectType.value = capitalize(type)
+        settings.languageserver.sourcePath.value = srcPath
+      })
   }
 })
 

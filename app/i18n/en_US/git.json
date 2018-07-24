@@ -106,6 +106,7 @@
       "errMsg": "The tag with the same name exists."
    },
    "commitView": {
+      "nnableToPreview": "Unable to preview",
       "nothingCommit": "Your working directory is clean. Nothing to commit.",
       "initMessage": "Updated by Cloud Studio , https://studio.coding.net"
    },

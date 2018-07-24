@@ -35,6 +35,8 @@ import {
   BindQcloudView,
   ImportFromGit,
   ResetRemote,
+  GitCommit,
+  CreateProject,
 } from './index'
 
 const modalCache = observable.map({
@@ -69,6 +71,8 @@ const modalCache = observable.map({
   BindQcloud: BindQcloudView,
   ImportFromGit,
   ResetRemote,
+  GitCommitView: GitCommit,
+  CreateProject
 })
 
 window.modalCache = modalCache

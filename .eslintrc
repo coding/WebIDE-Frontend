@@ -10,6 +10,7 @@
     "no-param-reassign": 0,
     "new-cap": 0,
     "no-eval": 0,
+    "no-undef": 0,
     "no-plusplus": 0,
     "no-return-assign": 0,
     "no-underscore-dangle": 0,
@@ -23,13 +24,15 @@
       "named": "always",
       "asyncArrow": "ignore"
     }],
+    "react/prefer-stateless-function": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 0,
     "jsx-quotes": ["error", "prefer-single"],
+    "react/jsx-filename-extension": 0,
     "react/jsx-first-prop-new-line": 0,
     "react/forbid-prop-types": 0,
+    "import/extensions": 0,
     "jsx-a11y/no-static-element-interactions": 0
-  },
-  "settings": {
-    "import/resolver": "webpack"
   },
   "globals": {
     "i18n": false,

@@ -16,6 +16,11 @@
     ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ],
   "env": {
+    "production": {
+      "plugins": [
+        "@babel/plugin-transform-react-constant-elements"
+      ]
+    },
     "development": {
       "plugins": [
         "react-hot-loader/babel"

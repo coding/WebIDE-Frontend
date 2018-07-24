@@ -3,6 +3,7 @@ import store, { dispatch as $d } from '../../store'
 import api from '../../backendAPI'
 import * as Git from '../../components/Git/actions'
 import * as Modal from '../../components/Modal/actions'
+import config from 'config'
 
 export default {
   'git:remote': () => {
@@ -19,9 +20,13 @@ export default {
   'git:commit': (c) => {
     api.gitStatus().then(({ files, clean }) => {
       $d(Git.updateStatus({ files, isClean: clean }))
-    }).then(() =>
-      Modal.showModal('GitCommit', 'HelloYo')
-    )
+    }).then(() => {
+      if (!config.switchOldEditor) {
+        Modal.showModal('GitCommitView')
+      } else {
+        Modal.showModal('GitCommit', 'HelloYo')
+      }
+    })
   },
 
   'git:pull': c => $d(Git.pull()),
