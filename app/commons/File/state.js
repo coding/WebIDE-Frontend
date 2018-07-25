@@ -140,14 +140,14 @@ class FileNode {
 
 state.entities.set(ROOT_PATH, new FileNode({
   path: ROOT_PATH,
-  name: config.projectName || 'Home',
+  name: (config.workspaceName === 'default' ? config.projectName : config.workspaceName) || 'Home',
   isDir: true,
 }))
 
-when(() => config.projectName, () => {
+when(() => config.workspaceName || config.projectName, () => {
   state.entities.set(ROOT_PATH, new FileNode({
     path: ROOT_PATH,
-    name: config.projectName,
+    name: config.workspaceName === 'default' ? config.projectName : config.workspaceName,
     isDir: true,
   }))
 })
