@@ -338,8 +338,10 @@ class CreateProject extends PureComponent {
   }
 
   submitStatus = () => {
-    const { step, types, url, projectName, activeRepo, showWarn } = this.state
+    const { step, types, url, projectName, activeRepo, showWarn, emptyName } = this.state
     switch (types[step - 1]) {
+      case 'CreateEmptyWs':
+        return emptyName === ''
       case 'createWorkspace':
         return projectName === ''
       case 'importCoding':
