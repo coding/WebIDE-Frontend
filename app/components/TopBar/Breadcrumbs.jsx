@@ -5,7 +5,7 @@ import icons from 'file-icons-js'
 
 let Breadcrumbs = observer(({ fileNode }) => {
   const pathComps = fileNode.path.split('/')
-  let rootName = config.projectName || 'Home'
+  let rootName = config.workspaceName || config.projectName || 'Home'
   if (config.isDefault) {
     rootName = 'Home'
   }
