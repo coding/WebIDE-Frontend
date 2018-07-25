@@ -63,29 +63,27 @@
 }
 
 .menu-bar-item-logo {
-  // width: 42px;
-  // height: 19px;
-  // background: url('~static/logo.svg') no-repeat center;
-  // background-size: 40px 34px;
-  background: url('~static/CloudStudio-Logo-Light.svg') -6px -3px no-repeat;
-  background-size: 60% 60%;
-  height 40px;
-  width: 180px;
-
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 133px;
+  height: 100%;
+  .logo {
+    height: 24px;
+    position: absolute;
+    top: -2px;
+    left: 4px;
+  }
   .beta {
-    background: #ddd;
+    height: 12px;
+    background-color: #ddd;
     border-radius: 2px;
     padding: 0px 2px;
     color: #333;
     font-size: 12px;
-    display: inline-block;
-    vertical-align: top;
-    margin-left: -14px;
-    position: absolute;
-    right: 12px;
-    top: 5px;
   }
 }
+
 .menu-bar-item-container {
   padding: 4px 12px;
   position: relative;

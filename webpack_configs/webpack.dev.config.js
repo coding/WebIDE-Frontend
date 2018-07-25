@@ -34,6 +34,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 const mainEntryHtmlName = 'workspace.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
+// const changelogEntryHtmlName = 'changelog.html'
 
 const staticDir = ''
 
@@ -94,6 +95,13 @@ const config = merge(
       template: path.join(PROJECT_ROOT, 'app/login.html'),
       // favicon: ICO_PATH,
     }),
+    // new HtmlWebpackPlugin({
+    //   title: 'Coding WebIDE',
+    //   inject: false,
+    //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+    //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+    //   // favicon: ICO_PATH,
+    // }),
     new webpack.DefinePlugin({
       __DEV__: true,
       __RUN_MODE__: str(process.env.RUN_MODE || ''),
@@ -104,7 +112,7 @@ const config = merge(
       __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || process.env.HTML_BASE_URL || ''),
       __PACKAGE_PORTS__: str(getPluginsPorts),
       __NODE_ENV__: str(process.env.NODE_ENV || ''),
-      __CHANGELOG_PATH__: str('changelog/')
+      __CHANGELOG_PATH__: str('/changelog/')
     }),
     new HardSourceWebpackPlugin()
   ]

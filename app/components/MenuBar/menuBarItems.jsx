@@ -6,11 +6,13 @@ import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
 
+import logo from '../../../static/CloudStudio-Logo.svg';
+
 const divider = { isDivider: true }
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className='menu-bar-item-logo' ><span className='beta'>beta</span></div>),
+    name: (<div className="menu-bar-item-logo"><img className="logo" src={logo} alt="logo" /><div className='beta'>beta</div></div>),
     className: 'coding-logo',
     items: [
       {

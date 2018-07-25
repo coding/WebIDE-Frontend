@@ -62,7 +62,7 @@ autorun(() => {
 })
 
 autorun(() => {
-  if (config.spaceKey !== '') {
+  if (config.spaceKey !== '' && config.spaceKey !== 'default') {
     config.__WORKSPACE_URI__ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
     config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir`
   }
