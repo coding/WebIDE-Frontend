@@ -32,8 +32,6 @@ export const documentSelectors = [
   },
   {
     lang: 'TypeScript',
-    selectors: [
-      { scheme: 'file', language: 'typescript' }
-    ]
+    selectors: ['typescript']
   },
 ]

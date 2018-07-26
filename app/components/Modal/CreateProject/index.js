@@ -156,7 +156,7 @@ class CreateProject extends PureComponent {
           <CreateEmptyWs
             submit={this.submit}
             projectName={emptyName}
-            showTitle={false}
+            title={i18n`project.emptyNotGitHeader`}
             onChange={this.handleChangeEmptyProjectName}
           />
         )
@@ -165,6 +165,7 @@ class CreateProject extends PureComponent {
           <CreateEmptyWs
             submit={this.handleCreateWorkSpace}
             projectName={projectName}
+            title={i18n`project.emptyHeader`}
             onChange={this.handleChangeProjectName}
           />
         )
