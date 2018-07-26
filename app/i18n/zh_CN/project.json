@@ -5,8 +5,9 @@
   "createFromCoding": "从 Coding 导入",
   "createFromGitServer": "从 Git 导入",
   "emptyHeader": "将会在 Coding 创建一个项目",
-  "wsPlaceholder": "请输入项目名",
+  "wsPlaceholder": "请输入工作空间名",
   "bindRemote": "绑定远程仓库",
   "selectRemote": "选择远程仓库源",
-  "createOrImport": "创建或导入项目"
+  "createOrImport": "创建或导入项目",
+  "emptyNotGitHeader": "将不会绑定任何 Git 仓库"
 }

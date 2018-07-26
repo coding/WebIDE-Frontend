@@ -7,10 +7,13 @@ import {
   MonacoLanguages,
   MonacoWorkspace,
 } from 'monaco-languageclient'
+import io from 'socket.io-client'
+import { lowerCase } from 'lodash'
 
 import config from 'config'
-import io from 'socket.io-client'
 import { documentSelectors } from '../utils/languages'
+import initializationOptions from '../utils/initializationOptions'
+import synchronize from '../utils/synchronize'
 
 export function createMonacoServices (editor, options) {
   const m2p = new MonacoToProtocolConverter()
@@ -23,18 +26,23 @@ export function createMonacoServices (editor, options) {
   }
 }
 
-export function createLanguageClient (services, connection, language) {
+export function createLanguageClient (services, connection) {
   const currentDocumentSelector = documentSelectors.find(v => v.lang === config.mainLanguage)
+  const initializationOption = initializationOptions[config.mainLanguage]
   return new BaseLanguageClient({
     name: `[${config.mainLanguage}-langServer]`,
     clientOptions: {
       commands: undefined,
       documentSelector: currentDocumentSelector.selectors,
       synchronize: {},
+      initializationOptions: {
+        ...initializationOption,
+        workspaceFolders: [`file://${config._ROOT_URI_}`]
+      },
       initializationFailedHandler: (err) => {
         const detail = err instanceof Error ? err.message : ''
       },
-      diagnosticCollectionName: language,
+      // diagnosticCollectionName: lowerCase(language),
     },
     services,
     connectionProvider: {
@@ -56,7 +64,8 @@ export function createWebSocket () {
     path: `${serverpath}/javalsp/${config.spaceKey}`,
     transports: ['websocket'],
     query: {
-      ws: config.spaceKey
+      ws: config.spaceKey,
+      language: lowerCase(config.mainLanguage)
     }
   }
   return io.connect(host, socketOptions)
