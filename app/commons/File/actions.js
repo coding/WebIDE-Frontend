@@ -50,7 +50,7 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
         (!config.mainLanguage || config.mainLanguage !== '' || capitalize(type) !== mainLanguage) &&
         mainLanguage !== ''
       ) {
-        config.mainLanguage = mainLanguage
+        // config.mainLanguage = mainLanguage
         settings.languageserver.projectType.value = mainLanguage
         setLanguageServerOne({ type: mainLanguage, srcPath: '/' })
       }
