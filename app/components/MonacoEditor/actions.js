@@ -25,7 +25,6 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
     const relativePath = path.substring(config.__WORKSPACE_URI__.length)
     const fileTreeNode = FileTreeState.entities.get(relativePath)
     if (fileTreeNode) {
-      // 已打开过
       dispatchCommand('file:open_file', {
         path: fileTreeNode.path,
         editor: { filePath: relativePath, selection: params.options && params.options.selection },
@@ -44,7 +43,7 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
       formattedUri = resource._formatted
     }
     if (tabItem) {
-      activateTab(`fake_${fileName}`)
+      tabItem.activate()
     } else {
       languageClient.fetchJavaClassContent({ uri: formattedUri })
         .then((data) => {

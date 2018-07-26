@@ -433,35 +433,35 @@ const settings = observable({
     _keys: ['projectType', 'sourcePath'],
     requireConfirm: true,
     confirmCallBack ([lang, path]) {
-      if (lang !== config.mainLanguage) {
-        const client = LanguageState.clients.get(config.mainLanguage)
-        if (client) {
-          client.destory()
-        }
-        config.mainLanguage = lang
-      }
-      const prevFolder = config._ROOT_URI_
-      if (path !== '/') {
-        config._WORKSPACE_SUB_FOLDER_ = path
-        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
-      }
       setLanguageServerOne({ type: lang, srcPath: path })
-      const client = LanguageState.clients.get(lang)
-
-      /**
-       * lsp 支持多根目录，目前仅允许一个目录被 lsp 分析
-       * 修改源码目录后，发送 workSpaceFoldersChange 请求，替换根目录为新的目录
-       */
-      if (client) {
-        client.workSpaceFoldersChange({
-          event: {
-            added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
-            removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+        .then((res) => {
+          if (res.code === 0) {
+            const prevFolder = config._ROOT_URI_
+            if (path !== '/') {
+              config._WORKSPACE_SUB_FOLDER_ = path
+              config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+            }
+            const client = LanguageState.clients.get(config.mainLanguage)
+            if (lang !== config.mainLanguage) {
+              if (client) {
+                client.destory()
+              }
+              // config.mainLanguage = lang
+              createLanguageClient(lang)
+            } else {
+            /**
+             * lsp 支持多根目录，目前仅允许一个目录被 lsp 分析
+             * 修改源码目录后，发送 workSpaceFoldersChange 请求，替换根目录为新的目录
+             */
+              client.workSpaceFoldersChange({
+                event: {
+                  added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+                  removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+                }
+              })
+            }
           }
         })
-      } else {
-        createLanguageClient(lang)
-      }
     },
     projectType: {
       name: 'modal.projectType',

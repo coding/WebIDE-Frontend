@@ -26,17 +26,15 @@ export function createMonacoServices (editor, options) {
   }
 }
 
-export function createLanguageClient (services, connection, language) {
+export function createLanguageClient (services, connection) {
   const currentDocumentSelector = documentSelectors.find(v => v.lang === config.mainLanguage)
-  const initializationOption = initializationOptions[language]
+  const initializationOption = initializationOptions[config.mainLanguage]
   return new BaseLanguageClient({
     name: `[${config.mainLanguage}-langServer]`,
     clientOptions: {
       commands: undefined,
       documentSelector: currentDocumentSelector.selectors,
-      synchronize: {
-        configurationSection: synchronize[language]
-      },
+      synchronize: {},
       initializationOptions: {
         ...initializationOption,
         workspaceFolders: [`file://${config._ROOT_URI_}`]
@@ -44,7 +42,7 @@ export function createLanguageClient (services, connection, language) {
       initializationFailedHandler: (err) => {
         const detail = err instanceof Error ? err.message : ''
       },
-      diagnosticCollectionName: language,
+      // diagnosticCollectionName: lowerCase(language),
     },
     services,
     connectionProvider: {
