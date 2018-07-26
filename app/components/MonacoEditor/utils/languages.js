@@ -2,11 +2,12 @@ export default [
   { exts: ['js', 'jsx', 'mjs'], language: 'JavaScript' },
   { exts: ['ts', 'tsx'], language: 'TypeScript' },
   { exts: ['java'], language: 'Java' },
+  { exts: ['py'], language: 'Python' },
 ]
 
 export const supportLangServer = [
   { lang: 'Java', files: ['pom.xml', 'settings.gradle', 'build.gradle'], file: 'pom.xml' },
-  // { lang: 'JavaScript', files: ['package.json'], file: 'package.json' },
+  { lang: 'Python', files: [], file: null },
   // { lang: 'TypeScript', files: ['package.json'], file: 'package.json' },
 ]
 
@@ -24,6 +25,10 @@ export const documentSelectors = [
     selectors: [
       { scheme: 'file', language: 'javascript' }
     ]
+  },
+  {
+    lang: 'Python',
+    selectors: ['python']
   },
   {
     lang: 'TypeScript',
