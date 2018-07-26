@@ -2,6 +2,7 @@ export default [
   { exts: ['js', 'jsx', 'mjs'], language: 'JavaScript' },
   { exts: ['ts', 'tsx'], language: 'TypeScript' },
   { exts: ['java'], language: 'Java' },
+  { exts: ['py'], language: 'Python' },
 ]
 
 export const supportLangServer = [
