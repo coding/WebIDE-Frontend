@@ -14,19 +14,49 @@ import ImportFromCoding from './ImportFromCoding'
 
 const radioGroup = [
   {
-    type: 'CreateEmptyWs',
-    name: i18n`project.createEmptyWorkspace`,
-    title: i18n`project.createEmptyWorkspace`
+    title: i18n`project.createWorkspace`,
+    items: [
+      {
+        type: 'CreateEmptyWs',
+        name: i18n`project.createEmptyWorkspace`,
+        title: i18n`project.createEmptyWorkspace`
+      },
+      {
+        type: 'BindRemote',
+        name: i18n`project.bindRemote`,
+        title: i18n`project.bindRemote`
+      }
+    ]
   },
   {
-    type: 'ImportFromGit',
-    name: i18n`project.createFromGitServer`,
-    title: i18n`import.importGit`
+    title: i18n`project.selectRemote`,
+    items: [
+      {
+        type: 'Git',
+        name: 'Git',
+        title: i18n`import.importGit`
+      },
+      {
+        type: 'Coding',
+        name: 'Coding',
+        title: i18n`import.importCoding`
+      }
+    ]
   },
   {
-    type: 'ImportFromCoding',
-    name: i18n`project.createFromCoding`,
-    title: i18n`import.importCoding`
+    title: i18n`project.createOrImport`,
+    items: [
+      {
+        type: 'createWorkspace',
+        name: i18n.get('project.createBlank'),
+        title: i18n`project.createBlank`
+      },
+      {
+        type: 'importCoding',
+        name: i18n.get('import.importCoding'),
+        title: i18n`import.importCoding`
+      }
+    ]
   }
 ]
 
@@ -56,9 +86,13 @@ class CreateProject extends PureComponent {
   state = {
     step: 0,
 
-    // empty ws
-    type: radioGroup[0].type,
+    types: [radioGroup[0].items[0].type, radioGroup[1].items[0].type, radioGroup[2].items[0].type],
+    // ws with git
     projectName: '',
+
+    // empty ws
+
+    emptyName: '',
 
     // import from coding
     activeRepo: null,
@@ -72,24 +106,69 @@ class CreateProject extends PureComponent {
     this.setState({ activeRepo: repo })
   }
 
-  handleChangeType = (index) => {
-    this.setState({ type: index })
+  handleChangeTypes = (type) => {
+    const { step, types } = this.state
+    this.setState({
+      types: types.map((t, i) => (i === step ? type : t))
+    })
+  }
+
+  makeTitle = () => {
+    const { step, types } = this.state
+    switch (types[step - 1]) {
+      case 'CreateEmptyWs':
+        return i18n`project.createEmptyWorkspace`
+      case 'createWorkspace':
+        return i18n`project.createBlank`
+      case 'Git':
+        return i18n`import.importGit`
+      case 'importCoding':
+        return i18n`import.importCoding`
+      default:
+        return radioGroup[step].title
+    }
+  }
+
+  makeRadioGroup = () => {
+    const { step, types } = this.state
+    if ((step === 2 && types[1] === 'Git') || (step === 1 && types[0] === 'CreateEmptyWs')) return null
+    return radioGroup[step].items.map(item => (
+      <p key={item.type}>
+        <input
+          type='radio'
+          id={`ws-${item.type}`}
+          onChange={() => this.handleChangeTypes(item.type)}
+          checked={types[step] === item.type}
+        />
+        <label htmlFor={`ws-${item.type}`} style={{ marginLeft: 10, cursor: 'pointer' }}>
+          {item.name}
+        </label>
+      </p>
+    ))
   }
 
   makeProjectCreator = () => {
-    const { step, type, projectName, activeRepo, url, showWarn } = this.state
-    if (step === 0) return null
+    const { step, types, projectName, activeRepo, url, showWarn, emptyName } = this.state
 
-    switch (type) {
+    switch (types[step - 1]) {
       case 'CreateEmptyWs':
         return (
           <CreateEmptyWs
-            submit={this.handleCreateEmptyWs}
+            submit={this.submit}
+            projectName={emptyName}
+            showTitle={false}
+            onChange={this.handleChangeEmptyProjectName}
+          />
+        )
+      case 'createWorkspace':
+        return (
+          <CreateEmptyWs
+            submit={this.handleCreateWorkSpace}
             projectName={projectName}
             onChange={this.handleChangeProjectName}
           />
         )
-      case 'ImportFromGit':
+      case 'Git':
         return (
           <ImportFromGit
             url={url}
@@ -98,11 +177,31 @@ class CreateProject extends PureComponent {
             submit={this.submit}
           />
         )
-      case 'ImportFromCoding':
+      case 'importCoding':
         return <ImportFromCoding activeRepo={activeRepo} setActiveRepo={this.setActiveRepo} />
       default:
         return null
     }
+  }
+
+  makeDefaultBtnText = () => {
+    const { step } = this.state
+    return step === 0 ? i18n`git.cancel` : i18n`modal.prevButton`
+  }
+
+  makePrimaryBtnText = () => {
+    const { types, step } = this.state
+    return (step === 1 && types[0] === 'CreateEmptyWs')
+      || step === 3
+      || (step === 2 && types[1] === 'Git')
+      ? i18n`modal.okButton`
+      : i18n`modal.nextButton`
+  }
+
+  handleChangeEmptyProjectName = (data) => {
+    this.setState({
+      emptyName: typeof data === 'object' ? data.target.value : data
+    })
   }
 
   handleChangeProjectName = (data) => {
@@ -112,6 +211,11 @@ class CreateProject extends PureComponent {
   }
 
   handleCreateEmptyWs = () => {
+    const { emptyName } = this.state
+    window.location = `/ws/?projectName=${emptyName}&templateId=5`
+  }
+
+  handleCreateWorkSpace = () => {
     const { projectName } = this.state
     const projectOptions = {
       ...initialEmptyProjectOptions,
@@ -183,9 +287,6 @@ class CreateProject extends PureComponent {
 
   handleChangeGitUrl = (e) => {
     const value = e.target.value
-    if (!value) {
-      return
-    }
     this.setState({
       url: value,
       showWarn: !value.startsWith('git')
@@ -198,43 +299,54 @@ class CreateProject extends PureComponent {
       url,
       cpuLimit: 1,
       memory: 128,
-      storage: 1,
-    }).then((res) => {
-      if (res.data) {
-        window.open(`/ws/${res.data.spaceKey}`, '_self')
-      } else {
-        notify({ message: `Import failed: ${res.msg}` })
-      }
-    }).catch((res) => {
-      notify({ message: `Import failed: ${res.msg}` })
+      storage: 1
     })
+      .then((res) => {
+        if (res.data) {
+          window.open(`/ws/${res.data.spaceKey}`, '_self')
+        } else {
+          notify({ message: `Import failed: ${res.msg}` })
+        }
+      })
+      .catch((res) => {
+        notify({ message: `Import failed: ${res.msg}` })
+      })
   }
 
   submit = () => {
+    const { step, types } = this.state
+    if (this.submitStatus()) return
     dismissModal()
-    switch (this.state.type) {
-      case 'CreateEmptyWs':
-        this.handleCreateEmptyWs()
-        break
-      case 'ImportFromCoding':
-        this.handleImportFromCoding()
-        break
-      case 'ImportFromGit':
-        this.handleImportFromGit()
-        break
-      default:
-        break
+
+    if (step === 1 && types[0] === 'CreateEmptyWs') {
+      this.handleCreateEmptyWs()
+    } else {
+      switch (types[step - 1]) {
+        case 'createWorkspace':
+          this.handleCreateWorkSpace()
+          break
+        case 'importCoding':
+          this.handleImportFromCoding()
+          break
+        case 'Git':
+          this.handleImportFromGit()
+          break
+        default:
+          break
+      }
     }
   }
 
   submitStatus = () => {
-    const { url, projectName, activeRepo, showWarn } = this.state
-    switch (this.state.type) {
+    const { step, types, url, projectName, activeRepo, showWarn, emptyName } = this.state
+    switch (types[step - 1]) {
       case 'CreateEmptyWs':
+        return emptyName === ''
+      case 'createWorkspace':
         return projectName === ''
-      case 'ImportFromCoding':
+      case 'importCoding':
         return !activeRepo
-      case 'ImportFromGit':
+      case 'Git':
         return url === '' || showWarn
       default:
         break
@@ -243,55 +355,44 @@ class CreateProject extends PureComponent {
   }
 
   render () {
-    const { step, type } = this.state
-    const currentType = radioGroup.find(item => item.type === type)
+    const { step, types } = this.state
+    // const currentType = radioGroup.find(item => item.type === type)
     return (
       <div className='import-from-coding'>
-        <p className='title'>{step === 1 ? currentType.title : i18n`project.createWorkspace`}</p>
-        {step === 0 && (
-          <div>
-            {radioGroup.map(item => (
-              <p key={item.type}>
-                <input
-                  type='radio'
-                  id={`ws-${item.type}`}
-                  onChange={() => this.handleChangeType(item.type)}
-                  checked={type === item.type}
-                />
-                <label htmlFor={`ws-${item.type}`} style={{ marginLeft: 10, cursor: 'pointer' }}>
-                  {item.name}
-                </label>
-              </p>
-            ))}
-          </div>
-        )}
+        <p className='title'>{this.makeTitle()}</p>
+        {step < 3 && this.makeRadioGroup()}
         {this.makeProjectCreator()}
         <hr />
-        {step === 0 ? (
-          <div className='modal-ops'>
-            <button className='btn btn-default' onClick={dismissModal}>{i18n`git.cancel`}</button>
-            <button
-              className='btn btn-primary'
-              onClick={() => this.setState({ step: step + 1 })}
-              disabled={type === ''}
-            >
-              {i18n.get('modal.nextButton')}
-            </button>
-          </div>
-        ) : (
-          <div className='modal-ops'>
-            <button className='btn btn-default' onClick={() => this.setState({ step: step - 1 })}>
-              {i18n.get('modal.prevButton')}
-            </button>
-            <button
-              className='btn btn-primary'
-              onClick={this.submit}
-              disabled={this.submitStatus()}
-            >
-              {i18n.get('modal.okButton')}
-            </button>
-          </div>
-        )}
+        <div className='modal-ops'>
+          <button
+            className='btn btn-default'
+            onClick={() => {
+              if (step === 0) {
+                dismissModal()
+              } else {
+                this.setState({ step: step - 1 })
+              }
+            }}
+          >
+            {this.makeDefaultBtnText()}
+          </button>
+          <button
+            className='btn btn-primary'
+            onClick={() => {
+              if ((step === 1 && types[0] === 'CreateEmptyWs')
+              || step === 3
+              || (step === 2 && types[1] === 'Git')
+              ) {
+                this.submit()
+              } else {
+                this.setState({ step: step + 1 })
+              }
+            }}
+            disabled={this.submitStatus()}
+          >
+            {this.makePrimaryBtnText()}
+          </button>
+        </div>
       </div>
     )
   }

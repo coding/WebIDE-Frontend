@@ -1,9 +1,12 @@
 {
   "createWorkspace": "Create Workspace",
   "createEmptyWorkspace": "Create empty workspace",
-  "createBlank": "Blank Project",
+  "createBlank": "Create Blank Project",
   "createFromCoding": "From Coding",
   "createFromGitServer": "From Git",
   "emptyHeader": "A project will be created in Coding",
-  "wsPlaceholder": "Please enter project name"
+  "wsPlaceholder": "Please enter project name",
+  "bindRemote": "Binding a remote repository",
+  "selectRemote": "Select remote repository source",
+  "createOrImport": "Create or import a project"
 }
