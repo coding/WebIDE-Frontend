@@ -176,6 +176,11 @@ class DomainSetting {
 
   @action.bound
   onConfirm () {
+    if (this.confirmCallBack) {
+      const values = this.items.map(item => item.tempValue || item.value)
+      this.confirmCallBack(values)
+    }
+
     this.items.forEach((item) => {
       if (item.tempValue !== undefined) {
         item.value = item.tempValue
@@ -186,10 +191,6 @@ class DomainSetting {
       }
     })
 
-    if (this.confirmCallBack) {
-      const values = this.items.map(item => item.tempValue || item.value)
-      this.confirmCallBack(values)
-    }
     dismissModal()
   }
 
@@ -437,28 +438,27 @@ const settings = observable({
         .then((res) => {
           if (res.code === 0) {
             const prevFolder = config._ROOT_URI_
+            const prevLang = config.mainLanguage
+            config.mainLanguage = lang
             if (path !== '/') {
               config._WORKSPACE_SUB_FOLDER_ = path
               config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
             }
-            const client = LanguageState.clients.get(config.mainLanguage)
-            if (lang !== config.mainLanguage) {
-              if (client) {
+            const client = LanguageState.clients.get(prevLang)
+            if (client) {
+              if (lang !== prevLang) {
                 client.destory()
+                  .then(() => createLanguageClient(lang))
+              } else {
+                client.workSpaceFoldersChange({
+                  event: {
+                    added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+                    removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+                  }
+                })
               }
-              // config.mainLanguage = lang
-              createLanguageClient(lang)
             } else {
-            /**
-             * lsp 支持多根目录，目前仅允许一个目录被 lsp 分析
-             * 修改源码目录后，发送 workSpaceFoldersChange 请求，替换根目录为新的目录
-             */
-              client.workSpaceFoldersChange({
-                event: {
-                  added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
-                  removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
-                }
-              })
+              createLanguageClient(lang)
             }
           }
         })
@@ -470,7 +470,8 @@ const settings = observable({
       options: ['Blank', ...supportLangServer.map(v => v.lang)],
       reaction (value) {
         if (value !== config.mainLanguage) {
-          config.mainLanguage = value
+          console.log('change')
+          // config.mainLanguage = value
         }
       },
     },
@@ -566,6 +567,7 @@ autorun(() => {
     fetchLanguageServerSetting(config.spaceKey)
       .then((res) => {
         const { type, srcPath } = res.data.default
+        config.mainLanguage = capitalize(type)
         settings.languageserver.projectType.value = capitalize(type)
         settings.languageserver.sourcePath.value = srcPath
       })
