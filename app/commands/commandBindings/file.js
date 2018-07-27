@@ -12,6 +12,8 @@ import icons from 'file-icons-js'
 import config from 'config'
 import { toJS, when } from 'mobx'
 import emitter, { FILE_HIGHLIGHT } from 'utils/emitter'
+import qs from 'qs'
+import mime from 'mime-types'
 
 const nodeToNearestDirPath = (node) => {
   if (!node) node = { isDir: true, path: '/' } // fake a root node if !node
@@ -62,6 +64,49 @@ function createFolderAtPath (path) {
 //   }
 // }
 
+const getMIME = (path) => {
+  let contentType = mime.lookup(path);
+  if (contentType) {
+    const exts = ['php', 'javascript'];
+    exts.map (ext => {
+      if (contentType.includes(ext)) {
+        contentType = contentType.replace('application', 'text');
+      }
+    });
+  } else {
+    contentType = 'text/plain'
+  }
+
+  return contentType;
+}
+
+const openUrlFile = (files) => {
+  // open file depends on url
+
+  let fileArr = [];
+  if (files) {
+    fileArr = files.split(',');
+
+    const baseOpen = (i) => {
+      if (i < fileArr.length) {
+        let path = fileArr[i]
+        if (!path.startsWith('/')) {
+          path = `/${path}`;
+        }
+        openFile({
+          path,
+          contentType: getMIME(path)
+        }, () => {
+          i++
+          baseOpen(i)
+        });
+      }
+    }
+
+    baseOpen(0);
+  }
+}
+
 export function initOpenFile(tabs, tabGroups) {
   when(() => !FileState.initData.get('_init'), () => {
     const openedTabs = Object.values(TabState.tabs._data);
@@ -78,6 +123,7 @@ export function initOpenFile(tabs, tabGroups) {
         return tab;
       }
     })
+
     tabs.map((tabValue) => {
       const { path, editor, contentType, ...others } = tabValue
       FileStore.loadNodeData({ ...tabValue, isEditorLoading: true })
@@ -96,11 +142,24 @@ export function initOpenFile(tabs, tabGroups) {
         FileState.initData.set(path, {})
       })
     })
+
+    const files = qs.parse(window.location.search.slice(1)).open;
+    if (files) {
+      openUrlFile(files);
+      return;
+    }
+
     tabGroups.forEach((tabGroupsValue) => {
-      if (tabGroupsValue.activeTabId) {
-        setTimeout(() => {
-          TabStore.activateTab(tabGroupsValue.activeTabId)
-        }, 1)
+      const activeTabId = tabGroupsValue.activeTabId
+      if (activeTabId ) {
+        const index = tabs.findIndex(tab => tab.id === activeTabId);
+        if (index >= 0) {
+          const { path, contentType } = tabs[index];
+          openFile({ 
+            path,
+            contentType
+          });
+        }
       }
     })
   })
@@ -144,6 +203,10 @@ export function openFile (obj, callback) {
       if (callback) {
         callback()
       }
+    }
+  }).catch(e => {
+    if (callback) {
+      callback();
     }
   })
 }
