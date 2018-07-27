@@ -25,13 +25,16 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
     localStorage.setItem(versionID, version)
     setTimeout(() => {
       dispatchCommand('file:open_changelog')
-    }, 100)
+    }, 50)
   }
 
   if (tabs.length === 0) {
     dispatchCommand('global:show_env')
-    return;
+    setTimeout(() => {
+      dispatchCommand('file:open_welcome')
+    }, 10)
   }
+
   return initOpenFile(tabs, tabGroups)
 })
 
