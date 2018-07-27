@@ -100,39 +100,41 @@ export default {
   Python: {
     workspaceFolders: [],
     settings: {
-      configurationSources: ['pycodestyle'],
-      rope: { ropeFolder: null, extensionModules: null },
-      plugins: {
-        preload: { enabled: true, modules: null },
-        pycodestyle: {
-          maxLineLength: null,
-          enabled: true,
-          filename: null,
-          ignore: null,
-          hangClosing: null,
-          exclude: null,
-          select: null
-        },
-        jedi_completion: { enabled: true },
-        jedi_references: { enabled: true },
-        jedi_symbols: { all_scopes: true, enabled: true },
-        jedi_definition: { enabled: true },
-        pyflakes: { enabled: true },
-        yapf: { enabled: true },
-        pydocstyle: {
-          ignore: null,
-          matchDir: '[^\\.].*',
-          select: null,
-          convention: null,
-          addSelect: null,
-          addIgnore: null,
-          enabled: false,
-          match: '(?!test_).*\\.py'
-        },
-        rope_completion: { enabled: true },
-        mccabe: { threshold: 15, enabled: true },
-        jedi_signature_help: { enabled: true },
-        jedi_hover: { enabled: true }
+      pyls: {
+        configurationSources: ['pycodestyle'],
+        rope: { ropeFolder: null, extensionModules: null },
+        plugins: {
+          preload: { enabled: true, modules: null },
+          pycodestyle: {
+            maxLineLength: null,
+            enabled: true,
+            filename: null,
+            ignore: null,
+            hangClosing: null,
+            exclude: null,
+            select: null
+          },
+          jedi_completion: { enabled: true },
+          jedi_references: { enabled: true },
+          jedi_symbols: { all_scopes: true, enabled: true },
+          jedi_definition: { enabled: true },
+          pyflakes: { enabled: true },
+          yapf: { enabled: true },
+          pydocstyle: {
+            ignore: null,
+            matchDir: '[^\\.].*',
+            select: null,
+            convention: null,
+            addSelect: null,
+            addIgnore: null,
+            enabled: false,
+            match: '(?!test_).*\\.py'
+          },
+          rope_completion: { enabled: true },
+          mccabe: { threshold: 15, enabled: true },
+          jedi_signature_help: { enabled: true },
+          jedi_hover: { enabled: true }
+        }
       }
     }
   }

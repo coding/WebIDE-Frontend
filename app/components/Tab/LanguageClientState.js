@@ -94,27 +94,29 @@ export class LanguageClient {
         )
         this.client.onReady()
           .then(() => {
-            let ready = false
-            this.client.onNotification(LANGUAGE_STATUS, (report) => {
-              languageState.status = report.type
-              if (report.type === 'Starting' && !ready) {
-                languageState.message = report.message
-              }
-
-              if (report.type === 'Started' && !ready) {
-                languageState.message = 'Language service is ready'
-                ready = true
-              }
-
-              if (report.type === 'Error') {
-                languageState.message = 'Error'
-              }
-            })
+            this.ready = false
+            this.client.onNotification(LANGUAGE_STATUS, this.onLanguageStatus)
           })
         const disposable = this.client.start()
         connection.onClose(() => disposable.dispose())
       },
     })
+  }
+
+  onLanguageStatus = (report) => {
+    languageState.status = report.type
+    if (report.type === 'Starting' && !this.ready) {
+      languageState.message = report.message
+    }
+
+    if (report.type === 'Started' && !ready) {
+      languageState.message = 'Language service is ready'
+      this.ready = true
+    }
+
+    if (report.type === 'Error') {
+      languageState.message = 'Error'
+    }
   }
 
   workSpaceFolder = params =>
@@ -156,6 +158,8 @@ export class LanguageClient {
         this.exit()
         this.socket.close()
         languageState.clients.delete(this.language)
+        languageState.status = 'Stopped'
+        languageState.message = ''
         return Promise.resolve(true)
       })
       .catch((err) => {
