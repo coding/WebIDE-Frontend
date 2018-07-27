@@ -86,7 +86,7 @@ class CreateProject extends PureComponent {
   state = {
     step: 0,
 
-    types: [radioGroup[0].items[0].type, radioGroup[1].items[0].type, radioGroup[2].items[0].type],
+    types: [radioGroup[0].items[0].type, radioGroup[1].items[1].type, radioGroup[2].items[0].type],
     // ws with git
     projectName: '',
 

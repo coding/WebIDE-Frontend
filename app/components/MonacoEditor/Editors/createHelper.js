@@ -34,7 +34,9 @@ export function createLanguageClient (services, connection) {
     clientOptions: {
       commands: undefined,
       documentSelector: currentDocumentSelector.selectors,
-      synchronize: {},
+      synchronize: {
+        configurationSection: synchronize[config.mainLanguage],
+      },
       initializationOptions: {
         ...initializationOption,
         workspaceFolders: [`file://${config._ROOT_URI_}`]
@@ -42,7 +44,7 @@ export function createLanguageClient (services, connection) {
       initializationFailedHandler: (err) => {
         const detail = err instanceof Error ? err.message : ''
       },
-      // diagnosticCollectionName: lowerCase(language),
+      diagnosticCollectionName: lowerCase(config.mainLanguage),
     },
     services,
     connectionProvider: {

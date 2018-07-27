@@ -470,7 +470,6 @@ const settings = observable({
       options: ['Blank', ...supportLangServer.map(v => v.lang)],
       reaction (value) {
         if (value !== config.mainLanguage) {
-          console.log('change')
           // config.mainLanguage = value
         }
       },
