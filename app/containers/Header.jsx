@@ -123,9 +123,9 @@ const Header = ({ handleSignout, userProfile }) => (
       <li>
         <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>帮助</a>
       </li>
-      <li>
+      {/* <li>
         <a href='/changelog'>更新日志</a>
-      </li>
+      </li> */}
     </ul>
     <User />
   </div>
