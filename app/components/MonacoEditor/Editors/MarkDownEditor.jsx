@@ -1,20 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { autorun, extendObservable, observable, autorunAsync } from 'mobx'
+import { autorun, extendObservable, observable } from 'mobx'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
-import marked from 'marked'
 import Remarkable from 'remarkable'
 import { observer } from 'mobx-react'
 import CodeEditor from './CodeEditor'
-import state from './state'
 import * as actions from './actions'
 // import mdMixin from './mdMixin'
 
 // CodeEditor.use(mdMixin)
 
 const md = new Remarkable('full', {
-  html:         true,        // Enable HTML tags in source
+  html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
@@ -68,13 +66,6 @@ md.renderer.rules.heading_open = (tokens, idx) => {
   }
   return '<h' + tokens[idx].hLevel + '>'
 }
-
-marked.setOptions({
-  highlight: (code) => {
-    require('highlight.js/styles/github-gist.css')
-    return require('highlight.js').highlightAuto(code).value
-  },
-})
 
 @observer
 class PreviewEditor extends Component {
