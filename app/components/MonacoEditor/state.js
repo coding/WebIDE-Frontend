@@ -81,8 +81,8 @@ class EditorInfo {
       this.selections = monacoEditor.getSelections()
       const { position: { lineNumber, column } } = event
       this.cursorPosition = {
-        ln: lineNumber + 1,
-        col: column + 1,
+        ln: lineNumber,
+        col: column,
       }
     })
 
