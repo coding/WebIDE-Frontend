@@ -17,7 +17,7 @@ const md = new Remarkable('full', {
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
   linkify:      true,         // autoconvert URL-like texts to links
-  linkTarget:   '',           // set target to open link in
+  linkTarget:   '_blank',           // set target to open link in
 
   // Enable some language-neutral replacements + quotes beautification
   typographer:  false,
@@ -133,7 +133,7 @@ class MarkdownEditor extends Component {
         showPreview: true,
       })
     }
-    
+
     this.state = observable({
       previewContent: '',
       tokens: []
