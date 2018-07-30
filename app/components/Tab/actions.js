@@ -1,4 +1,5 @@
 import { extendObservable } from 'mobx'
+import qs from 'qs'
 import mobxStore from 'mobxStore'
 import { createAction, handleActions, registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
@@ -7,6 +8,29 @@ import dispatchCommand from 'commands/dispatchCommand'
 
 export const TAB_CREATE = 'TAB_CREATE'
 export const TAB_STORE_HYDRATE = 'TAB_STORE_HYDRATE'
+
+const openUrlFile = (files) => {
+  // open file depends on url
+  let fileArr = [];
+  if (files) {
+    fileArr = files.split(',');
+     const baseOpen = (i) => {
+      if (i < fileArr.length) {
+        let path = fileArr[i]
+        if (!path.startsWith('/')) {
+          path = `/${path}`;
+        }
+        openFile({
+          path
+        }, () => {
+          i++
+          baseOpen(i)
+        });
+      }
+    }
+     baseOpen(0);
+  }
+}
 
 export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   Object.values(json.tabGroups).forEach((tabGroupsValue) => {
@@ -21,15 +45,33 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
     const option = { path, editor, others }
     return openFile(option)
   })
-  Promise.all(openTabs).then(() => {
-    Object.values(json.tabGroups).forEach((tabGroupsValue) => {
-      if (tabGroupsValue.activeTabId) {
-        setTimeout(() => {
-          activateTab(tabGroupsValue.activeTabId)
-        }, 1)
-      }
+
+  const files = qs.parse(window.location.search.slice(1)).open;
+  if (tabs.map.length) {
+    Promise.all(openTabs).then(() => {
+      Object.values(json.tabGroups).forEach((tabGroupsValue) => {
+        const activeTabId = tabGroupsValue.activeTabId;
+        if (activeTabId) {
+          const index = tabs.findIndex(tab => tab.id === activeTabId);
+          if (index >= 0) {
+            const { path, contentType } = tabs[index];
+            openFile({
+              path,
+              contentType
+            }, () => {
+              if (files) {
+                openUrlFile(files);
+              }
+            });
+          }
+        }
+      })
     })
-  })
+  } else {
+    if (files) {
+      openUrlFile(files);
+    }
+  }
 })
 
 export const createTab = registerAction(TAB_CREATE,
