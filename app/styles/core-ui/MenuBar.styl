@@ -63,25 +63,10 @@
 }
 
 .menu-bar-item-logo {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 133px;
-  height: 100%;
-  .logo {
-    height: 24px;
-    position: absolute;
-    top: -2px;
-    left: 4px;
-  }
-  .beta {
-    height: 12px;
-    background-color: #ddd;
-    border-radius: 2px;
-    padding: 0px 2px;
-    color: #333;
-    font-size: 12px;
-  }
+  width: 42px;
+  height: 19px;
+  background: url('~static/logo.svg') no-repeat center;
+  background-size: 40px 34px;
 }
 
 .menu-bar-item-container {
@@ -89,7 +74,6 @@
   position: relative;
   height: 100%;
   z-index: z(menu-bar-item-container);
-  overflow: hidden;
   &.active {
     background-color: $background-color-highlight;
     color: $text-color-highlight;
@@ -98,7 +82,7 @@
 
 .menu-bar-item.coding-logo {
   align-self: stretch;
-  width: 154px;
+  width: 60px;
   height: 21px;
   .menu-bar-item-container {
     padding: 2px 10px;
