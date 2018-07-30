@@ -5,11 +5,12 @@ import * as monaco from 'monaco-editor'
 import config from 'config'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
+import is from 'utils/is'
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { toDefinition } from 'components/MonacoEditor/actions'
-import { findLanguageByextensions } from './utils/findLanguage'
+import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 
 import initialOptions from './monacoDefaultOptions'
 
@@ -49,7 +50,7 @@ class EditorInfo {
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       ...props,
-      model: model || monaco.editor.createModel(this.content || '', this.mode, monaco.Uri.parse(`inmemory://model/${this.id}`)),
+      model: model || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(`inmemory://model/${this.id}`)),
     }, {
       editorService: {
         openEditor: toDefinition
@@ -106,14 +107,15 @@ class EditorInfo {
 
   @computed get mode () {
     if (!this.filePath) return 'plaintext'
-    return this.languageMode
+    const mode = is.string(this.languageMode) ? findModeByName(this.languageMode).aliases[0] : this.languageMode
+    return mode
   }
 
-  setMode (mode) {
-    if (mode !== this.languageMode) {
+  setMode (name) {
+    if (name !== this.languageMode) {
       const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
-      this.languageMode = mode
-      monaco.editor.setModelLanguage(model, mode)
+      monaco.editor.setModelLanguage(model, name)
+      this.languageMode = name
     }
   }
 
