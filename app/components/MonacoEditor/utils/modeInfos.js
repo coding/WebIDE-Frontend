@@ -211,6 +211,10 @@ const modeInfos = [{
   id: 'scheme',
   extensions: ['.scm', '.ss', '.sch', '.rkt'],
   aliases: ['Scheme', 'scheme'],
+}, {
+  id: 'vue',
+  extensions: ['.vue'],
+  aliases: ['Vue', 'vuejs'],
 }]
 
 function mergeExtensions () {
