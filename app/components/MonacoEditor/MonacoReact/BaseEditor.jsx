@@ -12,6 +12,9 @@ import dispatchCommand from 'commands/dispatchCommand'
 import { findLangueByExt } from '../utils/findLanguage'
 import { EditorInfo } from '../state'
 import initialOptions from '../monacoDefaultOptions'
+import registerCustomLanguages from '../languages'
+
+registerCustomLanguages()
 
 function noop () {}
 

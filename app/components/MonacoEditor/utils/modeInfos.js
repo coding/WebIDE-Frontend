@@ -24,7 +24,7 @@ const modeInfos = [{
   "mimetypes": ["text/javascript"]
 }, {
   "id": "bat",
-  "extensions": [".bat", ".cmd", ".sh"],
+  "extensions": [".bat", ".cmd"],
   "aliases": ["Batch", "bat"]
 }, {
   "id": "coffeescript",
@@ -199,6 +199,18 @@ const modeInfos = [{
   "extensions": [".yaml", ".yml"],
   "aliases": ["YAML", "yaml", "YML", "yml"],
   "mimetypes": ["application/x-yaml"]
+}, {
+  id: 'shell',
+	extensions: ['.sh', '.bash'],
+	aliases: ['Shell Script', 'sh'],
+}, {
+  id: 'clojure',
+  extensions: ['.clj', '.clojure'],
+  aliases: ['Clojure', 'clojure'],
+}, {
+  id: 'scheme',
+  extensions: ['.scm', '.ss', '.sch', '.rkt'],
+  aliases: ['Scheme', 'scheme'],
 }]
 
 function mergeExtensions () {
