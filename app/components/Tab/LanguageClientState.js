@@ -109,7 +109,7 @@ export class LanguageClient {
       languageState.message = report.message
     }
 
-    if (report.type === 'Started' && !ready) {
+    if (report.type === 'Started' && !this.ready) {
       languageState.message = 'Language service is ready'
       this.ready = true
     }
