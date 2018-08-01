@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import config from 'config'
 import CodeEditor from './CodeEditor'
+import HtmlEditor from './HtmlEditor'
 import MarkDownEditor from './MarkDownEditor'
 import UnknownEditor from 'components/Editor/components/UnknownEditor'
 import ImageEditor from 'components/Editor/components/ImageEditor'
@@ -26,7 +27,7 @@ const EditorWrapper = observer(({ tab, active }) => {
   const key = `editor_${file.path}`
   switch (editorType) {
     case 'htmlEditor':
-      return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active, language: '' })
+      return React.createElement(HtmlEditor, { editor, editorInfo, key, tab, active, language: '' })
     case 'textEditor':
       return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active, language: config.mainLanguage })
     case 'markdownEditor':
