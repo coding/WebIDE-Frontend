@@ -14,8 +14,10 @@ function buildScrollMap($lines) {
 }
 
 function scrollMixin(monaco, previewDOM) {
+    let mousedown = false;
     let active = 'editor';
     const $lines = previewDOM.getElementsByClassName('line');
+    const editorDOM = monaco.getDomNode();
     const map = buildScrollMap($lines);
     const array = Object.keys(map);
     const length = array.length;
@@ -24,15 +26,21 @@ function scrollMixin(monaco, previewDOM) {
     let preMap = { top: 0, current: 0, next: 0 };
     let nextMap = { top: 0, current: 0, next: 0 };
     let areaStep = 1;
-    previewDOM.addEventListener('mouseover', () => active = 'preview');
-    monaco.getDomNode().addEventListener('mouseover', () => active = 'editor');
+    document.addEventListener('mousedown', () => mousedown = true);
+    document.addEventListener('mouseup', () => mousedown = false);
+    previewDOM.addEventListener('mouseover', () => {
+        if (!mousedown) {
+            active = 'preview';
+        }
+    });
+    editorDOM.addEventListener('mouseover', () => active = 'editor');
     monaco.onDidScrollChange((event) => {
         if (active === 'preview') {
             return;
         }
         let mapItem;
         const line = Math.ceil(event.scrollTop / 20); // 20px each line
-        if (line > array[length - 1]) {
+        if (line > (array[length - 1] - editorDOM.offsetHeight / 20)) {
             previewDOM.scrollTop = lastMap.top;
             return;
         }
@@ -41,7 +49,7 @@ function scrollMixin(monaco, previewDOM) {
             const next = array[i + 1];
             if (line == cur) {
                 mapItem = map[line];
-            } else if (line - cur > 0 && line - cur < 6 && next - line > 0 && next - line < 6) {
+            } else if (line - cur > 0 && line - cur < 6 && next - line > 0 && next - line < 6) { // 6 line range
                 mapItem = map[next];
             }
         }
