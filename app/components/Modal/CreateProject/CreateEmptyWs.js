@@ -9,7 +9,7 @@ class CreateEmptyWs extends PureComponent {
     submit: PropTypes.func,
     projectName: PropTypes.string,
     onChange: PropTypes.func,
-    showTitle: PropTypes.bool,
+    title: PropTypes.object,
   }
 
   onKeyDown = (e) => {
@@ -19,10 +19,10 @@ class CreateEmptyWs extends PureComponent {
   }
 
   render () {
-    const { projectName, onChange, showTitle } = this.props
+    const { projectName, onChange, title } = this.props
     return (
       <div>
-        {showTitle && <p className='message'>{i18n`project.emptyHeader`}</p>}
+        <p className='message'>{title}</p>
         <input type='text'
           className='form-control'
           // ref={r => this.input = r}

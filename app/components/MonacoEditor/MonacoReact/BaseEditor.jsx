@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { debounce } from 'lodash'
+import { debounce, lowerCase } from 'lodash'
 import { measure } from '@pinyin/measure'
 import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
@@ -12,6 +12,9 @@ import dispatchCommand from 'commands/dispatchCommand'
 import { findLangueByExt } from '../utils/findLanguage'
 import { EditorInfo } from '../state'
 import initialOptions from '../monacoDefaultOptions'
+import registerCustomLanguages from '../languages'
+
+registerCustomLanguages()
 
 function noop () {}
 
@@ -98,7 +101,7 @@ class MonacoEditor extends React.PureComponent {
         if (!model) {
           model = monaco.editor.createModel(
             content,
-            'java',
+            lowerCase(this.language),
             monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
           )
           this.editor.model = model
@@ -117,7 +120,7 @@ class MonacoEditor extends React.PureComponent {
             languageClient.openTextDocument({
               textDocument: {
                 uri: `file://${languageClient._ROOT_URI_}${path}`,
-                languageId: this.language,
+                languageId: lowerCase(this.language),
                 text: content,
                 version: 1,
               }

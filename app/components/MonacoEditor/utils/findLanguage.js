@@ -35,8 +35,24 @@ function findLanguageByFileName (data) {
   return ''
 }
 
+
+function findModeByName (name) {
+  name = name.toLowerCase()
+  for (let i = 0; i < modeInfos.length; i++) {
+    const info = modeInfos[i]
+    if (info.id.toLowerCase() === name) return info
+    if (info.aliases) {
+      for (let j = 0; j < info.aliases.length; j++) {
+        if (info.aliases[j].toLowerCase() === name) return info
+      }
+    }
+  }
+  return null
+}
+
 export {
   findLangueByExt,
   findLanguageByFileName,
-  findLanguageByextensions
+  findLanguageByextensions,
+  findModeByName
 }

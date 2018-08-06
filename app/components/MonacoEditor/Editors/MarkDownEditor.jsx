@@ -1,25 +1,23 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { autorun, extendObservable, observable, autorunAsync } from 'mobx'
+import { autorun, extendObservable, observable } from 'mobx'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
-import marked from 'marked'
 import Remarkable from 'remarkable'
 import { observer } from 'mobx-react'
 import CodeEditor from './CodeEditor'
-import state from './state'
 import * as actions from './actions'
 // import mdMixin from './mdMixin'
 
 // CodeEditor.use(mdMixin)
 
 const md = new Remarkable('full', {
-  html:         true,        // Enable HTML tags in source
+  html:         false,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
   linkify:      true,         // autoconvert URL-like texts to links
-  linkTarget:   '',           // set target to open link in
+  linkTarget:   '_blank',           // set target to open link in
 
   // Enable some language-neutral replacements + quotes beautification
   typographer:  false,
@@ -69,13 +67,6 @@ md.renderer.rules.heading_open = (tokens, idx) => {
   return '<h' + tokens[idx].hLevel + '>'
 }
 
-marked.setOptions({
-  highlight: (code) => {
-    require('highlight.js/styles/github-gist.css')
-    return require('highlight.js').highlightAuto(code).value
-  },
-})
-
 @observer
 class PreviewEditor extends Component {
   constructor (props) {
@@ -99,7 +90,7 @@ class PreviewEditor extends Component {
   }
 }
 
-const startResize = (sectionId, e, actions, state) => {
+const startResize = (e, actions, state) => {
   if (e.button !== 0) return // do nothing unless left button pressed
       e.preventDefault()
       let oX = e.pageX // origin x-distince
@@ -108,10 +99,10 @@ const startResize = (sectionId, e, actions, state) => {
         // get destination of difference of two distince x
         const dX = oX - e.pageX
         // get destination of difference of two distince y
-        let dY = oY - e.pageY
+        const dY = oY - e.pageY
         oX = e.pageX // reset x
         oY = e.pageY // reset y
-        actions.editorResize(sectionId, dX, dY, state)
+        actions.editorResize(dX, state, 'editor_preview_markdown_editor', 'editor_preview_preview')
       }
 
   const stopResize = () => {
@@ -122,12 +113,8 @@ const startResize = (sectionId, e, actions, state) => {
   window.document.addEventListener('mouseup', stopResize)
 }
 
-const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions, state }) => {
-  let barClass = (parentFlexDirection == 'row') ? 'col-resize' : 'row-resize'
-  return (
-    <div className={cx('resize-bar', barClass)} style={{ position: 'relative' }}
-      onMouseDown={e => startResize(sectionId, e, actions, state)}
-    />)
+const ResizeBar = ({ startResize, actions, state }) => {
+  return <div className="resize-bar col-resize" onMouseDown={e => startResize(e, actions, state)}/>
 }
 
 @observer
@@ -140,9 +127,10 @@ class MarkdownEditor extends Component {
         rightGrow: 50,
         showBigSize: false,
         showPreview: true,
+        collapseAuto: false,
       })
     }
-    
+
     this.state = observable({
       previewContent: '',
       tokens: []
@@ -162,70 +150,34 @@ class MarkdownEditor extends Component {
   render () {
     const { editor, tab, active, editorInfo } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
-    return (<div
-      name='markdown_editor_container'
-      style={{
-        display: 'flex',
-        width: '100%',
-        height: '100%'
-      }}
-    >
-      <div name='toolbal_commands' style={{
-        position: 'absolute',
-        top: '10px',
-        right: '20px',
-        zIndex: '3'
-      }}
-      >
-        {(showPreview && !showBigSize) ? (<i className='fa fa-expand' style={{ color: '#999' }}
-          onClick={() => actions.togglePreviewSize({ state: tab })}
-        ></i>) : ((showPreview) ? (
-          <i className='fa fa-compress' style={{ color: '#999' }} onClick={() => actions.togglePreviewSize({ state: tab })} />
-          ) : null)
-        }
-        {!showPreview ? <i className='fa fa-eye' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} /> :
-        <i className='fa fa-eye-slash' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} />
-      }
-      </div>
-      <div name='body'
-        style={{
-          display: 'flex',
-          width: '100%',
-          height: '100%'
-        }}
-      >
-      <div
-        name='editor'
-        id='editor_preview_markdown_editor'
-        style={{
-          flexGrow: leftGrow,
-          flexShrink: 0,
-          flexBasis: 0,
-          display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none'
-        }}
-      >
-        <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
-      </div>
-          {(showPreview && !showBigSize) ? (
-            <ResizeBar
-              sectionId={'editor_preview_markdown'}
-              parentFlexDirection={'row'}
-              startResize={startResize}
-              actions={actions}
-              state={tab}
-            />) : null}
-        {showPreview ? (
-          <div
-          name='preview'
-          id='editor_preview_preview'
-          style={{
-            flexGrow: rightGrow,
-            flexShrink: 0,
-            flexBasis: 0,
-          }}
-        >
-          <PreviewEditor content={this.state.previewContent} editor={editor} />
-        </div>) : null}
+    const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
+    const previewStyle = { flexGrow: rightGrow };
+    const expandIcon = showBigSize ? 'fa fa-expand' : 'fa fa-compress';
+    const eyeIcon = showPreview ? 'fa fa-eye-slash' : 'fa fa-eye';
+    return (
+      <div className="markdown-editor-container">
+        <div className="preview-action">
+          {
+            showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>
+          }
+          <i className={eyeIcon} onClick={() => actions.togglePreview({ state: tab })}></i>
+        </div>
+        <div className="wrap">
+          <div id='editor_preview_markdown_editor' style={editorStyle}>
+            <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
+          </div>
+          {
+            (showPreview && !showBigSize) && (
+              <ResizeBar startResize={startResize} actions={actions} state={tab} />
+            )
+          }
+          {
+            showPreview && (
+              <div id='editor_preview_preview' style={previewStyle}>
+                <PreviewEditor content={this.state.previewContent} editor={editor} />
+              </div>
+            )
+          }
         </div>
       </div>
     )

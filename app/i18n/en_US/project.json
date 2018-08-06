@@ -5,8 +5,9 @@
   "createFromCoding": "From Coding",
   "createFromGitServer": "From Git",
   "emptyHeader": "A project will be created in Coding",
-  "wsPlaceholder": "Please enter project name",
+  "wsPlaceholder": "Please enter WorkSpace name",
   "bindRemote": "Binding a remote repository",
   "selectRemote": "Select remote repository source",
-  "createOrImport": "Create or import a project"
+  "createOrImport": "Create or import a project",
+  "emptyNotGitHeader": "Will not bind any git repository"
 }

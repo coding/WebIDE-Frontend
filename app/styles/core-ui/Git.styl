@@ -115,12 +115,14 @@
 
 .git-commit-container {
   width: 1280px;
-  min-width: 1024px;
   height: 720px;
-  min-height: 576px;
   display: flex;
   flex-direction: column;
-  
+  @media screen and (max-width: 1280px) {
+    width: 1024px;
+    height: 576px;
+  }
+
   .git-commit-body {
     flex: 1;
     display: flex;

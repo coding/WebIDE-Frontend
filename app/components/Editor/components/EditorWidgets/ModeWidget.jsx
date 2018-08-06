@@ -32,7 +32,7 @@ export default class ModeWidget extends Component {
     }
     return languageInfos.map((mode) => ({
       key: mode.name || mode.id,
-      name: mode.name || mode.id,
+      name: mode.name || mode.aliases[0],
       command: () => {
         this.setMode(mode.name || mode.id)
       },
