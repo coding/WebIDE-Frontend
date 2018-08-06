@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const str = JSON.stringify
 const { DefinePlugin } = webpack
+const WebpackBar = require('webpackbar')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
@@ -104,6 +105,9 @@ module.exports = function(options = {}) {
         loaders: ['babel-loader?cacheDirectory'],
         threadPool: happyThreadPool,
         verbose: true
+      }),
+      new WebpackBar({
+        profile: true
       })
     ],
     module: {

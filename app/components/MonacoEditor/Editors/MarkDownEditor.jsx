@@ -7,6 +7,7 @@ import Remarkable from 'remarkable'
 import { observer } from 'mobx-react'
 import CodeEditor from './CodeEditor'
 import * as actions from './actions'
+import scrollMixin from './scrollMixin';
 // import mdMixin from './mdMixin'
 
 // CodeEditor.use(mdMixin)
@@ -29,7 +30,7 @@ const md = new Remarkable('full', {
   // Highlighter function. Should return escaped HTML,
   // or '' if input not changed
   highlight: (str, lang) => {
-    require('highlight.js/styles/github-gist.css')
+    require('highlight.js/styles/monokai-sublime.css')
     const hljs = require('highlight.js')
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -67,6 +68,24 @@ md.renderer.rules.heading_open = (tokens, idx) => {
   return '<h' + tokens[idx].hLevel + '>'
 }
 
+md.renderer.rules.bullet_list_open = (tokens, idx) => {
+  let line
+  if (tokens[idx].lines && tokens[idx].level === 0) {
+    line = tokens[idx].lines[0]
+    return '<ul class="line" data-line="' + line + '">'
+  }
+  return '<ul>'
+}
+
+md.renderer.rules.ordered_list_open = (tokens, idx) => {
+  let line
+  if (tokens[idx].lines && tokens[idx].level === 0) {
+    line = tokens[idx].lines[0]
+    return '<ol class="line" data-line="' + line + '">'
+  }
+  return '<ol>'
+}
+
 @observer
 class PreviewEditor extends Component {
   constructor (props) {
@@ -78,12 +97,9 @@ class PreviewEditor extends Component {
   }
 
   render () {
-    const { content, editor } = this.props
+    const { content } = this.props
     return (
-      <div name='markdown_preview' className='markdown content' ref={(dom) => {
-        this.previewDOM = dom
-        editor.previewDOM = dom
-      }}>
+      <div name='markdown_preview' className='markdown content'>
         { this.makeHTMLComponent(md.render(content)) }
       </div>
     )
@@ -137,17 +153,24 @@ class MarkdownEditor extends Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const dispose = autorun(() => {
       this.setPreviewContent(this.props.editorInfo.file.content)
     })
+  }
+
+  componentDidUpdate() {
+    if (!this.scrollFlag) {
+      this.scrollFlag = true;
+      scrollMixin(this.props.editorInfo.monacoEditor, this.previewDOM);
+    }
   }
 
   setPreviewContent = debounce((content) => {
     this.state.previewContent = content
   }, 500)
 
-  render () {
+  render() {
     const { editor, tab, active, editorInfo } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
     const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
@@ -173,7 +196,7 @@ class MarkdownEditor extends Component {
           }
           {
             showPreview && (
-              <div id='editor_preview_preview' style={previewStyle}>
+              <div id='editor_preview_preview' style={previewStyle} ref={dom => this.previewDOM = dom}>
                 <PreviewEditor content={this.state.previewContent} editor={editor} />
               </div>
             )

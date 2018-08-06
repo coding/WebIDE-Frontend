@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { autorun, extendObservable } from 'mobx'
-import { observer } from 'mobx-react'
-import CodeEditor from './CodeEditor'
-import * as actions from './actions'
-import uniqueId from 'lodash/uniqueId'
-import config from '../../../config'
+import React, { Component } from 'react';
+import { autorun, extendObservable } from 'mobx';
+import { observer } from 'mobx-react';
+import CodeEditor from './CodeEditor';
+import * as actions from './actions';
+import uniqueId from 'lodash/uniqueId';
+import config from '../../../config';
 
 @observer
 class PreviewEditor extends Component {
