@@ -10,11 +10,12 @@ export const TabContent = ({ children }) => (
 )
 
 export const TabContentItem = observer(({ tab, children }) => {
+  const ext = tab.title && tab.title.split('.')[1];
   if (tab.isActive && tab.onActive) {
     tab.onActive()
   }
   return (
-    <div className={cx('tab-content-item', { active: tab.isActive })}>
+    <div className={cx('tab-content-item', { active: tab.isActive })} data-ext={ext}>
       {children}
     </div>
   )
