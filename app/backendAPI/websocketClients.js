@@ -9,7 +9,7 @@ import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 const log = console.log || (x => x)
 const warn = console.warn || (x => x)
 
-const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
+const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.slim.js')
 
 class FsSocketClient {
   constructor () {
