@@ -38,4 +38,3 @@ export const primiaryPanelBlurControler = registerAction(PRIMIARY_PANEL_BLUR_CON
 (shouldShow) => {
   state.primaryPanelAxis.blur = shouldShow
 })
-

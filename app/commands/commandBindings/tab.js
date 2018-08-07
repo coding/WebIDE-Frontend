@@ -35,4 +35,33 @@ export default {
       Tab.moveTabToPane(c.context.id, newPaneId)
     )
   },
+  'tab:zenmode': () => {
+    const tab = document.querySelector('.tab-content-item.active');
+    if (tab.requestFullscreen) {
+      tab.classList.add('zenmode');
+      tab.requestFullscreen();
+    } else if (tab.webkitRequestFullscreen) {
+      tab.classList.add('zenmode');
+      tab.webkitRequestFullscreen();
+    } else if (tab.mozRequestFullScreen) {
+      tab.classList.add('zenmode');
+      tab.mozRequestFullScreen();
+    } else if (tab.msRequestFullscreen) {
+      tab.classList.add('zenmode');
+      tab.msRequestFullscreen();
+    }
+  }
 }
+
+function exitFullScreen() {
+  const isFull = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement;
+  if (!isFull) {
+    const tab = document.querySelector('.tab-content-item.active');
+    tab.classList.remove('zenmode');
+  }
+}
+
+document.addEventListener('fullscreenchange', () => exitFullScreen());
+document.addEventListener('webkitfullscreenchange', () => exitFullScreen());
+document.addEventListener('mozfullscreenchange', () => exitFullScreen());
+document.addEventListener('msfullscreenchang', () => exitFullScreen());
