@@ -24,6 +24,7 @@ if (isMac) {
     'ctrl+g': 'editor:goto',
     'alt+l': 'edit:toggle_format',
     'cmd+/': 'edit:toggle_comment',
+    'cmd+f11': 'tab:zenmode',
   }
   modifierKeysMap = {
     ctrl: '⌃',
@@ -51,6 +52,7 @@ if (isMac) {
     'ctrl+g': 'editor:goto',
     'alt+l': 'edit:toggle_format',
     'ctrl+/': 'edit:toggle_comment',
+    'ctrl+f11': 'tab:zenmode',
   }
   modifierKeysMap = {
     ctrl: 'Ctrl',
