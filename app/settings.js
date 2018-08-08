@@ -561,16 +561,4 @@ reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules }
   }
 })
 
-autorun(() => {
-  if (config.spaceKey !== '' && config.spaceKey !== 'default') {
-    fetchLanguageServerSetting(config.spaceKey)
-      .then((res) => {
-        const { type, srcPath } = res.data.default
-        config.mainLanguage = capitalize(type)
-        settings.languageserver.projectType.value = capitalize(type)
-        settings.languageserver.sourcePath.value = srcPath
-      })
-  }
-})
-
 export default settings
