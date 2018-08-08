@@ -6,8 +6,7 @@ import { capitalize } from 'lodash'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
 import config from 'config'
-import { findLanguageByFileName } from 'components/MonacoEditor/utils/findLanguage'
-import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
+import { fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
@@ -43,17 +42,11 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
-    const mainLanguage = findLanguageByFileName(data)
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
-      const { type } = res.data.default
-      if (
-        (!config.mainLanguage || config.mainLanguage !== '' || capitalize(type) !== mainLanguage) &&
-        mainLanguage !== ''
-      ) {
-        // config.mainLanguage = mainLanguage
-        settings.languageserver.projectType.value = mainLanguage
-        setLanguageServerOne({ type: mainLanguage, srcPath: '/' })
-      }
+      const { type, srcPath } = res.data.default
+      config.mainLanguage = capitalize(type)
+      settings.languageserver.projectType.value = capitalize(type)
+      settings.languageserver.sourcePath.value = srcPath
     })
     return loadNodeData(data)
   })
