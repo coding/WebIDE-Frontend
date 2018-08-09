@@ -12,8 +12,13 @@ import scrollMixin from './scrollMixin';
 
 // CodeEditor.use(mdMixin)
 
+const eventXSSReg = /\son[a-z]{3,20}=('\S*'|"\S*")/ig;
+const hrefXSSReg = /\shref=('javascript:\S+'|"javascript:\S+")/ig;
+const scriptLt = /<(?=\/?script)/ig;
+const scriptGt = /(?<=\/?script)>/ig;
+
 const md = new Remarkable('full', {
-  html:         false,        // Enable HTML tags in source
+  html:         true,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
@@ -98,9 +103,10 @@ class PreviewEditor extends Component {
 
   render () {
     const { content } = this.props
+    const html = md.render(content).replace(eventXSSReg, '').replace(hrefXSSReg, '').replace(scriptLt, '&lt;').replace(scriptGt, '&gt;');
     return (
       <div name='markdown_preview' className='markdown content'>
-        { this.makeHTMLComponent(md.render(content)) }
+        {this.makeHTMLComponent(html) }
       </div>
     )
   }
