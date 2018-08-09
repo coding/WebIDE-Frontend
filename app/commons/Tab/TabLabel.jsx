@@ -8,6 +8,16 @@ import { dispatch } from '../../store'
 
 let TabLabel = observer(({tab, removeTab, activateTab, openContextMenu}) => {
   const tabLabelId = `tab_label_${tab.id}`
+  let middleClickClose;
+  let isIE = !!navigator.userAgent.match(/Trident/g) || !!navigator.userAgent.match(/MSIE/g);
+  if (isIE) {
+    middleClickClose = <button className="tabMiddleClickButton"
+      onMouseUp={e => { if (e.button == 1) { e.stopPropagation; removeTab(tab.id) }}}></button>
+  } else {
+    middleClickClose = <a className="tabMiddleClickAnchor"
+      href="#"
+      onMouseUp={e => { if (e.button == 1) { e.stopPropagation; removeTab(tab.id) }}}></a>
+  }
   return (
     <li className={cx('tab-label', {
       active: tab.isActive,
@@ -23,6 +33,7 @@ let TabLabel = observer(({tab, removeTab, activateTab, openContextMenu}) => {
       }}
       onContextMenu={e => openContextMenu(e, tab)}
     >
+      {middleClickClose}
       {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div>: null}
       {tab.icon ? <div className={tab.icon}></div>: null}
       <div className='title'>{tab.title}</div>
