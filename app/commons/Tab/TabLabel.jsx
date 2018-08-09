@@ -18,6 +18,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       data-droppable='TABLABEL'
       draggable='true'
       onClick={e => activateTab(tab.id)}
+      onMouseUp={e => { e.button === 1 && removeTab(tab.id) }}
       onDoubleClick={() => {
         if (!tab.isActive) {
           activateTab(tab.id)
