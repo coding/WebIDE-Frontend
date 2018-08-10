@@ -1,7 +1,6 @@
 import state from './state'
 // import findByTextContent from './utils'
 import debounce from 'lodash/debounce'
-import marked from 'marked'
 import animatedScrollTo from 'animated-scrollto'
 
 const buildScrollMap = (previewDOM) => {

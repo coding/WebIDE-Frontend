@@ -31,13 +31,27 @@
    },
    "keymap": {
     "main": "Keymap Setting",
-    "keyboardMode": "Editor Keyboard Mode"
+    "keymap": "Keymap",
+    "keyboardMode": "Editor Keyboard Mode",
+    "command": "Command",
+    "createFile": "Create File",
+    "createFolder": "Create Folder",
+    "saveFile": "Save File",
+    "commandPalette": "Command Palette",
+    "filePalette": "File Palette",
+    "showSettings": "Show Settings Modal",
+    "exitModal": "Exit Modal",
+    "gitCommit": "Git Commit",
+    "toggleFormat": "Code Format",
+    "toggleComment": "Toggle Comment",
+    "into_zenmode": "Into Zen Mode",
+    "exit_zenmode": "Exit Zen Mode"
    },
    "appearance": {
       "main": "Appearance Setting",
       "uiTheme": "UI theme",
       "uiThemeOption": {
-         "baseTheme": "Default",
+         "baseTheme": "White",
          "dark": "Dark"
       },
       "syntaxTheme": "Syntax Theme",
