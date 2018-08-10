@@ -4,5 +4,7 @@ var serverConfig = {
   STATIC_SERVING_URL: 'http://{space-key}-static-{access-token}.dev.coding.ide',
   HTML_BASE_URL: 'http://dev.coding.ide',
   PACKAGE_DEV: false,
+  CODING_URL: 'https://coding.net',
+  HDD_ADJUST_ENABLE: true
 };
 window.serverConfig == serverConfig;

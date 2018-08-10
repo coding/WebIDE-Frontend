@@ -1,7 +1,7 @@
 import { observable, autorun, reaction, when } from 'mobx'
 import getCookie from './utils/getCookie'
 const localStorage = window.localStorage
-const serverConfig = __DEV__ ? {} : window.serverConfig
+const serverConfig = __DEV__ ? { HDD_ADJUST_ENABLE: true, CODING_URL: 'https://coding.net' } : window.serverConfig
 const config = observable({
   projectName: '',
   spaceKey: '',
@@ -18,6 +18,8 @@ const config = observable({
   packageServer: serverConfig.HTML_BASE_URL || getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
   wsURL: serverConfig.WS_URL || getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
   staticServingURL: serverConfig.STATIC_SERVING_URL || getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
+  hddAdjustEnable: serverConfig.HDD_ADJUST_ENABLE,
+  codingURL: serverConfig.CODING_URL,
   runMode: __RUN_MODE__,
   __WORKSPACE_URI__: '',
   // isPlatform: Boolean(__RUN_MODE__),
