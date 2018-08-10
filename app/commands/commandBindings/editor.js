@@ -22,4 +22,3 @@ export default {
     Pane.split(4, 'row')
   }
 }
-

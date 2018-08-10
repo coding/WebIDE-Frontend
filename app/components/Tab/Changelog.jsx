@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import marked from 'marked'
 import md from '../../../static/changelog/changelog.md'
 
 const style = {
