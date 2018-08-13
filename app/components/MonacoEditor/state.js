@@ -94,6 +94,10 @@ class EditorInfo {
 
     monacoEditor._editorInfo = this
     this.monacoEditor = monacoEditor
+
+    if (props.debug) {
+      this.setDebugDeltaDecorations()
+    }
   }
 
   @observable languageMode = ''
@@ -109,6 +113,32 @@ class EditorInfo {
     if (!this.filePath) return 'plaintext'
     const mode = is.string(this.languageMode) ? findModeByName(this.languageMode).aliases[0] : this.languageMode
     return mode
+  }
+
+  setDebugDeltaDecorations = () => {
+    if (this.debug) {
+      const { line, monacoEditor, decorations, stoppedReason } = this
+      this.decorations = monacoEditor.deltaDecorations(!!decorations ? decorations : [], [
+        {
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            isWholeLine: true,
+            className: 'monaco-debug-hightlight-content',
+            glyphMarginClassName: stoppedReason === 'breakpoint'
+              ? 'monaco-glyphMargin-breakpoint-stopped'
+              : 'monaco-glyphMargin-step-stopped'
+          }
+        }
+      ])
+      monacoEditor.revealLineInCenter(line, 1)
+    }
+  }
+
+  clearDebugDeltaDecorations = () => {
+    const { decorations } = this
+    this.decorations = this.monacoEditor.deltaDecorations(!!decorations ? decorations : [], [])
+    this.debug = false
+    this.line = -1
   }
 
   setMode (name) {

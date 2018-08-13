@@ -88,3 +88,49 @@ export const createLanguageClient = registerAction('language:create_client', (la
   const newClient = new LanguageClient(language)
   LanguageState.clients.set(language, newClient)
 })
+
+export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordebugger', (params) => {
+  const { path, line, name, stoppedReason } = params
+  if (path.startsWith('jdt')) {
+    const languageClient = LanguageState.clients.get(config.mainLanguage)
+    const tabItem = TabState.tabs.get(`fake_${name}`)
+    if (tabItem) {
+      // for debugger
+      tabItem.editorInfo.debug = true
+      tabItem.editorInfo.line = line
+      tabItem.editorInfo.stoppedReason = stoppedReason
+      tabItem.activate()
+    } else {
+      languageClient.fetchJavaClassContent({ uri: path })
+        .then((data) => {
+          createTab({
+            title: name,
+            id: `fake_${name}`,
+            icon: 'fa fa-file-o',
+            editor: {
+              // selection,
+              line,
+              stoppedReason,
+              debug: true,
+              content: data,
+              readOnly: true,
+              filePath: path,
+            },
+          })
+        })
+    }
+  } else {
+    const relativePath = path.substring(config.__WORKSPACE_URI__.length)
+    openFile({ path: relativePath, editor: { filePath: relativePath, line, debug: true, stoppedReason } })
+  }
+})
+
+export const cleardeltaDecorations = registerAction('monaco:cleardeltaDecorations', () => {
+  const tabs = TabState.tabs.toJS()
+
+  Object.keys(tabs).forEach((key) => {
+    if (tabs[key].editorInfo) {
+      tabs[key].editorInfo.clearDebugDeltaDecorations()
+    }
+  })
+})

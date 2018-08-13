@@ -184,11 +184,18 @@ export function openFile (obj, callback) {
       if (editor.gitBlame) {
         existingTab.editor.gitBlame = editor.gitBlame
       }
-      existingTab.activate()
       if (editor.selection) {
         existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
         existingTab.editorInfo.monacoEditor.focus()
       }
+
+      if (editor.debug) {
+        existingTab.editorInfo.debug = true
+        existingTab.editorInfo.line = editor.line
+        existingTab.editorInfo.stoppedReason = editor.stoppedReason
+        existingTab.editorInfo.setDebugDeltaDecorations()
+      }
+      existingTab.activate()
       if (callback) callback()
     } else {
       TabStore.createTab({
