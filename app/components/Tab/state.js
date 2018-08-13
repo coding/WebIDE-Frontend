@@ -28,6 +28,12 @@ class Tab extends BaseTab {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
     })
+
+    autorun(() => {
+      if(this.isActive && this.editorInfo) {
+        this.editorInfo.setDebugDeltaDecorations()
+      }
+    })
   }
   @action update (props = {}) {
     if (is.string(props.title)) this.title = props.title
@@ -76,7 +82,9 @@ class Tab extends BaseTab {
   }
   toJS () {
     if (this.file) {
-      return { ...this, path: this.file.path || '', editor: this.editorProps }
+      // don't persist debug prop
+      const { debug, ...other } = this.editorProps
+      return { ...this, path: this.file.path || '', editor: other }
     }
     return null
   }
