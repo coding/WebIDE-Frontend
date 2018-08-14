@@ -40,6 +40,7 @@
    "preparingFirst": "初次见面，正在准备工作空间...",
    "ttyConnectFailed": "无法连接当前运行环境，请尝试切换到其他环境",
    "workspaceLimit": "您最多只能创建 {limit} 个工作空间",
+   "workspaceOnlineLimit": "您最多只能同时打开 {limit} 个工作空间",
    "returnDefault": "返回默认工作空间",
    "projectPublic": "公开",
    "projectPrivate": "私有",

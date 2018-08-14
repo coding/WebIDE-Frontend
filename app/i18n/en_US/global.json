@@ -40,6 +40,7 @@
    "preparingFirst": "Preparing Workspace...",
    "ttyConnectFailed": "Cannot connect to current environment, please try others",
    "workspaceLimit": "You can only create {limit} workspaces.",
+   "workspaceOnlineLimit": "You can only open {limit} workspaces at the same time.",
    "returnDefault": "return default workspace",
    "projectPublic": "Public",
    "projectPrivate": "Private",
