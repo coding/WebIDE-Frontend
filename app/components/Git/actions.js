@@ -23,6 +23,10 @@ export function commit () {
       files: stagedFilesPathList,
       message: GitState.commitMessage || initialCommitMessage,
     }).then((filetreeDelta) => {
+      if (filetreeDelta.code) {
+        notify({ notifyType: NOTIFY_TYPE.ERROR, message: filetreeDelta.msg });
+        return;
+      }
       dispatch(updateCommitMessage(''))
       notify({ message: i18n`git.action.commitSuccess` })
       dismissModal()
