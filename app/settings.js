@@ -74,7 +74,9 @@ const changeUITheme = (nextThemeId) => {
       if (currentTheme && currentTheme.unuse) currentTheme.unuse()
       window.themes['@current'] = window.themes[nextThemeId] = module
       module.use()
-      window.themeVariables.replace(window.themes['@current'].locals)
+      window.themeVariables.replace(
+       window.themes['@current'].locals || window.themes['@current'].default.locals
+     )
     })
   }
 
