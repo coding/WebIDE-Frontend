@@ -85,7 +85,14 @@ class MonacoEditor extends React.PureComponent {
     autorun(() => {
       const languageClient = languageState.clients.get(this.language)
       if (languageClient) {
-        const { path, content } = this.editor.file
+        let path, content
+        if (this.editor.file) {
+          path = this.editor.file.path
+          content = this.editor.file.content
+        } else {
+          path = this.editor.uri
+          content = this.editor.content
+        }
         /**
          * client 状态
          * enum ClientState {
@@ -97,18 +104,21 @@ class MonacoEditor extends React.PureComponent {
          *  Stopped,      // 5
          * }
          */
-        let model = monaco.editor.getModel(`file://${languageClient._ROOT_URI_}${path}`)
+        const uri = path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`
+        let model = monaco.editor.getModel(uri)
         if (!model) {
           model = monaco.editor.createModel(
             content,
             lowerCase(this.language),
-            monaco.Uri.parse(`file://${languageClient._ROOT_URI_}${path}`)
+            monaco.Uri.parse(path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`)
           )
-          this.editor.model = model
-          this.uri = `file://${languageClient._ROOT_URI_}${path}`
+          this.uri = path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`
           const tmpModel = monaco.editor.getModel(`inmemory://model/${this.editor.id}`)
-          tmpModel.dispose()
+          if (tmpModel) {
+            tmpModel.dispose()
+          }
         }
+        this.editor.model = model
         monacoEditor.setModel(model)
 
         if (this.editor.selection) {
@@ -141,7 +151,7 @@ class MonacoEditor extends React.PureComponent {
   componentWillUnmount () {
     // this.editor.destroy()
     const languageClient = languageState.clients.get(this.language)
-    if (!languageClient) return
+    if (!languageClient || !this.editor.file) return
     const { path } = this.editor.file
     const { openeduri } = languageClient
     // 组件卸载后发送 didClose消息

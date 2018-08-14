@@ -31,6 +31,7 @@ class Tab extends BaseTab {
 
     autorun(() => {
       if(this.isActive && this.editorInfo) {
+        console.log('active')
         this.editorInfo.setDebugDeltaDecorations()
       }
     })

@@ -47,15 +47,16 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
     } else {
       languageClient.fetchJavaClassContent({ uri: formattedUri })
         .then((data) => {
+          const name = fileName.endsWith('class') ? `${fileName.substr(0, fileName.length - 5)}java` : fileName
           createTab({
-            title: fileName,
-            id: `fake_${fileName}`,
+            title: name,
+            id: `fake_${name}`,
             icon: 'fa fa-file-o',
             editor: {
               // selection,
               content: data,
               readOnly: true,
-              filePath: resource.path,
+              filePath: formattedUri,
             },
           })
         })
@@ -100,6 +101,7 @@ export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordeb
       tabItem.editorInfo.line = line
       tabItem.editorInfo.stoppedReason = stoppedReason
       tabItem.activate()
+      tabItem.editorInfo.setDebugDeltaDecorations()
     } else {
       languageClient.fetchJavaClassContent({ uri: path })
         .then((data) => {
@@ -131,6 +133,32 @@ export const cleardeltaDecorations = registerAction('monaco:cleardeltaDecoration
   Object.keys(tabs).forEach((key) => {
     if (tabs[key].editorInfo) {
       tabs[key].editorInfo.clearDebugDeltaDecorations()
+    }
+  })
+})
+
+export const setBreakPoint = registerAction('monaco:setbreakpoints', (params) => {
+  const tabs = TabState.tabs.toJS()
+  Object.keys(tabs).forEach((key) => {
+    const editor = tabs[key].editorInfo
+    if (editor && editor.model) {
+      const { model } = tabs[key].editorInfo
+      if (model.uri.toString() === params.path) {
+        tabs[key].editorInfo.setDebuggerBreakPoint(params)
+      }
+    }
+  })
+})
+
+export const removeBreakPoint = registerAction('monaco:removeBreakPoint', (params) => {
+  const tabs = TabState.tabs.toJS()
+  Object.keys(tabs).forEach((key) => {
+    const editor = tabs[key].editorInfo
+    if (editor && editor.model) {
+      const { model } = tabs[key].editorInfo
+      if (model.uri.toString() === params.path) {
+        tabs[key].editorInfo.removeDebuggerBreakPoint(params)
+      }
     }
   })
 })
