@@ -35,6 +35,8 @@ class EditorInfo {
     if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
+    this.debugBreakPoints = new Map()
+    this.line = -1
   }
 
   createMonacoEditorInstance (props) {
@@ -46,11 +48,12 @@ class EditorInfo {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
 
-    const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
+    const model = monaco.editor.getModel(this.uri) || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
+    this.uri = model.uri._formatted
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       ...props,
-      model: model || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(`inmemory://model/${this.id}`)),
+      model,
     }, {
       editorService: {
         openEditor: toDefinition
@@ -131,6 +134,32 @@ class EditorInfo {
         }
       ])
       monacoEditor.revealLineInCenter(line, 1)
+    }
+  }
+
+  setDebuggerBreakPoint = (params) => {
+    const { line, verified } = params
+    const debuggerBreakPoint = this.debugBreakPoints.get(line)
+    const newBreakPoint = this.monacoEditor.deltaDecorations(!!debuggerBreakPoint ? debuggerBreakPoint : [], [
+      {
+        range: new monaco.Range(line, 1, line, 1),
+        options: {
+          isWholeLine: false,
+          glyphMarginClassName: verified
+            ? 'monaco-glyphMargin-breakpoint'
+            : 'monaco-glyphMargin-breakpoint-unverified'
+        }
+      }
+    ])
+    this.debugBreakPoints.set(line, newBreakPoint)
+  }
+
+  removeDebuggerBreakPoint = (params) => {
+    const { line } = params
+    if (this.debugBreakPoints.has(line)) {
+      const debuggerBreakPoint = this.debugBreakPoints.get(line)
+      this.monacoEditor.deltaDecorations(debuggerBreakPoint, [])
+      this.debugBreakPoints.delete(line)
     }
   }
 
