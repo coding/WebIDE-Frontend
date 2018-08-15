@@ -1,6 +1,6 @@
 .ide-container {
   .public_fixedDataTable_main {
-    border-color: $base-border-color;  
+    border-color: $base-border-color;
   }
   .public_fixedDataTableRow_main {
     background-color: $base-background-color;
@@ -34,5 +34,28 @@
     background-color: $second-background-color;
     border-color: $base-border-color;
     color: $text-color;
+  }
+}
+
+#cm-merge-view-wrapper {
+  .CodeMirror {
+    color: #dcdcdc;
+    background-color: #1e1e1e;
+    .CodeMirror-line {
+      line-height: 1.5;
+    }
+    .CodeMirror-merge-l-chunk {
+      background-color: #333;
+    }
+    .CodeMirror-merge-r-chunk {
+      border-color: #3af;
+      background-color: #333;
+    }
+    .CodeMirror-merge-l-chunk-end.CodeMirror-merge-r-chunk-end {
+      border-bottom: 1px solid #4e4;
+    }
+    .CodeMirror-merge-l-chunk-start.CodeMirror-merge-r-chunk-start {
+      border-top: 1px solid #4e4;
+    }
   }
 }
