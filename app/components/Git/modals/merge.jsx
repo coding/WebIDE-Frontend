@@ -36,7 +36,7 @@ class GitMergeView extends Component {
                   value={this.state.branchToMerge}
                   style={this.state.selectChanged ? null : { color: '#aaa' }}
                 >
-                  <option selected value='' disabled={this.state.selectChanged}>
+                  <option value='' disabled={this.state.selectChanged}>
                     -- {i18n.get('git.mergeModal.selectBranch')} --
                   </option>
                   {allBranches.map(branch => <option key={branch} value={branch}>{branch}</option>)}
