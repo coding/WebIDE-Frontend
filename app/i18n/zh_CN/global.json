@@ -42,6 +42,7 @@
    "workspaceLimit": "您最多只能创建 {limit} 个工作空间",
    "workspaceOnlineLimit": "您最多只能同时打开 {limit} 个工作空间",
    "returnDefault": "返回默认工作空间",
+   "closeCurrentWebPage": "关闭当前页面",
    "projectPublic": "公开",
    "projectPrivate": "私有",
    "machineOutofDate": "专用主机的试用期已经结束了",

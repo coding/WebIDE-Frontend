@@ -42,6 +42,7 @@
    "workspaceLimit": "You can only create {limit} workspaces.",
    "workspaceOnlineLimit": "You can only open {limit} workspaces at the same time.",
    "returnDefault": "return default workspace",
+   "closeCurrentWebPage": "Close current web page",
    "projectPublic": "Public",
    "projectPrivate": "Private",
    "machineOutofDate": "Trial of machine has expired",
