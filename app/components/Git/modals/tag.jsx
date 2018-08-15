@@ -31,27 +31,25 @@ class GitTagView extends Component {
           <h1>{i18n`git.tag.title`}</h1>
           <hr />
           <form className="form-horizontal">
-            <div className="form-group">
-              <label className="col-sm-3 control-label">{i18n`git.tag.currentBranch`}</label>
-              <label className="col-sm-9 checkbox-inline">{currentBranch}</label>
+            <div className="row">
+              <label className="row-left">{i18n`git.tag.currentBranch`}</label>
+              <input className="row-right form-control" type="text" disabled={true} placeholder={currentBranch} />
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label">{i18n`git.tag.tagName`}</label>
-              <label className="col-sm-9">
-                <input type="text"
-                  className="form-control"
-                  value={this.state.tagName}
-                  onChange={this.handleTagNameChange}
-                  onKeyDown={e => {if (e.keyCode === 13) {
-                    e.preventDefault()
-                    this.addTag()
-                  }}}
-                />
-              </label>
+            <div className="row">
+              <label className="row-left">{i18n`git.tag.tagName`}</label>
+              <input type="text"
+                className="row-right form-control"
+                value={this.state.tagName}
+                onChange={this.handleTagNameChange}
+                onKeyDown={e => {if (e.keyCode === 13) {
+                  e.preventDefault()
+                  this.addTag()
+                }}}
+              />
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label"></label>
-              <label className="col-sm-9">
+            <div className="row">
+              <label className="row-left"></label>
+              <label className="row-right">
                 <input type="checkbox"
                   onChange={this.handleForceChange}
                   checked={checked}
@@ -59,33 +57,29 @@ class GitTagView extends Component {
                 />
                 {i18n`git.tag.force`}
                 <span className='error-info'>
-                {this.state.errMsg}
+                  {this.state.errMsg}
                 </span>
               </label>
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label">{i18n`git.tag.commit`}</label>
-              <label className="col-sm-9">
-                <input type="text"
-                  className="form-control"
-                  value={this.state.commit}
-                  onChange={e => this.setState({commit: e.target.value})} />
-              </label>
+            <div className="row">
+              <label className="row-left">{i18n`git.tag.commit`}</label>
+              <input type="text"
+                className="row-right form-control"
+                value={this.state.commit}
+                onChange={e => this.setState({commit: e.target.value})} />
             </div>
-            <div className="form-group">
-              <label className="col-sm-3 control-label">{i18n`git.tag.message`}</label>
-              <label className="col-sm-9">
-                <textarea type="text"
-                  className="form-control"
-                  value={this.state.message}
-                  placeholder={i18n.get('git.tag.optional')}
-                  onChange={e => this.setState({message: e.target.value})}
-                  onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) {
-                    e.preventDefault()
-                    this.addTag()
-                  }}}
-                />
-              </label>
+            <div className="row">
+              <label className="row-left">{i18n`git.tag.message`}</label>
+              <textarea type="text"
+                className="row-right textarea form-control"
+                value={this.state.message}
+                placeholder={i18n.get('git.tag.optional')}
+                onChange={e => this.setState({message: e.target.value})}
+                onKeyDown={e => {if ((e.metaKey || e.ctrlKey) && e.keyCode === 13) {
+                  e.preventDefault()
+                  this.addTag()
+                }}}
+              />
             </div>
           </form>
           <hr />
