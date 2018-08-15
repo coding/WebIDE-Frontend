@@ -291,3 +291,26 @@ $tab-highlight-bg-darker = #8ab0f3;
     padding-top: 20px;
   }
 }
+
+#cm-merge-view-wrapper {
+  .CodeMirror {
+    color: #333;
+    background-color: #fff;
+    .CodeMirror-line {
+      line-height: 1.5;
+    }
+    .CodeMirror-merge-l-chunk {
+      background-color: #f8f8f8;
+    }
+    .CodeMirror-merge-r-chunk {
+      border-color: #3af;
+      background-color: #f8f8f8;
+    }
+    .CodeMirror-merge-l-chunk-end.CodeMirror-merge-r-chunk-end {
+      border-bottom: 1px solid #4e4;
+    }
+    .CodeMirror-merge-l-chunk-start.CodeMirror-merge-r-chunk-start {
+      border-top: 1px solid #4e4;
+    }
+  }
+}
