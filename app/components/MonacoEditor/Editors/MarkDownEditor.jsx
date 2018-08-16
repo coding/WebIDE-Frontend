@@ -14,8 +14,8 @@ import scrollMixin from './scrollMixin';
 
 const eventXSSReg = /\son[a-z]{3,20}=('\S*'|"\S*")/ig;
 const hrefXSSReg = /\shref=('javascript:\S+'|"javascript:\S+")/ig;
-const scriptLt = /<(?=\/?script)/ig;
-const scriptGt = /(?<=\/?script)>/ig;
+const scriptLtReg = /<(\/?script)/ig;
+const scriptGtReg = /(\/?script)>/ig;
 
 const md = new Remarkable('full', {
   html:         true,        // Enable HTML tags in source
@@ -103,7 +103,7 @@ class PreviewEditor extends Component {
 
   render () {
     const { content } = this.props
-    const html = md.render(content).replace(eventXSSReg, '').replace(hrefXSSReg, '').replace(scriptLt, '&lt;').replace(scriptGt, '&gt;');
+    const html = md.render(content).replace(eventXSSReg, '').replace(hrefXSSReg, '').replace(scriptLtReg, '&lt;$1').replace(scriptGtReg, '$1&gt;');
     return (
       <div name='markdown_preview' className='markdown content'>
         {this.makeHTMLComponent(html) }

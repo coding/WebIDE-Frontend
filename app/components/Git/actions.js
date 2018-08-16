@@ -287,11 +287,18 @@ export function addTag ({ tagName, ref, message, force }) {
 export function mergeBranch (branch) {
   return dispatch => api.gitMerge(branch).then((res) => {
     // Merge conflict 的情况也是 200 OK，但 sucecss:false
-    if (!res.success) return res
-    notify({ message: 'Merge success.' })
-    dismissModal()
+    if (!res.success) {
+      return res;
+    } else {
+      if (res.status === 'ALREADY_UP_TO_DATE') {
+        notify({ message: 'Nothing to merge, already up to date.' })
+      } else {
+        notify({ message: 'Merge success.' })
+      }
+      dismissModal();
+    }
   }).then((res) => {
-    if (res.status && res.status === 'CONFLICTING') {
+    if (res && res.status === 'CONFLICTING') {
       dismissModal()
       api.gitStatus().then(({ files, clean }) => {
         files = _.filter(files, file => file.status == 'CONFLICTION')

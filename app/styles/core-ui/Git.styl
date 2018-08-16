@@ -70,9 +70,30 @@
     padding-right: 20px;
   }
 }
+
 .git-tag-container {
   input[type="checkbox"] {
     margin-right: 6px;
+  }
+  .row {
+    display: flex;
+    margin: 0 0 15px;
+    .row-left {
+      box-sizing: border-box;
+      width: 20%;
+      padding-top: 5px;
+      margin-right: 2%;
+      text-align: right;
+    }
+    .row-right {
+      box-sizing: border-box;
+      width: 78%;
+    }
+    .textarea {
+      min-height: 80px;
+      max-height: 160px;
+      resize: vertical;
+    }
   }
   .error-info {
     color: red;
@@ -109,9 +130,6 @@
 .git-blame-gutter {
   width: 250px;
 }
-// .git-blame-show .git-blame-gutter {
-//   display: block;
-// }
 
 .git-commit-container {
   width: 1280px;
@@ -129,20 +147,20 @@
 
     .filetree-node {
       & > span {
-        margin: 0px 5px;  
-      }  
+        margin: 0px 5px;
+      }
     }
     .git-commit-files {
       width: 30%;
       height: 100%;
       border-right: 1px solid #ccc;
       .active {
-        background-color: $background-color-highlight;  
+        background-color: $background-color-highlight;
       }
     }
 
     .git-commit-diff {
-      flex: 1;  
+      flex: 1;
     }
   }
 
