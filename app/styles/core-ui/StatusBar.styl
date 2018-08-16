@@ -64,4 +64,29 @@ $bar-height = 30px;
       align-items: center;
     }
   }
+  
+  .status-progress {
+    align-self: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    
+    span {
+      width: 10vw;
+      display: inline-block;
+      height: 5px;
+      border-radius: 3px;
+      background-size: 30px 30px;
+      animation: animate-stripes 3s linear infinite;
+    }
+  }
+}
+
+@keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 60px 0;
+  }
 }

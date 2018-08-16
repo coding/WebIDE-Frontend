@@ -6,6 +6,7 @@ import { createAction } from 'redux-actions'
 
 import Clipboard from 'clipboard'
 import i18n from 'utils/createI18n'
+import statusBarState from '../StatusBar/state'
 
 export const GIT_STATUS = 'GIT_STATUS'
 export const updateStatus = createAction(GIT_STATUS)
@@ -14,6 +15,7 @@ export const GIT_UPDATE_COMMIT_MESSAGE = 'GIT_UPDATE_COMMIT_MESSAGE'
 export const updateCommitMessage = createAction(GIT_UPDATE_COMMIT_MESSAGE)
 
 export function commit () {
+  statusBarState.displayBar = true
   return (dispatch, getState) => {
     const GitState = getState().GitState
     const stagedFiles = GitState.statusFiles.filter(file => file.isStaged)
@@ -23,6 +25,7 @@ export function commit () {
       files: stagedFilesPathList,
       message: GitState.commitMessage || initialCommitMessage,
     }).then((filetreeDelta) => {
+      statusBarState.displayBar = false
       if (filetreeDelta.code) {
         notify({ notifyType: NOTIFY_TYPE.ERROR, message: filetreeDelta.msg });
         return;
@@ -143,7 +146,9 @@ export function pull () {
 
 export function push () {
   return (dispatch) => {
+    statusBarState.displayBar = true
     api.gitPushAll().then((res) => {
+      statusBarState.displayBar = false
       if (res.nothingToPush) {
         notify({ message: 'Git push fail: nothing to push.' });
         return;
@@ -154,6 +159,7 @@ export function push () {
         notify({ message: `Git push fail: ${res.updates[0].status}` });
       }
     }).catch((res) => {
+      statusBarState.displayBar = false
       notify({ message: `Git push fail: ${res.response.data.msg}` })
     })
   }
