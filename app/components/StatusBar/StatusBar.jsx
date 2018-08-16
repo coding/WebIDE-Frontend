@@ -6,6 +6,7 @@ import { observer } from 'mobx-react'
 import languageState from 'components/Tab/LanguageClientState'
 import configState from '../../config'
 import UploadWidgets from './UploadWidgets'
+import state from './state'
 
 const StatusBar = observer(({ messages=[] }) => {
   return (
@@ -19,6 +20,9 @@ const StatusBar = observer(({ messages=[] }) => {
       <div className='status-messages'>
         {messages.map(message => <div className='status-message'>{message}</div>)}
       </div>
+      {state.displayBar && <div className='status-progress'>
+        <span></span>
+      </div>}
       <div className='status-widget-container right'>
         <EditorWidgets />
         <GitBranchWidget ref={ com => window.refs.GitBranchWidget = com}
