@@ -2,6 +2,7 @@ import { observable, autorun } from 'mobx'
 
 const state = observable({
   messages: observable.map(),
+  displayBar: false,
   uploadList: observable.map({
     // 'aaa.txt': { percentCompleted: 0, size: 100020303 },
     // 'bbb.txt': { percentCompleted: 50, size: 200020303 },
