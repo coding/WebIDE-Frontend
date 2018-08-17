@@ -77,7 +77,7 @@ class MonacoEditor extends React.PureComponent {
           content: value,
         })
         debounced(() => {
-          dispatchCommand('file:save')
+          dispatchCommand('file:save', this.editor.filePath)
         })
       }
     })
