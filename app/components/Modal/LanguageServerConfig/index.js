@@ -6,7 +6,7 @@ import config from 'config'
 import { addModal } from 'components/Modal/actions'
 import i18n from 'utils/createI18n'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
-import LanguageState from 'components/Tab/LanguageClientState'
+import LanguageState from 'components/MonacoEditor/LanguageClientState'
 import { createLanguageClient } from 'components/MonacoEditor/actions'
 
 @observer

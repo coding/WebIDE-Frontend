@@ -1,8 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
-import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
+import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
 
-import config from 'config'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
@@ -36,7 +35,6 @@ class EditorInfo {
       this.createMonacoEditorInstance(props)
     }
     this.debugBreakPoints = new Map()
-    this.line = -1
   }
 
   createMonacoEditorInstance (props) {
@@ -173,7 +171,6 @@ class EditorInfo {
     const { decorations } = this
     this.decorations = this.monacoEditor.deltaDecorations(!!decorations ? decorations : [], [])
     this.debug = false
-    this.line = -1
   }
 
   setMode (name) {

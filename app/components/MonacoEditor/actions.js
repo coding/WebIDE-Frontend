@@ -6,7 +6,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 import { createTab, activateTab } from 'components/Tab/actions'
 import { openFile } from 'commands/commandBindings/file'
 import TabState from 'components/Tab/state'
-import LanguageState, { LanguageClient } from 'components/Tab/LanguageClientState'
+import LanguageState, { LanguageClient } from './LanguageClientState'
 
 import { supportLangServer } from './utils/languages'
 
