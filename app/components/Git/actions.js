@@ -33,6 +33,8 @@ export function commit () {
       dispatch(updateCommitMessage(''))
       notify({ message: i18n`git.action.commitSuccess` })
       dismissModal()
+    }).catch(err => {
+      statusBarState.displayBar = false
     })
   }
 }
@@ -135,18 +137,21 @@ export function getTags () {
 }
 
 export function pull () {
+  statusBarState.displayBar = true
   return (dispatch) => {
     api.gitPull().then((res) => {
+      statusBarState.displayBar = false
       notify({ message: 'Git pull success.' })
     }).catch((res) => {
+      statusBarState.displayBar = false
       notify({ message: `Git pull fail: ${res.response.data.msg}` })
     })
   }
 }
 
 export function push () {
+  statusBarState.displayBar = true
   return (dispatch) => {
-    statusBarState.displayBar = true
     api.gitPushAll().then((res) => {
       statusBarState.displayBar = false
       if (res.nothingToPush) {
