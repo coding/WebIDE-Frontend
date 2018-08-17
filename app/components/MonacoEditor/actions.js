@@ -95,7 +95,7 @@ export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordeb
   if (path.startsWith('jdt')) {
     const languageClient = LanguageState.clients.get(config.mainLanguage)
     const tabItem = TabState.tabs.get(`fake_${name}`)
-    if (tabItem) {
+    if (tabItem && tabItem.editorInfo) {
       // for debugger
       tabItem.editorInfo.debug = true
       tabItem.editorInfo.line = line
