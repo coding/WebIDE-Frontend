@@ -26,7 +26,7 @@ export const fetchPackageInfo = (pkgName, pkgVersion, target) =>
 export const fetchPackageScript = (props) => {
   if (Array.isArray(props)) {
     const concatedUrl = props.reduce((p, v, i) => `${p}${v.pkgName}/${v.pkgVersion}/index.js${i !== props.length - 1 ? ',' : ''}`, '??')
-    if (config.isPlatform) {
+    if (!config.packageDev && config.isPlatform) {
       return axios.get(`${window.location.origin}/packages/${concatedUrl}`).then(res => res.data)
     }
     return axios.get(`${packageServer}/packages/${concatedUrl}`).then(res => res.data)
