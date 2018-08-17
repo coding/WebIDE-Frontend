@@ -1,6 +1,7 @@
 export const JAVA_CLASS_PATH_REQUEST = 'java/classFileContents'
 export const LANGUAGE_STATUS = 'language/status'
 export const JAVA_BUIILDWORKSPACE = 'java/buildWorkspace'
+export const JAVA_PROJECT_CONFIGURATION_UPDATE = 'java/projectConfigurationUpdate'
 /**
  * debugger
  */
