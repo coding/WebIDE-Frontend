@@ -93,6 +93,8 @@ class EditorInfo {
     if (props.selection) {
       this.selection = props.selection
       monacoEditor.setSelection(props.selection)
+      const { startLineNumber } = props.selection
+      monacoEditor.revealLineInCenter(startLineNumber, 1)
     }
 
     monacoEditor._editorInfo = this
