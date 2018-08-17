@@ -185,8 +185,10 @@ export function openFile (obj, callback) {
         existingTab.editor.gitBlame = editor.gitBlame
       }
       if (editor.selection) {
+        const { startLineNumber } = editor.selection
         existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
         existingTab.editorInfo.monacoEditor.focus()
+        existingTab.editorInfo.monacoEditor.revealLineInCenter(startLineNumber, 1)
       }
 
       if (editor.debug) {

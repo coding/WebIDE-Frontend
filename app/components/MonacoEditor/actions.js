@@ -53,7 +53,7 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
             id: `fake_${name}`,
             icon: 'fa fa-file-o',
             editor: {
-              // selection,
+              selection: params.options.selection,
               content: data,
               readOnly: true,
               filePath: formattedUri,

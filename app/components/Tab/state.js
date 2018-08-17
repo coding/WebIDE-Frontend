@@ -6,7 +6,7 @@ import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
 
 // monaco-editor
-import MonacoEditorState, { EditorInfo } from 'components/MonacoEditor/state'
+import { EditorInfo } from 'components/MonacoEditor/state'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 
@@ -30,8 +30,7 @@ class Tab extends BaseTab {
     })
 
     autorun(() => {
-      if(this.isActive && this.editorInfo) {
-        console.log('active')
+      if (this.isActive && this.editorInfo) {
         this.editorInfo.setDebugDeltaDecorations()
       }
     })
