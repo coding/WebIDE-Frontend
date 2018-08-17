@@ -3,7 +3,7 @@ import { GitBranchWidget } from 'components/Git'
 import { dispatchCommand } from 'commands'
 import { EditorWidgets } from 'components/Editor'
 import { observer } from 'mobx-react'
-import languageState from 'components/Tab/LanguageClientState'
+import languageState from 'components/MonacoEditor/LanguageClientState'
 import configState from '../../config'
 import UploadWidgets from './UploadWidgets'
 

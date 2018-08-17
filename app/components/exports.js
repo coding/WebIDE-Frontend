@@ -12,7 +12,7 @@ import * as Tooltip from './Tooltip'
 import * as Mask from './Mask'
 import * as MonacoEditor from './MonacoEditor'
 import * as Setting from './Setting'
-import LanguageClientState from './Tab/LanguageClientState'
+import LanguageClientState from './MonacoEditor/LanguageClientState'
 
 export {
   Accordion,

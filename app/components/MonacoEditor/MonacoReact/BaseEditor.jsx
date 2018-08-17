@@ -7,7 +7,7 @@ import { observer } from 'mobx-react'
 import * as monaco from 'monaco-editor'
 
 import FileStore from 'commons/File/store'
-import languageState from 'components/Tab/LanguageClientState'
+import languageState from 'components/MonacoEditor/LanguageClientState'
 import dispatchCommand from 'commands/dispatchCommand'
 import { findLangueByExt } from '../utils/findLanguage'
 import { EditorInfo } from '../state'

@@ -14,7 +14,7 @@ import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/lan
 // import { projectState } from 'components/Setting/state'
 
 let LanguageState
-import('components/Tab/LanguageClientState').then(res => LanguageState = res.default)
+import('components/MonacoEditor/LanguageClientState').then(res => LanguageState = res.default)
 
 let createLanguageClient
 import('components/MonacoEditor/actions')
