@@ -13,6 +13,7 @@ import * as Mask from './Mask'
 import * as MonacoEditor from './MonacoEditor'
 import * as Setting from './Setting'
 import LanguageClientState from './MonacoEditor/LanguageClientState'
+import * as SideBarAction from './Panel/SideBar/actions'
 
 export {
   Accordion,
@@ -30,4 +31,5 @@ export {
   MonacoEditor,
   Setting,
   LanguageClientState,
+  SideBarAction,
 }
