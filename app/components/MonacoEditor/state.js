@@ -12,6 +12,7 @@ import { toDefinition } from 'components/MonacoEditor/actions'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 
 import initialOptions from './monacoDefaultOptions'
+import { cacheConflicts, hasCache, matchesToDescriptor, containsConflict, scanDocument } from './mergeConflict'
 
 const state = observable({
   entities: observable.map({}),
@@ -27,6 +28,7 @@ class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
     this.contentType = props.contentType || 'TEXT'
+    this.containsConflict = false
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
@@ -65,6 +67,18 @@ class EditorInfo {
       const content = change.newValue || ''
       if (content !== monacoEditor.getValue()) {
         monacoEditor.setValue(content)
+
+        if (!this.containsConflict) {
+          this.containsConflict = true
+          let conflicts = null
+          if (hasCache(this.filePath)) {
+            conflicts = cacheConflicts.get(this.filePath)
+          } else {
+            conflicts = scanDocument(this.monacoEditor.getModel())
+            cacheConflicts.set(this.filePath, conflicts)
+          }
+          this.applyConflictsDecoration(conflicts)
+        }
       }
     }))
     /**
@@ -105,6 +119,18 @@ class EditorInfo {
     if (props.debug) {
       this.setDebugDeltaDecorations()
     }
+
+    if (containsConflict(this.content)) {
+      this.containsConflict = true
+      let conflicts = null
+      if (hasCache(this.filePath)) {
+        conflicts = cacheConflicts.get(this.filePath)
+      } else {
+        conflicts = scanDocument(this.monacoEditor.getModel())
+        cacheConflicts.set(this.filePath, conflicts)
+      }
+      this.applyConflictsDecoration(conflicts)
+    }
   }
 
   @observable languageMode = ''
@@ -114,6 +140,14 @@ class EditorInfo {
 
   setCursor (...args) {
     // TODO
+  }
+
+  applyConflictsDecoration = (conflicts) => {
+    if (!conflicts || conflicts.length === 0) return false
+    console.log(conflicts)
+    // const model = this.monacoEditor.getModel()
+    // const descriptor = conflicts.map(match => matchesToDescriptor(match, model))
+    // console.log(descriptor)
   }
 
   @computed get mode () {

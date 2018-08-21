@@ -1,7 +1,7 @@
 export default {
   Java: {
     bundles: [
-      '/data/coding-ide-home/LanguageServices-WebIDE/com.microsoft.java.debug.plugin-0.10.0.jar',
+      '/data/coding-ide-home/LanguageServices-WebIDE/com.microsoft.java.debug.plugin-0.11.0.jar',
     ],
     workspaceFolders: [],
     settings: {
