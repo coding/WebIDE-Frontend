@@ -12,7 +12,14 @@ import { toDefinition } from 'components/MonacoEditor/actions'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 
 import initialOptions from './monacoDefaultOptions'
-import { cacheConflicts, hasCache, matchesToDescriptor, containsConflict, scanDocument } from './mergeConflict'
+import {
+  cacheConflicts,
+  hasCache,
+  matchesToDescriptor,
+  containsConflict,
+  scanDocument,
+  Colors,
+} from './mergeConflict'
 
 const state = observable({
   entities: observable.map({}),
@@ -144,10 +151,41 @@ class EditorInfo {
 
   applyConflictsDecoration = (conflicts) => {
     if (!conflicts || conflicts.length === 0) return false
-    console.log(conflicts)
-    // const model = this.monacoEditor.getModel()
-    // const descriptor = conflicts.map(match => matchesToDescriptor(match, model))
-    // console.log(descriptor)
+    const model = this.monacoEditor.getModel()
+    const descriptors = conflicts.map(match => matchesToDescriptor(match, model))
+
+    if (!descriptors || descriptors.length === 0) {
+      // none conflict
+      return false
+    }
+
+    for (const descriptor of descriptors) {
+      const { current, incoming } = descriptor
+      // render viewzone
+      // @TODO
+      // render current and incoming
+      this.applyCurrentAndIncomingDescriptor(current, 'current')
+      this.applyCurrentAndIncomingDescriptor(incoming, 'incoming')
+    }
+  }
+
+  applyCurrentAndIncomingDescriptor = (descriptor, type) => {
+    const { header, name, content, decoratorContent } = descriptor
+    // render header
+    console.log(header)
+    // console.log(name)
+    // console.log(content)
+    // console.log(decoratorContent)
+    const headerDecoration = {
+      range: header,
+      options: {
+        isWholeLine: true,
+        className: `${type}-conflict-header`,
+        afterContentClassName: `${type}-conflict-header-after-decoration`,
+      }
+    }
+    console.log(headerDecoration)
+    this.monacoEditor.deltaDecorations([], [headerDecoration])
   }
 
   @computed get mode () {

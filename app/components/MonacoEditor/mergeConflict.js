@@ -1,11 +1,24 @@
 import * as monaco from 'monaco-editor'
 
 export const cacheConflicts = new Map()
-const offsetGroups = [1, 3, 4, 5, 6]
+
 const startHeaderMarker = '<<<<<<<'
 const commonAncestorsMarker = '|||||||'
 const splitterMarker = '======='
 const endFooterMarker = '>>>>>>>'
+const currentHeaderColor = 'rgba(64, 200, 174, 0.5)'
+const currentContentColor = 'rgba(64, 200, 174, 0.2)'
+const incomingContentColor = 'rgba(64, 166, 255, 0.2)'
+const incomingHeaderColor = 'rgba(64, 166, 255, 0.5)'
+const commonBaseColor = '#606060'
+
+export const Colors = {
+  currentHeaderColor,
+  currentContentColor,
+  incomingHeaderColor,
+  incomingContentColor,
+  commonBaseColor,
+}
 
 export function hasCache (key) {
   return cacheConflicts.has(key)
@@ -69,58 +82,23 @@ export function containsConflict (content) {
   return content.includes('<<<<<<<') && content.includes('>>>>>>>')
 }
 
-function getMatchPosition (model, match, groupIndex) {
-  let offsets = offsetGroups
-  if (!offsets) {
-    offsets = match.map((i, idx) => idx)
-  }
-
-  let start = match.index
-
-  for (let i = 0; i < offsetGroups.length; i += 1) {
-    const value = offsetGroups[i]
-
-    if (value >= groupIndex) {
-      break
-    }
-
-    start += match[value] !== undefined ? match[value].length : 0
-  }
-  const groupMatch = match[groupIndex]
-  const targetMatchLength = groupMatch !== undefined ? groupMatch.length : -1
-  let end = (start + targetMatchLength)
-  if (groupMatch !== undefined) {
-    // Move the end up if it's capped by a trailing \r\n, this is so regions don't expand into
-    // the line below, and can be "pulled down" by editing the line below
-    if (match[groupIndex].lastIndexOf('\n') === targetMatchLength - 1) {
-      end -= 1
-
-      // .. for windows encodings of new lines
-      if (match[groupIndex].lastIndexOf('\r') === targetMatchLength - 2) {
-        end -= 1
-      }
-    }
-  }
-
-  return new monaco.Range(model.getPositionAt(start), model.getPositionAt(end))
-}
-
-function shiftBackOneCharacter (model, startLineNumber, startColumn, endLineNumber, endColumn) {
-  const range = new monaco.Range(startLineNumber, startColumn, startLineNumber, startColumn)
-  const unlessEqual = new monaco.Range(endLineNumber, endColumn, endLineNumber, endColumn)
+function shiftBackOneCharacter (model, start, end) {
+  const range = new monaco.Range(start.lineNumber, start.column, start.lineNumber, start.column)
+  const unlessEqual = new monaco.Range(end.lineNumber, end.column, end.lineNumber, end.column)
   if (range.equalsRange(unlessEqual)) {
     return range
   }
 
-  let line = range.line
-  let character = range.character - 1
+  let line = range.startLineNumber
+  let character = range.startColumn - 1
 
   if (character < 0) {
     line -= 1
-    character = lineAt(model, line).range.end.character
+    character = lineAt(model, line).range.endColumn
   }
 
-  return new monaco.Position(line, character)
+  const { lineNumber, column } = new monaco.Position(line, character)
+  return [lineNumber, column]
 }
 
 export function matchesToDescriptor (match, model) {
@@ -136,17 +114,23 @@ export function matchesToDescriptor (match, model) {
       decoratorContent: new monaco.Range(
         match.startHeader.rangeIncludingLineBreak.endLineNumber,
         match.startHeader.rangeIncludingLineBreak.endColumn,
-        shiftBackOneCharacter(
+        ...shiftBackOneCharacter(
           model,
-          tokenAfterCurrentBlock.range.startLineNumber,
-          tokenAfterCurrentBlock.range.startColumn,
-          match.startHeader.rangeIncludingLineBreak.endLineNumber,
-          match.startHeader.rangeIncludingLineBreak.endColumn,
+          {
+            lineNumber: tokenAfterCurrentBlock.range.startLineNumber,
+            column: tokenAfterCurrentBlock.range.startColumn
+          },
+          {
+            lineNumber: match.startHeader.rangeIncludingLineBreak.endLineNumber,
+            column: match.startHeader.rangeIncludingLineBreak.endColumn
+          },
         )
       ),
       content: new monaco.Range(
-        match.startHeader.rangeIncludingLineBreak.end,
-        tokenAfterCurrentBlock.range.start
+        match.startHeader.rangeIncludingLineBreak.endLineNumber,
+        match.startHeader.rangeIncludingLineBreak.endColumn,
+        tokenAfterCurrentBlock.range.startLineNumber,
+        tokenAfterCurrentBlock.range.startColumn,
       ),
       name: match.startHeader.text.substring(startHeaderMarker.length + 1)
     },
@@ -155,11 +139,26 @@ export function matchesToDescriptor (match, model) {
       return {
         header: currentTokenLine.range,
         decoratorContent: new monaco.Range(
-          currentTokenLine.rangeIncludingLineBreak.end,
-          MergeConflictParser.shiftBackOneCharacter(document, nextTokenLine.range.start, currentTokenLine.rangeIncludingLineBreak.end)),
+          currentTokenLine.rangeIncludingLineBreak.endLineNumber,
+          currentTokenLine.rangeIncludingLineBreak.endColumn,
+          ...shiftBackOneCharacter(
+            model,
+            {
+              lineNumber: nextTokenLine.range.startLineNumber,
+              column: nextTokenLine.range.startColumn,
+            },
+            {
+              lineNumber: currentTokenLine.rangeIncludingLineBreak.endLineNumber,
+              column: currentTokenLine.rangeIncludingLineBreak.endColumn,
+            }
+          )
+        ),
         content: new monaco.Range(
-          currentTokenLine.rangeIncludingLineBreak.end,
-          nextTokenLine.range.start),
+          currentTokenLine.rangeIncludingLineBreak.endLineNumber,
+          currentTokenLine.rangeIncludingLineBreak.endColumn,
+          nextTokenLine.range.startLineNumber,
+          nextTokenLine.range.startColumn,
+        ),
         name: currentTokenLine.text.substring(commonAncestorsMarker.length + 1)
       }
     }),
@@ -167,15 +166,33 @@ export function matchesToDescriptor (match, model) {
     incoming: {
       header: match.endFooter.range,
       decoratorContent: new monaco.Range(
-        match.splitter.rangeIncludingLineBreak.end,
-        shiftBackOneCharacter(model, match.endFooter.range.start, match.splitter.rangeIncludingLineBreak.end)
+        match.splitter.rangeIncludingLineBreak.endLineNumber,
+        match.splitter.rangeIncludingLineBreak.endColumn,
+        ...shiftBackOneCharacter(
+          model,
+          {
+            lineNumber: match.endFooter.range.startLineNumber,
+            column: match.endFooter.range.startColumn,
+          },
+          {
+            lineNumber: match.splitter.rangeIncludingLineBreak.endLineNumber,
+            column: match.splitter.rangeIncludingLineBreak.endColumn,
+          }
+        )
       ),
       content: new monaco.Range(
-        match.splitter.rangeIncludingLineBreak.end,
-        match.endFooter.range.start
+        match.splitter.rangeIncludingLineBreak.endLineNumber,
+        match.splitter.rangeIncludingLineBreak.endColumn,
+        match.endFooter.range.startLineNumber,
+        match.endFooter.range.startColumn,
       ),
       name: match.endFooter.text.substring(endFooterMarker.length + 1)
     },
-    range: new monaco.Range(match.startHeader.range.start, match.endFooter.rangeIncludingLineBreak.end)
+    range: new monaco.Range(
+      match.startHeader.range.startLineNumber,
+      match.startHeader.range.startColumn,
+      match.endFooter.rangeIncludingLineBreak.endLineNumber,
+      match.endFooter.rangeIncludingLineBreak.endColumn,
+    )
   }
 }
