@@ -1,5 +1,24 @@
 .current-conflict-header {
-  background-color: rgba(64, 200, 174, 0.5);  
+  background-color: rgba(64, 200, 174, 0.5);
+}
+
+.incoming-conflict-header {
+  background-color: rgba(64, 166, 255, 0.5);
+}
+
+.incoming-conflict-content {
+  background-color: rgba(64, 166, 255, 0.2);
+}
+
+.current-conflict-content {
+  background-color: rgba(64, 200, 174, 0.2);
+}
+
+.incoming-conflict-header-after-decoration {
+  &::after {
+    content: "传入的更改";
+    color: $text-color;
+  }
 }
 
 .current-conflict-header-after-decoration {
@@ -7,4 +26,16 @@
     content: "当前更改";
     color: $text-color;
   }
+}
+
+.conflict-header-widget {
+  &>a {
+    color: $text-color;
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+      color: rgba(64, 166, 255, 0.5);
+      text-decoration: underline; 
+    } 
+  }  
 }

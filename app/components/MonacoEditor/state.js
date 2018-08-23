@@ -159,10 +159,40 @@ class EditorInfo {
       return false
     }
 
-    for (const descriptor of descriptors) {
-      const { current, incoming } = descriptor
+    for (let index = 0; index < descriptors.length; index += 1) {
+      const { current, incoming, name, range: { startLineNumber, startColumn } } = descriptors[index]
       // render viewzone
-      // @TODO
+      this.monacoEditor.changeViewZones((changeAccessor) => {
+        const domNode = document.createElement('div')
+        changeAccessor.addZone({
+          afterLineNumber: startLineNumber - 1,
+          heightInLines: 1,
+          domNode
+        })
+      })
+
+      // render widget
+      const headerWidget = {
+        domNode: null,
+        allowEditorOverflow: true,
+        getId: () => `conflict-header-widget-${index}`,
+        getDomNode: () => {
+          if (!this.domNode) {
+            this.domNode = document.createElement('span')
+            this.domNode.innerHTML = '<a>采用当前更改</a> | <a>采用传入的更改</a> | <a>保留双方更改</a>'
+            this.domNode.className = 'conflict-header-widget'
+          }
+          return this.domNode
+        },
+        getPosition: () => ({
+          position: {
+            lineNumber: startLineNumber - 1,
+            column: 1,
+          },
+          preference: [monaco.editor.ContentWidgetPositionPreference.BELOW]
+        })
+      }
+      this.monacoEditor.addContentWidget(headerWidget)
       // render current and incoming
       this.applyCurrentAndIncomingDescriptor(current, 'current')
       this.applyCurrentAndIncomingDescriptor(incoming, 'incoming')
@@ -172,20 +202,24 @@ class EditorInfo {
   applyCurrentAndIncomingDescriptor = (descriptor, type) => {
     const { header, name, content, decoratorContent } = descriptor
     // render header
-    console.log(header)
-    // console.log(name)
-    // console.log(content)
-    // console.log(decoratorContent)
     const headerDecoration = {
       range: header,
       options: {
         isWholeLine: true,
-        className: `${type}-conflict-header`,
-        afterContentClassName: `${type}-conflict-header-after-decoration`,
+        className: `.${type}-conflict-header`,
+        afterContentClassName: `.${type}-conflict-header-after-decoration`,
       }
     }
-    console.log(headerDecoration)
     this.monacoEditor.deltaDecorations([], [headerDecoration])
+    // render content
+    const contentDecoration = {
+      range: decoratorContent,
+      options: {
+        isWholeLine: true,
+        className: `.${type}-conflict-content`,
+      }
+    }
+    this.monacoEditor.deltaDecorations([], [contentDecoration])
   }
 
   @computed get mode () {
