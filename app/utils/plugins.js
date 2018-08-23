@@ -19,7 +19,6 @@ export const PluginRegistry = {
     return Object.values(this._plugins).filter(value => value.pkgId === pkgId)
   },
   findAllByType (loadType) {
-
     return Object.values(this._plugins).filter(value => value.loadType === loadType)
   }
 }
