@@ -21,3 +21,8 @@ export const CONTAINERS = {
 export const TERMINAL = {
   ENV: 'TERMINAL.ENV'
 }
+
+// 打开特定文件的编辑器插件
+export const EDITOR = {
+  CENTER: 'EDITOR.CENTER'
+}
