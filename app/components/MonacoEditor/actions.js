@@ -35,7 +35,8 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
   } else {
     const languageClient = LanguageState.clients.get(config.mainLanguage)
     const fileName = resource.path.split('/').pop()
-    const tabItem = TabState.tabs.get(`fake_${fileName}`)
+    const name = fileName.endsWith('class') ? `${fileName.substr(0, fileName.length - 5)}java` : fileName
+    const tabItem = TabState.tabs.get(`fake_${name}`)
     let formattedUri
     if (!resource._formatted) {
       formattedUri = resource.toString()
@@ -47,7 +48,6 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
     } else {
       languageClient.fetchJavaClassContent({ uri: formattedUri })
         .then((data) => {
-          const name = fileName.endsWith('class') ? `${fileName.substr(0, fileName.length - 5)}java` : fileName
           createTab({
             title: name,
             id: `fake_${name}`,
