@@ -7,12 +7,51 @@ import HtmlEditor from './HtmlEditor'
 import MarkDownEditor from './MarkDownEditor'
 import UnknownEditor from 'components/Editor/components/UnknownEditor'
 import ImageEditor from 'components/Editor/components/ImageEditor'
+import pluginStore from '../../Plugins/store'
+
+const editorSet = [
+  {
+    editorType: 'htmlEditor',
+    editor: HtmlEditor,
+  },
+  {
+    editorType: 'markdownEditor',
+    editor: MarkDownEditor,
+  },
+  {
+    editorType: 'imageEditor',
+    editor: ImageEditor,
+  },
+  {
+    editorType: 'textEditor',
+    editor: CodeEditor,
+  },
+  {
+    editorType: 'unknownEditor',
+    editor: UnknownEditor,
+  },
+];
+
+function matchEditorByContentType(editorType, contentType) {
+  for (let i = 0, n = editorSet.length; i < n; i++) {
+    const set = editorSet[i];
+    if (set.editorType) {
+      if (set.editorType === editorType) {
+        return set.editor;
+      }
+    } else if (set.mime) {
+      if (set.mime.includes(contentType)) {
+        return set.editor;
+      }
+    }
+  }
+  return UnknownEditor;
+}
+// 编辑器插件数组
+let pluginArray = [];
 
 const EditorWrapper = observer(({ tab, active }) => {
-  // if (!active) return null
-  const { editor, editorInfo } = tab
-  // console.log(editorInfo)
-  const editorType = editorInfo.editorType || 'default'
+  // loading
   if (tab.file && tab.file.isEditorLoading) {
     return (
       <div className="editor-spinner">
@@ -20,25 +59,24 @@ const EditorWrapper = observer(({ tab, active }) => {
       </div>
     )
   }
-  const file = editor.file || {}
-  // key is crutial here, it decides whether
-  // the component should re-construct or
-  // keep using the existing instance.
-  const key = `editor_${file.path}`
-  switch (editorType) {
-    case 'htmlEditor':
-      return React.createElement(HtmlEditor, { editor, editorInfo, key, tab, active, language: '' })
-    case 'textEditor':
-      return React.createElement(CodeEditor, { editor, editorInfo, key, tab, active, language: config.mainLanguage })
-    case 'markdownEditor':
-      return React.createElement(MarkDownEditor, { editor, editorInfo, key, tab, active, language: config.mainLanguage })
-    case 'imageEditor':
-      return React.createElement(ImageEditor, { path: file.path, key, tab, active })
-    case 'unknownEditor':
-      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab, active })
-    default:
-      return React.createElement(UnknownEditor, { path: file.path, size: file.size, key, tab, active })
+  const { editor, editorInfo } = tab;
+  const file = editor.file || {};
+  // 编辑器插件
+  if (!pluginArray.length) {
+    pluginArray = pluginStore.plugins.values().filter(plugin => plugin.label.mime);
+    for (let i = 0, n = pluginArray.length; i < n; i++) {
+      const plugin = pluginArray[i];
+      editorSet.unshift({
+        mime: plugin.label.mime,
+        editor: plugin.app,
+      });
+    }
   }
+  // key is crutial here, it decides whether the component should re-construct
+  // or keep using the existing instance.
+  const key = `editor_${file.path}`;
+  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType);
+  return React.createElement(editorElement, { editor, editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
 })
 
 EditorWrapper.propTypes = {

@@ -1,6 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
+import mime from 'mime-types'
 
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
@@ -26,7 +27,7 @@ const typeDetect = (title, types) => {
 class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
-    this.contentType = props.contentType || 'TEXT'
+    this.contentType = props.contentType || mime.lookup(props.filePath)
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
@@ -301,7 +302,7 @@ class EditorInfo {
   // @computed get mode () {
   //   if (!this.options.mode) return ''
 
-  //   const modeinfo = 
+  //   const modeinfo =
   // }
 }
 
