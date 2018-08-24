@@ -10,16 +10,9 @@ import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { toDefinition } from 'components/MonacoEditor/actions'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
+import config from 'config'
 
 import initialOptions from './monacoDefaultOptions'
-import {
-  cacheConflicts,
-  hasCache,
-  matchesToDescriptor,
-  containsConflict,
-  scanDocument,
-  Colors,
-} from './mergeConflict'
 
 const state = observable({
   entities: observable.map({}),
@@ -35,13 +28,10 @@ class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
     this.contentType = props.contentType || 'TEXT'
-    this.containsConflict = false
-    this.conflicts = null
-    this.descriptors = null
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
-    this.uri = this.filePath || `inmemory://model/${this.id}`
+    this.uri = `file://${config.__WORKSPACE_URI__}${props.filePath}` || `inmemory://model/${this.id}`
     if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
@@ -76,17 +66,6 @@ class EditorInfo {
       const content = change.newValue || ''
       if (content !== monacoEditor.getValue()) {
         monacoEditor.setValue(content)
-
-        if (!this.containsConflict) {
-          this.containsConflict = true
-          if (hasCache(this.filePath)) {
-            this.conflicts = cacheConflicts.get(this.filePath)
-          } else {
-            this.conflicts = scanDocument(this.monacoEditor.getModel())
-            cacheConflicts.set(this.filePath, this.conflicts)
-          }
-          this.applyConflictsDecoration(this.conflicts)
-        }
       }
     }))
     /**
@@ -113,49 +92,6 @@ class EditorInfo {
       }
     })
 
-    // model change event
-    monacoEditor.onDidChangeModel(() => {
-      if (this.containsConflict && this.conflicts) {
-        this.applyConflictsDecoration(this.conflicts)
-      }
-    })
-
-    // for merge
-    monacoEditor.onMouseDown((e) => {
-      const { target: { element, type, detail } } = e
-      // CONTENT_WIDGET https://github.com/Microsoft/monaco-editor/blob/master/monaco.d.ts#L3611:9
-      if (type === 9 && element) {
-        const conflictIndex = detail.split('conflict-header-widget-')[1]
-        const descriptor = this.descriptors[conflictIndex]
-        if (!descriptor) return
-        const { current, incoming } = descriptor
-        const textModel = this.monacoEditor.getModel()
-        switch (element.className) {
-          case 'accept-current': {
-            const { content } = incoming
-            textModel.pushEditOperations([], [{
-              range: content,
-              text: '',
-              forceMoveMarkers: false,
-            }])
-            break
-          }
-          case 'accept-incoming': {
-            const { content } = current
-            textModel.pushEditOperations([], [{
-              range: content,
-              text: '',
-              forceMoveMarkers: false,
-            }])
-            break
-          }
-          case 'accept-both':
-          default:
-            break
-        }
-      }
-    })
-
     if (props.selection) {
       const { startLineNumber, startColumn } = props.selection
       const selection = new monaco.Selection(startLineNumber, startColumn, startLineNumber, startColumn)
@@ -170,17 +106,6 @@ class EditorInfo {
     if (props.debug) {
       this.setDebugDeltaDecorations()
     }
-
-    if (containsConflict(this.content)) {
-      this.containsConflict = true
-      if (hasCache(this.filePath)) {
-        this.conflicts = cacheConflicts.get(this.filePath)
-      } else {
-        this.conflicts = scanDocument(this.monacoEditor.getModel())
-        cacheConflicts.set(this.filePath, this.conflicts)
-      }
-      this.applyConflictsDecoration(this.conflicts)
-    }
   }
 
   @observable languageMode = ''
@@ -190,83 +115,6 @@ class EditorInfo {
 
   setCursor (...args) {
     // TODO
-  }
-
-  applyConflictsDecoration = (conflicts) => {
-    if (!conflicts || conflicts.length === 0) return false
-    const model = this.monacoEditor.getModel()
-    const descriptors = conflicts.map(match => matchesToDescriptor(match, model))
-
-    if (!descriptors || descriptors.length === 0) {
-      // none conflict
-      return false
-    }
-
-    this.descriptors = descriptors
-    for (let index = 0; index < descriptors.length; index += 1) {
-      const { current, incoming, name, range: { startLineNumber, startColumn } } = descriptors[index]
-      // render viewzone
-      this.monacoEditor.changeViewZones((changeAccessor) => {
-        const domNode = document.createElement('div')
-        changeAccessor.addZone({
-          afterLineNumber: startLineNumber - 1,
-          heightInLines: 1,
-          domNode
-        })
-      })
-
-      // render widget
-      const headerWidget = {
-        domNode: null,
-        allowEditorOverflow: true,
-        getId: () => `conflict-header-widget-${index}`,
-        getDomNode: () => {
-          if (!this.domNode) {
-            this.domNode = document.createElement('span')
-            this.domNode.innerHTML = `
-            <a class="accept-current">采用当前更改</a> 
-            | <a class="accept-incoming">采用传入的更改</a> 
-            | <a class="accept-both">保留双方更改</a>`
-            this.domNode.className = 'conflict-header-widget'
-          }
-          return this.domNode
-        },
-        getPosition: () => ({
-          position: {
-            lineNumber: startLineNumber - 1,
-            column: 1,
-          },
-          preference: [monaco.editor.ContentWidgetPositionPreference.BELOW]
-        })
-      }
-      this.monacoEditor.addContentWidget(headerWidget)
-      // render current and incoming
-      this.applyCurrentAndIncomingDescriptor(current, 'current')
-      this.applyCurrentAndIncomingDescriptor(incoming, 'incoming')
-    }
-  }
-
-  applyCurrentAndIncomingDescriptor = (descriptor, type) => {
-    const { header, name, content, decoratorContent } = descriptor
-    // render header
-    const headerDecoration = {
-      range: header,
-      options: {
-        isWholeLine: true,
-        className: `.${type}-conflict-header`,
-        afterContentClassName: `.${type}-conflict-header-after-decoration`,
-      }
-    }
-    this.monacoEditor.deltaDecorations([], [headerDecoration])
-    // render content
-    const contentDecoration = {
-      range: decoratorContent,
-      options: {
-        isWholeLine: true,
-        className: `.${type}-conflict-content`,
-      }
-    }
-    this.monacoEditor.deltaDecorations([], [contentDecoration])
   }
 
   @computed get mode () {

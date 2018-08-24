@@ -1,7 +1,5 @@
 import * as monaco from 'monaco-editor'
 
-export const cacheConflicts = new Map()
-
 const startHeaderMarker = '<<<<<<<'
 const commonAncestorsMarker = '|||||||'
 const splitterMarker = '======='

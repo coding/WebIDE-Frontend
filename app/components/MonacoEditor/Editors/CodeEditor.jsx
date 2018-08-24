@@ -1,6 +1,7 @@
 // import React from 'react'
 import addMixinMechanism from './addMixinMechanism'
 import MonacoEditor from '../MonacoReact/BaseEditor'
+import MergeConflictMinxin from '../mergeConflictMinxin'
 
 class CodeEditor extends MonacoEditor {
   componentWillReceiveProps (nextProps) {
@@ -14,5 +15,7 @@ class CodeEditor extends MonacoEditor {
 }
 
 addMixinMechanism(CodeEditor, MonacoEditor)
+
+CodeEditor.use(MergeConflictMinxin)
 
 export default CodeEditor
