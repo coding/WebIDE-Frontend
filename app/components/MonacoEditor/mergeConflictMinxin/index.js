@@ -50,7 +50,11 @@ const MergeConflictMinxin = {
   applyConflictsDecoration (descriptors) {
     const { monacoEditor } = this.editor
     for (let index = 0; index < descriptors.length; index += 1) {
-      const { current, incoming, range: { startLineNumber } } = descriptors[index]
+      const {
+        current,
+        incoming,
+        range: { startLineNumber }
+      } = descriptors[index]
       monacoEditor.changeViewZones((changeAccessor) => {
         const domNode = document.createElement('div')
         if (this.viewzones[index]) {
@@ -82,13 +86,13 @@ const MergeConflictMinxin = {
         getPosition: () => ({
           position: {
             lineNumber: startLineNumber - 1,
-            column: 1,
+            column: 1
           },
           preference: [monaco.editor.ContentWidgetPositionPreference.BELOW]
         })
       }
 
-      if (!!this.headerWidgets[index]) {
+      if (this.headerWidgets[index]) {
         monacoEditor.removeContentWidget(this.headerWidgets[index])
       }
       monacoEditor.addContentWidget(headerWidget)
@@ -102,26 +106,37 @@ const MergeConflictMinxin = {
     const { monacoEditor } = this.editor
     const { header, name, content, decoratorContent } = descriptor
     // render header
-    const headerDecoration = [{
-      range: header,
-      options: {
-        isWholeLine: true,
-        className: `.${type}-conflict-header`,
-        afterContentClassName: `.${type}-conflict-header-after-decoration`,
+    const headerDecoration = [
+      {
+        range: header,
+        options: {
+          isWholeLine: true,
+          className: `.${type}-conflict-header`,
+          afterContentClassName: `.${type}-conflict-header-after-decoration`
+        }
       }
-    }]
+    ]
     const oldHeaderDecoration = this.headerDecorations[index] && this.headerDecorations[index][type]
-    this.headerDecorations[index][type] = monacoEditor.deltaDecorations(oldHeaderDecoration || [], headerDecoration)
+    this.headerDecorations[index][type] = monacoEditor.deltaDecorations(
+      oldHeaderDecoration || [],
+      headerDecoration
+    )
     // render content
-    const contentDecoration = [{
-      range: decoratorContent,
-      options: {
-        isWholeLine: true,
-        className: `.${type}-conflict-content`,
+    const contentDecoration = [
+      {
+        range: decoratorContent,
+        options: {
+          isWholeLine: true,
+          className: `.${type}-conflict-content`
+        }
       }
-    }]
-    const oldContentDecoration = this.contentDecorations[index] && this.contentDecorations[index][type]
-    this.contentDecorations[index][type] = monacoEditor.deltaDecorations(oldContentDecoration || [], contentDecoration)
+    ]
+    const oldContentDecoration =
+      this.contentDecorations[index] && this.contentDecorations[index][type]
+    this.contentDecorations[index][type] = monacoEditor.deltaDecorations(
+      oldContentDecoration || [],
+      contentDecoration
+    )
   }
 }
 
