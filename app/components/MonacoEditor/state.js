@@ -36,6 +36,8 @@ class EditorInfo {
     this.id = props.id || uniqueId('monaco_editor_')
     this.contentType = props.contentType || 'TEXT'
     this.containsConflict = false
+    this.conflicts = null
+    this.descriptors = null
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
@@ -77,14 +79,13 @@ class EditorInfo {
 
         if (!this.containsConflict) {
           this.containsConflict = true
-          let conflicts = null
           if (hasCache(this.filePath)) {
-            conflicts = cacheConflicts.get(this.filePath)
+            this.conflicts = cacheConflicts.get(this.filePath)
           } else {
-            conflicts = scanDocument(this.monacoEditor.getModel())
-            cacheConflicts.set(this.filePath, conflicts)
+            this.conflicts = scanDocument(this.monacoEditor.getModel())
+            cacheConflicts.set(this.filePath, this.conflicts)
           }
-          this.applyConflictsDecoration(conflicts)
+          this.applyConflictsDecoration(this.conflicts)
         }
       }
     }))
@@ -112,6 +113,49 @@ class EditorInfo {
       }
     })
 
+    // model change event
+    monacoEditor.onDidChangeModel(() => {
+      if (this.containsConflict && this.conflicts) {
+        this.applyConflictsDecoration(this.conflicts)
+      }
+    })
+
+    // for merge
+    monacoEditor.onMouseDown((e) => {
+      const { target: { element, type, detail } } = e
+      // CONTENT_WIDGET https://github.com/Microsoft/monaco-editor/blob/master/monaco.d.ts#L3611:9
+      if (type === 9 && element) {
+        const conflictIndex = detail.split('conflict-header-widget-')[1]
+        const descriptor = this.descriptors[conflictIndex]
+        if (!descriptor) return
+        const { current, incoming } = descriptor
+        const textModel = this.monacoEditor.getModel()
+        switch (element.className) {
+          case 'accept-current': {
+            const { content } = incoming
+            textModel.pushEditOperations([], [{
+              range: content,
+              text: '',
+              forceMoveMarkers: false,
+            }])
+            break
+          }
+          case 'accept-incoming': {
+            const { content } = current
+            textModel.pushEditOperations([], [{
+              range: content,
+              text: '',
+              forceMoveMarkers: false,
+            }])
+            break
+          }
+          case 'accept-both':
+          default:
+            break
+        }
+      }
+    })
+
     if (props.selection) {
       const { startLineNumber, startColumn } = props.selection
       const selection = new monaco.Selection(startLineNumber, startColumn, startLineNumber, startColumn)
@@ -129,14 +173,13 @@ class EditorInfo {
 
     if (containsConflict(this.content)) {
       this.containsConflict = true
-      let conflicts = null
       if (hasCache(this.filePath)) {
-        conflicts = cacheConflicts.get(this.filePath)
+        this.conflicts = cacheConflicts.get(this.filePath)
       } else {
-        conflicts = scanDocument(this.monacoEditor.getModel())
-        cacheConflicts.set(this.filePath, conflicts)
+        this.conflicts = scanDocument(this.monacoEditor.getModel())
+        cacheConflicts.set(this.filePath, this.conflicts)
       }
-      this.applyConflictsDecoration(conflicts)
+      this.applyConflictsDecoration(this.conflicts)
     }
   }
 
@@ -159,6 +202,7 @@ class EditorInfo {
       return false
     }
 
+    this.descriptors = descriptors
     for (let index = 0; index < descriptors.length; index += 1) {
       const { current, incoming, name, range: { startLineNumber, startColumn } } = descriptors[index]
       // render viewzone
@@ -179,7 +223,10 @@ class EditorInfo {
         getDomNode: () => {
           if (!this.domNode) {
             this.domNode = document.createElement('span')
-            this.domNode.innerHTML = '<a>采用当前更改</a> | <a>采用传入的更改</a> | <a>保留双方更改</a>'
+            this.domNode.innerHTML = `
+            <a class="accept-current">采用当前更改</a> 
+            | <a class="accept-incoming">采用传入的更改</a> 
+            | <a class="accept-both">保留双方更改</a>`
             this.domNode.className = 'conflict-header-widget'
           }
           return this.domNode
