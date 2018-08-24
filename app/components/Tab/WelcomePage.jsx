@@ -45,8 +45,8 @@ class WelcomePage extends Component {
           <ul className='demo-links'>
             {/* <li><a href='https://coding.net/help/doc/webide/online-editing.html' target='_blank' rel='noopener noreferrer'>HTML5 应用</a></li> */}
             {/* <li><a href='https://coding.net/help/doc/webide/compile.html' target='_blank' rel='noopener noreferrer'>Python 人工智能</a></li> */}
-            <li><a href='/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li>
-            <li><a href='/ws/?projectName=JavaDemo&open=README.md&templateId=4' target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
+            {/* <li><a href='/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li> */}
+            {/* <li><a href='/ws/?projectName=JavaDemo&open=README.md&templateId=4' target='_blank' rel='noopener noreferrer'>Java 应用</a></li> */}
             {/* <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
                 // ownerName: 'tanhe123',
