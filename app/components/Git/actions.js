@@ -309,7 +309,12 @@ export function mergeBranch (branch) {
       dismissModal();
     }
   }).then((res) => {
-    if (res && res.status === 'CONFLICTING') {
+    if (!res) {
+      return;
+    }
+    if (res.status === 'FAILED') {
+      notify({ message: 'Merge failed.' });
+    } else if (res.status === 'CONFLICTING') {
       dismissModal()
       api.gitStatus().then(({ files, clean }) => {
         files = _.filter(files, file => file.status == 'CONFLICTION')
