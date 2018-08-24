@@ -33,11 +33,14 @@ const MergeConflictMinxin = {
   },
   contentContentHandler () {
     const textModel = this.editor.monacoEditor.getModel()
-    if (!containsConflict(textModel.getValue())) return
     const conflicts = scanDocument(textModel)
-    if (!!conflicts && !isEqual(conflicts, this.conflicts)) {
+
+    if (!isEqual(conflicts, this.conflicts) && conflicts.length > 0) {
       this.conflicts = conflicts
       this.matchesToDescriptors.bind(this)()
+    } else {
+      this.clearDecoration.bind(this)()
+      this.conflicts = conflicts
     }
   },
   matchesToDescriptors () {
@@ -137,6 +140,59 @@ const MergeConflictMinxin = {
       oldContentDecoration || [],
       contentDecoration
     )
+  },
+  clearDecoration (index) {
+    const { monacoEditor } = this.editor
+    if (this.headerWidgets && this.headerWidgets.length > 0) {
+      if (index) {
+        monacoEditor.removeContentWidget(this.headerWidgets[index])
+        this.headerWidgets[index] = undefined
+      } else {
+        this.headerWidgets.forEach(widget => monacoEditor.removeContentWidget(widget))
+        this.headerWidgets = []
+      }
+    }
+
+    if (this.viewzones && this.viewzones.length > 0) {
+      if (index) {
+        monacoEditor.changeViewZones((changeAccessor) => {
+          changeAccessor.removeZone(this.viewzones[index])
+          this.viewzones[index] = undefined
+        })
+      } else {
+        monacoEditor.changeViewZones((changeAccessor) => {
+          this.viewzones.forEach(changeAccessor.removeZone)
+        })
+        this.viewzones = []
+      }
+    }
+
+    if (this.headerDecorations && this.headerDecorations.length > 0) {
+      if (index) {
+      } else {
+        this.headerDecorations.forEach((decoration) => {
+          const { current, incoming } = decoration
+          if (current || incoming) {
+            monacoEditor.deltaDecorations([...current, ...incoming], [])
+          }
+        })
+        this.headerDecorations = [{}, {}]
+      }
+    }
+
+    if (this.contentDecorations && this.contentDecorations.length > 0) {
+      if (index) {
+
+      } else {
+        this.contentDecorations.forEach((decoration) => {
+          const { current, incoming } = decoration
+          if (current || incoming) {
+            monacoEditor.deltaDecorations([...current, ...incoming], [])
+          }
+        })
+        this.contentDecorations = [{}, {}]
+      }
+    }
   }
 }
 
