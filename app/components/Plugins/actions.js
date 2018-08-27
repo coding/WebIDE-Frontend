@@ -193,7 +193,7 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
   const childrenArray = Array.isArray(children) ? children : [children]
   childrenArray.forEach((child) => {
     // children 的 shape
-    const { position, key, label, view, instanceId, status } = child
+    const { position, key, label, view, app, instanceId, status } = child
     const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
 
     store.plugins.set(generateViewId, observable({
@@ -202,6 +202,7 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
       position,
       key,
       label,
+      app,
       status: status || observable.map({}),
       actions: observable.ref(label.actions || {})
     }))
@@ -244,13 +245,20 @@ export const pluginUnRegister = registerAction(PLUGIN_UNREGISTER_VIEW,
 //  */
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
-  const extension = PluginRegistry.get(label.key)
-  const view = label.key && getComponent(extension || {}, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
+  const extension = PluginRegistry.get(key)
+  const view = key && getComponent(extension || {}, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
+  let app;
+  Object.values(PluginRegistry._plugins).forEach(plugin => {
+    if (label.mime && key === plugin.key) {
+      app = plugin.app;
+    }
+  });
 
   return pluginRegister({
     position,
     key,
     label,
-    view
+    view,
+    app,
   }, callback)
 }

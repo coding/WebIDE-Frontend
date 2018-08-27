@@ -124,7 +124,7 @@ class Initialize extends Component {
         info = (
           <div className='loading-info warning'>Error</div>
         )
-      } else if (state.errorCode === 403 && state.status === 'RequestColl') {
+      } else if ((state.errorCode === 404 || state.errorCode === 403) && state.status === 'RequestColl') {
         errorInfo = null
         info = (
           <div className='loading-info'>

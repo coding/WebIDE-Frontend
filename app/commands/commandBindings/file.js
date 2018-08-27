@@ -48,22 +48,6 @@ function createFolderAtPath (path) {
   )
 }
 
-// export function openFile (obj, callback) {
-//   if (!obj.path) return
-//   // 做一些encoding的调度
-//   if (FileState.initData.get('_init')) {
-//     when(() => !FileState.initData.get('_init'), () => {
-//       const { encoding } = FileState.initData.get(obj.path) || {}
-//       openFileWithEncoding({ ...obj, encoding, callback })
-//       FileState.initData.set(obj.path, {})
-//     })
-//   } else {
-//     const { encoding } = FileState.initData.get(obj.path) || {}
-//     openFileWithEncoding({ ...obj, encoding, callback })
-//     FileState.initData.set(obj.path, {})
-//   }
-// }
-
 const getMIME = (path) => {
   let contentType = mime.lookup(path);
   if (contentType) {
@@ -155,7 +139,7 @@ export function initOpenFile(tabs, tabGroups) {
         const index = tabs.findIndex(tab => tab.id === activeTabId);
         if (index >= 0) {
           const { path, contentType } = tabs[index];
-          openFile({ 
+          openFile({
             path,
             contentType
           });
