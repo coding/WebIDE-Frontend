@@ -1,6 +1,22 @@
 import { isEqual } from 'lodash'
 import { scanDocument, matchesToDescriptor, containsConflict } from './mergeConflictParser'
 
+const CONTENT_WIDGET = 9
+const overviewRulerColors = {
+  current: 'rgba(64, 200, 174, 0.5)',
+  incoming: 'rgba(64, 166, 255, 0.5)'
+}
+
+function getLanguages () {
+  const languages = []
+  for (const language of monaco.languages.getLanguages().map(l => l.id)) {
+    if (languages.indexOf(language) === -1) {
+      languages.push(language)
+    }
+  }
+  return languages
+}
+
 const MergeConflictMinxin = {
   key: 'mergeConflict',
   componentWillMount () {
@@ -9,6 +25,7 @@ const MergeConflictMinxin = {
     this.headerDecorations = [{}, {}]
     this.contentDecorations = [{}, {}]
     this.headerWidgets = []
+    this.descriptors = []
     const { monacoEditor } = this.editor
     if (!monacoEditor) {
       throw new Error("Can'\t find editor.")
@@ -18,7 +35,7 @@ const MergeConflictMinxin = {
     if (!textModel) {
       monacoEditor.onDidChangeModel(() => {
         const newModel = monacoEditor.getModel()
-        newModel.onDidChangeContent(this.contentContentHandler.bind(this))
+        newModel.onDidChangeContent(this.contentChangeHandler.bind(this))
       })
     } else {
       const content = textModel.getValue()
@@ -28,26 +45,140 @@ const MergeConflictMinxin = {
           this.matchesToDescriptors.bind(this)()
         }
       }
-      textModel.onDidChangeContent(this.contentContentHandler.bind(this))
+      textModel.onDidChangeContent(this.contentChangeHandler.bind(this))
+    }
+
+    monacoEditor.onMouseDown(this.mouseDownHandler.bind(this))
+  },
+  componentDidMount () {
+    if (this.conflicts && this.conflicts.length > 0) {
+      this.registerCodeLensProvider.bind(this)(this.conflicts)
     }
   },
-  contentContentHandler () {
+  componentWillUnMount () {
+    console.log('unmount')
+  },
+  mouseDownHandler (e) {
+    const { monacoEditor } = this.editor
+    if (e.target.type === CONTENT_WIDGET) {
+      const className = e.target.element.className
+      if (className.startsWith('accept-')) {
+        const conflictIndex = e.target.detail.split('-').pop()
+        const currentConflict = this.descriptors[conflictIndex]
+        const textModel = monacoEditor.getModel()
+        switch (className) {
+          case 'accept-current': {
+            const { incoming, current } = currentConflict
+            const operations = [
+              { range: current.header, text: '' },
+              { range: incoming.header, text: '' },
+              { range: incoming.content, text: '' }
+            ]
+            textModel.pushEditOperations([], operations)
+            // const incomingRange = 
+            break
+          }
+            // console.log()
+          case 'accept-incoming':
+          case 'accept-both':
+          default:
+            break
+        }
+      }
+    }
+  },
+  contentChangeHandler () {
     const textModel = this.editor.monacoEditor.getModel()
     const conflicts = scanDocument(textModel)
+    // if (!isEqual(this.conflicts, conflicts)) {
+    //   if (this.providers && this.providers.length > 0) {
+    //     console.log('dispose')
+    //     this.providers.forEach((p) => p.dispose())
+    //     this.providers = []
+    //     this.registerCodeLensProvider.bind(this)(conflicts)
+    //   }
+    // }
 
-    if (!isEqual(conflicts, this.conflicts) && conflicts.length > 0) {
+    if (conflicts.length > 0) {
       this.conflicts = conflicts
       this.matchesToDescriptors.bind(this)()
-    } else {
-      this.clearDecoration.bind(this)()
-      this.conflicts = conflicts
     }
+  },
+  registerCodeLensProvider () {
+    const { monacoEditor } = this.editor
+    const textModel = monacoEditor.getModel()
+    const providers = []
+    const acceptCurrentCommand = monacoEditor.addCommand(-1, (e) => {
+      console.log(e)
+    }, '')
+    const acceptIncomingCommand = monacoEditor.addCommand(-1, (e) => {
+      console.log(e)
+    }, '')
+    const acceptBothCommand = monacoEditor.addCommand(-1, (e) => {
+      console.log(e)
+    }, '')
+    const codeLensProvider = {
+      provideCodeLenses: (model, token) => {
+        const conflicts = scanDocument(textModel)
+        if (!conflicts || conflicts.length === 0 || textModel.uri.path !== model.uri.path) {
+          return null
+        }
+        let codelens = []
+        conflicts.forEach((conflict) => {
+          const range = {
+            startLineNumber: conflict.startHeader.lineNumber,
+            startColumn: conflict.startHeader.lineNumber,
+            endLineNumber: conflict.startHeader.lineNumber + 1,
+            endColumn: conflict.startHeader.lineNumber
+          }
+          codelens = codelens.concat([
+            {
+              range,
+              id: 0,
+              command: {
+                id: acceptCurrentCommand,
+                title: '采用当前更改',
+                arguments: ['known-conflict', conflict]
+              }
+            },
+            {
+              range,
+              id: 1,
+              command: {
+                id: acceptIncomingCommand,
+                title: '采用传入更改',
+                arguments: ['known-conflict', conflict]
+              }
+            },
+            {
+              range,
+              id: 2,
+              command: {
+                id: acceptBothCommand,
+                title: '保留双方更改',
+                arguments: ['known-conflict', conflict]
+              }
+            }
+          ])
+        })
+        return codelens
+      },
+      resolveCodeLens: (model, codeLens, token) => {
+        return codeLens
+      }
+    }
+    for (const language of getLanguages()) {
+      providers.push(
+        monaco.languages.registerCodeLensProvider(language, codeLensProvider)
+      )
+    }
+    this.providers = providers
   },
   matchesToDescriptors () {
     const textModel = this.editor.monacoEditor.getModel()
-    const descriptors = this.conflicts.map(match => matchesToDescriptor(match, textModel))
-    if (descriptors && descriptors.length > 0) {
-      this.applyConflictsDecoration.bind(this)(descriptors)
+    this.descriptors = this.conflicts.map(match => matchesToDescriptor(match, textModel))
+    if (this.descriptors && this.descriptors.length > 0) {
+      this.applyConflictsDecoration.bind(this)(this.descriptors)
     }
   },
   applyConflictsDecoration (descriptors) {
@@ -58,48 +189,6 @@ const MergeConflictMinxin = {
         incoming,
         range: { startLineNumber }
       } = descriptors[index]
-      monacoEditor.changeViewZones((changeAccessor) => {
-        const domNode = document.createElement('div')
-        if (this.viewzones[index]) {
-          changeAccessor.removeZone(this.viewzones[index])
-        }
-        const zoneId = changeAccessor.addZone({
-          afterLineNumber: startLineNumber - 1,
-          heightInLines: 1,
-          domNode
-        })
-        this.viewzones[index] = zoneId
-      })
-
-      const headerWidget = {
-        domNode: null,
-        allowEditorOverflow: true,
-        getId: () => `conflict-header-widget-${index}`,
-        getDomNode: () => {
-          if (!this.domNode) {
-            this.domNode = document.createElement('span')
-            this.domNode.innerHTML = `
-            <a class="accept-current">采用当前更改</a> 
-            | <a class="accept-incoming">采用传入的更改</a> 
-            | <a class="accept-both">保留双方更改</a>`
-            this.domNode.className = 'conflict-header-widget'
-          }
-          return this.domNode
-        },
-        getPosition: () => ({
-          position: {
-            lineNumber: startLineNumber - 1,
-            column: 1
-          },
-          preference: [monaco.editor.ContentWidgetPositionPreference.BELOW]
-        })
-      }
-
-      if (this.headerWidgets[index]) {
-        monacoEditor.removeContentWidget(this.headerWidgets[index])
-      }
-      monacoEditor.addContentWidget(headerWidget)
-      this.headerWidgets[index] = headerWidget
 
       this.applyCurrentAndIncomingDescriptor.bind(this)(current, 'current', index)
       this.applyCurrentAndIncomingDescriptor.bind(this)(incoming, 'incoming', index)
@@ -115,7 +204,12 @@ const MergeConflictMinxin = {
         options: {
           isWholeLine: true,
           className: `.${type}-conflict-header`,
-          afterContentClassName: `.${type}-conflict-header-after-decoration`
+          afterContentClassName: `.${type}-conflict-header-after-decoration`,
+          overviewRuler: {
+            color: overviewRulerColors[type],
+            darkColor: overviewRulerColors[type],
+            position: 4
+          }
         }
       }
     ]
@@ -130,7 +224,12 @@ const MergeConflictMinxin = {
         range: decoratorContent,
         options: {
           isWholeLine: true,
-          className: `.${type}-conflict-content`
+          className: `.${type}-conflict-content`,
+          overviewRuler: {
+            color: overviewRulerColors[type],
+            darkColor: overviewRulerColors[type],
+            position: 4
+          }
         }
       }
     ]
@@ -145,10 +244,12 @@ const MergeConflictMinxin = {
     const { monacoEditor } = this.editor
     if (this.headerWidgets && this.headerWidgets.length > 0) {
       if (index) {
-        monacoEditor.removeContentWidget(this.headerWidgets[index])
+        this.headerWidgets[index] && monacoEditor.removeContentWidget(this.headerWidgets[index])
         this.headerWidgets[index] = undefined
       } else {
-        this.headerWidgets.forEach(widget => monacoEditor.removeContentWidget(widget))
+        this.headerWidgets.forEach(widget => {
+          monacoEditor.removeContentWidget(widget)
+        })
         this.headerWidgets = []
       }
     }
@@ -156,7 +257,7 @@ const MergeConflictMinxin = {
     if (this.viewzones && this.viewzones.length > 0) {
       if (index) {
         monacoEditor.changeViewZones((changeAccessor) => {
-          changeAccessor.removeZone(this.viewzones[index])
+          this.viewzones[index] && changeAccessor.removeZone(this.viewzones[index])
           this.viewzones[index] = undefined
         })
       } else {
@@ -182,7 +283,6 @@ const MergeConflictMinxin = {
 
     if (this.contentDecorations && this.contentDecorations.length > 0) {
       if (index) {
-
       } else {
         this.contentDecorations.forEach((decoration) => {
           const { current, incoming } = decoration

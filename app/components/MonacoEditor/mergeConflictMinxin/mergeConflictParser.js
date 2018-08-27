@@ -4,19 +4,6 @@ const startHeaderMarker = '<<<<<<<'
 const commonAncestorsMarker = '|||||||'
 const splitterMarker = '======='
 const endFooterMarker = '>>>>>>>'
-const currentHeaderColor = 'rgba(64, 200, 174, 0.5)'
-const currentContentColor = 'rgba(64, 200, 174, 0.2)'
-const incomingContentColor = 'rgba(64, 166, 255, 0.2)'
-const incomingHeaderColor = 'rgba(64, 166, 255, 0.5)'
-const commonBaseColor = '#606060'
-
-export const Colors = {
-  currentHeaderColor,
-  currentContentColor,
-  incomingHeaderColor,
-  incomingContentColor,
-  commonBaseColor,
-}
 
 export function hasCache (key) {
   return cacheConflicts.has(key)

@@ -17,7 +17,7 @@ const config = observable({
   packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
   packageServer: getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
   langServerURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
-  wsURL: "http://dev.coding.ide/ide-ws",
+  wsURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
   staticServingURL: getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
   runMode: __RUN_MODE__,
   __WORKSPACE_URI__: '',
