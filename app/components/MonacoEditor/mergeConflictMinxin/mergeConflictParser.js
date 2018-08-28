@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor'
+import { uniqueId } from 'lodash'
 
 const startHeaderMarker = '<<<<<<<'
 const commonAncestorsMarker = '|||||||'
@@ -35,7 +36,6 @@ export function scanDocument (model) {
   for (let i = 0; i < lineCount; i += 1) {
     const lineNumber = i + 1
     const line = lineAt(model, lineNumber)
-
     if (!line || line.isEmptyOrWhitespace) {
       continue
     }
@@ -44,7 +44,6 @@ export function scanDocument (model) {
       if (currentConflict !== null) {
         break
       }
-
       currentConflict = { startHeader: line, commonAncestors: [] }
     } else if (currentConflict && !currentConflict.splitter && line.text.startsWith(commonAncestorsMarker)) {
       currentConflict.commonAncestors.push(line)

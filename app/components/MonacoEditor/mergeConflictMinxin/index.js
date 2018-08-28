@@ -1,10 +1,14 @@
-import { isEqual } from 'lodash'
+import { remove } from 'lodash'
 import { scanDocument, matchesToDescriptor, containsConflict } from './mergeConflictParser'
 
-const CONTENT_WIDGET = 9
 const overviewRulerColors = {
   current: 'rgba(64, 200, 174, 0.5)',
   incoming: 'rgba(64, 166, 255, 0.5)'
+}
+const CommitType = {
+  CURRENT: 0,
+  INCOMING: 1,
+  BOTH: 2,
 }
 
 function getLanguages () {
@@ -21,10 +25,8 @@ const MergeConflictMinxin = {
   key: 'mergeConflict',
   componentWillMount () {
     this.conflicts = []
-    this.viewzones = []
-    this.headerDecorations = [{}, {}]
-    this.contentDecorations = [{}, {}]
-    this.headerWidgets = []
+    this.headerDecorations = []
+    this.contentDecorations = []
     this.descriptors = []
     const { monacoEditor } = this.editor
     if (!monacoEditor) {
@@ -48,7 +50,6 @@ const MergeConflictMinxin = {
       textModel.onDidChangeContent(this.contentChangeHandler.bind(this))
     }
 
-    monacoEditor.onMouseDown(this.mouseDownHandler.bind(this))
   },
   componentDidMount () {
     if (this.conflicts && this.conflicts.length > 0) {
@@ -58,46 +59,9 @@ const MergeConflictMinxin = {
   componentWillUnMount () {
     console.log('unmount')
   },
-  mouseDownHandler (e) {
-    const { monacoEditor } = this.editor
-    if (e.target.type === CONTENT_WIDGET) {
-      const className = e.target.element.className
-      if (className.startsWith('accept-')) {
-        const conflictIndex = e.target.detail.split('-').pop()
-        const currentConflict = this.descriptors[conflictIndex]
-        const textModel = monacoEditor.getModel()
-        switch (className) {
-          case 'accept-current': {
-            const { incoming, current } = currentConflict
-            const operations = [
-              { range: current.header, text: '' },
-              { range: incoming.header, text: '' },
-              { range: incoming.content, text: '' }
-            ]
-            textModel.pushEditOperations([], operations)
-            // const incomingRange = 
-            break
-          }
-            // console.log()
-          case 'accept-incoming':
-          case 'accept-both':
-          default:
-            break
-        }
-      }
-    }
-  },
   contentChangeHandler () {
     const textModel = this.editor.monacoEditor.getModel()
     const conflicts = scanDocument(textModel)
-    // if (!isEqual(this.conflicts, conflicts)) {
-    //   if (this.providers && this.providers.length > 0) {
-    //     console.log('dispose')
-    //     this.providers.forEach((p) => p.dispose())
-    //     this.providers = []
-    //     this.registerCodeLensProvider.bind(this)(conflicts)
-    //   }
-    // }
 
     if (conflicts.length > 0) {
       this.conflicts = conflicts
@@ -108,14 +72,34 @@ const MergeConflictMinxin = {
     const { monacoEditor } = this.editor
     const textModel = monacoEditor.getModel()
     const providers = []
-    const acceptCurrentCommand = monacoEditor.addCommand(-1, (e) => {
-      console.log(e)
+    const acceptCurrentCommand = monacoEditor.addCommand(-1, (...args) => {
+      let conflict
+      let index
+      if (args[1] === 'known-conflict') {
+        conflict = args[2]
+      }
+      if (typeof args[3] === 'number') {
+        index = args[3]
+      }
+      this.commitMergeEdit.bind(this)(CommitType.CURRENT, conflict, index)
     }, '')
-    const acceptIncomingCommand = monacoEditor.addCommand(-1, (e) => {
-      console.log(e)
+    const acceptIncomingCommand = monacoEditor.addCommand(-1, (...args) => {
+      let conflict
+      let index
+      if (args[1] === 'known-conflict') {
+        conflict = args[2]
+      }
+      if (typeof args[3] === 'number') {
+        index = args[3]
+      }
+      this.commitMergeEdit.bind(this)(CommitType.INCOMING, conflict, index)
     }, '')
-    const acceptBothCommand = monacoEditor.addCommand(-1, (e) => {
-      console.log(e)
+    const acceptBothCommand = monacoEditor.addCommand(-1, (...args) => {
+      let conflict
+      if (args[1] === 'known-conflict') {
+        conflict = args[2]
+      }
+      this.commitMergeEdit.bind(this)(CommitType.BOTH, conflict, -1)
     }, '')
     const codeLensProvider = {
       provideCodeLenses: (model, token) => {
@@ -124,7 +108,7 @@ const MergeConflictMinxin = {
           return null
         }
         let codelens = []
-        conflicts.forEach((conflict) => {
+        conflicts.forEach((conflict, index) => {
           const range = {
             startLineNumber: conflict.startHeader.lineNumber,
             startColumn: conflict.startHeader.lineNumber,
@@ -138,7 +122,7 @@ const MergeConflictMinxin = {
               command: {
                 id: acceptCurrentCommand,
                 title: '采用当前更改',
-                arguments: ['known-conflict', conflict]
+                arguments: ['known-conflict', conflict, index]
               }
             },
             {
@@ -147,7 +131,7 @@ const MergeConflictMinxin = {
               command: {
                 id: acceptIncomingCommand,
                 title: '采用传入更改',
-                arguments: ['known-conflict', conflict]
+                arguments: ['known-conflict', conflict, index]
               }
             },
             {
@@ -156,7 +140,7 @@ const MergeConflictMinxin = {
               command: {
                 id: acceptBothCommand,
                 title: '保留双方更改',
-                arguments: ['known-conflict', conflict]
+                arguments: ['known-conflict', conflict, -1]
               }
             }
           ])
@@ -174,6 +158,41 @@ const MergeConflictMinxin = {
     }
     this.providers = providers
   },
+  commitMergeEdit (type, conflict, index) {
+    const { monacoEditor } = this.editor
+    const textModel = monacoEditor.getModel()
+    const descriptor = matchesToDescriptor(conflict, textModel)
+
+    if (type === CommitType.CURRENT) {
+      const range = descriptor.current.content
+      const content = textModel.getValueInRange(range)
+
+      this.replaceRangeWithContent.bind(this)(descriptor.range, content)
+      this.clearDecorations.bind(this)(index)
+    } else if (type === CommitType.INCOMING) {
+      const range = descriptor.incoming.content
+      const content = textModel.getValueInRange(range)
+
+      this.replaceRangeWithContent.bind(this)(descriptor.range, content)
+      this.clearDecorations.bind(this)(index)
+    } else {
+      //
+      this.clearDecorations()
+    }
+  },
+  replaceRangeWithContent (range, content) {
+    const { monacoEditor } = this.editor
+    const textModel = monacoEditor.getModel()
+    console.log(range, content)
+    const editOperations = [
+      {
+        range,
+        text: content,
+        forceMoveMarkers: true
+      }
+    ]
+    textModel.pushEditOperations([], editOperations)
+  },
   matchesToDescriptors () {
     const textModel = this.editor.monacoEditor.getModel()
     this.descriptors = this.conflicts.map(match => matchesToDescriptor(match, textModel))
@@ -182,17 +201,19 @@ const MergeConflictMinxin = {
     }
   },
   applyConflictsDecoration (descriptors) {
-    const { monacoEditor } = this.editor
+    this.headerDecorations = []
+    this.contentDecorations = []
     for (let index = 0; index < descriptors.length; index += 1) {
       const {
         current,
         incoming,
-        range: { startLineNumber }
       } = descriptors[index]
 
       this.applyCurrentAndIncomingDescriptor.bind(this)(current, 'current', index)
       this.applyCurrentAndIncomingDescriptor.bind(this)(incoming, 'incoming', index)
     }
+    console.log(this.headerDecorations)
+    console.log(this.contentDecorations)
   },
   applyCurrentAndIncomingDescriptor (descriptor, type, index) {
     const { monacoEditor } = this.editor
@@ -214,10 +235,17 @@ const MergeConflictMinxin = {
       }
     ]
     const oldHeaderDecoration = this.headerDecorations[index] && this.headerDecorations[index][type]
-    this.headerDecorations[index][type] = monacoEditor.deltaDecorations(
+    const newHeaderDecoration = monacoEditor.deltaDecorations(
       oldHeaderDecoration || [],
       headerDecoration
     )
+    if (!this.headerDecorations[index]) {
+      this.headerDecorations.push({})
+    }
+    this.headerDecorations[index] = {
+      ...this.headerDecorations[index],
+      [type]: newHeaderDecoration
+    }
     // render content
     const contentDecoration = [
       {
@@ -235,63 +263,47 @@ const MergeConflictMinxin = {
     ]
     const oldContentDecoration =
       this.contentDecorations[index] && this.contentDecorations[index][type]
-    this.contentDecorations[index][type] = monacoEditor.deltaDecorations(
+    const newContentDecoration = monacoEditor.deltaDecorations(
       oldContentDecoration || [],
       contentDecoration
     )
+    if (!this.contentDecorations[index]) {
+      this.contentDecorations.push({})
+    }
+    this.contentDecorations[index] = {
+      ...this.contentDecorations[index],
+      [type]: newContentDecoration
+    }
   },
-  clearDecoration (index) {
-    const { monacoEditor } = this.editor
-    if (this.headerWidgets && this.headerWidgets.length > 0) {
-      if (index) {
-        this.headerWidgets[index] && monacoEditor.removeContentWidget(this.headerWidgets[index])
-        this.headerWidgets[index] = undefined
-      } else {
-        this.headerWidgets.forEach(widget => {
-          monacoEditor.removeContentWidget(widget)
-        })
-        this.headerWidgets = []
-      }
-    }
-
-    if (this.viewzones && this.viewzones.length > 0) {
-      if (index) {
-        monacoEditor.changeViewZones((changeAccessor) => {
-          this.viewzones[index] && changeAccessor.removeZone(this.viewzones[index])
-          this.viewzones[index] = undefined
-        })
-      } else {
-        monacoEditor.changeViewZones((changeAccessor) => {
-          this.viewzones.forEach(changeAccessor.removeZone)
-        })
-        this.viewzones = []
-      }
-    }
-
+  clearDecorations (index) {
     if (this.headerDecorations && this.headerDecorations.length > 0) {
-      if (index) {
+      if (index >= 0) {
+        const decoration = this.headerDecorations[index]
+        this._clearDecoration.bind(this)(decoration)
+        remove(this.headerDecorations, (_, i) => i === index)
       } else {
-        this.headerDecorations.forEach((decoration) => {
-          const { current, incoming } = decoration
-          if (current || incoming) {
-            monacoEditor.deltaDecorations([...current, ...incoming], [])
-          }
-        })
-        this.headerDecorations = [{}, {}]
+        this.headerDecorations.forEach(this._clearDecoration.bind(this))
+        this.headerDecorations = []
       }
     }
 
     if (this.contentDecorations && this.contentDecorations.length > 0) {
-      if (index) {
+      if (index >= 0) {
+        const decoration = this.contentDecorations[index]
+        this._clearDecoration.bind(this)(decoration)
+        remove(this.contentDecorations, (_, i) => i === index)
       } else {
-        this.contentDecorations.forEach((decoration) => {
-          const { current, incoming } = decoration
-          if (current || incoming) {
-            monacoEditor.deltaDecorations([...current, ...incoming], [])
-          }
-        })
-        this.contentDecorations = [{}, {}]
+        this.contentDecorations.forEach(this._clearDecoration.bind(this))
+        this.contentDecorations = []
       }
+    }
+  },
+  _clearDecoration (decoration) {
+    if (!decoration) return false
+    const { monacoEditor } = this.editor
+    const { current, incoming } = decoration
+    if (current || incoming) {
+      monacoEditor.deltaDecorations([...current, ...incoming], [])
     }
   }
 }
