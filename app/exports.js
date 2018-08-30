@@ -25,6 +25,11 @@ const lib = {
   localforage: require('localforage'),
   styled: require('styled-components'),
   clipboard: require('clipboard'),
+  reactRedux: require('react-redux'),
+  redux: require('redux'),
+  reduxThunk: require('redux-thunk'),
+  propTypes: require('prop-types'),
+  socketIOClient: require('socket.io-client')
 }
 
 export { app, lib }

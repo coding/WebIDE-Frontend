@@ -16,6 +16,7 @@ class Accordion extends Component {
     const style = {
       flexGrow: this.state.showSection ? this.props.size : 0,
     }
+    const { bodyStyle } = this.props
     return (
       <div className='accordion' id={this.props.id} style={style}>
         <div className='accordion-topbar'>
@@ -30,7 +31,7 @@ class Accordion extends Component {
           {this.props.actions}
         </div>
 
-        <div className={cx('accordion-body', { hidden: !this.state.showSection })}>
+        <div className={cx('accordion-body', { hidden: !this.state.showSection })} style={{...bodyStyle}}>
           {this.props.children}
         </div>
       </div>

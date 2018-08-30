@@ -66,7 +66,7 @@ class Modal extends Component {
     const TargetComponent = modalCache.get(type)
     if (TargetComponent) {
       return (<div className='modal'>
-        <TargetComponent {...modalConfig} />
+        {TargetComponent.$$typeof ? TargetComponent : <TargetComponent {...modalConfig} />}
       </div>)
     }
     return <div className='modal'>{content}</div>
