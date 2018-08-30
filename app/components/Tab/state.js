@@ -83,8 +83,10 @@ class Tab extends BaseTab {
   toJS () {
     if (this.file) {
       // don't persist debug prop
-      const { debug, ...other } = this.editorProps
-      return { ...this, path: this.file.path || '', editor: other }
+      if (!!this.editorProps) {
+        const { debug, ...other } = this.editorProps
+        return { ...this, path: this.file.path || '', editor: other }
+      }
     }
     return null
   }

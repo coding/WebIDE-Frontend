@@ -1,5 +1,5 @@
 function isJavaConfigFile (path) {
-	return path.endsWith('pom.xml') || path.endsWith('.gradle')
+  return path && (path.endsWith('pom.xml') || path.endsWith('.gradle'))
 }
 
 export default {
