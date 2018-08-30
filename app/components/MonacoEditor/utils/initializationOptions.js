@@ -1,6 +1,8 @@
 export default {
   Java: {
-    bundles: [],
+    bundles: [
+      '/data/coding-ide-home/LanguageServices-WebIDE/com.microsoft.java.debug.plugin-0.10.0.jar',
+    ],
     workspaceFolders: [],
     settings: {
       java: {
@@ -11,7 +13,7 @@ export default {
           }
         },
         configuration: {
-          updateBuildConfiguration: 'automatic',
+          updateBuildConfiguration: 'interactive',
           maven: {
             userSettings: null
           }

@@ -1,9 +1,8 @@
 import uniqueId from 'lodash/uniqueId'
-import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
+import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
 
-import config from 'config'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
@@ -36,6 +35,7 @@ class EditorInfo {
     if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
+    this.debugBreakPoints = new Map()
   }
 
   createMonacoEditorInstance (props) {
@@ -47,11 +47,15 @@ class EditorInfo {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
 
-    const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
+    const model = monaco.editor.getModel(
+      monaco.Uri.parse(this.uri).toString())
+      || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri)
+    )
+    this.uri = model.uri._formatted
     const monacoEditor = monaco.editor.create(this.monacoElement, {
       ...initialOptions,
       ...props,
-      model: model || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(`inmemory://model/${this.id}`)),
+      model,
     }, {
       editorService: {
         openEditor: toDefinition
@@ -89,12 +93,19 @@ class EditorInfo {
     })
 
     if (props.selection) {
-      this.selection = props.selection
-      monacoEditor.setSelection(props.selection)
+      const { startLineNumber, startColumn } = props.selection
+      const selection = new monaco.Selection(startLineNumber, startColumn, startLineNumber, startColumn)
+      this.selection = selection
+      monacoEditor.setSelection(selection)
+      monacoEditor.revealLineInCenter(startLineNumber, 1)
     }
 
     monacoEditor._editorInfo = this
     this.monacoEditor = monacoEditor
+
+    if (props.debug) {
+      this.setDebugDeltaDecorations()
+    }
   }
 
   @observable languageMode = ''
@@ -110,6 +121,57 @@ class EditorInfo {
     if (!this.filePath) return 'plaintext'
     const mode = is.string(this.languageMode) ? findModeByName(this.languageMode).aliases[0] : this.languageMode
     return mode
+  }
+
+  setDebugDeltaDecorations = () => {
+    if (this.debug) {
+      const { line, monacoEditor, decorations, stoppedReason } = this
+      this.decorations = monacoEditor.deltaDecorations(!!decorations ? decorations : [], [
+        {
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            isWholeLine: true,
+            className: 'monaco-debug-hightlight-content',
+            glyphMarginClassName: stoppedReason === 'breakpoint'
+              ? 'monaco-glyphMargin-breakpoint-stopped'
+              : 'monaco-glyphMargin-step-stopped'
+          }
+        }
+      ])
+      monacoEditor.revealLineInCenter(line, 1)
+    }
+  }
+
+  setDebuggerBreakPoint = (params) => {
+    const { line, verified } = params
+    const debuggerBreakPoint = this.debugBreakPoints.get(line)
+    const newBreakPoint = this.monacoEditor.deltaDecorations(!!debuggerBreakPoint ? debuggerBreakPoint : [], [
+      {
+        range: new monaco.Range(line, 1, line, 1),
+        options: {
+          isWholeLine: false,
+          glyphMarginClassName: verified
+            ? 'monaco-glyphMargin-breakpoint'
+            : 'monaco-glyphMargin-breakpoint-unverified'
+        }
+      }
+    ])
+    this.debugBreakPoints.set(line, newBreakPoint)
+  }
+
+  removeDebuggerBreakPoint = (params) => {
+    const { line } = params
+    if (this.debugBreakPoints.has(line)) {
+      const debuggerBreakPoint = this.debugBreakPoints.get(line)
+      this.monacoEditor.deltaDecorations(debuggerBreakPoint, [])
+      this.debugBreakPoints.delete(line)
+    }
+  }
+
+  clearDebugDeltaDecorations = () => {
+    const { decorations } = this
+    this.decorations = this.monacoEditor.deltaDecorations(!!decorations ? decorations : [], [])
+    this.debug = false
   }
 
   setMode (name) {
