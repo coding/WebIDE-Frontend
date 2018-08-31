@@ -7,10 +7,10 @@ import initialize from './initialize'
 import InitializeContainer from './containers/Initialize'
 import SettingState from 'components/Setting/state'
 const uiTheme = SettingState.settings.appearance.ui_theme.value
-if (uiTheme === 'base-theme') {
-  const baseTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/base-theme/index.styl')
-  baseTheme.use()
-  window.themes = { '@current': baseTheme }
+if (uiTheme === 'light') {
+  const lightTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/light/index.styl')
+  lightTheme.use()
+  window.themes = { '@current': lightTheme }
 } else {
   const darkTheme = require('!!style-loader/useable!css-loader!stylus-loader!./styles/dark/index.styl')
   darkTheme.use()
