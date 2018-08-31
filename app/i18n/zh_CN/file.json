@@ -22,5 +22,7 @@
    "uploadFailed": "上传失败",
    "preparingDownload": "正在准备下载文件...",
    "saveNew": "保存新文件",
-   "newInfo": "文件内容已更改，是否保存？"
+   "newInfo": "文件内容已更改，是否保存？",
+   "updateIgnoreSuccess": ".gitignore 更新成功",
+   "updateIgnoreFailed": ".gitignore 更新失败：{err}"
 }

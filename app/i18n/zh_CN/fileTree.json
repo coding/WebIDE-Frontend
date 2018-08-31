@@ -7,6 +7,7 @@
       "download": "下载",
       "upload": "上传",
       "gitBlame": "查看历史",
-      "sync": "同步文件"
+      "sync": "同步文件",
+      "ignore": "移出版本控制"
    }
 }
