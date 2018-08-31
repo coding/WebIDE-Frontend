@@ -40,5 +40,10 @@
       "terminal": "终端",
       "newTerminal": "新建"
    },
+   "window": {
+       "main": "窗口",
+       "zenMode": "禅模式",
+       "fullScreen": "切换全面屏"
+   },
    "switch": "切换到 v1 版本"
 }

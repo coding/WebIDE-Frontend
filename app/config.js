@@ -8,6 +8,7 @@ const config = observable({
   spaceKey: '',
   mainLanguage: 'Blank',
   switchOldEditor: Boolean(JSON.parse(localStorage.getItem('switchOldEditor'))),
+  isFullScreen: false,
   globalKey: '',
   userProfile: {},
   requiredExtensions: [],
