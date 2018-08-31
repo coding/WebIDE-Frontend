@@ -8,7 +8,8 @@ import config from 'config'
 
 import logo from '../../../static/CloudStudio-Logo.svg';
 
-const divider = { isDivider: true }
+const divider = { isDivider: true };
+
 const menuBarItems = observable([
   {
     key: 'meta',
@@ -21,7 +22,8 @@ const menuBarItems = observable([
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
         canopen: true
-      }, {
+      },
+      {
         key: 'about',
         name: i18n`menuBarItems.meta.about`,
         icon: 'fa fa-info-circle',
@@ -31,6 +33,7 @@ const menuBarItems = observable([
   {
     key: 'file',
     name: i18n`menuBarItems.file.main`,
+    weight: 10,
     items: [
       {
         key: 'newFile',
@@ -38,13 +41,15 @@ const menuBarItems = observable([
         icon: 'fa fa-file-text-o',
         command: 'file:new_file',
         showMore: true
-      }, {
+      },
+      {
         key: 'newFolder',
         name: i18n`menuBarItems.file.newFolder`,
         icon: 'fa fa-folder-o',
         command: 'file:new_folder',
         showMore: true
-      }, {
+      },
+      {
         key: 'save',
         name: i18n`menuBarItems.file.save`,
         icon: 'fa fa-floppy-o',
@@ -52,25 +57,30 @@ const menuBarItems = observable([
         getIsDisabled: () => tabState.tabs.size === 0
       }
     ]
-  }, {
+  },
+  {
     key: 'edit',
     name: i18n`menuBarItems.edit.main`,
+    weight: 20,
     items: [
       {
         key: 'format',
         name: i18n`menuBarItems.edit.format`,
         icon: '',
         command: !config.switchOldEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
-      }, {
+      },
+      {
         key: 'comment',
         name: i18n`menuBarItems.edit.comment`,
         icon: '',
         command: 'edit:toggle_comment',
       }
     ]
-  }, {
+  },
+  {
     key: 'git',
     name: i18n`menuBarItems.git.main`,
+    weight: 30,
     onOpen: onGitMenuOpen,
     items: [
       {
@@ -94,13 +104,15 @@ const menuBarItems = observable([
         command: 'git:commit',
         showMore: true,
         isNotGitProject
-      }, {
+      },
+      {
         key: 'pull',
         name: i18n`menuBarItems.git.pull`,
         icon: 'octicon octicon-repo-pull',
         command: 'git:pull',
         isNotGitProject
-      }, {
+      },
+      {
         key: 'push',
         name: i18n`menuBarItems.git.push`,
         icon: 'octicon octicon-repo-push',
@@ -190,14 +202,15 @@ const menuBarItems = observable([
         getIsDisabled,
       }
     ]
-  }, {
+  },
+  {
     key: 'tools',
+    weight: 40,
     name: i18n`menuBarItems.tools.main`,
     items: [
       {
         key: 'terminal',
         name: i18n`menuBarItems.tools.terminal`,
-
         icon: 'octicon octicon-terminal',
         items: [
           {
@@ -211,8 +224,12 @@ const menuBarItems = observable([
   }
 ])
 
-const isRebasing = ['REBASING', 'REBASING_REBASING',
-  'REBASING_MERGE', 'REBASING_INTERACTIVE']
+const isRebasing = [
+  'REBASING',
+  'REBASING_REBASING',
+  'REBASING_MERGE',
+  'REBASING_INTERACTIVE'
+];
 
 function onGitMenuOpen (dispatch) {
   const gitStateTask = api.gitCurrentBranch()
@@ -231,4 +248,5 @@ function getIsDisabled (menuContext) {
 function isNotGitProject (branch) {
   return branch === '' || branch === undefined
 }
-export default menuBarItems
+
+export default menuBarItems;
