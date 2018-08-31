@@ -1,5 +1,6 @@
 import { observable, reaction } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
+import { lowerCase } from 'lodash';
 import config from 'config'
 import {
   ShutdownRequest,
@@ -12,8 +13,21 @@ import {
 } from 'vscode-languageserver-protocol'
 
 import { createLanguageClient as createClient } from 'components/MonacoEditor/actions'
-import { JAVA_CLASS_PATH_REQUEST, LANGUAGE_STATUS } from 'components/MonacoEditor/languageRequestTypes'
 import { createLanguageClient, createWebSocket, createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
+import {
+  JAVA_CLASS_PATH_REQUEST,
+  LANGUAGE_STATUS,
+  WORKSPACE_EXECUTECOMMAND,
+  JAVA_START_DEBUGSESSION,
+  JAVA_BUIILDWORKSPACE,
+  JAVA_RESOLVE_CLASSPATH,
+  JAVA_FETCH_USAGE_DATA,
+  JAVA_RESOLVE_MAINCLASS,
+  JAVA_UPDATE_DEBUG_SETTINGS,
+  JAVA_PROJECT_CONFIGURATION_UPDATE,
+} from 'components/MonacoEditor/languageRequestTypes'
+import { emitter } from 'utils'
+import isConfigFile from './utils/isConfigFile'
 
 const languageState = observable({
   clients: new observable.map({}),
@@ -50,6 +64,18 @@ export class LanguageClient {
     this.DESTROYED = false
     this.client = null
     this.initialize()
+    emitter.on('file:save', this.fileSaveMiddleware)
+  }
+
+  fileSaveMiddleware = (ctx) => {
+    const { data } = ctx
+    if (isConfigFile[lowerCase(this.language)]) {
+      const configFileVerification = isConfigFile[lowerCase(this.language)]
+      if (configFileVerification(data)) {
+        const absolutePath = `file://${this.__WORKSPACE_URI__}${data}`
+        this.javaProjectConfigurationUpdate(absolutePath)
+      }
+    }
   }
 
   /**
@@ -141,6 +167,37 @@ export class LanguageClient {
 
   exit = () => this.client.sendNotification(ExitNotification.type)
 
+  javaProjectConfigurationUpdate = uri => this.client.sendNotification(JAVA_PROJECT_CONFIGURATION_UPDATE, { uri })
+
+  resolveMainClass = () => this.client.sendRequest(WORKSPACE_EXECUTECOMMAND, {
+    command: JAVA_RESOLVE_MAINCLASS,
+    arguments: [`file://${this.__WORKSPACE_URI__}`],
+  })
+
+  fetchUsageData = () => this.client.sendRequest(WORKSPACE_EXECUTECOMMAND, {
+    command: JAVA_FETCH_USAGE_DATA,
+    arguments: []
+  })
+
+  buildJavaWorkspace = () => this.client.sendRequest(JAVA_BUIILDWORKSPACE, true)
+
+  resolveClassPath = (mainClass) => this.client.sendRequest(WORKSPACE_EXECUTECOMMAND, {
+    command: JAVA_RESOLVE_CLASSPATH,
+    arguments: [
+      mainClass,
+      null
+    ]
+  })
+
+  updateJavaDebugConfig = (params) => this.client.sendRequest(WORKSPACE_EXECUTECOMMAND, {
+    command: JAVA_UPDATE_DEBUG_SETTINGS,
+    arguments: [params],
+  })
+
+  startJavaDebugSession = () => this.client.sendRequest(WORKSPACE_EXECUTECOMMAND, {
+    command: JAVA_START_DEBUGSESSION,
+    arguments: []
+  })
   /**
    * 关闭语言服务
    * 首先发送 shutdown 消息要求语言服务关闭但不退出进程

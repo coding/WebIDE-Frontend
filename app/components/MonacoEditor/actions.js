@@ -6,7 +6,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 import { createTab, activateTab } from 'components/Tab/actions'
 import { openFile } from 'commands/commandBindings/file'
 import TabState from 'components/Tab/state'
-import LanguageState, { LanguageClient } from 'components/Tab/LanguageClientState'
+import LanguageState, { LanguageClient } from './LanguageClientState'
 
 import { supportLangServer } from './utils/languages'
 
@@ -35,7 +35,8 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
   } else {
     const languageClient = LanguageState.clients.get(config.mainLanguage)
     const fileName = resource.path.split('/').pop()
-    const tabItem = TabState.tabs.get(`fake_${fileName}`)
+    const name = fileName.endsWith('class') ? `${fileName.substr(0, fileName.length - 5)}java` : fileName
+    const tabItem = TabState.tabs.get(`fake_${name}`)
     let formattedUri
     if (!resource._formatted) {
       formattedUri = resource.toString()
@@ -48,14 +49,14 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
       languageClient.fetchJavaClassContent({ uri: formattedUri })
         .then((data) => {
           createTab({
-            title: fileName,
-            id: `fake_${fileName}`,
+            title: name,
+            id: `fake_${name}`,
             icon: 'fa fa-file-o',
             editor: {
-              // selection,
+              selection: params.options.selection,
               content: data,
               readOnly: true,
-              filePath: resource.path,
+              filePath: formattedUri,
             },
           })
         })
@@ -87,4 +88,77 @@ export const createLanguageClient = registerAction('language:create_client', (la
 
   const newClient = new LanguageClient(language)
   LanguageState.clients.set(language, newClient)
+})
+
+export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordebugger', (params) => {
+  const { path, line, name, stoppedReason } = params
+  if (path.startsWith('jdt')) {
+    const languageClient = LanguageState.clients.get(config.mainLanguage)
+    const tabItem = TabState.tabs.get(`fake_${name}`)
+    if (tabItem && tabItem.editorInfo) {
+      // for debugger
+      tabItem.editorInfo.debug = true
+      tabItem.editorInfo.line = line
+      tabItem.editorInfo.stoppedReason = stoppedReason
+      tabItem.activate()
+      tabItem.editorInfo.setDebugDeltaDecorations()
+    } else {
+      languageClient.fetchJavaClassContent({ uri: path })
+        .then((data) => {
+          createTab({
+            title: name,
+            id: `fake_${name}`,
+            icon: 'fa fa-file-o',
+            editor: {
+              // selection,
+              line,
+              stoppedReason,
+              debug: true,
+              content: data,
+              readOnly: true,
+              filePath: path,
+            },
+          })
+        })
+    }
+  } else {
+    const relativePath = path.substring(config.__WORKSPACE_URI__.length)
+    openFile({ path: relativePath, editor: { filePath: relativePath, line, debug: true, stoppedReason } })
+  }
+})
+
+export const cleardeltaDecorations = registerAction('monaco:cleardeltaDecorations', () => {
+  const tabs = TabState.tabs.toJS()
+
+  Object.keys(tabs).forEach((key) => {
+    if (tabs[key].editorInfo) {
+      tabs[key].editorInfo.clearDebugDeltaDecorations()
+    }
+  })
+})
+
+export const setBreakPoint = registerAction('monaco:setbreakpoints', (params) => {
+  const tabs = TabState.tabs.toJS()
+  Object.keys(tabs).forEach((key) => {
+    const editor = tabs[key].editorInfo
+    if (editor && editor.model) {
+      const { model } = tabs[key].editorInfo
+      if (model.uri.toString() === params.path) {
+        tabs[key].editorInfo.setDebuggerBreakPoint(params)
+      }
+    }
+  })
+})
+
+export const removeBreakPoint = registerAction('monaco:removeBreakPoint', (params) => {
+  const tabs = TabState.tabs.toJS()
+  Object.keys(tabs).forEach((key) => {
+    const editor = tabs[key].editorInfo
+    if (editor && editor.model) {
+      const { model } = tabs[key].editorInfo
+      if (model.uri.toString() === params.path) {
+        tabs[key].editorInfo.removeDebuggerBreakPoint(params)
+      }
+    }
+  })
 })

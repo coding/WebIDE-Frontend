@@ -6,7 +6,7 @@ import PaneState from 'components/Pane/state'
 import EditorState, { Editor } from 'components/Editor/state'
 
 // monaco-editor
-import MonacoEditorState, { EditorInfo } from 'components/MonacoEditor/state'
+import { EditorInfo } from 'components/MonacoEditor/state'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 
@@ -27,6 +27,12 @@ class Tab extends BaseTab {
     autorun(() => {
       if (!this.file) return
       this.flags.modified = !this.file.isSynced
+    })
+
+    autorun(() => {
+      if (this.isActive && this.editorInfo) {
+        this.editorInfo.setDebugDeltaDecorations()
+      }
     })
   }
   @action update (props = {}) {
@@ -76,7 +82,11 @@ class Tab extends BaseTab {
   }
   toJS () {
     if (this.file) {
-      return { ...this, path: this.file.path || '', editor: this.editorProps }
+      // don't persist debug prop
+      if (!!this.editorProps) {
+        const { debug, ...other } = this.editorProps
+        return { ...this, path: this.file.path || '', editor: other }
+      }
     }
     return null
   }

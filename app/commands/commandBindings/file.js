@@ -168,11 +168,20 @@ export function openFile (obj, callback) {
       if (editor.gitBlame) {
         existingTab.editor.gitBlame = editor.gitBlame
       }
-      existingTab.activate()
       if (editor.selection) {
+        const { startLineNumber } = editor.selection
         existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
         existingTab.editorInfo.monacoEditor.focus()
+        existingTab.editorInfo.monacoEditor.revealLineInCenter(startLineNumber, 1)
       }
+
+      if (editor.debug) {
+        existingTab.editorInfo.debug = true
+        existingTab.editorInfo.line = editor.line
+        existingTab.editorInfo.stoppedReason = editor.stoppedReason
+        existingTab.editorInfo.setDebugDeltaDecorations()
+      }
+      existingTab.activate()
       if (callback) callback()
     } else {
       TabStore.createTab({
