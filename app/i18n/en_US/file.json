@@ -22,5 +22,7 @@
    "uploadFailed": "Upload failed",
    "preparingDownload": "Preparing files...",
    "saveNew": "Save untitled file",
-   "newInfo": "File has been changed, save changes?"
+   "newInfo": "File has been changed, save changes?",
+   "updateIgnoreSuccess": "Update .gitignore successfully",
+   "updateIgnoreFailed": "Failed to update .gitignore: {err}"
 }

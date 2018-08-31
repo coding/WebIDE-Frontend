@@ -7,6 +7,7 @@
       "download": "Download",
       "upload": "Upload",
       "gitBlame": "Git Blame",
-      "sync": "Synchronize files"
+      "sync": "Synchronize files",
+      "ignore": "Add to .gitignore"
    }
 }
