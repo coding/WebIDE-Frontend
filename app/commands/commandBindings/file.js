@@ -6,7 +6,7 @@ import TabStore from 'components/Tab/store'
 import TabState from 'components/Tab/state'
 import FileState from 'commons/File/state'
 import FileStore from 'commons/File/store'
-import { notify } from '../../components/Notification/actions'
+import { notify, NOTIFY_TYPE } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
 import config from 'config'
@@ -432,6 +432,53 @@ const fileCommands = {
   },
   'file:open_about': () => {
     Modal.showModal({ type: 'About', position: 'center' })
+  },
+
+  'file:add_ignore': (c) => {
+    const ignorePath = '/.gitignore'
+    const ignoreFile = FileStore.get(ignorePath)
+    const { isDir, path } = c.context
+    const patchTxt = isDir ? `${path}/*` : path
+
+    if (ignoreFile) {
+      api.writeFile(
+        ignorePath,
+        ignoreFile.content ? `${ignoreFile.content}\n${patchTxt}`
+                           : patchTxt
+      )
+      .then(res => {
+        FileStore.updateFile({
+          path: ignorePath,
+          isSynced: true,
+          lastModified: res.lastModified,
+        })
+
+        notify({ message: i18n`file.updateIgnoreSuccess` })
+        openFile({ path: ignorePath })
+      })
+      .catch(err => {
+        notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: i18n`file.updateIgnoreFailed${err.msg}`
+        })
+      })
+    } else {
+      api.createFile(ignorePath, patchTxt)
+      .then((res) => {
+        res.msg ? throw new Error(res.msg) : ''
+      })
+      .then(() => api.writeFile(ignorePath, patchTxt))
+      .then(() => {
+        notify({ message: i18n`file.updateIgnoreSuccess` })
+        openFile({ path: ignorePath })
+      })
+      .catch(err => {
+        notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: i18n`file.updateIgnoreFailed${err.msg}`
+        })
+      })
+    }
   }
 }
 

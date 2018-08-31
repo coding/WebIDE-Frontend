@@ -13,15 +13,14 @@ const closeFileTab = async (e, tab, removeTab) => {
   e.stopPropagation()
 
   const isMonaco = !config.switchOldEditor
-  const content = isMonaco ? tab.editorInfo.monacoEditor.getValue()
-                             : tab.editor.cm.getValue()
+  const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
+  const content = (editor && editor.getValue) ? editor.getValue() : ''
 
-  if (!tab.file && content) {
+  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory') ) {
     const confirmed = await Modal.showModal('Confirm', {
       header: i18n`file.saveNew`,
       message: i18n`file.newInfo`,
     })
-
     if (confirmed) {
       Modal.dismissModal()
       dispatchCommand('file:save')
