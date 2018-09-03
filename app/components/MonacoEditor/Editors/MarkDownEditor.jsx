@@ -149,25 +149,23 @@ class MarkdownEditor extends Component {
         rightGrow: 50,
         showBigSize: false,
         showPreview: true,
-        collapseAuto: false,
       })
     }
 
     this.state = observable({
       previewContent: '',
-      tokens: []
+      tokens: [],
     })
   }
 
   componentDidMount() {
-    const dispose = autorun(() => {
+    autorun(() => {
       this.setPreviewContent(this.props.editorInfo.file.content)
     })
   }
 
   componentDidUpdate() {
-    if (!this.scrollFlag) {
-      this.scrollFlag = true;
+    if (this.previewDOM) {
       scrollMixin(this.props.editorInfo.monacoEditor, this.previewDOM);
     }
   }
