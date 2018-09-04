@@ -300,9 +300,7 @@ const fileCommands = {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
     const isMonaco = !config.switchOldEditor
-
     const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
-
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       const defaultPath = activeTab._title ? `/${activeTab._title}` : '/untitled'
@@ -465,7 +463,9 @@ const fileCommands = {
     } else {
       api.createFile(ignorePath, patchTxt)
       .then((res) => {
-        res.msg ? throw new Error(res.msg) : ''
+        if (res.msg) {
+          throw new Error(res.msg);
+        }
       })
       .then(() => api.writeFile(ignorePath, patchTxt))
       .then(() => {

@@ -53,7 +53,6 @@ class HtmlEditor extends Component {
                 rightGrow: 50,
                 showBigSize: false,
                 showPreview: false,
-                collapseAuto: false,
                 previewUniqueId: '1',
                 isResizing: false,
             });
