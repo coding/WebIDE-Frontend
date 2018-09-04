@@ -28,6 +28,7 @@ const reactHotLoaderPrependEntries = [
   'react-hot-loader/patch',
   'webpack-dev-server/client?http://ide.test:8060',
   'webpack/hot/only-dev-server',
+  '@babel/polyfill',
 ]
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
