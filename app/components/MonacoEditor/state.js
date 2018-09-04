@@ -252,6 +252,9 @@ class EditorInfo {
     if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
       return 'markdownEditor'
     }
+    if (typeDetect(this.file.name, ['html', 'htm'])) {
+      return 'htmlEditor'
+    }
     if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
       return 'imageEditor'
     }
