@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import WorkspaceList from './WorkspaceList'
 import bootstrapping from './bootstrapping'
 import '../styles/main.styl'
-import '../styles/base-theme/index.styl'
+import '../styles/light/index.styl'
 import store from './store'
 
 // first bootstrap the state, load the store

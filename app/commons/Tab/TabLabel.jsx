@@ -11,7 +11,10 @@ import dispatchCommand from 'commands/dispatchCommand'
 
 const closeFileTab = async (e, tab, removeTab) => {
   e.stopPropagation()
-
+  if (tab.tabGroupId === 'terminalGroup') {
+    removeTab(tab.id)
+    return
+  }
   const isMonaco = !config.switchOldEditor
   const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
   const content = (editor && editor.getValue) ? editor.getValue() : ''

@@ -51,7 +51,7 @@
       "main": "Appearance Setting",
       "uiTheme": "UI theme",
       "uiThemeOption": {
-         "baseTheme": "White",
+         "light": "White",
          "dark": "Dark"
       },
       "syntaxTheme": "Syntax Theme",

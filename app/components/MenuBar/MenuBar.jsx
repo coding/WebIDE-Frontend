@@ -102,7 +102,6 @@ class MenuBarItem extends Component {
       activatePrevTopLevelMenuItem,
       activateNextTopLevelMenuItem,
     } = this.props
-
     return (
       <li className={cx('menu-bar-item', menuBarItem.className)}>
         <div className={cx('menu-bar-item-container',
