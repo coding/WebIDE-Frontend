@@ -2,11 +2,6 @@ import React, { Component } from 'react'
 import Remarkable from 'remarkable'
 import md from '../../../static/changelog/changelog.md'
 
-const style = {
-  textAlign: 'left',
-  marginTop: '2em'
-}
-
 const remarkable = new Remarkable('full', {
   html: true,
   xhtmlOut: false,
@@ -19,10 +14,7 @@ const remarkable = new Remarkable('full', {
 })
 
 const Changelog = () => (
-  <div dangerouslySetInnerHTML={{ __html: remarkable.render(md) }}
-    className='welcome-page' style={style}
-  >
-  </div>
+  <div className='changelog-page' dangerouslySetInnerHTML={{ __html: remarkable.render(md) }}></div>
 )
 
 export default Changelog
