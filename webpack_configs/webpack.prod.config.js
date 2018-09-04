@@ -23,9 +23,9 @@ const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
 module.exports = merge(
   {
     entry: {
-      main: ['@babel/polyfill'],
-      workspaces: ['@babel/polyfill'],
-      login: ['@babel/polyfill'],
+      main: ['@babel/polyfill/noConflict'],
+      workspaces: ['@babel/polyfill/noConflict'],
+      login: ['@babel/polyfill/noConflict'],
     }
   },
   commonConfig({
