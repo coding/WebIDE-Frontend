@@ -194,8 +194,3 @@ export const mv = (from, to, force=false) => {
     // }
   })
 }
-
-// Check if file is in Version Control System
-export const isInVCS = (c) => ( FileStore.get('/.gitignore') ?
-  FileStore.get('/.gitignore').content.includes(c.path) : false
-)

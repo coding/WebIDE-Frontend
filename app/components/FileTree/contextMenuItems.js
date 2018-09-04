@@ -66,8 +66,7 @@ const items = [
     name: i18n`fileTree.contextMenu.ignore`,
     icon: 'fa',
     command: 'file:add_ignore',
-    id: 'filetree_menu_ignore',
-    getIsHidden: ctx => isInVCS(ctx)
+    id: 'filetree_menu_ignore'
   }
 ]
 
