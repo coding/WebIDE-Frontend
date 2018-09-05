@@ -1,6 +1,6 @@
 import { registerAction } from 'utils/actions'
 import state, { Tab, TabGroup } from './state'
-
+import config from 'config'
 /*
  * Old API copied from v1
  * currently not used, just keep as a reminder
@@ -119,4 +119,18 @@ export const openTerminal = registerAction('terminal:open', () => {
 
 export const removeTerminal = registerAction('terminal:remove', (tabId) => {
   state.tabGroups.get('terminalGroup').removeTab(tabId)
+})
+
+export const sharedTerminal = registerAction('terminal:shared', (...args) => {
+  if (!args) return
+  if (!!args[1]) {
+    const tab = args[1].data && args[1].data
+    const { terminal } = tab
+    if (!terminal) {
+      return
+    }
+    const { id } = terminal
+    const socket = state.terminalManager.getSocket()
+    socket.emit('term.shared', { id, spaceKey: config.spaceKey })
+  }
 })

@@ -54,7 +54,7 @@ class Term extends Component {
       rows: 24,
       // fontFamily: 'Menlo, Monaco, "DejaVu Sans Mono", Consolas, "Andale Mono", monospace;',
     })
-
+    console.log(terminal)
     autorun(() => {
       const props = this.props;
       // 初始加载时不执行，否则跟编辑器光标冲突

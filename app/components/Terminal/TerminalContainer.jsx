@@ -5,10 +5,11 @@ import { observer } from 'mobx-react'
 import { observable } from 'mobx'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 // import Terminal from './Terminal'
+import { emitter, E } from 'utils'
 import Terminal from './Xterm'
 import { Tab, TabGroup } from './state'
-import { emitter, E } from 'utils'
 
+import { readFile } from '../../backendAPI/fileAPI'
 import * as Actions from './actions'
 import PluginArea from '../Plugins/component'
 import { injectComponent } from '../Plugins/actions'
@@ -28,6 +29,11 @@ const contextMenuItems = [
     name: i18n`tab.contextMenu.closeAll`,
     icon: '',
     command: 'tab:close_all'
+  },
+  {
+    name: '共享终端',
+    icon: 'fa fa-share-alt',
+    command: 'terminal:shared'
   }
 ]
 
@@ -40,6 +46,12 @@ class TerminalContainer extends Component {
       showEnv: false,
       fullScreenActiveContent: false,
     })
+    readFile('/.coding-ide/settings.json')
+      .then((data) => {
+        const { content } = data
+        const settings = JSON.parse(content)
+        console.log(settings)
+      })
     const tab = new Tab()
     this.tabGroup = new TabGroup({ id: 'terminalGroup' })
     this.tabGroup.addTab(tab)

@@ -94,14 +94,15 @@ class TtySocketClient {
       const wsUrl = config.wsURL
       const firstSlashIdx = wsUrl.indexOf('/', 8)
       const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
-      this.socket = io.connect(host, {
+      this.socket = io.connect('http://127.0.0.1:5000', {
         forceNew: true,
         reconnection: false,
         autoConnect: false,     // <- will manually handle all connect/reconnect behavior
         reconnectionDelay: 1500,
         reconnectionDelayMax: 10000,
         reconnectionAttempts: 5,
-        path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
+        path: '/coding-ide-tty',
+        // path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
         transports: ['websocket']
       })
     } else {

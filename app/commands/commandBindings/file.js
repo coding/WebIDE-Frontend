@@ -207,9 +207,11 @@ export function openFile (obj, callback) {
 function createFileWithContent (content) {
   return function createFileAtPath (path) {
     if (content) {
+      debugger
       return api.createFile(path, content)
         .then((res) => {
           if (res.msg) {
+            debugger
             throw new Error(res.msg)
           } else {
             Modal.dismissModal()
@@ -229,6 +231,7 @@ function createFileWithContent (content) {
           })
         })
         .catch((res) => {
+          debugger
           Modal.updateModal({ statusMessage: res.response ? res.response.data.msg : res.message }).then(createFileAtPath)
         })
     }
@@ -313,6 +316,7 @@ const fileCommands = {
       })
         .then(createFile)
     } else {
+      debugger
       api.writeFile(activeTab.file.path, content)
         .then((res) => {
           FileStore.updateFile({

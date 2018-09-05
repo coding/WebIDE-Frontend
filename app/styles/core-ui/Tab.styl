@@ -151,18 +151,17 @@ $tab-control-width = $tab-height*0.5;
     margin-left: auto;
     margin-right: 2px;
     position: relative;
+    i {
+      absolute(0);
+      line-height: $tab-control-width;
+      text-align: center;
+      font-style: normal;
+    }
   }
 }
 
 
 .tab-label {
-  // case default:
-  i {
-    absolute(0);
-    line-height: $tab-control-width;
-    text-align: center;
-    font-style: normal;
-  }
 
   .dot {
     height: $tab-control-width*0.5;

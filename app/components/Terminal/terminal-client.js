@@ -5,6 +5,7 @@ import { TtySocketClient } from 'backendAPI/websocketClients'
 import * as TabActions from 'components/Tab/actions'
 import * as maskActions from 'components/Mask/actions'
 import * as TermActions from './actions'
+import { readFile } from '../../backendAPI/fileAPI'
 import * as SideBar from 'components/Panel/SideBar/actions'
 import i18n from 'utils/createI18n'
 import { emitter, E } from 'utils'
@@ -147,12 +148,24 @@ class TerminalClient extends TtySocketClient {
     if (!config.ttySocketConnected) {
       this.connectSocket()
     } else {
-      const termJSON = getTermJSON({
-        id: term.id,
-        cols: term.cols,
-        rows: term.rows
-      })
-      this.socket.emit('term.open', termJSON)
+      console.log('open')
+      readFile('/.coding-ide/settings.json')
+        .then((data) => {
+          const { content } = data
+          const settings = JSON.parse(content)
+          let termJSON = getTermJSON({
+            id: term.id,
+            cols: term.cols,
+            rows: term.rows
+          })
+          if (settings.terminal && settings.terminal.length > 0) {
+            termJSON = {
+              ...termJSON,
+              room: term.id
+            }
+          }
+          this.socket.emit('term.open', termJSON)
+        })
     }
   }
 

@@ -11,6 +11,7 @@ class Tab extends BaseTab {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
     state.tabs.set(this.id, this)
+    this.extraOperations = [{ icon: 'fa fa-share-alt', command: 'terminal:shared', shared: false }]
   }
 }
 

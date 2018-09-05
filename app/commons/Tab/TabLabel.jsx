@@ -17,12 +17,12 @@ const closeFileTab = async (e, tab, removeTab) => {
   }
   const isMonaco = !config.switchOldEditor
   const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
-  const content = (editor && editor.getValue) ? editor.getValue() : ''
+  const content = editor && editor.getValue ? editor.getValue() : ''
 
-  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory') ) {
+  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory')) {
     const confirmed = await Modal.showModal('Confirm', {
       header: i18n`file.saveNew`,
-      message: i18n`file.newInfo`,
+      message: i18n`file.newInfo`
     })
     if (confirmed) {
       Modal.dismissModal()
@@ -39,34 +39,51 @@ const closeFileTab = async (e, tab, removeTab) => {
 let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClickHandler }) => {
   const tabLabelId = `tab_label_${tab.id}`
   return (
-    <li className={cx('tab-label', {
-      active: tab.isActive,
-      modified: tab.flags.modified
-    })}
+    <li
+      className={cx('tab-label', {
+        active: tab.isActive,
+        modified: tab.flags.modified
+      })}
       title={tab.editorProps && tab.editorProps.filePath}
       id={tabLabelId}
       data-droppable='TABLABEL'
       draggable='true'
       onClick={e => activateTab(tab.id)}
-      onMouseUp={e => { e.button === 1 && removeTab(tab.id) }}
+      onMouseUp={(e) => {
+        e.button === 1 && removeTab(tab.id)
+      }}
       onDoubleClick={() => {
         if (!tab.isActive) {
           activateTab(tab.id)
         }
         dbClickHandler()
       }}
-      onDragStart={e => {
+      onDragStart={(e) => {
         // Chrome 下直接执行 dragStart 会导致立即又出发了 window.dragend, 添加 timeout 以避免无法拖动的情况
         setTimeout(() => dnd.dragStart({ type: 'TAB', id: tab.id }), 0)
       }}
       onContextMenu={e => openContextMenu(e, tab)}
     >
-      {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div>: null}
-      {tab.icon ? <div className={`icon ${tab.icon}`}></div>: null}
+      {tab.extraOperations &&
+        tab.extraOperations.map(extra => (
+          <div className='control' key={extra.command}>
+            <i
+              className={extra.icon}
+              onClick={(e) => {
+                e.stopPropagation()
+                dispatchCommand(extra.command, tab)
+              }}
+            />
+          </div>
+        ))}
+      {dnd.target.id === tabLabelId && <div className='tab-label-insert-pos' />}
+      {tab.icon && <div className={`icon ${tab.icon}`} />}
       <div className='title'>{tab.title}</div>
       <div className='control'>
-        <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>×</i>
-        <i className='dot'></i>
+        <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>
+          ×
+        </i>
+        <i className='dot' />
       </div>
     </li>
   )
@@ -77,16 +94,16 @@ TabLabel.propTypes = {
   removeTab: PropTypes.func.isRequired,
   activateTab: PropTypes.func.isRequired,
   openContextMenu: PropTypes.func.isRequired,
-  dbClickHandler: PropTypes.func.isRequired,
+  dbClickHandler: PropTypes.func.isRequired
 }
 
 TabLabel = defaultProps(props => ({
-  activateTab: function () {
+  activateTab () {
     props.tab.activate()
   },
-  removeTab: function () {
+  removeTab () {
     props.tab.destroy()
-  },
+  }
 }))(TabLabel)
 
 export default TabLabel
