@@ -95,7 +95,7 @@ class Term extends Component {
     terminal.open(this.termDOM)
     terminal.fit()
     terminal.id = this.sessionId = _.uniqueId('term_')
-    terminalManager.add(terminal)
+    terminalManager.add(terminal, this.props.tab.shared)
     terminal.on('resize', ({ cols, rows }) => {
       terminalManager.resize(terminal, cols, rows)
     })

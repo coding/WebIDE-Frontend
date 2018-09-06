@@ -13,12 +13,14 @@ import { emitter, E } from 'utils'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
-const getTermJSON = ({ id, cols, rows }) => ({
+const getTermJSON = ({ id, cols, rows, shared }) => ({
   id,
   cols,
   rows,
   cwd: WORKSPACE_PATH,
   spaceKey: config.spaceKey,
+  shared,
+  globalKey: config.globalKey,
 })
 
 const terms = []
@@ -45,20 +47,19 @@ class TerminalClient extends TtySocketClient {
 
   bindSocketEvent () {
     this.socket.on('shell.output', (data) => {
-      let term
       this.setOnline(true)
-      term = _.find(terms, term => term.id === data.id)
-      if (term) {
-        return term.write(data.output)
+      const wrappedTerm = terms.find((t) => t.id === data.id)
+      if (wrappedTerm) {
+        return wrappedTerm.term.write(data.output)
       }
     })
 
     this.socket.on('shell.exit', (data) => {
       let term
-      term = _.find(terms, term => term.id === data.id)
-      if (term) {
+      const wrappedTerm = terms.find((t) => t.id === data.id)
+      if (wrappedTerm) {
         this.remove(term)
-        return TermActions.removeTerminal(term.tabId)
+        return TermActions.removeTerminal(wrappedTerm.term.tabId)
       }
     })
 
@@ -139,40 +140,29 @@ class TerminalClient extends TtySocketClient {
     if (!this.unbindSocketEvent) this.bindSocketEvent()
   }
 
-  add (term) {
-    terms.push(term)
-    this.openTerm(term)
+  add (term, shared) {
+    terms.push({ term, shared, id: term.id })
+    this.openTerm({ term, shared, id: term.id })
   }
 
   openTerm (term) {
     if (!config.ttySocketConnected) {
       this.connectSocket()
     } else {
-      console.log('open')
-      readFile('/.coding-ide/settings.json')
-        .then((data) => {
-          const { content } = data
-          const settings = JSON.parse(content)
-          let termJSON = getTermJSON({
-            id: term.id,
-            cols: term.cols,
-            rows: term.rows
-          })
-          if (settings.terminal && settings.terminal.length > 0) {
-            termJSON = {
-              ...termJSON,
-              room: term.id
-            }
-          }
-          this.socket.emit('term.open', termJSON)
-        })
+      const termJSON = getTermJSON({
+        id: term.id,
+        cols: term.cols,
+        rows: term.rows,
+        shared: term.shared || false,
+      })
+      this.socket.emit('term.open', termJSON)
     }
   }
 
   remove (removedTerm) {
     _.remove(terms, { id: removedTerm.id })
     if (this.socket) {
-      this.socket.emit('term.close', { id: removedTerm.id })
+      this.socket.emit('term.close', { id: removedTerm.id, globalKey: config.globalKey })
     }
     if (terms.length == 0) {
       // this.socket.disconnect()
@@ -192,23 +182,23 @@ class TerminalClient extends TtySocketClient {
   getSocket () { return this.socket }
 
   clearBuffer (tabId) {
-    const term = _.find(terms, term => term.id == tabId)
-    this.socket.emit('term.input', { id: term.id, input: "printf '\\033c'\r" })
+    const wrappedTerm = terms.find((t) => t.id === tabId)
+    this.socket.emit('term.input', { id: wrappedTerm.id, input: "printf '\\033c'\r", shared: wrappedTerm.shared })
   }
 
   clearScrollBuffer (tabId) {
-    const term = _.find(terms, term => term.id == tabId)
-    term.clearScrollbackBuffer()
+    const wrappedTerm = terms.find((t) => t.id === tabId)
+    wrappedTerm.term.clearScrollbackBuffer()
   }
 
   reset (tabId) {
-    const term = _.find(terms, term => term.id == tabId)
-    this.socket.emit('term.input', { id: term.id, input: '\f' })
+    const wrappedTerm = terms.find((t) => t.id === tabId)
+    this.socket.emit('term.input', { id: wrappedTerm.id, input: '\f', shared: wrappedTerm.shared })
   }
 
   input (tabId, inputString) {
-    const term = _.find(terms, term => term.id == tabId)
-    this.socket.emit('term.input', { id: term.id, input: inputString })
+    const wrappedTerm = terms.find((t) => t.id === tabId)
+    this.socket.emit('term.input', { id: wrappedTerm.id, input: inputString, shared: wrappedTerm.shared })
   }
 
   inputFilePath (tabId, inputPath) {

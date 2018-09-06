@@ -103,7 +103,10 @@ class TtySocketClient {
         reconnectionAttempts: 5,
         path: '/coding-ide-tty',
         // path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect`,
-        transports: ['websocket']
+        transports: ['websocket'],
+        query: {
+          globalKey: config.globalKey,
+        }
       })
     } else {
       this.socket = io.connect(config.baseURL, { resource: 'coding-ide-tty1' })

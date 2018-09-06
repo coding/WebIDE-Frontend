@@ -46,15 +46,22 @@ class TerminalContainer extends Component {
       showEnv: false,
       fullScreenActiveContent: false,
     })
+    this.tabGroup = new TabGroup({ id: 'terminalGroup' })
     readFile('/.coding-ide/settings.json')
       .then((data) => {
         const { content } = data
         const settings = JSON.parse(content)
-        console.log(settings)
+        const { terminal } = settings
+        if (terminal && terminal.length > 0) {
+          for (const term of terminal) {
+            const tab = new Tab({ id: term, shared: true })
+            this.tabGroup.addTab(tab)
+          }
+        } else {
+          const tab = new Tab()
+          this.tabGroup.addTab(tab)
+        }
       })
-    const tab = new Tab()
-    this.tabGroup = new TabGroup({ id: 'terminalGroup' })
-    this.tabGroup.addTab(tab)
 
     this.handleEnv = this.handleEnv.bind(this)
     this.onEnvHide = this.onEnvHide.bind(this)
