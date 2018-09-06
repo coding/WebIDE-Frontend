@@ -198,16 +198,28 @@ class Initialize extends Component {
         )
       } else if (state.errorCode === 3019) {
         errorInfo = null
+        // info = (
+        //   <div className='loading-info'>
+        //     {i18n`global.oauthNotFound`}
+        //   </div>
+        // )
+        // requestInfo = (
+        //   <div className='request-info'>
+        //     <button className='btn btn-primary' onClick={this.handleBindQcloud}>{i18n`global.gotoOauth`}</button>
+        //     {/*<button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>*/}
+        //     {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
+        //   </div>
+        // )
         info = (
           <div className='loading-info'>
-            {i18n`global.oauthNotFound`}
+            {i18n`global.offlineInfo`}
           </div>
         )
         requestInfo = (
           <div className='request-info'>
-            <button className='btn btn-primary' onClick={this.handleBindQcloud}>{i18n`global.gotoOauth`}</button>
-            {/*<button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>*/}
-            {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
+            <div className='link'>
+              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
+            </div>
           </div>
         )
       } else if (state.errorCode === 1) {
