@@ -52,6 +52,6 @@
    "machineOutofDateSoon2": "，如需继续使用，请",
    "and": "。",
    "loading": "正在加载，请稍后",
-   "offlineInfo": "Cloud Studio 已在腾讯云开发者平台中全面升级，欢迎前往体验。",
-   "gotoIDE": "前往新 Cloud Studio"
+   "offlineInfo": "Cloud Studio 的专用主机服务即将下线，请前往 ide.coding.net 使用我们的在线 IDE 服务。",
+   "gotoIDE": "前往 IDE"
 }
