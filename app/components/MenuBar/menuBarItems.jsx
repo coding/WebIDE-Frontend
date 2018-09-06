@@ -89,25 +89,6 @@ const menuBarItems = observable([
       },
       divider,
       {
-        key: 'stash',
-        name: i18n`menuBarItems.git.stashChanges`,
-        command: 'git:stash',
-        showMore: true,
-      },
-      {
-        key: 'unstash',
-        name: i18n`menuBarItems.git.unstashChanges`,
-        command: 'git:unstash',
-        showMore: true
-      },
-      {
-        key: 'reset',
-        name: i18n`menuBarItems.git.resetHead`,
-        command: 'git:reset_head',
-        showMore: true
-      },
-      divider,
-      {
         key: 'branches',
         name: i18n`menuBarItems.git.branches`,
         icon: 'octicon octicon-git-branch',
@@ -121,38 +102,6 @@ const menuBarItems = observable([
         command: 'git:merge',
         showMore: true
       },
-      {
-        key: 'tag',
-        name: i18n`menuBarItems.git.tag`,
-        command: 'git:tag',
-        showMore: true
-      },
-      divider,
-      {
-        key: 'rebase',
-        name: i18n`menuBarItems.git.rebase`,
-        command: 'git:rebase:start',
-        showMore: true
-      },
-      {
-        key: 'abort',
-        name: i18n`menuBarItems.git.abortRebase`,
-        command: 'git:rebase:abort',
-        getIsDisabled,
-      },
-      {
-        key: 'continue',
-        name: i18n`menuBarItems.git.continueRebase`,
-        command: 'git:rebase:continue',
-        getIsDisabled,
-      },
-      {
-        key: 'skipCommit',
-        name: i18n`menuBarItems.git.skipCommit`,
-        command: 'git:rebase:skip_commit',
-        showMore: true,
-        getIsDisabled,
-      }
     ]
   }, {
     key: 'tools',
