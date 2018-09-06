@@ -29,20 +29,20 @@ class GlobalPrompt extends Component {
       type: 'update'
     })
 
-    if (!localStorage.getItem('visited')) {
-      promptMessage.push({
-        content: (
-          <p>
-            WebIDE 现已全面升级为 Cloud Studio, 使用旧版 IDE 请点击{' '}
-            <a href='https://ide.coding.net' target='_blank' rel='noopener noreferrer'>
-              WebIDE
-            </a>{' '}
-          </p>
-        ),
-        id: `global-prompt-${id++}`,
-        type: 'update'
-      })
-    }
+    // if (!localStorage.getItem('visited')) {
+    //   promptMessage.push({
+    //     content: (
+    //       <p>
+    //         WebIDE 现已全面升级为 Cloud Studio, 使用旧版 IDE 请点击{' '}
+    //         <a href='https://ide.coding.net' target='_blank' rel='noopener noreferrer'>
+    //           WebIDE
+    //         </a>{' '}
+    //       </p>
+    //     ),
+    //     id: `global-prompt-${id++}`,
+    //     type: 'update'
+    //   })
+    // }
 
     if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
       promptMessage.push({
