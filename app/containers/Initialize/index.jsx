@@ -173,7 +173,7 @@ class Initialize extends Component {
         requestInfo = (
           <div className='request-info'>
             <div className='link'>
-              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
+              <a href='https://ide.coding.net' rel='noopener noreferrer' >{i18n`global.gotoIDE`}</a>
             </div>
           </div>
         )
