@@ -19,15 +19,15 @@ class GlobalPrompt extends Component {
     const promptMessage = []
     const { prompts } = this.state
 
-    promptMessage.push({
-      content: (
-        <p>
-          Cloud Studio 将于 9 月 6 日 19 点进行系统维护，预计时间为 30 分钟，敬请谅解。
-        </p>
-      ),
-      id: `global-prompt-${id++}`,
-      type: 'update'
-    })
+    // promptMessage.push({
+    //   content: (
+    //     <p>
+    //       Cloud Studio 将于 9 月 6 日 19 点进行系统维护，预计时间为 30 分钟，敬请谅解。
+    //     </p>
+    //   ),
+    //   id: `global-prompt-${id++}`,
+    //   type: 'update'
+    // })
 
     // if (!localStorage.getItem('visited')) {
     //   promptMessage.push({
