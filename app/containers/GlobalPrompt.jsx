@@ -19,6 +19,16 @@ class GlobalPrompt extends Component {
     const promptMessage = []
     const { prompts } = this.state
 
+    promptMessage.push({
+      content: (
+        <p>
+          Cloud Studio 将于 9 月 6 日 19 点进行系统维护，预计时间为 30 分钟，敬请谅解。
+        </p>
+      ),
+      id: `global-prompt-${id++}`,
+      type: 'update'
+    })
+
     if (!localStorage.getItem('visited')) {
       promptMessage.push({
         content: (
@@ -49,13 +59,17 @@ class GlobalPrompt extends Component {
     if (config.willExpire) {
       promptMessage.push({
         content: (
+          // <p>
+          //   {i18n`global.machineOutofDateSoon`}
+          //   <span className='important'>{i18n`global.outofDateSoon`}</span>
+          //   {i18n`global.machineOutofDateSoon2`}
+          //   <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
+          //   {i18n`global.and`}
+          //   <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
+          // </p>
           <p>
-            {i18n`global.machineOutofDateSoon`}
-            <span className='important'>{i18n`global.outofDateSoon`}</span>
-            {i18n`global.machineOutofDateSoon2`}
-            <a href='https://console.cloud.tencent.com/lighthosting' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
-            {i18n`global.and`}
-            <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
+            {i18n`global.offlineInfo`}
+            <a href='https://ide.coding.net' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,
