@@ -65,9 +65,14 @@ class EditorInfo {
     this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
       if (content !== monacoEditor.getValue()) {
+        this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
         monacoEditor.setValue(content)
       }
     }))
+
+    if (this.content && this.content.length > 0) {
+      this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
+    }
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
