@@ -43,40 +43,37 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
 })
 
 function tryIdentificationWorkSpaceType (files) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, _) => {
     const type = findLanguageByFileName(files)
     if (!type || type === '') {
-      const tasks = files.filter(file => file.isDir)
-        .map(task => api.fetchPath(task.path))
-      const result = Promise.all(tasks).then(res => {
-        console.log(res)
-        res.map(findLanguageByFileName)
+      Promise.all(
+        files.filter(file => file.isDir)
+          .map(async (task) => {
+            const result = await api.fetchPath(task.path)
+            const subType = findLanguageByFileName(result)
+            return Promise.resolve({ srcPath: task.path, type: subType })
+          })
+      )
+      .then((langSetting) => {
+        resolve(langSetting.filter(setting => setting.type !== ''))
       })
-      console.log(result)
-        // .map((taskPromise) => {
-        //   taskPromise.then((res) => {
-        //     if ()
-        //   })
-        // })
-      // for (const task of tasks) {
-      //   api.fetchPath(task.path)
-      //     .then((res) => {
-      //       const subType = findLanguageByFileName(res)
-      //       if (subType && subType !== '') {
-      //         return resolve({ type: subType, srcPath: task.path })
-      //       }
-      //     })
-      // }
     } else {
       resolve({ type, srcPath: '/' })
     }
   })
 }
 
-const setLanguageSetting = ({ type, srcPath }) => {
-  config.mainLanguage = capitalize(type)
-  settings.languageserver.projectType.value = capitalize(type)
-  settings.languageserver.sourcePath.value = srcPath
+const setLanguageSetting = (data) => {
+  if (is.array(data)) {
+    if (data.length > 0) {
+      console.log(data)
+    }
+  } else {
+    const { type, srcPath } = data
+    config.mainLanguage = capitalize(type)
+    settings.languageserver.projectType.value = capitalize(type)
+    settings.languageserver.sourcePath.value = srcPath
+  }
 }
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
