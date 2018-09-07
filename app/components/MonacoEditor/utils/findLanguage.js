@@ -27,7 +27,8 @@ function findLanguageByFileName (data) {
     const langConfig = supportLangServer[i]
     for (let j = 0; j < langConfig.files.length; j += 1) {
       const file = langConfig.files[j]
-      if (data.find(v => v.name === file)) {
+      const sourceFile = data.find(v => v.name === file)
+      if (sourceFile) {
         return langConfig.lang
       }
     }

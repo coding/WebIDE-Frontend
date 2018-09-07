@@ -42,14 +42,52 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
   })
 })
 
+function tryIdentificationWorkSpaceType (files) {
+  return new Promise((resolve, reject) => {
+    const type = findLanguageByFileName(files)
+    if (!type || type === '') {
+      const tasks = files.filter(file => file.isDir)
+        .map(task => api.fetchPath(task.path))
+      const result = Promise.all(tasks).then(res => {
+        console.log(res)
+        res.map(findLanguageByFileName)
+      })
+      console.log(result)
+        // .map((taskPromise) => {
+        //   taskPromise.then((res) => {
+        //     if ()
+        //   })
+        // })
+      // for (const task of tasks) {
+      //   api.fetchPath(task.path)
+      //     .then((res) => {
+      //       const subType = findLanguageByFileName(res)
+      //       if (subType && subType !== '') {
+      //         return resolve({ type: subType, srcPath: task.path })
+      //       }
+      //     })
+      // }
+    } else {
+      resolve({ type, srcPath: '/' })
+    }
+  })
+}
+
+const setLanguageSetting = ({ type, srcPath }) => {
+  config.mainLanguage = capitalize(type)
+  settings.languageserver.projectType.value = capitalize(type)
+  settings.languageserver.sourcePath.value = srcPath
+}
+
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
-    tryIdentificationWorkSpaceType(data)
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
-      const { type, srcPath } = res.data.default
-      config.mainLanguage = capitalize(type)
-      settings.languageserver.projectType.value = capitalize(type)
-      settings.languageserver.sourcePath.value = srcPath
+      if (res.code === 0 && res.data) {
+        setLanguageSetting(res.data.default)
+      } else {
+        tryIdentificationWorkSpaceType(data)
+          .then(setLanguageSetting)
+      }
     })
     return loadNodeData(data)
   })
@@ -90,16 +128,3 @@ export const syncFile = registerAction('fs:sync', (params) => {
       .then(files => files[0])
   }
 })
-
-function tryIdentificationWorkSpaceType(files) {
-  let type = findLanguageByFileName(files)
-  if (!type || type === '') {
-    const dirs = files.filter(file => file.isDir)
-      .forEach((file) => {
-        api.fetchPath(file.path)
-          .then((data) => {
-            console.log(data)
-          })
-      })
-  }
-}
