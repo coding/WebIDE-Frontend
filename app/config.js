@@ -58,7 +58,7 @@ const config = observable({
 
 autorun(() => {
   if (config.projectName && !config.isLib) {
-    window.document.title = `${config.workspaceName !== 'default' ? config.workspaceName : config.projectName} | Cloud Studio 开启云端开发模式！ -  Coding.net`
+    window.document.title = `${(config.workspaceName && config.workspaceName !== 'default') ? config.workspaceName : config.projectName} | Cloud Studio 开启云端开发模式！ -  Coding.net`
   }
 })
 
