@@ -31,16 +31,18 @@ class GeneratePackage extends Component {
 
     pathHandle(e) {
         const value = e.target.value;
-        if (!value) {
-            return;
-        }
         this.setState({path: value});
     }
 
     submit() {
-        api.generatePackage(this.state.path).then(res => {
+        const path = this.state.path;
+        if (!path) {
+            return;
+        }
+        api.generatePackage(path).then(res => {
             if (res.code === 0) {
                 dispatchCommand('modal:dismiss');
+                notify({ message: '打包成功' });
             }
             notify({message: res.msg});
         });

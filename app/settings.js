@@ -310,8 +310,8 @@ const settings = observable({
     ],
     theme: {
       name: 'settings.terminal.theme',
-      value: 'bright',
-      options: ['bright', 'dark'],
+      value: '白色',
+      options: ['白色', '黑色'],
       reaction (value) {
         emitter.emit(TERM_THEME_CHANGE, value)
       }

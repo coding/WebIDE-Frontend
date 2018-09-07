@@ -315,19 +315,19 @@ const fileCommands = {
   // 'file:unsaved_files_list':
   'file:open_welcome': (c) => {
     // const activeTabGroup = TabStore.getState().activeTabGroup
-    const existingTabs = TabStore.findTab(
-      tab => tab.type === 'welcome'
-    )
-    if (existingTabs.length) {
-      const existingTab = existingTabs[0]
-      existingTab.activate()
-    } else {
-      TabStore.createTab({
-        icon: 'fa fa-info-circle',
-        type: 'welcome',
-        title: 'Welcome',
-      })
-    }
+    // const existingTabs = TabStore.findTab(
+    //   tab => tab.type === 'welcome'
+    // )
+    // if (existingTabs.length) {
+    //   const existingTab = existingTabs[0]
+    //   existingTab.activate()
+    // } else {
+    //   TabStore.createTab({
+    //     icon: 'fa fa-info-circle',
+    //     type: 'welcome',
+    //     title: 'Welcome',
+    //   })
+    // }
   },
 }
 
