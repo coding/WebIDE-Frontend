@@ -43,10 +43,12 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
-      const { type, srcPath } = res.data.default
-      config.mainLanguage = capitalize(type)
-      settings.languageserver.projectType.value = capitalize(type)
-      settings.languageserver.sourcePath.value = srcPath
+      if (res.code === 0 && res.data) {
+        const { type, srcPath } = res.data.default
+        config.mainLanguage = capitalize(type)
+        settings.languageserver.projectType.value = capitalize(type)
+        settings.languageserver.sourcePath.value = srcPath
+      }
     })
     return loadNodeData(data)
   })
