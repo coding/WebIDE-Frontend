@@ -80,7 +80,6 @@ const setLanguageSetting = (data) => {
 
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
-    tryIdentificationWorkSpaceType(data)
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
       if (res.code === 0 && res.data) {
         setLanguageSetting(res.data.default)
@@ -128,16 +127,3 @@ export const syncFile = registerAction('fs:sync', (params) => {
       .then(files => files[0])
   }
 })
-
-function tryIdentificationWorkSpaceType(files) {
-  let type = findLanguageByFileName(files)
-  if (!type || type === '') {
-    const dirs = files.filter(file => file.isDir)
-      .forEach((file) => {
-        api.fetchPath(file.path)
-          .then((data) => {
-            console.log(data)
-          })
-      })
-  }
-}
