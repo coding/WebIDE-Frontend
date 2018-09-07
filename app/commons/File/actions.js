@@ -6,8 +6,8 @@ import { capitalize } from 'lodash'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
 import config from 'config'
+import { showModal } from 'components/Modal/actions'
 import { fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
-import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 import { findLanguageByFileName } from 'components/MonacoEditor/utils/findLanguage'
 import state, { FileNode } from './state'
 
@@ -66,7 +66,7 @@ function tryIdentificationWorkSpaceType (files) {
 const setLanguageSetting = (data) => {
   if (is.array(data)) {
     if (data.length > 0) {
-      console.log(data)
+      showModal({ type: 'ProjectTypeSelector', position: 'center', data })
     }
   } else {
     const { type, srcPath } = data
