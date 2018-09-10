@@ -51,5 +51,7 @@
    "machineOutofDateSoon": "您的专用主机",
    "machineOutofDateSoon2": "，如需继续使用，请",
    "and": "。",
-   "loading": "正在加载，请稍后"
+   "loading": "正在加载，请稍后",
+   "offlineInfo": "Cloud Studio 的专用主机服务即将全面升级，目前请先前往 ide.coding.net 使用我们的在线 IDE 服务。",
+   "gotoIDE": "前往 IDE"
 }
