@@ -8,7 +8,7 @@ import api from 'backendAPI'
 import config from 'config'
 import { showModal } from 'components/Modal/actions'
 import { fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
-import { findLanguageByFileName, findLanguagesByFileList } from 'components/MonacoEditor/utils/findLanguage'
+import { findLanguagesByFileList } from 'components/MonacoEditor/utils/findLanguage'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {

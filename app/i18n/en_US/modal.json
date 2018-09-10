@@ -7,5 +7,6 @@
   "libraryFolder": "Library Folder",
   "cancelButton": "Cancel",
   "nextButton": "Next",
-  "prevButton": "Previous"
+  "prevButton": "Previous",
+  "projectTypeSelector": "Select project type"
 }

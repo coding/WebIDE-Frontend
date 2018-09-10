@@ -20,13 +20,31 @@
 }
 
 .project-type-item {
-  display: flex;
   justify-content: space-between;
-  padding: 0px 15px;
   border-radius: 2px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+  margin-bottom: 3px;
+  background-color: #444;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 36px;
+  line-height: 36px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  .icon {
+    margin-right: 8px;
+  }
+  .highlight {
+    color: $ui-site-color-2;
+  }
   &:hover {
-    background-color: $tab-background-color-hover;
+    background-color: $ui-site-color-2;
   }
   &>p {
     margin: 10px 0px;

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
 import { capitalize } from 'lodash'
 import settings from 'settings'
+import icons from 'file-icons-js'
 import config from 'config'
-
+import i18n from 'utils/createI18n'
 import { setLanguageServerOne } from 'backendAPI/languageServerAPI'
 import { dismissModal } from 'components/Modal/actions'
 
@@ -20,10 +21,17 @@ class ProjectTypeSelector extends PureComponent {
     const { data } = this.props
     return (
       <div className='modal-content'>
-        <h2>选择项目类型</h2>
+        <h2>{i18n`modal.projectTypeSelector`}</h2>
         {data.map(v => (
-          <div className='project-type-item' key={`${v.type}${v.srcPath}`} onClick={() => this.handleClick(v)}>
-            <p className='project-type'>{v.type}</p>
+          <div
+            className='project-type-item'
+            key={`${v.type}${v.srcPath}`}
+            onClick={() => this.handleClick(v)}
+          >
+            <p className='project-type'>
+              <i className={`icon ${icons.db.matchLanguage(v.type).getClass(0)}`}></i>
+              {v.type}
+            </p>
             <p className='project-src'>{v.srcPath}</p>
           </div>
         ))}
