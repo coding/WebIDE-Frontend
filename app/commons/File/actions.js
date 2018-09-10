@@ -8,7 +8,7 @@ import api from 'backendAPI'
 import config from 'config'
 import { showModal } from 'components/Modal/actions'
 import { fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
-import { findLanguageByFileName } from 'components/MonacoEditor/utils/findLanguage'
+import { findLanguageByFileName, findLanguagesByFileList } from 'components/MonacoEditor/utils/findLanguage'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
@@ -44,21 +44,23 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
 
 function tryIdentificationWorkSpaceType (files) {
   return new Promise(async (resolve, _) => {
-    const type = findLanguageByFileName(files)
-    if (!type || type === '') {
+    const types = findLanguagesByFileList(files)
+      .map(type => ({ srcPath: '/', type }))
+    if (!types || types.length === 0) {
       Promise.all(
         files.filter(file => file.isDir)
           .map(async (task) => {
             const result = await api.fetchPath(task.path)
-            const subType = findLanguageByFileName(result)
-            return Promise.resolve({ srcPath: task.path, type: subType })
+            const subTypes = findLanguagesByFileList(result)
+              .map(type => ({ srcPath: task.path, type }))
+            return Promise.resolve(subTypes)
           })
       )
-      .then((langSetting) => {
-        resolve(langSetting.filter(setting => setting.type !== ''))
+      .then((langSettings) => {
+        resolve(flattenDeep(langSettings.filter(type => type.length > 0)))
       })
     } else {
-      resolve({ type, srcPath: '/' })
+      resolve(types)
     }
   })
 }
