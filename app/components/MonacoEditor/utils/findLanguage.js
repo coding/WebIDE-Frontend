@@ -36,6 +36,21 @@ function findLanguageByFileName (data) {
   return ''
 }
 
+/**
+ * 识别文件列表中可能存在的所有语言特征文件(pom.xml,package.json)
+ */
+function findLanguagesByFileList (files) {
+  return files.reduce((pre, cur) => {
+    for (let i = 0; i < supportLangServer.length; i += 1) {
+      const langConfig = supportLangServer[i]
+      const { name } = cur
+      if (langConfig.files.includes(name)) {
+        pre.push(langConfig.lang)
+      }
+    }
+    return pre
+  }, [])
+}
 
 function findModeByName (name) {
   name = name.toLowerCase()
@@ -55,5 +70,6 @@ export {
   findLangueByExt,
   findLanguageByFileName,
   findLanguageByextensions,
-  findModeByName
+  findModeByName,
+  findLanguagesByFileList,
 }
