@@ -30,3 +30,4 @@ export ImportFromGit from '../ImportFromGit';
 export ResetRemote from '../ResetRemote'
 export GitCommit from '../GitCommitView'
 export CreateProject from '../CreateProject'
+export ProjectTypeSelector from '../ProjectTypeSelector'

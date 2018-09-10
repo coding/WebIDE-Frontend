@@ -1,6 +1,6 @@
 import { observable, reaction } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
-import { lowerCase } from 'lodash';
+import { lowerCase } from 'lodash'
 import config from 'config'
 import {
   ShutdownRequest,
