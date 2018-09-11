@@ -10,6 +10,7 @@ const gitRevisionPlugin = new GitRevisionPlugin()
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
 const HappyPack = require('happypack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const os = require('os')
 
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
@@ -67,13 +68,14 @@ module.exports = function(options = {}) {
     optimization: {
       splitChunks: {
         cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
+          venders: {
+            test: /node_modules\/(?!(monaco-editor)\/)/,
             name: 'vendors',
-            minSize: 30000,
-            minChunks: 1,
-            chunks: 'initial',
-            priority: 1
+            chunks: 'all'
+          },
+          monaco: {
+            test: /node_modules\/monaco-editor\//,
+            name: 'vender-monaco'
           },
         }
       },
@@ -85,6 +87,7 @@ module.exports = function(options = {}) {
         __VERSION__: str(gitRevisionPlugin.commithash() + '@' + gitRevisionPlugin.version()),
         __PUBLIC_PATH__: str(publicPath)
       }),
+      new webpack.HashedModuleIdsPlugin(),
       // https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([
         {
@@ -108,7 +111,8 @@ module.exports = function(options = {}) {
       }),
       new WebpackBar({
         profile: true
-      })
+      }),
+      new BundleAnalyzerPlugin()
     ],
     module: {
       rules: [

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import config from 'config'
 import { autorun, observalbe, runInAction } from 'mobx'
 import { TtySocketClient } from 'backendAPI/websocketClients'
-import * as TabActions from 'components/Tab/actions'
 import * as maskActions from 'components/Mask/actions'
 import * as TermActions from './actions'
 import { readFile } from '../../backendAPI/fileAPI'
@@ -55,12 +54,17 @@ class TerminalClient extends TtySocketClient {
     })
 
     this.socket.on('shell.exit', (data) => {
-      let term
       const wrappedTerm = terms.find((t) => t.id === data.id)
       if (wrappedTerm) {
-        this.remove(term)
+        this.remove(wrappedTerm.term)
         return TermActions.removeTerminal(wrappedTerm.term.tabId)
       }
+    })
+
+    this.socket.on('shell.shared', (data) => {
+      const { sharer, id } = data
+      TermActions.addTerminal({ sharer, termId: id, shared: true })
+      console.log(`${sharer} shared terminal ${id}`)
     })
 
     // this.socket.on('port.found', function(ports) {
@@ -182,22 +186,22 @@ class TerminalClient extends TtySocketClient {
   getSocket () { return this.socket }
 
   clearBuffer (tabId) {
-    const wrappedTerm = terms.find((t) => t.id === tabId)
+    const wrappedTerm = terms.find((t) => t.tabId === tabId)
     this.socket.emit('term.input', { id: wrappedTerm.id, input: "printf '\\033c'\r", shared: wrappedTerm.shared })
   }
 
   clearScrollBuffer (tabId) {
-    const wrappedTerm = terms.find((t) => t.id === tabId)
+    const wrappedTerm = terms.find((t) => t.tabId === tabId)
     wrappedTerm.term.clearScrollbackBuffer()
   }
 
   reset (tabId) {
-    const wrappedTerm = terms.find((t) => t.id === tabId)
+    const wrappedTerm = terms.find((t) => t.tabId === tabId)
     this.socket.emit('term.input', { id: wrappedTerm.id, input: '\f', shared: wrappedTerm.shared })
   }
 
   input (tabId, inputString) {
-    const wrappedTerm = terms.find((t) => t.id === tabId)
+    const wrappedTerm = terms.find((t) => t.tabId === tabId)
     this.socket.emit('term.input', { id: wrappedTerm.id, input: inputString, shared: wrappedTerm.shared })
   }
 

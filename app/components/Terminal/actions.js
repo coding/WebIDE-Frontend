@@ -105,8 +105,9 @@ export function inputPath (inputPath) {
 }
 */
 
-export const addTerminal = registerAction('terminal:add', () => {
-  state.tabGroups.get('terminalGroup').addTab(new Tab())
+export const addTerminal = registerAction('terminal:add', (props) => {
+  console.log(props)
+  state.tabGroups.get('terminalGroup').addTab(new Tab(props))
 })
 
 // 如果没有，添加一个
@@ -131,6 +132,8 @@ export const sharedTerminal = registerAction('terminal:shared', (...args) => {
     }
     const { id } = terminal
     const socket = state.terminalManager.getSocket()
-    socket.emit('term.shared', { id, spaceKey: config.spaceKey })
+    socket.emit('term.shared', { id, spaceKey: config.spaceKey, globalKey: config.globalKey })
+    tab.shared = true
+    state.terminalManager.openTerm(terminal)
   }
 })

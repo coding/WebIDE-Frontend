@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { reaction, autorun } from 'mobx'
 import PropTypes from 'prop-types'
 import { Terminal } from 'xterm'
+import * as uuid from 'uuid'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/dist/xterm.css'
 Terminal.applyAddon(fit)
@@ -89,13 +90,15 @@ class Term extends Component {
 
     terminal.setOption('theme', theme)
 
+    const { tab } = this.props
     terminalManager.setActions(TabActions)
-    terminal.tabId = this.props.tab.id
-    this.props.tab.terminal = terminal
+    terminal.tabId = tab.id
+    tab.terminal = terminal
     terminal.open(this.termDOM)
     terminal.fit()
-    terminal.id = this.sessionId = _.uniqueId('term_')
-    terminalManager.add(terminal, this.props.tab.shared)
+    console.log(tab)
+    terminal.id = this.sessionId = (tab.shared && tab.sharer && tab.termId) ? tab.termId : uuid()
+    terminalManager.add(terminal, tab.shared)
     terminal.on('resize', ({ cols, rows }) => {
       terminalManager.resize(terminal, cols, rows)
     })
@@ -112,7 +115,7 @@ class Term extends Component {
     terminal.on('title', _.debounce((title) => {
       _this.props.tab.title = title
     }, 300))
-    this.props.tab.onActive = this.onActive
+    tab.onActive = this.onActive
   }
 
   componentWillUnmount () {
