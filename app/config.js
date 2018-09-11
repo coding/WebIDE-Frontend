@@ -1,8 +1,7 @@
 import { observable, autorun, reaction, when } from 'mobx'
 import getCookie from './utils/getCookie'
-
 const localStorage = window.localStorage
-
+const serverConfig = __DEV__ ? { HDD_ADJUST_ENABLE: true, CODING_URL: 'https://coding.net' } : window.serverConfig
 const config = observable({
   projectName: '',
   spaceKey: '',
@@ -14,12 +13,14 @@ const config = observable({
   requiredExtensions: [],
   _WORKSPACE_SUB_FOLDER_: '/',
   _ROOT_URI_: '',
-  baseURL: getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
-  packageDev: getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
-  packageServer: getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
-  langServerURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
-  wsURL: getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
-  staticServingURL: getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
+  langServerURL: serverConfig.WS_URL || getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
+  baseURL: serverConfig.BACKEND_URL || getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin,
+  packageDev: serverConfig.PACKAGE_DEV || getCookie('PACKAGE_DEV') || __PACKAGE_DEV__,
+  packageServer: serverConfig.HTML_BASE_URL || getCookie('PACKAGE_SERVER') || __PACKAGE_SERVER__ || window.location.origin,
+  wsURL: serverConfig.WS_URL || getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin,
+  staticServingURL: serverConfig.STATIC_SERVING_URL || getCookie('STATIC_SERVING_URL') || __STATIC_SERVING_URL__ || window.location.origin,
+  hddAdjustEnable: serverConfig.HDD_ADJUST_ENABLE,
+  codingURL: serverConfig.CODING_URL,
   runMode: __RUN_MODE__,
   __WORKSPACE_URI__: '',
   // isPlatform: Boolean(__RUN_MODE__),
