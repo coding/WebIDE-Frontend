@@ -201,6 +201,10 @@ class TerminalClient extends TtySocketClient {
   inputFilePath (tabId, inputPath) {
     this.input(tabId, BASE_PATH + inputPath)
   }
+
+  getTermById (id) {
+    return terms.find(term => term.id === id)
+  }
 }
 
 export default TerminalClient
