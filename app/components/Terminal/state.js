@@ -10,6 +10,7 @@ class Tab extends BaseTab {
   constructor (props = {}) {
     super()
     this.id = is.undefined(props.id) ? uniqueId('tab_') : props.id
+    this.cwd = props.cwd || null
     state.tabs.set(this.id, this)
   }
 }
