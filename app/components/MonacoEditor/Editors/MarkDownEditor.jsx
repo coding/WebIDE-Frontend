@@ -82,15 +82,6 @@ md.renderer.rules.bullet_list_open = (tokens, idx) => {
   return '<ul>'
 }
 
-md.renderer.rules.ordered_list_open = (tokens, idx) => {
-  let line
-  if (tokens[idx].lines && tokens[idx].level === 0) {
-    line = tokens[idx].lines[0]
-    return '<ol class="line" data-line="' + line + '">'
-  }
-  return '<ol>'
-}
-
 @observer
 class PreviewEditor extends Component {
   constructor (props) {
