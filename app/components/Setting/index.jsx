@@ -46,7 +46,7 @@ const SettingsView = inject((state) => {
     <div className='settings-view'>
       <div className='settings-container'>
         <div className='settings-header'>
-          <div className='tab-bar-header'>Settings</div>
+          <div className='tab-bar-header'>设置</div>
           <ul className='tab-bar-tabs'>
             {tabIds.map(tabId =>
               <li key={tabId}
