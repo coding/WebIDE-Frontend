@@ -75,7 +75,6 @@ class EditorInfo {
       }
     )
 
-    state.activeMonacoEditor = monacoEditor
 
     state.editors.set(this.uri, monacoEditor)
 
@@ -86,9 +85,7 @@ class EditorInfo {
           activeEditorListener({ uri: this.uri, editor: monacoEditor })
         }
       }
-    })
-
-    // 编辑器创建钩子
+    )
     if (state.mountListeners && state.mountListeners.length > 0) {
       for (const mountListener of state.mountListeners) {
         mountListener(monacoEditor)
