@@ -12,11 +12,11 @@ import { emitter, E } from 'utils'
 const WORKSPACE_PATH = '/home/coding/workspace'
 const BASE_PATH = '~/workspace'
 
-const getTermJSON = ({ id, cols, rows }) => ({
+const getTermJSON = ({ id, cols, rows, cwd }) => ({
   id,
   cols,
   rows,
-  cwd: WORKSPACE_PATH,
+  cwd: cwd || WORKSPACE_PATH,
   spaceKey: config.spaceKey,
 })
 
@@ -150,7 +150,8 @@ class TerminalClient extends TtySocketClient {
       const termJSON = getTermJSON({
         id: term.id,
         cols: term.cols,
-        rows: term.rows
+        rows: term.rows,
+        cwd: term.cwd
       })
       this.socket.emit('term.open', termJSON)
     }
