@@ -374,7 +374,8 @@ const settings = observable({
     },
     trim_trailing_whitespace: {
       name: 'settings.editor.trimTrailingWhitespace',
-      value: false,
+      value: 'off',
+      options: ['off', 'on'],
       disabled: !config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.trimTrailingWhitespace = value
@@ -382,7 +383,8 @@ const settings = observable({
     },
     insert_final_newline: {
       name: 'settings.editor.insertFinalNewline',
-      value: false,
+      value: 'off',
+      options: ['off', 'on'],
       disabled: !config.switchOldEditor,
       reaction (value) {
         if (EditorState) EditorState.options.insertFinalNewline = value
