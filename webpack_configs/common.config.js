@@ -38,9 +38,19 @@ module.exports = function(options = {}) {
 
   // Get short CommitId
   const commitId= execSync('git rev-parse --short HEAD').toString().replace('\n', '')
-  const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
-    ? `${process.env.TENCENT_COS_SERVER}/${commitId}/`
-    : path.join('/', staticDir, '/')
+  // const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
+  //   ? `${process.env.TENCENT_COS_SERVER}/${commitId}/`
+  //   : path.join('/', staticDir, '/')
+
+  let publicPath = ''
+  if (process.env.TENCENT_COS_SERVER) {
+    publicPath = `${process.env.TENCENT_COS_SERVER}/${commitId}/`
+  } else if (process.env.QINIU_BUCKET) {
+    publicPath = `${process.env.QINIU_SERVER}/`
+  } else {
+    publicPath = path.join('/', staticDir, '/')
+  }
+
   return {
     entry: {
       main: [path.join(PROJECT_ROOT, 'app')],

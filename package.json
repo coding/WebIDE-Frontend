@@ -18,6 +18,8 @@
     "clean": "rm -rf build",
     "build": "npm run clean && node --max_old_space_size=4096 node_modules/.bin/webpack --mode production && npm run after-build",
     "after-build": "node cdn.js",
+    "build-tencent": "npm run clean && node --max_old_space_size=4096 node_modules/.bin/webpack --mode production && npm run after-build-tencent",
+    "after-build-tencent": "node cdn.tencent.js",
     "lint-stats": "eslint --format node_modules/eslint-stats/byError.js app",
     "lint": "eslint app",
     "lintf": "eslint app --fix",
