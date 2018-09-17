@@ -31,8 +31,11 @@ module.exports = function(options = {}) {
     chunkFilename = '[name].[hash].chunk.js'
   } = options
 
-  const publicPath = process.env.QINIU_BUCKET // publicPath should end with '/'
-    ? `${process.env.QINIU_SERVER}/`
+  // const publicPath = process.env.QINIU_BUCKET // publicPath should end with '/'
+  //   ? `${process.env.QINIU_SERVER}/`
+  //   : path.join('/', staticDir, '/')
+  const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
+    ? `${process.env.TENCENT_COS_SERVER}/`
     : path.join('/', staticDir, '/')
   return {
     entry: {

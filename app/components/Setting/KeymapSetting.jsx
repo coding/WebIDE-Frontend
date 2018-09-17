@@ -1,7 +1,30 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { observer } from 'mobx-react'
 import i18n from 'utils/createI18n'
 import FormInputGroup from './FormInputGroup'
+
+const keymaps = [
+  { id: 0, cmd: i18n`settings.keymap.createFile`, mac: ['alt', 'n'], win: ['alt', 'n'] },
+  { id: 1, cmd: i18n`settings.keymap.createFolder`, mac: ['alt', 'shift', 'n'], win: ['alt', 'shift', 'n'] },
+  { id: 2, cmd: i18n`settings.keymap.saveFile`, mac: ['cmd', 's'], win: ['ctrl', 's'] },
+  { id: 3, cmd: i18n`settings.keymap.gitCommit`, mac: ['cmd', 'ctrl', 'c'], win: ['ctrl', 'alt', 'c'] },
+  { id: 4, cmd: i18n`settings.keymap.exitModal`, mac: ['esc'], win: ['esc'] },
+  { id: 5, cmd: i18n`settings.keymap.commandPalette`, mac: ['cmd', 'shift', 'p'], win: ['ctrl', 'shift', 'p'] },
+  { id: 6, cmd: i18n`settings.keymap.filePalette`, mac: ['cmd', 'p'], win: ['ctrl', 'p'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', '1'], win: ['ctrl', 'alt', '1'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', 'shift', '1'], win: ['ctrl', 'alt', 'shift', '1'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', '2'], win: ['ctrl', 'alt', '2'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', 'shift', '2'], win: ['ctrl', 'alt', 'shift', '2'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', '3'], win: ['ctrl', 'alt', '3'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', 'shift', '3'], win: ['ctrl', 'alt', 'shift', '3'] },
+  // { cmd: i18n`tab.contextMenu.horizontalSplit`, mac: ['cmd', 'alt', '4'], win: ['ctrl', 'alt', '4'] },
+  { id: 7, cmd: i18n`settings.keymap.showSettings`, mac: ['cmd', ','], win: ['ctrl', ','] },
+  { id: 8, cmd: i18n`file.goto`, mac: ['ctrl', 'g'], win: ['ctrl', 'g'] },
+  { id: 9, cmd: i18n`settings.keymap.toggleFormat`, mac: ['alt', 'l'], win: ['alt', 'l'] },
+  { id: 10, cmd: i18n`settings.keymap.toggleComment`, mac: ['cmd', '/'], win: ['ctrl', '/'] },
+  { id: 11, cmd: i18n`settings.keymap.into_zenmode`, mac: ['cmd', 'f11'], win: ['ctrl', 'f11'] },
+  { id: 12, cmd: i18n`settings.keymap.exit_zenmode`, mac: ['esc'], win: ['esc'] },
+]
 
 export default observer(({ content }) => (
   <div>
@@ -13,6 +36,30 @@ export default observer(({ content }) => (
           settingItem={settingItem}
         />
       )}
+      <table className="keymap-list">
+        <thead>
+          <tr>
+            <th>{i18n`settings.keymap.command`}</th>
+            <th>Mac {i18n`settings.keymap.keymap`}</th>
+            <th>Win {i18n`settings.keymap.keymap`}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            keymaps.map(keymap => <Row key={keymap.id} {...keymap} />)
+          }
+        </tbody>
+      </table>
     </div>
   </div>
 ))
+
+const Row = ({ cmd, mac, win }) => {
+  return (
+    <tr>
+      <td>{cmd}</td>
+      <td>{mac.map(key => <span className="key" key={key}>{key}</span>)}</td>
+      <td>{win.map(key => <span className="key" key={key}>{key}</span>)}</td>
+    </tr>
+  );
+}

@@ -5,6 +5,36 @@ import { observer } from 'mobx-react'
 import { dnd } from 'utils'
 import { defaultProps } from 'utils/decorators'
 import { dispatch } from '../../store'
+import * as Modal from '../../components/Modal/actions'
+import config from 'config'
+import dispatchCommand from 'commands/dispatchCommand'
+
+const closeFileTab = async (e, tab, removeTab) => {
+  e.stopPropagation()
+  if (tab.tabGroupId === 'terminalGroup') {
+    removeTab(tab.id)
+    return
+  }
+  const isMonaco = !config.switchOldEditor
+  const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
+  const content = (editor && editor.getValue) ? editor.getValue() : ''
+
+  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory') ) {
+    const confirmed = await Modal.showModal('Confirm', {
+      header: i18n`file.saveNew`,
+      message: i18n`file.newInfo`,
+    })
+    if (confirmed) {
+      Modal.dismissModal()
+      dispatchCommand('file:save')
+    } else {
+      Modal.dismissModal()
+      removeTab(tab.id)
+    }
+  } else {
+    removeTab(tab.id)
+  }
+}
 
 let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClickHandler }) => {
   const tabLabelId = `tab_label_${tab.id}`
@@ -18,6 +48,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       data-droppable='TABLABEL'
       draggable='true'
       onClick={e => activateTab(tab.id)}
+      onMouseUp={e => { e.button === 1 && removeTab(tab.id) }}
       onDoubleClick={() => {
         if (!tab.isActive) {
           activateTab(tab.id)
@@ -34,7 +65,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       {tab.icon ? <div className={`icon ${tab.icon}`}></div>: null}
       <div className='title'>{tab.title}</div>
       <div className='control'>
-        <i className='close' onClick={e => { e.stopPropagation(); removeTab(tab.id) }}>×</i>
+        <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>×</i>
         <i className='dot'></i>
       </div>
     </li>

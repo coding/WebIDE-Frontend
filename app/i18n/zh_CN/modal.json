@@ -7,5 +7,6 @@
   "libraryFolder": "库文件目录",
   "cancelButton": "取消",
   "nextButton": "下一步",
-  "prevButton": "上一步"
+  "prevButton": "上一步",
+  "projectTypeSelector": "选择项目类型"
 }

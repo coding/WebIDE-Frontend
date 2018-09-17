@@ -124,7 +124,7 @@ class Initialize extends Component {
         info = (
           <div className='loading-info warning'>Error</div>
         )
-      } else if (state.errorCode === 403 && state.status === 'RequestColl') {
+      } else if ((state.errorCode === 404 || state.errorCode === 403) && state.status === 'RequestColl') {
         errorInfo = null
         info = (
           <div className='loading-info'>
@@ -159,31 +159,30 @@ class Initialize extends Component {
         }
       } else if (state.errorCode === 2001) { // 已经过期
         errorInfo = null
-        let tencentLink = 'https://console.cloud.tencent.com/lighthosting'
-        config.serverInfo.hostStrId = 'lh-1vj4b3ry'
-        if (config.serverInfo.hostStrId) {
-          const { hostStrId, hostId } = config.serverInfo
-          tencentLink = `https://console.cloud.tencent.com/lighthosting/detail/${hostStrId}/overview/${hostId}`
-        }
+        // let tencentLink = 'https://console.cloud.tencent.com/lighthosting'
+        // config.serverInfo.hostStrId = 'lh-1vj4b3ry'
+        // if (config.serverInfo.hostStrId) {
+        //   const { hostStrId, hostId } = config.serverInfo
+        //   tencentLink = `https://console.cloud.tencent.com/lighthosting/detail/${hostStrId}/overview/${hostId}`
+        // }
         info = (
           <div className='loading-info'>
-            {i18n`global.machineOutofDate`}
+            {i18n`global.offlineInfo`}
           </div>
         )
         requestInfo = (
           <div className='request-info'>
-            <a href={tencentLink} className='btn btn-primary' target='_blank' rel='noopener noreferrer'>{i18n`global.renewals`}</a>
             <div className='link'>
-              <a href='https://dnspod.cloud.tencent.com/act/coding' target='_blank' rel='noopener noreferrer' >{i18n`global.actHint`}</a>
+              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
             </div>
           </div>
         )
-        hintInfo = (
-          <div className='hint-info'>
-            <Tip />
-            {i18n`global.renewalsHint`}
-          </div>
-        )
+        // hintInfo = (
+        //   <div className='hint-info'>
+        //     <Tip />
+        //     {i18n`global.renewalsHint`}
+        //   </div>
+        // )
       } else if (state.errorCode === 3021 || state.errorCode === 1097 || state.errorCode === 3020) {
         errorInfo = null
         info = (
@@ -199,16 +198,28 @@ class Initialize extends Component {
         )
       } else if (state.errorCode === 3019) {
         errorInfo = null
+        // info = (
+        //   <div className='loading-info'>
+        //     {i18n`global.oauthNotFound`}
+        //   </div>
+        // )
+        // requestInfo = (
+        //   <div className='request-info'>
+        //     <button className='btn btn-primary' onClick={this.handleBindQcloud}>{i18n`global.gotoOauth`}</button>
+        //     {/*<button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>*/}
+        //     {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
+        //   </div>
+        // )
         info = (
           <div className='loading-info'>
-            {i18n`global.oauthNotFound`}
+            {i18n`global.offlineInfo`}
           </div>
         )
         requestInfo = (
           <div className='request-info'>
-            <button className='btn btn-primary' onClick={this.handleBindQcloud}>{i18n`global.gotoOauth`}</button>
-            {/*<button className='btn btn-primary' onClick={() => window.open('https://coding.net/user/account/setting/oauth', '_blank')} >{i18n`global.gotoOauth`}</button>*/}
-            {/* <button className='btn btn-primary' onClick={() => window.location.href = `https://coding.net/api/oauth/qcloud/rebind?return_url=${window.location.href}`} >{i18n`global.gotoOauth`}</button> */}
+            <div className='link'>
+              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
+            </div>
           </div>
         )
       } else if (state.errorCode === 1) {
@@ -228,12 +239,13 @@ class Initialize extends Component {
           errorInfo = null
           info = (
             <div className='loading-info'>
-              {i18n`global.noMachine`}
+              {i18n`global.offlineInfo`}
             </div>
           )
           requestInfo = (
             <div className='request-info'>
-              <button className='btn btn-primary' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button>
+              {/* <button className='btn btn-primary' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button> */}
+              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
               <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net/ws/?ownerName=codingide&projectName=workstation-demo&isTry=true&open=README.md&envId=ide-tty-php-python-java`} >{i18n`global.tryIDE`}</button>
             </div>
           )

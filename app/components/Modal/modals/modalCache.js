@@ -37,6 +37,7 @@ import {
   ResetRemote,
   GitCommit,
   CreateProject,
+  ProjectTypeSelector,
 } from './index'
 
 const modalCache = observable.map({
@@ -72,7 +73,8 @@ const modalCache = observable.map({
   ImportFromGit,
   ResetRemote,
   GitCommitView: GitCommit,
-  CreateProject
+  CreateProject,
+  ProjectTypeSelector
 })
 
 window.modalCache = modalCache

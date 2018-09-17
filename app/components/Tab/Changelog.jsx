@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
-import marked from 'marked'
+import Remarkable from 'remarkable'
 import md from '../../../static/changelog/changelog.md'
 
-const style = {
-  textAlign: 'left',
-  marginTop: '2em'
-}
+const remarkable = new Remarkable('full', {
+  html: true,
+  xhtmlOut: false,
+  breaks: false,
+  langPrefix: 'language-',
+  linkify: true,
+  linkTarget: '_blank',
+  typographer: false,
+  quotes: '“”‘’',
+})
 
 const Changelog = () => (
-  <div dangerouslySetInnerHTML={{ __html: marked(md) }}
-    className='welcome-page' style={style}
-  >
-  </div>
+  <div className='changelog-page' dangerouslySetInnerHTML={{ __html: remarkable.render(md) }}></div>
 )
 
 export default Changelog

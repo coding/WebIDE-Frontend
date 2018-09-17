@@ -6,7 +6,7 @@ import TabStore from 'components/Tab/store'
 import TabState from 'components/Tab/state'
 import FileState from 'commons/File/state'
 import FileStore from 'commons/File/store'
-import { notify } from '../../components/Notification/actions'
+import { notify, NOTIFY_TYPE } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import icons from 'file-icons-js'
 import config from 'config'
@@ -47,22 +47,6 @@ function createFolderAtPath (path) {
     Modal.updateModal({ statusMessage: err.msg }).then(createFolderAtPath)
   )
 }
-
-// export function openFile (obj, callback) {
-//   if (!obj.path) return
-//   // 做一些encoding的调度
-//   if (FileState.initData.get('_init')) {
-//     when(() => !FileState.initData.get('_init'), () => {
-//       const { encoding } = FileState.initData.get(obj.path) || {}
-//       openFileWithEncoding({ ...obj, encoding, callback })
-//       FileState.initData.set(obj.path, {})
-//     })
-//   } else {
-//     const { encoding } = FileState.initData.get(obj.path) || {}
-//     openFileWithEncoding({ ...obj, encoding, callback })
-//     FileState.initData.set(obj.path, {})
-//   }
-// }
 
 const getMIME = (path) => {
   let contentType = mime.lookup(path);
@@ -155,7 +139,7 @@ export function initOpenFile(tabs, tabGroups) {
         const index = tabs.findIndex(tab => tab.id === activeTabId);
         if (index >= 0) {
           const { path, contentType } = tabs[index];
-          openFile({ 
+          openFile({
             path,
             contentType
           });
@@ -316,9 +300,7 @@ const fileCommands = {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
     const isMonaco = !config.switchOldEditor
-
     const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
-
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       const defaultPath = activeTab._title ? `/${activeTab._title}` : '/untitled'
@@ -448,6 +430,61 @@ const fileCommands = {
   },
   'file:open_about': () => {
     Modal.showModal({ type: 'About', position: 'center' })
+  },
+
+  'file:add_ignore': (c) => {
+    const ignorePath = '/.gitignore'
+    const ignoreExists = FileStore.get(ignorePath)
+
+    const { isDir, path } = c.context
+    const patchTxt = isDir ? `${path}/` : path
+
+    if (ignoreExists) {
+      api.readFile(ignorePath)
+      .then(ignoreFile => {
+        const ignoreContent = ignoreFile.content
+        !ignoreContent.split('\n').some(item => patchTxt.startsWith(item)) ?
+        api.writeFile(
+          ignorePath,
+          ignoreFile.content ? `${ignoreFile.content}\n${patchTxt}`
+                             : patchTxt
+        )
+        .then(res => {
+          FileStore.updateFile({
+            path: ignorePath,
+            isSynced: true,
+            lastModified: res.lastModified,
+          })
+
+          notify({ message: i18n`file.updateIgnoreSuccess` })
+          openFile({ path: ignorePath })
+        })
+        .catch(err => {
+          notify({
+            notifyType: NOTIFY_TYPE.ERROR,
+            message: i18n`file.updateIgnoreFailed${{err: err.msg}}`
+          })
+        }) : notify({ message: i18n`file.updateIgnoreTip${{path}}` })
+      })
+    } else {
+      api.createFile(ignorePath, patchTxt)
+      .then((res) => {
+        if (res.msg) {
+          throw new Error(res.msg);
+        }
+      })
+      .then(() => api.writeFile(ignorePath, patchTxt))
+      .then(() => {
+        notify({ message: i18n`file.updateIgnoreSuccess` })
+        openFile({ path: ignorePath })
+      })
+      .catch(err => {
+        notify({
+          notifyType: NOTIFY_TYPE.ERROR,
+          message: i18n`file.updateIgnoreFailed${{err: err.msg}}`
+        })
+      })
+    }
   }
 }
 

@@ -7,12 +7,18 @@ import Remarkable from 'remarkable'
 import { observer } from 'mobx-react'
 import CodeEditor from './CodeEditor'
 import * as actions from './actions'
+import scrollMixin from './scrollMixin';
 // import mdMixin from './mdMixin'
 
 // CodeEditor.use(mdMixin)
 
+const eventXSSReg = /\son[a-z]{3,20}=('\S*'|"\S*")/ig;
+const hrefXSSReg = /\shref=('javascript:\S+'|"javascript:\S+")/ig;
+const scriptLtReg = /<(\/?script)/ig;
+const scriptGtReg = /(\/?script)>/ig;
+
 const md = new Remarkable('full', {
-  html:         false,        // Enable HTML tags in source
+  html:         true,        // Enable HTML tags in source
   xhtmlOut:     false,        // Use '/' to close single tags (<br />)
   breaks:       false,        // Convert '\n' in paragraphs into <br>
   langPrefix:   'language-',  // CSS language prefix for fenced blocks
@@ -29,7 +35,7 @@ const md = new Remarkable('full', {
   // Highlighter function. Should return escaped HTML,
   // or '' if input not changed
   highlight: (str, lang) => {
-    require('highlight.js/styles/github-gist.css')
+    require('highlight.js/styles/monokai-sublime.css')
     const hljs = require('highlight.js')
     if (lang && hljs.getLanguage(lang)) {
       try {
@@ -67,6 +73,24 @@ md.renderer.rules.heading_open = (tokens, idx) => {
   return '<h' + tokens[idx].hLevel + '>'
 }
 
+md.renderer.rules.bullet_list_open = (tokens, idx) => {
+  let line
+  if (tokens[idx].lines && tokens[idx].level === 0) {
+    line = tokens[idx].lines[0]
+    return '<ul class="line" data-line="' + line + '">'
+  }
+  return '<ul>'
+}
+
+md.renderer.rules.ordered_list_open = (tokens, idx) => {
+  let line
+  if (tokens[idx].lines && tokens[idx].level === 0) {
+    line = tokens[idx].lines[0]
+    return '<ol class="line" data-line="' + line + '">'
+  }
+  return '<ol>'
+}
+
 @observer
 class PreviewEditor extends Component {
   constructor (props) {
@@ -78,19 +102,17 @@ class PreviewEditor extends Component {
   }
 
   render () {
-    const { content, editor } = this.props
+    const { content } = this.props
+    const html = md.render(content).replace(eventXSSReg, '').replace(hrefXSSReg, '').replace(scriptLtReg, '&lt;$1').replace(scriptGtReg, '$1&gt;');
     return (
-      <div name='markdown_preview' className='markdown content' ref={(dom) => {
-        this.previewDOM = dom
-        editor.previewDOM = dom
-      }}>
-        { this.makeHTMLComponent(md.render(content)) }
+      <div name='markdown_preview' className='markdown content'>
+        {this.makeHTMLComponent(html) }
       </div>
     )
   }
 }
 
-const startResize = (sectionId, e, actions, state) => {
+const startResize = (e, actions, state) => {
   if (e.button !== 0) return // do nothing unless left button pressed
       e.preventDefault()
       let oX = e.pageX // origin x-distince
@@ -99,10 +121,10 @@ const startResize = (sectionId, e, actions, state) => {
         // get destination of difference of two distince x
         const dX = oX - e.pageX
         // get destination of difference of two distince y
-        let dY = oY - e.pageY
+        const dY = oY - e.pageY
         oX = e.pageX // reset x
         oY = e.pageY // reset y
-        actions.editorResize(sectionId, dX, dY, state)
+        actions.editorResize(dX, state, 'editor_preview_markdown_editor', 'editor_preview_preview')
       }
 
   const stopResize = () => {
@@ -113,12 +135,8 @@ const startResize = (sectionId, e, actions, state) => {
   window.document.addEventListener('mouseup', stopResize)
 }
 
-const ResizeBar = ({ parentFlexDirection, sectionId, startResize, actions, state }) => {
-  let barClass = (parentFlexDirection == 'row') ? 'col-resize' : 'row-resize'
-  return (
-    <div className={cx('resize-bar', barClass)} style={{ position: 'relative' }}
-      onMouseDown={e => startResize(sectionId, e, actions, state)}
-    />)
+const ResizeBar = ({ startResize, actions, state }) => {
+  return <div className="resize-bar col-resize" onMouseDown={e => startResize(e, actions, state)}/>
 }
 
 @observer
@@ -136,87 +154,57 @@ class MarkdownEditor extends Component {
 
     this.state = observable({
       previewContent: '',
-      tokens: []
+      tokens: [],
     })
   }
 
-  componentDidMount () {
-    const dispose = autorun(() => {
+  componentDidMount() {
+    autorun(() => {
       this.setPreviewContent(this.props.editorInfo.file.content)
     })
+  }
+
+  componentDidUpdate() {
+    if (this.previewDOM) {
+      scrollMixin(this.props.editorInfo.monacoEditor, this.previewDOM);
+    }
   }
 
   setPreviewContent = debounce((content) => {
     this.state.previewContent = content
   }, 500)
 
-  render () {
+  render() {
     const { editor, tab, active, editorInfo } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
-    return (<div
-      name='markdown_editor_container'
-      style={{
-        display: 'flex',
-        width: '100%',
-        height: '100%'
-      }}
-    >
-      <div name='toolbal_commands' style={{
-        position: 'absolute',
-        top: '10px',
-        right: '20px',
-        zIndex: '3'
-      }}
-      >
-        {(showPreview && !showBigSize) ? (<i className='fa fa-expand' style={{ color: '#999' }}
-          onClick={() => actions.togglePreviewSize({ state: tab })}
-        ></i>) : ((showPreview) ? (
-          <i className='fa fa-compress' style={{ color: '#999' }} onClick={() => actions.togglePreviewSize({ state: tab })} />
-          ) : null)
-        }
-        {!showPreview ? <i className='fa fa-eye' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} /> :
-        <i className='fa fa-eye-slash' style={{ marginLeft: '10px', color: '#999' }} onClick={() => actions.togglePreview({ state: tab })} />
-      }
-      </div>
-      <div name='body'
-        style={{
-          display: 'flex',
-          width: '100%',
-          height: '100%'
-        }}
-      >
-      <div
-        name='editor'
-        id='editor_preview_markdown_editor'
-        style={{
-          flexGrow: leftGrow,
-          flexShrink: 0,
-          flexBasis: 0,
-          display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none'
-        }}
-      >
-        <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
-      </div>
-          {(showPreview && !showBigSize) ? (
-            <ResizeBar
-              sectionId={'editor_preview_markdown'}
-              parentFlexDirection={'row'}
-              startResize={startResize}
-              actions={actions}
-              state={tab}
-            />) : null}
-        {showPreview ? (
-          <div
-          name='preview'
-          id='editor_preview_preview'
-          style={{
-            flexGrow: rightGrow,
-            flexShrink: 0,
-            flexBasis: 0,
-          }}
-        >
-          <PreviewEditor content={this.state.previewContent} editor={editor} />
-        </div>) : null}
+    const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
+    const previewStyle = { flexGrow: rightGrow };
+    const expandIcon = showBigSize ? 'fa fa-compress' : 'fa fa-expand';
+    const eyeIcon = showPreview ? 'fa fa-eye-slash' : 'fa fa-eye';
+    return (
+      <div className="markdown-editor-container">
+        <div className="preview-action">
+          {
+            showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>
+          }
+          <i className={eyeIcon} onClick={() => actions.togglePreview({ state: tab })}></i>
+        </div>
+        <div className="wrap">
+          <div id='editor_preview_markdown_editor' style={editorStyle}>
+            <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
+          </div>
+          {
+            (showPreview && !showBigSize) && (
+              <ResizeBar startResize={startResize} actions={actions} state={tab} />
+            )
+          }
+          {
+            showPreview && (
+              <div id='editor_preview_preview' style={previewStyle} ref={dom => this.previewDOM = dom}>
+                <PreviewEditor content={this.state.previewContent} editor={editor} />
+              </div>
+            )
+          }
         </div>
       </div>
     )

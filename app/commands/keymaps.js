@@ -22,8 +22,9 @@ if (isMac) {
     'cmd+alt+4': 'editor:split_pane_vertical_4',
     'cmd+,': 'global:show_settings',
     'ctrl+g': 'editor:goto',
-    'alt+l': 'edit:toggle_format',
+    'alt+l': 'edit:toggle_format_monaco',
     'cmd+/': 'edit:toggle_comment',
+    'cmd+f11': 'tab:zenmode',
   }
   modifierKeysMap = {
     ctrl: '⌃',
@@ -49,8 +50,9 @@ if (isMac) {
     'ctrl+alt+4': 'editor:split_pane_vertical_4',
     'alt+,': 'global:show_settings',
     'ctrl+g': 'editor:goto',
-    'alt+l': 'edit:toggle_format',
+    'alt+l': 'edit:toggle_format_monaco',
     'ctrl+/': 'edit:toggle_comment',
+    'ctrl+f11': 'tab:zenmode',
   }
   modifierKeysMap = {
     ctrl: 'Ctrl',

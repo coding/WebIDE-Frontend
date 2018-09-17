@@ -1,6 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
+import mime from 'mime-types'
 
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
@@ -26,7 +27,7 @@ const typeDetect = (title, types) => {
 class EditorInfo {
   constructor (props = {}) {
     this.id = props.id || uniqueId('monaco_editor_')
-    this.contentType = props.contentType || 'TEXT'
+    this.contentType = props.contentType || mime.lookup(props.filePath)
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
@@ -64,14 +65,17 @@ class EditorInfo {
       }
     )
 
-    this.disposers.push(
-      observe(this, 'content', (change) => {
-        const content = change.newValue || ''
-        if (content !== monacoEditor.getValue()) {
-          monacoEditor.setValue(content)
-        }
-      })
-    )
+    this.disposers.push(observe(this, 'content', (change) => {
+      const content = change.newValue || ''
+      if (content !== monacoEditor.getValue()) {
+        this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
+        monacoEditor.setValue(content)
+      }
+    }))
+
+    if (this.content && this.content.length > 0) {
+      this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
+    }
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
@@ -294,6 +298,9 @@ class EditorInfo {
     }
     if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
       return 'markdownEditor'
+    }
+    if (typeDetect(this.file.name, ['html', 'htm'])) {
+      return 'htmlEditor'
     }
     if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
       return 'imageEditor'

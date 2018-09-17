@@ -1,4 +1,4 @@
-import { gitBlameNode, syncDirectory } from './actions'
+import { gitBlameNode, syncDirectory, isInVCS } from './actions'
 import i18n from 'utils/createI18n'
 
 const divider = { isDivider: true }
@@ -61,6 +61,12 @@ const items = [
       gitBlameNode(c)
     },
     id: 'filetree_menu_gitBlame',
+  },
+  {
+    name: i18n`fileTree.contextMenu.ignore`,
+    icon: 'fa',
+    command: 'file:add_ignore',
+    id: 'filetree_menu_ignore'
   }
 ]
 

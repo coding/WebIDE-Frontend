@@ -30,13 +30,27 @@
    },
    "keymap": {
     "main": "快捷键",
-    "keyboardMode": "编辑器键盘模式"
+    "keymap": "快捷键",
+    "keyboardMode": "编辑器键盘模式",
+    "command": "命令",
+    "createFile": "新建文件",
+    "createFolder": "新建文件夹",
+    "saveFile": "保存文件",
+    "commandPalette": "命令调色板",
+    "filePalette": "文件调色板",
+    "showSettings": "调出设置面板",
+    "exitModal": "退出模态框",
+    "gitCommit": "Git 提交",
+    "toggleFormat": "代码格式化",
+    "toggleComment": "切换注释",
+    "into_zenmode": "进入禅模式",
+    "exit_zenmode": "退出禅模式"
    },
    "appearance": {
       "main": "样式",
       "uiTheme": "UI 主题",
       "uiThemeOption": {
-         "baseTheme": "默认",
+         "light": "白色",
          "dark": "黑色"
       },
       "syntaxTheme": "代码着色",

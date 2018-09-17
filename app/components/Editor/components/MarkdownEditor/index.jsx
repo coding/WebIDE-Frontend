@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { autorun, extendObservable, observable, autorunAsync } from 'mobx'
 import debounce from 'lodash/debounce'
 import cx from 'classnames'
-import marked from 'marked'
 import Remarkable from 'remarkable'
 import { observer } from 'mobx-react'
 import CodeEditor from '../CodeEditor'
@@ -68,13 +67,6 @@ md.renderer.rules.heading_open = (tokens, idx) => {
   }
   return '<h' + tokens[idx].hLevel + '>'
 }
-
-marked.setOptions({
-  highlight: (code) => {
-    require('highlight.js/styles/github-gist.css')
-    return require('highlight.js').highlightAuto(code).value
-  },
-})
 
 @observer
 class PreviewEditor extends Component {
@@ -142,7 +134,7 @@ class MarkdownEditor extends Component {
         showPreview: true,
       })
     }
-    
+
     this.state = observable({
       previewContent: '',
       tokens: []

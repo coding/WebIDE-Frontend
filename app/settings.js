@@ -50,7 +50,7 @@ if (config.isLib) {
   ]
 } else {
   uiOptions = [
-    { name: 'settings.appearance.uiThemeOption.baseTheme', value: 'base-theme' },
+    { name: 'settings.appearance.uiThemeOption.light', value: 'light' },
     { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
   ]
 }
@@ -60,7 +60,7 @@ export const monacoThemeOptions = ['vs-dark']
 
 const changeUITheme = (nextThemeId) => {
   if (!config.switchOldEditor) {
-    if (nextThemeId === 'base-theme') {
+    if (nextThemeId === 'light') {
       monacoConfig.theme = 'vs-light'
     } else {
       monacoConfig.theme = 'vs-dark'
@@ -74,14 +74,16 @@ const changeUITheme = (nextThemeId) => {
       if (currentTheme && currentTheme.unuse) currentTheme.unuse()
       window.themes['@current'] = window.themes[nextThemeId] = module
       module.use()
-      window.themeVariables.replace(window.themes['@current'].locals)
+      window.themeVariables.replace(
+       window.themes['@current'].locals || window.themes['@current'].default.locals
+     )
     })
   }
 
   const editorTheme = EditorState.options.theme
   if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
     settings.appearance.syntax_theme.value = 'material'
-  } else if (nextThemeId === 'base-theme' && (editorTheme === 'monokai' || editorTheme === 'material')) {
+  } else if (nextThemeId === 'light' && (editorTheme === 'monokai' || editorTheme === 'material')) {
     settings.appearance.syntax_theme.value = 'default'
   }
   emitter.emit(THEME_CHANGED, nextThemeId)
@@ -299,7 +301,7 @@ const settings = observable({
         if (!!value) {
           if (ui_theme === 'dark' && syntax_theme !== 'material') {
             settings.appearance.syntax_theme.value = 'material'
-          } else if (ui_theme === 'base-theme' && syntax_theme !== 'default') {
+          } else if (ui_theme === 'light' && syntax_theme !== 'default') {
             settings.appearance.syntax_theme.value = 'default'
           }
         }
@@ -558,18 +560,6 @@ reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules }
     editorConfig.keys.forEach((key) => {
       settings.editor[key].disabled = false
     })
-  }
-})
-
-autorun(() => {
-  if (config.spaceKey !== '' && config.spaceKey !== 'default') {
-    fetchLanguageServerSetting(config.spaceKey)
-      .then((res) => {
-        const { type, srcPath } = res.data.default
-        config.mainLanguage = capitalize(type)
-        settings.languageserver.projectType.value = capitalize(type)
-        settings.languageserver.sourcePath.value = srcPath
-      })
   }
 })
 

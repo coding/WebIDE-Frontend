@@ -6,8 +6,9 @@ import { capitalize } from 'lodash'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
 import config from 'config'
-import { findLanguageByFileName } from 'components/MonacoEditor/utils/findLanguage'
-import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
+import { showModal } from 'components/Modal/actions'
+import { fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
+import { findLanguagesByFileList } from 'components/MonacoEditor/utils/findLanguage'
 import state, { FileNode } from './state'
 
 export function fetchPath (path) {
@@ -41,18 +42,54 @@ export const loadNodeData = registerAction('fs:load_node_data', (nodePropsList) 
   })
 })
 
+function tryIdentificationWorkSpaceType (files) {
+  return new Promise(async (resolve, _) => {
+    const types = findLanguagesByFileList(files)
+      .map(type => ({ srcPath: '/', type }))
+    if (!types || types.length === 0) {
+      Promise.all(
+        files.filter(file => file.isDir)
+          .map(async (task) => {
+            const result = await api.fetchPath(task.path)
+            const subTypes = findLanguagesByFileList(result)
+              .map(type => ({ srcPath: task.path, type }))
+            return Promise.resolve(subTypes)
+          })
+      )
+      .then((langSettings) => {
+        resolve(flattenDeep(langSettings.filter(type => type.length > 0)))
+      })
+    } else {
+      resolve(types)
+    }
+  })
+}
+
+const setLanguageSetting = (data) => {
+  if (is.array(data)) {
+    if (data.length > 0) {
+      showModal({ type: 'ProjectTypeSelector', position: 'center', data })
+    }
+  } else {
+    const { type, srcPath } = data
+    config.mainLanguage = capitalize(type)
+    settings.languageserver.projectType.value = capitalize(type)
+    settings.languageserver.sourcePath.value = srcPath
+  }
+}
+
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
-    const mainLanguage = findLanguageByFileName(data)
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
-      const { type } = res.data.default
-      if (
-        (!config.mainLanguage || config.mainLanguage !== '' || capitalize(type) !== mainLanguage) &&
-        mainLanguage !== ''
-      ) {
-        // config.mainLanguage = mainLanguage
-        settings.languageserver.projectType.value = mainLanguage
-        setLanguageServerOne({ type: mainLanguage, srcPath: '/' })
+      if (res.code === 0 && res.data) {
+        setLanguageSetting(res.data.default)
+      } else {
+        tryIdentificationWorkSpaceType(data)
+          .then(setLanguageSetting)
+        const { type, srcPath } = res.data.default
+        config.mainLanguage = capitalize(type)
+        settings.languageserver.projectType.value = capitalize(type)
+        settings.languageserver.sourcePath.value = srcPath
       }
     })
     return loadNodeData(data)

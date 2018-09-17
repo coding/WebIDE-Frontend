@@ -1,6 +1,6 @@
 import { observable, reaction } from 'mobx'
 import { listen } from 'vscode-ws-jsonrpc'
-import { lowerCase } from 'lodash';
+import { lowerCase } from 'lodash'
 import config from 'config'
 import {
   ShutdownRequest,
@@ -25,6 +25,7 @@ import {
   JAVA_RESOLVE_MAINCLASS,
   JAVA_UPDATE_DEBUG_SETTINGS,
   JAVA_PROJECT_CONFIGURATION_UPDATE,
+  LANGUAGE_PROGRESS_REPORT,
 } from 'components/MonacoEditor/languageRequestTypes'
 import { emitter } from 'utils'
 import isConfigFile from './utils/isConfigFile'
@@ -122,11 +123,23 @@ export class LanguageClient {
           .then(() => {
             this.ready = false
             this.client.onNotification(LANGUAGE_STATUS, this.onLanguageStatus)
+            this.client.onNotification(LANGUAGE_PROGRESS_REPORT, this.onLanguageProgressReport)
           })
         const disposable = this.client.start()
         connection.onClose(() => disposable.dispose())
       },
     })
+  }
+
+  onLanguageProgressReport = (report) => {
+    const { status, complete } = report
+    languageState.message = status
+    if (complete) {
+      const timer = setTimeout(() => {
+        languageState.message = ''
+        clearTimeout(timer)
+      }, 500)
+    }
   }
 
   onLanguageStatus = (report) => {
@@ -138,6 +151,7 @@ export class LanguageClient {
     if (report.type === 'Started' && !this.ready) {
       languageState.message = 'Language service is ready'
       this.ready = true
+      setTimeout(() => languageState.message = '', 3000)
     }
 
     if (report.type === 'Error') {

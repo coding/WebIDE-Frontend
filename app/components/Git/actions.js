@@ -6,6 +6,7 @@ import { createAction } from 'redux-actions'
 
 import Clipboard from 'clipboard'
 import i18n from 'utils/createI18n'
+import statusBarState from '../StatusBar/state'
 
 export const GIT_STATUS = 'GIT_STATUS'
 export const updateStatus = createAction(GIT_STATUS)
@@ -14,6 +15,7 @@ export const GIT_UPDATE_COMMIT_MESSAGE = 'GIT_UPDATE_COMMIT_MESSAGE'
 export const updateCommitMessage = createAction(GIT_UPDATE_COMMIT_MESSAGE)
 
 export function commit () {
+  statusBarState.displayBar = true
   return (dispatch, getState) => {
     const GitState = getState().GitState
     const stagedFiles = GitState.statusFiles.filter(file => file.isStaged)
@@ -23,9 +25,16 @@ export function commit () {
       files: stagedFilesPathList,
       message: GitState.commitMessage || initialCommitMessage,
     }).then((filetreeDelta) => {
+      statusBarState.displayBar = false
+      if (filetreeDelta.code) {
+        notify({ notifyType: NOTIFY_TYPE.ERROR, message: filetreeDelta.msg });
+        return;
+      }
       dispatch(updateCommitMessage(''))
       notify({ message: i18n`git.action.commitSuccess` })
       dismissModal()
+    }).catch(err => {
+      statusBarState.displayBar = false
     })
   }
 }
@@ -128,18 +137,23 @@ export function getTags () {
 }
 
 export function pull () {
+  statusBarState.displayBar = true
   return (dispatch) => {
     api.gitPull().then((res) => {
+      statusBarState.displayBar = false
       notify({ message: 'Git pull success.' })
     }).catch((res) => {
+      statusBarState.displayBar = false
       notify({ message: `Git pull fail: ${res.response.data.msg}` })
     })
   }
 }
 
 export function push () {
+  statusBarState.displayBar = true
   return (dispatch) => {
     api.gitPushAll().then((res) => {
+      statusBarState.displayBar = false
       if (res.nothingToPush) {
         notify({ message: 'Git push fail: nothing to push.' });
         return;
@@ -150,6 +164,7 @@ export function push () {
         notify({ message: `Git push fail: ${res.updates[0].status}` });
       }
     }).catch((res) => {
+      statusBarState.displayBar = false
       notify({ message: `Git push fail: ${res.response.data.msg}` })
     })
   }
@@ -283,11 +298,23 @@ export function addTag ({ tagName, ref, message, force }) {
 export function mergeBranch (branch) {
   return dispatch => api.gitMerge(branch).then((res) => {
     // Merge conflict 的情况也是 200 OK，但 sucecss:false
-    if (!res.success) return res
-    notify({ message: 'Merge success.' })
-    dismissModal()
+    if (!res.success) {
+      return res;
+    } else {
+      if (res.status === 'ALREADY_UP_TO_DATE') {
+        notify({ message: 'Nothing to merge, already up to date.' })
+      } else {
+        notify({ message: 'Merge success.' })
+      }
+      dismissModal();
+    }
   }).then((res) => {
-    if (res.status && res.status === 'CONFLICTING') {
+    if (!res) {
+      return;
+    }
+    if (res.status === 'FAILED') {
+      notify({ message: 'Merge failed.' });
+    } else if (res.status === 'CONFLICTING') {
       dismissModal()
       api.gitStatus().then(({ files, clean }) => {
         files = _.filter(files, file => file.status == 'CONFLICTION')

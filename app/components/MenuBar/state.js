@@ -6,8 +6,10 @@ import { observable } from 'mobx'
 const { state, MenuItem } = MenuScope(menuBarItems)
 
 autorun(() => {
-  state.items = observable.shallowArray(menuBarItems.map((opts) => {
-    return new MenuItem(opts)
+  state.items = observable.shallowArray(menuBarItems.sort((a, b) => {
+    return a.weight - b.weight;
+  }).map((opts) => {
+    return new MenuItem(opts);
   }))
 })
 

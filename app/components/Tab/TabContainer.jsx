@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { autorun } from 'mobx'
 import { observer } from 'mobx-react'
 import { TabBar, TabContent, TabContentItem } from 'commons/Tab'
 import MonacoEditor from 'components/MonacoEditor'
@@ -53,12 +54,15 @@ class TabContainer extends Component {
     this.state = {
       fullScreenActiveContent: false,
     }
+    autorun(() => {
+      this.setState({ fullScreenActiveContent: config.isFullScreen });
+    })
   }
 
-  handleFullScreen = (value) => {
+  handleFullScreen = () => {
     const { fullScreenActiveContent } = this.state
     this.setState({
-      fullScreenActiveContent: value || !fullScreenActiveContent
+      fullScreenActiveContent: !fullScreenActiveContent
     })
   }
 
