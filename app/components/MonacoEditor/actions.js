@@ -162,3 +162,11 @@ export const removeBreakPoint = registerAction('monaco:removeBreakPoint', (param
     }
   })
 })
+
+export const updateProgressMessage = registerAction('monaco:progressMessage', (params) => {
+  const { message, delay } = params
+  LanguageState.message = message
+  setTimeout(() => {
+    LanguageState.message = ''
+  }, delay || 1000)
+})
