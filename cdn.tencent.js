@@ -58,66 +58,89 @@ const walk = (dir) => {
 }
 
 /**
- * @param  {Objec} Tencent Cloud COS instance
- * @param  {Array} current file path
- * @param  {String} CommitId of newest version
- * @return {Promise} Result of uploading
+ * Slice files arrays to smallers
+ * @param  {Array} initial files array
+ * @param  {Number} sliceCount
+ * @return {Array} sliced files array
  */
-const putObject = (cos, file, commitId) => new Promise((resolve, reject) => {
-  cos.putObject({
-    Bucket: TENCENT_COS_BUCKET,
-    Region: TENCENT_COS_REGION,
-    Key: file.replace(STATIC_DIR, commitId),
-    Body: fs.createReadStream(file),
-    ContentLength: fs.statSync(file).size
-  }, (error, data) => {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
-  })
-})
+const sliceFiles = (arr, sliceCount = 20) => {
+  const files = []
+  for (let i = 0; i < arr.length; i += sliceCount) {
+    files.push(arr.slice(i, i + sliceCount))
+  }
 
+  return files
+}
 
 /**
  * Main function to upload
  */
-const upload = () => {
-  console.log('Start uploading to Tencent Cloud COS...\n')
-
-  const files = walk(STATIC_DIR)
+const upload = (files) => {
   const total = files.length
+  const errList = []
+  let index = 0
 
   const cos = new COS({
     SecretId: TENCENT_COS_SECRETID,
     SecretKey: TENCENT_COS_SECRETKEY,
+    FileParallelLimit: 20,
+    ChunkParallelLimit: 10,
+    ChunkSize: 1024 * 1024 * 1024,
   })
 
   getCommitId(true)
     .then((commitId) => {
-      Promise.all(files.map((file, index) => putObject(cos, file, commitId)
-        .then(() => {
-          console.log(`${index + 1}/${total}, uploading ${file}...`)
-        }, (err) => {
-          const tip = err.error.Code
-            ? `Upload [${file}] Error, ${err.error.Code}: ${err.error.Message}`
-            : 'Some error has occurred, please check code or network.'
+      sliceFiles(files).map((arr) => {
+        const filesArr = arr.map(item => ({
+          Key: item.replace(STATIC_DIR, commitId),
+          Bucket: TENCENT_COS_BUCKET,
+          Region: TENCENT_COS_REGION,
+          FilePath: item
+        }))
 
-          console.error(tip)
-        })))
-        .then(() => {
-          console.log('\nComplete uploading to Tencent Cloud COS.')
+        cos.uploadFiles({
+          files: filesArr,
+          SliceSize: 1024 * 1024,
+          onFileFinish (err, data, options) {
+            index++
+            console.log(
+              `${index}/${total}, ${options.FilePath} upload ${err ? 'failed' : 'completed'}`
+            )
+
+            if (err) {
+              errList.push(options.FilePath)
+            }
+
+            if (index === total) {
+              if (errList.length) {
+                console.log('\n\x1b[31m[ERROR] Failed to upload some files.\x1b[0m\n')
+                console.log('[INFO] Retry to upload...\n')
+
+                upload(errList)
+              } else {
+                console.log('\n\x1b[32m[INFO] Complete uploading to Tencent Cloud COS.\x1b[0m\n')
+                console.timeEnd('timer')
+              }
+            }
+          },
+        }, (err) => {
+          if (err) {
+            throw new Error(err)
+          }
         })
-    }, (error) => {
-      console.error(`Get commitid error: ${error}`)
+
+        return cos
+      })
     })
 }
 
 if (STATIC_DIR && TENCENT_COS_BUCKET && TENCENT_COS_REGION
  && TENCENT_COS_SECRETID && TENCENT_COS_SECRETKEY) {
   // Start to upload
-  upload()
+  console.time('timer')
+  const files = walk(STATIC_DIR)
+  console.log('[INFO] Start uploading to Tencent Cloud COS...\n')
+  upload(files)
 } else {
   console.warn('Require cdn config to upload static files.')
 }
