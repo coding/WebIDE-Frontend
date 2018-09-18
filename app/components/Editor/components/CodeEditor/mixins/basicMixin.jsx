@@ -11,12 +11,12 @@ function changeInterceptor (editor) {
   let modFileContent = fileContent
 
   const { trimTrailingWhitespace, insertFinalNewline } = editor.options
-  if (trimTrailingWhitespace) {
-    modFileContent = modFileContent.replace(/[ \t]+$/gm, '')
+  if (trimTrailingWhitespace === 'on') {
+    modFileContent = modFileContent.replace(/[ \t]+$/gm, '');
   }
 
-  if (insertFinalNewline) {
-    if (!modFileContent.endsWith('\n')) modFileContent += '\n'
+  if (insertFinalNewline === 'on') {
+    if (!modFileContent.endsWith('\n')) modFileContent += '\n';
   }
 
   if (modFileContent !== fileContent) {
