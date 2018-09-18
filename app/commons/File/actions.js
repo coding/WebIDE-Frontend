@@ -86,10 +86,6 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
       } else {
         tryIdentificationWorkSpaceType(data)
           .then(setLanguageSetting)
-        const { type, srcPath } = res.data.default
-        config.mainLanguage = capitalize(type)
-        settings.languageserver.projectType.value = capitalize(type)
-        settings.languageserver.sourcePath.value = srcPath
       }
     })
     return loadNodeData(data)
