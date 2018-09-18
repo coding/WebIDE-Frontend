@@ -44,9 +44,7 @@ module.exports = function(options = {}) {
   let publicPath = ''
   if (process.env.TENCENT_COS_SERVER) {
     // Get short CommitId
-    const commitId = execSync('git rev-parse --short HEAD')
-      .toString()
-      .replace('\n', '')
+    const commitId= execSync('git rev-parse --short HEAD').toString().replace('\n', '')
     publicPath = `${process.env.TENCENT_COS_SERVER}/${commitId}/`
   } else if (process.env.QINIU_BUCKET) {
     publicPath = `${process.env.QINIU_SERVER}/`
