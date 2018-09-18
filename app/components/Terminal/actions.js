@@ -105,8 +105,8 @@ export function inputPath (inputPath) {
 }
 */
 
-export const addTerminal = registerAction('terminal:add', () => {
-  state.tabGroups.get('terminalGroup').addTab(new Tab())
+export const addTerminal = registerAction('terminal:add', (props) => {
+  state.tabGroups.get('terminalGroup').addTab(new Tab(props))
 })
 
 // 如果没有，添加一个
