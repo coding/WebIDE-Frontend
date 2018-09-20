@@ -90,52 +90,52 @@ const upload = (files) => {
 
   getCommitId(true)
     .then((commitId) => {
-      sliceFiles(files).map((arr) => {
-        const filesArr = arr.map(item => ({
-          Key: item.replace(STATIC_DIR, commitId),
-          Bucket: TENCENT_COS_BUCKET,
-          Region: TENCENT_COS_REGION,
-          FilePath: item
-        }))
+      // sliceFiles(files).map((arr) => {
+      const filesArr = files.map(item => ({
+        Key: item.replace(STATIC_DIR, commitId),
+        Bucket: TENCENT_COS_BUCKET,
+        Region: TENCENT_COS_REGION,
+        FilePath: item
+      }))
 
-        cos.uploadFiles({
-          files: filesArr,
-          SliceSize: 1024 * 1024 * 10,
-          onProgress: (info) => {
-            const percent = parseInt(info.percent * 10000, 10) / 100
-            const speed = parseInt(info.speed / 1024 / 1024 * 100, 10) / 100
-            console.log('进度：' + percent + '%; 速度：' + speed + 'Mb/s;')
-          },
-          onFileFinish (err, data, options) {
-            index++
-            console.log(
-              `${index}/${total}, ${options.FilePath} upload ${err ? 'failed' : 'completed'}`
-            )
+      cos.uploadFiles({
+        files: filesArr,
+        SliceSize: 1024 * 1024 * 10,
+        onProgress: (info) => {
+          const percent = parseInt(info.percent * 10000, 10) / 100
+          const speed = parseInt(info.speed / 1024 / 1024 * 100, 10) / 100
+          console.log('进度：' + percent + '%; 速度：' + speed + 'Mb/s;')
+        },
+        onFileFinish (err, data, options) {
+          index++
+          console.log(
+            `${index}/${total}, ${options.FilePath} upload ${err ? 'failed' : 'completed'}`
+          )
 
-            if (err) {
-              errList.push(options.FilePath)
-            }
-
-            if (index === total) {
-              if (errList.length) {
-                console.log('\n\x1b[31m[ERROR] Failed to upload some files.\x1b[0m\n')
-                console.log('[INFO] Retry to upload...\n')
-
-                upload(errList)
-              } else {
-                console.log('\n\x1b[32m[INFO] Complete uploading to Tencent Cloud COS.\x1b[0m\n')
-                console.timeEnd('timer')
-              }
-            }
-          },
-        }, (err) => {
           if (err) {
-            throw new Error(err)
+            errList.push(options.FilePath)
           }
-        })
 
-        return cos
+          if (index === total) {
+            if (errList.length) {
+              console.log('\n\x1b[31m[ERROR] Failed to upload some files.\x1b[0m\n')
+              console.log('[INFO] Retry to upload...\n')
+
+              upload(errList)
+            } else {
+              console.log('\n\x1b[32m[INFO] Complete uploading to Tencent Cloud COS.\x1b[0m\n')
+              console.timeEnd('timer')
+            }
+          }
+        },
+      }, (err) => {
+        if (err) {
+          throw new Error(err)
+        }
       })
+
+      return cos
+      // })
     })
 }
 
