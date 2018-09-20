@@ -125,6 +125,7 @@ const upload = (files) => {
             } else {
               console.log('\n\x1b[32m[INFO] Complete uploading to Tencent Cloud COS.\x1b[0m\n')
               console.timeEnd('timer')
+              return Promise.resolve()
             }
           }
         },
