@@ -100,7 +100,12 @@ const upload = (files) => {
 
         cos.uploadFiles({
           files: filesArr,
-          SliceSize: 1024 * 1024,
+          SliceSize: 1024 * 1024 * 10,
+          onProgress: (info) => {
+            const percent = parseInt(info.percent * 10000, 10) / 100
+            const speed = parseInt(info.speed / 1024 / 1024 * 100, 10) / 100
+            console.log('进度：' + percent + '%; 速度：' + speed + 'Mb/s;')
+          },
           onFileFinish (err, data, options) {
             index++
             console.log(
