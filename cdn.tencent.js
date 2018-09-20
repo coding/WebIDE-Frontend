@@ -88,7 +88,7 @@ const upload = (files) => {
     ChunkSize: 1024 * 1024 * 1024,
   })
 
-  getCommitId(true)
+  return getCommitId(true)
     .then((commitId) => {
       // sliceFiles(files).map((arr) => {
       const filesArr = files.map(item => ({
@@ -131,11 +131,12 @@ const upload = (files) => {
         },
       }, (err) => {
         if (err) {
-          throw new Error(err)
+          // throw new Error(err)
+          return Promise.reject(err)
         }
       })
 
-      return cos
+      // return cos
       // })
     })
 }
