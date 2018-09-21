@@ -2,6 +2,7 @@ import mobxStore from '../../mobxStore'
 import { path as pathUtil } from '../../utils'
 import api from '../../backendAPI'
 import * as Modal from '../../components/Modal/actions'
+import uniqueId from 'lodash/uniqueId'
 import TabStore from 'components/Tab/store'
 import TabState from 'components/Tab/state'
 import FileState from 'commons/File/state'
@@ -182,8 +183,9 @@ export function openFile (obj, callback) {
         existingTab.editorInfo.setDebugDeltaDecorations()
       }
       existingTab.activate()
-      if (callback) callback()
+      if (callback) callback(existingTab.id)
     } else {
+      const tabId = uniqueId('tab_')
       TabStore.createTab({
         icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
         contentType,
@@ -191,15 +193,16 @@ export function openFile (obj, callback) {
           ...editor,
           filePath: path,
         },
+        id: tabId,
         ...others,
       })
       if (callback) {
-        callback()
+        callback(tabId)
       }
     }
   }).catch(e => {
     if (callback) {
-      callback();
+      callback(null);
     }
   })
 }

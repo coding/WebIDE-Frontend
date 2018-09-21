@@ -16,6 +16,7 @@ import LanguageClientState from './MonacoEditor/LanguageClientState'
 import * as SideBarAction from './Panel/SideBar/actions'
 import * as Terminal from './Terminal/actions'
 import * as TerminalState from './Terminal/state'
+import * as MonacoEditorActions from './MonacoEditor/actions'
 
 export {
   Accordion,
@@ -36,4 +37,5 @@ export {
   SideBarAction,
   Terminal,
   TerminalState,
+  MonacoEditorActions,
 }

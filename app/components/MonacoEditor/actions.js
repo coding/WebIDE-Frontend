@@ -91,40 +91,45 @@ export const createLanguageClient = registerAction('language:create_client', (la
 })
 
 export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordebugger', (params) => {
-  const { path, line, name, stoppedReason } = params
-  if (path.startsWith('jdt')) {
-    const languageClient = LanguageState.clients.get(config.mainLanguage)
-    const tabItem = TabState.tabs.get(`fake_${name}`)
-    if (tabItem && tabItem.editorInfo) {
-      // for debugger
-      tabItem.editorInfo.debug = true
-      tabItem.editorInfo.line = line
-      tabItem.editorInfo.stoppedReason = stoppedReason
-      tabItem.activate()
-      tabItem.editorInfo.setDebugDeltaDecorations()
-    } else {
-      languageClient.fetchJavaClassContent({ uri: path })
-        .then((data) => {
-          createTab({
-            title: name,
-            id: `fake_${name}`,
-            icon: 'fa fa-file-o',
-            editor: {
-              // selection,
-              line,
-              stoppedReason,
-              debug: true,
-              content: data,
-              readOnly: true,
-              filePath: path,
-            },
+  return new Promise((resolve, reject) => {
+    const { path, line, name, stoppedReason } = params
+    if (path.startsWith('jdt')) {
+      const languageClient = LanguageState.clients.get(config.mainLanguage)
+      const tabItem = TabState.tabs.get(`fake_${name}`)
+      if (tabItem && tabItem.editorInfo) {
+        // for debugger
+        tabItem.editorInfo.debug = true
+        tabItem.editorInfo.line = line
+        tabItem.editorInfo.stoppedReason = stoppedReason
+        tabItem.activate()
+
+        tabItem.editorInfo.setDebugDeltaDecorations()
+        resolve(`fake_${name}`)
+      } else {
+        languageClient.fetchJavaClassContent({ uri: path })
+          .then((data) => {
+            createTab({
+              title: name,
+              id: `fake_${name}`,
+              icon: 'fa fa-file-o',
+              editor: {
+                // selection,
+                line,
+                stoppedReason,
+                debug: true,
+                content: data,
+                readOnly: true,
+                filePath: path,
+              },
+            })
+            resolve(`fake_${name}`)
           })
-        })
+      }
+    } else {
+      const relativePath = path.substring((path.startsWith('file://') ? `file://${config.__WORKSPACE_URI__}` : config.__WORKSPACE_URI__).length)
+      openFile({ path: relativePath, editor: { filePath: relativePath, line, debug: true, stoppedReason } }, resolve)
     }
-  } else {
-    const relativePath = path.substring((path.startsWith('file://') ? `file://${config.__WORKSPACE_URI__}` : config.__WORKSPACE_URI__).length)
-    openFile({ path: relativePath, editor: { filePath: relativePath, line, debug: true, stoppedReason } })
-  }
+  })
 })
 
 export const cleardeltaDecorations = registerAction('monaco:cleardeltaDecorations', () => {
@@ -160,5 +165,32 @@ export const removeBreakPoint = registerAction('monaco:removeBreakPoint', (param
         tabs[key].editorInfo.removeDebuggerBreakPoint(params)
       }
     }
+  })
+})
+
+export const updateProgressMessage = registerAction('monaco:progressMessage', (params) => {
+  const { message, delay } = params
+  LanguageState.message = message
+  setTimeout(() => {
+    LanguageState.message = ''
+  }, delay || 1000)
+})
+
+export const resolveAdvancedDebuggerExpression = registerAction('monaco:debuggerexpression', (params) => {
+  return new Promise((resolve, reject) => {
+    toDefinitionForDebugger(params)
+      .then((tabId) => {
+        if (tabId) {
+          const fileTab = TabState.tabs.get(tabId)
+          if (!fileTab) {
+            reject(null)
+            return false
+          }
+
+          const { editorInfo } = fileTab
+          editorInfo.setViewZoneForBreakPoint(params)
+            .then(resolve)
+        }
+      })
   })
 })
