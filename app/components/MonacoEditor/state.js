@@ -1,4 +1,6 @@
 import uniqueId from 'lodash/uniqueId'
+import React from 'react'
+import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
@@ -11,7 +13,7 @@ import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { toDefinition } from 'components/MonacoEditor/actions'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
-
+import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
 
 const state = observable({
@@ -157,13 +159,40 @@ class EditorInfo {
               stoppedReason === 'definition'
                 ? 'monaco-glyphMargin-breakpoint'
                 : stoppedReason === 'breakpoint'
-                  ? 'monaco-glyphMargin-breakpoint-stopped'
-                  : 'monaco-glyphMargin-step-stopped'
+                ? 'monaco-glyphMargin-breakpoint-stopped'
+                : 'monaco-glyphMargin-step-stopped'
           }
         }
       ])
+      monacoEditor.setSelection({
+        startLineNumber: line,
+        startColumn: 1,
+        endLineNumber: line,
+        endColumn: 1
+      })
       monacoEditor.revealLineInCenter(line, 1)
     }
+  }
+
+  setViewZoneForBreakPoint = (breakpoint) => {
+    return new Promise((resolve, reject) => {
+      const { path, line } = breakpoint
+
+      this.monacoEditor.changeViewZones((changeAccessor) => {
+        const domNode = document.createElement('div')
+        const viewZoneId = changeAccessor.addZone({
+          afterLineNumber: line,
+          heightInLines: 2,
+          domNode,
+        })
+        const handleCancel = () => {
+          this.monacoEditor.changeViewZones((_changeAccessor) => {
+            _changeAccessor.removeZone(viewZoneId)
+          })
+        }
+        render(<ConditionWidget onChange={resolve} onCancel={handleCancel} breakpoint={breakpoint} />, domNode)
+      })
+    })
   }
 
   setDebuggerBreakPoint = (params) => {
@@ -185,6 +214,8 @@ class EditorInfo {
     )
     this.debugBreakPoints.set(line, newBreakPoint)
   }
+
+  resolve
 
   removeDebuggerBreakPoint = (params) => {
     const { line } = params

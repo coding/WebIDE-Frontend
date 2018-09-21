@@ -12,5 +12,6 @@ export default observable({
   fontSize: 13,
   contextmenu: false,
   theme: 'vs-dark',
-  glyphMargin: true
+  glyphMargin: true,
+  wordWrap: 'on',
 })
