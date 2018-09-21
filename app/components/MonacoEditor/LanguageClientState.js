@@ -63,10 +63,11 @@ export class LanguageClient {
     this._ROOT_URI_ = config.__WORKSPACE_URI__
     this.openeduri = new observable.map({})
     this.DESTROYED = false
-    this.client = null
     this.initialize()
     emitter.on('file:save', this.fileSaveMiddleware)
   }
+
+  @observable client = null;
 
   fileSaveMiddleware = (ctx) => {
     const { data } = ctx
