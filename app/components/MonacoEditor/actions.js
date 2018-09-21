@@ -159,7 +159,6 @@ export const removeBreakPoint = registerAction('monaco:removeBreakPoint', (param
   const tabs = TabState.tabs.toJS()
   Object.keys(tabs).forEach((key) => {
     const editor = tabs[key].editorInfo
-    console.log(params)
     if (editor && editor.model) {
       const { model } = tabs[key].editorInfo
       if (model.uri.toString() === params.path) {
