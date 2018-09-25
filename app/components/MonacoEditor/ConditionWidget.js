@@ -60,9 +60,9 @@ const InputContainer = styled.div`
 `
 
 const placeHolder = {
-  logMessage: i18n`monaco.logMessage`,
-  condition: i18n`monaco.condition`,
-  hitCondition: i18n`monaco.hitCondition`,
+  logMessage: i18n.get('monaco.logMessage'),
+  condition: i18n.get('monaco.condition'),
+  hitCondition: i18n.get('monaco.hitCondition'),
 }
 
 class ConditionWidget extends PureComponent {
