@@ -183,6 +183,7 @@ class EditorInfo {
         const viewZoneId = changeAccessor.addZone({
           afterLineNumber: line,
           heightInLines: 2,
+          afterColumn: 0,
           domNode,
         })
         const handleCancel = () => {
@@ -214,8 +215,6 @@ class EditorInfo {
     )
     this.debugBreakPoints.set(line, newBreakPoint)
   }
-
-  resolve
 
   removeDebuggerBreakPoint = (params) => {
     const { line } = params

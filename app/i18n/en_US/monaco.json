@@ -1,5 +1,8 @@
 {
   "logMessage": "Message to log when breakpoint is hit. Expressions within {} are interpolated. 'Enter' to accept, 'esc' to cancel.",
   "hitCondition": "Break when hit count condition is met. 'Enter' to accept, 'esc' to cancel.",
-  "condition": "Break when expression evaluates to true. 'Enter' to accept, 'esc' to cancel."
+  "condition": "Break when expression evaluates to true. 'Enter' to accept, 'esc' to cancel.",
+  "logLabel": "Log Message",
+  "conditionLabel": "Condition",
+  "hitConditionLabel": "Hit Condition"
 }
