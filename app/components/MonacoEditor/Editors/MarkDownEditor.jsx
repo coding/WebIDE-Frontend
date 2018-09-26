@@ -82,15 +82,6 @@ md.renderer.rules.bullet_list_open = (tokens, idx) => {
   return '<ul>'
 }
 
-md.renderer.rules.ordered_list_open = (tokens, idx) => {
-  let line
-  if (tokens[idx].lines && tokens[idx].level === 0) {
-    line = tokens[idx].lines[0]
-    return '<ol class="line" data-line="' + line + '">'
-  }
-  return '<ol>'
-}
-
 @observer
 class PreviewEditor extends Component {
   constructor (props) {
@@ -149,25 +140,23 @@ class MarkdownEditor extends Component {
         rightGrow: 50,
         showBigSize: false,
         showPreview: true,
-        collapseAuto: false,
       })
     }
 
     this.state = observable({
       previewContent: '',
-      tokens: []
+      tokens: [],
     })
   }
 
   componentDidMount() {
-    const dispose = autorun(() => {
+    autorun(() => {
       this.setPreviewContent(this.props.editorInfo.file.content)
     })
   }
 
   componentDidUpdate() {
-    if (!this.scrollFlag) {
-      this.scrollFlag = true;
+    if (this.previewDOM) {
       scrollMixin(this.props.editorInfo.monacoEditor, this.previewDOM);
     }
   }
@@ -181,7 +170,7 @@ class MarkdownEditor extends Component {
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
     const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
     const previewStyle = { flexGrow: rightGrow };
-    const expandIcon = showBigSize ? 'fa fa-expand' : 'fa fa-compress';
+    const expandIcon = showBigSize ? 'fa fa-compress' : 'fa fa-expand';
     const eyeIcon = showPreview ? 'fa fa-eye-slash' : 'fa fa-eye';
     return (
       <div className="markdown-editor-container">

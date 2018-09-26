@@ -50,7 +50,7 @@
       "main": "样式",
       "uiTheme": "UI 主题",
       "uiThemeOption": {
-         "baseTheme": "白色",
+         "light": "白色",
          "dark": "黑色"
       },
       "syntaxTheme": "代码着色",

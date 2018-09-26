@@ -16,7 +16,7 @@ import initialOptions from './monacoDefaultOptions'
 
 const state = observable({
   entities: observable.map({}),
-  options: observable.map({}),
+  options: observable.map({})
 })
 
 const typeDetect = (title, types) => {
@@ -47,27 +47,35 @@ class EditorInfo {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
 
-    const model = monaco.editor.getModel(
-      monaco.Uri.parse(this.uri).toString())
-      || monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri)
-    )
+    const model =
+      monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
+      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
     this.uri = model.uri._formatted
-    const monacoEditor = monaco.editor.create(this.monacoElement, {
-      ...initialOptions,
-      ...props,
-      model,
-    }, {
-      editorService: {
-        openEditor: toDefinition
+    const monacoEditor = monaco.editor.create(
+      this.monacoElement,
+      {
+        ...initialOptions,
+        ...props,
+        model
+      },
+      {
+        editorService: {
+          openEditor: toDefinition
+        }
       }
-    })
+    )
 
     this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
       if (content !== monacoEditor.getValue()) {
+        this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
         monacoEditor.setValue(content)
       }
     }))
+
+    if (this.content && this.content.length > 0) {
+      this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
+    }
     /**
      * tablesseditor 新建 tab 自动聚焦光标位置
      */
@@ -85,16 +93,23 @@ class EditorInfo {
 
     monacoEditor.onDidChangeCursorPosition((event) => {
       this.selections = monacoEditor.getSelections()
-      const { position: { lineNumber, column } } = event
+      const {
+        position: { lineNumber, column }
+      } = event
       this.cursorPosition = {
         ln: lineNumber,
-        col: column,
+        col: column
       }
     })
 
     if (props.selection) {
       const { startLineNumber, startColumn } = props.selection
-      const selection = new monaco.Selection(startLineNumber, startColumn, startLineNumber, startColumn)
+      const selection = new monaco.Selection(
+        startLineNumber,
+        startColumn,
+        startLineNumber,
+        startColumn
+      )
       this.selection = selection
       monacoEditor.setSelection(selection)
       monacoEditor.revealLineInCenter(startLineNumber, 1)
@@ -108,33 +123,42 @@ class EditorInfo {
     }
   }
 
-  @observable languageMode = ''
+  @observable
+  languageMode = ''
 
-  @observable selections = []
-  @observable cursorPosition = { ln: 1, col: 1 }
+  @observable
+  selections = []
+  @observable
+  cursorPosition = { ln: 1, col: 1 }
 
   setCursor (...args) {
     // TODO
   }
 
-  @computed get mode () {
+  @computed
+  get mode () {
     if (!this.filePath) return 'plaintext'
-    const mode = is.string(this.languageMode) ? findModeByName(this.languageMode).aliases[0] : this.languageMode
+    const mode = is.string(this.languageMode)
+      ? findModeByName(this.languageMode).aliases[0]
+      : this.languageMode
     return mode
   }
 
   setDebugDeltaDecorations = () => {
     if (this.debug) {
       const { line, monacoEditor, decorations, stoppedReason } = this
-      this.decorations = monacoEditor.deltaDecorations(!!decorations ? decorations : [], [
+      this.decorations = monacoEditor.deltaDecorations(decorations || [], [
         {
           range: new monaco.Range(line, 1, line, 1),
           options: {
-            isWholeLine: true,
+            isWholeLine: stoppedReason !== 'definition',
             className: 'monaco-debug-hightlight-content',
-            glyphMarginClassName: stoppedReason === 'breakpoint'
-              ? 'monaco-glyphMargin-breakpoint-stopped'
-              : 'monaco-glyphMargin-step-stopped'
+            glyphMarginClassName:
+              stoppedReason === 'definition'
+                ? 'monaco-glyphMargin-breakpoint'
+                : stoppedReason === 'breakpoint'
+                  ? 'monaco-glyphMargin-breakpoint-stopped'
+                  : 'monaco-glyphMargin-step-stopped'
           }
         }
       ])
@@ -145,17 +169,20 @@ class EditorInfo {
   setDebuggerBreakPoint = (params) => {
     const { line, verified } = params
     const debuggerBreakPoint = this.debugBreakPoints.get(line)
-    const newBreakPoint = this.monacoEditor.deltaDecorations(!!debuggerBreakPoint ? debuggerBreakPoint : [], [
-      {
-        range: new monaco.Range(line, 1, line, 1),
-        options: {
-          isWholeLine: false,
-          glyphMarginClassName: verified
-            ? 'monaco-glyphMargin-breakpoint'
-            : 'monaco-glyphMargin-breakpoint-unverified'
+    const newBreakPoint = this.monacoEditor.deltaDecorations(
+      debuggerBreakPoint || [],
+      [
+        {
+          range: new monaco.Range(line, 1, line, 1),
+          options: {
+            isWholeLine: false,
+            glyphMarginClassName: verified
+              ? 'monaco-glyphMargin-breakpoint'
+              : 'monaco-glyphMargin-breakpoint-unverified'
+          }
         }
-      }
-    ])
+      ]
+    )
     this.debugBreakPoints.set(line, newBreakPoint)
   }
 
@@ -170,7 +197,7 @@ class EditorInfo {
 
   clearDebugDeltaDecorations = () => {
     const { decorations } = this
-    this.decorations = this.monacoEditor.deltaDecorations(!!decorations ? decorations : [], [])
+    this.decorations = this.monacoEditor.deltaDecorations(decorations || [], [])
     this.debug = false
   }
 
@@ -186,12 +213,13 @@ class EditorInfo {
     return FileStore.syncFile({ path: this.filePath, encoding })
   }
 
-  @action update (props = {}) {
+  @action
+  update (props = {}) {
     extendObservable(this, props)
     assignProps(this, props, {
       tabId: String,
       filePath: String,
-      gitBlame: Object,
+      gitBlame: Object
     })
     if (!this.file && props.content) {
       this._content = props.content
@@ -202,15 +230,21 @@ class EditorInfo {
     }
   }
 
-  @observable _options = observable.map({})
-  @computed get options () {
+  @observable
+  _options = observable.map({})
+  @computed
+  get options () {
     const options = { ...state.options, ...this._options.toJS() }
     const self = this
     const descriptors = Object.entries(options).reduce((acc, [key, value]) => {
       acc[key] = {
         enumerable: true,
-        get () { return value },
-        set (v) { self._options.set(key, v) },
+        get () {
+          return value
+        },
+        set (v) {
+          self._options.set(key, v)
+        }
       }
       return acc
     }, {})
@@ -221,26 +255,39 @@ class EditorInfo {
     this._options = observable.map(value)
   }
 
+  @observable
+  tabId = ''
+  @computed
+  get tab () {
+    return TabStore.getTab(this.tabId)
+  }
 
-  @observable tabId = ''
-  @computed get tab () { return TabStore.getTab(this.tabId) }
+  @observable
+  filePath = undefined
+  @computed
+  get file () {
+    return FileStore.get(this.filePath)
+  }
 
-  @observable filePath = undefined
-  @computed get file () { return FileStore.get(this.filePath) }
-
-  @observable _content = ''
-  @computed get content () {
+  @observable
+  _content = ''
+  @computed
+  get content () {
     return this.file ? this.file.content : this._content
   }
-  set content (v) { return this._content = v }
+  set content (v) {
+    return (this._content = v)
+  }
 
-  @computed get revision () {
+  @computed
+  get revision () {
     return this.file ? this.file.revision : null
   }
 
-  @observable gitBlame = {
+  @observable
+  gitBlame = {
     show: false,
-    data: observable.ref([]),
+    data: observable.ref([])
   }
 
   @computed
@@ -251,6 +298,9 @@ class EditorInfo {
     }
     if (typeDetect(this.file.name, ['md', 'markdown', 'mdown'])) {
       return 'markdownEditor'
+    }
+    if (typeDetect(this.file.name, ['html', 'htm'])) {
+      return 'htmlEditor'
     }
     if (typeDetect(this.file.name, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'bmp'])) {
       return 'imageEditor'

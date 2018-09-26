@@ -53,7 +53,6 @@ class HtmlEditor extends Component {
                 rightGrow: 50,
                 showBigSize: false,
                 showPreview: false,
-                collapseAuto: false,
                 previewUniqueId: '1',
                 isResizing: false,
             });
@@ -73,7 +72,7 @@ class HtmlEditor extends Component {
         const { leftGrow, rightGrow, showBigSize, showPreview, previewUniqueId } = tab;
         const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
         const previewStyle = { flexGrow: rightGrow };
-        const expandIcon = showBigSize ? 'fa fa-expand' : 'fa fa-compress';
+        const expandIcon = showBigSize ? 'fa fa-compress' : 'fa fa-expand';
         const eyeIcon = showPreview ? 'fa fa-eye-slash' : 'fa fa-eye';
         return (
             <div className="html-editor-container">

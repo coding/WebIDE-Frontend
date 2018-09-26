@@ -40,5 +40,10 @@
       "terminal": "Terminal",
       "newTerminal": "New Terminal"
    },
+   "window": {
+        "main": "Window",
+        "zenMode": "Zen Mode",
+        "fullScreen": "Toggle Full Screen"
+    },
    "switch": "Switch to v1"
 }

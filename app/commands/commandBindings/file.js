@@ -300,9 +300,7 @@ const fileCommands = {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
     const isMonaco = !config.switchOldEditor
-
     const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
-
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       const defaultPath = activeTab._title ? `/${activeTab._title}` : '/untitled'
@@ -436,36 +434,44 @@ const fileCommands = {
 
   'file:add_ignore': (c) => {
     const ignorePath = '/.gitignore'
-    const ignoreFile = FileStore.get(ignorePath)
+    const ignoreExists = FileStore.get(ignorePath)
+
     const { isDir, path } = c.context
-    const patchTxt = isDir ? `${path}/*` : path
+    const patchTxt = isDir ? `${path}/` : path
 
-    if (ignoreFile) {
-      api.writeFile(
-        ignorePath,
-        ignoreFile.content ? `${ignoreFile.content}\n${patchTxt}`
-                           : patchTxt
-      )
-      .then(res => {
-        FileStore.updateFile({
-          path: ignorePath,
-          isSynced: true,
-          lastModified: res.lastModified,
-        })
+    if (ignoreExists) {
+      api.readFile(ignorePath)
+      .then(ignoreFile => {
+        const ignoreContent = ignoreFile.content
+        !ignoreContent.split('\n').some(item => patchTxt.startsWith(item)) ?
+        api.writeFile(
+          ignorePath,
+          ignoreFile.content ? `${ignoreFile.content}\n${patchTxt}`
+                             : patchTxt
+        )
+        .then(res => {
+          FileStore.updateFile({
+            path: ignorePath,
+            isSynced: true,
+            lastModified: res.lastModified,
+          })
 
-        notify({ message: i18n`file.updateIgnoreSuccess` })
-        openFile({ path: ignorePath })
-      })
-      .catch(err => {
-        notify({
-          notifyType: NOTIFY_TYPE.ERROR,
-          message: i18n`file.updateIgnoreFailed${err.msg}`
+          notify({ message: i18n`file.updateIgnoreSuccess` })
+          openFile({ path: ignorePath })
         })
+        .catch(err => {
+          notify({
+            notifyType: NOTIFY_TYPE.ERROR,
+            message: i18n`file.updateIgnoreFailed${{err: err.msg}}`
+          })
+        }) : notify({ message: i18n`file.updateIgnoreTip${{path}}` })
       })
     } else {
       api.createFile(ignorePath, patchTxt)
       .then((res) => {
-        res.msg ? throw new Error(res.msg) : ''
+        if (res.msg) {
+          throw new Error(res.msg);
+        }
       })
       .then(() => api.writeFile(ignorePath, patchTxt))
       .then(() => {
@@ -475,7 +481,7 @@ const fileCommands = {
       .catch(err => {
         notify({
           notifyType: NOTIFY_TYPE.ERROR,
-          message: i18n`file.updateIgnoreFailed${err.msg}`
+          message: i18n`file.updateIgnoreFailed${{err: err.msg}}`
         })
       })
     }

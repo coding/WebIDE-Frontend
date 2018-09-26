@@ -24,5 +24,6 @@
    "saveNew": "Save untitled file",
    "newInfo": "File has been changed, save changes?",
    "updateIgnoreSuccess": "Update .gitignore successfully",
-   "updateIgnoreFailed": "Failed to update .gitignore: {err}"
+   "updateIgnoreFailed": "Failed to update .gitignore: {err}",
+   "updateIgnoreTip": "{path} is already in .gitignore"
 }

@@ -122,7 +122,7 @@ export const toDefinitionForDebugger = registerAction('monaco:todefinitionfordeb
         })
     }
   } else {
-    const relativePath = path.substring(config.__WORKSPACE_URI__.length)
+    const relativePath = path.substring((path.startsWith('file://') ? `file://${config.__WORKSPACE_URI__}` : config.__WORKSPACE_URI__).length)
     openFile({ path: relativePath, editor: { filePath: relativePath, line, debug: true, stoppedReason } })
   }
 })

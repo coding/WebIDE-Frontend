@@ -21,6 +21,13 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
 
 module.exports = merge(
+  {
+    entry: {
+      main: ['@babel/polyfill'],
+      workspaces: ['@babel/polyfill'],
+      login: ['@babel/polyfill'],
+    }
+  },
   commonConfig({
     staticDir,
     filename: '[name].[chunkhash].js',
