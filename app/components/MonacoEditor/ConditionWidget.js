@@ -36,9 +36,6 @@ const SelectContainer = styled.div`
   padding: 0 10px;
   &>select {
     font-size: 12px;
-    background-color: rgb(60, 60, 60);
-    color: rgb(240, 240, 240);
-    border-color: rgb(60, 60, 60);
     box-sizing: border-box;
     align-items: center;
     white-space: pre;
@@ -59,18 +56,12 @@ const InputContainer = styled.div`
   }
 `
 
-const placeHolder = {
-  logMessage: i18n.get('monaco.logMessage'),
-  condition: i18n.get('monaco.condition'),
-  hitCondition: i18n.get('monaco.hitCondition'),
-}
-
 class ConditionWidget extends PureComponent {
   state = {
     logMessage: this.props.breakpoint.logMessage || '',
     condition: this.props.breakpoint.condition || '',
     hitCondition: this.props.breakpoint.hitCondition || '',
-    conditionType: 'logMessage'
+    conditionType: 'condition'
   }
 
   componentDidMount () {
@@ -121,16 +112,16 @@ class ConditionWidget extends PureComponent {
     return (
       <Container className='form-group'>
         <SelectContainer>
-          <select value={conditionType} onChange={this.handleChangeType}>
-            <option value='hitCondition'>命中次数</option>
-            <option value='condition'>条件表达式</option>
-            <option value='logMessage'>消息记录</option>
+          <select value={conditionType} onChange={this.handleChangeType} className='debug-condition-select'>
+            <option value='hitCondition'>{i18n`monaco.hitConditionLabel`}</option>
+            <option value='condition'>{i18n`monaco.conditionLabel`}</option>
+            <option value='logMessage'>{i18n`monaco.logLabel`}</option>
           </select>
         </SelectContainer>
         <InputContainer>
           <input
             type='text'
-            placeholder={placeHolder[conditionType]}
+            placeholder={i18n.get(`monaco.${conditionType}`)}
             ref={(ele) => this.inputNode = ele}
             value={this.state[conditionType]}
             onChange={this.handleChange}
