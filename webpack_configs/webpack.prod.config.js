@@ -16,9 +16,12 @@ const changelogEntryHtmlName = 'changelog.html'
 const maintainEntryHtmlName = 'maintain.html'
 const workspacesEntryHtmlName = 'index.html'
 
+const serverConfig = require('../static/config')
+
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
-const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
+const staticDir = process.env.RUN_MODE
+                ? serverConfig.STATIC_PATH : 'rs'
 
 module.exports = merge(
   {

@@ -16,7 +16,7 @@ class User extends Component {
       if (data) {
         config.globalKey = data.global_key
         if (!/^(http|https):\/\/[^ "]+$/.test(data.avatar)) {
-          data.avatar = `https://coding.net${data.avatar}`
+          data.avatar = `${data.avatar}`
         }
         config.userProfile = data
         this.setState({

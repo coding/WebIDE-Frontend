@@ -17,7 +17,7 @@ const stepCache = observable.map({
       if (qsParsed.isTry) return true
     // case 1: spaceKey in url
       let spaceKey = null
-      const wsPathPattern = /^\/ws\/([^/]+)\/?$/
+      const wsPathPattern = '/^\/' + window.serverConfig.WS_REG + '\/([^/]+)\/?$/'
       const match = wsPathPattern.exec(urlPath)
       if (match) spaceKey = match[1]
       if (spaceKey) return config.spaceKey = spaceKey

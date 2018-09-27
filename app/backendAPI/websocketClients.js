@@ -91,7 +91,8 @@ class TtySocketClient {
   constructor () {
     if (TtySocketClient.$$singleton) return TtySocketClient.$$singleton
     if (config.isPlatform) {
-      const wsUrl = config.wsURL
+      // const wsUrl = config.wsURL
+      const wsUrl = window.serverConfig.WS_URL
       const firstSlashIdx = wsUrl.indexOf('/', 8)
       const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
       this.socket = io.connect(host, {
