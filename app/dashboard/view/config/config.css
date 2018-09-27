@@ -1,0 +1,10 @@
+.dash-config .config {
+    display: flex;
+    padding-bottom: 40px;
+}
+.dash-config .config .label {
+    width: 120px;
+}
+.dash-config .config .content {
+    width: calc(100% - 120px);
+}

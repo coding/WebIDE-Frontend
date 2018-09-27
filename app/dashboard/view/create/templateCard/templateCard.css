@@ -1,0 +1,14 @@
+.dash-create .template-card {
+    width: 260px;
+    height: 60px;
+}
+.dash-create .template-card .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+.dash-create .template-card .avatar img {
+    height: 100%;
+    border-radius: 4px;
+}

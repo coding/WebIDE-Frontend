@@ -1,0 +1,19 @@
+.com-ssh .ssh-tip {
+    width: 100%;
+    padding-bottom: 20px;
+}
+.com-ssh .ssh-content {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #757575;
+    word-break: break-all;
+    position: relative;
+}
+.com-ssh .ssh-content .clipboard {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}

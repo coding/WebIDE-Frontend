@@ -1,0 +1,67 @@
+.dash-about {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    height: 100%;
+}
+.dash-about .top,
+.dash-about .center,
+.dash-about .below {
+    width: 100%;
+}
+.dash-about .center .logo {
+    width: 27%;
+    min-width: 300px;
+    margin: 0 auto;
+    position: relative;
+}
+.dash-about .center .logo img {
+    width: 100%;
+}
+.dash-about .center .logo .beta {
+    height: 15px;
+    padding: 0 2px;
+    line-height: 15px;
+    border-radius: 3px;
+    color: #000;
+    background-color: #fff;
+    position: absolute;
+    top: 10px;
+    right: -10px;
+}
+.dash-about .center .desc {
+    width: 160px;
+    margin: 0 auto;
+}
+.dash-about .center .desc .version {
+    margin-right: 20px;
+    font-size: 16px;
+}
+.dash-about .center .desc a {
+    color: #5097e8;
+}
+.dash-about .produce {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.dash-about .produce .corp .role {
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+}
+.dash-about .produce .corp img {
+    height: 25px;
+}
+.dash-about .produce .x {
+    margin: 0 10px;
+    font-size: 22px;
+    font-weight: 100;
+    transform: rotate(45deg);
+}
+.dash-about .copyright {
+    margin-top: 20px;
+    text-align: center;
+    color: #5f5f5f;
+}

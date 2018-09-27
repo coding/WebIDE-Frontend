@@ -1,0 +1,15 @@
+.dash-create .project-card {
+    width: 240px;
+    height: 60px;
+}
+.dash-create .project-card .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 4px;
+    background-color: #3f3f3f;
+}
+.dash-create .project-card .avatar img {
+    height: 100%;
+    border-radius: 3px;
+}

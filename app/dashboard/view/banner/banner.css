@@ -1,0 +1,20 @@
+.dash-banner {
+    height: 60px;
+    padding: 0 30px;
+    line-height: 60px;
+    border-bottom: 1px solid #2d2d2d;
+    color: #fff;
+    background-color: #333;
+}
+.dash-banner .slash {
+    color: #aaa;
+}
+.dash-banner .crumb {
+    color: #aaa;
+}
+.dash-banner .crumb:last-child {
+    color: #ccc;
+}
+.dash-banner .crumb:hover {
+    color: #5097e8;
+}

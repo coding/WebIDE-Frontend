@@ -1,0 +1,19 @@
+import { createStore, combineReducers } from 'redux';
+
+import { switchLanguageReducer } from './view/config/reducer';
+import { switchMaskReducer } from './view/mask/reducer';
+import { userReducer } from './view/home/setting/reducer';
+import { workspaceCountReducer } from './view/workspace/reducer';
+
+const reducers = combineReducers({
+    language: switchLanguageReducer,
+    maskState: switchMaskReducer,
+    userState: userReducer,
+    workspaceCount: workspaceCountReducer,
+});
+
+const languageStorage = localStorage.getItem('cloudstudio-dashboard-language') || 'zh_CN';
+
+const store = createStore(reducers, { language: languageStorage });
+
+export default store;
