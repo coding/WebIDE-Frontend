@@ -1,0 +1,13 @@
+.dash-workspace .new {
+    color: #fff;
+}
+.dash-workspace .new .avatar {
+    line-height: 50px;
+    text-align: center;
+    font-size: 60px;
+    color: #303030;
+}
+.dash-workspace .new .content {
+    display: flex;
+    align-items: center;
+}

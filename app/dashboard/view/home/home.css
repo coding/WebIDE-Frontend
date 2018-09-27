@@ -1,0 +1,52 @@
+.dash-sidebar {
+    width: 200px;
+    height: 100%;
+    background-color: #3b3b3b;
+}
+.dash-sidebar .logo {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    border-bottom: 1px solid #2d2d2d;
+}
+.dash-sidebar .logo img {
+    width: 150px;
+    padding-left: 10px;
+}
+.dash-sidebar .logo .beta {
+    height: 15px;
+    padding: 0 2px;
+    line-height: 15px;
+    border-radius: 3px;
+    color: #000;
+    background-color: #ddd;
+}
+.dash-sidebar .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: calc(100% - 120px);
+    padding: 20px 0;
+}
+.dash-sidebar .nav-item {
+    width: 100%;
+    height: 40px;
+    padding: 0 20px;
+    margin: 5px 0;
+    line-height: 40px;
+    color: #e8e8e8;
+}
+.dash-sidebar .nav-item.active {
+    background-color: #5097e8;
+}
+
+.dash-main {
+    width: calc(100% - 200px);
+    height: 100%;
+    background-color: #333;
+}
+.dash-main .dash-view {
+    max-width: 1500px;
+    height: calc(100% - 60px);
+    padding: 30px;
+}

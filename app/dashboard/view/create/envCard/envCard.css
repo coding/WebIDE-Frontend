@@ -1,0 +1,21 @@
+.dash-create .env-card {
+    width: 250px;
+    height: 60px;
+}
+.dash-create .env-card .inner {
+    display: block;
+}
+.dash-create .env-card .main {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+}
+.dash-create .env-card .main img {
+    height: 18px;
+    margin-right: 10px;
+}
+.dash-create .env-card .desc {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #ccc;
+}

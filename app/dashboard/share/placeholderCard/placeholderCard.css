@@ -1,0 +1,21 @@
+.placeholder-card {
+    width: 340px;
+    height: 80px;
+    cursor: default;
+}
+.placeholder-card:hover {
+    background-color: #3b3b3b;
+}
+.placeholder-card .avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    border-radius: 4px;
+    background-color: #3f3f3f;
+}
+.placeholder-card .content {
+    font-size: 20px;
+}

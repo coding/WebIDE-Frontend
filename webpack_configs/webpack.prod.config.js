@@ -9,6 +9,7 @@ const stylesheet = require('./stylesheet.config')
 const uglify = require('./uglify.config')
 
 const mainEntryHtmlName = 'workspace.html'
+const dashboardEntryHtmlName = 'dashboard.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 const introEntryHtmlName = 'intro.html'
@@ -22,13 +23,6 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
 
 module.exports = merge(
-  {
-    entry: {
-      main: ['@babel/polyfill'],
-      workspaces: ['@babel/polyfill'],
-      login: ['@babel/polyfill'],
-    }
-  },
   commonConfig({
     staticDir,
     filename: '[name].[chunkhash].js',
@@ -48,6 +42,13 @@ module.exports = merge(
       }),
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',
+        multihtmlCatch: true,
+        excludeChunks: ['workspaces', 'login'],
+        filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
         multihtmlCatch: true,
         excludeChunks: ['workspaces', 'main'],
         filename: (staticDir ? '../' : '') + accountEntryHtmlName,

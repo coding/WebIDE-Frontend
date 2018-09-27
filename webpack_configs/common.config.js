@@ -21,6 +21,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 module.exports = function(options = {}) {
   const {
     mainEntryHtmlName = 'workspace.html',
+    dashboardEntryHtmlName = 'dashboard.html',
     accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
