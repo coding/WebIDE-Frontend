@@ -1,8 +1,8 @@
 var serverConfig = {
-  BACKEND_URL: 'http://dec.coding.ide/backend',
+  BACKEND_URL: 'http://dev.coding.ide/backend',
   WS_URL: 'http://ide-ws.dev.coding.ide',
   STATIC_SERVING_URL: 'http://{space-key}-static-{access-token}.dev.coding.ide',
-  HTML_BASE_URL: 'http://dec.coding.ide/backend',
+  HTML_BASE_URL: 'http://dev.coding.ide/backend',
   PACKAGE_DEV: false,
   CODING_URL: 'https://coding.net',
   HDD_ADJUST_ENABLE: true,
