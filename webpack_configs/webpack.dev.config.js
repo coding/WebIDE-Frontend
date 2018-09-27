@@ -28,11 +28,11 @@ const reactHotLoaderPrependEntries = [
   'react-hot-loader/patch',
   'webpack-dev-server/client?http://ide.test:8060',
   'webpack/hot/only-dev-server',
-  '@babel/polyfill',
 ]
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
 const mainEntryHtmlName = 'workspace.html'
+const dashboardEntryHtmlName = 'dashboard.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 // const changelogEntryHtmlName = 'changelog.html'
@@ -79,6 +79,13 @@ const config = merge(
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      multihtmlCatch: true,
+      excludeChunks: ['workspaces', 'login'],
+      filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',

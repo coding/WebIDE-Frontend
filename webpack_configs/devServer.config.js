@@ -14,6 +14,7 @@ module.exports = function (options) {
       historyApiFallback: {
         rewrites: [
           { from: /\/ws/, to: '/workspace.html' },
+          { from: /\/dashboard/, to: '/dashboard.html' },
           { from: /\/account/, to: '/account.html' },
           { from: /\/signin/, to: '/login.html' },
           { from: /\/intro/, to: '/intro.html' },

@@ -21,6 +21,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 module.exports = function(options = {}) {
   const {
     mainEntryHtmlName = 'workspace.html',
+    dashboardEntryHtmlName = 'dashboard.html',
     accountEntryHtmlName = 'account.html',
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
@@ -53,6 +54,7 @@ module.exports = function(options = {}) {
   return {
     entry: {
       main: [path.join(PROJECT_ROOT, 'app')],
+      dashboard: [path.join(PROJECT_ROOT, 'app/dashboard.jsx')],
       workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
       login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
       // intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],

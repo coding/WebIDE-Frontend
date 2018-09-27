@@ -1,0 +1,16 @@
+.dash-workspace .created,
+.dash-workspace .deleted {
+    display: flex;
+    flex-wrap: wrap;
+}
+.dash-workspace .caption {
+    padding-top: 30px;
+}
+.dash-workspace .caption .tip {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #757575;
+}
+.dash-workspace .deleted {
+    padding-top: 20px;
+}

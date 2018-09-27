@@ -1,0 +1,10 @@
+.com-board .repo .repo-input {
+    margin-bottom: 20px;
+}
+.com-board .board-content.env {
+    display: flex;
+    flex-wrap: wrap;
+}
+.com-board .board-content.env .com-env {
+    margin: 0 2% 20px 0;
+}

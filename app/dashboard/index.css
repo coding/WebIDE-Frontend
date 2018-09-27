@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+a {
+    color: #5097e8;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+a:hover {
+    color: #3788e4;
+}
+a:active {
+    color: #2277d7;
+}
+ul, ol {
+    list-style: none;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    padding-right: 2px;
+    background-color: #333;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: #555;
+}
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+#root {
+    height: 100%;
+}
+#dash-container {
+    display: flex;
+    min-width: 1000px;
+    height: 100%;
+    font-size: 14px;
+    font-family: PingFangSC-Ultralight, Helvetica Neue, Hiragino Sans GB, Segoe UI, Microsoft YaHei, sans-serif;
+    color: #ccc;
+}

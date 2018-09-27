@@ -1,0 +1,38 @@
+.ide-radio {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+}
+.ide-radio.checked {
+    background-color: #5097e8;
+}
+.ide-radio.checked::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: calc(50% - 2px);
+}
+.ide-radio.disabled {
+    background-color: #888;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.ide-radio.disabled::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: calc(50% - 2px);
+}
