@@ -47,8 +47,8 @@ const options = {
   matchBrackets: true,
   autoCloseBrackets: true,
   dragDrop: false,
-  trimTrailingWhitespace: undefined,
-  insertFinalNewline: undefined,
+  trimTrailingWhitespace: 'off',
+  insertFinalNewline: 'off',
   smartIndent: false,
   extraKeys,
 }

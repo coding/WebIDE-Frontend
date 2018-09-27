@@ -11,6 +11,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
 const HappyPack = require('happypack')
 const os = require('os')
+const execSync = require('child_process').execSync
 
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 const PROJECT_ROOT = path.resolve(__dirname, '..')
@@ -34,9 +35,23 @@ module.exports = function(options = {}) {
   // const publicPath = process.env.QINIU_BUCKET // publicPath should end with '/'
   //   ? `${process.env.QINIU_SERVER}/`
   //   : path.join('/', staticDir, '/')
-  const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
-    ? `${process.env.TENCENT_COS_SERVER}/`
-    : path.join('/', staticDir, '/')
+
+  
+  // const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
+  //   ? `${process.env.TENCENT_COS_SERVER}/${commitId}/`
+  //   : path.join('/', staticDir, '/')
+
+  let publicPath = ''
+  if (process.env.TENCENT_COS_SERVER) {
+    // Get short CommitId
+    const commitId= execSync('git rev-parse --short HEAD').toString().replace('\n', '')
+    publicPath = `${process.env.TENCENT_COS_SERVER}/${commitId}/`
+  } else if (process.env.QINIU_BUCKET) {
+    publicPath = `${process.env.QINIU_SERVER}/`
+  } else {
+    publicPath = path.join('/', staticDir, '/')
+  }
+
   return {
     entry: {
       main: [path.join(PROJECT_ROOT, 'app')],
