@@ -147,7 +147,7 @@ class Initialize extends Component {
           )
           requestInfo = (
             <div className='request-info'>
-              <button className='btn btn-primary' onClick={() => window.location.href = '/dashboard'} >{i18n`global.returnDashboard`}</button>
+              <button className='btn btn-primary' onClick={() => window.location.href = window.serverConfig.DASHBOARD_URL} >{i18n`global.returnDashboard`}</button>
             </div>
           )
         } else if (state.errorInfo.includes('your online workspace is limit to')) {
@@ -159,7 +159,7 @@ class Initialize extends Component {
           )
           requestInfo = (
             <div className='request-info'>
-              <button className='btn btn-primary' onClick={() => window.location.href = '/dashboard'} >{i18n`global.returnDashboard`}</button>
+              <button className='btn btn-primary' onClick={() => window.location.href = window.serverConfig.DASHBOARD_URL} >{i18n`global.returnDashboard`}</button>
             </div>
           )
         } else {
