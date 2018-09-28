@@ -1,5 +1,5 @@
 .dash-create .project-card {
-    width: 240px;
+    width: calc(25% - 15px);
     height: 60px;
 }
 .dash-create .project-card .avatar {
@@ -12,4 +12,10 @@
 .dash-create .project-card .avatar img {
     height: 100%;
     border-radius: 3px;
+}
+
+@media screen and (max-width: 1440px) {
+    .dash-create .project-card {
+        width: calc(33% - 15px);
+    }
 }

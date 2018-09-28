@@ -8,13 +8,16 @@ import './setting.css';
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
 
+const httpsReg = /http(?:s)?/;
+
 class Setting extends Component {
     render() {
         const { name, avatar } = this.props.user;
+        const src = httpsReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
         return (
             <div className="setting">
                 <div className="main">
-                    {avatar && <img className="avatar" src={`https://coding.net${avatar}`} alt="avatar" />}
+                    {avatar && <img className="avatar" src={src} alt="avatar" />}
                     <span className="name">{name}</span>
                     <i className="caret fa fa-caret-up"></i>
                 </div>

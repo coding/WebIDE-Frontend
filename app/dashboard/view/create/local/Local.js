@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import './local.css';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import TemplateCard from '../templateCard';
-import PlaceholderCard from '../../../share/placeholderCard';
+import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
 
 class Local extends Component {
@@ -17,20 +19,28 @@ class Local extends Component {
 
     render() {
         const { workspaceName, desc, templateId } = this.state;
-        const { templates } = this.props;
+        const { templates, language } = this.props;
+        let inputPh, textareaPh;
+        if (language === 'zh_CN') {
+            inputPh = '填写工作空间名';
+            textareaPh = '一句话描述这个工作空间';
+        } else {
+            inputPh = 'Fill in the workspace name';
+            textareaPh = 'Describe this workspace in one sentence';
+        }
         return (
             <div>
                 <div className="com-board">
                     <div className="board-label">{i18n('global.workspaceName')}*</div>
                     <div className="board-content">
-                        <input className="com-input" type="text" spellCheck={false} value={workspaceName} onChange={this.handleWorkspaceName} />
+                        <input className="com-input" type="text" spellCheck={false} placeholder={inputPh} value={workspaceName} onChange={this.handleWorkspaceName} />
                         <div className="input-tip">{i18n('global.inputTip')}</div>
                     </div>
                 </div>
                 <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
-                        <textarea className="com-textarea" spellCheck={false} value={desc} onChange={this.handleDescription}></textarea>
+                        <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
                 </div>
                 <div className="com-board">
@@ -42,7 +52,7 @@ class Local extends Component {
                                     templateId={templateId}
                                     handleSeleteTemplate={this.handleSeleteTemplate} />
                                 )
-                            ) : <PlaceholderCard style={{ width: 260, height: 60 }} />
+                            ) : <NoData />
                         }
                     </div>
                 </div>
@@ -70,11 +80,7 @@ class Local extends Component {
     }
 
     handleCancel = () => {
-        this.setState({
-            workspaceName: '',
-            desc: '',
-            templateId: -1,
-        });
+        this.props.history.push({ pathname: '/dashboard/workspace' });
     }
 
     handleCreate = () => {
@@ -101,4 +107,8 @@ class Local extends Component {
     }
 }
 
-export default Local;
+const mapState = (state) => {
+    return { language: state.language };
+}
+
+export default connect(mapState)(withRouter(Local));
