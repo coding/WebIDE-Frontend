@@ -9,7 +9,7 @@ import i18n from '../../../utils/i18n';
 import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
-import PlaceholderCard from '../../../share/placeholderCard';
+import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
 
 class Coding extends Component {
@@ -21,13 +21,24 @@ class Coding extends Component {
         templateId: -1,
         envId: '',
         filter: '',
+        isSync: false,
     };
 
     render() {
-        const { type, desc, projectName, templateId, envId, filter } = this.state;
-        let { projects, templates, envs } = this.props;
+        const { type, desc, projectName, templateId, envId, filter, isSync } = this.state;
+        let { projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.includes(filter) || item.name.includes(filter));
+        }
+        let inputPh, textareaPh, searchPh;
+        if (language === 'zh_CN') {
+            inputPh = '输入项目名';
+            textareaPh = '一句话描述这个工作空间';
+            searchPh = '搜索';
+        } else {
+            inputPh = 'Enter the project name';
+            textareaPh = 'Describe this workspace in one sentence';
+            searchPh = 'Search';
         }
         return (
             <div>
@@ -35,7 +46,7 @@ class Coding extends Component {
                     <div className="com-board">
                         <div className="board-label">{i18n('global.projectName')}*</div>
                         <div className="board-content">
-                            <input className="com-input" type="text" spellCheck={false} value={projectName} onChange={this.handleProjectName} />
+                            <input className="com-input" type="text" spellCheck={false} placeholder={inputPh} value={projectName} onChange={this.handleProjectName} />
                             <div className="input-tip">{i18n('global.inputTip')}</div>
                         </div>
                     </div>
@@ -43,7 +54,7 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
-                        <textarea className="com-textarea" spellCheck={false} value={desc} onChange={this.handleDescription}></textarea>
+                        <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
                 </div>
                 <div className="com-board">
@@ -56,8 +67,12 @@ class Coding extends Component {
                             </div>
                             {type === 1 && (
                                 <div className="project-head-right">
-                                    <input className="com-input" type="text" spellCheck={false} value={filter} onChange={this.handleFilter} />
-                                    <span className="async" onClick={this.handleAsync}><i className="fa fa-refresh"></i>{i18n('global.async')}</span>
+                                    <input className="com-input" type="text" spellCheck={false} placeholder={searchPh} value={filter} onChange={this.handleFilter} />
+                                    {
+                                        isSync
+                                        ? <span className="async"><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
+                                        : <span className="async" onClick={this.handleAsync}><i className="fa fa-refresh"></i>{i18n('global.sync')}</span>
+                                    }
                                 </div>
                             )}
                         </div>
@@ -67,16 +82,17 @@ class Coding extends Component {
                                     projects.length ? (
                                         projects.map(item => <ProjectCard key={item.id} {...item}
                                             projectName={projectName}
+                                            filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : <PlaceholderCard style={{ width: 240, height: 60 }} />
+                                    ) : <NoData />
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}
                                             templateId={templateId}
                                             handleSeleteTemplate={this.handleSeleteTemplate} />
                                         )
-                                    ) : <PlaceholderCard style={{ width: 240, height: 60 }} />
+                                    ) : <NoData />
                                 )
                             }
                         </div>
@@ -84,7 +100,13 @@ class Coding extends Component {
                 </div>
                 {type === 1 && (
                     <div className="com-board">
-                        <div className="board-label">{i18n('global.env')}*</div>
+                        <div className="board-label">
+                            {i18n('global.env')}
+                            *
+                            <span className="tooltip-container" onClick={this.handleEnvToolTip}>
+                                <i className="fa fa-question-circle"></i>
+                            </span>
+                        </div>
                         <div className="board-content env">
                             {
                                 envs.length ? (
@@ -92,7 +114,7 @@ class Coding extends Component {
                                         envId={envId}
                                         handleSeleteEnv={this.handleSeleteEnv} />
                                     )
-                                ) : <PlaceholderCard style={{ width: 250, height: 60 }} />
+                                ) : <NoData />
                             }
                         </div>
                     </div>
@@ -120,14 +142,25 @@ class Coding extends Component {
         });
     }
 
+    handleEnvToolTip = (event) => {
+        this.props.handleToolTipOn({
+            clientX: event.clientX,
+            clientY: event.clientY,
+            message: '默认为自定义环境，你可以在该环境中自己安装所需要的环境。',
+        });
+    }
+
     handleFilter = (event) => {
         this.setState({ filter: event.target.value });
     }
 
     handleAsync = () => {
+        this.setState({ isSync: true });
         api.syncProject().then(res => {
+            this.setState({ isSync: false });
             notify({ message: 'Async project success' });
         }).catch(err => {
+            this.setState({ isSync: false });
             console.log(err);
         });
     }
@@ -153,13 +186,7 @@ class Coding extends Component {
     }
 
     handleCancel = () => {
-        this.setState({
-            desc: '',
-            ownerName: '',
-            projectName: '',
-            templateId: -1,
-            envId: '',
-        });
+        this.props.history.push({ pathname: '/dashboard/workspace' });
     }
 
     handleCreate = () => {
@@ -218,7 +245,14 @@ class Coding extends Component {
 const mapState = (state) => {
     return {
         globalKey: state.userState.global_key,
+        language: state.language,
     }
 }
 
-export default connect(mapState)(withRouter(Coding));
+const mapDispatch = (dispatch) => {
+    return {
+        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
+    }
+}
+
+export default connect(mapState, mapDispatch)(withRouter(Coding));

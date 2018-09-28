@@ -1,7 +1,7 @@
 .dash-workspace .ws-card {
     display: flex;
     align-items: center;
-    width: 340px;
+    width: calc(25% - 20px);
     height: 80px;
     padding: 10px;
     margin: 0 20px 20px 0;
@@ -37,7 +37,15 @@
     right: -5px;
 }
 .dash-workspace .ws-card .content {
+    width: calc(100% - 60px);
     height: 100%;
+}
+.dash-workspace .ws-card .title,
+.dash-workspace .ws-card .desc {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .dash-workspace .ws-card .title {
     margin: 4px 0 10px;
@@ -65,5 +73,12 @@
     color: #ccc;
 }
 .dash-workspace .ws-card .control i {
+    padding: 3px;
     margin-left: 10px;
+}
+
+@media screen and (max-width: 1440px) {
+    .dash-workspace .ws-card {
+        width: calc(33% - 20px);
+    }
 }

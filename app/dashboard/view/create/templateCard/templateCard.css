@@ -1,5 +1,5 @@
 .dash-create .template-card {
-    width: 260px;
+    width: calc(25% - 15px);
     height: 60px;
 }
 .dash-create .template-card .avatar {
@@ -11,4 +11,10 @@
 .dash-create .template-card .avatar img {
     height: 100%;
     border-radius: 4px;
+}
+
+@media screen and (max-width: 1440px) {
+    .dash-create .template-card {
+        width: calc(33% - 15px);
+    }
 }

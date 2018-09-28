@@ -13,7 +13,7 @@
     "copyright": "扣钉网络 版权所有",
     "language": "语言",
     "sshPublicKey": "SSH 公钥",
-    "mode": "方式",
+    "importSource": "导入来源",
     "noRemoteRepo": "不设远端仓库",
     "codingRepo": "CODING 仓库",
     "otherGitRepo": "其他 Git 仓库",
@@ -33,5 +33,7 @@
     "createWorkspace": "新建工作空间",
     "sshTip": "目前 Cloud Studio 导入外部项目只支持 SSH 协议，请先将下面的 SSH key (点击图标复制) 添加到导入来源 Git 仓库的公钥列表中。",
     "inputTip": "最少两个字符，仅支持字母、数字或者下划线(_)、中划线(-)、点(.)",
-    "async": "同步"
+    "sync": "同步",
+    "syncing": "同步中",
+    "nodata": "暂无数据"
 }

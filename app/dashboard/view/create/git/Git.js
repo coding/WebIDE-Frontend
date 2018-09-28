@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import './git.css';
 
@@ -6,7 +8,7 @@ import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import SSH from '../../../share/ssh';
 import EnvCard from '../envCard';
-import PlaceholderCard from '../../../share/placeholderCard';
+import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
 
 class Git extends Component {
@@ -18,24 +20,38 @@ class Git extends Component {
 
     render() {
         const { desc, url, envId } = this.state;
-        const { envs } = this.props;
+        const { envs, language } = this.props;
+        let textareaPh, inputPh;
+        if (language === 'zh_CN') {
+            textareaPh = '一句话描述这个工作空间';
+            inputPh = '填写 Git 仓库地址';
+        } else {
+            textareaPh = 'Describe this workspace in one sentence';
+            inputPh = 'Fill in the Git repository address';
+        }
         return (
             <div>
                 <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
-                        <textarea className="com-textarea" spellCheck={false} value={desc} onChange={this.handleDescription}></textarea>
+                        <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
                 </div>
                 <div className="com-board">
                     <div className="board-label">{i18n('global.repoUrl')}*</div>
                     <div className="board-content repo">
-                        <div><input className="com-input repo-input" type="text" spellCheck={false} value={url} onChange={this.handleUrl} /></div>
+                        <div><input className="com-input repo-input" type="text" spellCheck={false} placeholder={inputPh} value={url} onChange={this.handleUrl} /></div>
                         <SSH />
                     </div>
                 </div>
                 <div className="com-board">
-                    <div className="board-label">{i18n('global.env')}*</div>
+                    <div className="board-label">
+                        {i18n('global.env')}
+                        *
+                        <span className="tooltip-container" onClick={this.handleEnvToolTip}>
+                            <i className="fa fa-question-circle"></i>
+                        </span>
+                    </div>
                     <div className="board-content env">
                         {
                             envs.length ? (
@@ -43,7 +59,7 @@ class Git extends Component {
                                     envId={envId}
                                     handleSeleteEnv={this.handleSeleteEnv} />
                                 )
-                            ) : <PlaceholderCard style={{ width: 250, height: 60 }} />
+                            ) : <NoData />
                         }
                     </div>
                 </div>
@@ -56,6 +72,14 @@ class Git extends Component {
                 </div>
             </div>
         );
+    }
+
+    handleEnvToolTip = (event) => {
+        this.props.handleToolTipOn({
+            clientX: event.clientX,
+            clientY: event.clientY,
+            message: '默认为自定义环境，你可以在该环境中自己安装所需要的环境。',
+        });
     }
 
     handleDescription = (event) => {
@@ -71,11 +95,7 @@ class Git extends Component {
     }
 
     handleCancel = () => {
-        this.setState({
-            desc: '',
-            url: '',
-            envId: '',
-        });
+        this.props.history.push({ pathname: '/dashboard/workspace' });
     }
 
     handleCreate = () => {
@@ -105,4 +125,14 @@ class Git extends Component {
     }
 }
 
-export default Git;
+const mapState = (state) => {
+    return { language: state.language };
+}
+
+const mapDispatch = (dispatch) => {
+    return {
+        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
+    }
+}
+
+export default connect(mapState, mapDispatch)(withRouter(Git));

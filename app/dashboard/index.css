@@ -42,9 +42,9 @@ ul, ol {
 }
 #dash-container {
     display: flex;
-    min-width: 1000px;
     height: 100%;
     font-size: 14px;
-    font-family: PingFangSC-Ultralight, Helvetica Neue, Hiragino Sans GB, Segoe UI, Microsoft YaHei, sans-serif;
+    font-family: PingFangSC-Light, Helvetica Neue, Hiragino Sans GB, Segoe UI, Microsoft YaHei, sans-serif;
     color: #ccc;
+    -webkit-font-smoothing: antialiased;
 }
