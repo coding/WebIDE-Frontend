@@ -74,9 +74,9 @@ class Card extends Component {
 
 const Href = ({ invalid, spaceKey, children }) => {
     if (invalid) {
-        return <a className="ws-card" href="javascript:;">{children}</a>;
+        return <div className="ws-card">{children}</div>;
     } else {
-        return <a className="ws-card" href={`/ws/${spaceKey}`} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className="ws-card" href={`${window.top.location.origin}/ws/${spaceKey}`} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 
