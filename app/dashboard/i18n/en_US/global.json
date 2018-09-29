@@ -13,7 +13,7 @@
     "copyright": "CODING. All Rights Reserved.",
     "language": "Language",
     "sshPublicKey": "SSH Public Key",
-    "mode": "Mode",
+    "importSource": "Import Source",
     "noRemoteRepo": "No Remote Repos",
     "codingRepo": "CODING Repos",
     "otherGitRepo": "Other Git Repos",
@@ -33,5 +33,7 @@
     "createWorkspace": "Create Workspace",
     "sshTip": "Currently, Cloud Studio import external projects only support SSH protocol. Please add the following SSH key (click icon to copy) to the list of public keys imported into the source Git repository.",
     "inputTip": "A minimum of two characters, only letters, numbers, or underscores (_), underscores (-), dots (.)",
-    "async": "Async"
+    "sync": "Sync",
+    "syncing": "Syncing",
+    "nodata": "No Data"
 }

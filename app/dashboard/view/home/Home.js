@@ -5,6 +5,7 @@ import { NavLink, Switch, Route } from 'react-router-dom';
 import './home.css';
 import cloudstudio from '../../static/cloudstudio.svg';
 
+import api from '../../api';
 import i18n from '../../utils/i18n';
 import Setting from './setting';
 import Banner from '../banner';
@@ -45,12 +46,21 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const listen = this.props.history.listen;
-        listen(route => {
+        const { history, location, workspaceCount, storeWorkspaceCount } = this.props;
+        history.listen(route => {
             window.top.postMessage({ path: route.pathname }, '*');
         });
-        this.props.history.push({ pathname: '/dashboard/workspace' });
+        if (location.pathname === '/dashboard') {
+            history.push({ pathname: '/dashboard/workspace' });
+        }
         window.top.postMessage({ path: window.location.pathname }, '*');
+        if (!workspaceCount) {
+            api.getWorkspace().then(res => {
+                if (res.code === 0) {
+                    storeWorkspaceCount(res.data.list.length);
+                }
+            });
+        }
     }
 }
 
@@ -60,4 +70,10 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState)(Home);
+const mapDispatch = (dispatch) => {
+    return {
+        storeWorkspaceCount: (payload) => dispatch({ type: 'STORE_WORKSPACE_COUNT', payload }),
+    }
+}
+
+export default connect(mapState, mapDispatch)(Home);

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Clipboard from 'clipboard'
+import { connect } from 'react-redux';
+import Clipboard from 'clipboard';
 
 import './ssh.css';
 
 import api from '../../api';
 import i18n from '../../utils/i18n';
-import { notify } from '../../../components/Notification/actions';
 
 let _sshPublicKey = '';
 
@@ -19,13 +19,14 @@ class SSH extends Component {
                 <div className="ssh-tip">{i18n('global.sshTip')}</div>
                 <div className="ssh-content">
                     {publicKey}
-                    <i className='clipboard fa fa-copy' />
+                    <i className='clipboard fa fa-copy' ref={el => this.ref = el} />
                 </div>
             </div>
         );
     }
 
     componentDidMount() {
+        const { handleToolTipOn } = this.props;
         if (_sshPublicKey) {
             this.setState({ publicKey: _sshPublicKey });
             return;
@@ -40,9 +41,29 @@ class SSH extends Component {
         const clipboard = new Clipboard('.clipboard', {
             text: trigger => trigger.parentElement.innerText,
         })
-        clipboard.on('success', () => notify({ message: '复制剪贴板成功' }));
-        clipboard.on('error', () => notify({ message: '复制剪贴板失败' }));
+        clipboard.on('success', () => {
+            const rect = this.ref.getBoundingClientRect();
+            handleToolTipOn({
+                clientX: rect.left + rect.width / 2,
+                clientY: rect.top,
+                message: '复制成功',
+            });
+        });
+        clipboard.on('error', () => {
+            const rect = this.ref.getBoundingClientRect();
+            handleToolTipOn({
+                clientX: rect.left + rect.width / 2,
+                clientY: rect.top,
+                message: '复制失败',
+            });
+        });
     }
 }
 
-export default SSH;
+const mapDispatch = (dispatch) => {
+    return {
+        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
+    }
+}
+
+export default connect(null, mapDispatch)(SSH);

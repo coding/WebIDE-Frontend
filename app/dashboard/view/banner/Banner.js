@@ -60,7 +60,10 @@ class Banner extends Component {
 const BreadCrumb = ({ breadcrumbs }) => {
     return (
         <div className="breadcrumb">
-            {breadcrumbs.map(bc => {
+            {breadcrumbs.map((bc, index) => {
+                if (index < 2) {
+                    return;
+                }
                 if (bc.slash) {
                     return <span key={bc.name} className="slash"> / </span>
                 } else {
