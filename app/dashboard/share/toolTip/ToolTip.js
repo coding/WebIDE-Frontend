@@ -8,12 +8,13 @@ class ToolTip extends Component {
         left: -300,
         top: -300,
         message: '',
+        animate: false,
     }
     render() {
-        const { left, top } = this.state;
+        const { left, top, animate } = this.state;
         const { message } = this.props;
         return (
-            <div className="com-tooltip" ref={el => this.ref = el} style={{ left, top }}>{message}</div>
+            <div className={`com-tooltip${animate ? ' animate' : ''}`} ref={el => this.ref = el} style={{ left, top }}>{message}</div>
         );
     }
 
@@ -23,10 +24,10 @@ class ToolTip extends Component {
             return;
         }
         const rect = this.ref.getBoundingClientRect();
-        this.setState({ left: clientX - rect.width / 2, top: clientY - rect.height - 20, message });
+        this.setState({ left: clientX - rect.width / 2, top: clientY - rect.height - 20, message, animate: true });
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            this.setState({ left: -300, top: -300, message: '' });
+            this.setState({ left: -300, top: -300, message: '', animate: false });
             handleToolTipOff({ clientX: -300, clientY: -300, message: '' });
         }, 3000);
     }

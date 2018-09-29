@@ -28,7 +28,7 @@ class Coding extends Component {
         const { type, desc, projectName, templateId, envId, filter, isSync } = this.state;
         let { projects, templates, envs, language } = this.props;
         if (filter) {
-            projects = projects.filter(item => item.ownerName.includes(filter) || item.name.includes(filter));
+            projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
         let inputPh, textareaPh, searchPh;
         if (language === 'zh_CN') {
@@ -151,7 +151,7 @@ class Coding extends Component {
     }
 
     handleFilter = (event) => {
-        this.setState({ filter: event.target.value });
+        this.setState({ filter: event.target.value.toLowerCase() });
     }
 
     handleAsync = () => {

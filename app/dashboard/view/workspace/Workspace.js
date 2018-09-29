@@ -68,7 +68,7 @@ class Workspace extends Component {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
         api.getWorkspaceInvalid().then(res => {
-            if (res && res.length) {
+            if (Array.isArray(res)) {
                 const invalid = [];
                 for (let i = 0; i < res.length; i++) {
                     const item = res[i];
