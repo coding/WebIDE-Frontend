@@ -75,6 +75,7 @@
 .dash-workspace .ws-card .control i {
     padding: 3px;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 1440px) {
