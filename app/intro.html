@@ -184,6 +184,7 @@
       font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
       -webkit-font-smoothing: antialiased;
       width: 100%;
+      min-width: 300px;
       height: 100vh;
       margin: 0;
     }
@@ -246,6 +247,14 @@
 
     .user {
       float: right;
+    }
+    .user a {
+      color: #fff;
+      text-decoration: none;
+    }
+    .user .divide {
+      padding: 0 4px;
+      color: #fff;
     }
 
     .user .user-info {
@@ -386,18 +395,21 @@
     }
 
     .page-header {
+      font-size: 14px;
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       padding: 24px;
       display: flex;
+      align-items: flex-end;
     }
 
     .page-header .logo {
-      background: url("//studio-res.coding.net/StudioWebResource/Images/CloudStudio-Logo-Light.svg") -10px -9px no-repeat;
-      height: 0px;
-      width: 161px;
+      background: url("https://dn-coding-net-production-pp.qbox.me/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat;
+      background-size: 176px 24px;
+      height: 24px;
+      width: 176px;
       padding-top: 20px;
       overflow: hidden;
       display: inline-block;
@@ -417,9 +429,58 @@
     }
 
     .page-header .nav a {
-      font-size: 16px;
       color: #fff;
       text-decoration: none;
+    }
+
+    .drop-down-wrap {
+      position: relative;
+    }
+
+    .drop-down-wrap:hover .drop-down-container {
+      display: block;
+    }
+
+    .drop-down-wrap .drop-down-container {
+      display: none;
+      padding-top: 10px;
+      position: absolute;
+      top: 20px;
+    }
+
+    .drop-down-wrap .drop-down-container::before {
+      content: '';
+      border: 8px solid transparent;
+      border-bottom-color: #fff;
+      position: absolute;
+      top: -4px;
+      left: 10px;
+    }
+
+    .drop-down-wrap .drop-down-container .drop-down {
+      background: #fff;
+      border: 1px solid #f5f6f8;
+      border-radius: 2px 2px 2px 2px;
+      color: #202d40;
+      font-size: 12px;
+      position: relative;
+      width: 110px;
+    }
+
+    .drop-down-wrap .drop-down-container .drop-down .item {
+      cursor: pointer;
+      height: 36px;
+      line-height: 36px;
+      padding-left: 10px;
+      text-align: left!important;
+    }
+
+    .drop-down-wrap .drop-down-container .drop-down .item:hover {
+      background-color: #f5f7fa;
+    }
+
+    .drop-down-wrap .drop-down-container .drop-down .item a {
+      color: #202d40;
     }
 
     .page-header .nav-right {
@@ -488,6 +549,25 @@
       background: #1e2229;
       text-align: center;
     }
+    .intro-page .intro-header h2 {
+      color: #fff;
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 0;
+      padding-bottom: 20px;
+      text-align: center;
+    }
+    .intro-page .intro-header p {
+      color: #fff;
+      font-size: 18px;
+      letter-spacing: 1px;
+      line-height: 34px;
+      margin: 0 auto;
+      text-align: center;
+      text-shadow: 0 1px 1px #232f40;
+      width: 920px;
+    }
 
     .intro-page .intro-header #canvas {
       position: absolute;
@@ -497,58 +577,13 @@
     }
 
     .intro-page .intro-header .content {
-      position: absolute;
-      top: 0px;
-      width: 100%;
-      /* background: rgba(0, 0, 0, 0.439); */
-      height: 600px;
-    }
-
-    .intro-page .intro-header h2 {
-      font-size: 48px;
-      color: #fff;
-      letter-spacing: 2px;
-      text-align: center;
-      line-height: 70px;
-      padding-top: 150px;
-      margin: 0;
-      font-weight: normal;
-    }
-
-    .intro-page .intro-header p {
-      font-size: 16px;
-      color: #fff;
-      letter-spacing: 1px;
-      text-align: center;
-      line-height: 28px;
-      text-shadow: 0 1px 1px #232f40;
-      width: 920px;
-      margin: 0 auto;
-      padding-top: 20px;
-    }
-
-    .intro-page .intro-header ul {
-      width: 860px;
-      margin: 0 auto;
-      font-size: 14px;
-      color: #fff;
-      letter-spacing: 0.88px;
-      margin-top: 60px;
       display: flex;
-    }
-
-    .intro-page .intro-header ul li {
-      flex: 1;
-    }
-
-    .intro-page .intro-header ul li:before {
-      content: '';
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: #06f;
-      border-radius: 100px;
-      margin-right: 8px;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 600px;
+      position: absolute;
+      top: 0;
     }
 
     .mobile-nav-btn {
@@ -579,14 +614,14 @@
     }
 
     .intro-page .intro-counter {
-      padding: 80px 0;
-      background: #f7fcff;
-      font-size: 16px;
+      align-items: center;
+      background: #f7f8fa;
       color: #000;
       display: flex;
+      font-size: 16px;
+      font-weight: 700;
       justify-content: center;
-      align-items: center;
-      font-weight: bold;
+      padding: 80px 0;
     }
 
     .intro-page .intro-counter .logo {
@@ -602,7 +637,7 @@
     .intro-page .intro-counter .num {
       font-family: DINAlternate-Bold;
       font-size: 32px;
-      color: #06f;
+      color: #00a4ff;
       margin-left: 8px;
     }
 
@@ -1052,7 +1087,7 @@
       }
 
       .btn-rotate-to {
-        z-index: 10;
+        z-index: 2000;
         transform: rotate(90deg);
         transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
       }
@@ -1071,29 +1106,166 @@
       }
 
       .mobile-intro-menu {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: #fff;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
-        z-index: 1;
-        transition: all 0.3s ease-in;
-        transition-delay: 0.25s;
-        justify-content: flex-end;
+        width: 100%;
         height: 0px;
+        background-color: #fff;
+        overflow: hidden;
+        transition: all .2s .1s ease-in;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
       }
-
-      .mobile-intro-menu a {
-        padding-left: 20px;
-        padding-right: 20px;
-        line-height: 60px;
-        display: block;
+      .mobile-intro-menu .nav {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding-top: 100px;
+      }
+      .mobile-intro-menu .nav .nav-item {
+        font-size: 18px;
+        margin-bottom: 40px;
+      }
+      .mobile-intro-menu .nav .nav-item a {
+        color: #000;
         text-decoration: none;
-        color: #333;
-        text-align: left;
+        cursor: pointer;
+      }
+    }
+  </style>
+
+  <style>
+    .section-container:nth-child(even) {
+      background-color: #fff;
+    }
+    .section-container:nth-child(odd) {
+      background-color: #f7f8fa;
+    }
+    .section-container .section-content {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin: 0 auto;
+      max-width: 1160px;
+      padding: 120px 30px;
+      color: #000;
+    }
+    .section-container .section-content .text-container {
+      flex: 1 0 368px;
+      max-width: 368px;
+      text-align: left;
+    }
+    .section-container .section-content .text-container .title {
+      font-size: 36px;
+      font-weight: 700;
+      padding-bottom: 16px;
+    }
+    .section-container .section-content .text-container .desc {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .section-container .section-content .img-container {
+      max-width: 707px;
+      text-align: right;
+      width: 100%;
+    }
+    .section-container .section-content .img-container img {
+      width: 95%;
+    }
+    .footer-container {
+      align-items: center;
+      background-color: #1f2530;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 150px;
+      justify-content: center;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .footer-container .nav {
+      display: flex;
+      flex-wrap: wrap;
+      font-size: 14px;
+      justify-content: center;
+      margin-bottom: 15px;
+      opacity: .8;
+    }
+    .footer-container .nav .item {
+      color: #fff;
+      font-size: 14px;
+      margin-right: 40px;
+      text-decoration: unset;
+    }
+    .footer-container .items {
+      font-size: 12px;
+      margin-bottom: 3px;
+      opacity: .6;
+    }
+    .footer-container .items a {
+      color: #fff;
+      text-decoration: unset;
+    }
+    .footer-container .right {
+      color: #fff;
+      font-size: 12px;
+      opacity: .6;
+    }
+    @media only screen and (max-width: 768px) {
+      .section-container .section-content {
+        flex-direction: column;
+        padding: 88px 30px;
+      }
+      .section-container:nth-child(odd) .section-content {
+        flex-direction: column-reverse;
+      }
+      .section-container .section-content .text-container {
+        flex: auto;
+      }
+      .section-container .section-content .text-container {
+        flex: auto;
+      }
+      .section-container .section-content .text-container .desc {
+        padding-bottom: 48px;
+      }
+      .section-container .section-content .img-container img {
+        width: 100%;
+      }
+    }
+    @media only screen and (max-width: 414px) {
+      .section-container .section-content {
+        padding-bottom: 65px;
+        padding-top: 40px;
+      }
+      .section-container .section-content .text-container {
+        text-align: center;
+        width: auto;
+      }
+      .footer-container {
+        height: 200px;
+      }
+      .footer-container .nav {
+        color: #fff;
+        flex-direction: column;
+        font-size: 14px;
+        justify-content: center;
+        margin-bottom: 4px;
+      }
+      .footer-container .nav .first-row,
+      .footer-container .nav .second-row {
+        margin-bottom: 20px;
+      }
+      .footer-container .nav .first-row a,
+      .footer-container .nav .second-row a {
+        margin-right: 10px;
+      }
+      .footer-container .nav .item {
+        font-size: 14px;
+      }
+      .footer-container .items {
+        margin-bottom: 12px;
       }
     }
   </style>
@@ -1109,39 +1281,62 @@
           </div>
         </div>
         <div class="content">
-          <h2>打开浏览器就能写代码</h2>
-          <p>Cloud Studio 是基于浏览器的集成式开发环境，为开发者提供了一个永不间断的云端工作站，不管有没有开发经验都可以毫无门槛的体验云端开发的乐趣，支持绝大部分编程语言，包括 HTML5、PHP、Python、Java、Ruby、C/C++、.NET 小程序等等。Cloud
-            Studio 提供了完整的 Linux 环境，并且支持自定义域名指向，动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
-          <ul>
-            <li>随处可用，低门槛</li>
-            <li>无需下载安装程序</li>
-            <li>一键切换开发环境</li>
-            <li>开发资源动态调整</li>
-          </ul>
-          <a href="/ws/default" class="btn btn-try">立即体验</a>
+          <h2>最极客的云端开发体验</h2>
+          <p>用户可以通过 Cloud Studio 创建项目的工作空间, 提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
+          <p>动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
+          <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
           <span class="content-tips">需使用桌面版体验</span>
         </div>
         <section class="mobile-intro-menu">
-          <a href="/intro">产品介绍</a>
-          <a href="https://coding.net/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">帮助</a>
-          <a href="/changelog">更新日志</a>
+          <div class="nav">
+            <div class="nav-item">
+              <a href="/production">项目与代码托管</a>
+            </div>
+            <div class="nav-item">
+              <a href="/cs">Cloud Studio</a>
+            </div>
+            <div class="nav-item">
+              <a href="https://dev.tencent.com/help" target="_blank">文档</a>
+            </div>
+            <div class="nav-item">
+              <a href="https://e.coding.net/" target="_blank">CODING 企业版</a>
+            </div>
+            <div class="nav-item">
+              <a href="/login">登录</a>
+            </div>
+            <div class="nav-item">
+              <a href="/register">注册</a>
+            </div>
+          </div>
         </section>
       </div>
       <div class="page-header">
-        <a href="/" class="logo">Cloud Studio</a>
+        <a href="/" class="logo"></a>
         <ul class="nav">
-          <li>
-            <a href="/intro">产品介绍</a>
+          <li class="drop-down-wrap">
+            功能
+            <div class="drop-down-container">
+              <div class="drop-down">
+                <div class="item">
+                  <a href="/production">项目与代码托管</a>
+                </div>
+                <div class="item">
+                  <a href="/cs">Cloud Studio</a>
+                </div>
+              </div>
+            </div>
           </li>
           <li>
-            <a href="https://coding.net/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">帮助</a>
+            <a href="/help" target="_blank" rel="noopener noreferrer">文档</a>
           </li>
           <li>
-            <a href="/changelog">更新日志</a>
+            <a href="https://e.coding.net/">CODING 企业版</a>
           </li>
         </ul>
         <div class="user" id="user">
-
+          <a href="/register">注册</a>
+          <span class="divide">|</span>
+          <a href="/login">登录</a>
         </div>
         <button class="mobile-nav-btn">
           <span style="margin-bottom: 6px"></span>
@@ -1159,180 +1354,103 @@
           秒
         </div>
       </div>
-      <div class="intro-feature">
-        <h2>独一无二的特性</h2>
-        <div class="react-tabs" data-tabs="true">
-          <ul class="react-tabs__tab-list" role="tablist">
-            <li class="react-tabs__tab react-tabs__tab--selected" role="tab" id="react-tabs-0" aria-selected="false" aria-disabled="false"
-              aria-controls="react-tabs-1" tabindex="0">多环境切换</li>
-            <li class="react-tabs__tab" role="tab" id="react-tabs-2" aria-selected="false" aria-disabled="false" aria-controls="react-tabs-3">协同编辑</li>
-            <li class="react-tabs__tab" role="tab" id="react-tabs-4" aria-selected="false" aria-disabled="false" aria-controls="react-tabs-5">全功能 Terminal</li>
-          </ul>
-          <div class="react-tabs__tab-panel react-tabs__tab-panel--selected" role="tabpanel" id="react-tabs-1" aria-labelledby="react-tabs-0">
-            <div class="tab-panel">
-              <div class="tab-panel-img">
-                <img src="https://dn-coding-net-production-pp.qbox.me/5f892a55-9e72-4a2b-a834-92c883deebd0.png" alt="feature_1">
-              </div>
-              <div class="tab-panel-intro">
-                <h3>一键切换开发环境</h3>
-                <p>告别繁琐的开发环境准备工作，一键切换各种预置的开发环境。</p>
-                <h3>快速恢复开发环境</h3>
-                <p>系统搞坏了，环境弄乱了，一键快速恢复为初始状态。</p>
-                <!-- <h3>保存与分享环境</h3> -->
-                <!-- <p>对开发环境进行改动或升级后，可保存当前开发环境以便随时切换。在环境列表中可查看与切换项目成员保存的开发环境，新成员即刻上手开发。</p> -->
-              </div>
+      <div class="section-container">
+        <div class="section-content">
+          <div class="text-container">
+            <div class="title">
+              一键切换开发环境
+            </div>
+            <div class="desc">
+              Cloud Studio 预置近 20 种开发环境，一键切换，开发者也可以保存自己配置的开发环境，告别烦杂的环境部署工作，将精力专注于代码的编写之上。
             </div>
           </div>
-          <div class="react-tabs__tab-panel" role="tabpanel" id="react-tabs-3" aria-labelledby="react-tabs-2">
-            <div class="tab-panel">
-              <div class="tab-panel-img">
-                <img src="https://dn-coding-net-production-pp.qbox.me/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png" alt="feature_2">
-              </div>
-              <div class="tab-panel-intro">
-                <h3>多人协作</h3>
-                <p>支持主动申请和被动邀请，多人同时编辑一个工作空间</p>
-                <h3>多光标输入</h3>
-                <p>多个多人同时编辑同一文件，多光标显示，输入内容一目了然。</p>
-                <h3>聊天室</h3>
-                <p>侧边栏聊天室，让实时沟通更便捷。</p>
-              </div>
-            </div>
-          </div>
-          <div class="react-tabs__tab-panel" role="tabpanel" id="react-tabs-5" aria-labelledby="react-tabs-4">
-            <div class="tab-panel">
-              <div class="tab-panel-img">
-                <img src="https://dn-coding-net-production-pp.qbox.me/cfa1e9da-9246-4da6-896f-009c445fc9fa.png" alt="feature_3">
-              </div>
-              <div class="tab-panel-intro">
-                <h3>支持 Unicode 宽字符</h3>
-                <p>完美支持宽字符的输入和显示。</p>
-                <h3>完善的 Web 终端模拟器</h3>
-                <p>兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持。</p>
-                <h3>提供 root 权限</h3>
-                <p>默认用户 sudo 免密码，用户可以自由安装偏好的软件包。</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <section class="tabs-mobile">
-          <div class="tab-item-container">
-            <h3>多环境切换</h3>
-            <div class="tab-mobile-panel">
-              <img src="https://dn-coding-net-production-pp.qbox.me/5f892a55-9e72-4a2b-a834-92c883deebd0.png" alt="feature_1">
-            </div>
-            <div class="tab-mobile-intro">
-              <h4>一键切换开发环境</h4>
-              <p>告别繁琐的开发环境准备工作，一键切换各种预置的开发环境。</p>
-              <!-- <h4>保存与分享环境</h4>
-              <p>对开发环境进行改动或升级后，可保存当前开发环境以便随时切换。在环境列表中可查看与切换项目成员保存的开发环境，新成员即刻上手开发。</p> -->
-              <h4>快速恢复开发环境</h4>
-              <p>系统搞坏了，环境弄乱了，一键快速恢复为初始状态。</p>
-            </div>
-          </div>
-          <div class="tab-item-container">
-            <h3>协同编辑</h3>
-            <div class="tab-mobile-panel">
-              <img src="https://dn-coding-net-production-pp.qbox.me/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png" alt="feature_2">
-            </div>
-            <div class="tab-mobile-intro">
-              <h4>多人协作</h4>
-              <p>支持主动申请和被动邀请，多人同时编辑一个工作空间</p>
-              <h4>多光标输入</h4>
-              <p>多个多人同时编辑同一文件，多光标显示，输入内容一目了然。</p>
-              <h4>聊天室</h4>
-              <p>侧边栏聊天室，让实时沟通更便捷。</p>
-            </div>
-          </div>
-          <div class="tab-item-container">
-            <h3>全功能 Terminal</h3>
-            <div class="tab-mobile-panel">
-              <img src="https://dn-coding-net-production-pp.qbox.me/cfa1e9da-9246-4da6-896f-009c445fc9fa.png" alt="feature_3">
-            </div>
-            <div class="tab-mobile-intro">
-              <h4>支持 Unicode 宽字符</h4>
-              <p>完美支持宽字符的输入和显示。</p>
-              <h4>完善的 Web 终端模拟器</h4>
-              <p>兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持。</p>
-              <h4>提供 root 权限</h4>
-              <p>默认用户 sudo 免密码，用户可以自由安装偏好的软件包。</p>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="intro-swiper">
-        <h2>完整的云端 IDE</h2>
-        <div class="intro-swiper-c">
-          <div class="swiper-container">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <img src="https://dn-coding-net-production-pp.qbox.me/3c2d37c6-1e83-4811-acf2-2c779094ef53.png" alt="screen-1">
-                <div class="desc">小程序开发</div>
-              </div>
-              <div class="swiper-slide">
-                <img src="https://dn-coding-net-production-pp.qbox.me/4837bb50-5338-42e8-8f3a-a24974e6e891.png" alt="screen-2">
-                <div class="desc">协同编辑</div>
-              </div>
-            </div>
-            <div class="swiper-pagination"></div>
+          <div class="img-container">
+            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p2.dc9b885f.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p2@2x.c470c016.png 2x"
+              alt="一键切换开发环境">
           </div>
         </div>
       </div>
-      <div class="intro-corp">
-        <div class="logo"></div>
-        <!-- react-text: 59 -->
-        <span>由</span>
-        <!-- /react-text -->
-        <i class="c-logo-icon"></i>
-        <!-- react-text: 61 -->
-        <span class="c-surrpot">提供云计算支持</span>
-        <!-- /react-text -->
+      <div class="section-container">
+        <div class="section-content">
+          <div class="img-container">
+            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p3.30cb4fb4.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p3@2x.76689a62.png 2x"
+              alt="实时协同编辑">
+          </div>
+          <div class="text-container">
+            <div class="title">
+              实时协同编辑
+            </div>
+            <div class="desc">
+              支持聊天室，支持多人协同操作，实时展示协作者的代码进度，多光标显示，输入内容一目了然。
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="global_footer">
-        <div class="record">
-          <div class="record_img_info">
-            <a href="https://coding.net/index">
-              <img src="https://dn-coding-net-production-pp.qbox.me/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png" height="36" width="353" style="position: absolute;">
+      <div class="section-container">
+        <div class="section-content">
+          <div class="text-container">
+            <div class="title">
+              全功能终端
+            </div>
+            <div class="desc">
+              兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持，默认用户 sudo 免密码，用户可以自由安装偏好的软件包。
+            </div>
+          </div>
+          <div class="img-container">
+            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p4.514023d3.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p4@2x.7e1108c6.png 2x"
+              alt="全功能终端">
+          </div>
+        </div>
+      </div>
+      <div class="section-container">
+        <div class="section-content">
+          <div class="img-container">
+            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p5.695383d8.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p5@2x.e7d550e2.png 2x"
+              alt="实时进度保存">
+          </div>
+          <div class="text-container">
+            <div class="title">
+              实时进度保存
+            </div>
+            <div class="desc">
+              开发进度、开发环境、代码文件自动实时云端存储，无需手动保存，大大降低了误操作和浏览器性能问题带来的代码丢失风险。
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer-container">
+        <div class="nav">
+          <div class="first-row">
+            <a href="https://dev.tencent.com/help" target="_blank" class="item">
+              文档帮助
             </a>
-            <div class="record_info">
-              <p>
-                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a> |
-                <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
-                <!-- react-text: 70 -->|
-                <!-- /react-text -->
-                <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
-                <!-- react-text: 72 -->|
-                <!-- /react-text -->
-                <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
-              </p>
-              <p>
-                <a href="https://coding.net/index">© 2018 Coding.net</a>
-                <!-- react-text: 76 -->|
-                <!-- /react-text -->
-                <a href="http://www.miitbeian.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备14029750号</a>
-                <!-- react-text: 78 -->| 深圳市扣钉网络科技有限公司
-                <!-- /react-text -->
-              </p>
-            </div>
-          </div>
-          <section class="mobile-record">
-            <a href="https://coding.net/index">
-              <img src="https://dn-coding-net-production-pp.qbox.me/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png">
+            <a href="https://www.cloud.tencent.com" class="item" target="_blank">
+              腾讯云官网
             </a>
-            <div class="record-info-mobile">
-              <p style="margin-top: 10px">
-                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a>
-                <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
-                <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
-                <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
-              </p>
-              <p>
-                <a href="https://coding.net/index">© 2017 Coding.net</a>
-                <a href="http://www.miitbeian.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备14029750号</a>
-              </p>
-            </div>
-          </section>
+          </div>
+          <div class="second-row">
+            <a href="https://cloud.tencent.com/developer" class="item" target="_blank">
+              腾讯云+社区
+            </a>
+            <a href="https://dev.tencent.com/about" target="_blank" class="item">
+              关于我们
+            </a>
+            <a href="https://feedback.coding.net/" target="_blank" class="item" style="margin-right: 0">
+              在线反馈
+            </a>
+          </div>
         </div>
-      </div>
+        <div class="items">
+          <a href="https://dev.tencent.com/privacy" target="_blank">隐私策略</a>
+          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+          <a href="https://dev.tencent.com/terms" target="_blank">服务条款</a>
+          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+          <a href="https://dev.tencent.com/security" target="_blank">安全策略</a>
+        </div>
+        <div class="right">
+          Copyright © 2013-2018 Tencent Cloud. All Rights Reserved. 腾讯云 版权所有&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;粤B2-20090059
+        </div>
+      </footer>
     </div>
   </div>
   <div class='hidden'>
@@ -1381,13 +1499,13 @@
         $(topLine).removeClass('rotate-line-to-t menu-show');
         $(bottomLine).removeClass('rotate-line-to-b menu-show');
         $('.mobile-intro-menu').css('height', 0);
-        $('.page-header .logo').css('filter', 'invert(0%)');
+        $('.page-header .logo').css('opacity', 1);
       } else {
         $('.mobile-nav-btn').addClass('btn-rotate-to');
         $(topLine).addClass('rotate-line-to-t menu-show');
         $(bottomLine).addClass('rotate-line-to-b menu-show');
-        $('.mobile-intro-menu').css('height', 240);
-        $('.page-header .logo').css('filter', 'invert(100%)');
+        $('.mobile-intro-menu').css('height', '100%');
+        $('.page-header .logo').css('opacity', 0);
       }
     })
 
@@ -1425,7 +1543,7 @@
 
     function logout() {
       $.ajax({
-        url: "https://studio.coding.net/backend/logout",
+        url: "https://studio.qcloud.coding.net/backend/logout",
         type: "GET",
         contentType: "application/vnd.coding.v2+json",
         xhrFields: {
@@ -1441,7 +1559,7 @@
 
     function getUserInfo() {
       $.ajax({
-        url: "https://studio.coding.net/backend/user/current",
+        url: "https://studio.qcloud.coding.net/backend/user/current",
         type: "GET",
         contentType: "application/vnd.coding.v2+json",
         xhrFields: {
@@ -1450,16 +1568,20 @@
         crossDomain: true
       }).done(function (res) {
         if (res.code === 1000) {
-          $('.user').html($('.login'));
+          //$('.user').html($('.login'));
         } else {
-          if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-            res.data.avatar = "https://coding.net" + res.data.avatar;
+          const pathname = location.pathname;
+          if (pathname === '/') {
+            location.href = '/dashboard';
+          } else {
+            if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
+              res.data.avatar = "https://coding.net" + res.data.avatar;
+            }
+            $('#user-info img').attr('src', res.data.avatar);
+
+            $('#user-info .username').html(res.data.name);
+            $('.user').hide().html($('#user-info')).fadeIn();
           }
-          $('#user-info img').attr('src', res.data.avatar);
-
-          $('#user-info .username').html(res.data.name);
-          $('.user').hide().html($('#user-info')).fadeIn();
-
         }
       }).fail(function () {
       }).always(function () {
