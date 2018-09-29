@@ -13,6 +13,10 @@
     height: 100%;
     border-radius: 3px;
 }
+.dash-create .project-card .highlight {
+    border-radius: 2px;
+    background-color: #6b6b6b;
+}
 
 @media screen and (max-width: 1440px) {
     .dash-create .project-card {

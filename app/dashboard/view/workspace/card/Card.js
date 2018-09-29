@@ -30,7 +30,7 @@ class Card extends Component {
                     {workingStatus === 'Online' && <div className="dot"></div>}
                 </div>
                 <div className="content">
-                    <div className="title" onClick={this.handleMask}>{`${ownerName}/${projectName}`}</div>
+                    <div className="title">{`${ownerName}/${projectName}`}</div>
                     {workingStatus !== 'Invalid' && <div className="desc">最后更新于 {getModifiedDate(Date.now(), lastModifiedDate)}</div>}
                     {workingStatus === 'Invalid' && <div className="desc">删除于 {getDeletedTime(Date.now(), lastModifiedDate)}</div>}
                 </div>
@@ -44,6 +44,7 @@ class Card extends Component {
 
     handleMask = ({ message, isWarn, okText, okHandle }, event) => {
         event.preventDefault();
+        event.stopPropagation();
         this.props.switchMaskToOn({
             message,
             isWarn,

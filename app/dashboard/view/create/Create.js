@@ -66,7 +66,7 @@ class Create extends Component {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
         api.getEnvList().then(res => {
-            if (res && res.length) {
+            if (Array.isArray(res)) {
                 this.setState({ envs: res });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
