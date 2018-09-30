@@ -146,7 +146,7 @@ class Coding extends Component {
         this.props.handleToolTipOn({
             clientX: event.clientX,
             clientY: event.clientY,
-            message: '默认为自定义环境，你可以在该环境中自己安装所需要的环境。',
+            message: '默认环境为 Ubuntu 16.04，你可以在该环境中自己安装所需要的环境。',
         });
     }
 

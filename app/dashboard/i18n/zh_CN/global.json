@@ -14,7 +14,7 @@
     "language": "语言",
     "sshPublicKey": "SSH 公钥",
     "importSource": "导入来源",
-    "noRemoteRepo": "不设远端仓库",
+    "noRemoteRepo": "无",
     "codingRepo": "CODING 仓库",
     "otherGitRepo": "其他 Git 仓库",
     "workspaceName": "工作空间名",
