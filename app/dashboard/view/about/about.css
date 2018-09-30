@@ -30,11 +30,13 @@
     right: -10px;
 }
 .dash-about .center .desc {
-    width: 160px;
+    display: flex;
+    justify-content: flex-end;
+    width: 140px;
     margin: 0 auto;
 }
 .dash-about .center .desc .version {
-    margin-right: 20px;
+    margin-right: 10px;
     font-size: 16px;
 }
 .dash-about .center .desc a {

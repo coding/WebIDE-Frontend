@@ -18,12 +18,13 @@ class Workspace extends Component {
 
     render() {
         const { workspaces, workspacesInvalid, ready } = this.state;
-        const { switchMaskToOn, switchMaskToOff } = this.props;
+        const { hasWorkspaceOpend, switchMaskToOn, switchMaskToOff } = this.props;
         return (
             <div className="dash-workspace">
                 <div className="created">
                     <New />
                     {workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                        hasWorkspaceOpend={hasWorkspaceOpend}
                         switchMaskToOn={switchMaskToOn}
                         switchMaskToOff={switchMaskToOff}
                         handleFetch={this.handleFetch} />
@@ -73,6 +74,9 @@ class Workspace extends Component {
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspaces.push(ws);
+                    if (item.workingStatus === 'Online') {
+                        this.props.handleWorkspaceOpend();
+                    }
                 }
                 this.setState({ workspaces, ready: true });
                 this.props.storeWorkspaceCount(workspaces.length);
@@ -107,12 +111,17 @@ class Workspace extends Component {
     }
 }
 
+const mapState = (state) => {
+    return { hasWorkspaceOpend: state.hasWorkspaceOpend };
+}
+
 const mapDispatch = (dispatch) => {
     return {
         switchMaskToOn: (payload) => dispatch({ type: 'SWITCH_MASK_TO_ON', payload }),
         switchMaskToOff: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
         storeWorkspaceCount: (payload) => dispatch({ type: 'STORE_WORKSPACE_COUNT', payload }),
+        handleWorkspaceOpend: () => dispatch({ type: 'HAS_WORKSPACE_OPEND' }),
     }
 }
 
-export default connect(null, mapDispatch)(Workspace);
+export default connect(mapState, mapDispatch)(Workspace);

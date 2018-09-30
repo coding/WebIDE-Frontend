@@ -1,4 +1,6 @@
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 html {
@@ -46,5 +48,6 @@ ul, ol {
     font-size: 14px;
     font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", sans-serif;
     color: #ccc;
+    background-color: #333;
     -webkit-font-smoothing: antialiased;
 }

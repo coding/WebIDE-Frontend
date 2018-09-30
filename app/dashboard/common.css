@@ -3,10 +3,10 @@
     padding-bottom: 40px;
 }
 .com-board .board-label {
-    width: 120px;
+    width: 130px;
 }
 .com-board .board-content {
-    width: calc(100% - 120px);
+    width: calc(100% - 130px);
 }
 .com-board .board-content.radio {
     display: flex;

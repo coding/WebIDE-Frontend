@@ -30,7 +30,7 @@
     "cancel": "取消",
     "repoUrl": "仓库地址",
     "recentdeleted": "最近删除",
-    "deleteProjectTip": "删除后项目自动保留一天，再次期间你可以恢复，否则将永久删除",
+    "deleteProjectTip": "删除后项目自动保留一天，在此期间你可以恢复，否则将永久删除",
     "noWorkspaceHint": "欢迎来到 Cloud Studio，您可以在这里创建工作空间, 我们为您准备了完整的 Linux 环境，可以用来完成各种应用的开发编译与部署。",
     "createWorkspace": "新建工作空间",
     "sshTip": "目前 Cloud Studio 导入外部项目只支持 SSH 协议，请先将下面的 SSH key (点击图标复制) 添加到导入来源 Git 仓库的公钥列表中。",
