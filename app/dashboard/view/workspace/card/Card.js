@@ -24,6 +24,7 @@ class Card extends Component {
             okHandle: this.handleRestore,
         }
         const src = httpsReg.test(projectIconUrl) ? projectIconUrl : `https://coding.net${projectIconUrl}`;
+        const title = `${ownerName}/${projectName}`;
         return (
             <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey}>
                 <div className="avatar">
@@ -31,7 +32,7 @@ class Card extends Component {
                     {workingStatus === 'Online' && <div className="dot"></div>}
                 </div>
                 <div className="content">
-                    <div className="title">{`${ownerName}/${projectName}`}</div>
+                    <div className="title" title={title}>{title}</div>
                     {workingStatus !== 'Invalid' && <div className="desc">最后更新于 {getModifiedDate(Date.now(), lastModifiedDate)}</div>}
                     {workingStatus === 'Invalid' && <div className="desc">删除于 {getDeletedTime(Date.now(), lastModifiedDate)}</div>}
                 </div>
@@ -74,10 +75,12 @@ class Card extends Component {
 }
 
 const Href = ({ invalid, spaceKey, children }) => {
+    const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+    console.log('判断自己是否在 iframe 内', window !== window.top, url);
     if (invalid) {
         return <div className="ws-card">{children}</div>;
     } else {
-        return <a className="ws-card" href={`${tencentOrigin}/ws/${spaceKey}`} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className="ws-card" href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 

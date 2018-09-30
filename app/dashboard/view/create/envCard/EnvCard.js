@@ -43,15 +43,16 @@ const match = (label) => {
     return ubuntu;
 }
 
-const EnvCard = ({ name, description, envId, handleSeleteEnv }) => {
+const EnvCard = ({ name, displayName, description, descriptionCN, envId, language, handleSeleteEnv }) => {
+    const desc = language === 'zh_CN' ? descriptionCN : description;
     return (
         <div className={`com-card env-card${envId === name ? ' seleted' : ''}`} onClick={() => handleSeleteEnv(name)}>
             <div className="inner">
                 <div className="main">
                     <img src={match(name)} alt="avatar" />
-                    <span>{name}</span>
+                    <span title={displayName}>{displayName}</span>
                 </div>
-                <div className="desc">{description}</div>
+                <div className="desc">{desc}</div>
                 <div className="mark">
                     <i className="fa fa-check"></i>
                 </div>

@@ -59,8 +59,21 @@ class Workspace extends Component {
         api.getWorkspace().then(res => {
             if (res.code === 0) {
                 const list = res.data.list;
-                this.setState({ workspaces: list });
-                this.props.storeWorkspaceCount(list.length);
+                const workspaces = [];
+                for (let i = 0; i < list.length; i++) {
+                    const item = list[i];
+                    const ws = {};
+                    ws.spaceKey = item.spaceKey;
+                    ws.projectIconUrl = item.projectIconUrl;
+                    ws.ownerName = item.ownerName;
+                    // 无远端仓库有一个 workspaceName 字段
+                    ws.projectName = item.workspaceName === 'default' ? item.projectName : item.workspaceName;
+                    ws.lastModifiedDate = item.lastModifiedDate;
+                    ws.workingStatus = item.workingStatus;
+                    workspaces.push(ws);
+                }
+                this.setState({ workspaces });
+                this.props.storeWorkspaceCount(workspaces.length);
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch workspaceList' });
             }
@@ -69,7 +82,7 @@ class Workspace extends Component {
         });
         api.getWorkspaceInvalid().then(res => {
             if (Array.isArray(res)) {
-                const invalid = [];
+                const workspacesInvalid = [];
                 for (let i = 0; i < res.length; i++) {
                     const item = res[i];
                     const ws = {};
@@ -79,9 +92,9 @@ class Workspace extends Component {
                     ws.projectName = item.project.name;
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
-                    invalid.push(ws);
+                    workspacesInvalid.push(ws);
                 }
-                this.setState({ workspacesInvalid: invalid });
+                this.setState({ workspacesInvalid });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch deleted workspaceList' });
             }

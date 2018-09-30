@@ -15,11 +15,12 @@ class Git extends Component {
     state = {
         desc: '',
         url: '',
-        envId: '',
+        envId: 'ide-tty',
+        isCreating: false,
     }
 
     render() {
-        const { desc, url, envId } = this.state;
+        const { desc, url, envId, isCreating } = this.state;
         const { envs, language } = this.props;
         let textareaPh, inputPh;
         if (language === 'zh_CN') {
@@ -56,6 +57,7 @@ class Git extends Component {
                         {
                             envs.length ? (
                                 envs.map(env => <EnvCard key={env.name} {...env}
+                                    language={language}
                                     envId={envId}
                                     handleSeleteEnv={this.handleSeleteEnv} />
                                 )
@@ -66,7 +68,9 @@ class Git extends Component {
                 <div className="com-board">
                     <div className="board-label"></div>
                     <div className="board-content">
-                        <button className="com-button primary" disabled={!url || !envId} onClick={this.handleCreate}>{i18n('global.create')}</button>
+                        <button className="com-button primary" disabled={!url || !envId} onClick={this.handleCreate}>
+                            {isCreating ? i18n('global.creating') : i18n('global.create')}
+                        </button>
                         <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
                     </div>
                 </div>
@@ -100,10 +104,6 @@ class Git extends Component {
 
     handleCreate = () => {
         const { desc, url, envId } = this.state;
-        if (!url || !envId) {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Please fill in all required fields' });
-            return;
-        }
         const option = {
             cpuLimit: 2,
             memory: 512,
@@ -113,13 +113,16 @@ class Git extends Component {
             url,
             envId,
         }
+        this.setState({ isCreating: true });
         api.cloneWorkspace(option).then(res => {
+            this.setState({ isCreating: false });
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create workspace' });
             }
         }).catch(err => {
+            this.setState({ isCreating: false });
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
