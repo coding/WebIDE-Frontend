@@ -150,6 +150,13 @@ class Initialize extends Component {
               <button className='btn btn-primary' onClick={() => window.location.href = '/ws/default'} >{i18n`global.returnDefault`}</button>
             </div>
           )
+        } else if (state.errorInfo.includes('your online workspace is limit to')) {
+          const limit = state.errorInfo.substring(state.errorInfo.length - 1)
+          info = (
+            <div className='loading-info'>
+              {i18n`global.workspaceRunLimit${{ limit }}`}
+            </div>
+          )
         } else {
           info = (
             <div className='loading-info'>
