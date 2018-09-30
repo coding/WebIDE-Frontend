@@ -35,7 +35,7 @@ module.exports = merge(
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',
         multihtmlCatch: true,
-        excludeChunks: ['workspaces', 'login'],
+        excludeChunks: ['workspaces', 'login','dashboard'],
         filename: (staticDir ? '../' : '') + mainEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/index.html'),
         // favicon: ICO_PATH,
@@ -43,14 +43,14 @@ module.exports = merge(
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',
         multihtmlCatch: true,
-        excludeChunks: ['workspaces', 'login'],
+        excludeChunks: ['workspaces', 'login', 'main'],
         filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
       }),
       new HtmlWebpackPlugin({
         title: 'Coding WebIDE',
         multihtmlCatch: true,
-        excludeChunks: ['workspaces', 'main'],
+        excludeChunks: ['workspaces', 'main', 'dashboard'],
         filename: (staticDir ? '../' : '') + accountEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/account.html'),
         // favicon: ICO_PATH,
@@ -58,14 +58,14 @@ module.exports = merge(
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',
         multihtmlCatch: true,
-        excludeChunks: ['workspaces', 'main'],
+        excludeChunks: ['workspaces', 'main', 'dashboard'],
         filename: (staticDir ? '../' : '') + loginEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/login.html'),
         // favicon: ICO_PATH,
       }),
       new HtmlWebpackPlugin({
-        title: 'Cloud Studio',
-        excludeChunks: ['main', 'login'],
+        title: 'Coding WebIDE',
+        excludeChunks: ['main', 'login', 'dashboard'],
         filename: (staticDir ? '../' : '') + workspacesEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/workspaces_standalone/index.html'),
         // favicon: ICO_PATH,
