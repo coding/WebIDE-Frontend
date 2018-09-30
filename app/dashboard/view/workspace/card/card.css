@@ -48,6 +48,7 @@
     text-overflow: ellipsis;
 }
 .dash-workspace .ws-card .title {
+    width: calc(100% - 20px);
     margin: 4px 0 10px;
     font-size: 16px;
     font-weight: 700;

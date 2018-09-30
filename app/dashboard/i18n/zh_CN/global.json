@@ -26,6 +26,7 @@
     "templateProject": "从模板创建",
     "env": "运行环境",
     "create": "创建",
+    "creating": "创建中...",
     "cancel": "取消",
     "repoUrl": "仓库地址",
     "recentdeleted": "最近删除",

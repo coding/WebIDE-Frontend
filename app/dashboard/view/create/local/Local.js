@@ -15,10 +15,11 @@ class Local extends Component {
         workspaceName: '',
         desc: '',
         templateId: -1,
+        isCreating: false,
     }
 
     render() {
-        const { workspaceName, desc, templateId } = this.state;
+        const { workspaceName, desc, templateId, isCreating } = this.state;
         const { templates, language } = this.props;
         let inputPh, textareaPh;
         if (language === 'zh_CN') {
@@ -59,7 +60,9 @@ class Local extends Component {
                 <div className="com-board">
                     <div className="board-label"></div>
                     <div className="board-content">
-                        <button className="com-button primary" disabled={!workspaceName || !templateId} onClick={this.handleCreate}>{i18n('global.create')}</button>
+                        <button className="com-button primary" disabled={!workspaceName || !templateId} onClick={this.handleCreate}>
+                            {isCreating ? i18n('global.creating') : i18n('global.create')}
+                        </button>
                         <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
                     </div>
                 </div>
@@ -95,13 +98,16 @@ class Local extends Component {
             desc,
             templateId,
         }
+        this.setState({ isCreating: true });
         api.createWorkspaceV2(option).then(res => {
+            this.setState({ isCreating: false });
             if (res) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create workspace' });
             }
         }).catch(err => {
+            this.setState({ isCreating: false });
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

@@ -38,7 +38,7 @@ class Setting extends Component {
             if (res.code === 0) {
                 this.props.logIn(res.data);
             } else {
-                window.location.href = `${tencentOrigin}/intro`;
+                window.location.href = '/intro';
             }
         });
     }
@@ -47,7 +47,7 @@ class Setting extends Component {
         api.logout().then(res => {
             if (res.code === 0) {
                 this.props.logOut();
-                window.location.href = `${tencentOrigin}/intro`;
+                window.location.href = '/intro';
             }
         });
     }

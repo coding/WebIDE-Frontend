@@ -35,7 +35,8 @@ const Title = ({ ownerName, name, filter }) => {
             </div>
         );
     } else {
-        return <div className="title">{`${ownerName}/${name}`}</div>;
+        const title = `${ownerName}/${name}`;
+        return <div className="title" title={title}>{title}</div>;
     }
 }
 

@@ -19,17 +19,19 @@ class Coding extends Component {
         ownerName: '',
         projectName: '',
         templateId: -1,
-        envId: '',
+        envId: 'ide-tty',
+        isCreating: false,
         filter: '',
         isSync: false,
     };
 
     render() {
-        const { type, desc, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
+        const { type, desc, ownerName, projectName, templateId, envId, isCreating, filter, isSync } = this.state;
         let { projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
+        const disabled = type === 1 ? (!projectName || !envId) : (!projectName || !templateId);
         let inputPh, textareaPh, searchPh;
         if (language === 'zh_CN') {
             inputPh = '输入项目名';
@@ -111,6 +113,7 @@ class Coding extends Component {
                             {
                                 envs.length ? (
                                     envs.map(env => <EnvCard key={env.name} {...env}
+                                        language={language}
                                         envId={envId}
                                         handleSeleteEnv={this.handleSeleteEnv} />
                                     )
@@ -122,8 +125,9 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label"></div>
                     <div className="board-content">
-                        {type === 1 && <button className="com-button primary" disabled={!projectName || !envId} onClick={this.handleCreate}>{i18n('global.create')}</button>}
-                        {type === 2 && <button className="com-button primary" disabled={!projectName || !templateId} onClick={this.handleCreate}>{i18n('global.create')}</button>}
+                        <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>
+                            {isCreating ? i18n('global.creating') : i18n('global.create')}
+                        </button>
                         <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
                     </div>
                 </div>
@@ -202,6 +206,7 @@ class Coding extends Component {
             ownerName: ownerName || globalKey,
             projectName,
         };
+        this.setState({ isCreating: true });
         if (type === 1) {
             option.envId = envId;
             this.handleCreateWorkspace(option);
@@ -222,9 +227,11 @@ class Coding extends Component {
                 if (res.code === 0) {
                     this.handleCreateWorkspace(option);
                 } else {
+                    this.setState({ isCreating: false });
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create project' });
                 }
             }).catch(err => {
+                this.setState({ isCreating: false });
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
@@ -232,12 +239,14 @@ class Coding extends Component {
 
     handleCreateWorkspace(option) {
         api.createWorkspace(option).then(res => {
+            this.setState({ isCreating: false });
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create workspace' });
             }
         }).catch(err => {
+            this.setState({ isCreating: false });
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

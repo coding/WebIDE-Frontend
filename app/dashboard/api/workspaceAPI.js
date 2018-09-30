@@ -21,7 +21,7 @@ export const createWorkspaceV2 = (data) => {
 }
 
 export const cloneWorkspace = (data) => {
-    return request.postFormData('/ws/clone', data);
+    return request.postFormData('/ws/clone', data, { 'Content-Type': 'application/x-www-form-urlencoded' });
 }
 
 export const deleteWorkspace = (spaceKey) => {
