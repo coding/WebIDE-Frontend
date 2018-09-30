@@ -22,6 +22,8 @@
     margin-right: 10px;
 }
 .com-board .project-head-right .async {
+    width: 60px;
+    text-align: right;
     color: #5097e8;
     cursor: pointer;
 }

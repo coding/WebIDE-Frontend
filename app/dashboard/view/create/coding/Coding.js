@@ -228,7 +228,21 @@ class Coding extends Component {
                     this.handleCreateWorkspace(option);
                 } else {
                     this.setState({ isCreating: false });
-                    notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create project' });
+                    let message;
+                    if (res.msg) {
+                        const msg = res.msg;
+                        if (typeof msg === 'object') {
+                            message = msg[Object.keys(msg)[0]];
+                        } else {
+                            message = res.msg;
+                        }
+                    } else {
+                        message = 'Failed to create project';
+                    }
+                    notify({
+                        notifyType: NOTIFY_TYPE.ERROR,
+                        message,
+                    });
                 }
             }).catch(err => {
                 this.setState({ isCreating: false });
@@ -243,7 +257,7 @@ class Coding extends Component {
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create workspace' });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
         }).catch(err => {
             this.setState({ isCreating: false });

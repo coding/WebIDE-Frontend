@@ -44,11 +44,10 @@
     width: calc(100% - 200px);
     height: 100%;
     background-color: #333;
+    overflow: auto;
 }
 .dash-main .dash-view {
     min-width: 1000px;
     max-width: 1500px;
-    height: calc(100% - 60px);
     padding: 30px;
-    overflow: auto;
 }

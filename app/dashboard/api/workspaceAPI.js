@@ -49,7 +49,7 @@ export const getTemplateProject = () => {
 }
 
 export const getEnvList = () => {
-    return request.get(`/tty/env_list`, { 'Accept': 'application/vnd.coding.v2+json' });
+    return request.get(`/tty/common_envs`, { 'Accept': 'application/vnd.coding.v2+json' });
 }
 
 export const createProject = (data) => {

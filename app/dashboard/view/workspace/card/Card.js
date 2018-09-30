@@ -10,7 +10,7 @@ const httpsReg = /http(?:s)?/;
 
 class Card extends Component {
     render() {
-        const { spaceKey, projectIconUrl, ownerName, projectName, lastModifiedDate, workingStatus } = this.props;
+        const { spaceKey, projectIconUrl, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
         const deleteOption = {
             message: '删除后该工作空间自动为您保留到次日凌晨 2 点，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？',
             isWarn: true,
@@ -26,7 +26,7 @@ class Card extends Component {
         const src = httpsReg.test(projectIconUrl) ? projectIconUrl : `https://coding.net${projectIconUrl}`;
         const title = `${ownerName}/${projectName}`;
         return (
-            <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey}>
+            <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey} hasWorkspaceOpend={hasWorkspaceOpend} handleMask={this.handleMask}>
                 <div className="avatar">
                     <img src={src} />
                     {workingStatus === 'Online' && <div className="dot"></div>}
@@ -44,12 +44,13 @@ class Card extends Component {
         );
     }
 
-    handleMask = ({ message, isWarn, okText, okHandle }, event) => {
+    handleMask = ({ message, isWarn, noCancel, okText, okHandle }, event) => {
         event.preventDefault();
         event.stopPropagation();
         this.props.switchMaskToOn({
             message,
             isWarn,
+            noCancel,
             okText,
             okHandle,
         });
@@ -74,9 +75,18 @@ class Card extends Component {
     }
 }
 
-const Href = ({ invalid, spaceKey, children }) => {
+const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children }) => {
     const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
-    console.log('判断自己是否在 iframe 内', window !== window.top, url);
+    const hasWorkspaceOpendOption = {
+        message: '你有一个已打开的工作空间，如果想打开另一个，请关闭已打开工作空间的浏览器页面，并刷新 dashboard 重试',
+        isWarn: false,
+        noCancel: true,
+        okText: '确认',
+        okHandle: () => {},
+    }
+    if (hasWorkspaceOpend) {
+        return <div className="ws-card" onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
+    }
     if (invalid) {
         return <div className="ws-card">{children}</div>;
     } else {

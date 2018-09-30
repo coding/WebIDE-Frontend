@@ -104,7 +104,7 @@ class Local extends Component {
             if (res) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to create workspace' });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
         }).catch(err => {
             this.setState({ isCreating: false });
