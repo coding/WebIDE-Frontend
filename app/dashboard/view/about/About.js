@@ -10,7 +10,6 @@ import i18n from '../../utils/i18n';
 const About = () => {
     return (
         <div className="dash-about">
-            <div className="top"></div>
             <div className="center">
                 <div className="logo">
                     <img src={cloudstudio} alt="cloudstudio" />
