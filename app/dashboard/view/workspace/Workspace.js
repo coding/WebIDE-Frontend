@@ -11,12 +11,13 @@ import { notify, NOTIFY_TYPE } from '../../../components/Notification/actions';
 
 class Workspace extends Component {
     state = {
+        ready: false,
         workspaces: [],
         workspacesInvalid: [],
     }
 
     render() {
-        const { workspaces, workspacesInvalid } = this.state;
+        const { workspaces, workspacesInvalid, ready } = this.state;
         const { switchMaskToOn, switchMaskToOff } = this.props;
         return (
             <div className="dash-workspace">
@@ -28,6 +29,7 @@ class Workspace extends Component {
                         handleFetch={this.handleFetch} />
                     )}
                 </div>
+                {ready && !workspaces.length && !workspacesInvalid.length && <div className="tip">{i18n('global.noWorkspaceHint')}</div>}
                 {
                     workspacesInvalid.length ? (
                         <div className="deleted-container">
@@ -72,9 +74,10 @@ class Workspace extends Component {
                     ws.workingStatus = item.workingStatus;
                     workspaces.push(ws);
                 }
-                this.setState({ workspaces });
+                this.setState({ workspaces, ready: true });
                 this.props.storeWorkspaceCount(workspaces.length);
             } else {
+                this.setState({ ready: true });
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch workspaceList' });
             }
         }).catch(err => {
