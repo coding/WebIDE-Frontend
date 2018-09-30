@@ -4,10 +4,12 @@ import './projectCard.css';
 
 const httpsReg = /http(?:s)?/;
 
-const ProjectCard = ({ iconUrl, ownerName, name, projectName, filter, handleSeleteProject }) => {
+const ProjectCard = ({ iconUrl, ownerName, name, selected, filter, handleSeleteProject }) => {
+    const { seletedOwnerName, seletedProjectName } = selected;
     const src = httpsReg.test(iconUrl) ? iconUrl : `https://coding.net${iconUrl}`;
+    const projectCardClass = `com-card project-card${(seletedOwnerName === ownerName && seletedProjectName === name) ? ' seleted' : ''}`;
     return (
-        <div className={`com-card project-card${projectName === name ? ' seleted' : ''}`} onClick={() => handleSeleteProject({ ownerName, projectName: name })}>
+        <div className={projectCardClass} onClick={() => handleSeleteProject({ ownerName, projectName: name })}>
             <div className="inner">
                 <div className="avatar">
                     <img src={src} />

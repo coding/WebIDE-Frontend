@@ -47,13 +47,21 @@ class Home extends Component {
 
     componentDidMount() {
         const { history, location, workspaceCount, storeWorkspaceCount } = this.props;
-        history.listen(route => {
-            window.top.postMessage({ path: route.pathname }, '*');
-        });
+        // 跳转
         if (location.pathname === '/dashboard') {
             history.push({ pathname: '/dashboard/workspace' });
         }
+        // 给顶层 window 发送消息
+        history.listen(route => {
+            window.top.postMessage({ path: route.pathname }, '*');
+        });
         window.top.postMessage({ path: window.location.pathname }, '*');
+        // 接收顶层 window 的消息
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            console.log(data);
+        });
+        // 同步工作空间数量
         if (!workspaceCount) {
             api.getWorkspace().then(res => {
                 if (res.code === 0) {
