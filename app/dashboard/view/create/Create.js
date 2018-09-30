@@ -40,13 +40,19 @@ class Create extends Component {
                     </div>
                 </div>
                 {importFrom === 'local' && <Local templates={templates} />}
-                {importFrom === 'coding' && <Coding projects={projects} templates={templates} envs={envs} />}
+                {importFrom === 'coding' && <Coding projects={projects} templates={templates} envs={envs} fetchCodingProject={this.fetchCodingProject} />}
                 {importFrom === 'git' && <Git envs={envs} />}
             </div>
         );
     }
 
     componentDidMount() {
+        this.fetchCodingProject();
+        this.fetchTemplateProject();
+        this.fetchEnvList();
+    }
+
+    fetchCodingProject = () => {
         api.getCodingProject().then(res => {
             if (res.code === 0) {
                 this.setState({ projects: res.data });
@@ -56,6 +62,9 @@ class Create extends Component {
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
+    }
+
+    fetchTemplateProject = () => {
         api.getTemplateProject().then(res => {
             if (res.code === 0) {
                 this.setState({ templates: res.data });
@@ -65,6 +74,9 @@ class Create extends Component {
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
+    }
+
+    fetchEnvList = () => {
         api.getEnvList().then(res => {
             if (Array.isArray(res)) {
                 this.setState({ envs: res });

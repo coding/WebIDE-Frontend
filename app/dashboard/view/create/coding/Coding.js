@@ -25,7 +25,7 @@ class Coding extends Component {
     };
 
     render() {
-        const { type, desc, projectName, templateId, envId, filter, isSync } = this.state;
+        const { type, desc, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
         let { projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
@@ -81,7 +81,7 @@ class Coding extends Component {
                                 type === 1 ? (
                                     projects.length ? (
                                         projects.map(item => <ProjectCard key={item.id} {...item}
-                                            projectName={projectName}
+                                            selected={{ seletedOwnerName: ownerName, seletedProjectName: projectName }}
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
@@ -158,10 +158,11 @@ class Coding extends Component {
         this.setState({ isSync: true });
         api.syncProject().then(res => {
             this.setState({ isSync: false });
+            this.props.fetchCodingProject();
             notify({ message: 'Async project success' });
         }).catch(err => {
             this.setState({ isSync: false });
-            console.log(err);
+            this.props.fetchCodingProject();
         });
     }
 
