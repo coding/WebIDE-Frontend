@@ -75,7 +75,7 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login'],
+      excludeChunks: ['workspaces', 'login','dashboard'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       // favicon: ICO_PATH,
@@ -83,14 +83,14 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login'],
+      excludeChunks: ['workspaces', 'login', 'main'],
       filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
+      excludeChunks: ['workspaces', 'main','dashboard'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/account.html'),
       // favicon: ICO_PATH,
@@ -98,7 +98,7 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
+      excludeChunks: ['workspaces', 'main','dashboard'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
       // favicon: ICO_PATH,
