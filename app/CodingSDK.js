@@ -14,11 +14,12 @@ import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/wo
 import * as Panel from './components/Panel/actions'
 import * as File from './commons/File'
 import initializeState from './containers/Initialize/state'
-import { app as appExports, lib as libExports } from './exports'
+import { app as appExports, lib as libExports, codingide } from './exports'
 
 
 window.app = appExports
 window.lib = libExports
+window.codingide = codingide
 
 export default class {
   // app data

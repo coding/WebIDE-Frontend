@@ -32,4 +32,9 @@ const lib = {
   socketIOClient: require('socket.io-client')
 }
 
-export { app, lib }
+const codingide = {
+  component: require('components/exports'),
+  lib,
+}
+
+export { app, lib, codingide }
