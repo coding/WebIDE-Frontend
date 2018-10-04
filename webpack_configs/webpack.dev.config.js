@@ -35,6 +35,7 @@ const mainEntryHtmlName = 'workspace.html'
 const dashboardEntryHtmlName = 'dashboard.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
+const introEntryHtmlName = 'intro.html'
 // const changelogEntryHtmlName = 'changelog.html'
 const exportEntryHtmlName = 'export.html'
 
@@ -100,6 +101,14 @@ const config = merge(
       excludeChunks: ['workspaces', 'main','dashboard'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
+      // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
+      filename: (staticDir ? '../' : '') + introEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/intro.html'),
       // favicon: ICO_PATH,
     }),
     // new HtmlWebpackPlugin({
