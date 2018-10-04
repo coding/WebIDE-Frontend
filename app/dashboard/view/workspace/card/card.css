@@ -21,6 +21,10 @@
     border-radius: 4px;
     background-color: #3f3f3f;
     position: relative;
+    display: none;
+}
+.dash-workspace .ws-card.new .avatar {
+    display: block;
 }
 .dash-workspace .ws-card .avatar img {
     height: 100%;
@@ -35,6 +39,17 @@
     position: absolute;
     top: -5px;
     right: -5px;
+}
+.dash-workspace .ws-card {
+    border-left: 2px solid red;
+    padding: 10px 10px 10px 9px;
+}
+.dash-workspace .ws-card.online {
+    border-left: 2px solid #53bf1d;
+    padding: 10px 10px 10px 9px;
+}
+.dash-workspace .ws-card.new {
+    border: 1px solid #555;
 }
 .dash-workspace .ws-card .content {
     width: calc(100% - 60px);

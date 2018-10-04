@@ -22,6 +22,7 @@ class Workspace extends Component {
         return (
             <div className="dash-workspace">
                 <div className="created">
+                    {workspaces.length > 0 && <div className="tip">{i18n('global.wsIntro')}</div>}
                     <New />
                     {workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
                         hasWorkspaceOpend={hasWorkspaceOpend}
