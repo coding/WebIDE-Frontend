@@ -41,12 +41,12 @@ class WelcomePage extends Component {
         </div>
         <div className='intro'>
           <p>Cloud Studio 极大的降低了软件开发的门槛。即使您没有软件开发的经验，您也可以立即体验软件开发的魅力，毫无开发环境配置的繁琐。</p>
-          <p>使用以下预置的应用程序模版快速开始吧：</p>
+          {/* <p>使用以下预置的应用程序模版快速开始吧：</p> */}
           <ul className='demo-links'>
             {/* <li><a href='https://coding.net/help/doc/webide/online-editing.html' target='_blank' rel='noopener noreferrer'>HTML5 应用</a></li> */}
             {/* <li><a href='https://coding.net/help/doc/webide/compile.html' target='_blank' rel='noopener noreferrer'>Python 人工智能</a></li> */}
-            <li><a href='/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li>
-            <li><a href='/ws/?projectName=JavaDemo&open=README.md&templateId=4' target='_blank' rel='noopener noreferrer'>Java 应用</a></li>
+            {/* <li><a href='/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li> */}
+            {/* <li><a href='/ws/?projectName=JavaDemo&open=README.md&templateId=4' target='_blank' rel='noopener noreferrer'>Java 应用</a></li> */}
             {/* <li><a href='javascript: void(0)' onClick={e => {
               this.handleCreateWorkspace({
                 // ownerName: 'tanhe123',
