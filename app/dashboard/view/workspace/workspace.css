@@ -30,3 +30,30 @@
     color: gray(80%);
     border: 1px solid #444;
 }
+
+.mask-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mask-container .progress {
+    font-size: 16px;
+    padding: 16px 16px;
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 10;
+}
+.mask-container .progress .progress-btn {
+    text-align: right;
+    margin-top: 12px;
+    font-size: 14px;
+}
+.mask-container .progress .progress-line {
+    padding-top: 8px;
+    max-width: 260px;
+}
