@@ -13,6 +13,7 @@ import Workspace from '../workspace';
 import Create from '../create';
 import Config from '../config';
 import About from '../about';
+import Utilities from '../../../containers/Utilities';
 
 class Home extends Component {
     render() {
@@ -41,6 +42,7 @@ class Home extends Component {
                         </Switch>
                     </div>
                 </div>
+                <Utilities />
             </div>
         );
     }
