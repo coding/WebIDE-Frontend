@@ -606,6 +606,7 @@
       display: inline-block;
       border-radius: 2px;
       transition: all 0.5s ;
+      margin: 40px auto 0 auto;
     }
 
     .intro-page .intro-header .btn-try:hover {
@@ -914,6 +915,10 @@
     .mobile-record {
       display: none;
     }
+
+    .mobile-intro-menu {
+      display: none;
+    }
   </style>
 
   <style>
@@ -990,6 +995,10 @@
         letter-spacing: 1px;
         text-align: center;
         line-height: 40px;
+      }
+
+      .btn-try {
+        display: none;
       }
 
       .intro-page .intro-counter {
@@ -1285,6 +1294,7 @@
           <p>用户可以通过 Cloud Studio 创建项目的工作空间, 提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
           <p>动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
           <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
+          <a class="btn-try" href="javascript:void(0)" onClick="handleTry()">立即体验</a>
           <span class="content-tips">需使用桌面版体验</span>
         </div>
         <section class="mobile-intro-menu">
@@ -1470,10 +1480,10 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="aria-labelledby">
           <li>
-            <a href="https://coding.net" target="_blank" rel="noopener noreferrer">Coding.net</a>
+            <a href="/dashboard" rel="noopener noreferrer">控制台</a>
           </li>
           <li>
-            <a href="javascript:void(0)" onclick="logout()">Logout</a>
+            <a href="javascript:void(0)" onclick="logout()">退出</a>
           </li>
         </ul>
       </div>
@@ -1557,6 +1567,8 @@
       });
     }
 
+    var hasLogin = false;
+
     function getUserInfo() {
       $.ajax({
         url: "https://studio.qcloud.coding.net/backend/user/current",
@@ -1571,6 +1583,7 @@
           //$('.user').html($('.login'));
         } else {
           const pathname = location.pathname;
+          hasLogin = true
           if (pathname === '/') {
             location.href = '/dashboard';
           } else {
@@ -1586,6 +1599,14 @@
       }).fail(function () {
       }).always(function () {
       });
+    }
+
+    function handleTry () {
+      if (hasLogin) {
+        location.href = '/dashboard';
+      } else {
+        window.open("https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com")
+      }
     }
 
     getUserInfo();
