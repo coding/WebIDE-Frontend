@@ -70,7 +70,8 @@ class Workspace extends Component {
                     ws.projectIconUrl = item.projectIconUrl;
                     ws.ownerName = item.ownerName;
                     // 无远端仓库有一个 workspaceName 字段
-                    ws.projectName = item.workspaceName === 'default' ? item.projectName : item.workspaceName;
+                    // ws.projectName = item.workspaceName === 'default' ? item.projectName : item.workspaceName;
+                    ws.projectName = item.workspaceName ? item.workspaceName : item.projectName
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspaces.push(ws);
