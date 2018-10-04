@@ -13,7 +13,6 @@ import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
 // import ModalContainer from 'components/Modal'
 import * as maskActions from 'components/Mask/actions'
-import '../../../styles/core-ui/Mask.styl';
 
 class Coding extends Component {
     state = {
