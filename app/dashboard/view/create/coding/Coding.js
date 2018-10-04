@@ -11,6 +11,9 @@ import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
+// import ModalContainer from 'components/Modal'
+import * as maskActions from 'components/Mask/actions'
+import '../../../styles/core-ui/Mask.styl';
 
 class Coding extends Component {
     state = {
@@ -207,6 +210,7 @@ class Coding extends Component {
             projectName,
         };
         this.setState({ isCreating: true });
+        maskActions.showMask({ message: i18n('global.creatingWS') })
         if (type === 1) {
             option.envId = envId;
             this.handleCreateWorkspace(option);
@@ -228,6 +232,7 @@ class Coding extends Component {
                     this.handleCreateWorkspace(option);
                 } else {
                     this.setState({ isCreating: false });
+                    maskActions.hideMask()
                     let message;
                     if (res.msg) {
                         const msg = res.msg;
@@ -246,6 +251,7 @@ class Coding extends Component {
                 }
             }).catch(err => {
                 this.setState({ isCreating: false });
+                maskActions.hideMask()
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
@@ -254,6 +260,7 @@ class Coding extends Component {
     handleCreateWorkspace(option) {
         api.createWorkspace(option).then(res => {
             this.setState({ isCreating: false });
+            maskActions.hideMask()
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
@@ -261,6 +268,7 @@ class Coding extends Component {
             }
         }).catch(err => {
             this.setState({ isCreating: false });
+            maskActions.hideMask()
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

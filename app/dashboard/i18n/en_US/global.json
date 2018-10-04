@@ -37,5 +37,6 @@
     "inputTip": "A minimum of two characters, only letters, numbers, or underscores (_), underscores (-), dots (.)",
     "sync": "Sync",
     "syncing": "Syncing",
-    "nodata": "No Data"
+    "nodata": "No Data",
+    "creatingWS": "Creating workspace..."
 }

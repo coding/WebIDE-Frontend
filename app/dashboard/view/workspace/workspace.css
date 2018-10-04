@@ -14,3 +14,19 @@
     font-size: 12px;
     color: #757575;
 }
+.utilities-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+  }
+.utilities-container .mask-container {
+    background: rgba(0, 0, 0, 0.8);
+}
+.utilities-container .mask-container .progress {
+    background-color: #1e1e1e;
+    color: gray(80%);
+    border: 1px solid #444;
+}
