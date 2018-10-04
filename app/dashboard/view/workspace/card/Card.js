@@ -26,7 +26,7 @@ class Card extends Component {
         const src = httpsReg.test(projectIconUrl) ? projectIconUrl : `https://coding.net${projectIconUrl}`;
         const title = `${ownerName}/${projectName}`;
         return (
-            <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey} hasWorkspaceOpend={hasWorkspaceOpend} handleMask={this.handleMask}>
+            <Href invalid={workingStatus === 'Invalid'} online={workingStatus === 'Online'} spaceKey={spaceKey} hasWorkspaceOpend={hasWorkspaceOpend} handleMask={this.handleMask}>
                 <div className="avatar">
                     <img src={src} />
                     {workingStatus === 'Online' && <div className="dot"></div>}
@@ -75,8 +75,12 @@ class Card extends Component {
     }
 }
 
-const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children }) => {
+const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children, online }) => {
     const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+    let classname = 'ws-card';
+    if (online) {
+        classname += ' online';
+    }
     const hasWorkspaceOpendOption = {
         message: '你有一个已打开的工作空间，如果想打开另一个，请关闭已打开工作空间的浏览器页面，并刷新 dashboard 重试',
         isWarn: false,
@@ -85,12 +89,12 @@ const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children }) =>
         okHandle: () => {},
     }
     if (hasWorkspaceOpend) {
-        return <div className="ws-card" onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
+        return <div className={classname} onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
     }
     if (invalid) {
-        return <div className="ws-card">{children}</div>;
+        return <div className={classname}>{children}</div>;
     } else {
-        return <a className="ws-card" href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className={classname} href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 

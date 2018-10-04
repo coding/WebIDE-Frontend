@@ -32,6 +32,7 @@
     "recentdeleted": "Recently Deleted",
     "deleteProjectTip": "After deleting, the project will be automatically kept for one day, and you can recover it again during the period, otherwise it will be permanently deleted.",
     "noWorkspaceHint": "You can create a workspace to start your work here.",
+    "wsIntro": "We provide space and resource for each workspace, you can create 5 workspaces and open one workspace at the same time.",
     "createWorkspace": "Create Workspace",
     "sshTip": "Currently, Cloud Studio import external projects only support SSH protocol. Please add the following SSH key (click icon to copy) to the list of public keys imported into the source Git repository.",
     "inputTip": "A minimum of two characters, only letters, numbers, or underscores (_), underscores (-), dots (.)",
