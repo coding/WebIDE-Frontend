@@ -18,6 +18,15 @@ const menuBarItems = observable([
     items: [
       {
         key: 'settings',
+        name: i18n`menuBarItems.meta.dashboard`,
+        icon: 'octicon octicon-browser',
+        command: () => {
+          window.open('https://studio.dev.tencent.com/dashboard')
+        },
+        canopen: true
+      },
+      {
+        key: 'settings',
         name: i18n`menuBarItems.meta.main`,
         icon: 'octicon octicon-gear',
         command: 'global:show_settings',
