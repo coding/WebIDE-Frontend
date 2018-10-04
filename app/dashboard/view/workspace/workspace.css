@@ -49,6 +49,9 @@
     background-color: #fff;
     z-index: 10;
 }
+.mask-container .progress > i {
+    margin-right: 5px;
+}
 .mask-container .progress .progress-btn {
     text-align: right;
     margin-top: 12px;
