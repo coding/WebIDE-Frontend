@@ -18,7 +18,8 @@ const workspacesEntryHtmlName = 'index.html'
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
-const staticDir = process.env.RUN_MODE ? 'rs2' : 'rs'
+const staticDir = process.env.RUN_MODE
+                ? process.env.STATIC_DIR : 'rs'
 
 module.exports = merge(
   {
