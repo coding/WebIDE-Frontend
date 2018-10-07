@@ -101,7 +101,7 @@ class Local extends Component {
         this.setState({ isCreating: true });
         api.createWorkspaceV2(option).then(res => {
             this.setState({ isCreating: false });
-            if (res) {
+            if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
