@@ -5,7 +5,6 @@ import { updateCurrentBranch } from 'components/Git/actions'
 import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
-import mobxStore from '../../mobxStore'
 
 
 import logo from '../../../static/CloudStudio-Logo.svg';
@@ -81,7 +80,6 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.edit.format`,
         icon: '',
         command: !config.switchOldEditor ? 'edit:toggle_format_monaco' : 'edit:toggle_format',
-        getIsDisabled: getFormatDisabled
       },
       {
         key: 'comment',
@@ -261,20 +259,6 @@ const isRebasing = [
   'REBASING_MERGE',
   'REBASING_INTERACTIVE'
 ];
-
-
-const getCurrentMonaco = () => {
-  const { EditorTabState } = mobxStore
-  const activeTab = EditorTabState.activeTab
-  const monaco = activeTab ? activeTab.editorInfo.monacoEditor : null
-  return monaco
-}
-
-function getFormatDisabled() {
-  const monaco = getCurrentMonaco()
-  const textModel = monaco.getTextModel()
-  // return textModel
-}
 
 function onGitMenuOpen (dispatch) {
   const gitStateTask = api.gitCurrentBranch()
