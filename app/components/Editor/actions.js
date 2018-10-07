@@ -58,3 +58,8 @@ export const toggleComment = registerAction('edit:toggle_comment', () => {
     cm.blockComment(range.from, range.to, { fullLines: false })
   }
 })
+
+export const toggleMonacoComment = registerAction('edit:toggle_monaco_comment', () => {
+  const monacoEditor = getCurrentMonaco()
+  monacoEditor.trigger('format', 'editor.action.commentLine')
+})
