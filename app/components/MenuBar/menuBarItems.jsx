@@ -237,11 +237,11 @@ const menuBarItems = observable([
     weight: 45,
     name: i18n`menuBarItems.window.main`,
     items: [
-      {
-        key: 'zen',
-        name: i18n`menuBarItems.window.zenMode`,
-        command: 'tab:zenmode',
-      },
+      // {
+      //   key: 'zen',
+      //   name: i18n`menuBarItems.window.zenMode`,
+      //   command: 'tab:zenmode',
+      // },
       {
         key: 'fullScreen',
         name: i18n`menuBarItems.window.fullScreen`,
