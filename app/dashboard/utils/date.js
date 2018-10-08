@@ -1,10 +1,12 @@
+import i18n from './i18n';
+
 export const getModifiedDate = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
     if (d > 0) {
-        return `${d} 天前`;
+        return i18n('global.lastModified', { days: d });
     } else {
-        return '今天';
+        return i18n('global.lastModifiedToday');
     }
 }
 
@@ -12,7 +14,7 @@ export const getDeletedTime = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
     if (d > 0) {
-        return `${d} 天前`;
+        return i18n('global.deletedDaysAgo', { days: d });
     } else {
         let h = Math.floor(ms / 3600000 % 24);
         h = h < 0 ? 0 : h;
@@ -20,6 +22,6 @@ export const getDeletedTime = (now, lastModified) => {
         m = m < 0 ? 0 : m;
         let s = Math.floor(ms / 1000 % 60);
         s = s < 0 ? 0 : s;
-        return `${h} 小时 ${m} 分 ${s} 秒前`;
+        return i18n('global.deletedTime', { hours: h, minutes: m, seconds: s });
     }
 }

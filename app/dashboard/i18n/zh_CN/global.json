@@ -28,6 +28,11 @@
     "create": "创建",
     "creating": "创建中...",
     "cancel": "取消",
+    "ok": "确认",
+    "restore": "恢复",
+    "delete": "删除",
+    "restoreTip": "请确认是否恢复？",
+    "deleteTip": "删除后该工作空间自动为您保留到次日凌晨 2 点，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？",
     "repoUrl": "仓库地址",
     "recentdeleted": "最近删除",
     "deleteProjectTip": "删除后项目自动保留一天，在此期间你可以恢复，否则将永久删除",
@@ -39,5 +44,12 @@
     "sync": "同步",
     "syncing": "同步中",
     "nodata": "暂无数据",
-    "creatingWS": "正在创建工作空间..."
+    "creatingWS": "正在创建工作空间...",
+    "lastModified": "最后更新于 {{days}} 天前",
+    "lastModifiedToday": "最后更新于 今天",
+    "deletedDaysAgo": "删除于 {{days}} 天前",
+    "deletedTime": "删除于 {{hours}} 小时 {{minutes}} 分 {{seconds}} 秒前",
+    "envTip": "默认环境为 Ubuntu 16.04，你可以在该环境中自己安装所需要的环境",
+    "copySuccess": "复制成功",
+    "copyFailure": "复制失败"
 }

@@ -32,12 +32,12 @@ class Git extends Component {
         }
         return (
             <div>
-                <div className="com-board">
+                {/* <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
                         <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
-                </div>
+                </div> */}
                 <div className="com-board">
                     <div className="board-label">{i18n('global.repoUrl')}*</div>
                     <div className="board-content repo">
@@ -109,7 +109,7 @@ class Git extends Component {
             memory: 512,
             storage: 2,
             source: 'Import',
-            desc,
+            //desc,
             url,
             envId,
         }

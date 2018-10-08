@@ -12,7 +12,7 @@ class TemplateCard extends Component {
             <div className={`com-card template-card${templateId === id ? ' seleted' : ''}`} onClick={() => handleSeleteTemplate(id)}>
                 <div className="inner">
                     <div className="avatar">
-                        <img src={src} />
+                        <img src={src} alt="avatar" />
                     </div>
                     <div className="content">
                         <div className="title" title={name}>{name}</div>

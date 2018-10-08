@@ -11,8 +11,7 @@ import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
-// import ModalContainer from 'components/Modal'
-import * as maskActions from 'components/Mask/actions'
+import * as maskActions from 'components/Mask/actions';
 
 class Coding extends Component {
     state = {
@@ -35,6 +34,7 @@ class Coding extends Component {
         }
         const disabled = type === 1 ? (!projectName || !envId) : (!projectName || !templateId);
         let inputPh, textareaPh, searchPh;
+        // placeholder 中英文
         if (language === 'zh_CN') {
             inputPh = '输入项目名';
             textareaPh = '一句话描述这个工作空间';
@@ -55,12 +55,12 @@ class Coding extends Component {
                         </div>
                     </div>
                 )}
-                <div className="com-board">
+                {/* <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
                         <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
-                </div>
+                </div> */}
                 <div className="com-board">
                     <div className="board-label">{type === 1 ? i18n('global.project') : i18n('global.template')}*</div>
                     <div className="board-content project">
@@ -75,7 +75,7 @@ class Coding extends Component {
                                     {
                                         isSync
                                         ? <span className="async"><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
-                                        : <span className="async" onClick={this.handleAsync}><i className="fa fa-refresh"></i>{i18n('global.sync')}</span>
+                                        : <span className="async" onClick={this.handleSync}><i className="fa fa-refresh"></i>{i18n('global.sync')}</span>
                                     }
                                 </div>
                             )}
@@ -89,7 +89,7 @@ class Coding extends Component {
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : <NoData />
+                                    ) : '这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。'
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}
@@ -152,7 +152,7 @@ class Coding extends Component {
         this.props.handleToolTipOn({
             clientX: event.clientX,
             clientY: event.clientY,
-            message: '默认环境为 Ubuntu 16.04，你可以在该环境中自己安装所需要的环境。',
+            message: i18n('global.envTip'),
         });
     }
 
@@ -160,15 +160,16 @@ class Coding extends Component {
         this.setState({ filter: event.target.value.toLowerCase() });
     }
 
-    handleAsync = () => {
+    handleSync = () => {
         this.setState({ isSync: true });
         api.syncProject().then(res => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
-            notify({ message: 'Async project success' });
+            notify({ message: 'Sync project success' });
         }).catch(err => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
+            notify({ message: 'Sync project success' });
         });
     }
 
@@ -204,12 +205,12 @@ class Coding extends Component {
             memory: 512,
             storage: 2,
             source: 'Coding',
-            desc,
+            //desc,
             ownerName: ownerName || globalKey,
             projectName,
         };
         this.setState({ isCreating: true });
-        maskActions.showMask({ message: i18n('global.creatingWS') })
+        maskActions.showMask({ message: i18n('global.creatingWS'), shouldHideVideo: true });
         if (type === 1) {
             option.envId = envId;
             this.handleCreateWorkspace(option);
@@ -223,7 +224,7 @@ class Coding extends Component {
                 gitLicense: 'no',
                 vcsType: 'git',
                 name: projectName,
-                desc,
+                //desc,
                 joinTeam: false,
                 teamGK: globalKey,
             }).then(res => {
@@ -231,7 +232,7 @@ class Coding extends Component {
                     this.handleCreateWorkspace(option);
                 } else {
                     this.setState({ isCreating: false });
-                    maskActions.hideMask()
+                    maskActions.hideMask();
                     let message;
                     if (res.msg) {
                         const msg = res.msg;
@@ -250,7 +251,7 @@ class Coding extends Component {
                 }
             }).catch(err => {
                 this.setState({ isCreating: false });
-                maskActions.hideMask()
+                maskActions.hideMask();
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
@@ -259,7 +260,7 @@ class Coding extends Component {
     handleCreateWorkspace(option) {
         api.createWorkspace(option).then(res => {
             this.setState({ isCreating: false });
-            maskActions.hideMask()
+            maskActions.hideMask();
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
@@ -267,7 +268,7 @@ class Coding extends Component {
             }
         }).catch(err => {
             this.setState({ isCreating: false });
-            maskActions.hideMask()
+            maskActions.hideMask();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

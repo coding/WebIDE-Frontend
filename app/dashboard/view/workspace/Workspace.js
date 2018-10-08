@@ -24,12 +24,14 @@ class Workspace extends Component {
                 <div className="created">
                     {workspaces.length > 0 && <div className="tip">{i18n('global.wsIntro')}</div>}
                     <New />
-                    {workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                        hasWorkspaceOpend={hasWorkspaceOpend}
-                        switchMaskToOn={switchMaskToOn}
-                        switchMaskToOff={switchMaskToOff}
-                        handleFetch={this.handleFetch} />
-                    )}
+                    {
+                        workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                            hasWorkspaceOpend={hasWorkspaceOpend}
+                            switchMaskToOn={switchMaskToOn}
+                            switchMaskToOff={switchMaskToOff}
+                            handleFetch={this.handleFetch} />
+                        )
+                    }
                 </div>
                 {ready && !workspaces.length && !workspacesInvalid.length && <div className="tip">{i18n('global.noWorkspaceHint')}</div>}
                 {
@@ -71,7 +73,6 @@ class Workspace extends Component {
                     ws.projectIconUrl = item.projectIconUrl;
                     ws.ownerName = item.userName;
                     // 无远端仓库有一个 workspaceName 字段
-                    // ws.projectName = item.workspaceName === 'default' ? item.projectName : item.workspaceName;
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
@@ -82,6 +83,9 @@ class Workspace extends Component {
                 }
                 this.setState({ workspaces, ready: true });
                 this.props.storeWorkspaceCount(workspaces.length);
+            } else if (res.code === 401) {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
             } else {
                 this.setState({ ready: true });
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch workspaceList' });
@@ -104,6 +108,9 @@ class Workspace extends Component {
                     workspacesInvalid.push(ws);
                 }
                 this.setState({ workspacesInvalid });
+            } else if (res.code === 401) {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch deleted workspaceList' });
             }

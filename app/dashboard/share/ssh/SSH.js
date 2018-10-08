@@ -46,7 +46,7 @@ class SSH extends Component {
             handleToolTipOn({
                 clientX: rect.left + rect.width / 2,
                 clientY: rect.top,
-                message: '复制成功',
+                message: i18n('global.copySuccess'),
             });
         });
         clipboard.on('error', () => {
@@ -54,7 +54,7 @@ class SSH extends Component {
             handleToolTipOn({
                 clientX: rect.left + rect.width / 2,
                 clientY: rect.top,
-                message: '复制失败',
+                message: i18n('global.copyFailure'),
             });
         });
     }

@@ -12,7 +12,7 @@ const ProjectCard = ({ iconUrl, ownerName, name, selected, filter, handleSeleteP
         <div className={projectCardClass} onClick={() => handleSeleteProject({ ownerName, projectName: name })}>
             <div className="inner">
                 <div className="avatar">
-                    <img src={src} />
+                    <img src={src} alt="avatar" />
                 </div>
                 <div className="content">
                     <Title ownerName={ownerName} name={name} filter={filter} />

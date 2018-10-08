@@ -56,6 +56,9 @@ class Create extends Component {
         api.getCodingProject().then(res => {
             if (res.code === 0) {
                 this.setState({ projects: res.data });
+            } else if (res.code === 401) {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -68,6 +71,9 @@ class Create extends Component {
         api.getTemplateProject().then(res => {
             if (res.code === 0) {
                 this.setState({ templates: res.data });
+            } else if (res.code === 401) {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -80,6 +86,9 @@ class Create extends Component {
         api.getEnvList().then(res => {
             if (Array.isArray(res)) {
                 this.setState({ envs: res });
+            } else if (res.code === 401) {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }

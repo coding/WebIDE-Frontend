@@ -28,6 +28,11 @@
     "create": "Create",
     "creating": "Creating...",
     "cancel": "Cancel",
+    "ok": "OK",
+    "restore": "Restore",
+    "delete": "Delete",
+    "restoreTip": "Please confirm whether to restore?",
+    "deleteTip": "After deletion, the workspace will automatically be reserved for you until 2 am the next day, before you can restore it at any time, otherwise it will be permanently deleted. Please confirm whether to delete?",
     "repoUrl": "Repo Url",
     "recentdeleted": "Recently Deleted",
     "deleteProjectTip": "After deleting, the project will be automatically kept for one day, and you can recover it again during the period, otherwise it will be permanently deleted.",
@@ -39,5 +44,12 @@
     "sync": "Sync",
     "syncing": "Syncing",
     "nodata": "No Data",
-    "creatingWS": "Creating workspace..."
+    "creatingWS": "Creating workspace...",
+    "lastModified": "Last modified {{days}} days ago",
+    "lastModifiedToday": "Last modified Today",
+    "deletedDaysAgo": "Deleted {{days}} days ago",
+    "deletedTime": "Deleted {{hours}} hours {{minutes}} minutes {{seconds}} seconds ago",
+    "envTip": "The default environment is Ubuntu 16.04, where you can install the required environment yourself.",
+    "copySuccess": "Copy success",
+    "copyFailure": "Copy failure"
 }
