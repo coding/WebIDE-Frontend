@@ -21,17 +21,17 @@ export const fetchPackageList = (type) => {
 }
 
 export const fetchPackageInfo = (pkgName, pkgVersion, target) =>
-  request.get(`/packages/${pkgName}/${pkgVersion}/manifest.json`).then(res => res.data)
+  axios.get(`${window.serverConfig.URI_PREFIX}/packages/${pkgName}/${pkgVersion}/manifest.json`).then(res => res.data)
 
 export const fetchPackageScript = (props) => {
   if (Array.isArray(props)) {
     const concatedUrl = props.reduce((p, v, i) => `${p}${v.pkgName}/${v.pkgVersion}/index.js${i !== props.length - 1 ? ',' : ''}`, '??')
     if (!config.packageDev && config.isPlatform) {
-      return request.get(`/packages/${concatedUrl}`).then(res => res.data)
+      return axios.get(`${window.serverConfig.URI_PREFIX}/packages/${concatedUrl}`).then(res => res.data)
     }
-    return request.get(`/packages/${concatedUrl}`).then(res => res.data)
+    return axios.get(`${window.serverConfig.URI_PREFIX}/packages/${concatedUrl}`).then(res => res.data)
   }
-  return request.get(`/packages/${props.pkgName}/${props.pkgVersion}/index.js`).then(res => res.data)
+  return axios.get(`${window.serverConfig.URI_PREFIX}/packages/${props.pkgName}/${props.pkgVersion}/index.js`).then(res => res.data)
 }
 
 export const enablePackageHotReload = (target) => {

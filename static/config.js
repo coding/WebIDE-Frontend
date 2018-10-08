@@ -1,4 +1,5 @@
 var serverConfig = {
+  URI_PREFIX: "/cs",
   BACKEND_URL: 'http://dev.coding.ide/backend',
   WS_URL: 'http://ide-ws.dev.coding.ide',
   STATIC_SERVING_URL: 'http://{space-key}-static-{access-token}.dev.coding.ide',
@@ -7,8 +8,8 @@ var serverConfig = {
   CODING_URL: 'https://coding.net',
   HDD_ADJUST_ENABLE: true,
   WS_REG: 'ws',
-  DASHBOARD_URL: '/dashboard',
-  STATIC_PATH: 'rs2'
+  STATIC_PATH: 'rs2',
+  WS_PATTERN: /^\/cs\/ws\/([^/]+)\/?$/
 }
 
 if (typeof module !== 'undefined') {
