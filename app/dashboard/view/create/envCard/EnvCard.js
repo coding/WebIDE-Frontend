@@ -27,6 +27,7 @@ const svgs = {
     'machine-learning': machinelearning,
     'go': go,
     'c-cpp': c,
+    'elixir': elixir,
 }
 
 const match = (label) => {

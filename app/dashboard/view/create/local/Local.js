@@ -38,12 +38,12 @@ class Local extends Component {
                         <div className="input-tip">{i18n('global.inputTip')}</div>
                     </div>
                 </div>
-                <div className="com-board">
+                {/* <div className="com-board">
                     <div className="board-label">{i18n('global.description')}</div>
                     <div className="board-content desc">
                         <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
                     </div>
-                </div>
+                </div> */}
                 <div className="com-board">
                     <div className="board-label">{i18n('global.template')}*</div>
                     <div className="board-content env">
@@ -95,13 +95,13 @@ class Local extends Component {
             workspaceName,
             ownerName: 'codingide',
             projectName: 'empty-template',
-            desc,
+            //desc,
             templateId,
         }
         this.setState({ isCreating: true });
         api.createWorkspaceV2(option).then(res => {
             this.setState({ isCreating: false });
-            if (res.code === 0) {
+            if (!res.code) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });

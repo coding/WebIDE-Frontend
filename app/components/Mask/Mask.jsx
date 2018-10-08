@@ -36,7 +36,7 @@ class Mask extends Component {
   isFirstEnter = () => !localStorage.getItem('firstEnter')
 
   renderVideoPlayer = () => {
-    if (!localStorage.getItem('firstEnter')) {
+    if (!localStorage.getItem('firstEnter') && !state.shouldHideVideo) {
       return <video className='mask-video' src={url} autoPlay controls />
     }
     return null

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './card.css';
 
 import api from '../../../api';
+import i18n from '../../../utils/i18n';
 import { tencentOrigin } from '../../../utils/config';
 import { getModifiedDate, getDeletedTime } from '../../../utils/date';
 
@@ -12,15 +13,15 @@ class Card extends Component {
     render() {
         const { spaceKey, projectIconUrl, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
         const deleteOption = {
-            message: '删除后该工作空间自动为您保留到次日凌晨 2 点，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？',
+            message: i18n('global.deleteTip'),
             isWarn: true,
-            okText: '删除',
+            okText: i18n('global.delete'),
             okHandle: this.handleDelete,
         }
         const restoreOption = {
-            message: '请确认是否恢复？',
+            message: i18n('global.restoreTip'),
             isWarn: false,
-            okText: '恢复',
+            okText: i18n('global.restore'),
             okHandle: this.handleRestore,
         }
         const src = httpsReg.test(projectIconUrl) ? projectIconUrl : `https://coding.net${projectIconUrl}`;
@@ -33,8 +34,8 @@ class Card extends Component {
                 </div>
                 <div className="content">
                     <div className="title" title={title}>{title}</div>
-                    {workingStatus !== 'Invalid' && <div className="desc">最后更新于 {getModifiedDate(Date.now(), lastModifiedDate)}</div>}
-                    {workingStatus === 'Invalid' && <div className="desc">删除于 {getDeletedTime(Date.now(), lastModifiedDate)}</div>}
+                    {workingStatus !== 'Invalid' && <div className="desc">{getModifiedDate(Date.now(), lastModifiedDate)}</div>}
+                    {workingStatus === 'Invalid' && <div className="desc">{getDeletedTime(Date.now(), lastModifiedDate)}</div>}
                 </div>
                 <div className="control">
                     {workingStatus !== 'Invalid' && <i className="fa fa-trash-o" onClick={(event) => this.handleMask(deleteOption, event)}></i>}
@@ -85,7 +86,7 @@ const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children, onli
         message: '你有一个已打开的工作空间，如果想打开另一个，请关闭已打开工作空间的浏览器页面，并刷新 dashboard 重试',
         isWarn: false,
         noCancel: true,
-        okText: '确认',
+        okText: i18n('global.ok'),
         okHandle: () => {},
     }
     if (hasWorkspaceOpend) {

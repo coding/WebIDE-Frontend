@@ -4,7 +4,7 @@
 }
 .com-ssh .ssh-content {
     width: 100%;
-    padding: 20px;
+    padding: 30px 10px 10px;
     border: 1px solid #444;
     border-radius: 3px;
     color: #757575;
@@ -15,5 +15,5 @@
     cursor: pointer;
     position: absolute;
     top: 8px;
-    right: 8px;
+    right: 14px;
 }

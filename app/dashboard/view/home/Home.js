@@ -58,11 +58,6 @@ class Home extends Component {
             window.top.postMessage({ path: route.pathname }, '*');
         });
         window.top.postMessage({ path: window.location.pathname }, '*');
-        // 接收顶层 window 的消息
-        window.addEventListener('message', (event) => {
-            const data = event.data;
-            console.log(data);
-        });
         // 同步工作空间数量
         if (!workspaceCount) {
             api.getWorkspace().then(res => {
