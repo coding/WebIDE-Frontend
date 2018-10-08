@@ -70,7 +70,7 @@ return {
     // 'fixed-data-table-2',
     // 'highlight.js',
     // 'localforage',
-    // 'marked',
+    'marked',
     'octicons',
     // 'react-addons-css-transition-group',
     // 'react-notification',

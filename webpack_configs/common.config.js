@@ -124,6 +124,10 @@ module.exports = function(options = {}) {
         {
           from: path.join(PROJECT_ROOT, 'node_modules/octicons'),
           to: 'octicons'
+        },
+        {
+          from: path.join(PROJECT_ROOT, 'node_modules/marked'),
+          to: 'marked'
         }
       ]),
       new MonacoWebpackPlugin(initMonacoPluginConfig),
