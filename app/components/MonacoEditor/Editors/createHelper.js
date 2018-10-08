@@ -54,9 +54,7 @@ export function createLanguageClient (services, connection) {
   })
 }
 
-const wsUrl = config.wsURL
-const firstSlashIdx = wsUrl.indexOf('/', 8)
-const [host, serverpath] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
+const host=window.location.hostname, serverpath=window.serverConfig.WS_URL
 
 export function createWebSocket () {
   const socketOptions = {

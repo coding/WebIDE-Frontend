@@ -21,7 +21,7 @@ const serverConfig = require('../static/config')
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
 const staticDir = process.env.RUN_MODE
-                ? serverConfig.STATIC_PATH : 'rs'
+                ? process.env.STATIC_DIR : 'rs'
 
 module.exports = merge(
   {
