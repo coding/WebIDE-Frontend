@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1">
+  <title>Cloud Studio - 开启云端开发模式 WebIDE</title>
+  <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
+  <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
+  <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bc38dcf3aea6333c859d874c60648216";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #323A45;
+    }
+
+    main {
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 100vw;
+      color: white;
+    }
+
+    .title {
+      width: 34%;
+      font-size: 30px;
+    }
+
+    .intro {
+      width: 44%;
+      font-size: 14px;
+      margin-top: 20px;
+      line-height: 24px;
+    }
+
+    .intro a {
+      color: #297fff;
+      text-decoration: none;
+    }
+
+    .logo {
+      position: absolute;
+      bottom: 30px;
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo .qcloud-logo {
+      width: 112px;
+    }
+
+    .logo .coding-logo {
+      width: 127px;
+    }
+
+    .logo .multi {
+      width: 14px;
+      margin: 0 14px;
+    }
+
+    .button {
+      background: #297FFF;
+      cursor: pointer;
+      border-radius: 2px;
+      height: 34px;
+      line-height: 34px;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      width: 167px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button img {
+      margin-right: 3px;
+      animation: loading 1.5s linear infinite;
+    }
+
+    @keyframes loading{
+      0%{
+          transform: rotate(0deg);
+      }
+      100%{
+          transform: rotate(360deg);
+      }
+    }
+
+    .disable {
+      cursor: not-allowed;
+      background: #ABABAB;
+    }
+
+    .export-btn {
+      margin-top: 15px;
+    }
+
+    .start-btn {
+      margin-top: 30px;
+    }
+
+    .card {
+      padding: 9px;
+      border-radius: 2px;
+      border: 1px solid #515F72;
+      display: flex;
+      width: 300px;
+      height: 80px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .card .avatar {
+      width: auto;
+      height: 60px;
+    }
+
+    .card .meta {
+      margin-left: 10px;
+      width: 210px;
+    }
+
+    .card .mask {
+      margin-top: -10.5px;
+      margin-right: -11px;
+      width: 34px;
+      height: 30px;
+      text-align: right;
+      background-repeat: no-repeat;
+    }
+
+    .mask path {
+      fill: red;
+    }
+
+    .card .mask .check {
+      margin-right: 1px;
+    }
+
+    .card .meta .time {
+      font-size: 14px;
+      line-height: 22px;
+      margin-top: 5px;
+      color: #AAAAAA;
+    }
+
+    .card .meta .name {
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    .list {
+      width: 654px;
+      margin-top: 25px;
+    }
+
+    .list .list-group {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 15px;
+      padding-bottom: 0;
+      height: 300px;
+      justify-content: space-between;
+      border: 1px solid #515F72;
+      border-radius: 2px;
+      margin-top: 8px;
+      /*overflow-y: scroll;*/
+      align-content: start;
+    }
+
+    .list .list-header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .list .list-header .checkbox-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80px;
+    }
+
+    .list .list-header .checkbox-container input,label {
+      cursor: pointer;
+    }
+
+    .tip {
+      margin-top: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      height: 231px;
+      background: #181C23;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <script src="//cdn.staticfile.org/mithril/1.1.6/mithril.min.js"></script>
+  <script>
+    var STATIC_PATH = '<%= webpackConfig.output.publicPath %>static/export/'
+    var BASE_URL = 'http://dev.coding.ide/'
+    var IMG_URL = 'https://coding.net'
+
+    var wsList = []
+    var tip = '导出成功！'
+    var canShowTip = false
+    var isError = false
+    var checked = 'checked'
+    var btnName = '导出所选空间'
+    var showLoading = false
+
+    var warpPath = function(path) {
+      return STATIC_PATH + path
+    }
+
+    var formatDate = function(ms) {
+      var date = new Date(ms)
+      return date.getFullYear() + '-' + (date.getMonth() + 1)
+        + '-' + date.getDate() + ' ' + date.getHours() + ':'
+        + date.getMinutes()
+    }
+
+    var handleExport = function(error, el) {
+      tip = error ? '遇到了一些小问题，请尝试点击上面的按钮重新导出。'
+          : '导出成功！'
+      btnName = error ? '重新导出' : '再次导出'
+      isError = error
+      canShowTip = true
+
+      setTimeout(function() {
+        canShowTip = false
+        el.className = el.className.replace(' disable', '')
+        m.redraw()
+      }, 2000)
+    }
+
+    // View
+    var Home = {
+        view: function() {
+          return [
+            m('main', [
+              m('h1', {
+                class: 'title'
+              }, '携手腾讯云，Cloud Studio 全面升级'),
+              m('div', {
+                  class: 'intro'
+              },[
+                m('span', '尊敬的用户，'),
+                m('br'),
+                m('span', '为了优化 Cloud Studio 运行的基础设施，给用户提供体验更好、更稳定的产品服务， Cloud Studio 现已在'),
+                m('a', { href: 'https://dev.tencent.com/'}, '腾讯云开发者平台'),
+                m('span', '中全面升级，用户可长期免费使用。升级后，此版本后续不再做功能升级及维护。为避免影响您的后续使用，建议您将该版本数据导出，并迁移至新版'),
+                m('a', { href: 'https://studio.dev.tencent.com/intro' }, ' Cloud Studio'),
+                m('span', '，迁移教程可参考'),
+                m('a', { href: '#' }, '这里'),
+                m('span', '。'),
+                m('br'),
+                m('span', '如您已在 Cloud Studio 付费购买小主机，我们将在 2018 年 10 月 30 日（日期可能变动）前将已使用的金额返还至您的腾讯云账户中：'),
+                m('br'),
+                m('span', '已支付现金部分，全额退还到您的腾讯云账户中，您可操作提现；'),
+                m('br'),
+                m('span', '已使用的代金券部分，返还等额通用代金券，发放于您的腾讯云账户中。'),
+                m('br'),
+                m('br'),
+                m('span', '如给您造成了不便，敬请谅解。我们将在新的平台，给您提供更优质的服务。感谢您的理解和支持。')
+              ]),
+              m('a', {
+                href: '?/list',
+                class: 'button start-btn'
+              }, '开始导出')
+            ]),
+            m(Footer)
+          ]
+        }
+    }
+
+    var List = {
+      oninit: function() {
+        return m.request({
+          method: 'GET',
+          url: BASE_URL + 'workspaces'
+        })
+        .then(function(result) {
+          var lists = result.contents
+          if (lists) {
+            lists.map(function(item) {
+              var project = item.project
+              wsList.push({
+                spaceKey: item.spaceKey,
+                name: project.ownerName + '/' + project.name,
+                time: formatDate(item.lastModifiedDate),
+                checked: true,
+                img: IMG_URL + project.iconUrl
+              })
+            })
+          }
+        })
+      },
+      onupdate: function() {
+        // Set scrollbar
+        if (wsList.length > 6) {
+          var style = document.createElement('style')
+          style.innerText = '::-webkit-scrollbar{ width: 6px; }'
+          document.head.append(style)
+        }
+      },
+      view: function() {
+        return [
+          m('main', [
+            m('h1', {
+              class: 'list-title'
+            }, '选择工作空间导出'),
+            m('list', {
+              class: 'list'
+            }, [
+              m('div', {
+                class: 'list-header'
+              }, [
+                m('span', '选择空间导出'),
+                m('div', { 
+                  class: 'checkbox-container',
+                  onselectstart: function () {
+                    return false
+                  }
+                }, [
+                  m('input',{ 
+                    type: 'checkbox',
+                    checked: checked,
+                    id: 'checkList',
+                    onchange: function (e) {
+                      checked = checked === 'checked' ? '' 
+                              : 'checked'
+
+                      for (var i = wsList.length - 1; i >= 0; i--) {
+                        wsList[i].checked = checked ? true : false
+                      }
+                    }
+                  }),
+                  m('label', { for: 'checkList' }, '选择全部')
+                ])
+              ]),
+              m('div', { 
+                class: 'list-group',
+                style: {
+                  overflowY: wsList.length > 6 ? 'scroll' : ''
+                }
+              }, 
+                wsList.map(function(item) {
+                  return m(Card, { 
+                    name: item.name, 
+                    time: item.time,
+                    checked: item.checked,
+                    spaceKey: item.spaceKey,
+                    img: item.img
+                  })
+                })
+              )
+            ]),
+            m('a', {
+              href: '#',
+              class: 'button export-btn'
+                + (wsList.every(function (item) {
+                  return !item.checked
+                }) ? ' disable' : ''),
+              onclick: function(e) {
+                var el = this
+                if (el.className.includes('disable')) {
+                  return
+                }
+
+                el.className += ' disable'
+                btnName = '正在导出...'
+                // showLoading = true
+
+
+                var exportList = []
+                for (var i = wsList.length - 1; i >= 0; i--) {
+                  var tmp = wsList[i]
+                  if (tmp.checked) {
+                    exportList.push(tmp.spaceKey)
+                  }
+                }
+
+                m.request({
+                  method: 'GET',
+                  url: BASE_URL
+                    + 'workspaces/packing?spaceKeys=' + exportList.join(',')
+                })
+                .then(function(result){
+                  if (result.code = '-1') {
+                    handleExport(true, el)
+                  } else {
+                    handleExport(false, el)
+                  }
+                })
+                .catch(function(e) {
+                  handleExport(true, el)
+                }) 
+              }
+            }, [
+              showLoading ? m('img', { src: warpPath('loading.svg') }) : ''
+            ],  btnName),
+            m('div', {
+              class: 'tip',
+              style: { 
+                visibility: canShowTip ? 'visible' : 'hidden',
+                color: isError ? '#D65B4E' : '#37D180'
+              }
+            }, tip)
+          ]),
+          m(Footer)
+        ]
+      }
+    }
+
+    var Card = {
+      view: function(vnode) {
+        return m('div', {
+          class: 'card',
+          onclick: function() {
+            wsList.map(function(item, i) {
+              if (item.spaceKey === vnode.attrs.spaceKey) {
+                var tmpChecked = wsList[i].checked
+                wsList[i].checked = tmpChecked ? false : true
+              }
+            })
+
+            checked = wsList.every(function (item) {
+              return item.checked
+            }) ? 'checked' : ''
+          }
+        }, [
+          m('img', { class: 'avatar', src: vnode.attrs.img }),
+          m('div', {
+            class: 'meta'
+          }, [
+            m('div', { class: 'name' }, vnode.attrs.name),
+            m('div', { class: 'time' }, '最后修改于 ' + vnode.attrs.time),
+          ]),
+          m('div', {  
+            class: 'mask',
+            style: { 
+              'background-image': 'url('
+                + (vnode.attrs.checked
+                  ? warpPath('mask.svg') : warpPath('mask-unselected.svg')) 
+                + ')' 
+            } 
+          }, [
+            m('img', { 
+              src: vnode.attrs.checked 
+                ? warpPath('check.svg') : warpPath('check-unselected.svg'),
+              class: 'check' 
+            })
+          ]),
+        ])
+      }
+    }
+
+    var Footer =  {
+      view: function() {
+        return m('footer', {
+          class: 'logo'
+        }, [
+          m('a', { href: 'https://cloud.tencent.com/' }, [
+            m('img', { class: 'qcloud-logo', src: warpPath('qcloud-logo.png') })
+          ]),
+          m('img', { class: 'multi', src: warpPath('multi.png') }),
+          m('a', { href: 'https://coding.net/' }, [
+            m('img', { class: 'coding-logo', src: warpPath('coding-logo.png') })
+          ])
+        ])
+      }
+    }
+
+    m.route.prefix('?')
+    m.route(document.body, '/home', {
+      '/list': List,
+      '/home': Home,
+    })
+  </script>
+</body>
+</html>
