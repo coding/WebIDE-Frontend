@@ -4,6 +4,7 @@ const store = {
   views: {},
   plugins: observable.map({}),
   list: observable([]),
+  editorViews: observable.map({}),
   toJS () {
     const requiredList = this.list.toJS().filter(obj => obj.enabled && obj.requirement !== 'Required')
     return requiredList

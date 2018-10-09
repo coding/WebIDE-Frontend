@@ -11,6 +11,7 @@ import { TablessCodeEditor } from 'components/Editor/components/CodeEditor'
 import MonacoTablessEditor from 'components/MonacoEditor/Editors/MonacoTablessEditor'
 import i18n from 'utils/createI18n'
 import config from 'config'
+import pluginStore from 'components/Plugins/store'
 import WelcomePage from './WelcomePage'
 import Changelog from './Changelog'
 
@@ -98,6 +99,13 @@ class TabContainer extends Component {
     }
     if (tab.type === 'changelog') {
       return <Changelog />
+    }
+    if (tab.type && tab.type.startsWith('CUSTOM_EDITOR_VIEW')) {
+      const pluginConfig = pluginStore.editorViews.get(tab.type)
+      if (pluginConfig) {
+        const { component: TargetComponent, ...other } = pluginConfig
+        return <TargetComponent {...other} tab={tab} tabId={tab.id} />
+      }
     }
     return !config.switchOldEditor
       ? <MonacoEditor tab={tab} active={tab.isActive} />

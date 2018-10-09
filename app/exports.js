@@ -1,3 +1,5 @@
+import codingide from './extensions'
+
 const app = {
   backendAPI: require('backendAPI'),
   commands: require('commands'),
@@ -30,11 +32,6 @@ const lib = {
   reduxThunk: require('redux-thunk'),
   propTypes: require('prop-types'),
   socketIOClient: require('socket.io-client')
-}
-
-const codingide = {
-  component: require('components/exports'),
-  lib,
 }
 
 export { app, lib, codingide }

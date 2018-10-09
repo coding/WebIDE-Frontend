@@ -26,3 +26,8 @@ export const TERMINAL = {
 export const EDITOR = {
   CENTER: 'EDITOR.CENTER'
 }
+
+// 底部状态栏
+export const STATUSBAR = {
+  WIDGET: 'STATUSBAR.WIDGET'
+}
