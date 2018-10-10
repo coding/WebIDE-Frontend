@@ -6,12 +6,17 @@ import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { tencentOrigin } from '../../../utils/config';
 import { getModifiedDate, getDeletedTime } from '../../../utils/date';
-
-const httpsReg = /http(?:s)?/;
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
     render() {
         const { spaceKey, projectIconUrl, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
+        const stopOption = {
+            message: i18n('global.stopTip'),
+            isWarn: true,
+            okText: i18n('global.stop'),
+            okHandle: this.handleStop,
+        }
         const deleteOption = {
             message: i18n('global.deleteTip'),
             isWarn: true,
@@ -24,36 +29,71 @@ class Card extends Component {
             okText: i18n('global.restore'),
             okHandle: this.handleRestore,
         }
-        const src = httpsReg.test(projectIconUrl) ? projectIconUrl : `https://coding.net${projectIconUrl}`;
         const title = `${ownerName}/${projectName}`;
         return (
-            <Href invalid={workingStatus === 'Invalid'} online={workingStatus === 'Online'} spaceKey={spaceKey} hasWorkspaceOpend={hasWorkspaceOpend} handleMask={this.handleMask}>
-                <div className="avatar">
-                    <img src={src} />
-                    {workingStatus === 'Online' && <div className="dot"></div>}
-                </div>
-                <div className="content">
+            <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey} hasWSOpend={hasWorkspaceOpend} handleMask={this.handleMask} handleStop={this.handleStop}>
+                <div className="inner">
                     <div className="title" title={title}>{title}</div>
-                    {workingStatus !== 'Invalid' && <div className="desc">{getModifiedDate(Date.now(), lastModifiedDate)}</div>}
-                    {workingStatus === 'Invalid' && <div className="desc">{getDeletedTime(Date.now(), lastModifiedDate)}</div>}
+                    <div className="desc">
+                        {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), lastModifiedDate)}
+                    </div>
+                    <div className={`online${workingStatus !== 'Online' ? ' invisible' : ''}`}>
+                        <span className="dot"></span>
+                        <span>{i18n('global.running')}</span>
+                    </div>
                 </div>
-                <div className="control">
-                    {workingStatus !== 'Invalid' && <i className="fa fa-trash-o" onClick={(event) => this.handleMask(deleteOption, event)}></i>}
-                    {workingStatus === 'Invalid' && <i className="fa fa-undo" onClick={(event) => this.handleMask(restoreOption, event)}></i>}
-                </div>
+                {
+                    workingStatus !== 'Invalid' ? (
+                        <div className="control">
+                            {
+                                workingStatus === 'Online' && (
+                                    <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
+                                        <i className="fa fa-stop-circle-o"></i>
+                                        <span>{i18n('global.stop')}</span>
+                                    </div>
+                                )
+                            }
+                            <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
+                                <i className="fa fa-trash-o"></i>
+                                <span>{i18n('global.delete')}</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="control">
+                            <div className="act" onClick={(event) => this.handleMask(restoreOption, event)}>
+                                <i className="fa fa-undo"></i>
+                                <span>{i18n('global.restore')}</span>
+                            </div>
+                        </div>
+                    )
+                }
             </Href>
         );
     }
 
-    handleMask = ({ message, isWarn, noCancel, okText, okHandle }, event) => {
+    handleMask = ({ message, isWarn, noCancel, cancelText, okText, okHandle }, event) => {
         event.preventDefault();
         event.stopPropagation();
         this.props.switchMaskToOn({
             message,
             isWarn,
             noCancel,
+            cancelText,
             okText,
             okHandle,
+        });
+    }
+
+    handleStop = () => {
+        const { opendSpaceKey, spaceKey, switchMaskToOff, handleFetch } = this.props;
+        api.quitWorkspace(opendSpaceKey || spaceKey).then(res => {
+            if (res.code === 0) {
+                switchMaskToOff();
+                handleFetch();
+                notify({ message: res.msg });
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
         });
     }
 
@@ -63,6 +103,8 @@ class Card extends Component {
             if (res.code === 0) {
                 handleFetch();
                 switchMaskToOff();
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
         });
     }
@@ -72,30 +114,26 @@ class Card extends Component {
         api.restoreWorkspace(spaceKey).then(res => {
             handleFetch();
             switchMaskToOff();
-        })
+        });
     }
 }
 
-const Href = ({ invalid, spaceKey, hasWorkspaceOpend, handleMask, children, online }) => {
+const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children }) => {
     const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
-    let classname = 'ws-card';
-    if (online) {
-        classname += ' online';
-    }
     const hasWorkspaceOpendOption = {
-        message: '你有一个已打开的工作空间，如果想打开另一个，请关闭已打开工作空间的浏览器页面，并刷新 dashboard 重试',
-        isWarn: false,
-        noCancel: true,
-        okText: i18n('global.ok'),
-        okHandle: () => {},
+        message: i18n('global.hasWorkspaceOpendTip'),
+        isWarn: true,
+        cancelText: i18n('global.ok'),
+        okText: i18n('global.stop'),
+        okHandle: handleStop,
     }
-    if (hasWorkspaceOpend) {
-        return <div className={classname} onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
+    if (hasWSOpend) {
+        return <div className="ws-card" onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
     }
     if (invalid) {
-        return <div className={classname}>{children}</div>;
+        return <div className="ws-card">{children}</div>;
     } else {
-        return <a className={classname} href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className="ws-card" href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 

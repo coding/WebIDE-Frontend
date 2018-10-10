@@ -34,6 +34,7 @@
     padding: 0 15px;
     border: 1px solid #444;
     border-radius: 4px;
+    font-size: 14px;
     color: #b1b1b1;
     background-color: #2c2c2c;
     caret-color: #aaa;
@@ -57,6 +58,7 @@
     height: 35px;
     border: none;
     border-radius: 3px;
+    font-size: 14px;
     color: #fff;
     background-color: #5097e8;
     outline: none;
@@ -143,4 +145,23 @@
     position: absolute;
     bottom: 1px;
     left: 38%;
+}
+
+@media screen and (max-width: 860px) {
+    .com-board {
+        flex-wrap: wrap;
+    }
+    .com-board .board-label {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .com-board .board-label::before {
+        content: '#';
+        padding-right: 3px;
+        font-size: 16px;
+        color: #5097e8;
+    }
+    .com-board .board-content {
+        width: 100%;
+    }
 }

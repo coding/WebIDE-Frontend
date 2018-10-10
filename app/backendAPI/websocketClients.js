@@ -24,6 +24,7 @@ class FsSocketClient {
       delayMax: 5000,
     })
     this.maxAttempts = 7
+    this.shouldClose = false;
     FsSocketClient.$$singleton = this
     emitter.on(E.SOCKET_RETRY, this.reconnect.bind(this))
   }
@@ -40,6 +41,10 @@ class FsSocketClient {
       this.successCallback(this.stompClient)
     }
     const error = (frame) => {
+      if (this.shouldClose) {
+        this.shouldClose = false;
+        return;
+      }
       log('fsSocket error', this.socket)
       switch (this.socket.readyState) {
         case SockJS.CLOSING:
@@ -80,7 +85,8 @@ class FsSocketClient {
   close () {
     const self = this
     if (config.fsSocketConnected) {
-      self.socket.close(1000, 123)
+      self.shouldClose = true;
+      self.socket.close()
       runInAction(() => config.fsSocketConnected = false)
     }
   }

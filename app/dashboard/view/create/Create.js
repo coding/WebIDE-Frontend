@@ -23,7 +23,7 @@ class Create extends Component {
         return (
             <div className="dash-create">
                 <div className="com-board">
-                    <div className="board-label">{i18n('global.importSource')}*</div>
+                    <div className="board-label">{i18n('global.source')}*</div>
                     <div className="board-content radio">
                         <div className="radio-option" onClick={() => this.handleImportFrom('coding')}>
                             <Radio checked={importFrom === 'coding'} />

@@ -1,11 +1,22 @@
 .dash-workspace .new {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #555;
+    border-radius: 4px;
     color: #fff;
+    background-color: #3b3b3b;
 }
 .dash-workspace .new .avatar {
-    line-height: 50px;
+    width: 74px;
+    height: 74px;
+    margin-right: 20px;
+    line-height: 64px;
     text-align: center;
     font-size: 60px;
+    border-radius: 4px;
     color: #303030;
+    background-color: #3f3f3f;
 }
 .dash-workspace .new .content {
     display: flex;

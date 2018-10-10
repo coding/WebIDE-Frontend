@@ -4,6 +4,7 @@ import { switchLanguageReducer } from './view/config/reducer';
 import { switchMaskReducer } from './view/mask/reducer';
 import { userReducer } from './view/home/setting/reducer';
 import { workspaceCountReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
+import { switchMbarReducer } from './share/stripe/reducer';
 import { tooltipReducer } from './share/toolTip/reducer';
 
 const reducers = combineReducers({
@@ -12,6 +13,7 @@ const reducers = combineReducers({
     userState: userReducer,
     workspaceCount: workspaceCountReducer,
     hasWorkspaceOpend: hasWorkspaceOpendReducer,
+    isMbarOn: switchMbarReducer,
     tooltipState: tooltipReducer,
 });
 

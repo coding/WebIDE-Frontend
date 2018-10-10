@@ -102,5 +102,12 @@ export default function subscribeToFileChange () {
       const data = JSON.parse(frame.body)
       dispatch(GitActions.updateCurrentBranch({ name: data.branch }))
     })
+
+    client.subscribe(`/topic/ws/${config.spaceKey}/system`, (frame) => {
+      const data = frame.body;
+      if (data === 'quit') {
+        api.closeWebsocketClient();
+      }
+    })
   })
 }

@@ -7,17 +7,19 @@ import i18n from '../../utils/i18n';
 import api from '../../api';
 import Card from './card';
 import New from './new';
-import { notify, NOTIFY_TYPE } from '../../../components/Notification/actions';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Workspace extends Component {
     state = {
         ready: false,
         workspaces: [],
         workspacesInvalid: [],
+        opendSpaceKey: '',
     }
+    interval = null;
 
     render() {
-        const { workspaces, workspacesInvalid, ready } = this.state;
+        const { workspaces, workspacesInvalid, opendSpaceKey, ready } = this.state;
         const { hasWorkspaceOpend, switchMaskToOn, switchMaskToOff } = this.props;
         return (
             <div className="dash-workspace">
@@ -27,6 +29,7 @@ class Workspace extends Component {
                     {
                         workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
                             hasWorkspaceOpend={hasWorkspaceOpend}
+                            opendSpaceKey={opendSpaceKey}
                             switchMaskToOn={switchMaskToOn}
                             switchMaskToOff={switchMaskToOff}
                             handleFetch={this.handleFetch} />
@@ -59,9 +62,20 @@ class Workspace extends Component {
 
     componentDidMount() {
         this.handleFetch();
+        this.interval = setInterval(() => {
+            this.handleFetchWS();
+        }, 10000);
     }
 
     handleFetch = () => {
+        this.handleFetchWS();
+        this.handleFetchInvalidWS();
+    }
+
+    handleFetchWS() {
+        const { handleNoWorkspaceOpend, handleHasWorkspaceOpend } = this.props;
+        // 初始化
+        handleNoWorkspaceOpend();
         api.getWorkspace().then(res => {
             if (res.code === 0) {
                 const list = res.data.list;
@@ -78,7 +92,8 @@ class Workspace extends Component {
                     ws.workingStatus = item.workingStatus;
                     workspaces.push(ws);
                     if (item.workingStatus === 'Online') {
-                        this.props.handleWorkspaceOpend();
+                        this.setState({ opendSpaceKey: ws.spaceKey });
+                        handleHasWorkspaceOpend();
                     }
                 }
                 this.setState({ workspaces, ready: true });
@@ -88,11 +103,14 @@ class Workspace extends Component {
                 window.location.href = '/intro';
             } else {
                 this.setState({ ready: true });
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch workspaceList' });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to fetch workspaceList' });
             }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
+    }
+
+    handleFetchInvalidWS() {
         api.getWorkspaceInvalid().then(res => {
             if (Array.isArray(res)) {
                 const workspacesInvalid = [];
@@ -112,11 +130,15 @@ class Workspace extends Component {
                 window.top.postMessage({ path: '/intro' }, '*');
                 window.location.href = '/intro';
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: 'Failed to fetch deleted workspaceList' });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to fetch deleted workspaceList' });
             }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 }
 
@@ -129,7 +151,8 @@ const mapDispatch = (dispatch) => {
         switchMaskToOn: (payload) => dispatch({ type: 'SWITCH_MASK_TO_ON', payload }),
         switchMaskToOff: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
         storeWorkspaceCount: (payload) => dispatch({ type: 'STORE_WORKSPACE_COUNT', payload }),
-        handleWorkspaceOpend: () => dispatch({ type: 'HAS_WORKSPACE_OPEND' }),
+        handleHasWorkspaceOpend: () => dispatch({ type: 'HAS_WORKSPACE_OPEND' }),
+        handleNoWorkspaceOpend: () => dispatch({ type: 'NO_WORKSPACE_OPEND' }),
     }
 }
 

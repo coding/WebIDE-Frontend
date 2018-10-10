@@ -14,6 +14,9 @@
     height: 18px;
     margin-right: 10px;
 }
+.dash-create .env-card .title {
+    color: #fff;
+}
 .dash-create .env-card .desc {
     margin-top: 3px;
     font-size: 12px;
@@ -23,5 +26,11 @@
 @media screen and (max-width: 1440px) {
     .dash-create .env-card {
         width: calc(33% - 15px);
+    }
+}
+@media screen and (max-width: 860px) {
+    .dash-create .env-card {
+        width: 100%;
+        margin-right: 0;
     }
 }

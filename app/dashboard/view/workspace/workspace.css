@@ -3,6 +3,11 @@
     display: flex;
     flex-wrap: wrap;
 }
+.dash-workspace .created .tip {
+    width: 100%;
+    margin-bottom: 20px;
+    color: #757575;
+}
 .dash-workspace .deleted {
     padding-top: 20px;
 }
@@ -10,20 +15,10 @@
     padding-top: 30px;
 }
 .dash-workspace .caption .tip {
-    margin-top: 5px;
-    font-size: 12px;
+    margin-top: 10px;
     color: #757575;
 }
-.dash-workspace .created .tip {
-    margin-top: 5px;
-    font-size: 12px;
-    color: #757575;
-    width: 100%;
-    margin-bottom: 20px;
-}
-.utilities-container {
-    
-}
+
 .utilities-container .mask-container {
     background: rgba(0, 0, 0, 0.8);
 }
@@ -32,7 +27,6 @@
     color: gray(80%);
     border: 1px solid #444;
 }
-
 .mask-container {
     position: fixed;
     top: 0;
@@ -44,6 +38,7 @@
     /* width: 100%; */
     /* height: 100%; */
     flex-direction: column;
+    color: #fff;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;

@@ -10,11 +10,12 @@ class ToolTip extends Component {
         message: '',
         animate: false,
     }
+
     render() {
         const { left, top, animate } = this.state;
-        const { message } = this.props;
+        const { width, message } = this.props;
         return (
-            <div className={`com-tooltip${animate ? ' animate' : ''}`} ref={el => this.ref = el} style={{ left, top }}>{message}</div>
+            <div className={`dash-tooltip${animate ? ' animate' : ''}`} ref={el => this.ref = el} style={{ width, left, top }}>{message}</div>
         );
     }
 
@@ -29,12 +30,13 @@ class ToolTip extends Component {
         this.timer = setTimeout(() => {
             this.setState({ left: -300, top: -300, message: '', animate: false });
             handleToolTipOff({ clientX: -300, clientY: -300, message: '' });
-        }, 3000);
+        }, 5000);
     }
 }
 
 const mapState = (state) => {
     return {
+        width: state.tooltipState.width,
         clientX: state.tooltipState.clientX,
         clientY: state.tooltipState.clientY,
         message: state.tooltipState.message,
