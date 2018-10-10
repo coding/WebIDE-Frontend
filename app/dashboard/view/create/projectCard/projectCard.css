@@ -8,10 +8,20 @@
     margin-right: 10px;
     border-radius: 4px;
     background-color: #3f3f3f;
+    overflow: hidden;
 }
 .dash-create .project-card .avatar img {
     height: 100%;
     border-radius: 3px;
+}
+.dash-create .project-card .content {
+    width: calc(100% - 50px);
+}
+.dash-create .project-card .title {
+    color: #fff;
+}
+.dash-create .project-card .desc {
+    font-size: 12px;
 }
 .dash-create .project-card .highlight {
     border-radius: 2px;
@@ -21,5 +31,11 @@
 @media screen and (max-width: 1440px) {
     .dash-create .project-card {
         width: calc(33% - 15px);
+    }
+}
+@media screen and (max-width: 860px) {
+    .dash-create .project-card {
+        width: 100%;
+        margin-right: 0;
     }
 }

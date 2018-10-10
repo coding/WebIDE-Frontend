@@ -1,10 +1,10 @@
-export const switchMaskReducer = (maskState, action) => {
+export const switchMaskReducer = (maskState = { showMask: false }, action) => {
     switch (action.type) {
         case 'SWITCH_MASK_TO_ON':
             return { ...action.payload, showMask: true };
         case 'SWITCH_MASK_TO_OFF':
-            return { message: '', isWarn: false, okText: '', okHandle: () => {}, showMask: false };
+            return { message: '', okHandle: () => {}, showMask: false };
         default:
-            return { message: '', isWarn: false, okText: '', okHandle: () => {}, showMask: false };
+            return maskState;
     }
 }

@@ -1,101 +1,94 @@
 .dash-workspace .ws-card {
-    display: flex;
-    align-items: center;
-    width: calc(25% - 20px);
-    height: 80px;
-    padding: 10px;
+    width: calc(33% - 20px);
+    height: 100px;
     margin: 0 20px 20px 0;
+    position: relative;
+}
+.dash-workspace .ws-card .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
     border: 1px solid #555;
     border-radius: 4px;
     color: #ccc;
     background-color: #3b3b3b;
-    position: relative;
+    cursor: pointer;
 }
-.dash-workspace .ws-card:hover .control {
-    display: block;
+.dash-workspace .ws-card .inner:hover {
+    background-color: #555;
 }
-.dash-workspace .ws-card .avatar {
-    width: 60px;
-    height: 60px;
-    margin-right: 10px;
-    border-radius: 4px;
-    background-color: #3f3f3f;
-    position: relative;
-    display: none;
-}
-.dash-workspace .ws-card.new .avatar {
-    display: block;
-}
-.dash-workspace .ws-card .avatar img {
-    height: 100%;
-    border-radius: 4px;
-}
-.dash-workspace .ws-card .avatar .dot {
-    width: 12px;
-    height: 12px;
-    border: 2px solid #3b3b3b;
-    border-radius: 50%;
-    background-color: #53bf1d;
-    position: absolute;
-    top: -5px;
-    right: -5px;
-}
-.dash-workspace .ws-card {
-    border-left: 2px solid red;
-    padding: 10px 10px 10px 9px;
-}
-.dash-workspace .ws-card.online {
-    border-left: 2px solid #53bf1d;
-    padding: 10px 10px 10px 9px;
-}
-.dash-workspace .ws-card.new {
-    border: 1px solid #555;
-}
-.dash-workspace .ws-card .content {
-    width: calc(100% - 60px);
-    height: 100%;
-}
-.dash-workspace .ws-card .title,
-.dash-workspace .ws-card .desc {
+.dash-workspace .ws-card .title {
     width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.dash-workspace .ws-card .title {
-    width: calc(100% - 20px);
-    margin: 4px 0 10px;
-    font-size: 16px;
-    font-weight: 700;
+.dash-workspace .ws-card .desc {
+    width: 100%;
+    font-size: 12px;
+    color: #b1b1b1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.dash-workspace .ws-card .online {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
+}
+.dash-workspace .ws-card .online.invisible {
+    visibility: hidden;
+    opacity: 0;
+}
+.dash-workspace .ws-card .online .dot {
+    width: 8px;
+    height: 8px;
+    margin-right: 3px;
+    border-radius: 50%;
+    background-color: #2bd37d;
+}
+.dash-workspace .ws-card .control {
+    display: flex;
+    padding: 2px 12px 12px 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.dash-workspace .ws-card .control .act {
+    margin-left: 10px;
+    color: #aaa;
+    cursor: pointer;
+}
+.dash-workspace .ws-card .control .act:hover {
+    color: #fff;
+}
+.dash-workspace .ws-card .control i {
+    padding-right: 3px;
+}
+
+.dash-workspace .deleted .ws-card .inner {
+    cursor: default;
+}
+.dash-workspace .deleted .ws-card .inner:hover {
+    background-color: #3b3b3b;
 }
 .dash-workspace .deleted .ws-card .title {
     color: #9d9d9d;
 }
-.dash-workspace .ws-card .desc {
-    font-size: 12px;
-    color: #b1b1b1;
-}
 .dash-workspace .deleted .ws-card .desc {
     color: #757575;
 }
-.dash-workspace .ws-card .control {
-    display: none;
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-.dash-workspace .ws-card .control:hover {
-    color: #ccc;
-}
-.dash-workspace .ws-card .control i {
-    padding: 3px;
-    margin-left: 10px;
-    cursor: pointer;
-}
 
-@media screen and (max-width: 1440px) {
+@media screen and (max-width: 860px) {
     .dash-workspace .ws-card {
-        width: calc(33% - 20px);
+        width: 100%;
+        margin-right: 0;
     }
 }

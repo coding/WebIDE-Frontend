@@ -1,1 +1,17 @@
-
+@media screen and (max-width: 860px) {
+    .dash-create .com-board .board-label.none {
+        padding-bottom: 0;
+    }
+    .dash-create .com-board .board-label.none::before {
+        content: none;
+    }
+}
+@media screen and (max-width: 420px) {
+    .dash-create .com-board .board-content.radio {
+        flex-wrap: wrap;
+    }
+    .dash-create .com-board .board-content.radio .radio-option:not(:first-child) {
+        width: 100%;
+        padding-top: 10px;
+    }
+}

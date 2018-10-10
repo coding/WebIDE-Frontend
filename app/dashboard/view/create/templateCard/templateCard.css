@@ -7,15 +7,23 @@
     height: 40px;
     margin-right: 10px;
     border-radius: 50%;
-    background-color: #fff;
     overflow: hidden;
 }
 .dash-create .template-card .avatar img {
     height: 100%;
 }
+.dash-create .template-card .title {
+    color: #fff;
+}
 
 @media screen and (max-width: 1440px) {
     .dash-create .template-card {
         width: calc(33% - 15px);
+    }
+}
+@media screen and (max-width: 860px) {
+    .dash-create .template-card {
+        width: 100%;
+        margin-right: 0;
     }
 }

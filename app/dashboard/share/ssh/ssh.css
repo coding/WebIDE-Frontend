@@ -4,16 +4,16 @@
 }
 .com-ssh .ssh-content {
     width: 100%;
-    padding: 30px 10px 10px;
+    padding: 20px;
     border: 1px solid #444;
     border-radius: 3px;
     color: #757575;
     word-break: break-all;
+    cursor: pointer;
     position: relative;
 }
-.com-ssh .ssh-content .clipboard {
-    cursor: pointer;
+.com-ssh .ssh-content .fa-copy {
     position: absolute;
     top: 8px;
-    right: 14px;
+    right: 8px;
 }

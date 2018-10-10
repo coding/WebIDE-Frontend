@@ -44,7 +44,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    height: 300px;
+    max-height: 245px;
     padding: 20px;
     border-left: 1px solid #444;
     border-right: 1px solid #444;
@@ -55,4 +55,10 @@
 }
 .com-board .primary {
     margin-right: 10px;
+}
+
+@media screen and (max-width: 420px) {
+    .com-board .project-head-right {
+        display: none;
+    }
 }

@@ -2,9 +2,8 @@
     margin-left: 4px;
     cursor: pointer;
 }
-.com-tooltip {
-    min-width: 60px;
-    max-width: 160px;
+.dash-tooltip {
+    width: 120px;
     padding: 10px;
     border-radius: 2px;
     font-size: 12px;
@@ -13,18 +12,18 @@
     opacity: 0;
     transform: translate(0, 5px);
     word-break: break-all;
-    transition: opacity .5s ease, transform .5s ease;
+    transition: opacity .4s ease, transform .4s ease;
     position: fixed;
     top: -300px;
     left: -300px;
     z-index: 50;
 }
-.com-tooltip.animate {
+.dash-tooltip.animate {
     opacity: 1;
     transform: translate(0, 0);
-    transition: opacity .5s ease, transform .5s ease;
+    transition: opacity .4s ease, transform .4s ease;
 }
-.com-tooltip::after {
+.dash-tooltip::after {
     content: '';
     width: 0;
     height: 0;

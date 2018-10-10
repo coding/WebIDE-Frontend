@@ -10,7 +10,7 @@ import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
-import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 import * as maskActions from 'components/Mask/actions';
 
 class Coding extends Component {
@@ -89,7 +89,7 @@ class Coding extends Component {
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : '这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。'
+                                    ) : i18n('global.noProject')
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}
@@ -107,7 +107,7 @@ class Coding extends Component {
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="tooltip-container" onClick={this.handleEnvToolTip}>
+                            <span className="tooltip-container" onMouseEnter={this.handleEnvToolTip}>
                                 <i className="fa fa-question-circle"></i>
                             </span>
                         </div>
@@ -125,7 +125,7 @@ class Coding extends Component {
                     </div>
                 )}
                 <div className="com-board">
-                    <div className="board-label"></div>
+                    <div className="board-label none"></div>
                     <div className="board-content">
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>
                             {isCreating ? i18n('global.creating') : i18n('global.create')}
@@ -137,6 +137,10 @@ class Coding extends Component {
         );
     }
 
+    componentDidMount() {
+        this.handleSync();
+    }
+
     handleType = (type) => {
         this.setState({
             type,
@@ -144,12 +148,13 @@ class Coding extends Component {
             ownerName: '',
             projectName: '',
             templateId: -1,
-            envId: '',
+            envId: 'ide-tty',
         });
     }
 
     handleEnvToolTip = (event) => {
         this.props.handleToolTipOn({
+            width: 300,
             clientX: event.clientX,
             clientY: event.clientY,
             message: i18n('global.envTip'),
@@ -165,11 +170,9 @@ class Coding extends Component {
         api.syncProject().then(res => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
-            notify({ message: 'Sync project success' });
         }).catch(err => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
-            notify({ message: 'Sync project success' });
         });
     }
 

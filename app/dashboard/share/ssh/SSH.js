@@ -19,7 +19,7 @@ class SSH extends Component {
                 <div className="ssh-tip">{i18n('global.sshTip')}</div>
                 <div className="ssh-content">
                     {publicKey}
-                    <i className='clipboard fa fa-copy' ref={el => this.ref = el} />
+                    <i className="fa fa-copy" ref={el => this.ref = el} />
                 </div>
             </div>
         );
@@ -38,20 +38,24 @@ class SSH extends Component {
                 this.setState({ publicKey: publicKey });
             }
         });
-        const clipboard = new Clipboard('.clipboard', {
-            text: trigger => trigger.parentElement.innerText,
+        const clipboard = new Clipboard('.ssh-content', {
+            text: trigger => trigger.innerText,
         })
         clipboard.on('success', () => {
+            const { language } = this.props;
             const rect = this.ref.getBoundingClientRect();
             handleToolTipOn({
+                width: language === 'zh_CN' ? 70 : 100,
                 clientX: rect.left + rect.width / 2,
                 clientY: rect.top,
                 message: i18n('global.copySuccess'),
             });
         });
         clipboard.on('error', () => {
+            const { language } = this.props;
             const rect = this.ref.getBoundingClientRect();
             handleToolTipOn({
+                width: language === 'zh_CN' ? 70 : 100,
                 clientX: rect.left + rect.width / 2,
                 clientY: rect.top,
                 message: i18n('global.copyFailure'),
@@ -60,10 +64,14 @@ class SSH extends Component {
     }
 }
 
+const mapState = (state) => {
+    return { language: state.language };
+}
+
 const mapDispatch = (dispatch) => {
     return {
         handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
     }
 }
 
-export default connect(null, mapDispatch)(SSH);
+export default connect(mapState, mapDispatch)(SSH);

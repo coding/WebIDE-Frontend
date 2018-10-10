@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import './setting.css';
 
-import { tencentOrigin } from '../../../utils/config';
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
 
@@ -15,7 +14,6 @@ class Setting extends Component {
     render() {
         const { name, avatar } = this.props.user;
         const src = httpsReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
-        const url = window === window.top ? '/changelog' : `${tencentOrigin}/changelog`;
         return (
             <div className="setting">
                 <div className="main">
@@ -25,10 +23,10 @@ class Setting extends Component {
                 </div>
                 <div className="setting-menu">
                     <Link className="menu-item" to="/dashboard/about">{i18n('global.about')}</Link>
-                    <a className="menu-item" href={url} target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
+                    <a className="menu-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">{i18n('global.devPlatform')}</a>
                     <a className="menu-item" href="https://coding.net/help/doc/webide" target="_blank" rel="noopener noreferrer">{i18n('global.docs')}</a>
                     <a className="menu-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer">{i18n('global.feedback')}</a>
-                    <a className="menu-item" href="javascript:;" onClick={this.handleLogout}>{i18n('global.logout')}</a>
+                    {/* <a className="menu-item" href="javascript:;" onClick={this.handleLogout}>{i18n('global.logout')}</a> */}
                 </div>
             </div>
         );

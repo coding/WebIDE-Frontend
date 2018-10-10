@@ -44,9 +44,12 @@ ul, ol {
 }
 #dash-container {
     display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    min-width: 300px;
     height: 100%;
     font-size: 14px;
-    font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-family: "PingFangSC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "sans-serif";
     color: #ccc;
     background-color: #333;
     -webkit-font-smoothing: antialiased;

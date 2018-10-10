@@ -9,7 +9,8 @@ import i18n from '../../../utils/i18n';
 import SSH from '../../../share/ssh';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
-import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import * as maskActions from 'components/Mask/actions';
 
 class Git extends Component {
     state = {
@@ -49,7 +50,7 @@ class Git extends Component {
                     <div className="board-label">
                         {i18n('global.env')}
                         *
-                        <span className="tooltip-container" onClick={this.handleEnvToolTip}>
+                        <span className="tooltip-container" onMouseEnter={this.handleEnvToolTip}>
                             <i className="fa fa-question-circle"></i>
                         </span>
                     </div>
@@ -66,7 +67,7 @@ class Git extends Component {
                     </div>
                 </div>
                 <div className="com-board">
-                    <div className="board-label"></div>
+                    <div className="board-label none"></div>
                     <div className="board-content">
                         <button className="com-button primary" disabled={!url || !envId} onClick={this.handleCreate}>
                             {isCreating ? i18n('global.creating') : i18n('global.create')}
@@ -80,9 +81,10 @@ class Git extends Component {
 
     handleEnvToolTip = (event) => {
         this.props.handleToolTipOn({
+            width: 300,
             clientX: event.clientX,
             clientY: event.clientY,
-            message: '默认环境为 Ubuntu 16.04，你可以在该环境中自己安装所需要的环境。',
+            message: i18n('global.envTip'),
         });
     }
 
@@ -114,8 +116,10 @@ class Git extends Component {
             envId,
         }
         this.setState({ isCreating: true });
+        maskActions.showMask({ message: i18n('global.creatingWS'), shouldHideVideo: true });
         api.cloneWorkspace(option).then(res => {
             this.setState({ isCreating: false });
+            maskActions.hideMask();
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
@@ -123,6 +127,7 @@ class Git extends Component {
             }
         }).catch(err => {
             this.setState({ isCreating: false });
+            maskActions.hideMask();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

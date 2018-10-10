@@ -1,0 +1,32 @@
+.dash-stripe {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+}
+.dash-stripe::before,
+.dash-stripe:after {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    transition: transform 0.2s ease-in-out;
+    position: absolute;
+    left: 0;
+}
+.dash-stripe::before {
+    top: 2px;
+    box-shadow: 0 7px #fff;
+}
+.dash-stripe::after {
+    bottom: 2px;
+}
+.dash-stripe.on::before {
+    top: 9px;
+    box-shadow: none;
+    transform: rotate(225deg);
+}
+.dash-stripe.on::after {
+    bottom: 9px;
+    transform: rotate(135deg);
+}

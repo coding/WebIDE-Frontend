@@ -8,7 +8,8 @@ import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import TemplateCard from '../templateCard';
 import NoData from '../../../share/noData';
-import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import * as maskActions from 'components/Mask/actions';
 
 class Local extends Component {
     state = {
@@ -58,7 +59,7 @@ class Local extends Component {
                     </div>
                 </div>
                 <div className="com-board">
-                    <div className="board-label"></div>
+                    <div className="board-label none"></div>
                     <div className="board-content">
                         <button className="com-button primary" disabled={!workspaceName || !templateId} onClick={this.handleCreate}>
                             {isCreating ? i18n('global.creating') : i18n('global.create')}
@@ -99,8 +100,10 @@ class Local extends Component {
             templateId,
         }
         this.setState({ isCreating: true });
+        maskActions.showMask({ message: i18n('global.creatingWS'), shouldHideVideo: true });
         api.createWorkspaceV2(option).then(res => {
             this.setState({ isCreating: false });
+            maskActions.hideMask();
             if (!res.code) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
@@ -108,6 +111,7 @@ class Local extends Component {
             }
         }).catch(err => {
             this.setState({ isCreating: false });
+            maskActions.hideMask();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

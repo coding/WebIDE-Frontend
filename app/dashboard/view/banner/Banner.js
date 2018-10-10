@@ -65,9 +65,11 @@ const BreadCrumb = ({ breadcrumbs }) => {
                     return;
                 }
                 if (bc.slash) {
-                    return <span key={bc.name} className="slash"> / </span>
+                    return <span key={bc.name} className="slash"> / </span>;
+                } else if (index < breadcrumbs.length - 1) {
+                    return <Link key={bc.name} className="crumb" to={bc.route}>{i18n(`global.${bc.name}`)}</Link>;
                 } else {
-                    return <Link key={bc.name} className="crumb" to={bc.route}>{i18n(`global.${bc.name}`)}</Link>
+                    return <span key={bc.name}>{i18n(`global.${bc.name}`)}</span>
                 }
             })}
         </div>

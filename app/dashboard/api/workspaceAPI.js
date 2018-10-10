@@ -59,3 +59,7 @@ export const createProject = (data) => {
 export const syncProject = () => {
     return request.post('/project/sync', undefined, { 'Accept': 'application/vnd.coding.v2+json' });
 }
+
+export const quitWorkspace = (spaceKey) => {
+    return request.post(`/workspaces/${spaceKey}/force_quit`, undefined, { 'Accept': 'application/vnd.coding.v2+json' });
+}
