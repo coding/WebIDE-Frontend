@@ -29,7 +29,7 @@ class WelcomePage extends Component {
       <div className='welcome-page'>
         <div className='header'>
         </div>
-        <h1>欢迎使用 <div className='logo'><span className='beta'>beta</span></div></h1>
+        <h1>欢迎使用 <div className='logo'></div></h1>
         <div className='subtitle'>您将获得前所未有的云端开发体验</div>
         <div className='quick-start'>
           <h2>快速入门</h2>
@@ -81,7 +81,7 @@ class WelcomePage extends Component {
             <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>帮助文档</a>
             <a href='https://coding.net/help/doc/cloud-studio/video.html' target='_blank' rel='noopener noreferrer'>视频教程</a>
           </div>
-          
+
           <div className='coding-logo'></div>
         </div>
         {/* <h2>Start</h2>

@@ -9,7 +9,6 @@ const Alert = (props) => {
     <div className='modal-content about'>
       <div className='title'>
         <div className='logo'></div>
-        <span className='beta'>beta</span>
       </div>
       <div className='logos'>
         <div className='logo-item'>
