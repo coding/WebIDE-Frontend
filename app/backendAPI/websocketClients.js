@@ -86,8 +86,9 @@ class FsSocketClient {
     const self = this
     if (config.fsSocketConnected) {
       self.shouldClose = true;
-      self.socket.close()
-      runInAction(() => config.fsSocketConnected = false)
+      self.socket.close();
+      emitter.emit(E.SOCKET_TRIED_FAILED);
+      runInAction(() => config.fsSocketConnected = false);
     }
   }
 }
