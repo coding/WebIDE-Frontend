@@ -9,12 +9,15 @@ import * as Modal from '../../components/Modal/actions'
 import config from 'config'
 import dispatchCommand from 'commands/dispatchCommand'
 
-const closeFileTab = async (e, tab, removeTab) => {
+const closeFileTab = async (e, tab, removeTab, activateTab) => {
   e.stopPropagation()
   if (tab.tabGroupId === 'terminalGroup') {
     removeTab(tab.id)
     return
   }
+
+  activateTab(tab.id)
+
   const isMonaco = !config.switchOldEditor
   const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
   const content = (editor && editor.getValue) ? editor.getValue() : ''
@@ -26,6 +29,7 @@ const closeFileTab = async (e, tab, removeTab) => {
     })
     if (confirmed) {
       Modal.dismissModal()
+      console.log('ah')
       dispatchCommand('file:save')
     } else {
       Modal.dismissModal()
@@ -65,7 +69,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       {tab.icon ? <div className={`icon ${tab.icon}`}></div>: null}
       <div className='title'>{tab.title}</div>
       <div className='control'>
-        <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>×</i>
+        <i className='close' onClick={e => closeFileTab(e, tab, removeTab, activateTab)}>×</i>
         <i className='dot'></i>
       </div>
     </li>
