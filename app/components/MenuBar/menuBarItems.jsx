@@ -6,10 +6,11 @@ import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
 
-
 import logo from '../../../static/CloudStudio-Logo.svg';
 
 const divider = { isDivider: true };
+
+const dashboardUrl = window === window.top ? '/dashboard' : `${config.tencentOrigin}/dashboard`;
 
 const menuBarItems = observable([
   {
@@ -22,7 +23,7 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.meta.dashboard`,
         icon: 'octicon octicon-browser',
         command: () => {
-          window.open('https://studio.dev.tencent.com/dashboard')
+          window.open(dashboardUrl)
         },
         canopen: true
       },
