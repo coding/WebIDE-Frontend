@@ -26,12 +26,7 @@ class Config extends Component {
                     </div>
                 </div>
                 <div className="com-board">
-                    <div className="board-label">
-                        {i18n('global.sshPublicKey')}
-                        <a href="https://coding.net/help/faq/git/git.html#_SSH_Key" target="_blank" rel="noopener noreferrer">
-                            <i className="fa fa-question-circle"></i>
-                        </a>
-                    </div>
+                    <div className="board-label">{i18n('global.sshPublicKey')}</div>
                     <div className="board-content">
                         <SSH />
                     </div>

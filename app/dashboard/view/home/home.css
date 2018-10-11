@@ -84,7 +84,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    height: calc(100% - 120px);
+    height: calc(100% - 110px);
 }
 .dash-sidebar .nav-item {
     width: 100%;

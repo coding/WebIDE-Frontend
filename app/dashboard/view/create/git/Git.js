@@ -9,6 +9,7 @@ import i18n from '../../../utils/i18n';
 import SSH from '../../../share/ssh';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
+import ToolTip from '../../../share/toolTip';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 import * as maskActions from 'components/Mask/actions';
 
@@ -18,10 +19,11 @@ class Git extends Component {
         url: '',
         envId: 'ide-tty',
         isCreating: false,
+        isToolTipOn: false,
     }
 
     render() {
-        const { desc, url, envId, isCreating } = this.state;
+        const { desc, url, envId, isCreating, isToolTipOn } = this.state;
         const { envs, language } = this.props;
         let textareaPh, inputPh;
         if (language === 'zh_CN') {
@@ -50,8 +52,9 @@ class Git extends Component {
                     <div className="board-label">
                         {i18n('global.env')}
                         *
-                        <span className="tooltip-container" onMouseEnter={this.handleEnvToolTip}>
+                        <span className="git-env-tooltip" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}>
                             <i className="fa fa-question-circle"></i>
+                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('global.envTip') : ''} placement="left" />
                         </span>
                     </div>
                     <div className="board-content env">
@@ -80,12 +83,7 @@ class Git extends Component {
     }
 
     handleEnvToolTip = (event) => {
-        this.props.handleToolTipOn({
-            width: 300,
-            clientX: event.clientX,
-            clientY: event.clientY,
-            message: i18n('global.envTip'),
-        });
+        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     handleDescription = (event) => {
@@ -137,10 +135,4 @@ const mapState = (state) => {
     return { language: state.language };
 }
 
-const mapDispatch = (dispatch) => {
-    return {
-        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
-    }
-}
-
-export default connect(mapState, mapDispatch)(withRouter(Git));
+export default connect(mapState)(withRouter(Git));

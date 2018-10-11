@@ -8,7 +8,7 @@ import Radio from '../../share/radio';
 import Local from './local';
 import Coding from './coding';
 import Git from './git';
-import { notify, NOTIFY_TYPE } from '../../../components/Notification/actions';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Create extends Component {
     state = {

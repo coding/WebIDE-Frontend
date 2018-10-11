@@ -12,6 +12,10 @@ export const getWorkspaceInvalid = () => {
     return request.get('/workspaces?invalid');
 }
 
+export const findProject = ({ ownerName, projectName }) => {
+    return request.get(`/ws/find/coding/${ownerName}/${projectName}`);
+}
+
 export const createWorkspace = (data) => {
     return request.postFormData('/ws/create', data, { 'Content-Type': 'application/x-www-form-urlencoded' });
 }
