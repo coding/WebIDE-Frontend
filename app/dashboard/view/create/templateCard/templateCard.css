@@ -12,6 +12,9 @@
 .dash-create .template-card .avatar img {
     height: 100%;
 }
+.dash-create .template-card .content {
+    width: calc(100% - 50px);
+}
 .dash-create .template-card .title {
     color: #fff;
 }

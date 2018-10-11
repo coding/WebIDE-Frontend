@@ -11,7 +11,6 @@ import store from './dashboard/store';
 import Home from './dashboard/view/home';
 import Mask from './dashboard/view/mask';
 import Notification from 'components/Notification';
-import ToolTip from './dashboard/share/toolTip';
 import Utilities from './containers/Utilities';
 
 ReactDOM.render(
@@ -23,7 +22,6 @@ ReactDOM.render(
                 </Switch>
                 <Mask />
                 <Notification />
-                <ToolTip />
                 <Utilities />
             </div>
         </BrowserRouter>

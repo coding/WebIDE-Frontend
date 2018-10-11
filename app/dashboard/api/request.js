@@ -6,7 +6,6 @@ const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/vnd.coding.v1+json',
     'X-Requested-With': 'XMLHttpRequest',
-    //'X-Credentials': 'f538d3e8-da0f-45e4-84ad-fdd80cd8a209',
 }
 
 request.get = (url, overrideHeaders = {}) => {

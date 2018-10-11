@@ -53,9 +53,9 @@
     color: #ccc;
     transition: background-color .3s ease;
 }
-.dash-sidebar .setting .menu-item:last-child {
+/* .dash-sidebar .setting .menu-item:last-child {
     border-top: 1px solid #444;
-}
+} */
 .dash-sidebar .setting .menu-item:hover {
     background-color: #444;
 }

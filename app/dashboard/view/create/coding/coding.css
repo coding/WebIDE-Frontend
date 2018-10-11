@@ -21,13 +21,19 @@
     padding-right: 10px;
     margin-right: 10px;
 }
-.com-board .project-head-right .async {
+.com-board .project-head-right .sync {
     width: 60px;
     text-align: right;
     color: #5097e8;
     cursor: pointer;
+    position: relative;
 }
-.com-board .project-head-right .async i {
+/* 自定义 tooltip 样式 */
+.sync .dash-tooltip.on {
+    width: 220px;
+    bottom: 25px;
+}
+.com-board .project-head-right .sync i {
     margin-right: 5px;
 }
 .com-board .project-head .item {
@@ -55,6 +61,14 @@
 }
 .com-board .primary {
     margin-right: 10px;
+}
+/* 自定义 tooltip 样式 */
+.coding-env-tooltip {
+    padding-left: 4px;
+    position: relative;
+}
+.coding-env-tooltip .dash-tooltip {
+    width: 220px;
 }
 
 @media screen and (max-width: 420px) {

@@ -7,6 +7,9 @@
     color: #fff;
     background-color: #3b3b3b;
 }
+.dash-workspace .new.disabled {
+    cursor: not-allowed;
+}
 .dash-workspace .new .avatar {
     width: 74px;
     height: 74px;
@@ -20,5 +23,18 @@
 }
 .dash-workspace .new .content {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    width: calc(100% - 94px);
+}
+.dash-workspace .new .title {
+    width: 100%;
+    font-size: 16px;
+}
+.dash-workspace .new.disabled .title {
+    color: #9d9d9d;
+}
+.dash-workspace .new .desc {
+    width: 100%;
+    margin-top: 10px;
 }

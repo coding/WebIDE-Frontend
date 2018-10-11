@@ -1,32 +1,42 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import Clipboard from 'clipboard';
 
 import './ssh.css';
 
 import api from '../../api';
 import i18n from '../../utils/i18n';
+import ToolTip from '../toolTip';
 
 let _sshPublicKey = '';
 
 class SSH extends Component {
-    state = { publicKey: '' }
+    state = {
+        publicKey: '',
+        copyed: false,
+        copyTip: '',
+    };
+    timeout = null;
 
     render() {
-        const { publicKey } = this.state;
+        const { publicKey, copyed, copyTip } = this.state;
         return (
             <div className="com-ssh">
-                <div className="ssh-tip">{i18n('global.sshTip')}</div>
+                <div className="ssh-tip">
+                    {i18n('global.sshTip')}
+                    <a href="https://dev.tencent.com/help/cloud-studio/how-to-add-ssh" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                </div>
                 <div className="ssh-content">
                     {publicKey}
-                    <i className="fa fa-copy" ref={el => this.ref = el} />
+                    <div className="ssh-clipboard">
+                        <i className="fa fa-copy" ref={el => this.ref = el}></i>
+                        <ToolTip on={copyed} message={copyTip} />
+                    </div>
                 </div>
             </div>
         );
     }
 
     componentDidMount() {
-        const { handleToolTipOn } = this.props;
         if (_sshPublicKey) {
             this.setState({ publicKey: _sshPublicKey });
             return;
@@ -42,36 +52,17 @@ class SSH extends Component {
             text: trigger => trigger.innerText,
         })
         clipboard.on('success', () => {
-            const { language } = this.props;
-            const rect = this.ref.getBoundingClientRect();
-            handleToolTipOn({
-                width: language === 'zh_CN' ? 70 : 100,
-                clientX: rect.left + rect.width / 2,
-                clientY: rect.top,
-                message: i18n('global.copySuccess'),
-            });
+            this.setState({ copyed: true, copyTip: i18n('global.copyed') });
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.setState({ copyed: false, copyTip: '' });
+            }, 1000);
         });
-        clipboard.on('error', () => {
-            const { language } = this.props;
-            const rect = this.ref.getBoundingClientRect();
-            handleToolTipOn({
-                width: language === 'zh_CN' ? 70 : 100,
-                clientX: rect.left + rect.width / 2,
-                clientY: rect.top,
-                message: i18n('global.copyFailure'),
-            });
-        });
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
     }
 }
 
-const mapState = (state) => {
-    return { language: state.language };
-}
-
-const mapDispatch = (dispatch) => {
-    return {
-        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
-    }
-}
-
-export default connect(mapState, mapDispatch)(SSH);
+export default SSH;

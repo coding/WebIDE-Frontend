@@ -14,6 +14,7 @@
     "copyright": "扣钉网络 版权所有",
     "language": "语言",
     "sshPublicKey": "SSH 公钥",
+    "more": "更多...",
     "source": "来源",
     "noRemoteRepo": "无",
     "codingRepo": "CODING 仓库",
@@ -37,7 +38,7 @@
     "delete": "删除",
     "stopTip": "请确认是否停止该工作空间？",
     "restoreTip": "请确认是否恢复？",
-    "deleteTip": "删除后该工作空间自动为您保留到次日凌晨 2 点，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？",
+    "deleteTip": "删除后该工作空间自动为您保留 24 小时，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？",
     "repoUrl": "仓库地址",
     "recentdeleted": "最近删除",
     "deleteProjectTip": "删除后项目自动保留一天，在此期间你可以恢复，否则将永久删除",
@@ -48,6 +49,7 @@
     "inputTip": "最少两个字符，仅支持字母、数字或者下划线(_)、中划线(-)、点(.)",
     "sync": "同步",
     "syncing": "同步中",
+    "syncTip": "正在同步您在腾讯云开发者平台的项目，如果没有找到想要的项目可以等待同步完成再选择",
     "nodata": "暂无数据",
     "noProject": "这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。",
     "creatingWS": "正在创建工作空间...",
@@ -56,8 +58,8 @@
     "deletedDaysAgo": "删除于 {{days}} 天前",
     "deletedTime": "删除于 {{hours}} 小时 {{minutes}} 分 {{seconds}} 秒前",
     "envTip": "Cloud Studio 内置常用的环境，如 Node.js、Python、Java 等，帮助你摆脱繁琐配置，快速进入开发。运行环境还支持一键切换，保存和恢复。",
-    "copySuccess": "复制成功",
-    "copyFailure": "复制失败",
+    "copyed": "复制完成",
     "hasWorkspaceOpendTip": "你有一个已打开的工作空间，如果想打开另一个，请点击下方停止按钮然后重试。",
-    "noDesc": "暂无描述"
+    "noDesc": "暂无描述",
+    "limitTip": "超过 5 个工作空间，无法创建更多"
 }

@@ -58,7 +58,7 @@ class About extends Component {
     handleResize = () => {
         const w = document.documentElement.clientWidth - 60;
         this.setState({
-            width: w > 660 ? w - 200 : w,
+            width: w > 860 - 60 ? w - 200 : w,
             height: document.documentElement.clientHeight - 60 - 60,
         });
     }

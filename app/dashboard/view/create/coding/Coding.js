@@ -10,6 +10,7 @@ import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
+import ToolTip from '../../../share/toolTip';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 import * as maskActions from 'components/Mask/actions';
 
@@ -24,10 +25,11 @@ class Coding extends Component {
         isCreating: false,
         filter: '',
         isSync: false,
+        isToolTipOn: false,
     };
 
     render() {
-        const { type, desc, ownerName, projectName, templateId, envId, isCreating, filter, isSync } = this.state;
+        const { type, desc, ownerName, projectName, templateId, envId, isCreating, filter, isSync, isToolTipOn } = this.state;
         let { projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
@@ -73,9 +75,16 @@ class Coding extends Component {
                                 <div className="project-head-right">
                                     <input className="com-input" type="text" spellCheck={false} placeholder={searchPh} value={filter} onChange={this.handleFilter} />
                                     {
-                                        isSync
-                                        ? <span className="async"><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
-                                        : <span className="async" onClick={this.handleSync}><i className="fa fa-refresh"></i>{i18n('global.sync')}</span>
+                                        isSync ? (
+                                            <div className="sync">
+                                                <span><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
+                                                <ToolTip on={true} message={i18n('global.syncTip')} placement="right" />
+                                            </div>
+                                        ) : (
+                                            <div className="sync" onClick={this.handleSync}>
+                                                <i className="fa fa-refresh"></i>{i18n('global.sync')}
+                                            </div>
+                                        )
                                     }
                                 </div>
                             )}
@@ -107,8 +116,9 @@ class Coding extends Component {
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="tooltip-container" onMouseEnter={this.handleEnvToolTip}>
+                            <span className="coding-env-tooltip" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}>
                                 <i className="fa fa-question-circle"></i>
+                                <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('global.envTip') : ''} placement="left" />
                             </span>
                         </div>
                         <div className="board-content env">
@@ -152,13 +162,8 @@ class Coding extends Component {
         });
     }
 
-    handleEnvToolTip = (event) => {
-        this.props.handleToolTipOn({
-            width: 300,
-            clientX: event.clientX,
-            clientY: event.clientY,
-            message: i18n('global.envTip'),
-        });
+    handleEnvToolTip = () => {
+        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     handleFilter = (event) => {
@@ -203,7 +208,7 @@ class Coding extends Component {
     handleCreate = () => {
         const { desc, type, ownerName, projectName, envId, templateId } = this.state;
         const { globalKey } = this.props;
-        const option = {
+        const workspaceOption = {
             cpuLimit: 2,
             memory: 512,
             storage: 2,
@@ -215,11 +220,20 @@ class Coding extends Component {
         this.setState({ isCreating: true });
         maskActions.showMask({ message: i18n('global.creatingWS'), shouldHideVideo: true });
         if (type === 1) {
-            option.envId = envId;
-            this.handleCreateWorkspace(option);
+            workspaceOption.envId = envId;
+            // 查询该 project 是否创建过 workspace
+            api.findProject({ ownerName, projectName }).then(res => {
+                if (!res.data) {
+                    this.handleCreateWorkspace(workspaceOption);
+                } else {
+                    this.setState({ isCreating: false });
+                    maskActions.hideMask();
+                    notify({ notifyType: NOTIFY_TYPE.ERROR, message: i18n('ws.wsExisted', { ws: res.data }) });
+                }
+            });
         } else {
-            option.templateId = templateId;
-            api.createProject({
+            workspaceOption.templateId = templateId;
+            const projectOption = {
                 type: 2,
                 gitEnabled: true,
                 gitReadmeEnabled: false,
@@ -230,9 +244,10 @@ class Coding extends Component {
                 //desc,
                 joinTeam: false,
                 teamGK: globalKey,
-            }).then(res => {
+            };
+            api.createProject(projectOption).then(res => {
                 if (res.code === 0) {
-                    this.handleCreateWorkspace(option);
+                    this.handleCreateWorkspace(workspaceOption);
                 } else {
                     this.setState({ isCreating: false });
                     maskActions.hideMask();
@@ -247,10 +262,7 @@ class Coding extends Component {
                     } else {
                         message = 'Failed to create project';
                     }
-                    notify({
-                        notifyType: NOTIFY_TYPE.ERROR,
-                        message,
-                    });
+                    notify({ notifyType: NOTIFY_TYPE.ERROR, message });
                 }
             }).catch(err => {
                 this.setState({ isCreating: false });
@@ -284,10 +296,4 @@ const mapState = (state) => {
     }
 }
 
-const mapDispatch = (dispatch) => {
-    return {
-        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
-    }
-}
-
-export default connect(mapState, mapDispatch)(withRouter(Coding));
+export default connect(mapState)(withRouter(Coding));

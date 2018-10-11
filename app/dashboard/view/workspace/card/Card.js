@@ -94,6 +94,8 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -106,6 +108,8 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -114,6 +118,8 @@ class Card extends Component {
         api.restoreWorkspace(spaceKey).then(res => {
             handleFetch();
             switchMaskToOff();
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }
@@ -128,7 +134,7 @@ const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children 
         okHandle: handleStop,
     }
     if (hasWSOpend) {
-        return <div className="ws-card" onClick={() => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
+        return <div className="ws-card" onClick={(event) => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
     }
     if (invalid) {
         return <div className="ws-card">{children}</div>;

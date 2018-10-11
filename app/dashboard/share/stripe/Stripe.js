@@ -7,7 +7,11 @@ class Stripe extends Component {
     render() {
         const { isMbarOn, handleSwitchMbar } = this.props;
         return (
-            <div className={`dash-stripe${isMbarOn ? ' on' : ''}`} onClick={() => handleSwitchMbar(isMbarOn)}></div>
+            <div className={`dash-stripe${isMbarOn ? ' on' : ''}`} onClick={() => handleSwitchMbar(isMbarOn)}>
+                <div className="line up"></div>
+                <div className="line mid"></div>
+                <div className="line low"></div>
+            </div>
         );
     }
 }
