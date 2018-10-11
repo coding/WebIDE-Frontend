@@ -90,6 +90,9 @@ class FsSocketClient {
       emitter.emit(E.SOCKET_TRIED_FAILED);
       runInAction(() => config.fsSocketConnected = false);
     }
+    if (TtySocketClient.$$singleton) {
+      TtySocketClient.$$singleton.close();
+    }
   }
 }
 
@@ -170,7 +173,7 @@ class TtySocketClient {
   close () {
     if (config.ttySocketConnected) {
       this.socket.disconnect('manual')
-      TtySocketClient.$$singleton = null
+      // TtySocketClient.$$singleton = null
     }
   }
 }
