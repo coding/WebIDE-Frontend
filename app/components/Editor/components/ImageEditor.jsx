@@ -15,8 +15,8 @@ class ImageEditor extends Component {
   }
 
   getImageUrl () {
-    const { baseURL, spaceKey } = config;
-    const backgroundImageUrl = `${baseURL}/workspaces/${spaceKey}/raw?path=${encodeURIComponent(this.props.path)}`;
+    const { spaceKey } = config;
+    const backgroundImageUrl = `/workspaces/${spaceKey}/raw?path=${encodeURIComponent(this.props.path)}`;
     request.get(backgroundImageUrl, {}, {
       responseType: 'blob',
     }).then(blob => {

@@ -18,7 +18,7 @@ class UnknownEditor extends Component {
 
   getFileUrl () {
     const { baseURL, spaceKey } = config
-    return `${baseURL}/workspaces/${spaceKey}/raw?path=${encodeURIComponent(this.props.path)}`
+    return `/workspaces/${spaceKey}/raw?path=${encodeURIComponent(this.props.path)}`
   }
 
   getFileExt () {
