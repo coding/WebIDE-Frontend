@@ -15,7 +15,7 @@ const dashboardUrl = window === window.top ? '/dashboard' : `${config.tencentOri
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className="menu-bar-item-logo"></div>),
+    name: (<div className="menu-bar-item-logo"><img className="logo" src={logo} alt="logo" /><div className='beta'>beta</div></div>),
     className: 'coding-logo',
     items: [
       {
