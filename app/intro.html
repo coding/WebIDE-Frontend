@@ -400,17 +400,17 @@
       top: 0;
       left: 0;
       right: 0;
-      padding: 24px;
+      padding: 30px;
       display: flex;
       align-items: flex-end;
     }
 
     .page-header .logo {
-      background: url("https://dn-coding-net-production-pp.qbox.me/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat;
+      /* background: url("https://dn-coding-net-production-pp.qbox.me/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat; */
       background-size: 176px 24px;
       height: 24px;
       width: 176px;
-      padding-top: 20px;
+      /* padding-top: 20px; */
       overflow: hidden;
       display: inline-block;
       z-index: 1;
@@ -1303,7 +1303,7 @@
               <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
             </div>
             <div class="nav-item">
-              <a href="https://dev.tencent.com/cs" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
+              <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
             </div>
             <div class="nav-item">
               <a href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
@@ -1321,7 +1321,14 @@
         </section>
       </div>
       <div class="page-header">
-        <a class="logo" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer"></a>
+        <div class="logo">
+          <a href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">
+              <img
+                  src="https://dn-coding-net-production-pp.qbox.me/cd329f9b-3c29-4485-a061-af401cabb131.png"
+                  srcset="https://dn-coding-net-production-pp.qbox.me/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x"
+              />
+          </a>
+        </div>
         <ul class="nav">
           <li class="drop-down-wrap">
             功能
@@ -1331,7 +1338,7 @@
                   <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
                 </div>
                 <div class="item">
-                  <a href="https://dev.tencent.com/cs" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
+                  <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
                 </div>
               </div>
             </div>
