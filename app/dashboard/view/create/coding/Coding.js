@@ -6,63 +6,44 @@ import './coding.css';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
+import Inbox from '../../../share/inbox';
 import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import ToolTip from '../../../share/toolTip';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
-import * as maskActions from 'components/Mask/actions';
 
 class Coding extends Component {
     state = {
         type: 1,
-        desc: '',
         ownerName: '',
         projectName: '',
         templateId: -1,
         envId: 'ide-tty',
-        isCreating: false,
         filter: '',
         isSync: false,
         isToolTipOn: false,
     };
 
     render() {
-        const { type, desc, ownerName, projectName, templateId, envId, isCreating, filter, isSync, isToolTipOn } = this.state;
-        let { projects, templates, envs, language } = this.props;
+        const { type, ownerName, projectName, templateId, envId, filter, isSync, isToolTipOn } = this.state;
+        let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
-        const disabled = type === 1 ? (!projectName || !envId) : (!projectName || !templateId);
-        let inputPh, textareaPh, searchPh;
-        // placeholder 中英文
-        if (language === 'zh_CN') {
-            inputPh = '输入项目名';
-            textareaPh = '一句话描述这个工作空间';
-            searchPh = '搜索';
-        } else {
-            inputPh = 'Enter the project name';
-            textareaPh = 'Describe this workspace in one sentence';
-            searchPh = 'Search';
-        }
+        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId));
         return (
             <div>
                 {type === 2 && (
                     <div className="com-board">
                         <div className="board-label">{i18n('global.projectName')}*</div>
                         <div className="board-content">
-                            <input className="com-input" type="text" spellCheck={false} placeholder={inputPh} value={projectName} onChange={this.handleProjectName} />
+                            <Inbox holder="ws.inputProjectName" value={projectName} onChange={this.handleProjectName} />
                             <div className="input-tip">{i18n('global.inputTip')}</div>
                         </div>
                     </div>
                 )}
-                {/* <div className="com-board">
-                    <div className="board-label">{i18n('global.description')}</div>
-                    <div className="board-content desc">
-                        <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
-                    </div>
-                </div> */}
                 <div className="com-board">
                     <div className="board-label">{type === 1 ? i18n('global.project') : i18n('global.template')}*</div>
                     <div className="board-content project">
@@ -73,7 +54,7 @@ class Coding extends Component {
                             </div>
                             {type === 1 && (
                                 <div className="project-head-right">
-                                    <input className="com-input" type="text" spellCheck={false} placeholder={searchPh} value={filter} onChange={this.handleFilter} />
+                                    <Inbox holder="global.search" value={filter} onChange={this.handleFilter} />
                                     {
                                         isSync ? (
                                             <div className="sync">
@@ -112,12 +93,12 @@ class Coding extends Component {
                     </div>
                 </div>
                 {type === 1 && (
-                    <div className="com-board">
+                    <div className="com-board short-padding">
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="coding-env-tooltip" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}>
-                                <i className="fa fa-question-circle"></i>
+                            <span className="coding-env-tooltip">
+                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
                                 <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('global.envTip') : ''} placement="left" />
                             </span>
                         </div>
@@ -137,9 +118,8 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>
-                            {isCreating ? i18n('global.creating') : i18n('global.create')}
-                        </button>
+                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
                     </div>
                 </div>
@@ -154,7 +134,6 @@ class Coding extends Component {
     handleType = (type) => {
         this.setState({
             type,
-            desc: '',
             ownerName: '',
             projectName: '',
             templateId: -1,
@@ -185,10 +164,6 @@ class Coding extends Component {
         this.setState({ projectName: event.target.value });
     }
 
-    handleDescription = (event) => {
-        this.setState({ desc: event.target.value });
-    }
-
     handleSeleteProject = ({ ownerName, projectName }) => {
         this.setState({ ownerName, projectName });
     }
@@ -206,8 +181,8 @@ class Coding extends Component {
     }
 
     handleCreate = () => {
-        const { desc, type, ownerName, projectName, envId, templateId } = this.state;
-        const { globalKey } = this.props;
+        const { type, ownerName, projectName, envId, templateId } = this.state;
+        const { globalKey, showLoading, hideLoading } = this.props;
         const workspaceOption = {
             cpuLimit: 2,
             memory: 512,
@@ -217,8 +192,7 @@ class Coding extends Component {
             ownerName: ownerName || globalKey,
             projectName,
         };
-        this.setState({ isCreating: true });
-        maskActions.showMask({ message: i18n('global.creatingWS'), shouldHideVideo: true });
+        showLoading({ message: i18n('global.creatingWS') });
         if (type === 1) {
             workspaceOption.envId = envId;
             // 查询该 project 是否创建过 workspace
@@ -226,8 +200,7 @@ class Coding extends Component {
                 if (!res.data) {
                     this.handleCreateWorkspace(workspaceOption);
                 } else {
-                    this.setState({ isCreating: false });
-                    maskActions.hideMask();
+                    hideLoading();
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message: i18n('ws.wsExisted', { ws: res.data }) });
                 }
             });
@@ -249,8 +222,7 @@ class Coding extends Component {
                 if (res.code === 0) {
                     this.handleCreateWorkspace(workspaceOption);
                 } else {
-                    this.setState({ isCreating: false });
-                    maskActions.hideMask();
+                    hideLoading();
                     let message;
                     if (res.msg) {
                         const msg = res.msg;
@@ -265,25 +237,23 @@ class Coding extends Component {
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message });
                 }
             }).catch(err => {
-                this.setState({ isCreating: false });
-                maskActions.hideMask();
+                hideLoading();
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
     }
 
     handleCreateWorkspace(option) {
+        const { hideLoading } = this.props;
         api.createWorkspace(option).then(res => {
-            this.setState({ isCreating: false });
-            maskActions.hideMask();
+            hideLoading();
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
         }).catch(err => {
-            this.setState({ isCreating: false });
-            maskActions.hideMask();
+            hideLoading();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
@@ -293,7 +263,16 @@ const mapState = (state) => {
     return {
         globalKey: state.userState.global_key,
         language: state.language,
+        canCreate: state.wsState.canCreate,
+        wsLimit: state.wsState.wsLimit,
     }
 }
 
-export default connect(mapState)(withRouter(Coding));
+const mapDispatch = (dispatch) => {
+    return {
+        showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
+        hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
+    }
+}
+
+export default connect(mapState, mapDispatch)(withRouter(Coding));

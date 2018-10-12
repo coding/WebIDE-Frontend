@@ -32,8 +32,8 @@
 }
 .dash-about .center .desc {
     display: flex;
-    justify-content: flex-end;
-    width: 140px;
+    justify-content: center;
+    width: 200px;
     margin: 0 auto;
 }
 .dash-about .center .desc .version {
@@ -41,7 +41,7 @@
     font-size: 16px;
 }
 .dash-about .center .desc a {
-    color: #5097e8;
+    color: #18f;
 }
 .dash-about .produce {
     display: flex;

@@ -8,6 +8,10 @@ export const getWorkspace = () => {
     return request.get('/ws/list?page=0&size=100');
 }
 
+export const getWorkspaceLimit = () => {
+    return request.get('/workspaces/workspace-limit', { 'Accept': 'application/vnd.coding.v2+json' });
+}
+
 export const getWorkspaceInvalid = () => {
     return request.get('/workspaces?invalid');
 }

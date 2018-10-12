@@ -2,11 +2,14 @@
     display: flex;
     padding-bottom: 40px;
 }
+.com-board.short-padding {
+    padding-bottom: 20px;
+}
 .com-board .board-label {
-    width: 130px;
+    width: 140px;
 }
 .com-board .board-content {
-    width: calc(100% - 130px);
+    width: calc(100% - 140px);
 }
 .com-board .board-content.radio {
     display: flex;
@@ -60,7 +63,7 @@
     border-radius: 3px;
     font-size: 14px;
     color: #fff;
-    background-color: #5097e8;
+    background-color: #18f;
     outline: none;
     cursor: pointer;
 }
@@ -159,7 +162,7 @@
         content: '#';
         padding-right: 3px;
         font-size: 16px;
-        color: #5097e8;
+        color: #18f;
     }
     .com-board .board-content {
         width: 100%;

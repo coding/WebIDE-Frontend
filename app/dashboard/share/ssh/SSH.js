@@ -16,6 +16,7 @@ class SSH extends Component {
         copyTip: '',
     };
     timeout = null;
+    clipboard = null;
 
     render() {
         const { publicKey, copyed, copyTip } = this.state;
@@ -28,7 +29,7 @@ class SSH extends Component {
                 <div className="ssh-content">
                     {publicKey}
                     <div className="ssh-clipboard">
-                        <i className="fa fa-copy" ref={el => this.ref = el}></i>
+                        <i className="fa fa-copy"></i>
                         <ToolTip on={copyed} message={copyTip} />
                     </div>
                 </div>
@@ -37,6 +38,17 @@ class SSH extends Component {
     }
 
     componentDidMount() {
+        this.clipboard = new Clipboard('.ssh-content', {
+            text: trigger => trigger.innerText,
+        })
+        this.clipboard.on('success', (event) => {
+            this.setState({ copyed: true, copyTip: i18n('global.copyed') });
+            event.clearSelection();
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => {
+                this.setState({ copyed: false, copyTip: '' });
+            }, 1000);
+        });
         if (_sshPublicKey) {
             this.setState({ publicKey: _sshPublicKey });
             return;
@@ -48,20 +60,11 @@ class SSH extends Component {
                 this.setState({ publicKey: publicKey });
             }
         });
-        const clipboard = new Clipboard('.ssh-content', {
-            text: trigger => trigger.innerText,
-        })
-        clipboard.on('success', () => {
-            this.setState({ copyed: true, copyTip: i18n('global.copyed') });
-            clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                this.setState({ copyed: false, copyTip: '' });
-            }, 1000);
-        });
     }
 
     componentWillUnmount() {
         clearTimeout(this.timeout);
+        this.clipboard.destroy();
     }
 }
 

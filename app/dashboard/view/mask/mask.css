@@ -15,8 +15,7 @@
     width: 420px;
     padding: 20px;
     border-radius: 5px;
-    font-size: 12px;
-    font-family: "PingFangSC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "sans-serif";
+    font-size: 14px;
     color: #ccc;
     background-color: #333;
     position: absolute;
@@ -31,6 +30,7 @@
 .dash-mask .prompt button {
     width: 55px;
     height: 26px;
+    font-size: 12px;
 }
 .dash-mask .prompt button:last-child {
     margin-left: 10px;

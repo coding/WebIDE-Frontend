@@ -5,7 +5,7 @@ import i18n from '../../../utils/i18n';
 
 const httpsReg = /http(?:s)?/;
 
-const ProjectCard = ({ iconUrl, ownerName, name, description, selected, filter, handleSeleteProject }) => {
+const ProjectCard = ({ iconUrl, ownerName, name, desc, selected, filter, handleSeleteProject }) => {
     const { seletedOwnerName, seletedProjectName } = selected;
     const src = httpsReg.test(iconUrl) ? iconUrl : `https://coding.net${iconUrl}`;
     const projectCardClass = `com-card project-card${(seletedOwnerName === ownerName && seletedProjectName === name) ? ' seleted' : ''}`;
@@ -17,7 +17,7 @@ const ProjectCard = ({ iconUrl, ownerName, name, description, selected, filter, 
                 </div>
                 <div className="content">
                     <Title ownerName={ownerName} name={name} filter={filter} />
-                    <div className="desc">{description || i18n('global.noDesc')}</div>
+                    <div className="desc">{desc || i18n('global.noDesc')}</div>
                 </div>
                 <div className="mark">
                     <i className="fa fa-check"></i>

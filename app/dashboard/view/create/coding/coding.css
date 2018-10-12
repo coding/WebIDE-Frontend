@@ -22,9 +22,9 @@
     margin-right: 10px;
 }
 .com-board .project-head-right .sync {
-    width: 60px;
+    width: 70px;
     text-align: right;
-    color: #5097e8;
+    color: #18f;
     cursor: pointer;
     position: relative;
 }
@@ -44,14 +44,14 @@
     cursor: pointer;
 }
 .com-board .project-head .item.active {
-    border-bottom-color: #5097e8;
+    border-bottom-color: #18f;
 }
 .com-board .project-body {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    max-height: 245px;
-    padding: 20px;
+    max-height: 240px;
+    padding: 15px 0 15px 15px;
     border-left: 1px solid #444;
     border-right: 1px solid #444;
     border-bottom: 1px solid #444;

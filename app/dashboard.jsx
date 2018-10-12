@@ -10,8 +10,8 @@ import store from './dashboard/store';
 
 import Home from './dashboard/view/home';
 import Mask from './dashboard/view/mask';
+import Loading from './dashboard/share/loading';
 import Notification from 'components/Notification';
-import Utilities from './containers/Utilities';
 
 ReactDOM.render(
     <Provider store={store}>
@@ -21,11 +21,11 @@ ReactDOM.render(
                     <Route path="/dashboard" component={Home}></Route>
                 </Switch>
                 <Mask />
+                <Loading />
                 <Notification />
-                <Utilities />
             </div>
         </BrowserRouter>
     </Provider>
     ,
-    document.getElementById('root')
+    document.getElementById('dashboard')
 );

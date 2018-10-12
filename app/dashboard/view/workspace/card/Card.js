@@ -10,7 +10,7 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
     render() {
-        const { spaceKey, projectIconUrl, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
+        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
         const stopOption = {
             message: i18n('global.stopTip'),
             isWarn: true,
@@ -74,7 +74,7 @@ class Card extends Component {
     handleMask = ({ message, isWarn, noCancel, cancelText, okText, okHandle }, event) => {
         event.preventDefault();
         event.stopPropagation();
-        this.props.switchMaskToOn({
+        this.props.showMask({
             message,
             isWarn,
             noCancel,
@@ -85,10 +85,10 @@ class Card extends Component {
     }
 
     handleStop = () => {
-        const { opendSpaceKey, spaceKey, switchMaskToOff, handleFetch } = this.props;
+        const { opendSpaceKey, spaceKey, hideMask, handleFetch } = this.props;
         api.quitWorkspace(opendSpaceKey || spaceKey).then(res => {
             if (res.code === 0) {
-                switchMaskToOff();
+                hideMask();
                 handleFetch();
                 notify({ message: res.msg });
             } else {
@@ -100,11 +100,11 @@ class Card extends Component {
     }
 
     handleDelete = () => {
-        const { spaceKey, switchMaskToOff, handleFetch } = this.props;
+        const { spaceKey, hideMask, handleFetch } = this.props;
         api.deleteWorkspace(spaceKey).then(res => {
             if (res.code === 0) {
                 handleFetch();
-                switchMaskToOff();
+                hideMask();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -114,10 +114,14 @@ class Card extends Component {
     }
 
     handleRestore = () => {
-        const { spaceKey, switchMaskToOff, handleFetch } = this.props;
+        const { spaceKey, hideMask, handleFetch } = this.props;
         api.restoreWorkspace(spaceKey).then(res => {
-            handleFetch();
-            switchMaskToOff();
+            hideMask();
+            if (!res.code) {
+                handleFetch();
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });

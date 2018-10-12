@@ -1,0 +1,27 @@
+.dash-loading {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 101;
+}
+.dash-loading.on {
+    display: block;
+}
+.dash-loading .loading {
+    padding: 16px;
+    border: 1px solid #5b5b5b;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #3b3b3b;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.dash-loading .loading > i {
+    margin-right: 5px;
+}

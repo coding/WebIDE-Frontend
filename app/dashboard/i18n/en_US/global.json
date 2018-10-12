@@ -3,12 +3,13 @@
     "workspace": "Workspace",
     "config": "Config",
     "about": "About",
+    "readme": "README",
     "changelog": "Changelog",
+    "tencentCloudDevPlatform": "Tencent Cloud Dev Platform",
     "devPlatform": "Dev Platform",
     "docs": "Help Document",
     "feedback": "Feedback",
     "logout": "Log Out",
-    "viewChangelog": "Changelog",
     "produce": "Produced",
     "computeSupport": "Compute Support",
     "copyright": "CODING. All Rights Reserved.",
@@ -22,6 +23,7 @@
     "workspaceName": "Workspace Name",
     "projectName": "Project Name",
     "description": "Description",
+    "search": "Search",
     "project": "Project",
     "template": "Template",
     "existingProject": "Existing Project",
@@ -60,6 +62,5 @@
     "envTip": "Cloud Studio has built-in common environments such as Node.js, Python, Java, etc. to help you get rid of the cumbersome configuration and get to the development quickly. The operating environment also supports one-click switching, saving and recovery.",
     "copyed": "Copyed",
     "hasWorkspaceOpendTip": "You have an open workspace, if you want to open another, click the stop button below and try again.",
-    "noDesc": "No Description",
-    "limitTip": "More than 5 workspaces, no more creations"
+    "noDesc": "[No Description]"
 }

@@ -5,6 +5,7 @@ import './create.css';
 import api from '../../api';
 import i18n from '../../utils/i18n';
 import Radio from '../../share/radio';
+import ToolTip from '../../share/toolTip';
 import Local from './local';
 import Coding from './coding';
 import Git from './git';
@@ -12,22 +13,27 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Create extends Component {
     state = {
+        canCreateWS: true,
         projects: [],
         templates: [],
         envs: [],
         importFrom: 'coding',
+        isToolTipOn: false,
     };
 
     render() {
-        const { projects, templates, envs, importFrom } = this.state;
+        const { canCreateWS, projects, templates, envs, importFrom, isToolTipOn } = this.state;
         return (
             <div className="dash-create">
                 <div className="com-board">
                     <div className="board-label">{i18n('global.source')}*</div>
                     <div className="board-content radio">
-                        <div className="radio-option" onClick={() => this.handleImportFrom('coding')}>
-                            <Radio checked={importFrom === 'coding'} />
-                            <span>{i18n('global.codingRepo')}</span>
+                        <div className="radio-option radio-dev-platform" onClick={() => this.handleImportFrom('coding')}>
+                            <span onMouseEnter={this.handleToolTip} onMouseLeave={this.handleToolTip}>
+                                <Radio checked={importFrom === 'coding'} />
+                                <span>{i18n('global.tencentCloudDevPlatform')}</span>
+                            </span>
+                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.oldCoding') : ''} placement="center" />
                         </div>
                         <div className="radio-option" onClick={() => this.handleImportFrom('git')}>
                             <Radio checked={importFrom === 'git'} />
@@ -50,6 +56,10 @@ class Create extends Component {
         this.fetchCodingProject();
         this.fetchTemplateProject();
         this.fetchEnvList();
+    }
+
+    handleToolTip = () => {
+        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     fetchCodingProject = () => {

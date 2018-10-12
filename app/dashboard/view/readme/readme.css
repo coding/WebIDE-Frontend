@@ -1,0 +1,12 @@
+.dash-readme .head {
+    padding-bottom: .4em;
+    margin: 1.4em 0;
+    border-bottom: 1px solid #404040;
+    font-size: 16px;
+    color: #fff;
+    word-break: break-all;
+}
+.dash-readme .line {
+    margin: .2em 0;
+    line-height: 2;
+}

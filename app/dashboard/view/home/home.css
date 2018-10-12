@@ -54,7 +54,7 @@
     color: #e8e8e8;
 }
 .dash-mnav .nav-item:hover {
-    background-color: #5097e8;
+    color: #18f;
 }
 /* pc端样式 */
 .dash-sidebar {
@@ -69,8 +69,8 @@
     border-bottom: 1px solid #2d2d2d;
 }
 .dash-sidebar .logo img {
-    width: 150px;
-    padding-left: 10px;
+    width: 145px;
+    padding-left: 8px;
 }
 .dash-sidebar .logo .beta {
     height: 15px;
@@ -94,7 +94,8 @@
     color: #e8e8e8;
 }
 .dash-sidebar .nav-item.active {
-    background-color: #5097e8;
+    background-color: #18f;
+    background: linear-gradient(to right, #18f, #b0d0f0);
 }
 
 .dash-main {
