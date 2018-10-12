@@ -3,7 +3,10 @@ import icons from 'file-icons-js'
 import { uniqueId } from 'lodash'
 import * as TabActions from 'components/Tab/actions'
 import pluginStore from 'components/Plugins/store'
+import editorState from 'components/MonacoEditor/state'
 import tabStore from 'components/Tab/store'
+import Color from 'color'
+import { monacoThemeOptions } from '../settings'
 
 export function getActiveEditor () {
   const { EditorTabState } = mobxStore
@@ -18,7 +21,7 @@ export function openNewEditor (config) {
     contentType,
     editor: {
       filePath: path,
-      ...other,
+      ...other
     }
   })
 }
@@ -28,11 +31,10 @@ export async function registerLanguage (languageConf) {
   monaco.languages.register(contribution)
 
   monaco.languages.onLanguage(contribution.id, () => {
-    contribution.loader()
-      .then((mod) => {
-        monaco.languages.setMonarchTokensProvider(contribution.id, mod.language)
-        monaco.languages.setLanguageConfiguration(contribution.id, mod.conf)
-      })
+    contribution.loader().then((mod) => {
+      monaco.languages.setMonarchTokensProvider(contribution.id, mod.language)
+      monaco.languages.setLanguageConfiguration(contribution.id, mod.conf)
+    })
   })
 }
 
@@ -49,7 +51,7 @@ export function registerCustomEditorView (component, conf) {
       type: editorType,
       title,
       id: tabId,
-      innerProps: props,
+      innerProps: props
     })
     return tabId
   }
@@ -64,6 +66,117 @@ export function registerCustomEditorView (component, conf) {
   return {
     type,
     showEditorView,
-    dispose,
+    dispose
   }
+}
+
+export function removeEditorMountListener (fn) {
+  editorState.mountListeners = editorState.mountListeners.filter(f => f !== fn)
+}
+
+export function onDidEditorMount (fn) {
+  editorState.mountListeners.push(fn)
+  return () => {
+    removeEditorMountListener(fn)
+  }
+}
+
+export function defineTheme (name, themeData) {
+  if (monacoThemeOptions.includes(name)) {
+    throw new Error('theme name can\'t repeat')
+  }
+  monacoThemeOptions.push(name)
+  const transformedTheme = getTheme(themeData)
+  try {
+    monaco.editor.defineTheme(name, {
+      base: getBase(transformedTheme.type),
+      inherit: true,
+      colors: transformedTheme.colors,
+      rules: transformedTheme.rules
+    })
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function setTheme (name) {
+  if (monacoThemeOptions.includes(name)) {
+    monaco.editor.setTheme(name)
+  }
+}
+
+const sanitizeColor = (color) => {
+  if (!color) {
+    return color
+  }
+
+  if (/#......$/.test(color) || /#........$/.test(color)) {
+    return color
+  }
+
+  try {
+    return new Color(color).hexString()
+  } catch (e) {
+    return '#FF0000'
+  }
+}
+
+const colorsAllowed = ({ foreground, background }) => {
+  if (foreground === 'inherit' || background === 'inherit') {
+    return false
+  }
+
+  return true
+}
+
+const getTheme = (theme) => {
+  const { tokenColors = [], colors = {} } = theme
+  const rules = tokenColors
+    .filter(t => t.settings && t.scope && colorsAllowed(t.settings))
+    .reduce((acc, token) => {
+      const settings = {
+        foreground: sanitizeColor(token.settings.foreground),
+        background: sanitizeColor(token.settings.background),
+        fontStyle: token.settings.fontStyle
+      }
+
+      const scope =
+        typeof token.scope === 'string' ? token.scope.split(',').map(a => a.trim()) : token.scope
+
+      scope.map(s =>
+        acc.push({
+          token: s,
+          ...settings
+        })
+      )
+
+      return acc
+    }, [])
+
+  const newColors = colors
+  Object.keys(colors).forEach((c) => {
+    if (newColors[c]) return c
+
+    delete newColors[c]
+
+    return c
+  })
+
+  return {
+    colors: newColors,
+    rules,
+    type: theme.type
+  }
+}
+
+const getBase = (type) => {
+  if (type === 'dark') {
+    return 'vs-dark'
+  }
+
+  if (type === 'hc') {
+    return 'hc-black'
+  }
+
+  return 'vs'
 }

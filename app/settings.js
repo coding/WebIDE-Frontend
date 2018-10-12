@@ -66,33 +66,11 @@ const changeUITheme = (nextThemeId) => {
       monacoConfig.theme = 'vs-dark'
     }
   }
-  if (!window.themes) window.themes = {}
-  if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
-    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
-    .then((module) => {
-      const currentTheme = window.themes['@current']
-      if (currentTheme && currentTheme.unuse) currentTheme.unuse()
-      window.themes['@current'] = window.themes[nextThemeId] = module
-      module.use()
-      window.themeVariables.replace(
-       window.themes['@current'].locals || window.themes['@current'].default.locals
-     )
-    })
-  }
-
-  const editorTheme = EditorState.options.theme
-  if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
-    settings.appearance.syntax_theme.value = 'material'
-  } else if (nextThemeId === 'light' && (editorTheme === 'monokai' || editorTheme === 'material')) {
-    settings.appearance.syntax_theme.value = 'default'
-  }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  if (config.switchOldEditor && !nextSyntaxThemeId.startsWith('vs')) {
-    if (EditorState) EditorState.options.theme = nextSyntaxThemeId
-  }
+  monacoConfig.theme = nextSyntaxThemeId
 }
 
 const formatLocateName = (name) => {
@@ -236,8 +214,8 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: !config.switchOldEditor ? 'vs-dark' : 'material',
-      options: !config.switchOldEditor ? monacoThemeOptions : SyntaxThemeOptions,
+      value: 'vs-dark',
+      options: monacoThemeOptions,
       reaction: changeSyntaxTheme,
     },
     font_size: {
@@ -294,18 +272,6 @@ const settings = observable({
       },
       nopersist: true,
       onConfirm (value) {
-        config.switchOldEditor = value
-        /* eslint-disable */
-        const syntax_theme = settings.appearance.syntax_theme.value
-        const ui_theme = settings.appearance.ui_theme.value
-        if (!!value) {
-          if (ui_theme === 'dark' && syntax_theme !== 'material') {
-            settings.appearance.syntax_theme.value = 'material'
-          } else if (ui_theme === 'light' && syntax_theme !== 'default') {
-            settings.appearance.syntax_theme.value = 'default'
-          }
-        }
-        /* eslint-enable */
         localStorage.setItem('switchOldEditor', value)
         setTimeout(() => {
           window.location.reload()

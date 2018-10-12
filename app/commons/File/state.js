@@ -20,6 +20,7 @@ const state = observable({
   get root () {
     return this.entities.get(ROOT_PATH)
   },
+  createdListeners: [],
 })
 
 // state.entities.intercept((change) => {
@@ -43,6 +44,12 @@ class FileNode {
       })
     }
     state.entities.set(this.path, this)
+    // 文件创建钩子
+    if (state.createdListeners && state.createdListeners.length > 0) {
+      for (const createdListener of state.createdListeners) {
+        createdListener(this)
+      }
+    }
   }
 
   @action

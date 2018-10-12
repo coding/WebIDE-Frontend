@@ -14,5 +14,4 @@ export default observable({
   theme: 'vs-dark',
   glyphMargin: true,
   wordWrap: 'on',
-  formatOnType: true,
 })

@@ -1,10 +1,25 @@
 import { registerAction } from 'utils/actions'
 import { PluginRegistry } from 'utils/plugins'
 import { autorun, observable } from 'mobx'
+import { trim } from 'lodash'
 import config from 'config'
+import * as fileApi from 'backendAPI/fileAPI'
+import * as gitApi from 'backendAPI/gitAPI'
+import * as pluginApi from 'backendAPI/pluginAPI'
+// import * as terminalActions from 'components/Terminal/actions'
+// import * as TerminalState from 'components/Terminal/state'
 import store from './store'
 import api from '../../backendAPI'
 
+let TerminalState
+let terminalActions
+
+import('components/Terminal/state')
+  .then((module) => TerminalState = module.default)
+import('components/Terminal/actions')
+  .then((module) => terminalActions = module)
+
+const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 export const PLUGIN_REGISTER_VIEW = 'PLUGIN_REGISTER_VIEW'
 export const PLUGIN_UNREGISTER_VIEW = 'PLUGIN_UNREGISTER_VIEW'
@@ -211,6 +226,101 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
         // you can do other mapping such as status initialize in this callback
       callback(store.plugins.get(generateViewId), child, store)
     }
+  })
+})
+
+const wsUrl = config.wsURL
+const firstSlashIdx = wsUrl.indexOf('/', 8)
+const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
+const WORKSPACE_PATH = '/home/coding/workspace'
+
+/**
+ * 启动插件远程 hmr 服务
+ * 连接到远程 hmr 服务后首先加载一次插件
+ */
+export const startRemoteHMRServer = registerAction('plugin:mount', () => {
+  // 终端执行 yarn start，启动容器内用户插件 devserver
+  terminalActions.addTerminal({ cwd: `${WORKSPACE_PATH}${config._WORKSPACE_SUB_FOLDER_}` })
+  const socket = TerminalState.terminalManager.getSocket()
+  const execable = ['yarn', 'start']
+  const outputOnceHandler = (data) => {
+    if (trim(data.output) !== '') {
+      const terminal = TerminalState.activeTab.terminal
+      terminal.emit('data', execable.join(' '))
+      terminal.emit('data', '\r')
+      socket.off('shell.output', outputOnceHandler)
+    }
+  }
+  socket.on('shell.output', outputOnceHandler)
+
+  const devSocket = io.connect(host, {
+    forceNew: true,
+    reconnection: true,
+    autoConnect: true,     // <- will manually handle all connect/reconnect behavior
+    reconnectionDelay: 1500,
+    reconnectionDelayMax: 10000,
+    reconnectionAttempts: 5,
+    transports: ['websocket'],
+    path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect-other-service`,
+    query: {
+      port: 65000
+    }
+  })
+
+  devSocket.on('connect', () => {
+    console.log('插件开发hmr连接chenggong')
+    devSocket.emit('firstread')
+
+    let firstPending = true
+    devSocket.on('firstsend', ({ codingPackage, script }) => {
+      const packageUniqueName = `${codingPackage.name}_${codingPackage.version}`
+      const plugins = PluginRegistry.findAll(packageUniqueName)
+      if (!plugins || plugins.length === 0) {
+        try {
+          window.codingPackageJsonp.current = packageUniqueName
+          eval(`${script}`)
+          window.codingPackageJsonp.current = ''
+          const plugin = window.codingPackageJsonp.data[0]
+          console.log(plugin)
+          const { Manager = (() => null), key } = plugin
+          const manager = new Manager()
+          plugin.detaultInstance = manager
+          const getInfo = store.list.get(key || packageUniqueName) || {}
+          PluginRegistry.set(key || packageUniqueName, { ...plugin, pkgId: packageUniqueName, info: getInfo, loadType: 'Required' })
+          manager.pluginWillMount()
+          localStorage.setItem(packageUniqueName, script)
+          firstPending = false
+        } catch (e) {
+          console.log(e)
+        }
+      }
+
+      registerAction('plugin:unmount', () => {
+        togglePackage({ pkgId: packageUniqueName, shouldEnable: false })
+      })
+    })
+
+    devSocket.on('hmrfile', ({ codingPackage, script }) => {
+      const packageUniqueName = `${codingPackage.name}_${codingPackage.version}`
+      if (!firstPending) {
+        const plugins = PluginRegistry.findAll(packageUniqueName)
+        if (plugins && plugins.length > 0) {
+          plugins.forEach((plugin) => {
+            if (plugin.detaultInstance.pluginWillUnmount) {
+              plugin.detaultInstance.pluginWillUnmount()
+            }
+            PluginRegistry.delete(plugin.key)
+          })
+        }
+        localStorage.setItem(packageUniqueName, script)
+        togglePackage({ pkgId: packageUniqueName, shouldEnable: true, type: 'reload', data: null })
+      }
+    })
+  })
+
+  devSocket.on('change', (message) => {
+    const { codingIdePackage } = message
+    devSocket.emit('readfile', { name: codingIdePackage.name, version: codingIdePackage.version })
   })
 })
 

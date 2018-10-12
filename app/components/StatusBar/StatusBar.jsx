@@ -25,7 +25,7 @@ const StatusBar = observer(({ messages=[] }) => {
       {state.displayBar && <div className='status-progress'>
         <span></span>
       </div>}
-      <PluginArea position={STATUSBAR.WIDGET} />
+      <PluginArea className='status-bar-plugin-area' position={STATUSBAR.WIDGET} />
       <div className='status-widget-container right'>
         <EditorWidgets />
         <GitBranchWidget ref={com => window.refs.GitBranchWidget = com}

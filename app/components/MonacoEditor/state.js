@@ -18,7 +18,8 @@ import initialOptions from './monacoDefaultOptions'
 
 const state = observable({
   entities: observable.map({}),
-  options: observable.map({})
+  options: observable.map({}),
+  mountListeners: [],
 })
 
 const typeDetect = (title, types) => {
@@ -66,6 +67,13 @@ class EditorInfo {
         }
       }
     )
+
+    // 编辑器创建钩子
+    if (state.mountListeners && state.mountListeners.length > 0) {
+      for (const mountListener of state.mountListeners) {
+        mountListener(monacoEditor)
+      }
+    }
 
     this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''

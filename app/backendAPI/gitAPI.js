@@ -136,6 +136,7 @@ export function gitLogs (params = {}) {
       parentIds: c.parents,
       message: c.shortMessage,
       date: new Date(c.commitTime * 1000),
+      shortId: c.shortName,
     })))
     .catch(() => {})
 }

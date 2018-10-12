@@ -17,3 +17,15 @@ export function getFileNode (filePath) {
 export function getFileContent (filePath) {
   return fileApi.readFile(filePath)
 }
+
+
+export function removeFileNodeCreatedListener (fn) {
+  FileState.createdListeners = FileState.createdListeners.filter(f => f !== fn)
+}
+
+export function onDidFileNodeCreated (fn) {
+  FileState.createdListeners.push(fn)
+  return () => {
+    removeFileNodeCreatedListener(fn)
+  }
+}

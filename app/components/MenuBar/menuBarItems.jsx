@@ -240,6 +240,28 @@ const menuBarItems = observable([
         command: () => config.isFullScreen = !config.isFullScreen
       }
     ]
+  },
+  {
+    key: '插件',
+    widget: 60,
+    name: '插件',
+    items: [
+      {
+        key: 'plugin-mount',
+        name: '加载插件',
+        command: 'plugin:mount',
+      },
+      {
+        key: 'plugin-unmount',
+        name: '卸载插件',
+        command: 'plugin:unmount',
+      },
+      {
+        key: 'plugin-remount',
+        name: '重新加载插件',
+        command: 'plugin:remount',
+      }
+    ]
   }
 ])
 
