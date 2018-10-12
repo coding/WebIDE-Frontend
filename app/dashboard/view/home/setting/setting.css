@@ -26,6 +26,9 @@
     width: calc(100% - 70px);
     margin: 0 10px;
     font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .dash-sidebar .setting .caret {
     font-size: 16px;
@@ -33,7 +36,7 @@
 }
 .dash-sidebar .setting .setting-menu {
     width: 140px;
-    height: 136px;
+    height: 170px;
     border-radius: 3px;
     background-color: #333;
     box-shadow: 3px 0 30px rgba(0, 0, 0, .2);

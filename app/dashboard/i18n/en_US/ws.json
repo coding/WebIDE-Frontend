@@ -1,3 +1,9 @@
 {
-    "wsExisted": "Workspace {{ws}} already existed"
+    "wsExisted": "Workspace {{ws}} already existed",
+    "oldCoding": "Original Coding.net",
+    "limitTip": "Up to {{limit}} workspace limits, no more creations",
+    "inputProjectName": "Fill in the project name",
+    "inputWSName": "Fill in the workspace name",
+    "inputWSDesc": "Describe this workspace in one sentence",
+    "inputGitUrl": "Fill in the Git repository address"
 }

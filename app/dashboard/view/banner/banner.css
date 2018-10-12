@@ -4,6 +4,7 @@
     padding: 0 30px;
     line-height: 50px;
     border-bottom: 1px solid #2d2d2d;
+    font-weight: 700;
     color: #ccc;
     background-color: #333;
     position: fixed;
@@ -18,5 +19,5 @@
     color: #aaa;
 }
 .dash-banner .crumb:hover {
-    color: #5097e8;
+    color: #18f;
 }

@@ -24,8 +24,8 @@ class About extends Component {
                         <div className="beta">beta</div>
                     </div>
                     <div className="desc">
-                        <span className="version">V 3.0</span>
-                        <a href="/changelog" target="_blank" rel="noopener noreferrer">{i18n('global.viewChangelog')}</a>
+                        <span className="version">V3.0</span>
+                        <a href="/changelog" target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
                     </div>
                 </div>
                 <div className="below">
@@ -59,7 +59,7 @@ class About extends Component {
         const w = document.documentElement.clientWidth - 60;
         this.setState({
             width: w > 860 - 60 ? w - 200 : w,
-            height: document.documentElement.clientHeight - 60 - 60,
+            height: document.documentElement.clientHeight - 50 - 60,
         });
     }
 

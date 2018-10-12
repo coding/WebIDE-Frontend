@@ -1,3 +1,9 @@
 {
-    "wsExisted": "工作空间 {{ws}} 已存在"
+    "wsExisted": "工作空间 {{ws}} 已存在",
+    "oldCoding": "原 Coding.net",
+    "limitTip": "达到 {{limit}} 个工作空间上限，无法创建更多",
+    "inputProjectName": "填写项目名",
+    "inputWSName": "填写工作空间名",
+    "inputWSDesc": "一句话描述这个工作空间",
+    "inputGitUrl": "填写 Git 仓库地址"
 }

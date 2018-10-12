@@ -20,18 +20,18 @@ class Workspace extends Component {
 
     render() {
         const { workspaces, workspacesInvalid, opendSpaceKey, ready } = this.state;
-        const { hasWorkspaceOpend, switchMaskToOn, switchMaskToOff } = this.props;
+        const { hasWorkspaceOpend, showMask, hideMask } = this.props;
         return (
             <div className="dash-workspace">
                 <div className="created">
                     {workspaces.length > 0 && <div className="tip">{i18n('global.wsIntro')}</div>}
-                    <New isLimited={workspaces.length >= 5} />
+                    <New />
                     {
                         workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
                             hasWorkspaceOpend={hasWorkspaceOpend}
                             opendSpaceKey={opendSpaceKey}
-                            switchMaskToOn={switchMaskToOn}
-                            switchMaskToOff={switchMaskToOff}
+                            showMask={showMask}
+                            hideMask={hideMask}
                             handleFetch={this.handleFetch} />
                         )
                     }
@@ -41,14 +41,14 @@ class Workspace extends Component {
                     workspacesInvalid.length ? (
                         <div className="deleted-container">
                             <div className="caption">
-                                <div>{i18n('global.recentdeleted')} ({workspacesInvalid.length})</div>
+                                <div>{i18n('global.recentdeleted')}({workspacesInvalid.length})</div>
                                 <div className="tip">{i18n('global.deleteProjectTip')}</div>
                             </div>
                             <div className="deleted">
                                 {
                                     workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
-                                        switchMaskToOn={switchMaskToOn}
-                                        switchMaskToOff={switchMaskToOff}
+                                        showMask={showMask}
+                                        hideMask={hideMask}
                                         handleFetch={this.handleFetch} />
                                     )
                                 }
@@ -73,7 +73,7 @@ class Workspace extends Component {
     }
 
     handleFetchWS() {
-        const { handleNoWorkspaceOpend, handleHasWorkspaceOpend } = this.props;
+        const { handleNoWorkspaceOpend, handleHasWorkspaceOpend, storeWorkspace } = this.props;
         // 初始化
         handleNoWorkspaceOpend();
         api.getWorkspace().then(res => {
@@ -87,7 +87,7 @@ class Workspace extends Component {
                     ws.projectIconUrl = item.projectIconUrl;
                     ws.ownerName = item.userName;
                     // 无远端仓库有一个 workspaceName 字段
-                    ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName
+                    ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspaces.push(ws);
@@ -97,7 +97,7 @@ class Workspace extends Component {
                     }
                 }
                 this.setState({ workspaces, ready: true });
-                this.props.storeWorkspaceCount(workspaces.length);
+                storeWorkspace({ ws: workspaces, wsCount: workspaces.length });
             } else if (res.code === 401) {
                 window.top.postMessage({ path: '/intro' }, '*');
                 window.location.href = '/intro';
@@ -120,7 +120,8 @@ class Workspace extends Component {
                     ws.spaceKey = item.spaceKey;
                     ws.projectIconUrl = item.project.iconUrl;
                     ws.ownerName = item.project.ownerName;
-                    ws.projectName = item.project.name;
+                    // 无远端仓库有一个 workspaceName 字段
+                    ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
                     ws.lastModifiedDate = item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspacesInvalid.push(ws);
@@ -148,9 +149,9 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
     return {
-        switchMaskToOn: (payload) => dispatch({ type: 'SWITCH_MASK_TO_ON', payload }),
-        switchMaskToOff: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
-        storeWorkspaceCount: (payload) => dispatch({ type: 'STORE_WORKSPACE_COUNT', payload }),
+        showMask: (payload) => dispatch({ type: 'SWITCH_MASK_TO_ON', payload }),
+        hideMask: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
+        storeWorkspace: (payload) => dispatch({ type: 'STORE_WORKSPACE', payload }),
         handleHasWorkspaceOpend: () => dispatch({ type: 'HAS_WORKSPACE_OPEND' }),
         handleNoWorkspaceOpend: () => dispatch({ type: 'NO_WORKSPACE_OPEND' }),
     }

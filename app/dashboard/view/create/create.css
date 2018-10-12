@@ -1,3 +1,10 @@
+.dash-create .radio-option.radio-dev-platform {
+    position: relative;
+}
+.dash-create .radio-option.radio-dev-platform .dash-tooltip {
+    width: 160px;
+    text-align: center;
+}
 @media screen and (max-width: 860px) {
     .dash-create .com-board .board-label.none {
         padding-bottom: 0;
