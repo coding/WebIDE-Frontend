@@ -270,7 +270,7 @@ const settings = observable({
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'exclude_files', 'enable_new_editor'],
+    _keys: ['language', 'exclude_files'/*, 'enable_new_editor'*/],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -286,32 +286,32 @@ const settings = observable({
       reaction (value) {
         config.fileExcludePatterns = value.split(',')
       }
-    },
-    enable_new_editor: {
-      name: 'settings.general.switchOldEditor',
-      value: config.switchOldEditor,
-      reaction () {
-      },
-      nopersist: true,
-      onConfirm (value) {
-        config.switchOldEditor = value
-        /* eslint-disable */
-        const syntax_theme = settings.appearance.syntax_theme.value
-        const ui_theme = settings.appearance.ui_theme.value
-        if (!!value) {
-          if (ui_theme === 'dark' && syntax_theme !== 'material') {
-            settings.appearance.syntax_theme.value = 'material'
-          } else if (ui_theme === 'light' && syntax_theme !== 'default') {
-            settings.appearance.syntax_theme.value = 'default'
-          }
-        }
-        /* eslint-enable */
-        localStorage.setItem('switchOldEditor', value)
-        setTimeout(() => {
-          window.location.reload()
-        }, 200)
-      }
-    }
+    }//,
+    // enable_new_editor: {
+    //   name: 'settings.general.switchOldEditor',
+    //   value: config.switchOldEditor,
+    //   reaction () {
+    //   },
+    //   nopersist: true,
+    //   onConfirm (value) {
+    //     config.switchOldEditor = value
+    //     /* eslint-disable */
+    //     const syntax_theme = settings.appearance.syntax_theme.value
+    //     const ui_theme = settings.appearance.ui_theme.value
+    //     if (!!value) {
+    //       if (ui_theme === 'dark' && syntax_theme !== 'material') {
+    //         settings.appearance.syntax_theme.value = 'material'
+    //       } else if (ui_theme === 'light' && syntax_theme !== 'default') {
+    //         settings.appearance.syntax_theme.value = 'default'
+    //       }
+    //     }
+    //     /* eslint-enable */
+    //     localStorage.setItem('switchOldEditor', value)
+    //     setTimeout(() => {
+    //       window.location.reload()
+    //     }, 200)
+    //   }
+    // }
   }),
 
   editor: new DomainSetting({
