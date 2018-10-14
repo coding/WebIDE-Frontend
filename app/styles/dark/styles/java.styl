@@ -1,3 +1,22 @@
 .modals-container .project-config-container .form-line .fa-folder-o {
   border-color: $tab-bar-border-color;
 }
+
+.project-config-container {
+  .form-line {
+    display: flex;
+    .form-control {
+      flex: 1;
+      border-radius: 4px 0px 0px 4px;
+    }
+    .fa-folder-o {
+      padding: 9px;
+      border: 1px solid #ccc;
+      border-radius: 0px 4px 4px 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      border-left: none;
+      cursor: pointer;
+    }
+  }
+}
