@@ -3,7 +3,7 @@ import { createStore, combineReducers } from 'redux';
 import { switchLanguageReducer } from './view/config/reducer';
 import { notifyReducer } from './share/notify/reducer';
 import { switchMaskReducer } from './view/mask/reducer';
-import { switchLoadingReducer } from './share/loading/reducer';
+import { switchLoadingReducer } from './view/loading/reducer';
 import { userReducer } from './view/home/setting/reducer';
 import { workspaceReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
 import { switchMbarReducer } from './share/stripe/reducer';

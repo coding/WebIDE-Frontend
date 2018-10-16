@@ -12,19 +12,19 @@ class Card extends Component {
     render() {
         const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
         const stopOption = {
-            message: i18n('global.stopTip'),
+            message: i18n('ws.stopNotice'),
             isWarn: true,
             okText: i18n('global.stop'),
             okHandle: this.handleStop,
         }
         const deleteOption = {
-            message: i18n('global.deleteTip'),
+            message: i18n('ws.deleteNotice'),
             isWarn: true,
             okText: i18n('global.delete'),
             okHandle: this.handleDelete,
         }
         const restoreOption = {
-            message: i18n('global.restoreTip'),
+            message: i18n('ws.restoreNotice'),
             isWarn: false,
             okText: i18n('global.restore'),
             okHandle: this.handleRestore,
@@ -131,7 +131,7 @@ class Card extends Component {
 const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children }) => {
     const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
-        message: i18n('global.hasWorkspaceOpendTip'),
+        message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,
         cancelText: i18n('global.ok'),
         okText: i18n('global.stop'),

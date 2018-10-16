@@ -2,7 +2,7 @@
     position: relative;
 }
 .dash-create .radio-option.radio-dev-platform .dash-tooltip {
-    width: 160px;
+    width: 130px;
     text-align: center;
 }
 @media screen and (max-width: 860px) {
@@ -13,7 +13,7 @@
         content: none;
     }
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 540px) {
     .dash-create .com-board .board-content.radio {
         flex-wrap: wrap;
     }

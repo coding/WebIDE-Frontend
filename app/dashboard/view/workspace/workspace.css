@@ -1,18 +1,14 @@
-.dash-workspace .created,
-.dash-workspace .deleted {
+.dash-workspace .container {
     display: flex;
     flex-wrap: wrap;
+    margin: 0 -10px;
 }
 .dash-workspace .created .tip {
-    width: 100%;
     margin-bottom: 20px;
     color: #757575;
 }
-.dash-workspace .deleted {
-    padding-top: 20px;
-}
-.dash-workspace .caption {
-    padding-top: 30px;
+.dash-workspace .deleted .caption {
+    padding: 30px 0 20px;
 }
 .dash-workspace .caption .tip {
     margin-top: 10px;

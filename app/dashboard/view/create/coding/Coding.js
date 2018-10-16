@@ -37,7 +37,7 @@ class Coding extends Component {
             <div>
                 {type === 2 && (
                     <div className="com-board">
-                        <div className="board-label">{i18n('global.projectName')}*</div>
+                        <div className="board-label">{i18n('ws.projectName')}*</div>
                         <div className="board-content">
                             <Inbox holder="ws.inputProjectName" value={projectName} onChange={this.handleProjectName} />
                             <div className="input-tip">{i18n('global.inputTip')}</div>
@@ -49,8 +49,8 @@ class Coding extends Component {
                     <div className="board-content project">
                         <div className="project-head">
                             <div className="project-head-left">
-                                <div className={`item${type === 1 ? ' active' : ''}`} onClick={() => this.handleType(1)}>{i18n('global.existingProject')}</div>
-                                <div className={`item${type === 2 ? ' active' : ''}`} onClick={() => this.handleType(2)}>{i18n('global.templateProject')}</div>
+                                <div className={`item${type === 1 ? ' active' : ''}`} onClick={() => this.handleType(1)}>{i18n('ws.existingProject')}</div>
+                                <div className={`item${type === 2 ? ' active' : ''}`} onClick={() => this.handleType(2)}>{i18n('ws.templateProject')}</div>
                             </div>
                             {type === 1 && (
                                 <div className="project-head-right">
@@ -59,7 +59,7 @@ class Coding extends Component {
                                         isSync ? (
                                             <div className="sync">
                                                 <span><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
-                                                <ToolTip on={true} message={i18n('global.syncTip')} placement="right" />
+                                                <ToolTip on={true} message={i18n('ws.syncTip')} placement="right" />
                                             </div>
                                         ) : (
                                             <div className="sync" onClick={this.handleSync}>
@@ -79,7 +79,7 @@ class Coding extends Component {
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : i18n('global.noProject')
+                                    ) : i18n('ws.noProject')
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}
@@ -99,10 +99,10 @@ class Coding extends Component {
                             *
                             <span className="coding-env-tooltip">
                                 <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
-                                <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('global.envTip') : ''} placement="left" />
+                                <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.envTip') : ''} placement="left" />
                             </span>
                         </div>
-                        <div className="board-content env">
+                        <div className="board-content negative-margin env">
                             {
                                 envs.length ? (
                                     envs.map(env => <EnvCard key={env.name} {...env}
@@ -192,7 +192,7 @@ class Coding extends Component {
             ownerName: ownerName || globalKey,
             projectName,
         };
-        showLoading({ message: i18n('global.creatingWS') });
+        showLoading({ message: i18n('ws.creatingWS') });
         if (type === 1) {
             workspaceOption.envId = envId;
             // 查询该 project 是否创建过 workspace
