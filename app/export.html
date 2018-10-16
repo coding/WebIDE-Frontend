@@ -47,6 +47,7 @@
       font-size: 14px;
       margin-top: 20px;
       line-height: 24px;
+      letter-spacing: 1px;
     }
 
     .intro a {
@@ -124,9 +125,9 @@
       border: 1px solid #515F72;
       display: flex;
       width: 300px;
-      height: 80px;
       margin-bottom: 15px;
       cursor: pointer;
+      align-items: center;
     }
 
     .card .avatar {
@@ -140,6 +141,7 @@
     }
 
     .card .mask {
+      align-self: start;
       margin-top: -10.5px;
       margin-right: -11px;
       width: 34px;
@@ -178,13 +180,13 @@
       flex-wrap: wrap;
       padding: 15px;
       padding-bottom: 0;
-      height: 300px;
       justify-content: space-between;
       border: 1px solid #515F72;
       border-radius: 2px;
       margin-top: 8px;
       /*overflow-y: scroll;*/
       align-content: start;
+      min-height: 300px
     }
 
     .list .list-header {
@@ -218,8 +220,9 @@
   <script src="//cdn.staticfile.org/mithril/1.1.6/mithril.min.js"></script>
   <script>
     var STATIC_PATH = '<%= webpackConfig.output.publicPath %>static/export/'
-    var BASE_URL = 'http://dev.coding.ide/'
+    var BASE_URL = 'http://test.coding.ide/backend/'
     var IMG_URL = 'https://coding.net'
+    var REDIRECT_URL = 'https://ide.coding.net/index'
 
     var wsList = []
     var tip = '导出成功！'
@@ -235,9 +238,38 @@
 
     var formatDate = function(ms) {
       var date = new Date(ms)
+      var minutes = date.getMinutes()
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+
       return date.getFullYear() + '-' + (date.getMonth() + 1)
         + '-' + date.getDate() + ' ' + date.getHours() + ':'
-        + date.getMinutes()
+        + minutes
+    }
+
+    var ajax = function(fn, url, accept) {
+      var xhr = new XMLHttpRequest()
+
+      xhr.open('GET', url, true)
+      xhr.withCredentials = true
+
+      xhr.setRequestHeader('Accept', 'application/vnd.coding.v2+json')
+
+      if (accept) {
+        // xhr.setRequestHeader('Accept-Encoding', 'gzip, deflate')
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        xhr.setRequestHeader('Accept-Language', 'zh-CN,zh;q=0.9,en;q=0.8')
+        xhr.responseType = 'blob'
+      }
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          fn(xhr)
+        }
+      }
+
+      return xhr.send()
     }
 
     var handleExport = function(error, el) {
@@ -246,6 +278,7 @@
       btnName = error ? '重新导出' : '再次导出'
       isError = error
       canShowTip = true
+      m.redraw()
 
       setTimeout(function() {
         canShowTip = false
@@ -265,21 +298,23 @@
               m('div', {
                   class: 'intro'
               },[
-                m('span', '尊敬的用户，'),
-                m('br'),
                 m('span', '为了优化 Cloud Studio 运行的基础设施，给用户提供体验更好、更稳定的产品服务， Cloud Studio 现已在'),
                 m('a', { href: 'https://dev.tencent.com/'}, '腾讯云开发者平台'),
                 m('span', '中全面升级，用户可长期免费使用。升级后，此版本后续不再做功能升级及维护。为避免影响您的后续使用，建议您将该版本数据导出，并迁移至新版'),
                 m('a', { href: 'https://studio.dev.tencent.com/intro' }, ' Cloud Studio'),
                 m('span', '，迁移教程可参考'),
-                m('a', { href: '#' }, '这里'),
+                m('a', { href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate' }, '这里'),
                 m('span', '。'),
+                m('br'),
                 m('br'),
                 m('span', '如您已在 Cloud Studio 付费购买小主机，我们将在 2018 年 10 月 30 日（日期可能变动）前将已使用的金额返还至您的腾讯云账户中：'),
                 m('br'),
-                m('span', '已支付现金部分，全额退还到您的腾讯云账户中，您可操作提现；'),
                 m('br'),
-                m('span', '已使用的代金券部分，返还等额通用代金券，发放于您的腾讯云账户中。'),
+                m('strong', [
+                  m('span', '已支付现金部分，全额退还到您的腾讯云账户中，您可操作提现；'),
+                  m('br'),
+                  m('span', '已使用的代金券部分，返还等额通用代金券，发放于您的腾讯云账户中。')
+                ]),
                 m('br'),
                 m('br'),
                 m('span', '如给您造成了不便，敬请谅解。我们将在新的平台，给您提供更优质的服务。感谢您的理解和支持。')
@@ -295,30 +330,12 @@
     }
 
     var List = {
-      oninit: function() {
-        return m.request({
-          method: 'GET',
-          url: BASE_URL + 'workspaces'
-        })
-        .then(function(result) {
-          var lists = result.contents
-          if (lists) {
-            lists.map(function(item) {
-              var project = item.project
-              wsList.push({
-                spaceKey: item.spaceKey,
-                name: project.ownerName + '/' + project.name,
-                time: formatDate(item.lastModifiedDate),
-                checked: true,
-                img: IMG_URL + project.iconUrl
-              })
-            })
-          }
-        })
-      },
-      onupdate: function() {
+      oncreate: function() {
+        var listGroup = document.getElementsByClassName('list-group')[0]
         // Set scrollbar
-        if (wsList.length > 6) {
+        if (listGroup.getClientRects()[0].height > 300) {
+          listGroup.style.height = '300px'
+          listGroup.style.overflowY = 'scroll'
           var style = document.createElement('style')
           style.innerText = '::-webkit-scrollbar{ width: 6px; }'
           document.head.append(style)
@@ -347,7 +364,12 @@
                     type: 'checkbox',
                     checked: checked,
                     id: 'checkList',
+                    style: {
+                      cursor: showLoading ? 'not-allowed' : 'pointer'
+                    },
                     onchange: function (e) {
+                      if (showLoading) return
+
                       checked = checked === 'checked' ? '' 
                               : 'checked'
 
@@ -356,14 +378,16 @@
                       }
                     }
                   }),
-                  m('label', { for: 'checkList' }, '选择全部')
+                  m('label', {
+                    for: 'checkList',
+                    style: {
+                      cursor: showLoading ? 'not-allowed' : 'pointer'
+                    }
+                 }, '选择全部')
                 ])
               ]),
               m('div', { 
-                class: 'list-group',
-                style: {
-                  overflowY: wsList.length > 6 ? 'scroll' : ''
-                }
+                class: 'list-group'
               }, 
                 wsList.map(function(item) {
                   return m(Card, { 
@@ -390,7 +414,7 @@
 
                 el.className += ' disable'
                 btnName = '正在导出...'
-                // showLoading = true
+                showLoading = true
 
 
                 var exportList = []
@@ -401,21 +425,40 @@
                   }
                 }
 
-                m.request({
-                  method: 'GET',
-                  url: BASE_URL
-                    + 'workspaces/packing?spaceKeys=' + exportList.join(',')
-                })
-                .then(function(result){
-                  if (result.code = '-1') {
-                    handleExport(true, el)
-                  } else {
-                    handleExport(false, el)
-                  }
-                })
-                .catch(function(e) {
-                  handleExport(true, el)
-                }) 
+                var downloadURL = BASE_URL + 'workspaces/packing?spaceKeys=' + exportList.join(',')
+                ajax(function(xhr) {
+                  showLoading = false
+
+                  var reader = new FileReader()
+                  reader.addEventListener('load', function () {
+                    try {
+                      var res = JSON.parse(this.result)
+                      if (res.code === -1) {
+                        handleExport(true, el)
+                      }
+                    } catch (e) {
+                      var aLink = document.createElement('a')
+                      aLink.setAttribute('type', 'hidden')
+                      
+                      if (exportList.length > 1) {
+                        aLink.download = wsList[0].ownerName + '.tar.gz'
+                      } else {
+                        aLink.download = exportList[0] + '.tar.gz'
+                      }
+
+                      aLink.href = URL.createObjectURL(xhr.response)
+
+                      document.body.appendChild(aLink)
+                      aLink.click()
+                      aLink.remove()
+
+                      handleExport(false, el)
+                    }
+                  }, false)
+
+                  reader.readAsText(xhr.response)
+
+                }, downloadURL, true)
               }
             }, [
               showLoading ? m('img', { src: warpPath('loading.svg') }) : ''
@@ -437,7 +480,12 @@
       view: function(vnode) {
         return m('div', {
           class: 'card',
+          style: {
+            cursor: showLoading ? 'not-allowed' : 'pointer'
+          },
           onclick: function() {
+            if (showLoading) return
+
             wsList.map(function(item, i) {
               if (item.spaceKey === vnode.attrs.spaceKey) {
                 var tmpChecked = wsList[i].checked
@@ -492,11 +540,38 @@
       }
     }
 
-    m.route.prefix('?')
-    m.route(document.body, '/home', {
-      '/list': List,
-      '/home': Home,
-    })
+    try{
+      ajax(function(xhr) {
+        var result = JSON.parse(xhr.responseText)
+        if (result.contents && result.contents.length) {
+          var lists = result.contents
+
+          lists.map(function(item) {
+            var project = item.project
+            var iconUrl = project.iconUrl
+
+            wsList.push({
+              spaceKey: item.spaceKey,
+              name: item.owner.globalKey + '/' + project.name,
+              time: formatDate(item.lastModifiedDate),
+              checked: true,
+              img: iconUrl.includes('http') ? iconUrl : IMG_URL + iconUrl,
+              ownerName: item.owner.globalKey
+            })
+          })
+
+          m.route.prefix('?')
+          m.route(document.body, '/home', {
+            '/list': List,
+            '/home': Home,
+          })
+        } else {
+          location.href = REDIRECT_URL
+        }
+      }, BASE_URL + 'workspaces?page=0&size=5&sort=lastModifiedDate,desc')
+    } catch (e) {
+      location.href = REDIRECT_URL
+    }
   </script>
 </body>
 </html>
