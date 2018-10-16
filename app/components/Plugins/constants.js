@@ -24,7 +24,8 @@ export const TERMINAL = {
 
 // 打开特定文件的编辑器插件
 export const EDITOR = {
-  CENTER: 'EDITOR.CENTER'
+  CENTER: 'EDITOR.CENTER',
+  VIEW: 'EDITOR.VIEW',
 }
 
 // 底部状态栏

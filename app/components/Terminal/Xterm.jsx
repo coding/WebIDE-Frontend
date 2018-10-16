@@ -12,7 +12,7 @@ import { emitter, E } from 'utils'
 import TerminalManager from './terminal-client'
 import * as TabActions from 'components/Tab/actions'
 import SettingState from 'components/Setting/state'
-import TerminalState from './state'
+import state, { terminalState } from './state'
 
 const DARK_THEME = {
   foreground: '#FFF',
@@ -40,7 +40,7 @@ class Term extends Component {
     const _this = this
     _this.props.tab.title = 'Shell'
     const terminalManager = new TerminalManager()
-    TerminalState.terminalManager = terminalManager
+    state.terminalManager = terminalManager
     const uiTheme = SettingState.settings.appearance.ui_theme.value
     let theme = BRIGHT_THEME
     if (uiTheme === 'dark') {
@@ -114,12 +114,18 @@ class Term extends Component {
       _this.props.tab.title = title
     }, 300))
     this.props.tab.onActive = this.onActive
+
+    if (terminalState.didOpenListeners && terminalState.didOpenListeners.length > 0) {
+      for (const didOpenListener of terminalState.didOpenListeners) {
+        didOpenListener(terminal)
+      }
+    }
   }
 
   componentWillUnmount () {
     emitter.removeListener(E.PANEL_RESIZED, this.onResize)
     emitter.removeListener(E.THEME_CHANGED, this.onTheme)
-    TerminalState.terminalManager.remove(this.terminal)
+    state.terminalManager.remove(this.terminal)
   }
 
   render () {

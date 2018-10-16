@@ -1,7 +1,7 @@
 import uniqueId from 'lodash/uniqueId'
 import React from 'react'
 import { render } from 'react-dom'
-import { observe, observable, computed, action, extendObservable } from 'mobx'
+import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
 
@@ -16,10 +16,17 @@ import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
 
+reaction(() => initialOptions.theme, (theme) => {
+  monaco.editor.setTheme(theme)
+})
+
 const state = observable({
   entities: observable.map({}),
   options: observable.map({}),
   mountListeners: [],
+  activeMonacoEditor: null,
+  editors: new Map(),
+  activeEditorListeners: [],
 })
 
 const typeDetect = (title, types) => {
@@ -67,6 +74,19 @@ class EditorInfo {
         }
       }
     )
+
+    state.activeMonacoEditor = monacoEditor
+
+    state.editors.set(this.uri, monacoEditor)
+
+    monacoEditor.onDidFocusEditorText(() => {
+      state.activeMonacoEditor = monacoEditor
+      if (state.activeEditorListeners && state.activeEditorListeners.length > 0) {
+        for (const activeEditorListener of state.activeEditorListeners) {
+          activeEditorListener({ uri: this.uri, editor: monacoEditor })
+        }
+      }
+    })
 
     // 编辑器创建钩子
     if (state.mountListeners && state.mountListeners.length > 0) {

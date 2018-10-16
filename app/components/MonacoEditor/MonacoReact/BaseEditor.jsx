@@ -38,11 +38,6 @@ class MonacoEditor extends React.PureComponent {
 
     const model = monaco.editor.getModel(this.editor.uri)
 
-    reaction(() => initialOptions.theme, (theme) => {
-      console.log(theme)
-      monaco.editor.setTheme(theme)
-    })
-
     reaction(() => initialOptions.tabSize, (tabSize) => {
       if (model) {
         model.updateOptions({

@@ -70,7 +70,12 @@ const changeUITheme = (nextThemeId) => {
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  monacoConfig.theme = nextSyntaxThemeId
+  if (monacoThemeOptions.includes(nextSyntaxThemeId)) {
+    monacoConfig.theme = nextSyntaxThemeId
+  } else {
+    const uiTheme = settings.appearance.ui_theme.value
+    monacoConfig.theme = `vs-${uiTheme}`
+  }
 }
 
 const formatLocateName = (name) => {

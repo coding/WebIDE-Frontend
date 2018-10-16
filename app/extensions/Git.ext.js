@@ -9,7 +9,8 @@ export function gitRefs () {
 }
 
 export function gitFileContentWithRef (params) {
-  return gitApi.gitReadFile(params)
+  const { filePath, ref } = params
+  return gitApi.gitReadFile({ path: filePath, ref })
 }
 
 export function gitFileDiffWithRef (params) {

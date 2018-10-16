@@ -9,6 +9,6 @@ export function registerCommand (commandType, handler) {
   })
 }
 
-export function dispatchCommand (commandType, data) {
+export function executeCommand (commandType, data) {
   dispatcher.default(commandType, data)
 }

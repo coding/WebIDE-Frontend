@@ -1,6 +1,6 @@
 import mobxStore from 'mobxStore'
 import icons from 'file-icons-js'
-import { uniqueId } from 'lodash'
+import { uniqueId, isArray, isFunction } from 'lodash'
 import * as TabActions from 'components/Tab/actions'
 import pluginStore from 'components/Plugins/store'
 import editorState from 'components/MonacoEditor/state'
@@ -64,7 +64,7 @@ export function registerCustomEditorView (component, conf) {
   }
   pluginStore.editorViews.set(type, { type, component, dispatch: showEditorView, dispose })
   return {
-    type,
+    editorType: type,
     showEditorView,
     dispose
   }
@@ -81,29 +81,6 @@ export function onDidEditorMount (fn) {
   }
 }
 
-export function defineTheme (name, themeData) {
-  if (monacoThemeOptions.includes(name)) {
-    throw new Error('theme name can\'t repeat')
-  }
-  monacoThemeOptions.push(name)
-  const transformedTheme = getTheme(themeData)
-  try {
-    monaco.editor.defineTheme(name, {
-      base: getBase(transformedTheme.type),
-      inherit: true,
-      colors: transformedTheme.colors,
-      rules: transformedTheme.rules
-    })
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-export function setTheme (name) {
-  if (monacoThemeOptions.includes(name)) {
-    monaco.editor.setTheme(name)
-  }
-}
 
 const sanitizeColor = (color) => {
   if (!color) {
@@ -179,4 +156,53 @@ const getBase = (type) => {
   }
 
   return 'vs'
+}
+
+export function defineTheme (name, themeData) {
+  if (monacoThemeOptions.includes(name)) {
+    throw new Error(`${name} is already exits`)
+  }
+  const transformedTheme = getTheme(themeData)
+  monacoThemeOptions.push(name)
+  try {
+    monaco.editor.defineTheme(name, {
+      base: getBase(transformedTheme.type),
+      inherit: true,
+      colors: transformedTheme.colors,
+      rules: transformedTheme.rules
+    })
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function setTheme (name) {
+  if (monacoThemeOptions.includes(name)) {
+    monaco.editor.setTheme(name)
+  }
+}
+
+export function registerActiveEditorChangeHandler (fn) {
+  editorState.activeEditorListeners.push(fn)
+  return () => {
+    editorState.activeEditorListeners = editorState.activeEditorListeners.filter(f => f !== fn)
+  }
+}
+
+function _registerCodeSnippets (language, snippetsProvider) {
+  monaco.languages.registerCompletionItemProvider(language, {
+    provideCompletionItems: function () {
+      return isFunction(snippetsProvider) ? snippetsProvider() : snippetsProvider
+    }
+  })
+}
+
+export function registerCodeSnippetsProvider (languages, snippetsProvider) {
+  if (isArray(languages)) {
+    for (const lang of languages) {
+      _registerCodeSnippets(lang, snippetsProvider)
+    }
+  } else {
+    _registerCodeSnippets(languages, snippetsProvider)
+  }
 }

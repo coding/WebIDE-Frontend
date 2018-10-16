@@ -11,7 +11,15 @@ const store = {
   }
 }
 
+const pluginDevStore = observable({
+  progress: null,
+  infomation: null,
+  online: false,
+})
+
 // for test
 window.pluginStore = store
+
+export { pluginDevStore }
 
 export default store
