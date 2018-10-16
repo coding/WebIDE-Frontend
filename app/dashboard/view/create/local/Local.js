@@ -24,15 +24,15 @@ class Local extends Component {
         return (
             <div>
                 <div className="com-board">
-                    <div className="board-label">{i18n('global.workspaceName')}*</div>
+                    <div className="board-label">{i18n('ws.workspaceName')}*</div>
                     <div className="board-content">
                         <Inbox holder="ws.inputWSName" value={workspaceName} onChange={this.handleWorkspaceName} />
                         <div className="input-tip">{i18n('global.inputTip')}</div>
                     </div>
                 </div>
-                <div className="com-board">
+                <div className="com-board short-padding">
                     <div className="board-label">{i18n('global.template')}*</div>
-                    <div className="board-content env">
+                    <div className="board-content negative-margin env">
                         {
                             templates.length ? (
                                 templates.map(item => <TemplateCard key={item.id} {...item}
@@ -80,7 +80,7 @@ class Local extends Component {
             //desc,
             templateId,
         }
-        showLoading({ message: i18n('global.creatingWS') });
+        showLoading({ message: i18n('ws.creatingWS') });
         api.createWorkspaceV2(option).then(res => {
             hideLoading();
             if (!res.code) {

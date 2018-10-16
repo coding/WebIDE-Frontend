@@ -10,7 +10,7 @@ import store from './dashboard/store';
 
 import Home from './dashboard/view/home';
 import Mask from './dashboard/view/mask';
-import Loading from './dashboard/share/loading';
+import Loading from './dashboard/view/loading';
 import Notification from 'components/Notification';
 
 ReactDOM.render(

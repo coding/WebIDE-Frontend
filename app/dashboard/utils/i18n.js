@@ -5,7 +5,7 @@ import zh_CN from '../i18n/zh_CN';
 import en_US from '../i18n/en_US';
 import is from './is';
 
-const slotReg = /{{(.+?)}}/g;
+const slotReg = /{{([a-z]+)}}/gi;
 
 const compileTemplate = (template, slot, dict, language) => {
     const chain = template.split('.');

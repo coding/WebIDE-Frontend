@@ -1,0 +1,15 @@
+.dash-workspace .intro {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 30px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #3b3b3b;
+}
+.dash-workspace .intro .title {
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+.dash-workspace .intro .line:last-child {
+    padding-top: 5px;
+}

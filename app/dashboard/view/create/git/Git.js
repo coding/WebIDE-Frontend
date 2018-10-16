@@ -41,10 +41,10 @@ class Git extends Component {
                         *
                         <span className="git-env-tooltip">
                             <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
-                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('global.envTip') : ''} placement="left" />
+                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.envTip') : ''} placement="left" />
                         </span>
                     </div>
-                    <div className="board-content env">
+                    <div className="board-content negative-margin env">
                         {
                             envs.length ? (
                                 envs.map(env => <EnvCard key={env.name} {...env}
@@ -96,7 +96,7 @@ class Git extends Component {
             url,
             envId,
         }
-        showLoading({ message: i18n('global.creatingWS') });
+        showLoading({ message: i18n('ws.creatingWS') });
         api.cloneWorkspace(option).then(res => {
             hideLoading();
             if (res.code === 0) {

@@ -5,6 +5,7 @@ import './workspace.css';
 
 import i18n from '../../utils/i18n';
 import api from '../../api';
+import Intro from './intro';
 import Card from './card';
 import New from './new';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
@@ -20,31 +21,33 @@ class Workspace extends Component {
 
     render() {
         const { workspaces, workspacesInvalid, opendSpaceKey, ready } = this.state;
-        const { hasWorkspaceOpend, showMask, hideMask } = this.props;
+        const { wsLimit, hasWorkspaceOpend, showMask, hideMask } = this.props;
         return (
             <div className="dash-workspace">
+                {ready && !workspaces.length && !workspacesInvalid.length && <Intro />}
                 <div className="created">
-                    {workspaces.length > 0 && <div className="tip">{i18n('global.wsIntro')}</div>}
-                    <New />
-                    {
-                        workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                            hasWorkspaceOpend={hasWorkspaceOpend}
-                            opendSpaceKey={opendSpaceKey}
-                            showMask={showMask}
-                            hideMask={hideMask}
-                            handleFetch={this.handleFetch} />
-                        )
-                    }
+                    {workspaces.length > 0 && <div className="tip">{i18n('ws.wsTip', { limit: wsLimit })}</div>}
+                    <div className="container">
+                        <New />
+                        {
+                            workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                                hasWorkspaceOpend={hasWorkspaceOpend}
+                                opendSpaceKey={opendSpaceKey}
+                                showMask={showMask}
+                                hideMask={hideMask}
+                                handleFetch={this.handleFetch} />
+                            )
+                        }
+                    </div>
                 </div>
-                {ready && !workspaces.length && !workspacesInvalid.length && <div className="tip">{i18n('global.noWorkspaceHint')}</div>}
                 {
                     workspacesInvalid.length ? (
-                        <div className="deleted-container">
+                        <div className="deleted">
                             <div className="caption">
-                                <div>{i18n('global.recentdeleted')}({workspacesInvalid.length})</div>
-                                <div className="tip">{i18n('global.deleteProjectTip')}</div>
+                                <div>{i18n('global.recentdeleted')} ({workspacesInvalid.length})</div>
+                                <div className="tip">{i18n('ws.deletedWSTip')}</div>
                             </div>
-                            <div className="deleted">
+                            <div className="container">
                                 {
                                     workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
                                         showMask={showMask}
@@ -85,7 +88,7 @@ class Workspace extends Component {
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
                     ws.projectIconUrl = item.projectIconUrl;
-                    ws.ownerName = item.userName;
+                    ws.ownerName = item.ownerName;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
                     ws.lastModifiedDate = item.lastModifiedDate;
@@ -144,7 +147,10 @@ class Workspace extends Component {
 }
 
 const mapState = (state) => {
-    return { hasWorkspaceOpend: state.hasWorkspaceOpend };
+    return {
+        wsLimit: state.wsState.wsLimit,
+        hasWorkspaceOpend: state.hasWorkspaceOpend,
+    };
 }
 
 const mapDispatch = (dispatch) => {

@@ -23,7 +23,6 @@ class Setting extends Component {
                 </div>
                 <div className="setting-menu">
                     <Link className="menu-item" to="/dashboard/about">{i18n('global.about')}</Link>
-                    <Link className="menu-item" to="/dashboard/readme">README</Link>
                     <a className="menu-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">{i18n('global.devPlatform')}</a>
                     <a className="menu-item" href="https://dev.tencent.com/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">{i18n('global.docs')}</a>
                     <a className="menu-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer">{i18n('global.feedback')}</a>

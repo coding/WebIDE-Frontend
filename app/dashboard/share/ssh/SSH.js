@@ -23,7 +23,7 @@ class SSH extends Component {
         return (
             <div className="com-ssh">
                 <div className="ssh-tip">
-                    {i18n('global.sshTip')}
+                    {i18n('ws.sshTip')}
                     <a href="https://dev.tencent.com/help/cloud-studio/how-to-add-ssh" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
                 </div>
                 <div className="ssh-content">

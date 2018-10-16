@@ -44,7 +44,7 @@
     z-index: 30;
 }
 .dash-mnav.on {
-    height: 280px;
+    height: 260px;
 }
 .dash-mnav .nav-item {
     width: 100%;
@@ -95,7 +95,6 @@
 }
 .dash-sidebar .nav-item.active {
     background-color: #18f;
-    background: linear-gradient(to right, #18f, #b0d0f0);
 }
 
 .dash-main {
@@ -125,5 +124,8 @@
     .dash-main {
         width: 100%;
         height: auto;
+    }
+    .dash-main .dash-view {
+        padding: 20px;
     }
 }

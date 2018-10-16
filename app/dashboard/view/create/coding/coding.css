@@ -1,7 +1,7 @@
 .com-board .project-head {
     display: flex;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 14px;
     border: 1px solid #444;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -22,7 +22,7 @@
     margin-right: 10px;
 }
 .com-board .project-head-right .sync {
-    width: 70px;
+    width: 60px;
     text-align: right;
     color: #18f;
     cursor: pointer;
@@ -50,8 +50,8 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    max-height: 240px;
-    padding: 15px 0 15px 15px;
+    max-height: 236px;
+    padding: 14px 7px 14px;
     border-left: 1px solid #444;
     border-right: 1px solid #444;
     border-bottom: 1px solid #444;
@@ -71,8 +71,13 @@
     width: 220px;
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 960px) {
     .com-board .project-head-right {
         display: none;
+    }
+}
+@media screen and (max-width: 860px) {
+    .com-board .project-body {
+        padding: 14px;
     }
 }

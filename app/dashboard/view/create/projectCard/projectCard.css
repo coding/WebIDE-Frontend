@@ -1,5 +1,5 @@
 .dash-create .project-card {
-    width: calc(25% - 15px);
+    width: calc(25% - 14px);
     height: 60px;
 }
 .dash-create .project-card .avatar {
@@ -30,12 +30,18 @@
 
 @media screen and (max-width: 1440px) {
     .dash-create .project-card {
-        width: calc(33% - 15px);
+        width: calc(33.3% - 14px);
+    }
+}
+@media screen and (max-width: 1150px) {
+    .dash-create .project-card {
+        width: calc(50% - 14px);
     }
 }
 @media screen and (max-width: 860px) {
     .dash-create .project-card {
         width: 100%;
+        margin-left: 0;
         margin-right: 0;
     }
 }

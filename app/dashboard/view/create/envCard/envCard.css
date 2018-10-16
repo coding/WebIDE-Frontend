@@ -1,5 +1,5 @@
 .dash-create .env-card {
-    width: calc(25% - 15px);
+    width: calc(25% - 14px);
     height: 60px;
 }
 .dash-create .env-card .inner {
@@ -25,12 +25,18 @@
 
 @media screen and (max-width: 1440px) {
     .dash-create .env-card {
-        width: calc(33% - 15px);
+        width: calc(33.3% - 14px);
+    }
+}
+@media screen and (max-width: 1150px) {
+    .dash-create .env-card {
+        width: calc(50% - 14px);
     }
 }
 @media screen and (max-width: 860px) {
     .dash-create .env-card {
         width: 100%;
+        margin-left: 0;
         margin-right: 0;
     }
 }
