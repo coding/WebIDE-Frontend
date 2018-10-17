@@ -72,8 +72,10 @@ class Home extends Component {
         // 给顶层 window 发送消息
         history.listen(route => {
             window.top.postMessage({ path: route.pathname }, '*');
+            gtag('config', 'GA_TRACKING_ID', {'page_path': route.pathname});
         });
         window.top.postMessage({ path: window.location.pathname }, '*');
+        gtag('config', 'GA_TRACKING_ID', {'page_path': window.location.pathname});
         // 获取工作空间
         api.getWorkspace().then(wsRes => {
             if (wsRes.code === 0) {

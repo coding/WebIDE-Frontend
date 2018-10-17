@@ -11,15 +11,6 @@
   <script src="//studio-res.coding.net/StudioWebResource/Scripts/jquery.min.js"></script>
   <script src="<%= webpackConfig.output.publicPath + 'marked/marked.min.js' %>"></script>
   <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?7103025d60a298b8386a8c1c370dbe24";
-      var s = document.getElementsByTagName("script")[0]; 
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
   <style>
     .react-tabs__tab-list {
       border-bottom: 1px solid #aaa;
@@ -1024,6 +1015,15 @@
     // Render changelog page
     renderMD();
 
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-65952334-9');
   </script>
 </body>
 
