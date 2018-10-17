@@ -8,6 +8,10 @@ export const getWorkspace = () => {
     return request.get('/ws/list?page=0&size=100');
 }
 
+export const getWorkspaceCollaborative = () => {
+    return request.get('/ws/list?collaborative');
+}
+
 export const getWorkspaceLimit = () => {
     return request.get('/workspaces/workspace-limit', { 'Accept': 'application/vnd.coding.v2+json' });
 }
@@ -69,5 +73,5 @@ export const syncProject = () => {
 }
 
 export const quitWorkspace = (spaceKey) => {
-    return request.post(`/workspaces/${spaceKey}/force_quit`, undefined, { 'Accept': 'application/vnd.coding.v2+json' });
+    return request.post(`/workspaces/${spaceKey}/force_quit`, undefined, { 'X-Space-Key': spaceKey, 'Accept': 'application/vnd.coding.v2+json' });
 }

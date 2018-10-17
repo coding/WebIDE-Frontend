@@ -4,6 +4,30 @@
     margin: 0 10px 20px;
     position: relative;
 }
+.dash-workspace .ws-card .spacekey {
+    padding: 16px 12px 2px 2px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.dash-workspace .ws-card .spacekey .s {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+    color: #333;
+    background-color: #aaa;
+    cursor: pointer;
+}
+.dash-workspace .ws-card .spacekey .dash-tooltip {
+    width: 140px;
+    text-align: center;
+    right: 0;
+}
 .dash-workspace .ws-card .inner {
     display: flex;
     flex-wrap: wrap;
@@ -16,12 +40,13 @@
     color: #ccc;
     background-color: #3b3b3b;
     cursor: pointer;
+    transition: background-color .5s ease;
 }
 .dash-workspace .ws-card .inner:hover {
     background-color: #555;
 }
 .dash-workspace .ws-card .title {
-    width: 100%;
+    width: calc(100% - 20px);
     font-size: 16px;
     font-weight: 700;
     color: #fff;
@@ -36,22 +61,32 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.dash-workspace .ws-card .online {
+.dash-workspace .ws-card .status {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 18px;
+}
+.dash-workspace .ws-card .state {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
     font-size: 12px;
 }
-.dash-workspace .ws-card .online.invisible {
-    visibility: hidden;
-    opacity: 0;
+.dash-workspace .ws-card .state.off {
+    display: none;
 }
-.dash-workspace .ws-card .online .dot {
+.dash-workspace .ws-card .state .dot {
     width: 8px;
     height: 8px;
     margin-right: 3px;
     border-radius: 50%;
+}
+.dash-workspace .ws-card .state .dot.green {
     background-color: #2bd37d;
+}
+.dash-workspace .ws-card .state .dot.red {
+    background-color: #db178c;
 }
 .dash-workspace .ws-card .control {
     display: flex;

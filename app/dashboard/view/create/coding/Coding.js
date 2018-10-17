@@ -23,11 +23,12 @@ class Coding extends Component {
         envId: 'ide-tty',
         filter: '',
         isSync: false,
-        isToolTipOn: false,
+        isEnvTTOn: false,
+        isSyncTTOn: false,
     };
 
     render() {
-        const { type, ownerName, projectName, templateId, envId, filter, isSync, isToolTipOn } = this.state;
+        const { type, ownerName, projectName, templateId, envId, filter, isSync, isEnvTTOn, isSyncTTOn } = this.state;
         let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
@@ -55,18 +56,13 @@ class Coding extends Component {
                             {type === 1 && (
                                 <div className="project-head-right">
                                     <Inbox holder="global.search" value={filter} onChange={this.handleFilter} />
-                                    {
-                                        isSync ? (
-                                            <div className="sync">
-                                                <span><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
-                                                <ToolTip on={true} message={i18n('ws.syncTip')} placement="right" />
-                                            </div>
-                                        ) : (
-                                            <div className="sync" onClick={this.handleSync}>
-                                                <i className="fa fa-refresh"></i>{i18n('global.sync')}
-                                            </div>
-                                        )
-                                    }
+                                    <div className="sync" onClick={this.handleSync}>
+                                        <span onMouseEnter={this.handleSyncTT} onMouseLeave={this.handleSyncTT}>
+                                            <i className={`fa fa-refresh${!isSync ? '' : ' fa-spin'}`}></i>
+                                            {!isSync ? i18n('global.sync') : i18n('global.syncing')}
+                                        </span>
+                                        <ToolTip on={isSyncTTOn} message={isSyncTTOn ? i18n('ws.syncTip') : ''} placement="right" />
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -98,8 +94,8 @@ class Coding extends Component {
                             {i18n('global.env')}
                             *
                             <span className="coding-env-tooltip">
-                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
-                                <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.envTip') : ''} placement="left" />
+                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvTT} onMouseLeave={this.handleEnvTT}></i>
+                                <ToolTip on={isEnvTTOn} message={isEnvTTOn ? i18n('ws.envTip') : ''} placement="left" />
                             </span>
                         </div>
                         <div className="board-content negative-margin env">
@@ -141,8 +137,12 @@ class Coding extends Component {
         });
     }
 
-    handleEnvToolTip = () => {
-        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
+    handleEnvTT = () => {
+        this.setState(prevState => ({ isEnvTTOn: !prevState.isEnvTTOn }));
+    }
+
+    handleSyncTT = () => {
+        this.setState(prevState => ({ isSyncTTOn: !prevState.isSyncTTOn }));
     }
 
     handleFilter = (event) => {

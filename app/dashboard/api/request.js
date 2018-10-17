@@ -41,11 +41,20 @@ request.postFormData = (url, formdata, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-request.delete = (url) => {
+request.put = (url, data, overrideHeaders = {}) => {
+    return fetch(`${config.baseURL}${url}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { ...headers, ...overrideHeaders },
+        body: JSON.stringify(data),
+    }).then(res => res.json());
+}
+
+request.delete = (url, overrideHeaders = {}) => {
     return fetch(`${config.baseURL}${url}`, {
         method: 'DELETE',
         credentials: 'include',
-        headers,
+        headers: { ...headers, ...overrideHeaders },
     }).then(res => res.json());
 }
 

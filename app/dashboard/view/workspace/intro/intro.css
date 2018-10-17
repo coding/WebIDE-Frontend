@@ -5,11 +5,22 @@
     border: 1px solid #555;
     border-radius: 4px;
     background-color: #3b3b3b;
+    position: relative;
 }
 .dash-workspace .intro .title {
-    padding-bottom: 10px;
     font-size: 20px;
 }
-.dash-workspace .intro .line:last-child {
-    padding-top: 5px;
+.dash-workspace .intro .detail {
+    padding: 10px 0;
+}
+.dash-workspace .intro i {
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.dash-workspace .intro i:hover {
+    color: #fff;
 }

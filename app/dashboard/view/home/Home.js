@@ -12,9 +12,9 @@ import Setting from './setting';
 import Banner from '../banner';
 import Workspace from '../workspace';
 import Create from '../create';
+import Plugin from '../plugin';
 import Config from '../config';
 import About from '../about';
-import Readme from '../readme';
 
 class Home extends Component {
     render() {
@@ -30,6 +30,7 @@ class Home extends Component {
                 </div>
                 <div className={`dash-mnav${isMbarOn ? ' on' : ''}`}>
                     <Link className="nav-item" to="/dashboard/workspace" onClick={hideMbar}>{i18n('global.workspace')} ({wsCount})</Link>
+                    <Link className="nav-item" to="/dashboard/plugin/installed" onClick={hideMbar}>{i18n('plugin.pluginManage')}</Link>
                     <Link className="nav-item" to="/dashboard/config" onClick={hideMbar}>{i18n('global.config')}</Link>
                     <Link className="nav-item" to="/dashboard/about" onClick={hideMbar}>{i18n('global.about')}</Link>
                     <a className="nav-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.devPlatform')}</a>
@@ -43,6 +44,7 @@ class Home extends Component {
                     </div>
                     <div className="nav">
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/workspace">{i18n('global.workspace')} ({wsCount})</NavLink>
+                        <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin/installed">{i18n('plugin.pluginManage')}</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/config">{i18n('global.config')}</NavLink>
                     </div>
                     <Setting />
@@ -53,9 +55,9 @@ class Home extends Component {
                         <Switch>
                             <Route exact path="/dashboard/workspace" component={Workspace}></Route>
                             <Route exact path="/dashboard/workspace/create" component={Create}></Route>
+                            <Route path="/dashboard/plugin" component={Plugin}></Route>
                             <Route exact path="/dashboard/config" component={Config}></Route>
                             <Route exact path="/dashboard/about" component={About}></Route>
-                            <Route exact path="/dashboard/readme" component={Readme}></Route>
                         </Switch>
                     </div>
                 </div>
