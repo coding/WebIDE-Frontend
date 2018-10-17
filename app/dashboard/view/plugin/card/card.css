@@ -1,0 +1,48 @@
+.dash-plugin .plugin-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    width: calc(50% - 40px);
+    height: 160px;
+    padding: 20px;
+    margin: 0 20px 40px;
+    background-color: #3b3b3b;
+}
+.dash-plugin .plugin-card .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.dash-plugin .plugin-card .name {
+    font-size: 16px;
+    font-weight: 700;
+}
+.dash-plugin .plugin-card .desc {
+    color: #b1b1b1;
+}
+.dash-plugin .plugin-card .desc {
+    width: 100%;
+}
+.dash-plugin .plugin-card .score {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.dash-plugin .plugin-card .score-count {
+    margin: 0 20px;
+}
+.dash-plugin .plugin-card .low {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.dash-plugin .plugin-card button {
+    padding: 2px 20px;
+    border: 1px solid #c9c9c9;
+    font-size: 14px;
+    color: #ccc;
+    background-color: #5e5e5e;
+    outline: none;
+}

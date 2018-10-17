@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import './card.css';
 
+import ToolTip from '../../../share/toolTip';
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { tencentOrigin } from '../../../utils/config';
@@ -9,37 +10,56 @@ import { getModifiedDate, getDeletedTime } from '../../../utils/date';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
+    state = { isTTOn: false }
+
     render() {
-        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, hasWorkspaceOpend } = this.props;
+        const { isTTOn } = this.state;
+        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWorkspaceOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
+            ccText: i18n('global.cancel'),
             okText: i18n('global.stop'),
+            opText: i18n('global.stoping'),
             okHandle: this.handleStop,
         }
         const deleteOption = {
             message: i18n('ws.deleteNotice'),
             isWarn: true,
+            ccText: i18n('global.cancel'),
             okText: i18n('global.delete'),
+            opText: i18n('global.deleting'),
             okHandle: this.handleDelete,
         }
         const restoreOption = {
             message: i18n('ws.restoreNotice'),
             isWarn: false,
+            ccText: i18n('global.cancel'),
             okText: i18n('global.restore'),
+            opText: i18n('global.restoring'),
             okHandle: this.handleRestore,
         }
         const title = `${ownerName}/${projectName}`;
         return (
             <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey} hasWSOpend={hasWorkspaceOpend} handleMask={this.handleMask} handleStop={this.handleStop}>
+                <div className="spacekey">
+                    <div className="s" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}>S</div>
+                    <ToolTip on={isTTOn} message={isTTOn ? `SpaceKey: ${spaceKey}` : ''} placement="right" />
+                </div>
                 <div className="inner">
                     <div className="title" title={title}>{title}</div>
                     <div className="desc">
                         {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), lastModifiedDate)}
                     </div>
-                    <div className={`online${workingStatus !== 'Online' ? ' invisible' : ''}`}>
-                        <span className="dot"></span>
-                        <span>{i18n('global.running')}</span>
+                    <div className="status">
+                        <div className={`state${workingStatus !== 'Online' ? ' off' : ''}`}>
+                            <span className="dot green"></span>
+                            <span>{i18n('global.running')}</span>
+                        </div>
+                        <div className={`state${!collaborative ? ' off' : ''}`}>
+                            <span className="dot red"></span>
+                            <span>{i18n('global.collaborating')}</span>
+                        </div>
                     </div>
                 </div>
                 {
@@ -71,26 +91,28 @@ class Card extends Component {
         );
     }
 
-    handleMask = ({ message, isWarn, noCancel, cancelText, okText, okHandle }, event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        this.props.showMask({
-            message,
-            isWarn,
-            noCancel,
-            cancelText,
-            okText,
-            okHandle,
-        });
+    handleTT = () => {
+        this.setState(prevState => ({ isTTOn: !prevState.isTTOn }));
     }
 
-    handleStop = () => {
+    handleMask = (options, event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.showMask(options);
+    }
+
+    handleStop = (shouldOpen) => {
         const { opendSpaceKey, spaceKey, hideMask, handleFetch } = this.props;
         api.quitWorkspace(opendSpaceKey || spaceKey).then(res => {
+            hideMask();
             if (res.code === 0) {
-                hideMask();
                 handleFetch();
-                notify({ message: res.msg });
+                if (shouldOpen) {
+                    const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+                    window.open(url);
+                } else {
+                    notify({ message: res.msg });
+                }
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -102,9 +124,9 @@ class Card extends Component {
     handleDelete = () => {
         const { spaceKey, hideMask, handleFetch } = this.props;
         api.deleteWorkspace(spaceKey).then(res => {
+            hideMask();
             if (res.code === 0) {
                 handleFetch();
-                hideMask();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -133,9 +155,10 @@ const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children 
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,
-        cancelText: i18n('global.ok'),
+        ccText: i18n('global.ok'),
         okText: i18n('global.stop'),
-        okHandle: handleStop,
+        opText: i18n('global.stoping'),
+        okHandle: () => handleStop(true),
     }
     if (hasWSOpend) {
         return <div className="ws-card" onClick={(event) => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
