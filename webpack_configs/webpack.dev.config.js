@@ -83,7 +83,7 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login', 'main'],
+      chunks: ['vendor', 'dashboard'],
       filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
     }),
