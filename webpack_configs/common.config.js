@@ -10,6 +10,7 @@ const gitRevisionPlugin = new GitRevisionPlugin()
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
 const HappyPack = require('happypack')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const os = require('os')
 const execSync = require('child_process').execSync
 
@@ -57,8 +58,8 @@ module.exports = function(options = {}) {
     entry: {
       main: [path.join(PROJECT_ROOT, 'app')],
       dashboard: [path.join(PROJECT_ROOT, 'app/dashboard.jsx')],
-      workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
-      login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
+      // workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
+      // login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
       // intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],
       vendor: ['@babel/polyfill', 'react', 'react-dom', 'redux', 'react-redux']
     },
@@ -86,16 +87,24 @@ module.exports = function(options = {}) {
     },
     optimization: {
       splitChunks: {
-        cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            minSize: 30000,
-            minChunks: 1,
-            chunks: 'initial',
-            priority: 1
-          },
-        }
+          minChunks: 1,
+          chunks: 'all',
+          cacheGroups: {
+            commons: {
+              name: "commons",
+              chunks: "initial",
+              minChunks: 2
+            },
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true
+            }
+          }
       },
     },
     plugins: [
