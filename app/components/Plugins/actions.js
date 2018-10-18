@@ -144,6 +144,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
       } else {
         store.list.replace(list)
       }
+      console.log(list)
       if (group) {
         return fetchPackageGroup('required', store.list, type, data)
       }

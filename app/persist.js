@@ -27,6 +27,7 @@ function persistStore (store, transform) {
         mainStore.setItem(`${config.spaceKey}.${config.globalKey}`, transformedStore)
       } else {
         mainStore.getItem(`${config.spaceKey}.${config.globalKey}`).then((store) => {
+          console.log(store)
           if (store) {
             autoRehydrate(store)
           } else {

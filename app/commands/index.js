@@ -1,12 +1,17 @@
 import { emitter } from 'utils'
 import Keymapper from './lib/keymapper'
-import keymaps from './keymaps'
+import { systemKeymaps, pluginsKeymaps } from './keymaps'
 import commandBindings from './commandBindings'
+import { flattenKeyMaps } from './lib/helpers'
 import dispatchCommand, { setContext, addCommand } from './dispatchCommand'
 import { CommandPalette } from './CommandPalette'
+// import { pluinKeymapsForPlatform } from './pluginsKeymaps'
+export const key = new Keymapper({ dispatchCommand })
+key.loadKeymaps(systemKeymaps)
 
-const key = new Keymapper({ dispatchCommand })
-key.loadKeymaps(keymaps)
+pluginsKeymaps.forEach((keyConfig) => {
+  key.loadKeymaps(flattenKeyMaps(keyConfig))
+})
 
 Object.keys(commandBindings).map((commandType) => {
   emitter.on(commandType, commandBindings[commandType])

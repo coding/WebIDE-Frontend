@@ -4,6 +4,7 @@ const store = {
   views: {},
   plugins: observable.map({}),
   list: observable([]),
+  thirdPartyList: observable([]),
   editorViews: observable.map({}),
   toJS () {
     const requiredList = this.list.toJS().filter(obj => obj.enabled && obj.requirement !== 'Required')
@@ -19,6 +20,7 @@ const pluginDevStore = observable({
 
 // for test
 window.pluginStore = store
+export const pluginConfigEventStore = observable({})
 
 export { pluginDevStore }
 

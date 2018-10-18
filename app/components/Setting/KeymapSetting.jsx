@@ -1,6 +1,8 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import i18n from 'utils/createI18n'
+import keymapStore from 'commands/keymaps'
+
 import FormInputGroup from './FormInputGroup'
 
 const keymaps = [
@@ -44,22 +46,41 @@ export default observer(({ content }) => (
             <th>Win {i18n`settings.keymap.keymap`}</th>
           </tr>
         </thead>
+        <thead>
+          系统快捷键
+        </thead>
         <tbody>
-          {
-            keymaps.map(keymap => <Row key={keymap.id} {...keymap} />)
-          }
+          {keymapStore.systemKeymaps.map(keymap => <Row key={`${keymap.command}`} {...keymap} />)}
+        </tbody>
+        <thead>
+          插件快捷键
+        </thead>
+        {keymapStore.pluginsKeymaps.map(keyConfig => {
+          return (
+            <tbody>
+              <thead>{keyConfig.contribution}</thead>
+              {
+                keyConfig.keymaps.map((keymap) => <Row key={`${keymap.command}`} {...keymap} />)
+              }
+            </tbody>
+          )
+        })}
+        <tbody>
+          
         </tbody>
       </table>
     </div>
   </div>
 ))
 
-const Row = ({ cmd, mac, win }) => {
+const Row = ({ label, mac, win }) => {
+  const macKeyS = mac.split('+')
+  const winKeys = win.split('+')
   return (
     <tr>
-      <td>{cmd}</td>
-      <td>{mac.map(key => <span className="key" key={key}>{key}</span>)}</td>
-      <td>{win.map(key => <span className="key" key={key}>{key}</span>)}</td>
+      <td>{label}</td>
+      <td>{macKeyS.map(key => <span className="key" key={key}>{key}</span>)}</td>
+      <td>{winKeys.map(key => <span className="key" key={key}>{key}</span>)}</td>
     </tr>
   );
 }

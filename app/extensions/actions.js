@@ -1,8 +1,8 @@
 import { notify } from 'components/Notification/actions'
 import statusBarState from 'components/StatusBar/state'
 
-export function notification (type, message) {
-  notify({ notifyType: type, message })
+export function notification (params) {
+  notify(params)
 }
 
 export function errorNotify (message) {

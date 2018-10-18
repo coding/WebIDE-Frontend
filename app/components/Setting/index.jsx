@@ -7,6 +7,7 @@ import SettingForm from './SettingForm'
 import KeymapSetting from './KeymapSetting'
 import EditorSetting from './EditorSetting'
 import LanguageServerSetting from './LanguageServerSetting'
+import PluginSetting from './PluginSetting'
 
 const ExtensionSetting = () => (
   <div>
@@ -19,7 +20,6 @@ const DomainSetting = ({ content, domainKey, component }) => {
   if (component) return component
   switch (domainKey) {
     case 'GENERAL':
-    default:
       return <SettingForm content={content} header={i18n`settings.general.main`} />
     case 'APPEARANCE':
       return <SettingForm content={content} header={i18n`settings.appearance.main`} />
@@ -33,12 +33,20 @@ const DomainSetting = ({ content, domainKey, component }) => {
       return <LanguageServerSetting content={content} header={i18n`settings.projectsetting.main`} />
     case 'LANGUAGESERVER':
       return <LanguageServerSetting content={content} header={i18n`settings.languageserver.main`} />
+    default:
+      return <PluginSetting domainKey={domainKey} />
   }
 }
 
 const SettingsView = inject((state) => {
-  const { activeTabId, tabIds, activeTab, activateTab, tabNames } = state.SettingState
-  return { activeTabId, tabIds, activeTab, activateTab, tabNames }
+  const { activeTabId, tabIds, activeTab, activateTab, tabNames, pluginSettingsState } = state.SettingState
+  const pluginsIds = pluginSettingsState.keys()
+  const pluginsNames = pluginsIds.reduce((pre, cur) => {
+    const plugin = pluginSettingsState.get(cur)
+    pre[cur] = plugin.title
+    return pre
+  }, {})
+  return { activeTabId, tabIds: [...tabIds, ...pluginsIds], activeTab, activateTab, tabNames: { ...tabNames, ...pluginsNames } }
 })(observer((props) => {
   const {
     activeTabId, tabIds, activeTab, activateTab, tabNames
@@ -64,9 +72,9 @@ const SettingsView = inject((state) => {
         <div className='settings-content' >
           <div className='settings-content-container'>
             {/* activeTab = state.settings.resources */}
-            <DomainSetting content={activeTab} domainKey={activeTabId} component={activeTab.component} />
+            <DomainSetting content={activeTab} domainKey={activeTabId} component={(activeTab && activeTab.component) || null} />
           </div>
-          {activeTab.requireConfirm && <div className='modal-ops settings-content-controls'>
+          {(activeTab && activeTab.requireConfirm) && <div className='modal-ops settings-content-controls'>
             <button className='btn btn-default' onClick={onCancel} >{i18n`settings.reset`}</button>
             <button className='btn btn-primary'
               onClick={onConfirm}
