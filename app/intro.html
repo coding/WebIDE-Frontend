@@ -1591,17 +1591,17 @@
         } else {
           const pathname = location.pathname;
           hasLogin = true
-          if (pathname === '/') {
-            location.href = '/dashboard';
-          } else {
-            if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-              res.data.avatar = "https://coding.net" + res.data.avatar;
-            }
-            $('#user-info img').attr('src', res.data.avatar);
-
-            $('#user-info .username').html(res.data.name);
-            $('.user').hide().html($('#user-info')).fadeIn();
+          // if (pathname === '/') {
+            // location.href = '/dashboard';
+          // } else {
+          if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
+            res.data.avatar = "https://coding.net" + res.data.avatar;
           }
+          $('#user-info img').attr('src', res.data.avatar);
+
+          $('#user-info .username').html(res.data.name);
+          $('.user').hide().html($('#user-info')).fadeIn();
+          // }
         }
       }).fail(function () {
       }).always(function () {
