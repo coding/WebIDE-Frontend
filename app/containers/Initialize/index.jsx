@@ -246,7 +246,7 @@ class Initialize extends Component {
             <div className='request-info'>
               {/* <button className='btn btn-primary' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button> */}
               <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net`} >{i18n`global.gotoIDE`}</button>
-              <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net/ws/?ownerName=codingide&projectName=workstation-demo&isTry=true&open=README.md&envId=ide-tty-php-python-java`} >{i18n`global.tryIDE`}</button>
+              {/* <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net/ws/?ownerName=codingide&projectName=workstation-demo&isTry=true&open=README.md&envId=ide-tty-php-python-java`} >{i18n`global.tryIDE`}</button> */}
             </div>
           )
           hintInfo = (
