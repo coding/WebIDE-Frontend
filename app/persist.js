@@ -5,6 +5,7 @@ import { hydrate as editorTabHydrate } from './components/Tab/actions'
 import { hydrate as settingsHydrate } from './components/Setting/state'
 import { hydrate as pluginsHydrate } from './components/Plugins/actions'
 import fileState, { hydrate as fileHydrate } from './commons/File/state'
+import { pluginSettingStore } from './components/Setting/state'
 import dispatchCommand from 'commands/dispatchCommand'
 
 const mainStore = localforage.createInstance({
@@ -18,6 +19,7 @@ const mainStore = localforage.createInstance({
 function persistStore (store, transform) {
   autorunAsync(() => {
     const customTransform = transform || createTransformer(store => mobxToJS(store))
+    const transformedPluginStore = mobxToJS(pluginSettingStore)
     const transformedStore = customTransform(store)
     // 初次等spacekey出现存
     if (config.spaceKey && !mainStore._config.storeName) {
@@ -25,9 +27,9 @@ function persistStore (store, transform) {
     } else if (mainStore._config.storeName && (config.globalKey || !config.isPlatform)) {
       if (config.hasRehydrated) {
         mainStore.setItem(`${config.spaceKey}.${config.globalKey}`, transformedStore)
+        mainStore.setItem(`${config.spaceKey}.${config.globalKey}.plugins`, transformedPluginStore)
       } else {
         mainStore.getItem(`${config.spaceKey}.${config.globalKey}`).then((store) => {
-          console.log(store)
           if (store) {
             autoRehydrate(store)
           } else {
@@ -35,6 +37,12 @@ function persistStore (store, transform) {
           }
           fileState.initData.set('_init', false)
           config.hasRehydrated = true
+        })
+        mainStore.getItem(`${config.spaceKey}.${config.globalKey}.plugins`).then((plugins) => {
+          pluginSettingStore = plugins
+          if (!config.hasRehydrated) {
+            config.hasRehydrated = true
+          }
         })
       }
     }

@@ -3,7 +3,7 @@ import { PluginRegistry } from 'utils/plugins'
 import { autorun, observable } from 'mobx'
 import config from 'config'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
-import store, { pluginDevStore } from './store'
+import store from './store'
 import api from '../../backendAPI'
 
 const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
@@ -241,7 +241,7 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
   })
 
   devSocket.on('progress', (progress) => {
-    pluginDevStore.progress = progress
+    store.pluginDevState.progress = progress
   })
 
   devSocket.on('connect', () => {
@@ -250,7 +250,7 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
       message: '连接成功'
     })
 
-    pluginDevStore.online = true
+    store.pluginDevState.online = true
     devSocket.on('firstsend', ({ codingPackage, script }) => {
       const packageUniqueName = `${codingPackage.name}_${codingPackage.version}`
       const plugins = PluginRegistry.findAll(packageUniqueName)
@@ -275,13 +275,13 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
     })
 
     registerAction('plugin:unmount', () => {
-      const { infomation: { name, version } } = pluginDevStore
+      const { infomation: { name, version } } = store.pluginDevState
       togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
       devSocket.disconnect()
     })
 
     registerAction('plugin:remount', () => {
-      const { infomation: { name, version } } = pluginDevStore
+      const { infomation: { name, version } } = store.pluginDevState
       togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
       devSocket.disconnect()
 
@@ -311,13 +311,13 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
       notifyType: NOTIFY_TYPE.INFO,
       message: '插件开发服务已断开连接'
     })
-    pluginDevStore.online = false
-    const { infomation: { name, version } } = pluginDevStore
+    store.pluginDevState.online = false
+    const { infomation: { name, version } } = store.pluginDevState
     togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
   })
   devSocket.on('change', (message) => {
     const { codingIdePackage } = message
-    pluginDevStore.infomation = codingIdePackage
+    store.pluginDevState.infomation = codingIdePackage
     devSocket.emit('readfile', { name: codingIdePackage.name, version: codingIdePackage.version })
   })
 })

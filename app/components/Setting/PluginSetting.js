@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { toJS } from 'mobx'
-import { pluginSettingsState, pluginStore } from './state'
-import { pluginConfigEventStore } from 'components/Plugins/store'
+import { pluginSettingStore } from './state'
+import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
 
 @observer
 class PluingSettingItem extends PureComponent {
@@ -79,29 +79,33 @@ class PluingSettingItem extends PureComponent {
 class PluginSetting extends PureComponent {
   componentWillMount () {
     const { domainKey } = this.props
-    const { title, properties } = toJS(pluginSettingsState.get(domainKey))
-    if (!pluginStore[domainKey]) {
+    const { title, properties } = toJS(pluginSettingsItem.get(domainKey))
+    if (!pluginSettingStore[domainKey]) {
       console.log(`[Plugins-${title}]----Initialize plugin configuration.`)
       const initialState = Object.keys(properties).reduce((pre, propKey) => {
         pre[propKey] = properties[propKey].default
         return pre
       }, {})
-      pluginStore[domainKey] = observable(initialState)
+      pluginSettingStore[domainKey] = observable(initialState)
     }
   }
 
   handleChangeState = (propKey, value) => {
     const { domainKey } = this.props
     const eventStore = pluginConfigEventStore[domainKey]
-    for (const handler of eventStore) {
-      handler(propKey, pluginStore[domainKey][propKey], value)
+    const oldValue = pluginSettingStore[domainKey][propKey]
+
+    pluginSettingStore[domainKey][propKey] = value
+    if (eventStore) {
+      for (const handler of eventStore) {
+        handler(propKey, oldValue, value)
+      }
     }
-    pluginStore[domainKey][propKey] = value
   }
 
   render () {
     const { domainKey } = this.props
-    const { title, properties, key } = toJS(pluginSettingsState.get(domainKey))
+    const { title, properties, key } = toJS(pluginSettingsItem.get(domainKey))
     const propKeys = Object.keys(properties)
     return (
       <div>
@@ -112,7 +116,7 @@ class PluginSetting extends PureComponent {
             propKey={prop}
             propItem={properties[prop]}
             handleChange={this.handleChangeState}
-            settingSate={pluginStore[domainKey]}
+            settingSate={pluginSettingStore[domainKey]}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 import CodingSDK from 'CodingSDK'
 import { toJS, observable } from 'mobx'
-import { pluginSettingsState, pluginStore } from 'components/Setting/state'
-import { pluginConfigEventStore } from 'components/Plugins/store'
+import { pluginSettingStore } from 'components/Setting/state'
+import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
 
 class PluginApp {
   constructor (options) {
@@ -39,16 +39,16 @@ export function appRegistry (obj, callback) {
 
 export function registerPluginConfiguration (configuration) {
   const { key, properties } = configuration
-  pluginSettingsState.set(key, configuration)
+  pluginSettingsItem.set(key, configuration)
   const initialState = Object.keys(properties).reduce((pre, propKey) => {
     pre[propKey] = properties[propKey].default
     return pre
   }, {})
-  pluginStore[key] = observable(initialState)
+  pluginSettingStore[key] = observable(initialState)
 }
 
 export function getPluginConfiguration (pluginKey) {
-  return toJS(pluginStore[pluginKey] || observable({}))
+  return toJS(pluginSettingStore[pluginKey] || observable({}))
 }
 
 export function registerPluginConfigChangeHandler (key, fn) {

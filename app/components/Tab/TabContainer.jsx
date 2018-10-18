@@ -55,7 +55,10 @@ class TabContainer extends Component {
     this.state = {
       fullScreenActiveContent: false,
     }
-    autorun(() => {
+  }
+
+  componentDidMount () {
+    this.dispose = autorun(() => {
       this.setState({ fullScreenActiveContent: config.isFullScreen });
     })
   }
@@ -67,6 +70,12 @@ class TabContainer extends Component {
     })
   }
 
+  componentWillUnmount () {
+    if (this.dispose) {
+      console.log(this.dispose)
+      this.dispose()
+    }
+  }
   render () {
     const { tabGroup, closePane } = this.props
     const { fullScreenActiveContent } = this.state

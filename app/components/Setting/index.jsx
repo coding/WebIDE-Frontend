@@ -39,14 +39,15 @@ const DomainSetting = ({ content, domainKey, component }) => {
 }
 
 const SettingsView = inject((state) => {
-  const { activeTabId, tabIds, activeTab, activateTab, tabNames, pluginSettingsState } = state.SettingState
-  const pluginsIds = pluginSettingsState.keys()
-  const pluginsNames = pluginsIds.reduce((pre, cur) => {
-    const plugin = pluginSettingsState.get(cur)
+  const { activeTabId, tabIds, activeTab, activateTab, tabNames, pluginSettingsItem } = state.SettingState
+  const pluginsKeys = pluginSettingsItem.keys()
+  const pluginsNames = pluginsKeys.reduce((pre, cur) => {
+    const plugin = pluginSettingsItem.get(cur)
     pre[cur] = plugin.title
     return pre
   }, {})
-  return { activeTabId, tabIds: [...tabIds, ...pluginsIds], activeTab, activateTab, tabNames: { ...tabNames, ...pluginsNames } }
+
+  return { activeTabId, tabIds: [...tabIds, ...pluginsKeys], activeTab, activateTab, tabNames: { ...tabNames, ...pluginsNames } }
 })(observer((props) => {
   const {
     activeTabId, tabIds, activeTab, activateTab, tabNames

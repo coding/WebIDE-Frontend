@@ -4,6 +4,7 @@ import { isPlainObject } from 'utils/is'
 import settings from 'settings'
 import config from 'config'
 import i18n from 'utils/createI18n'
+import { pluginSettingsItem } from 'components/Plugins/store'
 
 const getSettingValueHelper = store => Object.keys(store)
   .filter(e => e !== '_keys' && e !== 'confirmCallBack')
@@ -20,13 +21,12 @@ if (!config.switchOldEditor) {
   tabIds.push('LANGUAGESERVER')
 }
 
-export const pluginSettingsState = observable.map()
-export const pluginStore = observable({})
+export const pluginSettingStore = observable({})
 
 const state = observable({
   activeTabId: 'GENERAL',
   tabIds,
-  pluginSettingsState,
+  pluginSettingsItem,
   tabNames: {
     GENERAL: i18n`settings.tabs.general`,
     APPEARANCE: i18n`settings.tabs.appearance`,
@@ -97,48 +97,4 @@ export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {
 
 export { projectState }
 
-// const mock = {
-//   key: 'my-plugin-config',
-//   title: 'MyPluginConfig',
-//   properties: {
-//     'java.home': {
-//       title: 'JavaHome',
-//       type: 'string',
-//       default: null,
-//       description: 'Specifies the folder path to the JDK (8 or more recent) used to launch the Java Language Server',
-//     },
-//     'java.error.incompleteclasspath.serverity': {
-//       title: 'Java Error Notify',
-//       type: 'string',
-//       enum: [
-//         'ignore',
-//         'info',
-//         'warning',
-//         'error',
-//       ],
-//       default: 'warning',
-//       description: 'Specifies the severity of the message when the classpath is incomplete for a Java file',
-//     },
-//     'java.config': {
-//       type: 'boolean',
-//       title: 'boolean 设置项',
-//       default: true,
-//       description: 'Traces the communication between VS Code and the Java language server.',
-//     },
-//     'java.import.exclusions': {
-//       type: 'array',
-//       title: '我就测试一下',
-//       description: 'Configure glob patterns for excluding folders',
-//       default: [
-//         "**/node_modules/**",
-//         "**/.metadata/**",
-//         "**/archetype-resources/**",
-//         "**/META-INF/maven/**"
-//       ]
-//     },
-//   } 
-// }
-
-// pluginSettingsState.set('my-plugin-config', mock)
-// pluginSettingsState.set('my-plugin-22222', { title: '测试' })
 export default state
