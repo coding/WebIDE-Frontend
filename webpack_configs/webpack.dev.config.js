@@ -36,6 +36,7 @@ const mainEntryHtmlName = 'workspace.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 // const changelogEntryHtmlName = 'changelog.html'
+const exportEntryHtmlName = 'export.html'
 
 const staticDir = ''
 
@@ -73,7 +74,7 @@ const config = merge(
   { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
       excludeChunks: ['workspaces', 'login'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
@@ -81,7 +82,7 @@ const config = merge(
       // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
       excludeChunks: ['workspaces', 'main'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
@@ -89,15 +90,22 @@ const config = merge(
       // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
       excludeChunks: ['workspaces', 'main'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
       // favicon: ICO_PATH,
     }),
+    new HtmlWebpackPlugin({
+      title: 'Cloud Studio',
+      inject: false,
+      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/export.html'),
+      // favicon: ICO_PATH,
+    }),
     // new HtmlWebpackPlugin({
-    //   title: 'Coding WebIDE',
+    //   title: 'Cloud Studio',
     //   inject: false,
     //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
     //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
