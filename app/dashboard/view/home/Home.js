@@ -33,7 +33,7 @@ class Home extends Component {
                     <Link className="nav-item" to="/dashboard/plugin" onClick={hideMbar}>{i18n('global.plugin')}</Link>
                     <Link className="nav-item" to="/dashboard/setting" onClick={hideMbar}>{i18n('global.setting')}</Link>
                     <Link className="nav-item" to="/dashboard/about" onClick={hideMbar}>{i18n('global.about')}</Link>
-                    <a className="nav-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.devPlatform')}</a>
+                    <a className="nav-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.tencentCloudDevPlatform')}</a>
                     <a className="nav-item" href="https://dev.tencent.com/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.docs')}</a>
                     <a className="nav-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.feedback')}</a>
                 </div>

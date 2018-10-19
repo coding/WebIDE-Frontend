@@ -14,7 +14,7 @@ class Card extends Component {
 
     render() {
         const { isTTOn } = this.state;
-        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
+        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -68,7 +68,7 @@ class Card extends Component {
                     workingStatus !== 'Invalid' ? (
                         <div className="control">
                             {
-                                workingStatus === 'Online' && (
+                                workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
                                     <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
                                         <i className="fa fa-stop-circle-o"></i>
                                         <span>{i18n('global.stop')}</span>

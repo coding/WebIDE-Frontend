@@ -22,7 +22,7 @@ class Workspace extends Component {
 
     render() {
         const { showWelcome, workspaces, workspacesInvalid, opendSpaceKey } = this.state;
-        const { globalKey, wsLimit, hasWSOpend, showMask, hideMask } = this.props;
+        const { globalKey, wsCount, wsLimit, hasWSOpend, showMask, hideMask } = this.props;
         return (
             <div className="dash-workspace">
                 {showWelcome && <Intro handler={this.handleWelcome} />}
@@ -32,7 +32,7 @@ class Workspace extends Component {
                 </div>
                 <div className="created">
                     <div className="caption">
-                        <div className="title">{i18n('ws.myWorkspace')} ({workspaces.length})</div>
+                        <div className="title">{i18n('ws.myWorkspace')} ({wsCount})</div>
                         <div className="tip">
                             {i18n('ws.wsTip', { limit: wsLimit })}
                             <a href="https://dev.tencent.com/help/cloud-studio/about-new-cloud-studio#i" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
@@ -41,6 +41,7 @@ class Workspace extends Component {
                     <div className="card-box">
                         {
                             workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                                globalKey={globalKey}
                                 hasWSOpend={hasWSOpend}
                                 opendSpaceKey={opendSpaceKey}
                                 showMask={showMask}
@@ -143,6 +144,7 @@ class Workspace extends Component {
             const ws = {};
             ws.spaceKey = item.spaceKey;
             ws.projectIconUrl = item.projectIconUrl;
+            ws.ownerGlobalKey = item.ownerGlobalKey;
             // codingide 是无来源创建的特殊项目名
             ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
@@ -201,6 +203,7 @@ class Workspace extends Component {
 const mapState = (state) => {
     return {
         globalKey: state.userState.global_key,
+        wsCount: state.wsState.wsCount,
         wsLimit: state.wsState.wsLimit,
         hasWSOpend: state.hasWorkspaceOpend,
     };

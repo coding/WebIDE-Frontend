@@ -18,7 +18,7 @@ class NewWS extends Component {
                     </div>
                 </Link>
             ) : (
-                <div className="ws-card new disabled">
+                <div className="ws-card new-ws disabled">
                     <div className="avatar"></div>
                     <div className="content">
                         <div className="title">{i18n('ws.createWorkspace')}</div>
