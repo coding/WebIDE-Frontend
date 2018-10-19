@@ -56,6 +56,11 @@
     cursor: pointer;
 }
 
+@media screen and (min-width: 1800px) {
+    .dash-plugin .plugin-card {
+        height: 200px;
+    }
+}
 @media screen and (max-width: 1220px) {
     .dash-plugin .plugin-card {
         width: calc(50% - 20px);

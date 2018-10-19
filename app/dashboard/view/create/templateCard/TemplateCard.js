@@ -14,9 +14,7 @@ class TemplateCard extends Component {
                     <div className="avatar">
                         <img src={src} alt="avatar" />
                     </div>
-                    <div className="content">
-                        <div className="title" title={name}>{name}</div>
-                    </div>
+                    <div className="title" title={name}>{name}</div>
                     <div className="mark">
                         <i className="fa fa-check"></i>
                     </div>

@@ -12,13 +12,24 @@
 .dash-create .template-card .avatar img {
     height: 100%;
 }
-.dash-create .template-card .content {
-    width: calc(100% - 50px);
-}
 .dash-create .template-card .title {
+    width: calc(100% - 50px);
     color: #fff;
 }
 
+@media screen and (min-width: 1800px) {
+    .dash-create .template-card {
+        height: 80px;
+    }
+    .dash-create .template-card .avatar {
+        width: 60px;
+        height: 60px;
+    }
+    .dash-create .template-card .title {
+        width: calc(100% - 70px);
+        font-size: 16px;
+    }
+}
 @media screen and (max-width: 1440px) {
     .dash-create .template-card {
         width: calc(33.3% - 14px);

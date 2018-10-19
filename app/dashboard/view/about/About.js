@@ -6,6 +6,7 @@ import coding from './img/coding.png';
 import tencentcloud from './img/tencentcloud.png';
 
 import i18n from '../../utils/i18n';
+import { tencentOrigin } from '../../utils/config';
 
 class About extends Component {
     state = {
@@ -15,6 +16,7 @@ class About extends Component {
 
     render() {
         const { width, height } = this.state;
+        const url = window === window.top ? '/changelog' : `${tencentOrigin}/changelog`;
         return (
             <div className="dash-about" style={{ width, height }}>
                 <div className="up"></div>
@@ -25,7 +27,7 @@ class About extends Component {
                     </div>
                     <div className="desc">
                         <span className="version">V 3.0</span>
-                        <a href="/changelog" target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
+                        <a href={url} target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
                     </div>
                 </div>
                 <div className="below">
