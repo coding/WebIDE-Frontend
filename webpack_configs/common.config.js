@@ -26,6 +26,7 @@ module.exports = function(options = {}) {
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
     changelogEntryHtmlName = 'changelog.html',
+    exportEntryHtmlName = 'export.html',
     maintainEntryHtmlName = 'maintain.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
