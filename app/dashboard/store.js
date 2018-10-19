@@ -1,10 +1,10 @@
 import { createStore, combineReducers } from 'redux';
 
-import { switchLanguageReducer } from './view/config/reducer';
+import { switchLanguageReducer } from './view/setting/reducer';
 import { notifyReducer } from './share/notify/reducer';
 import { switchMaskReducer } from './view/mask/reducer';
 import { switchLoadingReducer } from './view/loading/reducer';
-import { userReducer } from './view/home/setting/reducer';
+import { userReducer } from './view/home/profile/reducer';
 import { workspaceReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
 import { switchMbarReducer } from './share/stripe/reducer';
 

@@ -61,7 +61,7 @@ class Git extends Component {
                     <div className="board-content">
                         {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
-                        <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
+                        <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@ class Git extends Component {
         this.setState({ envId: envId });
     }
 
-    handleCancel = () => {
+    handleBack = () => {
         this.props.history.push({ pathname: '/dashboard/workspace' });
     }
 

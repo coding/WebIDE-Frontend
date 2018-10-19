@@ -1,3 +1,15 @@
 {
-    "pluginManage": "Plugin Management"
+    "createPlugin": "Create Plugin",
+    "createCSPlugin": "Create Cloud Studio Plugin",
+    "howToCreatePlugin": "How to create a CS plugin?",
+    "pluginName": "Plugin Name",
+    "repoName": "Repo Name",
+    "inputPluginName": "Give your plugin a resounding name",
+    "inputRepoName": "Used to generate Tencent Cloud Dev Platform projects, only supports numbers, letters, underscores (_), and underscores (-)",
+    "inputPluginDesc": "Briefly describe the role of this plugin",
+    "viewPluginMarket": "View Plugin Market",
+    "currentVersion": "Current Version",
+    "newVersion": "New Version",
+    "versionMessage": "Version Message",
+    "inputVersionMessage": "Please enter the feature record added or modified in this version."
 }

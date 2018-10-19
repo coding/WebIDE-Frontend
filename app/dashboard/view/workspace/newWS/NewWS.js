@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import './new.css';
+import './newWS.css';
 
 import i18n from '../../../utils/i18n';
 
-class New extends Component {
+class NewWS extends Component {
     render() {
         const { canCreate, wsLimit } = this.props;
         return (
             canCreate ? (
-                <Link className="ws-card new" to="/dashboard/workspace/create">
+                <Link className="ws-card new-ws" to="/dashboard/workspace/create">
                     <div className="avatar"></div>
                     <div className="content">
                         <div className="title">{i18n('ws.createWorkspace')}</div>
@@ -37,4 +37,4 @@ const mapState = (state) => {
     };
 }
 
-export default connect(mapState)(New);
+export default connect(mapState)(NewWS);

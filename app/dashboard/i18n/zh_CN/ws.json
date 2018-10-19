@@ -1,7 +1,9 @@
 {
     "createWorkspace": "新建工作空间",
     "creatingWS": "正在创建工作空间...",
+    "myWorkspace": "我的工作空间",
     "workspaceName": "工作空间名",
+    "gotoWS": "进入工作空间",
     "projectName": "项目名",
     "otherGitRepo": "其他 Git 仓库",
     "noRemoteRepo": "无来源",
@@ -23,7 +25,7 @@
     "stopNotice": "请确认是否停止该工作空间？",
     "restoreNotice": "请确认是否恢复？",
     "deleteNotice": "删除后该工作空间自动为您保留一天，在此之前您可以随时恢复，否则将被永久删除。请确认是否删除？",
-    "hasWSOpendNotice": "你有一个已打开的工作空间，如果想打开另一个，请点击下方停止按钮然后重试。",
+    "hasWSOpendNotice": "你有一个已打开的工作空间，如果想打开另一个，请点击下方停止按钮。",
     "existingProject": "已有项目",
     "templateProject": "从模板创建",
     "noProject": "这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。"

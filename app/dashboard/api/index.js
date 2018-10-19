@@ -1,5 +1,5 @@
-import * as wsAPI from './wsAPI';
-import * as pluginAPI from './pluginAPI';
+import * as wsAPI from './ws';
+import * as pluginAPI from './plugin';
 
 export default {
     ...wsAPI,

@@ -1,28 +1,28 @@
-.dash-sidebar .setting {
+.dash-sidebar .profile {
     height: 60px;
     position: relative;
 }
-.dash-sidebar .setting .main {
+.dash-sidebar .profile .main {
     display: flex;
     align-items: center;
     height: 100%;
     padding: 0 15px;
     cursor: pointer;
 }
-.dash-sidebar .setting:hover .setting-menu {
+.dash-sidebar .profile:hover .profile-menu {
     opacity: 1;
     pointer-events: all;
     bottom: 60px;
 }
-.dash-sidebar .setting .avatar {
+.dash-sidebar .profile .avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
 }
-.dash-sidebar .setting:hover .caret {
+.dash-sidebar .profile:hover .caret {
     transform: rotate(-180deg);
 }
-.dash-sidebar .setting .name {
+.dash-sidebar .profile .name {
     width: calc(100% - 70px);
     margin: 0 10px;
     font-size: 16px;
@@ -30,11 +30,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.dash-sidebar .setting .caret {
+.dash-sidebar .profile .caret {
     font-size: 16px;
     transition: transform .4s ease;
 }
-.dash-sidebar .setting .setting-menu {
+.dash-sidebar .profile .profile-menu {
     width: 140px;
     height: 136px;
     border-radius: 3px;
@@ -48,7 +48,7 @@
     bottom: 70px;
     left: 20px;
 }
-.dash-sidebar .setting .menu-item {
+.dash-sidebar .profile .menu-item {
     display: block;
     height: 34px;
     padding: 0 10px;
@@ -56,9 +56,9 @@
     color: #ccc;
     transition: background-color .3s ease;
 }
-/* .dash-sidebar .setting .menu-item:last-child {
+/* .dash-sidebar .profile .menu-item:last-child {
     border-top: 1px solid #444;
 } */
-.dash-sidebar .setting .menu-item:hover {
+.dash-sidebar .profile .menu-item:hover {
     background-color: #444;
 }

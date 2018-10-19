@@ -14,7 +14,7 @@ class Card extends Component {
 
     render() {
         const { isTTOn } = this.state;
-        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWorkspaceOpend } = this.props;
+        const { spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -39,9 +39,11 @@ class Card extends Component {
             opText: i18n('global.restoring'),
             okHandle: this.handleRestore,
         }
+        const invalid = workingStatus === 'Invalid';
+        const canotOpen = hasWSOpend && workingStatus !== 'Online';
         const title = `${ownerName}/${projectName}`;
         return (
-            <Href invalid={workingStatus === 'Invalid'} spaceKey={spaceKey} hasWSOpend={hasWorkspaceOpend} handleMask={this.handleMask} handleStop={this.handleStop}>
+            <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
                 <div className="spacekey">
                     <div className="s" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}>S</div>
                     <ToolTip on={isTTOn} message={isTTOn ? `SpaceKey: ${spaceKey}` : ''} placement="right" />
@@ -150,7 +152,7 @@ class Card extends Component {
     }
 }
 
-const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children }) => {
+const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }) => {
     const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
@@ -160,7 +162,7 @@ const Href = ({ invalid, spaceKey, hasWSOpend, handleMask, handleStop, children 
         opText: i18n('global.stoping'),
         okHandle: () => handleStop(true),
     }
-    if (hasWSOpend) {
+    if (canotOpen) {
         return <div className="ws-card" onClick={(event) => handleMask(hasWorkspaceOpendOption, event)}>{children}</div>;
     }
     if (invalid) {

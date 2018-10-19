@@ -3,25 +3,25 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import './setting.css';
+import './profile.css';
 
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
 
 const httpsReg = /http(?:s)?/;
 
-class Setting extends Component {
+class Profile extends Component {
     render() {
         const { name, avatar } = this.props.user;
         const src = httpsReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
         return (
-            <div className="setting">
+            <div className="profile">
                 <div className="main">
                     {avatar && <img className="avatar" src={src} alt="avatar" />}
                     <span className="name">{name}</span>
                     <i className="caret fa fa-caret-up"></i>
                 </div>
-                <div className="setting-menu">
+                <div className="profile-menu">
                     <Link className="menu-item" to="/dashboard/about">{i18n('global.about')}</Link>
                     <a className="menu-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">{i18n('global.devPlatform')}</a>
                     <a className="menu-item" href="https://dev.tencent.com/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">{i18n('global.docs')}</a>
@@ -67,4 +67,4 @@ const mapDispatch = (dispatch) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(withRouter(Setting));
+export default connect(mapState, mapDispatch)(withRouter(Profile));

@@ -3,50 +3,60 @@ import { NavLink, Route, Switch } from 'react-router-dom';
 
 import './plugin.css';
 
-import Inbox from '../../share/inbox';
-import Installed from './installed';
+import Create from './create';
+import ThirdParty from './thirdParty';
 import Builtin from './builtin';
-import Developed from './developed';
+import DevelopedByMe from './developedByMe';
+import Config from './config';
 import i18n from '../../utils/i18n';
 
-class Plugin extends Component {
-    state = {
-        filter: '',
-    }
+const routes = ['thirdparty', 'builtin', 'developedbyme'];
 
+class Plugin extends Component {
     render() {
-        const { filter } = this.state;
+        const path = this.props.location.pathname;
         return (
             <div className="dash-plugin">
-                <div className="topbar">
-                    <div className="nav">
-                        <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/installed">{i18n('global.installed')}</NavLink>
-                        <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/builtin">{i18n('global.builtin')}</NavLink>
-                        <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/developed">{i18n('global.developed')}</NavLink>
-                    </div>
-                    <div className="filter">
-                        <Inbox holder="global.filter" value={filter} onChange={this.handleFilter} />
-                    </div>
-                </div>
+                {
+                    routes.includes(path.split('/').pop()) && (
+                        <div className="topbar">
+                            <div className="nav">
+                                <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/thirdparty">{i18n('global.thirdparty')}</NavLink>
+                                <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/builtin">{i18n('global.builtin')}</NavLink>
+                                <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/developedbyme">{i18n('global.developedbyme')}</NavLink>
+                            </div>
+                            <a className="market" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">
+                                <i className="fa fa-external-link"></i>
+                                {i18n('plugin.viewPluginMarket')}
+                            </a>
+                        </div>
+                    )
+                }
                 <Switch>
-                    <Route exact path="/dashboard/plugin/installed" render={(props) => <Installed {...props} filter={filter} />}></Route>
-                    <Route exact path="/dashboard/plugin/builtin" render={(props) => <Builtin {...props} filter={filter} />}></Route>
-                    <Route exact path="/dashboard/plugin/developed" render={(props) => <Developed {...props} filter={filter} />}></Route>
+                    <Route exact path="/dashboard/plugin/create" component={Create} />
+                    <Route exact path="/dashboard/plugin/thirdparty" component={ThirdParty} />
+                    <Route exact path="/dashboard/plugin/builtin" component={Builtin} />
+                    <Route exact path="/dashboard/plugin/developedbyme" component={DevelopedByMe} />
+                    <Route exact path="/dashboard/plugin/developedbyme/config" component={Config} />
                 </Switch>
             </div>
         );
     }
 
     componentDidMount() {
+        this.handleRoute();
+    }
+
+    componentDidUpdate() {
+        this.handleRoute();
+    }
+
+    handleRoute() {
         const { history, location } = this.props;
         // 跳转
         if (location.pathname === '/dashboard/plugin') {
-            history.push({ pathname: '/dashboard/plugin/installed' });
+            history.push({ pathname: '/dashboard/plugin/thirdparty' });
         }
-    }
-
-    handleFilter = (event) => {
-        this.setState({ filter: event.target.value });
     }
 }
 

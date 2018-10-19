@@ -1,13 +1,9 @@
-.dash-workspace .container {
+.dash-workspace .card-box {
     display: flex;
     flex-wrap: wrap;
     margin: 0 -10px;
 }
-.dash-workspace .created .tip {
-    margin-bottom: 20px;
-    color: #757575;
-}
-.dash-workspace .deleted .caption {
+.dash-workspace .caption {
     padding: 30px 0 20px;
 }
 .dash-workspace .caption .tip {
