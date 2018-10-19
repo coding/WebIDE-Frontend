@@ -1,19 +1,18 @@
-import React from 'react'
 import { observable, extendShallowObservable } from 'mobx'
-import keyMapConfig, { modifierKeysMap } from 'commands/keymaps'
+import { modifierKeysMap, getFlattenAllKeymaps } from 'commands/keymaps'
 
-const findKeyByValue = value => Object
-    .keys(keyMapConfig)
-    .reduce((p, v) => {
-      p[keyMapConfig[v]] = v
+function MenuScope (defaultMenuItems = []) {
+  const findKeyByValue = value =>
+    Object.keys(getFlattenAllKeymaps()).reduce((p, v) => {
+      p[getFlattenAllKeymaps()[v]] = v
       return p
     }, {})[value] || ''
 
-const withModifierKeys = value => value.split('+')
-    .map(e => modifierKeysMap[e] || e.toUpperCase()).join('')
-
-
-function MenuScope (defaultMenuItems=[]) {
+  const withModifierKeys = value =>
+    value
+      .split('+')
+      .map(e => modifierKeysMap[e] || e.toUpperCase())
+      .join('')
 
   class MenuItem {
     constructor (opts) {
@@ -28,7 +27,7 @@ function MenuScope (defaultMenuItems=[]) {
                 return this.items.reduce((acc, item) => {
                   if (item.key) acc[item.key] = item
                 }, {})
-              },
+              }
             })
           // case 'key':
           // case 'name':

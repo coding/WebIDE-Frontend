@@ -4,19 +4,21 @@ import { flattenKeyMaps } from './lib/helpers'
 
 // Unavailable shortcuts: shift / ctrl + (q|n|w|t|↹)
 const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
-export const isMac = (os === 'mac')
+export const isMac = os === 'mac'
 
-export const modifierKeysMap = isMac ? {
-  ctrl: '⌃',
-  alt: '⌥',
-  cmd: '⌘',
-  shift: '⇧',
-} : {
-  ctrl: 'Ctrl',
-  alt: 'Alt',
-  cmd: 'Cmd',
-  shift: 'Shift',
-}
+export const modifierKeysMap = isMac
+  ? {
+    ctrl: '⌃',
+    alt: '⌥',
+    cmd: '⌘',
+    shift: '⇧'
+  }
+  : {
+    ctrl: 'Ctrl',
+    alt: 'Alt',
+    cmd: 'Cmd',
+    shift: 'Shift'
+  }
 
 const keymapStore = observable({
   systemKeymaps: [
@@ -36,55 +38,55 @@ const keymapStore = observable({
       command: 'file:save',
       mac: 'cmd+s',
       win: 'ctrl+s',
-      label: i18n`settings.keymap.saveFile`,
+      label: i18n`settings.keymap.saveFile`
     },
     {
       command: 'modal:dismiss',
       mac: 'esc',
       win: 'esc',
-      label: i18n`settings.keymap.exitModal`,
+      label: i18n`settings.keymap.exitModal`
     },
     {
       command: 'git:commit',
       mac: 'cmd+ctrl+c',
       win: 'ctrl+alt+c',
-      label: i18n`settings.keymap.gitCommit`,
+      label: i18n`settings.keymap.gitCommit`
     },
     {
       command: 'global:command_palette',
       mac: 'cmd+shift+p',
       win: 'ctrl+shift+p',
-      label: i18n`settings.keymap.commandPalette`,
+      label: i18n`settings.keymap.commandPalette`
     },
     {
       command: 'global:file_palette',
       mac: 'cmd+p',
       win: 'ctrl+p',
-      label: i18n`settings.keymap.filePalette`,
+      label: i18n`settings.keymap.filePalette`
     },
     {
       command: 'global:show_settings',
       mac: 'cmd+,',
       win: 'alt+,',
-      label: i18n`settings.keymap.showSettings`,
+      label: i18n`settings.keymap.showSettings`
     },
     {
       command: 'editor:goto',
       mac: 'cmd+g',
       win: 'ctrl+g',
-      label: i18n`file.goto`,
+      label: i18n`file.goto`
     },
     {
       command: 'edit:toggle_format_monaco',
       mac: 'alt+l',
       win: 'alt+l',
-      label: i18n`settings.keymap.toggleFormat`,
+      label: i18n`settings.keymap.toggleFormat`
     },
     {
       command: 'edit:toggle_comment',
       mac: 'cmd+/',
       win: 'ctrl+/',
-      label: i18n`settings.keymap.toggleComment`,
+      label: i18n`settings.keymap.toggleComment`
     },
     {
       command: 'tab:zenmode',
@@ -101,3 +103,15 @@ export default keymapStore
 export const systemKeymaps = flattenKeyMaps(keymapStore.systemKeymaps)
 
 export const pluginsKeymaps = keymapStore.pluginsKeymaps
+
+export function getFlattenAllKeymaps () {
+  return {
+    ...flattenKeyMaps(keymapStore.systemKeymaps),
+    ...flattenKeyMaps(
+      keymapStore.pluginsKeymaps.map(km => km.keymaps).reduce((pre, cur) => {
+        pre = [...pre, ...cur]
+        return pre
+      }, [])
+    )
+  }
+}

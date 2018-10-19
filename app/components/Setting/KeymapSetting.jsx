@@ -50,21 +50,19 @@ export default observer(({ content }) => (
           系统快捷键
         </thead>
         <tbody>
-          {keymapStore.systemKeymaps.map(keymap => <Row key={`${keymap.command}`} {...keymap} />)}
+          {keymapStore.systemKeymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} />)}
         </tbody>
         <thead>
           插件快捷键
         </thead>
-        {keymapStore.pluginsKeymaps.map(keyConfig => {
-          return (
-            <tbody>
-              <thead>{keyConfig.contribution}</thead>
-              {
-                keyConfig.keymaps.map((keymap) => <Row key={`${keymap.command}`} {...keymap} />)
-              }
-            </tbody>
-          )
-        })}
+        {keymapStore.pluginsKeymaps.map(keyConfig => (
+          <tbody key={keyConfig.name}>
+            <thead>{keyConfig.contribution}</thead>
+            {
+              keyConfig.keymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} />)
+            }
+          </tbody>
+        ))}
         <tbody>
           
         </tbody>

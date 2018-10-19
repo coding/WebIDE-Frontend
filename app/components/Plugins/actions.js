@@ -144,7 +144,6 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
       } else {
         store.list.replace(list)
       }
-      console.log(list)
       if (group) {
         return fetchPackageGroup('required', store.list, type, data)
       }
@@ -198,7 +197,6 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
     // children 的 shape
     const { position, key, label, view, app, instanceId, status } = child
     const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
-
     store.plugins.set(generateViewId, observable({
       // 可修改位置
       viewId: generateViewId,

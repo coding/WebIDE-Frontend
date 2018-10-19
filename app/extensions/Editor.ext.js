@@ -42,7 +42,7 @@ export function registerFormattingEditProvider (languageId, provider) {
   // todo
 }
 
-export function registerCustomEditorView (component, conf) {
+export function registerContentProvider (component, conf) {
   const { name } = conf
   const type = `CUSTOM_EDITOR_VIEW_${name}`
   const showEditorView = (editorType, title, props) => {

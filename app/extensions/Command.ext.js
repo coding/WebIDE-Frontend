@@ -1,6 +1,7 @@
 import { isArray } from 'lodash'
 import { registerAction } from 'utils/actions'
 import emitter from 'utils/emitter'
+import { observable } from 'mobx'
 import { key as keymapper } from 'commands'
 
 import * as dispatcher from 'commands/dispatchCommand'
@@ -27,7 +28,7 @@ export function registerKeyBindings (keyBinds) {
 
   keymapStore.pluginsKeymaps = keymapStore.pluginsKeymaps.find(keyconfig => keyconfig.name === name)
     ? keymapStore.pluginsKeymaps.map(keyconfig => keyconfig.name === name ? keyBinds : keyconfig)
-    : [...keymapStore.pluginsKeymaps, keyBinds]
+    : observable([...keymapStore.pluginsKeymaps, keyBinds])
 
   keymapStore.pluginsKeymaps.forEach((keyconfig) => {
     const keys = flattenKeyMaps(keyconfig.keymaps)

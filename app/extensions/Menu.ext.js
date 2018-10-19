@@ -1,3 +1,5 @@
+import { isArray } from 'lodash'
+import { observable } from 'mobx'
 import menuBarItems from 'components/MenuBar/menuBarItems'
 
 function insertMenuItemDeep (source, item, target) {
@@ -5,7 +7,7 @@ function insertMenuItemDeep (source, item, target) {
     const menuBar = source.find(menubar => menubar.key === target[i])
     if (menuBar && menuBar.items) {
       if (menuBar && i === target.length - 1) {
-        menuBar.items = [...menuBar.items, item]
+        menuBar.items = [...menuBar.items, observable(item)]
         break
       } else {
         insertMenuItemDeep(menuBar.items, item, target.slice(i + 1))
@@ -17,9 +19,19 @@ function insertMenuItemDeep (source, item, target) {
 
 export function registerMenu (menuItem, target) {
   if (!target || target === '') {
-    menuBarItems.push(menuItem)
+    if (isArray(menuItem)) {
+      menuBarItems.concat(menuItem)
+    } else {
+      menuBarItems.push(menuItem)
+    }
     return
   }
   const targetDepth = target.split('/')
-  insertMenuItemDeep(menuBarItems, menuItem, targetDepth)
+  if (isArray(menuItem)) {
+    for (const menu of menuItem) {
+      insertMenuItemDeep(menuBarItems, menu, targetDepth)
+    }
+  } else {
+    insertMenuItemDeep(menuBarItems, menuItem, targetDepth)
+  }
 }

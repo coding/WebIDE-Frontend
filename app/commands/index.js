@@ -10,7 +10,7 @@ export const key = new Keymapper({ dispatchCommand })
 key.loadKeymaps(systemKeymaps)
 
 pluginsKeymaps.forEach((keyConfig) => {
-  key.loadKeymaps(flattenKeyMaps(keyConfig))
+  key.loadKeymaps(flattenKeyMaps(keyConfig.keymaps))
 })
 
 Object.keys(commandBindings).map((commandType) => {

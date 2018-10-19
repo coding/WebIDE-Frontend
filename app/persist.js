@@ -39,7 +39,9 @@ function persistStore (store, transform) {
           config.hasRehydrated = true
         })
         mainStore.getItem(`${config.spaceKey}.${config.globalKey}.plugins`).then((plugins) => {
-          pluginSettingStore = plugins
+          for (const plugin in plugins) {
+            pluginSettingStore[plugin] = plugins[plugin]
+          }
           if (!config.hasRehydrated) {
             config.hasRehydrated = true
           }
