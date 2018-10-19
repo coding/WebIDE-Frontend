@@ -39,6 +39,7 @@ const config = observable({
   willExpire: false,
   rehydrated: false,
   fileicons: 'default',
+  tencentOrigin: 'https://studio.dev.tencent.com',
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(
