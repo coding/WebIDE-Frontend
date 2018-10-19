@@ -303,7 +303,7 @@
                 m('span', '中全面升级，用户可长期免费使用。升级后，此版本后续不再做功能升级及维护。为避免影响您的后续使用，建议您将该版本数据导出，并迁移至新版'),
                 m('a', { href: 'https://studio.dev.tencent.com/intro' }, ' Cloud Studio'),
                 m('span', '，迁移教程可参考'),
-                m('a', { href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate' }, '这里'),
+                m('a', { href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate-ide' }, '这里'),
                 m('span', '。'),
                 m('br'),
                 m('br'),
@@ -319,10 +319,14 @@
                 m('br'),
                 m('span', '如给您造成了不便，敬请谅解。我们将在新的平台，给您提供更优质的服务。感谢您的理解和支持。')
               ]),
+              // m('a', {
+              //   href: '?/list',
+              //   class: 'button start-btn'
+              // }, '开始导出')
               m('a', {
-                href: '?/list',
+                href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate-ide',
                 class: 'button start-btn'
-              }, '开始导出')
+              }, '查看迁移教程')
             ]),
             m(Footer)
           ]
