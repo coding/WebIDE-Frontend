@@ -52,6 +52,6 @@
    "machineOutofDateSoon2": ", please ",
    "and": ". ",
    "loading": "Loading in progress, please wait",
-   "offlineInfo": "Cloud Studio will upgrade soon，please visit ide.coding.net for our web ide service.",
-   "gotoIDE": "Go to IDE"
+   "offlineInfo": "Cloud Studio will upgrade soon, welcome to the new version.",
+   "gotoIDE": "Go to New Cloud Studio"
 }
