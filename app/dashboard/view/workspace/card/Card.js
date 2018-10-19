@@ -14,7 +14,7 @@ class Card extends Component {
 
     render() {
         const { isTTOn } = this.state;
-        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
+        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -51,7 +51,7 @@ class Card extends Component {
                 <div className="inner">
                     <div className="title" title={title}>{title}</div>
                     <div className="desc">
-                        {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), lastModifiedDate)}
+                        {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), deleteTime)}
                     </div>
                     <div className="status">
                         <div className={`state${workingStatus !== 'Online' ? ' off' : ''}`}>

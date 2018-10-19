@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { NavLink, Link, Switch, Route } from 'react-router-dom';
+import { NavLink, Link, Switch, Route, Redirect } from 'react-router-dom';
 
 import './home.css';
 import cloudstudio from '../../static/cloudstudio.svg';
@@ -58,6 +58,7 @@ class Home extends Component {
                             <Route path="/dashboard/plugin" component={Plugin}></Route>
                             <Route exact path="/dashboard/setting" component={Setting}></Route>
                             <Route exact path="/dashboard/about" component={About}></Route>
+                            <Redirect to="/dashboard/workspace" />
                         </Switch>
                     </div>
                 </div>

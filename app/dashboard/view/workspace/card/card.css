@@ -1,5 +1,5 @@
 .dash-workspace .ws-card {
-    width: calc(33.3% - 20px);
+    width: calc(33.33% - 20px);
     height: 100px;
     margin: 0 10px 20px;
     position: relative;
@@ -120,6 +120,14 @@
     color: #757575;
 }
 
+@media screen and (min-width: 1800px) {
+    .dash-workspace .ws-card {
+        height: 120px;
+    }
+    .dash-workspace .ws-card .title {
+        font-size: 18px;
+    }
+}
 @media screen and (max-width: 1150px) {
     .dash-workspace .ws-card {
         width: calc(50% - 20px);

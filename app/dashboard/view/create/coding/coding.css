@@ -51,7 +51,7 @@
     flex-wrap: wrap;
     align-content: flex-start;
     max-height: 236px;
-    padding: 14px 7px 14px;
+    padding: 14px 7px 0;
     border-left: 1px solid #444;
     border-right: 1px solid #444;
     border-bottom: 1px solid #444;
@@ -71,6 +71,11 @@
     width: 220px;
 }
 
+@media screen and (min-width: 1800px) {
+    .com-board .project-body {
+        max-height: 296px;
+    }
+}
 @media screen and (max-width: 960px) {
     .com-board .project-head-right {
         display: none;

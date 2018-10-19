@@ -13,6 +13,7 @@
 .dash-about .center .logo {
     width: 27%;
     min-width: 200px;
+    max-width: 400px;
     margin: 0 auto;
     position: relative;
 }

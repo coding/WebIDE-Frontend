@@ -15,12 +15,18 @@
     border-radius: 3px;
 }
 .dash-create .project-card .content {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
     width: calc(100% - 50px);
+    height: 100%;
 }
 .dash-create .project-card .title {
+    width: 100%;
     color: #fff;
 }
 .dash-create .project-card .desc {
+    width: 100%;
     font-size: 12px;
 }
 .dash-create .project-card .highlight {
@@ -28,6 +34,21 @@
     background-color: #6b6b6b;
 }
 
+@media screen and (min-width: 1800px) {
+    .dash-create .project-card {
+        height: 80px;
+    }
+    .dash-create .project-card .avatar {
+        width: 60px;
+        height: 60px;
+    }
+    .dash-create .project-card .title {
+        font-size: 16px;
+    }
+    .dash-create .project-card .desc {
+        font-size: 14px;
+    }
+}
 @media screen and (max-width: 1440px) {
     .dash-create .project-card {
         width: calc(33.3% - 14px);

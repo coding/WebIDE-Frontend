@@ -182,7 +182,7 @@ class Workspace extends Component {
                     ws.ownerName = item.project.ownerName !== 'codingide' ? item.project.ownerName : item.owner.globalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
-                    ws.lastModifiedDate = item.lastModifiedDate;
+                    ws.deleteTime = item.deleteTime || item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspacesInvalid.push(ws);
                 }
