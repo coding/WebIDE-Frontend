@@ -1,0 +1,72 @@
+.dash-developedbyme-config .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dash-developedbyme-config .plugin-name {
+    font-size: 24px;
+    color: #fff;
+}
+.dash-developedbyme-config .goto {
+    padding: 6px 14px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ccc;
+    background-color: #3b3b3b;
+}
+.dash-developedbyme-config .desc {
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-developedbyme-config .info {
+    display: flex;
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-developedbyme-config .info .item {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.dash-developedbyme-config .info .key {
+    margin-right: 6px;
+}
+.dash-developedbyme-config .info .review-status {
+    padding: 0 2px;
+    border-radius: 2px;
+    color: #333;
+    background-color: #ccc;
+}
+.dash-developedbyme-config .info .rate-user-count {
+    margin-left: 5px;
+}
+.dash-developedbyme-config .tab {
+    display: flex;
+    margin-top: 40px;
+    border-bottom: 1px solid #555;
+}
+.dash-developedbyme-config .tab-item {
+    padding: 10px 20px;
+    margin-bottom: -1px;
+    border: 1px solid transparent;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color .3s ease;
+}
+.dash-developedbyme-config .tab-item.on {
+    border-left-color: #555;
+    border-top-color: #555;
+    border-right-color: #555;
+    border-bottom-color: #333;
+}
+.dash-developedbyme-config .panel {
+    padding-top: 40px;
+}
+.dash-developedbyme-config .version-number {
+    width: 70px;
+}
+.dash-developedbyme-config .version-dot {
+    margin: 0 10px;
+}

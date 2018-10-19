@@ -1,34 +1,34 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import './card.css';
 
-import Star from '../../../share/star';
 import i18n from '../../../utils/i18n';
 
 class Card extends Component {
     render() {
-        const { pluginName, currentVersion, remark, avgScore, countScoreUser, src, createdBy } = this.props;
+        const { pluginName, remark, src, createdBy, belong } = this.props;
         return (
             <div className="plugin-card">
                 <div className="top">
-                    <div className="name">{pluginName}</div>
-                    <div className="version">V {currentVersion}</div>
-                </div>
-                <div className="desc">{remark}</div>
-                <div className="score">
-                    <Star score={avgScore} />
-                    <span className="score-count">{avgScore}</span>
-                    <span className="user-count">{countScoreUser} 人评分</span>
-                </div>
-                <div className="low">
+                    <Link className="name" to="/">{pluginName}</Link>
                     <div className="author">
                         <img src={src} />
                         <span>{createdBy}</span>
                     </div>
-                    <div className="control">
-                        <button>{i18n('global.uninstall')}</button>
-                    </div>
                 </div>
+                <div className="desc">{remark}</div>
+                {belong === 1 && (
+                    <div className="control">
+                        <button className="button">{i18n('global.uninstall')}</button>
+                    </div>
+                )}
+                {belong === 3 && (
+                    <div className="control">
+                        <Link className="button" to="/dashboard/plugin/developedbyme/config">{i18n('global.setting')}</Link>
+                        <button className="button">{i18n('global.workspace')}</button>
+                    </div>
+                )}
             </div>
         );
     }

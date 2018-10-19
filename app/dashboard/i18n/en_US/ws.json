@@ -1,7 +1,9 @@
 {
     "createWorkspace": "Create Workspace",
     "creatingWS": "Creating workspace...",
+    "myWorkspace": "My Workspace",
     "workspaceName": "Workspace Name",
+    "gotoWS": "Goto workspace",
     "projectName": "Project Name",
     "otherGitRepo": "Other Git Repos",
     "noRemoteRepo": "No Source",
@@ -23,7 +25,7 @@
     "stopNotice": "Please confirm whether to stop this workspace?",
     "restoreNotice": "Please confirm whether to restore?",
     "deleteNotice": "After the deletion, the workspace automatically reserves for you for a day, before which you can resume at any time, otherwise it will be permanently deleted. Please confirm whether to delete?",
-    "hasWSOpendNotice": "You have an open workspace, if you want to open another, click the stop button below and try again.",
+    "hasWSOpendNotice": "You have an open workspace, if you want to open another, click the stop button below.",
     "existingProject": "Existing Project",
     "templateProject": "Create Project by template",
     "noProject": "This is empty, please click the 'Sync' button in the upper right corner to sync the CODING project list, or click 'Create Project by template' above to create a new project."

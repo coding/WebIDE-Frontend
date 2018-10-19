@@ -1,0 +1,23 @@
+.dash-create-plugin .title {
+    padding-bottom: 10px;
+    margin-bottom: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+.dash-create-plugin .plugin-type {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -5px;
+}
+.dash-create-plugin .plugin-type .type {
+    padding: 5px 10px;
+    margin: 0 5px 10px;
+    border-radius: 2px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, .7);
+    cursor: pointer;
+}
+.dash-create-plugin .plugin-type .type.on {
+    background-color: #18f;
+}

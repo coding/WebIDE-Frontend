@@ -1,6 +1,6 @@
 import config from '../../config';
 
-const request = {};
+const axios = {};
 
 const headers = {
     'Content-Type': 'application/json',
@@ -8,7 +8,7 @@ const headers = {
     'X-Requested-With': 'XMLHttpRequest',
 }
 
-request.get = (url, overrideHeaders = {}) => {
+axios.get = (url, overrideHeaders = {}) => {
     return fetch(`${config.baseURL}${url}`, {
         method: 'GET',
         credentials: 'include',
@@ -16,7 +16,7 @@ request.get = (url, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-request.post = (url, data, overrideHeaders = {}) => {
+axios.post = (url, data, overrideHeaders = {}) => {
     return fetch(`${config.baseURL}${url}`, {
         method: 'POST',
         credentials: 'include',
@@ -25,7 +25,7 @@ request.post = (url, data, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-request.postFormData = (url, formdata, overrideHeaders = {}) => {
+axios.postFormData = (url, formdata, overrideHeaders = {}) => {
     let str = '';
     for (let key in formdata) {
         if (formdata.hasOwnProperty(key)) {
@@ -41,7 +41,7 @@ request.postFormData = (url, formdata, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-request.put = (url, data, overrideHeaders = {}) => {
+axios.put = (url, data, overrideHeaders = {}) => {
     return fetch(`${config.baseURL}${url}`, {
         method: 'PUT',
         credentials: 'include',
@@ -50,7 +50,7 @@ request.put = (url, data, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-request.delete = (url, overrideHeaders = {}) => {
+axios.delete = (url, overrideHeaders = {}) => {
     return fetch(`${config.baseURL}${url}`, {
         method: 'DELETE',
         credentials: 'include',
@@ -58,4 +58,4 @@ request.delete = (url, overrideHeaders = {}) => {
     }).then(res => res.json());
 }
 
-export default request;
+export default axios;

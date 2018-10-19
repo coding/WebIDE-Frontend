@@ -7,7 +7,8 @@ import i18n from '../../utils/i18n';
 import api from '../../api';
 import Intro from './intro';
 import Card from './card';
-import New from './new';
+import NewWs from './newWS';
+import NewPlugin from './newPlugin';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Workspace extends Component {
@@ -21,20 +22,26 @@ class Workspace extends Component {
 
     render() {
         const { showWelcome, workspaces, workspacesInvalid, opendSpaceKey } = this.state;
-        const { wsLimit, hasWorkspaceOpend, showMask, hideMask } = this.props;
+        const { globalKey, wsLimit, hasWSOpend, showMask, hideMask } = this.props;
         return (
             <div className="dash-workspace">
                 {showWelcome && <Intro handler={this.handleWelcome} />}
+                <div className="card-box">
+                    <NewWs />
+                    <NewPlugin />
+                </div>
                 <div className="created">
-                    <div className="tip">
-                        {i18n('ws.wsTip', { limit: wsLimit })}
-                        <a href="https://dev.tencent.com/help/cloud-studio/about-new-cloud-studio#i" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                    <div className="caption">
+                        <div className="title">{i18n('ws.myWorkspace')} ({workspaces.length})</div>
+                        <div className="tip">
+                            {i18n('ws.wsTip', { limit: wsLimit })}
+                            <a href="https://dev.tencent.com/help/cloud-studio/about-new-cloud-studio#i" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                        </div>
                     </div>
-                    <div className="container">
-                        <New />
+                    <div className="card-box">
                         {
                             workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                                hasWorkspaceOpend={hasWorkspaceOpend}
+                                hasWSOpend={hasWSOpend}
                                 opendSpaceKey={opendSpaceKey}
                                 showMask={showMask}
                                 hideMask={hideMask}
@@ -50,7 +57,7 @@ class Workspace extends Component {
                                 <div>{i18n('global.recentdeleted')} ({workspacesInvalid.length})</div>
                                 <div className="tip">{i18n('ws.deletedWSTip')}</div>
                             </div>
-                            <div className="container">
+                            <div className="card-box">
                                 {
                                     workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
                                         showMask={showMask}
@@ -91,87 +98,73 @@ class Workspace extends Component {
     }
 
     fetchWS() {
-        const { handleNoWorkspaceOpend, handleHasWorkspaceOpend, storeWorkspace } = this.props;
+        const { handleNoWorkspaceOpend, storeWorkspace } = this.props;
         // 初始化
         handleNoWorkspaceOpend();
-        api.getWorkspace().then(res => {
-            if (res.code === 0) {
-                const list = res.data.list;
-                const array = [];
-                for (let i = 0; i < list.length; i++) {
-                    const item = list[i];
-                    const ws = {};
-                    ws.spaceKey = item.spaceKey;
-                    ws.projectIconUrl = item.projectIconUrl;
-                    // codingide 是无来源创建的特殊项目名
-                    ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
-                    // 无远端仓库有一个 workspaceName 字段
-                    ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
-                    ws.lastModifiedDate = item.lastModifiedDate;
-                    ws.workingStatus = item.workingStatus;
-                    ws.collaborative = item.collaborative;
-                    array.push(ws);
-                    if (item.workingStatus === 'Online') {
-                        this.setState({ opendSpaceKey: ws.spaceKey });
-                        handleHasWorkspaceOpend();
-                    }
-                }
-                this.setState({ workspaces: array });
-                storeWorkspace({ ws: array, wsCount: array.length });
+        Promise.all([api.getWorkspace(), api.getWorkspaceCollaborative()]).then((values) => {
+            let wsNor = [];
+            let wsCol = [];
+            // 自己创建的 workspaces
+            if (values[0].code === 0) {
+                wsNor = this.handleParse(values[0].data.list);
             } else if (res.code === 401) {
                 window.top.postMessage({ path: '/intro' }, '*');
                 window.location.href = '/intro';
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to fetch workspaceList' });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: values[0].msg });
             }
-            // 获取协作的工作空间
-            this.fetchCollaborativeWS();
+            // 只计算自己创建的 workspaces
+            storeWorkspace({ ws: wsNor, wsCount: wsNor.length });
+            // 协作的 workspaces
+            if (Array.isArray(values[1])) {
+                wsCol = this.handleParse(values[1]);
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: values[1].msg });
+            }
+            // 这里包括自己邀请别人和别人邀请自己的 workspaces，去除自己邀请别人的重复 workspaces
+            const workspaces = [...wsNor];
+            for (let i = 0; i < wsCol.length; i++) {
+                const item = wsCol[i];
+                if (!wsNor.find(ws => ws.spaceKey === item.spaceKey)) {
+                    workspaces.push(item);
+                }
+            }
+            this.setState({ workspaces });
         }).catch(err => {
-            console.log(res);
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
-    fetchCollaborativeWS() {
-        const { workspaces } = this.state;
-        const { handleNoWorkspaceOpend, handleHasWorkspaceOpend, storeWorkspace } = this.props;
-        // 初始化
-        handleNoWorkspaceOpend();
-        api.getWorkspaceCollaborative().then(res => {
-            if (Array.isArray(res)) {
-                const array = [];
-                for (let i = 0; i < res.length; i++) {
-                    const item = res[i];
-                    const ws = {};
-                    ws.spaceKey = item.spaceKey;
-                    ws.projectIconUrl = item.projectIconUrl;
-                    // codingide 是无来源创建的特殊项目名
-                    ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
-                    // 无远端仓库有一个 workspaceName 字段
-                    ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
-                    ws.lastModifiedDate = item.lastModifiedDate;
-                    ws.workingStatus = item.workingStatus;
-                    ws.collaborative = item.collaborative;
-                    array.push(ws);
-                    if (item.workingStatus === 'Online') {
+    handleParse(res) {
+        const { globalKey, handleHasWorkspaceOpend } = this.props;
+        const array = [];
+        for (let i = 0; i < res.length; i++) {
+            const item = res[i];
+            const ws = {};
+            ws.spaceKey = item.spaceKey;
+            ws.projectIconUrl = item.projectIconUrl;
+            // codingide 是无来源创建的特殊项目名
+            ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
+            // 无远端仓库有一个 workspaceName 字段
+            ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
+            ws.lastModifiedDate = item.lastModifiedDate;
+            ws.workingStatus = item.workingStatus;
+            ws.collaborative = item.collaborative;
+            array.push(ws);
+            if (item.workingStatus === 'Online') {
+                // 自己邀请别人算一个已打开的 workspaces，别人邀请自己不算
+                if (item.collaborative === true) {
+                    if (ws.ownerName === globalKey) {
                         this.setState({ opendSpaceKey: ws.spaceKey });
                         handleHasWorkspaceOpend();
                     }
+                } else {
+                    this.setState({ opendSpaceKey: ws.spaceKey });
+                    handleHasWorkspaceOpend();
                 }
-                for (let i = 0; i < array.length; i++) {
-                    const item = array[i];
-                    if (!workspaces.find(ws => ws.spaceKey === item.spaceKey)) {
-                        workspaces.push(item);
-                    }
-                }
-                this.setState({ workspaces });
-                storeWorkspace({ ws: workspaces, wsCount: workspaces.length });
-            } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to fetch collaborative workspaceList' });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
-        });
+        }
+        return array;
     }
 
     fetchInvalidWS() {
@@ -207,8 +200,9 @@ class Workspace extends Component {
 
 const mapState = (state) => {
     return {
+        globalKey: state.userState.global_key,
         wsLimit: state.wsState.wsLimit,
-        hasWorkspaceOpend: state.hasWorkspaceOpend,
+        hasWSOpend: state.hasWorkspaceOpend,
     };
 }
 

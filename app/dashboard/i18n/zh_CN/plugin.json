@@ -1,3 +1,15 @@
 {
-    "pluginManage": "插件管理"
+    "createPlugin": "创建插件",
+    "createCSPlugin": "新建 Cloud Studio 插件",
+    "howToCreatePlugin": "如何开发一款 CS 插件？",
+    "pluginName": "插件名",
+    "repoName": "仓库名",
+    "inputPluginName": "给您的插件起个响亮的名字",
+    "inputRepoName": "用于生成腾讯云开发者平台项目，仅支持数字、字母、下划线(_)和中划线(-)",
+    "inputPluginDesc": "简单描述一下这个插件的作用",
+    "viewPluginMarket": "浏览插件市场",
+    "currentVersion": "当前版本",
+    "newVersion": "新版本",
+    "versionMessage": "版本说明",
+    "inputVersionMessage": "请输入本次版本添加或修改的功能记录"
 }
