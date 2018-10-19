@@ -18,20 +18,18 @@ function insertMenuItemDeep (source, item, target) {
 }
 
 export function registerMenu (menuItem, target) {
+  const menuItems = isArray(menuItem) ? menuItem : [menuItem]
   if (!target || target === '') {
-    if (isArray(menuItem)) {
-      menuBarItems.concat(menuItem)
-    } else {
-      menuBarItems.push(menuItem)
+    for (const menu of menuItems) {
+      if (!menu.items) {
+        throw new Error(`${menu.key} items is required!`)
+      }
+      menuBarItems.push(menu)
     }
     return
   }
   const targetDepth = target.split('/')
-  if (isArray(menuItem)) {
-    for (const menu of menuItem) {
-      insertMenuItemDeep(menuBarItems, menu, targetDepth)
-    }
-  } else {
-    insertMenuItemDeep(menuBarItems, menuItem, targetDepth)
+  for (const menu of menuItems) {
+    insertMenuItemDeep(menuBarItems, menu, targetDepth)
   }
 }
