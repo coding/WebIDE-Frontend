@@ -45,7 +45,7 @@ export function registerFormattingEditProvider (languageId, provider) {
 export function registerContentProvider (component, conf) {
   const { name } = conf
   const type = `CUSTOM_EDITOR_VIEW_${name}`
-  const showEditorView = (editorType, title, props) => {
+  const activate = (editorType, title, props) => {
     const tabId = uniqueId(editorType)
     tabStore.createTab({
       type: editorType,
@@ -62,10 +62,10 @@ export function registerContentProvider (component, conf) {
       tab.destroy()
     }
   }
-  pluginStore.editorViews.set(type, { type, component, dispatch: showEditorView, dispose })
+  pluginStore.editorViews.set(type, { type, component, dispatch: activate, dispose })
   return {
     editorType: type,
-    showEditorView,
+    activate,
     dispose
   }
 }

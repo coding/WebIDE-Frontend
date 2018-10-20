@@ -38,13 +38,16 @@ export function appRegistry (obj, callback) {
 }
 
 export function registerPluginConfiguration (configuration) {
-  const { key, properties } = configuration
+  const { key, properties, title } = configuration
   pluginSettingsItem.set(key, configuration)
-  const initialState = Object.keys(properties).reduce((pre, propKey) => {
-    pre[propKey] = properties[propKey].default
-    return pre
-  }, {})
-  pluginSettingStore[key] = observable(initialState)
+  if (!pluginSettingStore[key]) {
+    console.log(`[Plugins-${title}]----Initialize plugin configuration.`)
+    const initialState = Object.keys(properties).reduce((pre, propKey) => {
+      pre[propKey] = properties[propKey].default
+      return pre
+    }, {})
+    pluginSettingStore[key] = observable(initialState)
+  }
 }
 
 export function getPluginConfiguration (pluginKey) {

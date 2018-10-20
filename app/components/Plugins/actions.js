@@ -223,15 +223,15 @@ const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, fi
  * 连接到远程 hmr 
  */
 export const startRemoteHMRServer = registerAction('plugin:mount', () => {
-  const devSocket = io.connect(host, {
+  const devSocket = io.connect('localhost:65000', {
     forceNew: true,
     reconnection: false,
     autoConnect: true,
     transports: ['websocket'],
-    path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect-other-service`,
-    query: {
-      port: 65000
-    }
+    // path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect-other-service`,
+    // query: {
+    //   port: 65000
+    // }
   })
 
   devSocket.on('connect_error', () => {

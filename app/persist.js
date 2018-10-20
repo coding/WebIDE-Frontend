@@ -1,4 +1,4 @@
-import { autorunAsync, createTransformer, toJS as mobxToJS } from 'mobx'
+import { autorunAsync, createTransformer, toJS as mobxToJS, observable } from 'mobx'
 import localforage from 'localforage'
 import config from './config'
 import { hydrate as editorTabHydrate } from './components/Tab/actions'
@@ -40,7 +40,7 @@ function persistStore (store, transform) {
         })
         mainStore.getItem(`${config.spaceKey}.${config.globalKey}.plugins`).then((plugins) => {
           for (const plugin in plugins) {
-            pluginSettingStore[plugin] = plugins[plugin]
+            pluginSettingStore[plugin] = observable(plugins[plugin])
           }
           if (!config.hasRehydrated) {
             config.hasRehydrated = true

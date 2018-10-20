@@ -1,24 +1,24 @@
-import * as File from './File.ext'
-import * as Git from './Git.ext'
-import * as Editor from './Editor.ext'
-import * as Menu from './Menu.ext'
-import * as Command from './Command.ext'
-import * as Modal from './Modal.ext'
+import * as file from './file.ext'
+import * as git from './git.ext'
+import * as editor from './editor.ext'
+import * as menu from './menu.ext'
+import * as command from './command'
+import * as modal from './modal.ext'
 import * as actions from './actions'
-import * as Terminal from './Terminal.ext'
-import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler } from './PluginApp.ext'
+import * as terminal from './terminal.ext'
+import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler } from './pluginApp.ext'
 
 export default {
-  File,
-  Git,
-  Editor,
-  Menu,
-  Command,
+  file,
+  git,
+  editor,
+  menu,
+  command,
   PluginApp,
   appRegistry,
-  Modal,
+  modal,
   actions,
-  Terminal,
+  terminal,
   registerPluginConfiguration,
   getPluginConfiguration,
   registerPluginConfigChangeHandler,

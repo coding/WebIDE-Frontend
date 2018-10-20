@@ -14,6 +14,7 @@ class PluingSettingItem extends PureComponent {
 
   makePropItem = () => {
     const { propItem, settingSate, propKey, handleChange } = this.props
+    console.log(propItem)
     switch (propItem.type) {
       case 'string':
         return (
@@ -77,18 +78,6 @@ class PluingSettingItem extends PureComponent {
 
 @observer
 class PluginSetting extends PureComponent {
-  componentWillMount () {
-    const { domainKey } = this.props
-    const { title, properties } = toJS(pluginSettingsItem.get(domainKey))
-    if (!pluginSettingStore[domainKey]) {
-      console.log(`[Plugins-${title}]----Initialize plugin configuration.`)
-      const initialState = Object.keys(properties).reduce((pre, propKey) => {
-        pre[propKey] = properties[propKey].default
-        return pre
-      }, {})
-      pluginSettingStore[domainKey] = observable(initialState)
-    }
-  }
 
   handleChangeState = (propKey, value) => {
     const { domainKey } = this.props

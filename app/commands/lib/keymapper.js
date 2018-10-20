@@ -7,6 +7,14 @@ class Keymapper {
   constructor ({ dispatchCommand }) {
     this.dispatchCommand = dispatchCommand
     this.keyStore = []
+    Mousetrap.bind(normalizeKeys('cmd+w'), (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    })
+    Mousetrap.bind(normalizeKeys('ctrl+w'), (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    })
   }
 
   loadKeymaps (keymaps) {
