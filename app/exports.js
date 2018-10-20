@@ -1,4 +1,4 @@
-import codingide from './extensions'
+import cloudstudio from './extensions'
 
 const app = {
   backendAPI: require('backendAPI'),
@@ -34,4 +34,4 @@ const lib = {
   socketIOClient: require('socket.io-client')
 }
 
-export { app, lib, codingide }
+export { app, lib, cloudstudio }
