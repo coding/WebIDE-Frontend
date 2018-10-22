@@ -38,7 +38,7 @@
     }
 
     .title {
-      width: 34%;
+      /* width: 34%; */
       font-size: 30px;
     }
 
@@ -544,38 +544,44 @@
       }
     }
 
-    try{
-      ajax(function(xhr) {
-        var result = JSON.parse(xhr.responseText)
-        if (result.contents && result.contents.length) {
-          var lists = result.contents
+    m.route.prefix('?')
+    m.route(document.body, '/home', {
+      '/list': List,
+      '/home': Home,
+    })
 
-          lists.map(function(item) {
-            var project = item.project
-            var iconUrl = project.iconUrl
+    // try{
+    //   ajax(function(xhr) {
+    //     var result = JSON.parse(xhr.responseText)
+    //     if (result.contents && result.contents.length) {
+    //       var lists = result.contents
 
-            wsList.push({
-              spaceKey: item.spaceKey,
-              name: item.owner.globalKey + '/' + project.name,
-              time: formatDate(item.lastModifiedDate),
-              checked: true,
-              img: iconUrl.includes('http') ? iconUrl : IMG_URL + iconUrl,
-              ownerName: item.owner.globalKey
-            })
-          })
+    //       lists.map(function(item) {
+    //         var project = item.project
+    //         var iconUrl = project.iconUrl
 
-          m.route.prefix('?')
-          m.route(document.body, '/home', {
-            '/list': List,
-            '/home': Home,
-          })
-        } else {
-          location.href = REDIRECT_URL
-        }
-      }, BASE_URL + 'workspaces?page=0&size=5&sort=lastModifiedDate,desc')
-    } catch (e) {
-      location.href = REDIRECT_URL
-    }
+    //         wsList.push({
+    //           spaceKey: item.spaceKey,
+    //           name: item.owner.globalKey + '/' + project.name,
+    //           time: formatDate(item.lastModifiedDate),
+    //           checked: true,
+    //           img: iconUrl.includes('http') ? iconUrl : IMG_URL + iconUrl,
+    //           ownerName: item.owner.globalKey
+    //         })
+    //       })
+
+    //       m.route.prefix('?')
+    //       m.route(document.body, '/home', {
+    //         '/list': List,
+    //         '/home': Home,
+    //       })
+    //     } else {
+    //       location.href = REDIRECT_URL
+    //     }
+    //   }, BASE_URL + 'workspaces?page=0&size=5&sort=lastModifiedDate,desc')
+    // } catch (e) {
+    //   location.href = REDIRECT_URL
+    // }
   </script>
 </body>
 </html>
