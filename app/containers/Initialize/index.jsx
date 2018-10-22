@@ -173,7 +173,7 @@ class Initialize extends Component {
         requestInfo = (
           <div className='request-info'>
             <div className='link'>
-              <button className='btn btn-default' onClick={() => window.location.href = `https://studio.dev.tencent.com`} >{i18n`global.gotoIDE`}</button>
+              <button className='btn btn-default' onClick={() => window.open('https://studio.dev.tencent.com', '_blank')} >{i18n`global.gotoIDE`}</button>
             </div>
           </div>
         )
@@ -218,7 +218,7 @@ class Initialize extends Component {
         requestInfo = (
           <div className='request-info'>
             <div className='link'>
-              <button className='btn btn-default' onClick={() => window.location.href = `https://studio.dev.tencent.com`} >{i18n`global.gotoIDE`}</button>
+              <button className='btn btn-default' onClick={() => window.open('https://studio.dev.tencent.com', '_blank')} >{i18n`global.gotoIDE`}</button>
             </div>
           </div>
         )
@@ -245,7 +245,7 @@ class Initialize extends Component {
           requestInfo = (
             <div className='request-info'>
               {/* <button className='btn btn-primary' onClick={e => state.action({restartApp: this.props.restartApp})} >{i18n`global.tryMachine`}</button> */}
-              <button className='btn btn-default' onClick={() => window.location.href = `https://studio.dev.tencent.com`} >{i18n`global.gotoIDE`}</button>
+              <button className='btn btn-default' onClick={() => window.open('https://studio.dev.tencent.com', '_blank')} >{i18n`global.gotoIDE`}</button>
               {/* <button className='btn btn-default' onClick={() => window.location.href = `https://ide.coding.net/ws/?ownerName=codingide&projectName=workstation-demo&isTry=true&open=README.md&envId=ide-tty-php-python-java`} >{i18n`global.tryIDE`}</button> */}
             </div>
           )
