@@ -69,7 +69,7 @@ class GlobalPrompt extends Component {
           // </p>
           <p>
             {i18n`global.offlineInfo`}
-            <a href='https://ide.coding.net' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
+            <a href='https://studio.dev.tencent.com' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,
