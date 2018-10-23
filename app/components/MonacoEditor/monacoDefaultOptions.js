@@ -10,8 +10,10 @@ export default observable({
   },
   tabSize: 4,
   fontSize: 13,
-  contextmenu: false,
+  contextmenu: true,
   theme: 'vs-dark',
   glyphMargin: true,
   wordWrap: 'on',
+  colorDecorators: true,
+  showUnused: true,
 })

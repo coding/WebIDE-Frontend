@@ -67,6 +67,19 @@ const changeUITheme = (nextThemeId) => {
       monacoConfig.theme = 'vs-dark'
     }
   }
+  if (!window.themes) window.themes = {}
+  if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
+    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
+    .then((module) => {
+      const currentTheme = window.themes['@current']
+      if (currentTheme && currentTheme.unuse) currentTheme.unuse()
+      window.themes['@current'] = window.themes[nextThemeId] = module
+      module.use()
+      window.themeVariables.replace(
+       window.themes['@current'].locals || window.themes['@current'].default.locals
+     )
+    })
+  }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
 
@@ -263,7 +276,7 @@ const settings = observable({
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'exclude_files', 'enable_new_editor'],
+    _keys: ['language', 'exclude_files'],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -280,19 +293,6 @@ const settings = observable({
         config.fileExcludePatterns = value.split(',')
       }
     },
-    enable_new_editor: {
-      name: 'settings.general.switchOldEditor',
-      value: config.switchOldEditor,
-      reaction () {
-      },
-      nopersist: true,
-      onConfirm (value) {
-        localStorage.setItem('switchOldEditor', value)
-        setTimeout(() => {
-          window.location.reload()
-        }, 200)
-      }
-    }
   }),
 
   editor: new DomainSetting({

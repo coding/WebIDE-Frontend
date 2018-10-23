@@ -2,32 +2,50 @@ import CodingSDK from 'CodingSDK'
 import { toJS, observable } from 'mobx'
 import { pluginSettingStore } from 'components/Setting/state'
 import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
+import emitter, { THEME_CHANGED } from 'utils/emitter'
+import settings from '../settings'
 
 class PluginApp {
   constructor (options) {
     this.sdk = new CodingSDK(options) || ''
     this.inializeData = this.sdk.getData() || {}
+    this.styles = options.styles
+    this.prevTheme = settings.appearance.ui_theme.value
+    if (this.styles[this.prevTheme]) {
+      this.styles[this.prevTheme].use()
+    }
+    emitter.on(THEME_CHANGED, (themeId) => {
+      if (themeId !== this.prevTheme) {
+        if (this.styles[themeId]) {
+          if (this.styles[this.prevTheme]) {
+            this.styles[this.prevTheme].unuse()
+          }
+          this.styles[themeId].use()
+        }
+        this.prevTheme = themeId
+      }
+    })
   }
 
   get injectComponent () {
     return this.sdk.injectComponent
   }
 
-  get request () {
-    return this.sdk.utils.request
-  }
+  // get request () {
+  //   return this.sdk.utils.request
+  // }
   get i18n () {
     const i18n = this.sdk.i18n.i18nComponent
     i18n.get = this.sdk.i18n.getCache
     i18n.language = this.sdk.language
     return i18n
   }
-  get sdk () {
-    return this._sdk
-  }
-  set sdk (sdk) {
-    this._sdk = sdk
-  }
+  // get sdk () {
+  //   return this._sdk
+  // }
+  // set sdk (sdk) {
+  //   this._sdk = sdk
+  // }
 }
 
 export function appRegistry (obj, callback) {
@@ -62,6 +80,12 @@ export function registerPluginConfigChangeHandler (key, fn) {
   return () => {
     pluginConfigEventStore[key] = pluginConfigEventStore[key].filter(f => f !== fn)
   }
+}
+
+export const IPropertiesType = {
+  string: 'string',
+  array: 'array',
+  boolean: 'boolean',
 }
 
 export default PluginApp

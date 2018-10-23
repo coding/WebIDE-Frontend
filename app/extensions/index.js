@@ -6,7 +6,7 @@ import * as command from './command'
 import * as modal from './modal.ext'
 import * as actions from './actions'
 import * as terminal from './terminal.ext'
-import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler } from './pluginApp.ext'
+import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler, IPropertiesType } from './pluginApp.ext'
 
 export default {
   file,
@@ -22,4 +22,5 @@ export default {
   registerPluginConfiguration,
   getPluginConfiguration,
   registerPluginConfigChangeHandler,
+  IPropertiesType,
 }
