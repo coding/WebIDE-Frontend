@@ -43,8 +43,6 @@ const config = merge(
   {
     entry: {
       main: reactHotLoaderPrependEntries,
-      // workspaces: reactHotLoaderPrependEntries,
-      // login: reactHotLoaderPrependEntries,
       // intro: reactHotLoaderPrependEntries,
     }
   },
@@ -75,27 +73,10 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      // excludeChunks: ['workspaces', ],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       // favicon: ICO_PATH,
     }),
-    // new HtmlWebpackPlugin({
-    //   title: 'Coding WebIDE',
-    //   multihtmlCatch: true,
-    //   excludeChunks: ['workspaces', 'main'],
-    //   filename: (staticDir ? '../' : '') + accountEntryHtmlName,
-    //   template: path.join(PROJECT_ROOT, 'app/account.html'),
-    //   // favicon: ICO_PATH,
-    // }),
-    // new HtmlWebpackPlugin({
-    //   title: 'Coding WebIDE',
-    //   multihtmlCatch: true,
-    //   excludeChunks: ['workspaces', 'main'],
-    //   filename: (staticDir ? '../' : '') + loginEntryHtmlName,
-    //   template: path.join(PROJECT_ROOT, 'app/login.html'),
-    //   // favicon: ICO_PATH,
-    // }),
     // new HtmlWebpackPlugin({
     //   title: 'Coding WebIDE',
     //   inject: false,
