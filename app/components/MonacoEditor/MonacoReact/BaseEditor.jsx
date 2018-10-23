@@ -58,9 +58,9 @@ class MonacoEditor extends React.PureComponent {
     this.containerElement.appendChild(this.editorElement)
     const { monacoEditor } = this.editor
     const { tab } = this.props
-    if (this.props.active) {
-      monacoEditor.focus()
-    }
+    // if (this.props.active) {
+    //   monacoEditor.focus()
+    // }
     this.didmount = true
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()

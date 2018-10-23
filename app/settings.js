@@ -57,6 +57,7 @@ if (config.isLib) {
 export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 export const monacoThemeOptions = ['vs-dark']
+export const fileIconOptions = ['default']
 
 const changeUITheme = (nextThemeId) => {
   if (!config.switchOldEditor) {
@@ -208,6 +209,7 @@ const settings = observable({
     _keys: [
       'ui_theme',
       'syntax_theme',
+      'file_icon_theme',
       'font_size',
       'terminal_font_size'
     ],
@@ -222,6 +224,14 @@ const settings = observable({
       value: 'vs-dark',
       options: monacoThemeOptions,
       reaction: changeSyntaxTheme,
+    },
+    file_icon_theme: {
+      name: 'settings.appearance.file_icon_theme',
+      value: 'default',
+      options: fileIconOptions,
+      reaction: (value) => {
+        config.fileicons = value
+      }
     },
     font_size: {
       name: 'settings.appearance.fontSize',

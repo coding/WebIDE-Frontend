@@ -37,6 +37,7 @@ const closeFileTab = async (e, tab, removeTab) => {
 }
 
 let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClickHandler }) => {
+  console.log(tab.title)
   const tabLabelId = `tab_label_${tab.id}`
   return (
     <li className={cx('tab-label', {
@@ -61,8 +62,8 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       }}
       onContextMenu={e => openContextMenu(e, tab)}
     >
-      {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div>: null}
-      {tab.icon ? <div className={`icon ${tab.icon}`}></div>: null}
+      {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div> : null}
+      {tab.icon && <div className={`icon ${tab.icon}`} />}
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>×</i>
