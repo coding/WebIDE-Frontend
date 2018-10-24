@@ -156,11 +156,7 @@ class CreateProject extends PureComponent {
           <CreateEmptyWs
             submit={this.submit}
             projectName={emptyName}
-<<<<<<< HEAD
-            showTitle={false}
-=======
             title={i18n`project.emptyNotGitHeader`}
->>>>>>> d0ecc90d5a3a4479da956b9a21d36b24aa6face8
             onChange={this.handleChangeEmptyProjectName}
           />
         )
