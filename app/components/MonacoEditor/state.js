@@ -85,7 +85,7 @@ class EditorInfo {
           activeEditorListener({ uri: this.uri, editor: monacoEditor })
         }
       }
-    )
+    })
     if (state.mountListeners && state.mountListeners.length > 0) {
       for (const mountListener of state.mountListeners) {
         mountListener(monacoEditor)
