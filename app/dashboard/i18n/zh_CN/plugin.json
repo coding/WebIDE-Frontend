@@ -8,8 +8,18 @@
     "inputRepoName": "用于生成腾讯云开发者平台项目，仅支持数字、字母、下划线(_)和中划线(-)",
     "inputPluginDesc": "简单描述一下这个插件的作用",
     "viewPluginMarket": "浏览插件市场",
-    "currentVersion": "当前版本",
-    "newVersion": "新版本",
-    "versionMessage": "版本说明",
-    "inputVersionMessage": "请输入本次版本添加或修改的功能记录"
+    "currentRelease": "当前版本",
+    "releaseMessage": "版本说明",
+    "inputReleaseMessage": "请输入本次版本添加或修改的功能记录",
+    "prePublish": "预发布",
+    "publishTip": "在发布新版本之前请确保当前代码已经提交并推送到远程仓库。因为我们是根据空间绑定的腾讯云开发者平台的仓库地址获取代码打包编译，所以请不要删除对应的仓库。",
+    "prePublishTip": "预发布与发布的区别",
+    "publishTooltip": "预发布只会在您自己的所有工作空间安装该插件，而发布是会提交到后台，经审核通过后进入插件市场。",
+    "versionTip": "新版本必须高于老版本",
+    "statusDev": "您的插件尚未发布版本，处于对外不可见状态，您可以点击继续开发来提交版本以发布插件。",
+    "statusBuildFail": "尊敬的开发者，您的插件在构建时发生了错误，请前往工作空间查看错误日志。",
+    "statusAuditing": "您的插件正在审核中，一般为 3-5 个工作日，在此期间您不可以进行更改，请耐心等待。",
+    "statusAuditPass": "尊敬的开发者，您的插件 v{{version}} 版本发布成功！",
+    "statusAuditFailure": "尊敬的开发者，您的插件审核失败，原因为存在安全隐患，请修改代码后重新提交。",
+    "creatingPlugin": "正在创建插件..."
 }

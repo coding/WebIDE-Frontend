@@ -54,6 +54,7 @@
     "deletedTime": "Deleted {{hours}} hours {{minutes}} minutes {{seconds}} seconds ago",
     "copyed": "Copyed",
     "noDesc": "[No Description]",
+    "management": "Management",
     "install": "Install",
     "uninstall": "Uninstall",
     "category": "Category",
@@ -61,5 +62,5 @@
     "save": "Save",
     "publish": "Publish",
     "status": "Status",
-    "underReview": "Under Review"
+    "release": "Release"
 }

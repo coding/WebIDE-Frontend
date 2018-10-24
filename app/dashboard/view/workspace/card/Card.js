@@ -6,7 +6,7 @@ import ToolTip from '../../../share/toolTip';
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { tencentOrigin } from '../../../utils/config';
-import { getModifiedDate, getDeletedTime } from '../../../utils/date';
+import { getCreatedTime, getModifiedDate, getDeletedTime } from '../../../utils/date';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
@@ -14,7 +14,7 @@ class Card extends Component {
 
     render() {
         const { isTTOn } = this.state;
-        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
+        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -42,14 +42,15 @@ class Card extends Component {
         const invalid = workingStatus === 'Invalid';
         const canotOpen = hasWSOpend && workingStatus !== 'Online';
         const title = `${ownerName}/${projectName}`;
+        const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
         return (
             <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
-                <div className="spacekey">
+                {/* <div className="spacekey">
                     <div className="s" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}>S</div>
                     <ToolTip on={isTTOn} message={isTTOn ? `SpaceKey: ${spaceKey}` : ''} placement="right" />
-                </div>
-                <div className="inner">
-                    <div className="title" title={title}>{title}</div>
+                </div> */}
+                <div className="inner" title={attr}>
+                    <div className="title">{title}</div>
                     <div className="desc">
                         {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), deleteTime)}
                     </div>

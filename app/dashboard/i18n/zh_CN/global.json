@@ -54,6 +54,7 @@
     "deletedTime": "删除于 {{hours}} 小时 {{minutes}} 分 {{seconds}} 秒前",
     "copyed": "复制完成",
     "noDesc": "[暂无描述]",
+    "management": "管理",
     "install": "安装",
     "uninstall": "卸载",
     "category": "分类",
@@ -61,5 +62,5 @@
     "save": "保存",
     "publish": "发布",
     "status": "状态",
-    "underReview": "审核中"
+    "release": "版本"
 }

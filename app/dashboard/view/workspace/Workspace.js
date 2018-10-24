@@ -30,27 +30,31 @@ class Workspace extends Component {
                     <NewWs />
                     <NewPlugin />
                 </div>
-                <div className="created">
-                    <div className="caption">
-                        <div className="title">{i18n('ws.myWorkspace')} ({wsCount})</div>
-                        <div className="tip">
-                            {i18n('ws.wsTip', { limit: wsLimit })}
-                            <a href="https://dev.tencent.com/help/cloud-studio/about-new-cloud-studio#i" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                {
+                    workspaces.length ? (
+                        <div className="created">
+                            <div className="caption">
+                                <div className="title">{i18n('ws.myWorkspace')} ({wsCount})</div>
+                                <div className="tip">
+                                    {i18n('ws.wsTip', { limit: wsLimit })}
+                                    <a href="https://dev.tencent.com/help/cloud-studio/workspace-introduction" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                                </div>
+                            </div>
+                            <div className="card-box">
+                                {
+                                    workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                                        globalKey={globalKey}
+                                        hasWSOpend={hasWSOpend}
+                                        opendSpaceKey={opendSpaceKey}
+                                        showMask={showMask}
+                                        hideMask={hideMask}
+                                        handleFetch={this.handleFetch} />
+                                    )
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div className="card-box">
-                        {
-                            workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                                globalKey={globalKey}
-                                hasWSOpend={hasWSOpend}
-                                opendSpaceKey={opendSpaceKey}
-                                showMask={showMask}
-                                hideMask={hideMask}
-                                handleFetch={this.handleFetch} />
-                            )
-                        }
-                    </div>
-                </div>
+                    ) : null
+                }
                 {
                     workspacesInvalid.length ? (
                         <div className="deleted">
@@ -149,6 +153,7 @@ class Workspace extends Component {
             ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
             ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
+            ws.createDate = item.createDate;
             ws.lastModifiedDate = item.lastModifiedDate;
             ws.workingStatus = item.workingStatus;
             ws.collaborative = item.collaborative;
