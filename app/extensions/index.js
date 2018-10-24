@@ -1,5 +1,5 @@
 import * as file from './File.ext.js'
-import * as git from './Fit.ext.js'
+import * as git from './Git.ext.js'
 import * as editor from './Editor.ext.js'
 import * as menu from './Menu.ext.js'
 import * as command from './command'

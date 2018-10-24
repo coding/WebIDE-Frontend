@@ -1,5 +1,5 @@
 import dispatchCommand from 'commands/dispatchCommand'
-import FileState from 'commons/file/state'
+import FileState from 'commons/File/state'
 import * as fileApi from 'backendAPI/fileAPI'
 import { fileIconProviders } from 'components/FileTree/state'
 import { fileIconOptions } from 'settings'

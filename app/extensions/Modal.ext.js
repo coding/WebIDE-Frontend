@@ -1,4 +1,4 @@
-import * as modalActions from 'components/modal/actions'
+import * as modalActions from 'components/Modal/actions'
 
 export function modalRegister (name, component, command) {
   modalActions.modalRegister(name, component, command)
