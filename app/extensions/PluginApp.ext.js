@@ -11,7 +11,7 @@ class PluginApp {
     this.inializeData = this.sdk.getData() || {}
     this.styles = options.styles
     this.prevTheme = settings.appearance.ui_theme.value
-    if (this.styles[this.prevTheme]) {
+    if (this.styles && this.styles[this.prevTheme]) {
       this.styles[this.prevTheme].use()
     }
     emitter.on(THEME_CHANGED, (themeId) => {
