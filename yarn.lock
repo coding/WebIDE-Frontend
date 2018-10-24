@@ -6422,9 +6422,9 @@ monaco-editor-webpack-plugin@^1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/monaco-editor-webpack-plugin/download/monaco-editor-webpack-plugin-1.3.0.tgz#3a6c1ede01321f24cc1f7b3de8b1e355667840f6"
 
-monaco-editor@0.14.0:
-  version "0.14.0"
-  resolved "http://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.14.0.tgz#c7f709cfc77a76d2d9ab1edb2e0d137dfb8e4f76"
+monaco-editor@0.13.1:
+  version "0.13.1"
+  resolved "http://registry.npm.taobao.org/monaco-editor/download/monaco-editor-0.13.1.tgz#6b9ce20e4d1c945042d256825eb133cb23315a52"
 
 monaco-languageclient@^0.6.3:
   version "0.6.3"
