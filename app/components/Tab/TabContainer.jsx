@@ -55,6 +55,9 @@ class TabContainer extends Component {
     this.state = {
       fullScreenActiveContent: false,
     }
+    autorun(() => {
+      this.setState({ fullScreenActiveContent: config.isFullScreen });
+    })
   }
 
   componentDidMount () {

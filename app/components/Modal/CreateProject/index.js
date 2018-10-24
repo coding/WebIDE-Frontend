@@ -86,7 +86,7 @@ class CreateProject extends PureComponent {
   state = {
     step: 0,
 
-    types: [radioGroup[0].items[0].type, radioGroup[1].items[0].type, radioGroup[2].items[0].type],
+    types: [radioGroup[0].items[0].type, radioGroup[1].items[1].type, radioGroup[2].items[0].type],
     // ws with git
     projectName: '',
 
@@ -156,7 +156,11 @@ class CreateProject extends PureComponent {
           <CreateEmptyWs
             submit={this.submit}
             projectName={emptyName}
+<<<<<<< HEAD
             showTitle={false}
+=======
+            title={i18n`project.emptyNotGitHeader`}
+>>>>>>> d0ecc90d5a3a4479da956b9a21d36b24aa6face8
             onChange={this.handleChangeEmptyProjectName}
           />
         )
