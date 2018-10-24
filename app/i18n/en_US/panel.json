@@ -7,5 +7,8 @@
    "left": {
       "project": "Project",
       "working": "Working"
-   }
+   },
+   "right": {
+    "plugin": "Plugin Development"
+  }
 }

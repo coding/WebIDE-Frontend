@@ -1,6 +1,9 @@
 const keycodes = require('./keycodes')
 const MODIFIERS_LIST = ['meta', 'ctrl', 'shift', 'alt']
 
+const os = (navigator.platform.match(/mac|win|linux/i) || ['other'])[0].toLowerCase()
+export const isMac = (os === 'mac')
+
 export function keyEventToKeyCombination (e, combinator) {
   // ensure comb always in the order spec by MODIFIERS_LIST
   const modString = MODIFIERS_LIST.filter(mod => e[`${mod}Key`]).join(combinator)
@@ -29,4 +32,16 @@ export function normalizeKeys (keys, combinator='+', delimiter=' ') {
     return keyEventToKeyCombination(keyEventObj, combinator)
   })
   .join(delimiter)
+}
+
+export function flattenKeyMaps (keymaps) {
+  return keymaps.reduce((pre, cur) => {
+    const { mac, win, command } = cur
+    if (isMac) {
+      pre[mac] = command
+    } else {
+      pre[win] = command
+    }
+    return pre
+  }, {})
 }

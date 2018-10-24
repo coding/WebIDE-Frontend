@@ -10,6 +10,7 @@ import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
 import FileList from '../Tab/fileList'
 import config from '../../config'
+import PluginDev from 'components/PluginDev'
 import FileTreeToolBar from 'components/FileTreeToolBar'
 
 
@@ -36,7 +37,13 @@ const PanelContent = ({ panel }) => {
       return <SideBar side={panel.id.toLowerCase().replace('bar_', '')} />
 
     case 'PANEL_RIGHT':
-      return <SidePanelContainer side='right' />
+      return (
+        <SidePanelContainer side='right'>
+          <SidePanelView key='project' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
+            <PluginDev />
+          </SidePanelView>
+        </SidePanelContainer>
+      )
 
     case 'PANEL_LEFT':
       return (

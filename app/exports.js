@@ -1,3 +1,5 @@
+import cloudstudio from './extensions'
+
 const app = {
   backendAPI: require('backendAPI'),
   commands: require('commands'),
@@ -32,4 +34,4 @@ const lib = {
   socketIOClient: require('socket.io-client')
 }
 
-export { app, lib }
+export { app, lib, cloudstudio }

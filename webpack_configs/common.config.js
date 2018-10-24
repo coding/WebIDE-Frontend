@@ -37,7 +37,6 @@ module.exports = function(options = {}) {
   //   ? `${process.env.QINIU_SERVER}/`
   //   : path.join('/', staticDir, '/')
 
-  
   // const publicPath = process.env.TENCENT_COS_SERVER // publicPath should end with '/'
   //   ? `${process.env.TENCENT_COS_SERVER}/${commitId}/`
   //   : path.join('/', staticDir, '/')
@@ -45,7 +44,9 @@ module.exports = function(options = {}) {
   let publicPath = ''
   if (process.env.TENCENT_COS_SERVER) {
     // Get short CommitId
-    const commitId= execSync('git rev-parse --short HEAD').toString().replace('\n', '')
+    const commitId = execSync('git rev-parse --short HEAD')
+      .toString()
+      .replace('\n', '')
     publicPath = `${process.env.TENCENT_COS_SERVER}/${commitId}/`
   } else if (process.env.QINIU_BUCKET) {
     publicPath = `${process.env.QINIU_SERVER}/`
@@ -56,8 +57,8 @@ module.exports = function(options = {}) {
   return {
     entry: {
       main: [path.join(PROJECT_ROOT, 'app')],
-      workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
-      login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
+      // workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
+      // login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
       // intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],
       vendor: ['@babel/polyfill', 'react', 'react-dom', 'redux', 'react-redux']
     },
@@ -85,17 +86,25 @@ module.exports = function(options = {}) {
     },
     optimization: {
       splitChunks: {
+        minChunks: 1,
+        chunks: 'all',
         cacheGroups: {
+          commons: {
+            name: 'commons',
+            chunks: 'initial',
+            minChunks: 2
+          },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            minSize: 30000,
-            minChunks: 1,
-            chunks: 'initial',
-            priority: 1
+            priority: -10
           },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
         }
-      },
+      }
     },
     plugins: [
       gitRevisionPlugin,

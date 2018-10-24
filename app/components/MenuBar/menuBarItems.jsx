@@ -240,7 +240,7 @@ const menuBarItems = observable([
         command: () => config.isFullScreen = !config.isFullScreen
       }
     ]
-  }
+  },
 ])
 
 const isRebasing = [

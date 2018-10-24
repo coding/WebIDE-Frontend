@@ -8,6 +8,7 @@ import { dispatch } from '../../store'
 import * as Modal from '../../components/Modal/actions'
 import config from 'config'
 import dispatchCommand from 'commands/dispatchCommand'
+import { fileIconProviders } from 'components/FileTree/state'
 
 const closeFileTab = async (e, tab, removeTab, activateTab) => {
   e.stopPropagation()
@@ -15,14 +16,11 @@ const closeFileTab = async (e, tab, removeTab, activateTab) => {
     removeTab(tab.id)
     return
   }
+  const editor = tab.editorInfo.monacoEditor
 
-  activateTab(tab.id)
-
-  const isMonaco = !config.switchOldEditor
-  const editor = isMonaco ? tab.editorInfo.monacoEditor : tab.editor.cm
   const content = (editor && editor.getValue) ? editor.getValue() : ''
 
-  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory') ) {
+  if (!tab.file && content && tab.editorInfo.uri.includes('inmemory')) {
     const confirmed = await Modal.showModal('Confirm', {
       header: i18n`file.saveNew`,
       message: i18n`file.newInfo`,
@@ -39,6 +37,37 @@ const closeFileTab = async (e, tab, removeTab, activateTab) => {
     removeTab(tab.id)
   }
 }
+
+const TabIcon = observer(({ fileName, defaultIconStr }) => {
+  const provider = fileIconProviders.get(config.fileicons)
+  if (provider) {
+    let fileIconsProvider = provider
+    if (typeof provider === 'function') {
+      fileIconsProvider = provider()
+    }
+    const { icons: allicons, fileicons: fileiconsMap } = fileIconsProvider
+    let fileiconName = fileiconsMap.defaultIcon
+    const extension = fileName.split('.').pop()
+    for (let i = 0; i < fileiconsMap.icons.length; i += 1) {
+      const fileicon = fileiconsMap.icons[i]
+      if ((fileicon.fileNames && fileicon.fileNames.includes(fileName)) || (fileicon.fileExtensions && fileicon.fileExtensions.includes(extension))) {
+        fileiconName = fileicon.name
+        break
+      }
+    }
+    return (
+      <span
+        className='filetree-node-icon'
+        style={{
+          backgroundImage: `url(${allicons[fileiconName] || allicons[fileiconsMap.defaultIcon]})`,
+          width: 15,
+          height: 15
+        }}
+      />
+    )
+  }
+  return <div className={`icon ${defaultIconStr}`} />
+})
 
 let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClickHandler }) => {
   const tabLabelId = `tab_label_${tab.id}`
@@ -65,8 +94,8 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       }}
       onContextMenu={e => openContextMenu(e, tab)}
     >
-      {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div>: null}
-      {tab.icon ? <div className={`icon ${tab.icon}`}></div>: null}
+      {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div> : null}
+      <TabIcon fileName={tab.title} defaultIconStr={tab.icon} />
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => closeFileTab(e, tab, removeTab, activateTab)}>×</i>

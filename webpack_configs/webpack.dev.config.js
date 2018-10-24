@@ -44,8 +44,6 @@ const config = merge(
   {
     entry: {
       main: reactHotLoaderPrependEntries,
-      workspaces: reactHotLoaderPrependEntries,
-      login: reactHotLoaderPrependEntries,
       // intro: reactHotLoaderPrependEntries,
     }
   },
@@ -76,32 +74,8 @@ const config = merge(
     new HtmlWebpackPlugin({
       title: 'Cloud Studio',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
-      // favicon: ICO_PATH,
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Cloud Studio',
-      multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
-      filename: (staticDir ? '../' : '') + accountEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/account.html'),
-      // favicon: ICO_PATH,
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Cloud Studio',
-      multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
-      filename: (staticDir ? '../' : '') + loginEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/login.html'),
-      // favicon: ICO_PATH,
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Cloud Studio',
-      inject: false,
-      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/export.html'),
       // favicon: ICO_PATH,
     }),
     // new HtmlWebpackPlugin({

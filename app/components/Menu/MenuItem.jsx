@@ -5,6 +5,7 @@ import MenuSheet from './MenuSheet'
 import MenuContextTypes from './MenuContextTypes'
 import { isFunction, isBoolean } from 'utils/is'
 import { connect } from 'react-redux'
+import keymapStore, { modifierKeysMap, getFlattenAllKeymaps } from 'commands/keymaps'
 
 const handleMenuItemCommand = (command, menuContext) => {
   if (typeof command === 'function') {
@@ -16,6 +17,20 @@ const handleMenuItemCommand = (command, menuContext) => {
     return true
   }
 }
+
+const findKeyByValue = value => {
+  return Object.keys(getFlattenAllKeymaps()).reduce((p, v) => {
+    p[getFlattenAllKeymaps()[v]] = v
+    return p
+  }, {})[value] || ''
+}
+
+const withModifierKeys = value =>
+  value
+    .split('+')
+    .map(e => modifierKeysMap[e] || e.toUpperCase())
+    .join('')
+
 
 class MenuItem extends Component {
   constructor (props) {
@@ -90,11 +105,13 @@ class MenuItem extends Component {
     if (execCommandSuccess) this.context.deactivateTopLevelMenu()
   }
 
+  getShortCut = (command) => {
+    return withModifierKeys(findKeyByValue(command))
+  }
 
   render () {
     const { item, isActive, currentBranch } = this.props
     const itemElement = item.element ? React.createElement(item.element, { item }) : null
-
     const isDisabled = isBoolean(item.isDisabled) ? item.isDisabled
       : isFunction(item.getIsDisabled) ? item.getIsDisabled(this.context.menuContext)
       : isFunction(item.isNotGitProject) && item.isNotGitProject(currentBranch)
@@ -115,9 +132,8 @@ class MenuItem extends Component {
             </div>
           )}
           <div className='menu-item-name'>{itemElement || item.displayName || item.name}{item.showMore && '...'}</div>
-          { item.shortcut
-            ? <div className='menu-item-shortcut'>{item.shortcut}</div>
-          : null }
+          { this.getShortCut(item.command)
+            && <div className='menu-item-shortcut'>{this.getShortCut(item.command)}</div>}
           {item.items && <div className='menu-item-triangle'>▶</div>}
         </div>
         {item.items && (isActive && this.state.isSubmenuShown) &&

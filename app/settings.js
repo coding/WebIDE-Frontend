@@ -57,6 +57,7 @@ if (config.isLib) {
 export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
 export const monacoThemeOptions = ['vs-dark']
+export const fileIconOptions = ['default']
 
 const changeUITheme = (nextThemeId) => {
   if (!config.switchOldEditor) {
@@ -79,19 +80,15 @@ const changeUITheme = (nextThemeId) => {
      )
     })
   }
-
-  const editorTheme = EditorState.options.theme
-  if (nextThemeId === 'dark' && (editorTheme === 'default' || editorTheme === 'neo' || editorTheme === 'eclipse')) {
-    settings.appearance.syntax_theme.value = 'material'
-  } else if (nextThemeId === 'light' && (editorTheme === 'monokai' || editorTheme === 'material')) {
-    settings.appearance.syntax_theme.value = 'default'
-  }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
 
 const changeSyntaxTheme = (nextSyntaxThemeId) => {
-  if (config.switchOldEditor && !nextSyntaxThemeId.startsWith('vs')) {
-    if (EditorState) EditorState.options.theme = nextSyntaxThemeId
+  if (monacoThemeOptions.includes(nextSyntaxThemeId)) {
+    monacoConfig.theme = nextSyntaxThemeId
+  } else {
+    const uiTheme = settings.appearance.ui_theme.value
+    monacoConfig.theme = `vs-${uiTheme}`
   }
 }
 
@@ -225,6 +222,7 @@ const settings = observable({
     _keys: [
       'ui_theme',
       'syntax_theme',
+      'file_icon_theme',
       'font_size',
       'terminal_font_size'
     ],
@@ -236,9 +234,17 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: !config.switchOldEditor ? 'vs-dark' : 'material',
-      options: !config.switchOldEditor ? monacoThemeOptions : SyntaxThemeOptions,
+      value: 'vs-dark',
+      options: monacoThemeOptions,
       reaction: changeSyntaxTheme,
+    },
+    file_icon_theme: {
+      name: 'settings.appearance.file_icon_theme',
+      value: 'default',
+      options: fileIconOptions,
+      reaction: (value) => {
+        config.fileicons = value
+      }
     },
     font_size: {
       name: 'settings.appearance.fontSize',
@@ -270,7 +276,7 @@ const settings = observable({
   extensions: new DomainSetting({}),
 
   general: new DomainSetting({
-    _keys: ['language', 'exclude_files', 'enable_new_editor'],
+    _keys: ['language', 'exclude_files'],
     requireConfirm: true,
     language: {
       name: 'settings.general.language',
@@ -287,31 +293,6 @@ const settings = observable({
         config.fileExcludePatterns = value.split(',')
       }
     },
-    enable_new_editor: {
-      name: 'settings.general.switchOldEditor',
-      value: config.switchOldEditor,
-      reaction () {
-      },
-      nopersist: true,
-      onConfirm (value) {
-        config.switchOldEditor = value
-        /* eslint-disable */
-        const syntax_theme = settings.appearance.syntax_theme.value
-        const ui_theme = settings.appearance.ui_theme.value
-        if (!!value) {
-          if (ui_theme === 'dark' && syntax_theme !== 'material') {
-            settings.appearance.syntax_theme.value = 'material'
-          } else if (ui_theme === 'light' && syntax_theme !== 'default') {
-            settings.appearance.syntax_theme.value = 'default'
-          }
-        }
-        /* eslint-enable */
-        localStorage.setItem('switchOldEditor', value)
-        setTimeout(() => {
-          window.location.reload()
-        }, 200)
-      }
-    }
   }),
 
   editor: new DomainSetting({

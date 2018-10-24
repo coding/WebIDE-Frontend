@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Provider, connect } from 'react-redux'
 import { Provider as MobxProvider } from 'mobx-react'
-
+import { PluginRegistry } from 'utils/plugins'
 import store from '../../store' // initLifecycle_1: gives the defaultState
 import mobxStore from '../../mobxStore'
 import IDE from '../IDE'
@@ -14,6 +14,14 @@ class Root extends Component {
   }
   componentWillMount () {
     // this.props.dispatch(initState()) // initLifecycle_2
+  }
+  componentDidMount () {
+    const plugins = PluginRegistry.findAllByType('Required')
+    plugins.forEach((plugin) => {
+      if (plugin.detaultInstance.pluginDidMount) {
+        plugin.detaultInstance.pluginDidMount(plugin)
+      }
+    })
   }
   render () {
     return <IDE />
