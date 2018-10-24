@@ -1,12 +1,12 @@
-import * as file from './file.ext'
-import * as git from './git.ext'
-import * as editor from './editor.ext'
-import * as menu from './menu.ext'
+import * as file from './file.ext.js'
+import * as git from './git.ext.js'
+import * as editor from './editor.ext.js'
+import * as menu from './menu.ext.js'
 import * as command from './command'
-import * as modal from './modal.ext'
+import * as modal from './modal.ext.js'
 import * as actions from './actions'
-import * as terminal from './terminal.ext'
-import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler, IPropertiesType } from './pluginApp.ext'
+import * as terminal from './terminal.ext.js'
+import PluginApp, { appRegistry, registerPluginConfiguration, getPluginConfiguration, registerPluginConfigChangeHandler, IPropertiesType } from './PluginApp.ext.js'
 
 export default {
   file,
