@@ -30,18 +30,18 @@ class GlobalPrompt extends Component {
     // })
 
     // if (!localStorage.getItem('visited')) {
-    //   promptMessage.push({
-    //     content: (
-    //       <p>
-    //         WebIDE 现已全面升级为 Cloud Studio, 使用旧版 IDE 请点击{' '}
-    //         <a href='https://ide.coding.net' target='_blank' rel='noopener noreferrer'>
-    //           WebIDE
-    //         </a>{' '}
-    //       </p>
-    //     ),
-    //     id: `global-prompt-${id++}`,
-    //     type: 'update'
-    //   })
+    promptMessage.push({
+      content: (
+        <p>
+          Cloud Studio 已在腾讯云开发者平台中全面升级，升级后您可以获得更好体验，详情参见{' '}
+          <a href='/export' target='_blank' rel='noopener noreferrer'>
+          这里
+          </a>{' '}
+        </p>
+      ),
+      id: `global-prompt-${id++}`,
+      type: 'update'
+    })
     // }
 
     if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
@@ -69,7 +69,7 @@ class GlobalPrompt extends Component {
           // </p>
           <p>
             {i18n`global.offlineInfo`}
-            <a href='https://ide.coding.net' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
+            <a href='https://studio.dev.tencent.com' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,

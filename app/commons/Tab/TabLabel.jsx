@@ -10,13 +10,14 @@ import config from 'config'
 import dispatchCommand from 'commands/dispatchCommand'
 import { fileIconProviders } from 'components/FileTree/state'
 
-const closeFileTab = async (e, tab, removeTab) => {
+const closeFileTab = async (e, tab, removeTab, activateTab) => {
   e.stopPropagation()
   if (tab.tabGroupId === 'terminalGroup') {
     removeTab(tab.id)
     return
   }
   const editor = tab.editorInfo.monacoEditor
+
   const content = (editor && editor.getValue) ? editor.getValue() : ''
 
   if (!tab.file && content && tab.editorInfo.uri.includes('inmemory')) {
@@ -26,6 +27,7 @@ const closeFileTab = async (e, tab, removeTab) => {
     })
     if (confirmed) {
       Modal.dismissModal()
+      console.log('ah')
       dispatchCommand('file:save')
     } else {
       Modal.dismissModal()
@@ -96,7 +98,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       <TabIcon fileName={tab.title} defaultIconStr={tab.icon} />
       <div className='title'>{tab.title}</div>
       <div className='control'>
-        <i className='close' onClick={e => closeFileTab(e, tab, removeTab)}>×</i>
+        <i className='close' onClick={e => closeFileTab(e, tab, removeTab, activateTab)}>×</i>
         <i className='dot'></i>
       </div>
     </li>

@@ -36,6 +36,7 @@ const mainEntryHtmlName = 'workspace.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 // const changelogEntryHtmlName = 'changelog.html'
+const exportEntryHtmlName = 'export.html'
 
 const staticDir = ''
 
@@ -71,14 +72,14 @@ const config = merge(
   { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       // favicon: ICO_PATH,
     }),
     // new HtmlWebpackPlugin({
-    //   title: 'Coding WebIDE',
+    //   title: 'Cloud Studio',
     //   inject: false,
     //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
     //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
