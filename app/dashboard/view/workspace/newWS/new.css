@@ -1,4 +1,4 @@
-.dash-workspace .new-ws {
+.dash-workspace .new {
     display: flex;
     align-items: center;
     padding: 12px;
@@ -8,10 +8,10 @@
     color: #fff;
     background-color: #3b3b3b;
 }
-.dash-workspace .new-ws.disabled {
+.dash-workspace .new.disabled {
     cursor: not-allowed;
 }
-.dash-workspace .new-ws .avatar {
+.dash-workspace .new .avatar {
     width: 74px;
     height: 74px;
     margin-right: 10px;
@@ -19,7 +19,7 @@
     background-color: #3f3f3f;
     position: relative;
 }
-.dash-workspace .new-ws .avatar::before {
+.dash-workspace .new .avatar::before {
     content: '';
     width: 40px;
     height: 4px;
@@ -29,7 +29,7 @@
     top: 35px;
     left: 17px;
 }
-.dash-workspace .new-ws .avatar::after {
+.dash-workspace .new .avatar::after {
     content: '';
     width: 4px;
     height: 40px;
@@ -39,20 +39,35 @@
     top: 17px;
     left: 35px;
 }
-.dash-workspace .new-ws .content {
+.dash-workspace .new .content {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     width: calc(100% - 94px);
 }
-.dash-workspace .new-ws .title {
+.dash-workspace .new .title {
     width: 100%;
     font-size: 16px;
 }
-.dash-workspace .new-ws.disabled .title {
+.dash-workspace .new.disabled .title {
     color: #9d9d9d;
 }
-.dash-workspace .new-ws .desc {
+.dash-workspace .new .desc {
     width: 100%;
     margin-top: 10px;
+}
+
+@media screen and (min-width: 1800px) {
+    .dash-workspace .new .avatar {
+        width: 94px;
+        height: 94px;
+    }
+    .dash-workspace .new .avatar::before {
+        width: 60px;
+        top: 45px;
+    }
+    .dash-workspace .new .avatar::after {
+        height: 60px;
+        left: 45px;
+    }
 }

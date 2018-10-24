@@ -246,6 +246,9 @@
     }
 
     .user {
+      display: flex;
+      align-items: center;
+      height: 36px;
       float: right;
     }
     .user a {
@@ -269,6 +272,7 @@
     .user .user-info .avatar {
       width: 36px;
       height: 36px;
+      vertical-align: middle;
       border-radius: 50%;
       border: 1px solid #fff;
     }
@@ -402,7 +406,7 @@
       right: 0;
       padding: 30px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
     }
 
     .page-header .logo {
@@ -1476,7 +1480,7 @@
       <a href="/signin" class="btn">登录</a>
     </div>
     <div class="user-info" id="user-info">
-      <a href="https://coding.net/user/account" target="_blank" rel="noopener noreferrer">
+      <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
         <img src="" alt="avatar" class="avatar">
       </a>
       <div class="dropdown">

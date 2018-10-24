@@ -185,7 +185,7 @@ class Coding extends Component {
         const { globalKey, showLoading, hideLoading } = this.props;
         const workspaceOption = {
             cpuLimit: 2,
-            memory: 512,
+            memory: 2048,
             storage: 2,
             source: 'Coding',
             //desc,

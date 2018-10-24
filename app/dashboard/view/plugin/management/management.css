@@ -31,14 +31,14 @@
 .dash-developedbyme-config .info .key {
     margin-right: 6px;
 }
-.dash-developedbyme-config .info .review-status {
-    padding: 0 2px;
-    border-radius: 2px;
-    color: #333;
-    background-color: #ccc;
-}
 .dash-developedbyme-config .info .rate-user-count {
     margin-left: 5px;
+}
+.dash-developedbyme-config .audit-status {
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: #5c5c5c;
 }
 .dash-developedbyme-config .tab {
     display: flex;
@@ -61,12 +61,7 @@
     border-right-color: #555;
     border-bottom-color: #333;
 }
-.dash-developedbyme-config .panel {
-    padding-top: 40px;
-}
-.dash-developedbyme-config .version-number {
-    width: 70px;
-}
-.dash-developedbyme-config .version-dot {
-    margin: 0 10px;
+.dash-developedbyme-config .panel-title {
+    width: 100%;
+    padding: 20px 0;
 }

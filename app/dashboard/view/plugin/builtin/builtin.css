@@ -1,0 +1,29 @@
+.dash-plugin .built-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    width: calc(33.33% - 20px);
+    height: 100px;
+    padding: 20px;
+    margin: 0 10px 20px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #3b3b3b;
+    transition: background-color .5s ease;
+}
+/* .dash-plugin .built-card:hover {
+    background-color: #555;
+} */
+.dash-plugin .built-card .name {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #39f;
+}
+.dash-plugin .built-card .desc {
+    width: 100%;
+    color: #b1b1b1;
+}

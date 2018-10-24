@@ -1,5 +1,12 @@
 import i18n from './i18n';
 
+const twoDigit = (num) => {
+    if (num < 10) {
+        return `0${num}`;
+    }
+    return num;
+}
+
 export const getModifiedDate = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
@@ -24,4 +31,15 @@ export const getDeletedTime = (now, lastModified) => {
         s = s < 0 ? 0 : s;
         return i18n('global.deletedTime', { hours: h, minutes: m, seconds: s });
     }
+}
+
+export const getCreatedTime = (now) => {
+    const date = new Date(now);
+    const y = date.getFullYear();
+    const m = twoDigit(date.getMonth() + 1);
+    const d = twoDigit(date.getDate());
+    const h = twoDigit(date.getHours());
+    const n = twoDigit(date.getMinutes());
+    const s = twoDigit(date.getSeconds());
+    return `Created: ${y}-${m}-${d} ${h}:${n}:${s}`;
 }

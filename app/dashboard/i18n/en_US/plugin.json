@@ -8,8 +8,18 @@
     "inputRepoName": "Used to generate Tencent Cloud Dev Platform projects, only supports numbers, letters, underscores (_), and underscores (-)",
     "inputPluginDesc": "Briefly describe the role of this plugin",
     "viewPluginMarket": "View Plugin Market",
-    "currentVersion": "Current Version",
-    "newVersion": "New Version",
-    "versionMessage": "Version Message",
-    "inputVersionMessage": "Please enter the feature record added or modified in this version."
+    "currentRelease": "Current Release",
+    "releaseMessage": "Release Message",
+    "inputReleaseMessage": "Please enter the feature record added or modified in this release.",
+    "prePublish": "Pre Publish",
+    "publishTip": "Make sure the current code has been submitted and pushed to the remote repository before releasing the new version. Because we are based on the spatially bound Tencent cloud developer platform's repository address to obtain code package compilation, so please do not delete the corresponding repository.",
+    "prePublishTip": "The difference between Pre-Publish and Publish",
+    "publishTooltip": "Pre-Publish will only install the plugin in all of your own workspaces, and the Publish will be submitted to the backend and will be entered into the plugin market after being approved.",
+    "versionTip": "The new version must be higher than the old version",
+    "statusDev": "Your plugin has not been released yet and is not visible to the outside world. You can click Continue Development to submit the version to publish the plugin.",
+    "statusBuildFail": "Dear developer, your plugin has an error while building. Please go to the workspace to view the error log.",
+    "statusAuditing": "Your plugin is under review, usually 3-5 business days, during which you can't make changes, please be patient.",
+    "statusAuditPass": "Dear developer, your plugin v{{version}} version was released successfully!",
+    "statusAuditFailure": "Dear developer, your plugin failed to be verified due to a security risk. Please re-submit after modifying the code.",
+    "creatingPlugin": "Creating plugin..."
 }

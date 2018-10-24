@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import './create.css';
 
 import Inbox from '../../../share/inbox';
+import api from '../../../api';
 import i18n from '../../../utils/i18n';
-import api from 'dashboard/api/index';
-
-const types = ['Git 工具', '文件操作', '语言增强', '界面 UI', '主题', '小程序', '配色', '信息提示', '腾讯云', 'Markdown 增强', '快捷键', '终端增强', '文件预览'];
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Create extends Component {
     state = {
+        types: [],
         PluginName: '',
         repoName: '',
-        types: [],
         typeId: '',
         remark: '',
     }
 
     render() {
-        const { pluginName, repoName, typeId, remark } = this.state;
+        const { types, pluginName, repoName, typeId, remark } = this.state;
         const disabled = !pluginName || !repoName || !remark;
         return (
             <div className="dash-create-plugin">
@@ -40,7 +40,7 @@ class Create extends Component {
                     <div className="board-label">{i18n('global.category')}*</div>
                     <div className="board-content">
                         <div className="plugin-type">
-                            {types.map(type => <Type key={type} type={type} on={type === typeId} handler={this.handleType} />)}
+                            {types.map(t => <Type key={t.id} {...t} on={typeId === t.id} handler={this.handleType} />)}
                         </div>
                     </div>
                 </div>
@@ -59,6 +59,18 @@ class Create extends Component {
                 </div>
             </div>
         );
+    }
+
+    componentDidMount() {
+        api.getPluginTypes().then(res => {
+            if (res.code === 0) {
+                this.setState({ types: res.data });
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
     }
 
     handlePluginName = (event) => {
@@ -88,14 +100,34 @@ class Create extends Component {
 
     handleCreate = () => {
         const { pluginName, repoName, typeId, remark } = this.state;
-        api.createPlugin({ pluginName, repoName, typeId, remark }).then(res => {});
+        const { showLoading, hideLoading } = this.props;
+        showLoading({ message: i18n('plugin.creatingPlugin') });
+        // pluginTemplateId 是固定的
+        api.createPlugin({ pluginName, repoName, typeId, pluginTemplateId: 8, remark }).then(res => {
+            hideLoading();
+            if (res.code === 0) {
+                this.props.history.push({ pathname: '/dashboard/workspace' });
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
+        }).catch(err => {
+            hideLoading();
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
     }
 }
 
-const Type = ({ type, on, handler }) => {
+const Type = ({ id, typeName, on, handler }) => {
     return (
-        <div className={`type${on ? ' on' : ''}`} onClick={() => handler(type)}>{type}</div>
+        <div className={`type${on ? ' on' : ''}`} onClick={() => handler(id)}>{typeName}</div>
     );
 }
 
-export default withRouter(Create);
+const mapDispatch = (dispatch) => {
+    return {
+        showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
+        hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
+    }
+}
+
+export default connect(null, mapDispatch)(withRouter(Create));
