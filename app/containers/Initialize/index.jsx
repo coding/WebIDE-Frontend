@@ -73,8 +73,15 @@ class Initialize extends Component {
     let errorInfo = null
     let icon = null
     let info = null
+
+    let loadingStyle = {
+      width: "556px",
+      height: "100%",
+      backgroundImage: `url(${window.serverConfig.BACKEND_URL+"/versions/loading"})`,
+    }
+
     if (config.isPlatform) {
-      icon = <div className='coding-loading'></div>
+      icon = <div className='coding-loading' style={loadingStyle}></div>
       if (state.iconState === 'warning') {
         icon = <div className='coding-warning'></div>
       }
