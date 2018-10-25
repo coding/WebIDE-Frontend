@@ -72,7 +72,7 @@ class Local extends Component {
         const { showLoading, hideLoading } = this.props;
         const option = {
             cpuLimit: 2,
-            memory: 2048,
+            memory: 512,
             storage: 2,
             workspaceName,
             ownerName: 'codingide',
