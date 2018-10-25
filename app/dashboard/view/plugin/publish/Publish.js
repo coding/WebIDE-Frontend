@@ -118,19 +118,19 @@ class Publish extends Component {
 
     handlePost(isPreDeploy) {
         const { major, minor, patch, desc } = this.state;
+        const { pluginId, fetchInfo } = this.props;
         const option = {
-            pluginId: 1,
+            pluginId,
             version: `${major}.${minor}.${patch}`,
             description: desc,
         }
         option.isPreDeploy = isPreDeploy;
         api.publishPlugin(option).then(res => {
             if (res.code === 0) {
-                //
+                fetchInfo();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-            console.log(res);
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });

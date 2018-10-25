@@ -21,5 +21,8 @@
     "statusAuditing": "Your plugin is under review, usually 3-5 business days, during which you can't make changes, please be patient.",
     "statusAuditPass": "Dear developer, your plugin v{{version}} version was released successfully!",
     "statusAuditFailure": "Dear developer, your plugin failed to be verified due to a security risk. Please re-submit after modifying the code.",
-    "creatingPlugin": "Creating plugin..."
+    "creatingPlugin": "Creating plugin...",
+    "hasPrePublish": "This plugin is pre-published and you can ",
+    "cancelPublish": "cancel Pre-Publish",
+    "cannotPublish": "The last release is under review and is temporarily unavailable"
 }

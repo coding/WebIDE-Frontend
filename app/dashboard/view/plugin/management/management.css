@@ -40,6 +40,12 @@
     border-radius: 2px;
     background-color: #5c5c5c;
 }
+.dash-developedbyme-config .cancel-prepublish {
+    margin-top: 20px;
+}
+.dash-developedbyme-config .cancel-prepublish .click {
+    color: #39f;
+}
 .dash-developedbyme-config .tab {
     display: flex;
     margin-top: 40px;
@@ -64,4 +70,11 @@
 .dash-developedbyme-config .panel-title {
     width: 100%;
     padding: 20px 0;
+}
+.dash-developedbyme-config .cannot-publish {
+    width: 100%;
+    padding-top: 100px;
+    text-align: center;
+    font-size: 20px;
+    color: #a1a1a1;
 }

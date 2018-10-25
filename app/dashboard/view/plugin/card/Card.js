@@ -17,7 +17,7 @@ class Card extends Component {
         return (
             <div className="plugin-card">
                 <div className="top">
-                    <Link className="name" to="/">{pluginName}</Link>
+                    <a className="name" href="javascript:;" target="_blank" rel="noopener noreferrer">{pluginName}</a>
                     <div className="author">
                         <img src={src} />
                         <span>{createdBy}</span>
@@ -41,13 +41,13 @@ class Card extends Component {
 
     handleUninstall = (pluginId) => {
         const { fetchThirdParty } = this.props;
+        // status 为 2 表示禁用
         api.uninstallPlugin({ pluginId, status: 2 }).then(res => {
             if (res.code === 0) {
                 fetchThirdParty();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-            console.log(res);
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
