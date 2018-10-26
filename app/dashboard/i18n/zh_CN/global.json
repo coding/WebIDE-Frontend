@@ -62,5 +62,6 @@
     "save": "保存",
     "publish": "发布",
     "status": "状态",
-    "release": "版本"
+    "release": "版本",
+    "modify": "修改"
 }

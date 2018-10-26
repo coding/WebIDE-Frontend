@@ -62,5 +62,6 @@
     "save": "Save",
     "publish": "Publish",
     "status": "Status",
-    "release": "Release"
+    "release": "Release",
+    "modify": "Modification"
 }

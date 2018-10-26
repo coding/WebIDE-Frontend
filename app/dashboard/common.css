@@ -167,7 +167,13 @@
         content: '#';
         padding-right: 3px;
         font-size: 16px;
-        color: #18f;
+        color: #39f;
+    }
+    .com-board .board-label.none {
+        padding-bottom: 0;
+    }
+    .com-board .board-label.none::before {
+        content: none;
     }
     .com-board .board-content {
         width: 100%;

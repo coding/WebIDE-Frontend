@@ -14,13 +14,14 @@ class Create extends Component {
         types: [],
         PluginName: '',
         repoName: '',
-        typeId: '',
+        typeId: 0,
         remark: '',
     }
 
     render() {
         const { types, pluginName, repoName, typeId, remark } = this.state;
-        const disabled = !pluginName || !repoName || !remark;
+        const { canCreate, wsLimit } = this.props;
+        const disabled = !canCreate || !pluginName || !repoName || !typeId || !remark;
         return (
             <div className="dash-create-plugin">
                 <div className="title">{i18n('plugin.createPlugin')}</div>
@@ -53,6 +54,7 @@ class Create extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
+                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
@@ -86,7 +88,7 @@ class Create extends Component {
         if (typeId !== type) {
             this.setState({ typeId: type });
         } else {
-            this.setState({ typeId: '' });
+            this.setState({ typeId: 0 });
         }
     }
 
@@ -123,6 +125,13 @@ const Type = ({ id, typeName, on, handler }) => {
     );
 }
 
+const mapState = (state) => {
+    return {
+        canCreate: state.wsState.canCreate,
+        wsLimit: state.wsState.wsLimit,
+    }
+}
+
 const mapDispatch = (dispatch) => {
     return {
         showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
@@ -130,4 +139,4 @@ const mapDispatch = (dispatch) => {
     }
 }
 
-export default connect(null, mapDispatch)(withRouter(Create));
+export default connect(mapState, mapDispatch)(withRouter(Create));

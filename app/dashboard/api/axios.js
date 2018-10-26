@@ -1,31 +1,14 @@
-import config from '../../config';
+import getCookie from '../utils/cookie';
 
+const baseURL = getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin;
 const axios = {};
-
 const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'application/vnd.coding.v1+json',
     'X-Requested-With': 'XMLHttpRequest',
-}
+};
 
-axios.get = (url, overrideHeaders = {}) => {
-    return fetch(`${config.baseURL}${url}`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: { ...headers, ...overrideHeaders },
-    }).then(res => res.json());
-}
-
-axios.post = (url, data, overrideHeaders = {}) => {
-    return fetch(`${config.baseURL}${url}`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { ...headers, ...overrideHeaders },
-        body: JSON.stringify(data),
-    }).then(res => res.json());
-}
-
-axios.postFormData = (url, formdata, overrideHeaders = {}) => {
+function parseFormdata(formdata) {
     let str = '';
     for (let key in formdata) {
         if (formdata.hasOwnProperty(key)) {
@@ -33,28 +16,41 @@ axios.postFormData = (url, formdata, overrideHeaders = {}) => {
         }
     }
     str = str.slice(1);
-    return fetch(`${config.baseURL}${url}`, {
+    return str;
+}
+
+axios.get = (url, overrideHeaders = {}) => {
+    return fetch(`${baseURL}${url}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { ...headers, ...overrideHeaders },
+    }).then(res => res.json());
+}
+
+axios.post = (url, data, overrideHeaders = {}) => {
+    return fetch(`${baseURL}${url}`, {
         method: 'POST',
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
-        body: str,
+        body: parseFormdata(data),
     }).then(res => res.json());
 }
 
 axios.put = (url, data, overrideHeaders = {}) => {
-    return fetch(`${config.baseURL}${url}`, {
+    return fetch(`${baseURL}${url}`, {
         method: 'PUT',
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
-        body: JSON.stringify(data),
+        body: parseFormdata(data),
     }).then(res => res.json());
 }
 
-axios.delete = (url, overrideHeaders = {}) => {
-    return fetch(`${config.baseURL}${url}`, {
+axios.delete = (url, data, overrideHeaders = {}) => {
+    return fetch(`${baseURL}${url}`, {
         method: 'DELETE',
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
+        body: parseFormdata(data),
     }).then(res => res.json());
 }
 

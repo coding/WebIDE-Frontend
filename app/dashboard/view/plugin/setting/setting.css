@@ -1,51 +1,55 @@
-.dash-developedbyme-config .top {
+.dash-developedbyme-setting .top {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.dash-developedbyme-config .plugin-name {
+.dash-developedbyme-setting .plugin-name {
     font-size: 24px;
     color: #fff;
 }
-.dash-developedbyme-config .goto {
+.dash-developedbyme-setting .goto {
     padding: 6px 14px;
     border: 1px solid #555;
     border-radius: 4px;
     color: #ccc;
     background-color: #3b3b3b;
 }
-.dash-developedbyme-config .desc {
+.dash-developedbyme-setting .desc {
     margin-top: 20px;
     color: #898989;
 }
-.dash-developedbyme-config .info {
+.dash-developedbyme-setting .info {
     display: flex;
     margin-top: 20px;
     color: #898989;
 }
-.dash-developedbyme-config .info .item {
+.dash-developedbyme-setting .info .item {
     display: flex;
     align-items: center;
     margin-right: 30px;
 }
-.dash-developedbyme-config .info .key {
+.dash-developedbyme-setting .info .key {
     margin-right: 6px;
 }
-.dash-developedbyme-config .info .rate-user-count {
+.dash-developedbyme-setting .info .rate-user-count {
     margin-left: 5px;
 }
-.dash-developedbyme-config .audit-status {
+.dash-developedbyme-setting .plugin-status {
     padding: 10px 20px;
     margin-top: 20px;
     border-radius: 2px;
     background-color: #5c5c5c;
 }
-.dash-developedbyme-config .tab {
+.dash-developedbyme-setting .plugin-status .click {
+    color: #39f;
+    cursor: pointer;
+}
+.dash-developedbyme-setting .tab {
     display: flex;
     margin-top: 40px;
     border-bottom: 1px solid #555;
 }
-.dash-developedbyme-config .tab-item {
+.dash-developedbyme-setting .tab-item {
     padding: 10px 20px;
     margin-bottom: -1px;
     border: 1px solid transparent;
@@ -55,13 +59,20 @@
     cursor: pointer;
     transition: border-color .3s ease;
 }
-.dash-developedbyme-config .tab-item.on {
+.dash-developedbyme-setting .tab-item.on {
     border-left-color: #555;
     border-top-color: #555;
     border-right-color: #555;
     border-bottom-color: #333;
 }
-.dash-developedbyme-config .panel-title {
+.dash-developedbyme-setting .panel-title {
     width: 100%;
     padding: 20px 0;
+}
+.dash-developedbyme-setting .cannot-publish {
+    width: 100%;
+    padding-top: 100px;
+    text-align: center;
+    font-size: 20px;
+    color: #a1a1a1;
 }

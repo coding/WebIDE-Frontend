@@ -30,7 +30,7 @@ class DevelopedByMe extends Component {
             if (res.code === 0) {
                 this.setState({ plugins: res.data });
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || res.message });
             }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });

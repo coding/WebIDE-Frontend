@@ -7,7 +7,7 @@ import Create from './create';
 import ThirdParty from './thirdParty';
 import Builtin from './builtin';
 import DevelopedByMe from './developedByMe';
-import Management from './management';
+import Setting from './setting';
 import i18n from '../../utils/i18n';
 
 const routes = ['thirdparty', 'builtin', 'developedbyme'];
@@ -37,7 +37,7 @@ class Plugin extends Component {
                     <Route exact path="/dashboard/plugin/thirdparty" component={ThirdParty} />
                     <Route exact path="/dashboard/plugin/builtin" component={Builtin} />
                     <Route exact path="/dashboard/plugin/developedbyme" component={DevelopedByMe} />
-                    <Route exact path="/dashboard/plugin/developedbyme/management" component={Management} />
+                    <Route exact path="/dashboard/plugin/developedbyme/setting" component={Setting} />
                 </Switch>
             </div>
         );

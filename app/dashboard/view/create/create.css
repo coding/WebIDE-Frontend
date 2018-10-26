@@ -8,14 +8,7 @@
 .dash-create .dash-nodata {
     margin-left: 7px;
 }
-@media screen and (max-width: 860px) {
-    .dash-create .com-board .board-label.none {
-        padding-bottom: 0;
-    }
-    .dash-create .com-board .board-label.none::before {
-        content: none;
-    }
-}
+
 @media screen and (max-width: 540px) {
     .dash-create .com-board .board-content.radio {
         flex-wrap: wrap;
