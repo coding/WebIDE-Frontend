@@ -75,8 +75,6 @@ class Initialize extends Component {
     let info = null
 
     let loadingStyle = {
-      width: "556px",
-      height: "100%",
       backgroundImage: `url(${window.serverConfig.BACKEND_URL+"/versions/loading"})`,
     }
 
