@@ -16,13 +16,13 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
   const tabGroups = Object.values(json.tabGroups);
   tabGroups.forEach((tabGroupsValue) => createGroup(tabGroupsValue.id));
   // Load changelog tab
-  const currentVersion = localStorage.getItem(versionID)
-  if (!currentVersion || currentVersion !== version) {
-    localStorage.setItem(versionID, version)
-    setTimeout(() => {
-      dispatchCommand('file:open_changelog')
-    }, 50)
-  }
+  // const currentVersion = localStorage.getItem(versionID)
+  // if (!currentVersion || currentVersion !== version) {
+  //   localStorage.setItem(versionID, version)
+  //   setTimeout(() => {
+  //     dispatchCommand('file:open_changelog')
+  //   }, 50)
+  // }
 
   if (tabs.length === 0) {
     dispatchCommand('global:show_env')
