@@ -108,7 +108,7 @@
    "commitView": {
       "nnableToPreview": "无法预览",
       "nothingCommit": "你的当前工作目录无内容提交",
-      "initMessage": "由 Cloud Studio 更新，https://studio.coding.net"
+      "initMessage": "由 Cloud Studio 更新"
    },
    "unStash": {
       "branch": "新建分支并应用",

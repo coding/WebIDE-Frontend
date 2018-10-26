@@ -6,6 +6,7 @@ import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
 
+
 import logo from '../../../static/CloudStudio-Logo.svg';
 
 const divider = { isDivider: true };
@@ -13,7 +14,7 @@ const divider = { isDivider: true };
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className="menu-bar-item-logo"><img className="logo" src={logo} alt="logo" /><div className='beta'>beta</div></div>),
+    name: (<div className="menu-bar-item-logo"><img className="logo" src={window.serverConfig.BACKEND_URL+"/versions/logo"} alt="logo" /></div>),
     weight: 0,
     className: 'coding-logo',
     items: [
@@ -24,12 +25,12 @@ const menuBarItems = observable([
         command: 'global:show_settings',
         canopen: true
       },
-      {
-        key: 'about',
-        name: i18n`menuBarItems.meta.about`,
-        icon: 'fa fa-info-circle',
-        command: 'file:open_about'
-      }
+      // {
+      //   key: 'about',
+      //   name: i18n`menuBarItems.meta.about`,
+      //   icon: 'fa fa-info-circle',
+      //   command: 'file:open_about'
+      // }
     ]
   },
   {
@@ -75,7 +76,7 @@ const menuBarItems = observable([
         key: 'comment',
         name: i18n`menuBarItems.edit.comment`,
         icon: '',
-        command: 'edit:toggle_comment',
+        command: !config.switchOldEditor ? 'edit:toggle_monaco_comment' : 'edit:toggle_comment',
       }
     ]
   },

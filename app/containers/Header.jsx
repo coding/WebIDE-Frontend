@@ -70,9 +70,9 @@ class User extends Component {
                 <span className="caret"></span>
               </button>
               <ul className='dropdown-menu' aria-labelledby='aria-labelledby'>
-                <li>
+                {/* <li>
                   <a href="https://coding.net" target='_blank' rel="noopener noreferrer" >Coding.net</a>
-                </li>
+                </li> */}
                 <li>
                   <a href="javascript:void(0)" onClick={(e) => {
                     e.preventDefault()

@@ -29,20 +29,21 @@ class WelcomePage extends Component {
       <div className='welcome-page'>
         <div className='header'>
         </div>
-        <h1>欢迎使用 <div className='logo'><span className='beta'>beta</span></div></h1>
+        {/* <h1>欢迎使用 <div className='logo'></div></h1> */}
+        <h1>欢迎使用</h1>
         <div className='subtitle'>您将获得前所未有的云端开发体验</div>
-        <div className='quick-start'>
+        {/* <div className='quick-start'>
           <h2>快速入门</h2>
           <ul>
             <li><a href='https://coding.net/help/doc/cloud-studio/online-editing.html' target='_blank' rel='noopener noreferrer'>在线编辑</a></li>
             <li><a href='https://coding.net/help/doc/cloud-studio/compile.html' target='_blank' rel='noopener noreferrer'>编译运行</a></li>
             <li><a href='https://coding.net/help/doc/cloud-studio/co-operation.html' target='_blank' rel='noopener noreferrer'>协同开发</a></li>
           </ul>
-        </div>
+        </div> */}
         <div className='intro'>
           <p>Cloud Studio 极大的降低了软件开发的门槛。即使您没有软件开发的经验，您也可以立即体验软件开发的魅力，毫无开发环境配置的繁琐。</p>
-          <p>使用以下预置的应用程序模版快速开始吧：</p>
-          <ul className='demo-links'>
+          {/* <p>使用以下预置的应用程序模版快速开始吧：</p> */}
+          {/* <ul className='demo-links'> */}
             {/* <li><a href='https://coding.net/help/doc/webide/online-editing.html' target='_blank' rel='noopener noreferrer'>HTML5 应用</a></li> */}
             {/* <li><a href='https://coding.net/help/doc/webide/compile.html' target='_blank' rel='noopener noreferrer'>Python 人工智能</a></li> */}
             {/* <li><a href='/ws/?projectName=WordPress&open=readme.md&templateId=1' target='_blank' rel='noopener noreferrer'>PHP 博客</a></li> */}
@@ -75,14 +76,14 @@ class WelcomePage extends Component {
                 open: 'README.md',
               })
             }} target='_blank' rel='noopener noreferrer'>小程序</a></li> */}
-          </ul>
+          {/* </ul> */}
 
-          <div className='btn-list'>
+          {/* <div className='btn-list'>
             <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>帮助文档</a>
             <a href='https://coding.net/help/doc/cloud-studio/video.html' target='_blank' rel='noopener noreferrer'>视频教程</a>
-          </div>
-          
-          <div className='coding-logo'></div>
+          </div> */}
+
+          {/* <div className='coding-logo'></div> */}
         </div>
         {/* <h2>Start</h2>
         <div className='block start-block'>

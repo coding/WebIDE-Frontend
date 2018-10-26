@@ -23,7 +23,7 @@ export function downloadFile (path, shouldPacked) {
   //   filePath = 'Home.tar.gz'
   // }
   const packOrRaw = shouldPacked ? 'pack' : 'raw'
-  let url = `${config.baseURL}/workspaces/${config.spaceKey}/${packOrRaw}`
+  let url = `/workspaces/${config.spaceKey}/${packOrRaw}`
   url += `?${qs.stringify({
     path,
     inline: false
@@ -42,7 +42,7 @@ export function uploadFile (path, file, option) {
   const formdata = new FormData()
   formdata.append('path', path)
   formdata.append('files', file, file.name)
-  request.upload(`${config.baseURL}/workspaces/${config.spaceKey}/upload`, formdata, {
+  request.upload(`/workspaces/${config.spaceKey}/upload`, formdata, {
     onUploadProgress: option.onUploadProgress
   }).catch((res) => {
     option.onUploadFailed()
