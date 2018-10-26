@@ -1,5 +1,6 @@
 import { registerAction } from 'utils/actions'
 import { PluginRegistry } from 'utils/plugins'
+import React from 'react'
 import { autorun, observable } from 'mobx'
 import config from 'config'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
@@ -128,6 +129,7 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
+export const PRELOAD_USER_EXTENSION = 'PRELOAD_USER_EXTENSION'
 
 // 插件申明加载时机，
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
@@ -153,6 +155,16 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
     })
   }
 )
+
+export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
+  const userPackagePromise = api.fetchUserPackagelist()
+  return userPackagePromise.then((response) => {
+    if (response.code === 0) {
+      const { data } = response
+      console.log(data)
+    }
+  })
+})
 
 export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
@@ -352,7 +364,7 @@ export const pluginUnRegister = registerAction(PLUGIN_UNREGISTER_VIEW,
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
   const extension = PluginRegistry.get(key)
-  const view = key && getComponent(extension || {}, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
+  const view = key && getComponent && getComponent(extension || {}, PluginRegistry, store)// ge your package conteng get all package install cache, get the store
   let app;
   Object.values(PluginRegistry._plugins).forEach(plugin => {
     if (label.mime && key === plugin.key) {

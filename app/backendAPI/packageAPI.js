@@ -51,3 +51,7 @@ export const enablePackageHotReload = (target) => {
     fetchPackage(data.codingIdePackage, 'reload')
   })
 }
+
+export const fetchUserPackagelist = () => {
+  return request.get('/user-plugin/enable/list')
+}

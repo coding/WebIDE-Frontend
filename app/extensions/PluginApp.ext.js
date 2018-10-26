@@ -3,6 +3,8 @@ import { toJS, observable } from 'mobx'
 import { pluginSettingStore } from 'components/Setting/state'
 import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
+import { createProvider, connectAdvanced } from 'react-redux'
+
 import settings from '../settings'
 
 class PluginApp {
@@ -82,10 +84,28 @@ export function registerPluginConfigChangeHandler (key, fn) {
   }
 }
 
+export const createAdvancedProviderAndConnect = (storeKey) => ({
+  Provider: createProvider(storeKey),
+  connect: (mapStateToProps, mapDispatchToProps) => connectAdvanced(
+      (dispatch, options) => (state, props) => {
+        const selectedState =
+          typeof mapStateToProps === 'function' || !!mapStateToProps
+            ? mapStateToProps(state)
+            : state
+        return {
+          ...selectedState,
+          ...props,
+          ...mapDispatchToProps(dispatch)
+        }
+      },
+      { storeKey }
+    )
+})
+
 export const IPropertiesType = {
   string: 'string',
   array: 'array',
-  boolean: 'boolean',
+  boolean: 'boolean'
 }
 
 export default PluginApp

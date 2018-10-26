@@ -19,12 +19,19 @@ class TreeNode extends Component {
   resolveFolderIcon = (defaultIconStr) => {
     const { node } = this.props
     const provider = fileIconProviders.get(config.fileicons)
-    if (provider) {
-      let fileIconsProvider = provider
-      if (typeof provider === 'function') {
-        fileIconsProvider = provider()
-      }
+    const fileIconsProvider = typeof provider === 'function' ? provider() : provider
+    if (fileIconsProvider && fileIconsProvider.foldericons) {
       const { icons: allicons, foldericons: foldericonsMap } = fileIconsProvider
+      if (!foldericonsMap.icons || foldericonsMap.icons.length === 0) {
+        return (<span
+          className='filetree-node-icon'
+          style={{
+            backgroundImage: `url(${allicons[foldericonsMap.defaultIcon]})`,
+            width: 15,
+            height: 15
+          }}
+        />)
+      }
       let folderName = foldericonsMap.defaultIcon
       for (let i = 0; i < foldericonsMap.icons.length; i += 1) {
         const foldericon = foldericonsMap.icons[i]
@@ -57,12 +64,19 @@ class TreeNode extends Component {
   resolveFileIcon = (defaultIconStr) => {
     const { node } = this.props
     const provider = fileIconProviders.get(config.fileicons)
-    if (provider) {
-      let fileIconsProvider = provider
-      if (typeof provider === 'function') {
-        fileIconsProvider = provider()
-      }
+    const fileIconsProvider = typeof provider === 'function' ? provider() : provider
+    if (fileIconsProvider && fileIconsProvider.fileicons) {
       const { icons: allicons, fileicons: fileiconsMap } = fileIconsProvider
+      if (!fileiconsMap.icons || fileiconsMap.icons.length === 0) {
+        return (<span
+          className='filetree-node-icon'
+          style={{
+            backgroundImage: `url(${allicons[fileiconsMap.defaultIcon]})`,
+            width: 15,
+            height: 15
+          }}
+        />)
+      }
       let fileiconName = fileiconsMap.defaultIcon
       const extension = node.name.split('.').pop()
       for (let i = 0; i < fileiconsMap.icons.length; i += 1) {

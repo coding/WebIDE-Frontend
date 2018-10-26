@@ -3,6 +3,7 @@ import FileState from 'commons/File/state'
 import * as fileApi from 'backendAPI/fileAPI'
 import { fileIconProviders } from 'components/FileTree/state'
 import { fileIconOptions } from 'settings'
+import { findLanguageByextensions } from 'components/MonacoEditor/utils/findLanguage'
 
 export function openCreateFileModal () {
   dispatchCommand('file:new_file')
@@ -13,7 +14,11 @@ export function getFileNode (filePath) {
 }
 
 export function getFileContent (filePath) {
-  return fileApi.readFile(filePath)
+  return new Promise((resolve, reject) => {
+    fileApi.readFile(filePath)
+      .then((data) => resolve(data.content))
+      .catch(reject)
+  })
 }
 
 export function removeFileNodeCreatedListener (fn) {
@@ -32,4 +37,8 @@ export function registerFileIconProvider (name, provider) {
   if (!fileIconOptions.includes(name)) {
     fileIconOptions.push(name)
   }
+}
+
+export function findLanguageByextension (ext) {
+  return findLanguageByextensions(ext)
 }

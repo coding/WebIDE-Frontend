@@ -11,7 +11,12 @@ import { monacoThemeOptions } from '../settings'
 export function getActiveEditor () {
   const { EditorTabState } = mobxStore
   const activeTab = EditorTabState.activeTab
-  return activeTab ? activeTab.editorInfo.monacoEditor : null
+  return activeTab
+    ? {
+      uri: activeTab.file ? activeTab.file.path : null,
+      editor: activeTab.editorInfo.monacoEditor
+    }
+    : null
 }
 
 export function openNewEditor (config) {
@@ -30,12 +35,10 @@ export function registerLanguage (languageConf) {
   const { contribution } = languageConf
   monaco.languages.register(contribution)
   console.log(contribution)
-  monaco.languages.onLanguage(contribution.id, () => {
-    return contribution.loader().then((mod) => {
-      monaco.languages.setMonarchTokensProvider(contribution.id, mod.language)
-      monaco.languages.setLanguageConfiguration(contribution.id, mod.conf)
-    })
-  })
+  monaco.languages.onLanguage(contribution.id, () => contribution.loader().then((mod) => {
+    monaco.languages.setMonarchTokensProvider(contribution.id, mod.language)
+    monaco.languages.setLanguageConfiguration(contribution.id, mod.conf)
+  }))
 }
 
 export function registerFormattingEditProvider (languageId, provider) {
@@ -184,7 +187,7 @@ export function registerActiveEditorChangeHandler (fn) {
 
 function _registerCodeSnippets (language, snippetsProvider) {
   monaco.languages.registerCompletionItemProvider(language, {
-    provideCompletionItems: function () {
+    provideCompletionItems () {
       return isFunction(snippetsProvider) ? snippetsProvider() : snippetsProvider
     }
   })

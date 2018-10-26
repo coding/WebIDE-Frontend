@@ -40,12 +40,19 @@ const closeFileTab = async (e, tab, removeTab, activateTab) => {
 
 const TabIcon = observer(({ fileName, defaultIconStr }) => {
   const provider = fileIconProviders.get(config.fileicons)
-  if (provider) {
-    let fileIconsProvider = provider
-    if (typeof provider === 'function') {
-      fileIconsProvider = provider()
-    }
+  const fileIconsProvider = typeof provider === 'function' ? provider() : provider
+  if (fileIconsProvider && fileIconsProvider.fileicons) {
     const { icons: allicons, fileicons: fileiconsMap } = fileIconsProvider
+    if (!fileiconsMap.icons || fileiconsMap.icons.length === 0) {
+      return (<span
+        className='filetree-node-icon'
+        style={{
+          backgroundImage: `url(${allicons[fileiconsMap.defaultIcon]})`,
+          width: 15,
+          height: 15
+        }}
+      />)
+    }
     let fileiconName = fileiconsMap.defaultIcon
     const extension = fileName.split('.').pop()
     for (let i = 0; i < fileiconsMap.icons.length; i += 1) {
@@ -95,7 +102,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       onContextMenu={e => openContextMenu(e, tab)}
     >
       {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div> : null}
-      <TabIcon fileName={tab.title} defaultIconStr={tab.icon} />
+      {tab.icon && <TabIcon fileName={tab.title} defaultIconStr={tab.icon} />}
       <div className='title'>{tab.title}</div>
       <div className='control'>
         <i className='close' onClick={e => closeFileTab(e, tab, removeTab, activateTab)}>×</i>
