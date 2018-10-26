@@ -20,8 +20,12 @@ export const getPluginInfo = (pluginId) => {
     return axios.get(`/user-plugin/info?pluginId=${pluginId}`, { 'Accept': 'application/vnd.coding.v2+json' });
 }
 
+export const modifyPluginInfo = (data) => {
+    return axios.put(`/user-plugin/plugin`, data, { 'Accept': 'application/vnd.coding.v2+json' });
+}
+
 export const createPlugin = (data) => {
-    return axios.postFormData('/user-plugin/create', data, { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.coding.v2+json' });
+    return axios.post('/user-plugin/create', data, { 'Accept': 'application/vnd.coding.v2+json' });
 }
 
 export const uninstallPlugin = (data) => {
@@ -37,7 +41,7 @@ export const switchPluginEnable = (data) => {
 }
 
 export const publishPlugin = (data) => {
-    return axios.postFormData('/user-plugin/deploy', data, { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.coding.v2+json' });
+    return axios.post('/user-plugin/deploy', data, { 'Accept': 'application/vnd.coding.v2+json' });
 }
 
 export const cancelPrePublish = (data) => {

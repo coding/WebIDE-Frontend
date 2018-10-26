@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    width: calc(33.33% - 20px);
+    width: calc(50% - 20px);
     height: 180px;
     padding: 20px;
     margin: 0 10px 20px;
@@ -58,12 +58,8 @@
 
 @media screen and (min-width: 1800px) {
     .dash-plugin .plugin-card {
+        width: calc(33.33% - 20px);
         height: 200px;
-    }
-}
-@media screen and (max-width: 1220px) {
-    .dash-plugin .plugin-card {
-        width: calc(50% - 20px);
     }
 }
 @media screen and (max-width: 860px) {

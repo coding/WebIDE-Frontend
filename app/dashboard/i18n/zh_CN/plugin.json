@@ -24,5 +24,6 @@
     "creatingPlugin": "正在创建插件...",
     "hasPrePublish": "该插件已经预发布，您可以 ",
     "cancelPublish": "取消预发布",
-    "cannotPublish": "上次发布正在审核中，暂时无法发布"
+    "cannotPublish": "上次发布正在审核中，暂时无法发布",
+    "publishingPlugin": "正在发布版本..."
 }

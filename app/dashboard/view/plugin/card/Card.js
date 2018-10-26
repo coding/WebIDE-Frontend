@@ -5,15 +5,17 @@ import './card.css';
 
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
+import { tencentOrigin } from '../../../utils/config';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
     render() {
-        const { id, pluginName, remark, src, createdBy, belong } = this.props;
+        const { id, pluginName, remark, src, createdBy, spaceKey, belong } = this.props;
         const to = {
-            pathname: '/dashboard/plugin/developedbyme/management',
+            pathname: '/dashboard/plugin/developedbyme/setting',
             state: { pluginId: id },
         };
+        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
         return (
             <div className="plugin-card">
                 <div className="top">
@@ -31,8 +33,8 @@ class Card extends Component {
                 )}
                 {belong === 3 && (
                     <div className="control">
-                        <Link className="button" to={to}>{i18n('global.management')}</Link>
-                        <button className="button">{i18n('global.workspace')}</button>
+                        <Link className="button" to={to}>{i18n('global.setting')}</Link>
+                        <a className="button" href={href} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
                     </div>
                 )}
             </div>

@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    width: calc(33.33% - 20px);
+    width: calc(50% - 20px);
     height: 100px;
     padding: 20px;
     margin: 0 10px 20px;
@@ -11,9 +11,6 @@
     background-color: #3b3b3b;
     transition: background-color .5s ease;
 }
-/* .dash-plugin .built-card:hover {
-    background-color: #555;
-} */
 .dash-plugin .built-card .name {
     width: 100%;
     font-size: 16px;
@@ -26,4 +23,17 @@
 .dash-plugin .built-card .desc {
     width: 100%;
     color: #b1b1b1;
+}
+
+@media screen and (min-width: 1800px) {
+    .dash-plugin .built-card {
+        width: calc(33.33% - 20px);
+    }
+}
+@media screen and (max-width: 860px) {
+    .dash-plugin .built-card {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
 }

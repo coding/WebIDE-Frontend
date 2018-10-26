@@ -24,5 +24,6 @@
     "creatingPlugin": "Creating plugin...",
     "hasPrePublish": "This plugin is pre-published and you can ",
     "cancelPublish": "cancel Pre-Publish",
-    "cannotPublish": "The last release is under review and is temporarily unavailable"
+    "cannotPublish": "The last release is under review and is temporarily unavailable",
+    "publishingPlugin": "In the process of publish..."
 }

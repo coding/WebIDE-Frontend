@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import './publish.css';
 
@@ -11,9 +12,9 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 class Publish extends Component {
     state = {
         v: { major: '', minor: '', patch: '' },
-        major: 3,
-        minor: 3,
-        patch: 3,
+        major: 0,
+        minor: 0,
+        patch: 0,
         desc: '',
         isTTOn: false,
     }
@@ -21,8 +22,8 @@ class Publish extends Component {
     render() {
         const { v, major, minor, patch, desc, isTTOn } = this.state;
         // 新版本必须高于老版本
-        const oldNum = v.major * 100 + v.minor * 10 + v.patch;
-        const newNum = major * 100 + minor * 10 + patch;
+        const oldNum = v.major * 10000 + v.minor * 100 + v.patch;
+        const newNum = major * 10000 + minor * 100 + patch;
         const disabled = (newNum <= oldNum) || !desc;
         return (
             <div className="panel">
@@ -38,11 +39,11 @@ class Publish extends Component {
                         </a>
                     </div>
                     <div className="board-content">
-                        <input className="com-input version-number" type="number" min={0} value={major} onChange={(event) => this.handleVersion(event, 'major')} />
+                        <input className="com-input version-number" type="number" min={0} max={99} value={major} onChange={(event) => this.handleVersion(event, 'major')} />
                         <span className="version-dot">.</span>
-                        <input className="com-input version-number" type="number" min={0} value={minor} onChange={(event) => this.handleVersion(event, 'minor')} />
+                        <input className="com-input version-number" type="number" min={0} max={99} value={minor} onChange={(event) => this.handleVersion(event, 'minor')} />
                         <span className="version-dot">.</span>
-                        <input className="com-input version-number" type="number" min={0} value={patch} onChange={(event) => this.handleVersion(event, 'patch')} />
+                        <input className="com-input version-number" type="number" min={0} max={99} value={patch} onChange={(event) => this.handleVersion(event, 'patch')} />
                         <div className="version-tip">{i18n('plugin.versionTip')}</div>
                     </div>
                 </div>
@@ -118,23 +119,33 @@ class Publish extends Component {
 
     handlePost(isPreDeploy) {
         const { major, minor, patch, desc } = this.state;
-        const { pluginId, fetchInfo } = this.props;
+        const { pluginId, fetchInfo, showLoading, hideLoading } = this.props;
         const option = {
             pluginId,
             version: `${major}.${minor}.${patch}`,
             description: desc,
         }
         option.isPreDeploy = isPreDeploy;
+        showLoading({ message: i18n('plugin.publishingPlugin') });
         api.publishPlugin(option).then(res => {
+            hideLoading();
             if (res.code === 0) {
                 fetchInfo();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
         }).catch(err => {
+            hideLoading();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }
 
-export default Publish;
+const mapDispatch = (dispatch) => {
+    return {
+        showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
+        hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
+    }
+}
+
+export default connect(null, mapDispatch)(Publish);

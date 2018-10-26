@@ -1,32 +1,33 @@
-.dash-developedbyme-config .version-url {
+.dash-developedbyme-setting .version-url {
     padding-left: 4px;
     color: #ccc;
 }
-.dash-developedbyme-config .version-number {
+.dash-developedbyme-setting .version-number {
     width: 70px;
     padding-right: 5px;
 }
-.dash-developedbyme-config .version-tip {
+.dash-developedbyme-setting .version-tip {
     width: 100%;
     margin-top: 10px;
     font-size: 12px;
     color: #898989;
 }
-.dash-developedbyme-config .version-dot {
+.dash-developedbyme-setting .version-dot {
     margin: 0 10px;
 }
-.dash-developedbyme-config .publish-tip {
+.dash-developedbyme-setting .publish-tip {
     width: 100%;
     margin-bottom: 10px;
     color: #898989;
 }
-.dash-developedbyme-config .prepublish-tip {
+.dash-developedbyme-setting .prepublish-tip {
     width: 100%;
     margin-bottom: 10px;
     color: #898989;
 }
-.dash-developedbyme-config .plugin-publish-tooltip {
+.dash-developedbyme-setting .plugin-publish-tooltip {
     margin-left: 4px;
+    cursor: pointer;
     position: relative;
 }
 .plugin-publish-tooltip .dash-tooltip {

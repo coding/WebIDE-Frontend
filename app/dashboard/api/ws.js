@@ -25,15 +25,15 @@ export const findProject = ({ ownerName, projectName }) => {
 }
 
 export const createWorkspace = (data) => {
-    return axios.postFormData('/ws/create', data, { 'Content-Type': 'application/x-www-form-urlencoded' });
+    return axios.post('/ws/create', data);
 }
 
 export const createWorkspaceV2 = (data) => {
-    return axios.postFormData('/workspaces', data, { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.coding.v2+json' });
+    return axios.post('/workspaces', data, { 'Accept': 'application/vnd.coding.v2+json' });
 }
 
 export const cloneWorkspace = (data) => {
-    return axios.postFormData('/ws/clone', data, { 'Content-Type': 'application/x-www-form-urlencoded' });
+    return axios.post('/ws/clone', data);
 }
 
 export const deleteWorkspace = (spaceKey) => {
@@ -65,7 +65,7 @@ export const getEnvList = () => {
 }
 
 export const createProject = (data) => {
-    return axios.postFormData('/projects', data, { 'Content-Type': 'application/x-www-form-urlencoded' });
+    return axios.post('/projects', data);
 }
 
 export const syncProject = () => {
