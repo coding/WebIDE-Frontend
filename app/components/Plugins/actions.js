@@ -18,7 +18,7 @@ export const updatePackageList = registerAction(PACKAGE_UPDATE_LIST, () => {
   .then((result) => {
     store.list.replace(result.map(e => {
       const current = store.list.find(obj => obj.name === e.name)
-      return ({ enabled: current ? current.enabled || false : false, ...e })
+      return ({ enabled: current ? current.enabled || false : false, userPlugin: false, ...e })
     }))
   })
 })
@@ -146,7 +146,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
       } else {
         store.list.replace(list)
       }
-      if (group) {
+      if (group) {        
         return fetchPackageGroup('required', store.list, type, data)
       }
       for (const pkg of filterList) {
@@ -156,12 +156,39 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
   }
 )
 
+const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
+
+export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
+  return api.fetchUserPackageScript(`${pkg.version}/index.js`)
+    .then((script) => {
+      localStorage.setItem(pkg.name, script)
+      return pkg.name
+    })
+    .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
+})
+
 export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
   const userPackagePromise = api.fetchUserPackagelist()
-  return userPackagePromise.then((response) => {
+  return userPackagePromise.then(async (response) => {
     if (response.code === 0) {
       const { data } = response
-      console.log(data)
+      const convert = data.map((p) => ({
+        name: p.pluginName,
+        author: p.createdBy,
+        description: p.remark,
+        displayName: p.pluginName,
+        enabled: true,
+        id: p.id,
+        requirement: 'Required',
+        status: 'Available',
+        version: p.currentVersion,
+        userPlugin: true,
+      }))
+
+      for (const pkg of convert) {
+        store.list.push(pkg)
+        await fetchUserPackage(pkg)
+      }
     }
   })
 })

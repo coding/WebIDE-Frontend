@@ -5,6 +5,8 @@ import { toJS } from 'mobx'
 import { pluginSettingStore } from './state'
 import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
 
+import TagsInput from './TagsInput'
+
 @observer
 class PluingSettingItem extends PureComponent {
   handleChange = (value) => {
@@ -14,13 +16,12 @@ class PluingSettingItem extends PureComponent {
 
   makePropItem = () => {
     const { propItem, settingSate, propKey, handleChange } = this.props
-    console.log(propItem)
     switch (propItem.type) {
       case 'string':
         return (
           <div className='form-group'>
             <label>{propItem.title}</label>
-            <p>{propItem.description}</p>
+            <p className='custom-setting-description'>{propItem.description}</p>
             {(propItem.enum && propItem.enum.length) > 0 ? (
               <select
                 className='form-control'
@@ -48,10 +49,13 @@ class PluingSettingItem extends PureComponent {
               <p style={{ lineHeight: '20px', display: 'flex', alignItems: 'center' }}>
                 <input
                   type='checkbox'
+                  className='custom-setting-item'
                   checked={Boolean(settingSate[propKey]) || Boolean(propItem.default) || false}
                   onChange={e => this.handleChange(e.target.checked)}
                 />
-                <span>{propItem.description}</span>
+                <span style={{ marginLeft: 10 }} className='custom-setting-description'>
+                  {propItem.description}
+                </span>
               </p>
             </div>
           </div>
@@ -60,10 +64,11 @@ class PluingSettingItem extends PureComponent {
         return (
           <div className='form-group'>
             <label>{propItem.title}</label>
-            {propItem.default.map(v => (
-              <p key={v}>{v}</p>
-            ))}
-            <p>{propItem.description}</p>
+            <p className='custom-setting-description'>{propItem.description}</p>
+            <TagsInput
+              value={settingSate[propKey] || propItem.default}
+              onChange={this.handleChange}
+            />
           </div>
         )
       default:
@@ -78,7 +83,6 @@ class PluingSettingItem extends PureComponent {
 
 @observer
 class PluginSetting extends PureComponent {
-
   handleChangeState = (propKey, value) => {
     const { domainKey } = this.props
     const eventStore = pluginConfigEventStore[domainKey]
@@ -97,8 +101,8 @@ class PluginSetting extends PureComponent {
     const { title, properties, key } = toJS(pluginSettingsItem.get(domainKey))
     const propKeys = Object.keys(properties)
     return (
-      <div>
-        <h1>{title}</h1>
+      <div className='plugin-custom-settings'>
+        <h1 className='plugin-settings-title'>{title}</h1>
         {propKeys.map(prop => (
           <PluingSettingItem
             key={prop}

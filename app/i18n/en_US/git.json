@@ -108,7 +108,7 @@
    "commitView": {
       "nnableToPreview": "Unable to preview",
       "nothingCommit": "Your working directory is clean. Nothing to commit.",
-      "initMessage": "Updated by Cloud Studio , https://studio.coding.net"
+      "initMessage": "Updated by Cloud Studio , https://studio.dev.tencent.com"
    },
    "unStash": {
       "branch": "Branch",
