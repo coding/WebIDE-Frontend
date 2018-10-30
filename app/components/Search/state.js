@@ -2,8 +2,9 @@ import { observable } from 'mobx'
 
 const state = observable({
   keyword: '',
-  list: new observable([]),
+  result: {},
   taskId: '',
+  searching: false,
 })
 
 export default state

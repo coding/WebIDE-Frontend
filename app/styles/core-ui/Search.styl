@@ -6,4 +6,52 @@
   .search-panel-title {
     margin-bottom: 14px;  
   }
+  .search-panel-input {
+    margin-bottom: 14px;  
+  }
+  .search-item {
+    cursor: pointer;
+    white-space: nowrap;
+    .search-item-path {
+      line-height: 20px;
+      display: flex;
+      i {
+        font-style: normal;
+      }
+      .fa {
+        margin-right: 4px;
+        width: 8px;
+      }
+      .file-icon {
+        width: 18px;
+        text-align: center;
+        display: inline-block;
+        transform: translateY(1px)
+      }
+      .search-item-path-path {
+        opacity: .6;
+        margin-left: 4px;
+        flex: 1;
+      }
+      .search-item-count {
+        padding: 2px 5px 3px 4px;
+        line-height: 14px;
+        height: 17px;
+        border-radius: 12px;
+        min-width: 17px;
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+    .search-item-line {
+      padding-left: 12px;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      h {
+        // font-weight: 700;
+        background: #d2691e78;
+      }
+    }
+  }
 }

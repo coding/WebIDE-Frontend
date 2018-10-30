@@ -4,8 +4,72 @@ import debounce from 'lodash/debounce'
 import { autorun } from 'mobx'
 import { FsSocketClient } from 'backendAPI/websocketClients'
 import api from 'backendAPI'
+import cx from 'classnames'
+import icons from 'file-icons-js'
+import * as monaco from 'monaco-editor'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
+import { openFile } from 'commands/commandBindings/file'
+import { createTab, activateTab } from 'components/Tab/actions'
+import dispatchCommand from 'commands/dispatchCommand'
 import state from './state'
+
+class SearchResultItem extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isFolded: false
+    }
+  }
+  handlePathClick = () => {
+    this.setState({
+      isFolded: !this.state.isFolded
+    })
+  }
+  handleItemClick = (path, line) => {
+    const selection = new monaco.Selection(
+      line.line,
+      line.content.indexOf('<h>') + 1,
+      line.line,
+      line.content.indexOf('</h>') - 2,
+    )
+    dispatchCommand('file:open_file', {
+      path,
+      // contentType: getMIME(path),
+      editor: { filePath: path, selection },
+    })
+  }
+  render () {
+    const { path, value } = this.props
+    const iconStr = 'file-icon ' + (icons.getClassWithColor(path) || 'fa fa-file-text-o')
+    const idx = path.lastIndexOf('/') + 1
+    const fileName = path.substring(idx)
+    const filePath = path.substring(1, idx)
+    const count = value.length
+    return (
+      <div className='search-item' key={path}>
+        <div className='search-item-path' onClick={this.handlePathClick}>
+          <i
+            className={cx({
+              'fa fa-caret-right': this.state.isFolded,
+              'fa fa-caret-down': !this.state.isFolded
+            })}
+          />
+          <i className={iconStr} />
+          {fileName}
+          <span className='search-item-path-path'>{filePath}</span>
+          <span className='search-item-count'>{count}</span>
+        </div>
+
+        {!this.state.isFolded && value.map(line => (
+          <div key={`${path}-${line.line}`} className='search-item-line' onClick={() => this.handleItemClick(path, line)}>
+            <span className='search-item-content' dangerouslySetInnerHTML={{ __html: line.content }} />
+            {/* {line.line} */}
+          </div>
+        ))}
+      </div>
+    )
+  }
+}
 
 @observer
 class SearchPanel extends Component {
@@ -14,7 +78,7 @@ class SearchPanel extends Component {
   }
   onKeyDown = (e) => {
     if (e.keyCode === 13) {
-      this.confirm()
+      this.searchTxt()
     }
   }
 
@@ -22,16 +86,15 @@ class SearchPanel extends Component {
     state.keyword = e.target.value
     e.stopPropagation()
     e.nativeEvent.stopImmediatePropagation()
-    this.confirm()
+    // this.confirm()
   }
 
   confirm = debounce(() => {
-    console.log('confirm', state.keyword)
     this.searchTxt()
   }, 1000)
 
   searchTxt = () => {
-    console.log('searchTxt', state.keyword)
+    state.searching = true
     api.searchTxt(state.keyword).then((data) => {
       state.taskId = data.taskId
     }).catch((res) => {
@@ -44,9 +107,34 @@ class SearchPanel extends Component {
       const client = FsSocketClient.$$singleton.stompClient
       client.subscribe(`/topic/ws/${config.spaceKey}/txt/search`, (frame) => {
         const data = JSON.parse(frame.body)
-        console.log('search', data)
+        this.setDate(data)
       })
     })
+  }
+
+  setDate = debounce((data) => {
+    if (data.taskId === state.taskId) {
+      state.result = data
+      state.searching = false
+    }
+  }, 500)
+
+  renderResult () {
+    let content = ''
+    if (state.searching) {
+      content = 'Searching...'
+    } else if (state.result.results) {
+      content = Object.entries(state.result.results).map(([key, value]) => {
+        if (key.startsWith('/.git/')) return null
+        return (<SearchResultItem path={key} key={key} value={value} />)
+      })
+    }
+
+    return (
+      <div className='search-result-list'>
+        {content}
+      </div>
+    )
   }
 
   render () {
@@ -61,8 +149,10 @@ class SearchPanel extends Component {
             value={state.keyword}
             onChange={this.handleKeywordChange}
             onKeyDown={this.onKeyDown}
+            placeholder={i18n.get('panel.left.find')}
           />
         </div>
+        {this.renderResult()}
       </div>
     )
   }
