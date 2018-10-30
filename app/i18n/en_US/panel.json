@@ -6,7 +6,8 @@
    },
    "left": {
       "project": "Project",
-      "working": "Working"
+      "working": "Working",
+      "find": "Find"
    },
    "right": {
     "plugin": "Plugin Development"
