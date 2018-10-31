@@ -4,18 +4,15 @@ import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
-// import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices'
+import { Services } from 'monaco-languageclient'
 
-// const codeEditorService = StaticServices.codeEditorService.get()
-import { MonacoServices, Services } from 'monaco-languageclient'
-
+import codeEditorService from './CodeEditorService'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
-import { toDefinition } from 'components/MonacoEditor/actions'
 import { createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 import ConditionWidget from './ConditionWidget'
@@ -76,23 +73,7 @@ class EditorInfo {
         model
       },
       {
-        codeEditorService: {
-          openCodeEditor: function (...args) {
-            toDefinition(args[0])
-            const editor = this.doOpenEditor(args[1], args[0])
-            return monaco.Promise.as(editor)
-          },
-          addCodeEditor: () => {},
-          getFocusedCodeEditor: (...args) => {
-            return monacoEditor
-          },
-          getActiveCodeEditor: (...args) => {
-            return monacoEditor
-          },
-          doOpenEditor: function (editor, input) {
-            return null
-          }
-        }
+        codeEditorService
       }
     )
 
