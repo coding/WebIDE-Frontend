@@ -56,14 +56,16 @@ if (config.isLib) {
 }
 export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
-export const monacoThemeOptions = ['vs-dark']
+export const monacoThemeOptions = ['vs-dark', 'vs-light']
 export const fileIconOptions = ['default']
 
 const changeUITheme = (nextThemeId) => {
   if (!config.switchOldEditor) {
     if (nextThemeId === 'light') {
+      settings.appearance.syntax_theme.value = 'vs-light'
       monacoConfig.theme = 'vs-light'
     } else {
+      settings.appearance.syntax_theme.value = 'vs-dark'
       monacoConfig.theme = 'vs-dark'
     }
   }
@@ -214,7 +216,7 @@ class DomainSetting {
 
 
 const settings = observable({
-  _keys: ['general', 'appearance', 'editor', 'keymap', 'extensions', 'languageserver'],
+  _keys: ['general', 'appearance', 'editor', 'keymap', 'languageserver'],
   get items () {
     return this._keys.map(key => this[key])
   },
@@ -272,8 +274,6 @@ const settings = observable({
       }
     },
   }),
-
-  extensions: new DomainSetting({}),
 
   general: new DomainSetting({
     _keys: ['language', 'exclude_files'],

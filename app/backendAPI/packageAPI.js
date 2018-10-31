@@ -55,3 +55,7 @@ export const enablePackageHotReload = (target) => {
 export const fetchUserPackagelist = () => {
   return request.get('/user-plugin/enable/list')
 }
+
+export const fetchUserPackageScript = (url) => {
+  return axios.get(`https://cs-addon-1255989204.cos.ap-shanghai.myqcloud.com/${config.globalKey}/plugin/${url}`).then(res => res.data)
+}

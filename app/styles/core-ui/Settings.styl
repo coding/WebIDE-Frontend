@@ -135,3 +135,52 @@
     }
   }
 }
+
+.plugin-custom-settings {
+  .plugin-settings-title {
+    margin: 20px 0px;
+    font-size: 16px;
+  }  
+}
+
+.custom-setting-description {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.custom-setting-item {
+  margin: 0px !important;
+}
+
+.plugin-setting-input-label {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  line-height: 30px;
+  justify-content: space-between;
+  padding: 0px 10px;
+
+  & > p {
+    margin: 0px;
+    &>i {
+      cursor: pointer;
+      display: inline-block;
+      margin-left: 10px;  
+    }
+  }
+}
+
+
+.input-mode {
+  & > input {
+    height: 25px;
+    line-height: 25px;
+    color: #444;
+  }
+  & > button {
+    padding: 6px 12px;
+    height: 13px;
+    box-sizing: content-box;
+    line-height: 13px;
+  }
+}

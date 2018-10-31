@@ -18,7 +18,7 @@ class PluginApp {
     }
     emitter.on(THEME_CHANGED, (themeId) => {
       if (themeId !== this.prevTheme) {
-        if (this.styles[themeId]) {
+        if (this.styles && this.styles[themeId]) {
           if (this.styles[this.prevTheme]) {
             this.styles[this.prevTheme].unuse()
           }
@@ -27,6 +27,18 @@ class PluginApp {
         this.prevTheme = themeId
       }
     })
+  }
+
+  get inject () {
+    return this.injectComponent.inject
+  }
+
+  get position () {
+    return this.injectComponent.position
+  }
+
+  get unregister () {
+    return this.injectComponent.unregister
   }
 
   get injectComponent () {
