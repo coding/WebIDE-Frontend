@@ -1,13 +1,10 @@
 import i18n from './i18n';
 
 const twoDigit = (num) => {
-    if (num < 10) {
-        return `0${num}`;
-    }
-    return num;
+    return num < 10 ? `0${num}` : num;
 }
 
-export const getModifiedDate = (now, lastModified) => {
+export const getModifiedTime = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
     if (d > 0) {
@@ -42,4 +39,15 @@ export const getCreatedTime = (now) => {
     const n = twoDigit(date.getMinutes());
     const s = twoDigit(date.getSeconds());
     return `Created: ${y}-${m}-${d} ${h}:${n}:${s}`;
+}
+
+export const getFormatTime = (now) => {
+    const date = new Date(now);
+    const y = date.getFullYear();
+    const m = twoDigit(date.getMonth() + 1);
+    const d = twoDigit(date.getDate());
+    const h = twoDigit(date.getHours());
+    const n = twoDigit(date.getMinutes());
+    const s = twoDigit(date.getSeconds());
+    return `${y}-${m}-${d} ${h}:${n}:${s}`;
 }

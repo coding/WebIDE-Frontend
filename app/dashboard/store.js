@@ -1,7 +1,6 @@
 import { createStore, combineReducers } from 'redux';
 
 import { switchLanguageReducer } from './view/setting/reducer';
-import { notifyReducer } from './share/notify/reducer';
 import { switchMaskReducer } from './view/mask/reducer';
 import { switchLoadingReducer } from './view/loading/reducer';
 import { userReducer } from './view/home/profile/reducer';
@@ -10,7 +9,6 @@ import { switchMbarReducer } from './share/stripe/reducer';
 
 const reducers = combineReducers({
     language: switchLanguageReducer,
-    notifications: notifyReducer,
     maskState: switchMaskReducer,
     loadingState: switchLoadingReducer,
     userState: userReducer,

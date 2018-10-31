@@ -10,24 +10,6 @@
     top: 0;
     right: 0;
 }
-.dash-workspace .ws-card .spacekey .s {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: 900;
-    color: #333;
-    background-color: #aaa;
-    cursor: pointer;
-}
-.dash-workspace .ws-card .spacekey .dash-tooltip {
-    width: 140px;
-    text-align: center;
-    right: 0;
-}
 .dash-workspace .ws-card .inner {
     display: flex;
     flex-wrap: wrap;

@@ -75,7 +75,7 @@ class Coding extends Component {
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : i18n('ws.noProject')
+                                    ) : <div className="noproject">{i18n('ws.noProject')}</div>
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}

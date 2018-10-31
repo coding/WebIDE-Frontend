@@ -84,7 +84,8 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    height: calc(100% - 110px);
+    /* 减去 logo 50，减去 avatar 60，减去 bell 60 */
+    height: calc(100% - 170px);
 }
 .dash-sidebar .nav-item {
     width: 100%;

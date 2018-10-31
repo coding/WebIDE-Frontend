@@ -5,7 +5,7 @@ import './card.css';
 
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
-import { tencentOrigin } from '../../../utils/config';
+import config from '../../../utils/config';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
@@ -15,7 +15,7 @@ class Card extends Component {
             pathname: '/dashboard/plugin/developedbyme/setting',
             state: { pluginId: id },
         };
-        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
         return (
             <div className="plugin-card">
                 <div className="top">

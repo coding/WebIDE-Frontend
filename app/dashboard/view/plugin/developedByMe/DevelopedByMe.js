@@ -15,7 +15,7 @@ class DevelopedByMe extends Component {
     render() {
         const { plugins } = this.state;
         return (
-            <div className="dash-developedbyme view">
+            <div className="dash-myplugin view">
                 {
                     plugins.length ? (
                         plugins.map(plugin => <Card key={plugin.id} {...plugin} belong={3} />)

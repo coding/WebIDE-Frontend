@@ -8,6 +8,7 @@ import cloudstudio from '../../static/cloudstudio.svg';
 import api from '../../api';
 import i18n from '../../utils/i18n';
 import Stripe from '../../share/stripe';
+import Bell from './bell';
 import Profile from './profile';
 import Banner from '../banner';
 import Workspace from '../workspace';
@@ -17,10 +18,15 @@ import Setting from '../setting';
 import About from '../about';
 
 class Home extends Component {
+    state = {
+        isBellOn: false,
+    }
+
     render() {
+        const { isBellOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
         return (
-            <div id="dash-container">
+            <div id="dash-container" onClick={(event) => this.toggleBellPanel(event, { turnOff: true })}>
                 <div className="dash-mbar">
                     <div className="logo">
                         <Link to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="logo" /></Link>
@@ -47,6 +53,7 @@ class Home extends Component {
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin">{i18n('global.plugin')}</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/setting">{i18n('global.setting')}</NavLink>
                     </div>
+                    <Bell on={isBellOn} togglePanel={this.toggleBellPanel} />
                     <Profile />
                 </div>
                 <div className="dash-main">
@@ -68,32 +75,35 @@ class Home extends Component {
 
     componentDidMount() {
         const { history, location, storeWorkspace, hideMbar } = this.props;
+        const pathname = location.pathname;
         // 跳转
-        if (location.pathname === '/dashboard') {
+        if (pathname === '/dashboard') {
             history.push({ pathname: '/dashboard/workspace' });
         }
         // 给顶层 window 发送消息
         history.listen(route => {
             window.top.postMessage({ path: route.pathname }, '*');
-            gtag('config', 'GA_TRACKING_ID', {'page_path': route.pathname});
+            gtag('config', 'UA-65952334-9', {'page_path': route.pathname});
         });
         window.top.postMessage({ path: window.location.pathname }, '*');
-        gtag('config', 'GA_TRACKING_ID', {'page_path': window.location.pathname});
+        gtag('config', 'UA-65952334-9', {'page_path': window.location.pathname});
         // 获取工作空间
-        api.getWorkspace().then(wsRes => {
-            if (wsRes.code === 0) {
-                // 获取创建工作空间数量限制
-                api.getWorkspaceLimit().then(limitRes => {
-                    if (limitRes.code === 0) {
-                        const ws = wsRes.data.list;
-                        const wsCount = ws.length;
-                        const wsLimit = limitRes.data.workspace;
-                        const canCreate = wsCount < wsLimit;
-                        storeWorkspace({ ws, wsCount, wsLimit, canCreate });
-                    }
-                });
-            }
-        });
+        if (pathname !== '/dashboard/workspace') {
+            // 如果当前在 workspace 路由，则不发起请求，以免覆盖数据
+            api.getWorkspace().then(wsRes => {
+                if (wsRes.code === 0) {
+                    // 获取创建工作空间数量限制
+                    api.getWorkspaceLimit().then(limitRes => {
+                        if (limitRes.code === 0) {
+                            const wsCount = wsRes.data.list.length;
+                            const wsLimit = limitRes.data.workspace;
+                            const canCreate = wsCount < wsLimit;
+                            storeWorkspace({ wsCount, wsLimit, canCreate });
+                        }
+                    });
+                }
+            });
+        }
         // 缩放页面时，关闭 mbar
         window.addEventListener('resize', () => {
             const { isMbarOn } = this.props;
@@ -101,6 +111,16 @@ class Home extends Component {
                 hideMbar();
             }
         });
+    }
+
+    toggleBellPanel = (event, { turnOff }) => {
+        event.stopPropagation();
+        // toggle 通知和私信面板
+        if (turnOff) {
+            this.setState({ isBellOn: false });
+        } else {
+            this.setState(prevState => ({ isBellOn: !prevState.isBellOn }));
+        }
     }
 }
 

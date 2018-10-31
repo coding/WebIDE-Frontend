@@ -1,10 +1,12 @@
 import getCookie from '../utils/cookie';
 
 const baseURL = getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin;
+
 const axios = {};
+
 const headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/vnd.coding.v1+json',
+    'Accept': 'application/vnd.coding.v2+json',
     'X-Requested-With': 'XMLHttpRequest',
 };
 
