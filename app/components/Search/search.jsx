@@ -10,6 +10,7 @@ import * as monaco from 'monaco-editor'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import { openFile } from 'commands/commandBindings/file'
 import { createTab, activateTab } from 'components/Tab/actions'
+import FileTreeState from 'components/FileTree/state'
 import dispatchCommand from 'commands/dispatchCommand'
 import state from './state'
 
@@ -28,15 +29,21 @@ class SearchResultItem extends Component {
   handleItemClick = (path, line) => {
     const selection = new monaco.Selection(
       line.line,
-      line.content.indexOf('<h>') + 1,
+      line.indexes[0] + 1,
       line.line,
-      line.content.indexOf('</h>') - 2,
+      line.indexes[0] + this.props.keyword.length + 1,
     )
-    dispatchCommand('file:open_file', {
-      path,
-      // contentType: getMIME(path),
-      editor: { filePath: path, selection },
-    })
+    
+    openFile({ path, editor: { filePath: path, selection } })
+    // const fileTreeNode = FileTreeState.entities.get(path)
+    // if (fileTreeNode) {
+    //   dispatchCommand('file:open_file', {
+    //     path: fileTreeNode.path,
+    //     editor: { filePath: path, selection },
+    //   })
+    // } else {
+    //   openFile({ path, editor: { filePath: path, selection } })
+    // }
   }
   render () {
     const { path, value } = this.props
@@ -60,12 +67,16 @@ class SearchResultItem extends Component {
           <span className='search-item-count'>{count}</span>
         </div>
 
-        {!this.state.isFolded && value.map(line => (
-          <div key={`${path}-${line.line}`} className='search-item-line' onClick={() => this.handleItemClick(path, line)}>
-            <span className='search-item-content' dangerouslySetInnerHTML={{ __html: line.content }} />
-            {/* {line.line} */}
-          </div>
-        ))}
+        {!this.state.isFolded && value.map(line => {
+          const contentStart = line.content.substring(0, line.indexes[0])
+          const contentMiddle = line.content.substring(line.indexes[0], line.indexes[0] + this.props.keyword.length)
+          const contentEnd = line.content.substring(line.indexes[0] + this.props.keyword.length)
+          return (
+            <div key={`${path}-${line.line}`} className='search-item-line' onClick={() => this.handleItemClick(path, line)}>
+              <span className='search-item-content'>{contentStart}<h>{contentMiddle}</h>{contentEnd}</span>
+            </div>
+          )
+        })}
       </div>
     )
   }
@@ -124,9 +135,10 @@ class SearchPanel extends Component {
     if (state.searching) {
       content = 'Searching...'
     } else if (state.result.results) {
+      const keyword = state.result.keyword
       content = Object.entries(state.result.results).map(([key, value]) => {
         if (key.startsWith('/.git/')) return null
-        return (<SearchResultItem path={key} key={key} value={value} />)
+        return (<SearchResultItem keyword={keyword} path={key} key={key} value={value} />)
       })
     }
 

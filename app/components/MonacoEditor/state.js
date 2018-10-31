@@ -138,8 +138,20 @@ class EditorInfo {
       }
     })
 
+    // if (props.selection) {
+    //   debugger
+    //   this.selection = props.selection
+    // }
     if (props.selection) {
-      this.selection = props.selection
+      const pos = {
+        lineNumber: props.selection.startLineNumber,
+        column: props.selection.startColumn,
+      }
+      setTimeout(() => {
+        monacoEditor.setSelection(props.selection)
+        monacoEditor.revealPositionInCenter(pos, 1)
+        monacoEditor.focus()
+      }, 0)
     }
 
     monacoEditor._editorInfo = this
