@@ -126,7 +126,7 @@
     "mobx-react": "^4.1.5",
     "moment": "^2.18.1",
     "monaco-editor": "0.14.1",
-    "monaco-languageclient": "^0.6.3",
+    "monaco-languageclient": "^0.9.0",
     "mousetrap": "^1.6.1",
     "octicons": "4.4.0",
     "prop-types": "^15.5.10",

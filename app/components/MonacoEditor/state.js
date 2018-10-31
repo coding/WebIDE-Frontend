@@ -4,6 +4,10 @@ import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
+// import { StaticServices } from 'monaco-editor/esm/vs/editor/standalone/browser/standaloneServices'
+
+// const codeEditorService = StaticServices.codeEditorService.get()
+import { MonacoServices, Services } from 'monaco-languageclient'
 
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
@@ -12,9 +16,11 @@ import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { toDefinition } from 'components/MonacoEditor/actions'
+import { createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
+import config from 'config'
 
 reaction(() => initialOptions.theme, (theme) => {
   monaco.editor.setTheme(theme)
@@ -27,6 +33,7 @@ const state = observable({
   activeMonacoEditor: null,
   editors: new Map(),
   activeEditorListeners: [],
+  installed: false,
 })
 
 const typeDetect = (title, types) => {
@@ -69,12 +76,33 @@ class EditorInfo {
         model
       },
       {
-        editorService: {
-          openEditor: toDefinition
+        codeEditorService: {
+          openCodeEditor: function (...args) {
+            toDefinition(args[0])
+            const editor = this.doOpenEditor(args[1], args[0])
+            return monaco.Promise.as(editor)
+          },
+          addCodeEditor: () => {},
+          getFocusedCodeEditor: (...args) => {
+            return monacoEditor
+          },
+          getActiveCodeEditor: (...args) => {
+            return monacoEditor
+          },
+          doOpenEditor: function (editor, input) {
+            return null
+          }
         }
       }
     )
 
+    if (!state.installed) {
+      // install Monaco language client services
+      const services = createMonacoServices(monacoEditor, { rootUri: `file://${config._ROOT_URI_}` })
+      Services.install(services)
+      // MonacoServices.install(monacoEditor)
+      state.installed = true
+    }
 
     state.editors.set(this.uri, monacoEditor)
 
@@ -138,8 +166,13 @@ class EditorInfo {
         startColumn
       )
       this.selection = selection
-      monacoEditor.setSelection(selection)
-      monacoEditor.revealLineInCenter(startLineNumber, 1)
+      // const pos = {
+      //   lineNumber: startLineNumber,
+      //   column: startColumn,
+      // }
+
+      // monacoEditor.setPosition(pos)
+      // monacoEditor.revealPositionInCenter(pos, 1)
     }
 
     monacoEditor._editorInfo = this
@@ -189,13 +222,16 @@ class EditorInfo {
           }
         }
       ])
-      monacoEditor.setSelection({
-        startLineNumber: line,
-        startColumn: 1,
-        endLineNumber: line,
-        endColumn: 1
-      })
-      monacoEditor.revealLineInCenter(line, 1)
+
+      const pos = {
+        lineNumber: line,
+        column: 1
+      }
+
+      setTimeout(() => {
+        monacoEditor.setPosition(pos)
+        monacoEditor.revealPositionInCenter(pos, 1)
+      }, 0)
     }
   }
 

@@ -118,7 +118,15 @@ class MonacoEditor extends React.PureComponent {
         monacoEditor.setModel(model)
 
         if (this.editor.selection) {
-          monacoEditor.setSelection(this.editor.selection)
+          const pos = {
+            lineNumber: this.editor.selection.startLineNumber,
+            column: this.editor.selection.startColumn,
+          }
+    
+          setTimeout(() => {
+            monacoEditor.setPosition(pos)
+            monacoEditor.revealPositionInCenter(pos, 1)
+          }, 0)
         }
         const { client, openeduri } = languageClient
         if (client && client.state === 3 && this.props.active && this.didmount) {
