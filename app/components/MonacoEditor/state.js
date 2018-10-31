@@ -172,8 +172,15 @@ class EditorInfo {
   @observable
   cursorPosition = { ln: 1, col: 1 }
 
-  setCursor (...args) {
-    // TODO
+  setCursor (position) {
+    const [lineNumber, column] = position.split(':')
+    const pos = {
+      lineNumber: Number(lineNumber),
+      column: Number(column),
+    }
+    this.monacoEditor.setPosition(pos)
+    this.monacoEditor.revealPositionInCenter(pos, 1)
+    this.monacoEditor.focus()
   }
 
   @computed
