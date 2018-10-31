@@ -129,3 +129,11 @@ export function searchFile (value, includeNonProjectItems = false) {
     }
   })
 }
+
+export function searchTxt (keyword) {
+  return request.post(`/workspaces/${config.spaceKey}/txt-search`, { keyword }, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+}

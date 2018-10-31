@@ -53,11 +53,8 @@ class TabContainer extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      fullScreenActiveContent: false,
+      fullScreenActiveContent: config.isFullScreen,
     }
-    autorun(() => {
-      this.setState({ fullScreenActiveContent: config.isFullScreen });
-    })
   }
 
   componentDidMount () {
