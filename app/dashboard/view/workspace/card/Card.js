@@ -2,18 +2,14 @@ import React, { Component } from 'react';
 
 import './card.css';
 
-import ToolTip from '../../../share/toolTip';
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
-import { tencentOrigin } from '../../../utils/config';
-import { getCreatedTime, getModifiedDate, getDeletedTime } from '../../../utils/date';
+import config from '../../../utils/config';
+import { getCreatedTime, getModifiedTime, getDeletedTime } from '../../../utils/date';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
-    state = { isTTOn: false }
-
     render() {
-        const { isTTOn } = this.state;
         const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
@@ -45,14 +41,10 @@ class Card extends Component {
         const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
         return (
             <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
-                {/* <div className="spacekey">
-                    <div className="s" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}>S</div>
-                    <ToolTip on={isTTOn} message={isTTOn ? `SpaceKey: ${spaceKey}` : ''} placement="right" />
-                </div> */}
                 <div className="inner" title={attr}>
                     <div className="title">{title}</div>
                     <div className="desc">
-                        {workingStatus !== 'Invalid' ? getModifiedDate(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), deleteTime)}
+                        {workingStatus !== 'Invalid' ? getModifiedTime(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), deleteTime)}
                     </div>
                     <div className="status">
                         <div className={`state${workingStatus !== 'Online' ? ' off' : ''}`}>
@@ -94,10 +86,6 @@ class Card extends Component {
         );
     }
 
-    handleTT = () => {
-        this.setState(prevState => ({ isTTOn: !prevState.isTTOn }));
-    }
-
     handleMask = (options, event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -111,7 +99,7 @@ class Card extends Component {
             if (res.code === 0) {
                 handleFetch();
                 if (shouldOpen) {
-                    const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+                    const url = window === window.top ? `/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
                     window.open(url);
                 } else {
                     notify({ message: res.msg });
@@ -154,7 +142,7 @@ class Card extends Component {
 }
 
 const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }) => {
-    const url = window === window.top ? `/ws/${spaceKey}` : `${tencentOrigin}/ws/${spaceKey}`;
+    const url = window === window.top ? `/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,

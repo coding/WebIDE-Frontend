@@ -59,6 +59,11 @@
     border-bottom-right-radius: 4px;
     overflow: auto;
 }
+.com-board .project-body .noproject {
+    width: 100%;
+    padding-bottom: 14px;
+    text-align: center;
+}
 .com-board .primary {
     margin-right: 10px;
 }

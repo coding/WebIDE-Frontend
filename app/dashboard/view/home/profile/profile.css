@@ -1,28 +1,28 @@
-.dash-sidebar .profile {
+.dash-profile {
     height: 60px;
     position: relative;
 }
-.dash-sidebar .profile .main {
+.dash-profile .profile {
     display: flex;
     align-items: center;
     height: 100%;
     padding: 0 15px;
     cursor: pointer;
 }
-.dash-sidebar .profile:hover .profile-menu {
+.dash-profile:hover .panel {
     opacity: 1;
     pointer-events: all;
     bottom: 60px;
 }
-.dash-sidebar .profile .avatar {
-    width: 32px;
-    height: 32px;
+.dash-profile .avatar {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
-.dash-sidebar .profile:hover .caret {
+.dash-profile:hover .caret {
     transform: rotate(-180deg);
 }
-.dash-sidebar .profile .name {
+.dash-profile .name {
     width: calc(100% - 70px);
     margin: 0 10px;
     font-size: 16px;
@@ -30,11 +30,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.dash-sidebar .profile .caret {
+.dash-profile .caret {
     font-size: 16px;
     transition: transform .4s ease;
 }
-.dash-sidebar .profile .profile-menu {
+.dash-profile .panel {
     width: 140px;
     height: 136px;
     border-radius: 3px;
@@ -46,9 +46,9 @@
     transition: opacity .4s ease, bottom .3s ease;
     position: absolute;
     bottom: 70px;
-    left: 20px;
+    left: 15px;
 }
-.dash-sidebar .profile .menu-item {
+.dash-profile .menu-item {
     display: block;
     height: 34px;
     padding: 0 10px;
@@ -56,9 +56,9 @@
     color: #ccc;
     transition: background-color .3s ease;
 }
-/* .dash-sidebar .profile .menu-item:last-child {
+/* .dash-profile .menu-item:last-child {
     border-top: 1px solid #444;
 } */
-.dash-sidebar .profile .menu-item:hover {
+.dash-profile .menu-item:hover {
     background-color: #444;
 }

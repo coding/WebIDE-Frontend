@@ -1,0 +1,29 @@
+.dash-setmyplugin .cannot-publish {
+    width: 100%;
+    padding-top: 80px;
+    text-align: center;
+    font-size: 20px;
+    color: #a1a1a1;
+}
+.dash-setmyplugin .version-url {
+    padding-left: 4px;
+    color: #ccc;
+}
+.dash-setmyplugin .version-number {
+    width: 70px;
+    padding-right: 5px;
+}
+.dash-setmyplugin .version-tip {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #898989;
+}
+.dash-setmyplugin .version-dot {
+    margin: 0 10px;
+}
+.dash-setmyplugin .publish-tip {
+    width: 100%;
+    margin-bottom: 10px;
+    color: #898989;
+}

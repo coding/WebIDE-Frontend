@@ -1,0 +1,90 @@
+.dash-bell {
+    padding: 0 15px;
+    margin-bottom: 30px;
+    font-size: 12px;
+    position: relative;
+}
+.dash-bell .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #f00;
+}
+.dash-bell .bell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #3b3b3b;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+}
+.dash-bell .bell .dot {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
+.dash-bell .panel {
+    display: none;
+    width: 260px;
+    background-color: #3a3a3a;
+    box-shadow: 3px 0 30px rgba(0, 0, 0, .2);
+    position: absolute;
+    bottom: 40px;
+    left: 15px;
+}
+.dash-bell .panel.on {
+    display: block;
+}
+.dash-bell .panel .tab {
+    display: flex;
+    padding: 0 10px;
+    height: 30px;
+}
+.dash-bell .panel .tab-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-right: 20px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+}
+.dash-bell .panel .tab-item.on {
+    border-bottom-color: #18f;
+}
+.dash-bell .panel .tab-item .dot {
+    position: absolute;
+    top: 4px;
+    right: -3px;
+}
+.dash-bell .panel .view {
+    background-color: #333;
+}
+.dash-bell .panel .view-item {
+    padding: 15px 10px 15px 16px;
+    cursor: pointer;
+    transition: background-color .2s;
+    position: relative;
+}
+.dash-bell .panel .view-item .dot {
+    margin-right: 2px;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 6px;
+}
+.dash-bell .panel .view-item:hover {
+    background-color: #555;
+}
+.dash-bell .panel .readall {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+}

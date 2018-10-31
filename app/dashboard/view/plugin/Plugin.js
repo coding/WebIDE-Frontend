@@ -7,7 +7,7 @@ import Create from './create';
 import ThirdParty from './thirdParty';
 import Builtin from './builtin';
 import DevelopedByMe from './developedByMe';
-import Setting from './setting';
+import Setting from '../myPlugin/setting';
 import i18n from '../../utils/i18n';
 
 const routes = ['thirdparty', 'builtin', 'developedbyme'];

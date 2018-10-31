@@ -63,5 +63,10 @@
     "publish": "发布",
     "status": "状态",
     "release": "版本",
-    "modify": "修改"
+    "modify": "修改",
+    "notification": "通知",
+    "message": "私信",
+    "readAllNotification": "查看全部通知",
+    "readAllMessage": "查看全部私信",
+    "createdTime": "创建时间"
 }

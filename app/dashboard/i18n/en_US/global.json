@@ -63,5 +63,10 @@
     "publish": "Publish",
     "status": "Status",
     "release": "Release",
-    "modify": "Modification"
+    "modify": "Modification",
+    "notification": "Notifications",
+    "message": "Messages",
+    "readAllNotification": "Read All Notification",
+    "readAllMessage": "Read All Message",
+    "createdTime": "Created Time"
 }

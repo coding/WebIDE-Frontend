@@ -1,1 +1,5 @@
-export const tencentOrigin = 'https://studio.dev.tencent.com';
+const config = {
+    tencentOrigin: 'https://studio.dev.tencent.com',
+}
+
+export default config;

@@ -62,8 +62,9 @@
     outline: none;
 }
 .com-button {
-    width: 70px;
+    min-width: 70px;
     height: 35px;
+    padding: 5px 10px;
     border: none;
     border-radius: 3px;
     font-size: 14px;

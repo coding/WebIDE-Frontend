@@ -15,14 +15,15 @@ class Workspace extends Component {
     state = {
         showWelcome: false,
         workspaces: [],
+        workspacesCollaborative: [],
         workspacesInvalid: [],
         opendSpaceKey: '',
     }
     interval = null;
 
     render() {
-        const { showWelcome, workspaces, workspacesInvalid, opendSpaceKey } = this.state;
-        const { globalKey, wsCount, wsLimit, hasWSOpend, showMask, hideMask } = this.props;
+        const { showWelcome, workspaces, workspacesCollaborative, workspacesInvalid, opendSpaceKey } = this.state;
+        const { globalKey, wsLimit, hasWSOpend, showMask, hideMask } = this.props;
         return (
             <div className="dash-workspace">
                 {showWelcome && <Intro handler={this.handleWelcome} />}
@@ -30,50 +31,66 @@ class Workspace extends Component {
                     <NewWs />
                     <NewPlugin />
                 </div>
-                {
-                    workspaces.length ? (
-                        <div className="created">
-                            <div className="caption">
-                                <div className="title">{i18n('ws.myWorkspace')} ({wsCount})</div>
-                                <div className="tip">
-                                    {i18n('ws.wsTip', { limit: wsLimit })}
-                                    <a href="https://dev.tencent.com/help/cloud-studio/workspace-introduction" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
-                                </div>
-                            </div>
-                            <div className="card-box">
-                                {
-                                    workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                                        globalKey={globalKey}
-                                        hasWSOpend={hasWSOpend}
-                                        opendSpaceKey={opendSpaceKey}
-                                        showMask={showMask}
-                                        hideMask={hideMask}
-                                        handleFetch={this.handleFetch} />
-                                    )
-                                }
+                {workspaces.length > 0 && (
+                    <div className="created">
+                        <div className="caption">
+                            <div className="title">{i18n('ws.myWorkspace')} ({workspaces.length})</div>
+                            <div className="tip">
+                                {i18n('ws.wsTip', { limit: wsLimit })}
+                                <a href="https://dev.tencent.com/help/cloud-studio/workspace-introduction" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
                             </div>
                         </div>
-                    ) : null
-                }
-                {
-                    workspacesInvalid.length ? (
-                        <div className="deleted">
-                            <div className="caption">
-                                <div>{i18n('global.recentdeleted')} ({workspacesInvalid.length})</div>
-                                <div className="tip">{i18n('ws.deletedWSTip')}</div>
-                            </div>
-                            <div className="card-box">
-                                {
-                                    workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
-                                        showMask={showMask}
-                                        hideMask={hideMask}
-                                        handleFetch={this.handleFetch} />
-                                    )
-                                }
-                            </div>
+                        <div className="card-box">
+                            {
+                                workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                                    globalKey={globalKey}
+                                    hasWSOpend={hasWSOpend}
+                                    opendSpaceKey={opendSpaceKey}
+                                    showMask={showMask}
+                                    hideMask={hideMask}
+                                    handleFetch={this.handleFetch} />
+                                )
+                            }
                         </div>
-                    ) : null
-                }
+                    </div>
+                )}
+                {workspacesCollaborative.length > 0 && (
+                    <div className="collaborate">
+                        <div className="caption">
+                            <div>{i18n('ws.invitedWorkspace')} ({workspacesCollaborative.length})</div>
+                            <div className="tip">{i18n('ws.invitedWorkspaceTip')}</div>
+                        </div>
+                        <div className="card-box">
+                            {
+                                workspacesCollaborative.map(ws => <Card key={ws.spaceKey} {...ws}
+                                    globalKey={globalKey}
+                                    hasWSOpend={hasWSOpend}
+                                    opendSpaceKey={opendSpaceKey}
+                                    showMask={showMask}
+                                    hideMask={hideMask}
+                                    handleFetch={this.handleFetch} />
+                                )
+                            }
+                        </div>
+                    </div>
+                )}
+                {workspacesInvalid.length > 0 && (
+                    <div className="deleted">
+                        <div className="caption">
+                            <div>{i18n('global.recentdeleted')} ({workspacesInvalid.length})</div>
+                            <div className="tip">{i18n('ws.deletedWSTip')}</div>
+                        </div>
+                        <div className="card-box">
+                            {
+                                workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
+                                    showMask={showMask}
+                                    hideMask={hideMask}
+                                    handleFetch={this.handleFetch} />
+                                )
+                            }
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
@@ -118,23 +135,24 @@ class Workspace extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: values[0].msg });
             }
-            // 只计算自己创建的 workspaces
-            storeWorkspace({ ws: wsNor, wsCount: wsNor.length });
             // 协作的 workspaces
             if (Array.isArray(values[1])) {
                 wsCol = this.handleParse(values[1]);
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: values[1].msg });
             }
-            // 这里包括自己邀请别人和别人邀请自己的 workspaces，去除自己邀请别人的重复 workspaces
+            // 别人邀请自己的 workspaces
             const workspaces = [...wsNor];
+            const workspacesCollaborative = [];
             for (let i = 0; i < wsCol.length; i++) {
                 const item = wsCol[i];
                 if (!wsNor.find(ws => ws.spaceKey === item.spaceKey)) {
-                    workspaces.push(item);
+                    workspacesCollaborative.push(item);
                 }
             }
-            this.setState({ workspaces });
+            // 保存 workspace 数量
+            storeWorkspace({ wsCount: workspaces.length + workspacesCollaborative.length });
+            this.setState({ workspaces, workspacesCollaborative });
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
@@ -208,7 +226,6 @@ class Workspace extends Component {
 const mapState = (state) => {
     return {
         globalKey: state.userState.global_key,
-        wsCount: state.wsState.wsCount,
         wsLimit: state.wsState.wsLimit,
         hasWSOpend: state.hasWorkspaceOpend,
     };
