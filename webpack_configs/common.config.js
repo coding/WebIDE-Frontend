@@ -87,6 +87,7 @@ module.exports = function(options = {}) {
       crypto: 'empty'
     },
     optimization: {
+      runtimeChunk: true,
       splitChunks: {
           minChunks: 1,
           chunks: 'all',
