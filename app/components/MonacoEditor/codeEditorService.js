@@ -1,4 +1,4 @@
-import { toDefinition } from 'components/MonacoEditor/actions'
+import { toDefinition } from './actions'
 
 class CodeEditorService {
   constructor () {

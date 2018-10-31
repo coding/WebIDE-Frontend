@@ -6,7 +6,7 @@ import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
 import { Services } from 'monaco-languageclient'
 
-import codeEditorService from './CodeEditorService'
+import codeEditorService from './codeEditorService'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
