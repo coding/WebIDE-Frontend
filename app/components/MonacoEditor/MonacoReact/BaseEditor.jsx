@@ -122,10 +122,10 @@ class MonacoEditor extends React.PureComponent {
             lineNumber: this.editor.selection.startLineNumber,
             column: this.editor.selection.startColumn,
           }
-    
           setTimeout(() => {
-            monacoEditor.setPosition(pos)
+            monacoEditor.setSelection(this.editor.selection)
             monacoEditor.revealPositionInCenter(pos, 1)
+            monacoEditor.focus()
           }, 0)
         }
         const { client, openeduri } = languageClient

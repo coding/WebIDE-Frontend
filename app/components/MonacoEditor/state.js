@@ -139,21 +139,7 @@ class EditorInfo {
     })
 
     if (props.selection) {
-      const { startLineNumber, startColumn } = props.selection
-      const selection = new monaco.Selection(
-        startLineNumber,
-        startColumn,
-        startLineNumber,
-        startColumn
-      )
-      this.selection = selection
-      // const pos = {
-      //   lineNumber: startLineNumber,
-      //   column: startColumn,
-      // }
-
-      // monacoEditor.setPosition(pos)
-      // monacoEditor.revealPositionInCenter(pos, 1)
+      this.selection = props.selection
     }
 
     monacoEditor._editorInfo = this

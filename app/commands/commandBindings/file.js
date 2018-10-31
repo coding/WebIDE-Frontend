@@ -178,8 +178,9 @@ export function openFile (obj, callback) {
         }
   
         setTimeout(() => {
-          existingTab.editorInfo.monacoEditor.setPosition(pos)
+          existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
           existingTab.editorInfo.monacoEditor.revealPositionInCenter(pos, 1)
+          existingTab.editorInfo.monacoEditor.focus()
         }, 0)
       }
 
