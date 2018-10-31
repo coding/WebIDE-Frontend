@@ -73,7 +73,8 @@ module.exports = function(options = {}) {
       extensions: ['*', '.js', '.jsx'],
       modules: ['node_modules', path.join(PROJECT_ROOT, 'app')],
       alias: {
-        static: path.join(PROJECT_ROOT, 'static')
+        static: path.join(PROJECT_ROOT, 'static'),
+        'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility')
       }
     },
     resolveLoader: {

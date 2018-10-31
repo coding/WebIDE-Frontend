@@ -114,6 +114,12 @@ export class LanguageClient {
   start = () => {
     listen({
       webSocket: this.ioToWebSocket,
+      logger: Object.freeze({
+        error: () => {},
+        warn: () => {},
+        info: () => {},
+        log: () => {}
+      }),
       onConnection: (connection) => {
         this.client = createLanguageClient(
           this.services,
