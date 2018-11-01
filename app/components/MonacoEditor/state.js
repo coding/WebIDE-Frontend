@@ -138,10 +138,6 @@ class EditorInfo {
       }
     })
 
-    // if (props.selection) {
-    //   debugger
-    //   this.selection = props.selection
-    // }
     if (props.selection) {
       const pos = {
         lineNumber: props.selection.startLineNumber,
