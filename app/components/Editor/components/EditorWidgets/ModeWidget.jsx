@@ -26,10 +26,7 @@ export default class ModeWidget extends Component {
   }
 
   makeModeMenuItems () {
-    let languageInfos = modeInfos
-    if (!config.switchOldEditor) {
-      languageInfos = monacoModeInfos
-    }
+    const languageInfos = monacoModeInfos
     return languageInfos.map((mode) => ({
       key: mode.name || mode.id,
       name: mode.name || mode.aliases[0],
