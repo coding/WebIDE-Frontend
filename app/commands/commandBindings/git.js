@@ -21,11 +21,7 @@ export default {
     api.gitStatus().then(({ files, clean }) => {
       $d(Git.updateStatus({ files, isClean: clean }))
     }).then(() => {
-      if (!config.switchOldEditor) {
-        Modal.showModal('GitCommitView')
-      } else {
-        Modal.showModal('GitCommit', 'HelloYo')
-      }
+      Modal.showModal('GitCommitView')
     })
   },
 

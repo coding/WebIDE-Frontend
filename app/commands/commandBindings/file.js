@@ -310,8 +310,7 @@ const fileCommands = {
   'file:save': (c) => {
     const { EditorTabState } = mobxStore
     const activeTab = EditorTabState.activeTab
-    const isMonaco = !config.switchOldEditor
-    const content = !activeTab ? '' : isMonaco ? activeTab.editorInfo.monacoEditor.getValue() : activeTab.editor.cm.getValue()
+    const content = activeTab.editorInfo.monacoEditor.getValue()
     if (!activeTab.file) {
       const createFile = createFileWithContent(content)
       const defaultPath = activeTab._title ? `/${activeTab._title}` : '/untitled'
