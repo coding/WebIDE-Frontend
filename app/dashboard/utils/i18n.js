@@ -5,7 +5,7 @@ import zh_CN from '../i18n/zh_CN';
 import en_US from '../i18n/en_US';
 import is from './is';
 
-const slotReg = /{{(.+)}}/g;
+const slotReg = /{{([a-z]+)}}/gi;
 
 const compileTemplate = (template, slot, dict, language) => {
     const chain = template.split('.');
@@ -18,12 +18,16 @@ const compileTemplate = (template, slot, dict, language) => {
         } else if (is.isString(subMap)) {
             return subMap.replace(slotReg, (match, $1) => {
                 const translate = slot[$1];
-                if (is.isObject(translate) && translate.en_US && translate.zh_CN) {
-                    return translate[language];
-                } else if (is.isString(translate)) {
-                    return translate;
-                } else {
+                if (is.isObject(translate)) {
+                    if (translate.en_US && translate.zh_CN) {
+                        return translate[language];
+                    } else {
+                        return match;
+                    }
+                } else if (is.isUndefined(translate)) {
                     return match;
+                } else {
+                    return translate;
                 }
             });
         } else {

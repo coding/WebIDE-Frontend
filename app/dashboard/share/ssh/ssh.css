@@ -9,11 +9,16 @@
     border-radius: 3px;
     color: #757575;
     word-break: break-all;
+    cursor: pointer;
     position: relative;
 }
-.com-ssh .ssh-content .clipboard {
-    cursor: pointer;
+.com-ssh .ssh-content .ssh-clipboard {
     position: absolute;
     top: 8px;
     right: 8px;
+}
+/* 自定义 tooltip 样式 */
+.com-ssh .ssh-content .dash-tooltip {
+    width: 70px;
+    text-align: center;
 }

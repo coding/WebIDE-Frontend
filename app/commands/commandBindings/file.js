@@ -170,10 +170,18 @@ export function openFile (obj, callback) {
         existingTab.editor.gitBlame = editor.gitBlame
       }
       if (editor.selection) {
-        const { startLineNumber } = editor.selection
-        existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
-        existingTab.editorInfo.monacoEditor.focus()
-        existingTab.editorInfo.monacoEditor.revealLineInCenter(startLineNumber, 1)
+        const { startLineNumber, startColumn } = editor.selection
+
+        const pos = {
+          lineNumber: startLineNumber,
+          column: startColumn,
+        }
+  
+        setTimeout(() => {
+          existingTab.editorInfo.monacoEditor.setSelection(editor.selection)
+          existingTab.editorInfo.monacoEditor.revealPositionInCenter(pos, 1)
+          existingTab.editorInfo.monacoEditor.focus()
+        }, 0)
       }
 
       if (editor.debug) {

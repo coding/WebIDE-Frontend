@@ -23,15 +23,10 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
   if (scheme === INMEMORY) return false
   if (scheme !== JDT) {
     const relativePath = path.substring(config.__WORKSPACE_URI__.length)
-    const fileTreeNode = FileTreeState.entities.get(relativePath)
-    if (fileTreeNode) {
-      dispatchCommand('file:open_file', {
-        path: fileTreeNode.path,
-        editor: { filePath: relativePath, selection: params.options && params.options.selection },
-      })
-    } else {
-      openFile({ path: relativePath, editor: { filePath: relativePath, selection: params.options && params.options.selection } })
-    }
+    openFile({
+      path: relativePath,
+      editor: { filePath: relativePath, selection: params.options && params.options.selection },
+    })
   } else {
     const languageClient = LanguageState.clients.get(config.mainLanguage)
     const fileName = resource.path.split('/').pop()

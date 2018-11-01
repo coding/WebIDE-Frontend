@@ -1,10 +1,16 @@
 .dash-banner {
-    height: 60px;
+    width: calc(100% - 200px);
+    height: 50px;
     padding: 0 30px;
-    line-height: 60px;
+    line-height: 50px;
     border-bottom: 1px solid #2d2d2d;
-    color: #fff;
+    font-weight: 700;
+    color: #ccc;
     background-color: #333;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 10;
 }
 .dash-banner .slash {
     color: #aaa;
@@ -12,9 +18,6 @@
 .dash-banner .crumb {
     color: #aaa;
 }
-.dash-banner .crumb:last-child {
-    color: #ccc;
-}
 .dash-banner .crumb:hover {
-    color: #5097e8;
+    color: #18f;
 }

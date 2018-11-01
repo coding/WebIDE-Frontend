@@ -55,7 +55,8 @@
       },
       "syntaxTheme": "代码着色",
       "fontSize": "编辑器字号",
-      "termFontSize": "终端字号"
+      "termFontSize": "终端字号",
+      "file_icon_theme": "文件图标"
    },
    "extension": {
       "main": "插件中心",

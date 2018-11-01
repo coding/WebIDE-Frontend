@@ -1,70 +1,16 @@
-.dash-workspace .created,
-.dash-workspace .deleted {
+.dash-workspace .card-box {
     display: flex;
     flex-wrap: wrap;
-}
-.dash-workspace .deleted {
-    padding-top: 20px;
+    margin: 0 -10px;
 }
 .dash-workspace .caption {
-    padding-top: 30px;
+    padding: 20px 0;
 }
 .dash-workspace .caption .tip {
-    margin-top: 5px;
-    font-size: 12px;
+    margin-top: 10px;
     color: #757575;
 }
-.dash-workspace .created .tip {
-    margin-top: 5px;
-    font-size: 12px;
+.can-not-create-ws-tip {
+    padding-bottom: 10px;
     color: #757575;
-    width: 100%;
-    margin-bottom: 20px;
-}
-.utilities-container {
-    
-}
-.utilities-container .mask-container {
-    background: rgba(0, 0, 0, 0.8);
-}
-.utilities-container .mask-container .progress {
-    background-color: #1e1e1e;
-    color: gray(80%);
-    border: 1px solid #444;
-}
-
-.mask-container {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 100;
-    /* position: absolute; */
-    /* width: 100%; */
-    /* height: 100%; */
-    flex-direction: column;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.mask-container .progress {
-    font-size: 16px;
-    padding: 16px 16px;
-    border-radius: 5px;
-    background-color: #fff;
-    z-index: 10;
-}
-.mask-container .progress > i {
-    margin-right: 5px;
-}
-.mask-container .progress .progress-btn {
-    text-align: right;
-    margin-top: 12px;
-    font-size: 14px;
-}
-.mask-container .progress .progress-line {
-    padding-top: 8px;
-    max-width: 260px;
 }

@@ -6,6 +6,10 @@
    },
    "left": {
       "project": "文件树",
-      "working": "工作文件"
+      "working": "工作文件",
+      "find": "搜索"
+   },
+   "right": {
+     "plugin": "插件开发"
    }
 }

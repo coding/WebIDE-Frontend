@@ -27,6 +27,7 @@ const svgs = {
     'machine-learning': machinelearning,
     'go': go,
     'c-cpp': c,
+    'elixir': elixir,
 }
 
 const match = (label) => {
@@ -50,7 +51,7 @@ const EnvCard = ({ name, displayName, description, descriptionCN, envId, languag
             <div className="inner">
                 <div className="main">
                     <img src={match(name)} alt="avatar" />
-                    <span title={displayName}>{displayName}</span>
+                    <span className="title" title={displayName}>{displayName}</span>
                 </div>
                 <div className="desc">{desc}</div>
                 <div className="mark">

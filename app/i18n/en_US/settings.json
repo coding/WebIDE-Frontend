@@ -56,7 +56,8 @@
       },
       "syntaxTheme": "Syntax Theme",
       "fontSize": "Editor Font Size",
-      "termFontSize": "Termininal Font Size"
+      "termFontSize": "Termininal Font Size",
+      "file_icon_theme": "File Icon"
    },
    "extension": {
       "main": "Extension Setting",

@@ -1,6 +1,4 @@
-*,
-*::before,
-*::after {
+*, *::before, *::after {
     box-sizing: border-box;
 }
 html {
@@ -12,7 +10,7 @@ body {
     padding: 0;
 }
 a {
-    color: #5097e8;
+    color: #39f;
     text-decoration: none;
     transition: color .2s ease;
 }
@@ -39,15 +37,18 @@ ul, ol {
     display: none;
 }
 
-#root {
-    height: 100%;
-}
-#dash-container {
-    display: flex;
+#dashboard {
+    min-width: 300px;
     height: 100%;
     font-size: 14px;
-    font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-family: PingFang SC, Helvetica Neue, Hiragino Sans GB, Segoe UI, Microsoft YaHei, 微软雅黑, sans-serif;
     color: #ccc;
     background-color: #333;
     -webkit-font-smoothing: antialiased;
+}
+#dash-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: 100%;
 }

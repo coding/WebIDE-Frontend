@@ -6,15 +6,16 @@ import i18n from '../../utils/createI18n'
 import { observable } from 'mobx'
 import config from 'config'
 
-
 import logo from '../../../static/CloudStudio-Logo.svg';
 
 const divider = { isDivider: true };
 
+const dashboardUrl = window === window.top ? '/dashboard' : `${config.tencentOrigin}/dashboard`;
+
 const menuBarItems = observable([
   {
     key: 'meta',
-    name: (<div className="menu-bar-item-logo"></div>),
+    name: (<div className="menu-bar-item-logo"><img className="logo" src={logo} alt="logo" /><div className='beta'>beta</div></div>),
     className: 'coding-logo',
     items: [
       {
@@ -22,7 +23,7 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.meta.dashboard`,
         icon: 'octicon octicon-browser',
         command: () => {
-          window.open('https://studio.dev.tencent.com/dashboard')
+          window.open(dashboardUrl)
         },
         canopen: true
       },
@@ -38,7 +39,8 @@ const menuBarItems = observable([
         name: i18n`menuBarItems.meta.about`,
         icon: 'fa fa-info-circle',
         command: 'file:open_about'
-      }]
+      }
+    ]
   },
   {
     key: 'file',
@@ -237,18 +239,18 @@ const menuBarItems = observable([
     weight: 45,
     name: i18n`menuBarItems.window.main`,
     items: [
-      // {
-      //   key: 'zen',
-      //   name: i18n`menuBarItems.window.zenMode`,
-      //   command: 'tab:zenmode',
-      // },
+      {
+        key: 'zen',
+        name: i18n`menuBarItems.window.zenMode`,
+        command: 'tab:zenmode',
+      },
       {
         key: 'fullScreen',
         name: i18n`menuBarItems.window.fullScreen`,
         command: () => config.isFullScreen = !config.isFullScreen
       }
     ]
-  }
+  },
 ])
 
 const isRebasing = [

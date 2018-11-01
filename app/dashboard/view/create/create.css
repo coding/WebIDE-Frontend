@@ -1,1 +1,20 @@
+.dash-create .radio-option.radio-dev-platform {
+    position: relative;
+}
+.dash-create .radio-option.radio-dev-platform .dash-tooltip {
+    width: 130px;
+    text-align: center;
+}
+.dash-create .dash-nodata {
+    margin-left: 7px;
+}
 
+@media screen and (max-width: 540px) {
+    .dash-create .com-board .board-content.radio {
+        flex-wrap: wrap;
+    }
+    .dash-create .com-board .board-content.radio .radio-option:not(:first-child) {
+        width: 100%;
+        padding-top: 10px;
+    }
+}

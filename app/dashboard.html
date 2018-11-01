@@ -8,8 +8,17 @@
     <title>Cloud Studio 开启云端开发模式！ - Coding.net</title>
     <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
     <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-65952334-9');
+    </script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="dashboard"></div>
 </body>
 </html>

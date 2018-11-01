@@ -4,6 +4,7 @@ import { isPlainObject } from 'utils/is'
 import settings from 'settings'
 import config from 'config'
 import i18n from 'utils/createI18n'
+import { pluginSettingsItem } from 'components/Plugins/store'
 
 const getSettingValueHelper = store => Object.keys(store)
   .filter(e => e !== '_keys' && e !== 'confirmCallBack')
@@ -14,15 +15,18 @@ const getSettingValueHelper = store => Object.keys(store)
 
 export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 
-const tabIds = ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP', 'EXTENSIONS']
+const tabIds = ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP']
 
 if (!config.switchOldEditor) {
   tabIds.push('LANGUAGESERVER')
 }
 
+export const pluginSettingStore = observable({})
+
 const state = observable({
   activeTabId: 'GENERAL',
   tabIds,
+  pluginSettingsItem,
   tabNames: {
     GENERAL: i18n`settings.tabs.general`,
     APPEARANCE: i18n`settings.tabs.appearance`,
@@ -33,7 +37,7 @@ const state = observable({
     PROJECTSETTING: i18n`settings.tabs.projectsetting`
   },
   get activeTab () {
-    return settings[this.activeTabId.toLowerCase()]
+    return settings[this.activeTabId.toLowerCase()] || null
   },
   settings,
   activateTab: action((tabId) => {
@@ -92,4 +96,5 @@ export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {
 })
 
 export { projectState }
+
 export default state

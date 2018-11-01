@@ -16,11 +16,11 @@ const PluginArea = observer(({ position = '', childProps = {}, children, getChil
   .sort((pluginA, pluginB) => (pluginA.label.weight || 0) < (pluginB.label.weight || 0) ? 1 : -1)
   .map((plugin) => {
     const view = store.views[plugin.viewId]
-    return getChildView ? getChildView(plugin, view) :
+    return !!view ? getChildView ? getChildView(plugin, view) :
      React[React.isValidElement(view) ? 'cloneElement' : 'createElement'](view, {
        key: plugin.viewId,
        ...childProps,
-     })
+     }) : null
   })
   // 允许提供children的必有不可插拔项
   return (

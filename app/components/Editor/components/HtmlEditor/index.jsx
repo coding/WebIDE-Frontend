@@ -163,7 +163,7 @@ class HtmlEditor extends Component {
   }
 }
 
-HtmlEditor.PropTypes = {
+HtmlEditor.propTypes = {
   tab: PropTypes.object,
 }
 

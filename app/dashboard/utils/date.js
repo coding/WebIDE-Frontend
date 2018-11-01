@@ -1,10 +1,16 @@
-export const getModifiedDate = (now, lastModified) => {
+import i18n from './i18n';
+
+const twoDigit = (num) => {
+    return num < 10 ? `0${num}` : num;
+}
+
+export const getModifiedTime = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
     if (d > 0) {
-        return `${d} 天前`;
+        return i18n('global.lastModified', { days: d });
     } else {
-        return '今天';
+        return i18n('global.lastModifiedToday');
     }
 }
 
@@ -12,7 +18,7 @@ export const getDeletedTime = (now, lastModified) => {
     const ms = now - lastModified;
     const d = Math.floor(ms / 3600000 / 24);
     if (d > 0) {
-        return `${d} 天前`;
+        return i18n('global.deletedDaysAgo', { days: d });
     } else {
         let h = Math.floor(ms / 3600000 % 24);
         h = h < 0 ? 0 : h;
@@ -20,6 +26,28 @@ export const getDeletedTime = (now, lastModified) => {
         m = m < 0 ? 0 : m;
         let s = Math.floor(ms / 1000 % 60);
         s = s < 0 ? 0 : s;
-        return `${h} 小时 ${m} 分 ${s} 秒前`;
+        return i18n('global.deletedTime', { hours: h, minutes: m, seconds: s });
     }
+}
+
+export const getCreatedTime = (now) => {
+    const date = new Date(now);
+    const y = date.getFullYear();
+    const m = twoDigit(date.getMonth() + 1);
+    const d = twoDigit(date.getDate());
+    const h = twoDigit(date.getHours());
+    const n = twoDigit(date.getMinutes());
+    const s = twoDigit(date.getSeconds());
+    return `Created: ${y}-${m}-${d} ${h}:${n}:${s}`;
+}
+
+export const getFormatTime = (now) => {
+    const date = new Date(now);
+    const y = date.getFullYear();
+    const m = twoDigit(date.getMonth() + 1);
+    const d = twoDigit(date.getDate());
+    const h = twoDigit(date.getHours());
+    const n = twoDigit(date.getMinutes());
+    const s = twoDigit(date.getSeconds());
+    return `${y}-${m}-${d} ${h}:${n}:${s}`;
 }

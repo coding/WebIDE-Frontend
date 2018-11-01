@@ -22,7 +22,7 @@ class GlobalPrompt extends Component {
     // promptMessage.push({
     //   content: (
     //     <p>
-    //       WebIDE 将于 9 月 6 日 19 点进行系统维护，预计时间为 30 分钟，敬请谅解。
+    //       Cloud Studio 将于 9 月 6 日 19 点进行系统维护，预计时间为 30 分钟，敬请谅解。
     //     </p>
     //   ),
     //   id: `global-prompt-${id++}`,
@@ -69,7 +69,7 @@ class GlobalPrompt extends Component {
           // </p>
           <p>
             {i18n`global.offlineInfo`}
-            <a href='https://ide.coding.net' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
+            <a href='https://studio.dev.tencent.com' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,

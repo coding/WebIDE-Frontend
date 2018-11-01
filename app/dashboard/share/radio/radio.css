@@ -9,7 +9,7 @@
     position: relative;
 }
 .ide-radio.checked {
-    background-color: #5097e8;
+    background-color: #18f;
 }
 .ide-radio.checked::after {
     content: '';

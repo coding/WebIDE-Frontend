@@ -1,3 +1,62 @@
+/* 移动端样式 */
+.dash-mbar {
+    display: none;
+    width: 100%;
+    height: 50px;
+    padding: 0 30px 0 15px;
+    border-bottom: 1px solid #333;
+    background-color: #3b3b3b;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+}
+.dash-mbar .logo {
+    display: flex;
+    align-items: center;
+    height: 50px;
+}
+.dash-mbar .logo img {
+    width: 150px;
+    padding-left: 8px;
+}
+.dash-mbar .logo .beta {
+    height: 15px;
+    padding: 0 2px;
+    line-height: 15px;
+    border-radius: 3px;
+    color: #3b3b3b;
+    background-color: #ddd;
+}
+.dash-mnav {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    width: 100%;
+    height: 0;
+    background-color: #3b3b3b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    overflow: hidden;
+    transition: height .2s ease-in-out;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    z-index: 30;
+}
+.dash-mnav.on {
+    height: 300px;
+}
+.dash-mnav .nav-item {
+    width: 100%;
+    height: 40px;
+    padding: 0 30px;
+    line-height: 40px;
+    color: #e8e8e8;
+}
+.dash-mnav .nav-item:hover {
+    color: #18f;
+}
+/* pc端样式 */
 .dash-sidebar {
     width: 200px;
     height: 100%;
@@ -6,48 +65,68 @@
 .dash-sidebar .logo {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 50px;
     border-bottom: 1px solid #2d2d2d;
 }
 .dash-sidebar .logo img {
-    width: 150px;
-    padding-left: 10px;
+    width: 145px;
+    padding-left: 8px;
 }
 .dash-sidebar .logo .beta {
     height: 15px;
     padding: 0 2px;
     line-height: 15px;
     border-radius: 3px;
-    color: #000;
+    color: #3b3b3b;
     background-color: #ddd;
 }
 .dash-sidebar .nav {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    height: calc(100% - 120px);
-    padding: 20px 0;
+    /* 减去 logo 50，减去 avatar 60，减去 bell 60 */
+    height: calc(100% - 170px);
 }
 .dash-sidebar .nav-item {
     width: 100%;
     height: 40px;
-    padding: 0 20px;
-    margin: 5px 0;
+    padding: 0 15px;
     line-height: 40px;
     color: #e8e8e8;
 }
 .dash-sidebar .nav-item.active {
-    background-color: #5097e8;
+    background-color: #18f;
 }
 
 .dash-main {
     width: calc(100% - 200px);
     height: 100%;
+    padding-top: 50px;
     background-color: #333;
     overflow: auto;
 }
 .dash-main .dash-view {
-    min-width: 1000px;
-    max-width: 1500px;
+    max-width: 2000px;
     padding: 30px;
+}
+
+@media screen and (max-width: 860px) {
+    .dash-mbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .dash-sidebar {
+        display: none;
+    }
+    .dash-banner {
+        display: none;
+    }
+    .dash-main {
+        width: 100%;
+        height: auto;
+    }
+    .dash-main .dash-view {
+        padding: 20px;
+    }
 }

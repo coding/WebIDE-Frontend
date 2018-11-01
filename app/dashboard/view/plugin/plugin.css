@@ -1,0 +1,50 @@
+.dash-plugin .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dash-plugin .topbar .nav {
+    display: flex;
+    flex-wrap: wrap;
+}
+.dash-plugin .topbar .nav-item {
+    margin-right: 50px;
+    font-weight: 700;
+    color: #a1a1a1;
+    cursor: pointer;
+}
+.dash-plugin .topbar .nav-item.on {
+    color: #fff;
+}
+.dash-plugin .topbar .view-market i {
+    margin-right: 5px;
+}
+.dash-plugin .topbar .filter {
+    width: 160px;
+}
+.dash-plugin .view {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 30px 0;
+    margin: 0 -10px;
+}
+.dash-plugin .dash-nodata {
+    margin-left: 10px;
+}
+
+@media screen and (max-width: 860px) {
+    .dash-plugin .view {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+@media screen and (max-width: 580px) {
+    .dash-plugin .topbar .nav-item {
+        width: 100%;
+        margin-top: 20px;
+        margin-right: 0;
+    }
+    .dash-plugin .topbar .view-market {
+        display: none;
+    }
+}

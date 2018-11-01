@@ -6,77 +6,63 @@ import './coding.css';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
+import Inbox from '../../../share/inbox';
 import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
-import { notify, NOTIFY_TYPE } from '../../../../components/Notification/actions';
-// import ModalContainer from 'components/Modal'
-import * as maskActions from 'components/Mask/actions'
+import ToolTip from '../../../share/toolTip';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Coding extends Component {
     state = {
         type: 1,
-        desc: '',
         ownerName: '',
         projectName: '',
         templateId: -1,
         envId: 'ide-tty',
-        isCreating: false,
         filter: '',
         isSync: false,
+        isEnvTTOn: false,
+        isSyncTTOn: false,
     };
 
     render() {
-        const { type, desc, ownerName, projectName, templateId, envId, isCreating, filter, isSync } = this.state;
-        let { projects, templates, envs, language } = this.props;
+        const { type, ownerName, projectName, templateId, envId, filter, isSync, isEnvTTOn, isSyncTTOn } = this.state;
+        let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
-        const disabled = type === 1 ? (!projectName || !envId) : (!projectName || !templateId);
-        let inputPh, textareaPh, searchPh;
-        if (language === 'zh_CN') {
-            inputPh = '输入项目名';
-            textareaPh = '一句话描述这个工作空间';
-            searchPh = '搜索';
-        } else {
-            inputPh = 'Enter the project name';
-            textareaPh = 'Describe this workspace in one sentence';
-            searchPh = 'Search';
-        }
+        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId));
         return (
             <div>
                 {type === 2 && (
                     <div className="com-board">
-                        <div className="board-label">{i18n('global.projectName')}*</div>
+                        <div className="board-label">{i18n('ws.projectName')}*</div>
                         <div className="board-content">
-                            <input className="com-input" type="text" spellCheck={false} placeholder={inputPh} value={projectName} onChange={this.handleProjectName} />
+                            <Inbox holder="ws.inputProjectName" value={projectName} onChange={this.handleProjectName} />
                             <div className="input-tip">{i18n('global.inputTip')}</div>
                         </div>
                     </div>
                 )}
                 <div className="com-board">
-                    <div className="board-label">{i18n('global.description')}</div>
-                    <div className="board-content desc">
-                        <textarea className="com-textarea" spellCheck={false} placeholder={textareaPh} value={desc} onChange={this.handleDescription}></textarea>
-                    </div>
-                </div>
-                <div className="com-board">
                     <div className="board-label">{type === 1 ? i18n('global.project') : i18n('global.template')}*</div>
                     <div className="board-content project">
                         <div className="project-head">
                             <div className="project-head-left">
-                                <div className={`item${type === 1 ? ' active' : ''}`} onClick={() => this.handleType(1)}>{i18n('global.existingProject')}</div>
-                                <div className={`item${type === 2 ? ' active' : ''}`} onClick={() => this.handleType(2)}>{i18n('global.templateProject')}</div>
+                                <div className={`item${type === 1 ? ' active' : ''}`} onClick={() => this.handleType(1)}>{i18n('ws.existingProject')}</div>
+                                <div className={`item${type === 2 ? ' active' : ''}`} onClick={() => this.handleType(2)}>{i18n('ws.templateProject')}</div>
                             </div>
                             {type === 1 && (
                                 <div className="project-head-right">
-                                    <input className="com-input" type="text" spellCheck={false} placeholder={searchPh} value={filter} onChange={this.handleFilter} />
-                                    {
-                                        isSync
-                                        ? <span className="async"><i className="fa fa-refresh fa-spin"></i>{i18n('global.syncing')}</span>
-                                        : <span className="async" onClick={this.handleAsync}><i className="fa fa-refresh"></i>{i18n('global.sync')}</span>
-                                    }
+                                    <Inbox holder="global.search" value={filter} onChange={this.handleFilter} />
+                                    <div className="sync" onClick={this.handleSync}>
+                                        <span onMouseEnter={this.handleSyncTT} onMouseLeave={this.handleSyncTT}>
+                                            <i className={`fa fa-refresh${!isSync ? '' : ' fa-spin'}`}></i>
+                                            {!isSync ? i18n('global.sync') : i18n('global.syncing')}
+                                        </span>
+                                        <ToolTip on={isSyncTTOn} message={isSyncTTOn ? i18n('ws.syncTip') : ''} placement="right" />
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -89,7 +75,7 @@ class Coding extends Component {
                                             filter={filter}
                                             handleSeleteProject={this.handleSeleteProject} />
                                         )
-                                    ) : <NoData />
+                                    ) : <div className="noproject">{i18n('ws.noProject')}</div>
                                 ) : (
                                     templates.length ? (
                                         templates.map(item => <TemplateCard key={item.id} {...item}
@@ -103,15 +89,16 @@ class Coding extends Component {
                     </div>
                 </div>
                 {type === 1 && (
-                    <div className="com-board">
+                    <div className="com-board short-padding">
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="tooltip-container" onClick={this.handleEnvToolTip}>
-                                <i className="fa fa-question-circle"></i>
+                            <span className="coding-env-tooltip">
+                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvTT} onMouseLeave={this.handleEnvTT}></i>
+                                <ToolTip on={isEnvTTOn} message={isEnvTTOn ? i18n('ws.envTip') : ''} placement="left" />
                             </span>
                         </div>
-                        <div className="board-content env">
+                        <div className="board-content negative-margin env">
                             {
                                 envs.length ? (
                                     envs.map(env => <EnvCard key={env.name} {...env}
@@ -125,47 +112,48 @@ class Coding extends Component {
                     </div>
                 )}
                 <div className="com-board">
-                    <div className="board-label"></div>
+                    <div className="board-label none"></div>
                     <div className="board-content">
-                        <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>
-                            {isCreating ? i18n('global.creating') : i18n('global.create')}
-                        </button>
-                        <button className="com-button default" onClick={this.handleCancel}>{i18n('global.cancel')}</button>
+                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
+                        <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
                 </div>
             </div>
         );
     }
 
+    componentDidMount() {
+        this.handleSync();
+    }
+
     handleType = (type) => {
         this.setState({
             type,
-            desc: '',
             ownerName: '',
             projectName: '',
             templateId: -1,
-            envId: '',
+            envId: 'ide-tty',
         });
     }
 
-    handleEnvToolTip = (event) => {
-        this.props.handleToolTipOn({
-            clientX: event.clientX,
-            clientY: event.clientY,
-            message: '默认环境为 Ubuntu 16.04，你可以在该环境中自己安装所需要的环境。',
-        });
+    handleEnvTT = () => {
+        this.setState(prevState => ({ isEnvTTOn: !prevState.isEnvTTOn }));
+    }
+
+    handleSyncTT = () => {
+        this.setState(prevState => ({ isSyncTTOn: !prevState.isSyncTTOn }));
     }
 
     handleFilter = (event) => {
         this.setState({ filter: event.target.value.toLowerCase() });
     }
 
-    handleAsync = () => {
+    handleSync = () => {
         this.setState({ isSync: true });
         api.syncProject().then(res => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
-            notify({ message: 'Async project success' });
         }).catch(err => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
@@ -174,10 +162,6 @@ class Coding extends Component {
 
     handleProjectName = (event) => {
         this.setState({ projectName: event.target.value });
-    }
-
-    handleDescription = (event) => {
-        this.setState({ desc: event.target.value });
     }
 
     handleSeleteProject = ({ ownerName, projectName }) => {
@@ -192,30 +176,37 @@ class Coding extends Component {
         this.setState({ envId: envId });
     }
 
-    handleCancel = () => {
+    handleBack = () => {
         this.props.history.push({ pathname: '/dashboard/workspace' });
     }
 
     handleCreate = () => {
-        const { desc, type, ownerName, projectName, envId, templateId } = this.state;
-        const { globalKey } = this.props;
-        const option = {
+        const { type, ownerName, projectName, envId, templateId } = this.state;
+        const { globalKey, showLoading, hideLoading } = this.props;
+        const workspaceOption = {
             cpuLimit: 2,
-            memory: 512,
+            memory: 2048,
             storage: 2,
             source: 'Coding',
-            desc,
+            //desc,
             ownerName: ownerName || globalKey,
             projectName,
         };
-        this.setState({ isCreating: true });
-        maskActions.showMask({ message: i18n('global.creatingWS') })
+        showLoading({ message: i18n('ws.creatingWS') });
         if (type === 1) {
-            option.envId = envId;
-            this.handleCreateWorkspace(option);
+            workspaceOption.envId = envId;
+            // 查询该 project 是否创建过 workspace
+            api.findProject({ ownerName, projectName }).then(res => {
+                if (!res.data) {
+                    this.handleCreateWorkspace(workspaceOption);
+                } else {
+                    hideLoading();
+                    notify({ notifyType: NOTIFY_TYPE.ERROR, message: i18n('ws.wsExisted', { ws: res.data }) });
+                }
+            });
         } else {
-            option.templateId = templateId;
-            api.createProject({
+            workspaceOption.templateId = templateId;
+            const projectOption = {
                 type: 2,
                 gitEnabled: true,
                 gitReadmeEnabled: false,
@@ -223,15 +214,15 @@ class Coding extends Component {
                 gitLicense: 'no',
                 vcsType: 'git',
                 name: projectName,
-                desc,
+                //desc,
                 joinTeam: false,
                 teamGK: globalKey,
-            }).then(res => {
+            };
+            api.createProject(projectOption).then(res => {
                 if (res.code === 0) {
-                    this.handleCreateWorkspace(option);
+                    this.handleCreateWorkspace(workspaceOption);
                 } else {
-                    this.setState({ isCreating: false });
-                    maskActions.hideMask()
+                    hideLoading();
                     let message;
                     if (res.msg) {
                         const msg = res.msg;
@@ -243,31 +234,26 @@ class Coding extends Component {
                     } else {
                         message = 'Failed to create project';
                     }
-                    notify({
-                        notifyType: NOTIFY_TYPE.ERROR,
-                        message,
-                    });
+                    notify({ notifyType: NOTIFY_TYPE.ERROR, message });
                 }
             }).catch(err => {
-                this.setState({ isCreating: false });
-                maskActions.hideMask()
+                hideLoading();
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
     }
 
     handleCreateWorkspace(option) {
+        const { hideLoading } = this.props;
         api.createWorkspace(option).then(res => {
-            this.setState({ isCreating: false });
-            maskActions.hideMask()
+            hideLoading();
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
         }).catch(err => {
-            this.setState({ isCreating: false });
-            maskActions.hideMask()
+            hideLoading();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
@@ -277,12 +263,15 @@ const mapState = (state) => {
     return {
         globalKey: state.userState.global_key,
         language: state.language,
+        canCreate: state.wsState.canCreate,
+        wsLimit: state.wsState.wsLimit,
     }
 }
 
 const mapDispatch = (dispatch) => {
     return {
-        handleToolTipOn: (payload) => dispatch({ type: 'TOOLTIP_ON', payload }),
+        showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
+        hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
     }
 }
 

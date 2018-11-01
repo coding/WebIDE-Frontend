@@ -1,10 +1,17 @@
 import uniqueId from 'lodash/uniqueId'
 import is from 'utils/is'
+import { observable } from 'mobx'
 import { TabStateScope } from 'commons/Tab'
 import config from 'config'
 
 const { Tab: BaseTab, TabGroup: BaseTabGroup, state } = TabStateScope()
 state.keepOne = config.isLib
+
+export const terminalState = observable({
+  activeTerminal: null,
+  terminals: new Map(),
+  didOpenListeners: [],
+})
 
 class Tab extends BaseTab {
   constructor (props = {}) {

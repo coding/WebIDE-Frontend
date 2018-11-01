@@ -1,18 +1,20 @@
 import { createStore, combineReducers } from 'redux';
 
-import { switchLanguageReducer } from './view/config/reducer';
+import { switchLanguageReducer } from './view/setting/reducer';
 import { switchMaskReducer } from './view/mask/reducer';
-import { userReducer } from './view/home/setting/reducer';
-import { workspaceCountReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
-import { tooltipReducer } from './share/toolTip/reducer';
+import { switchLoadingReducer } from './view/loading/reducer';
+import { userReducer } from './view/home/profile/reducer';
+import { workspaceReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
+import { switchMbarReducer } from './share/stripe/reducer';
 
 const reducers = combineReducers({
     language: switchLanguageReducer,
     maskState: switchMaskReducer,
+    loadingState: switchLoadingReducer,
     userState: userReducer,
-    workspaceCount: workspaceCountReducer,
+    wsState: workspaceReducer,
     hasWorkspaceOpend: hasWorkspaceOpendReducer,
-    tooltipState: tooltipReducer,
+    isMbarOn: switchMbarReducer,
 });
 
 const languageStorage = localStorage.getItem('cloudstudio-dashboard-language') || 'zh_CN';

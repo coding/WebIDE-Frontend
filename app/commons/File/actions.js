@@ -120,7 +120,7 @@ export const syncFile = registerAction('fs:sync', (params) => {
     encoding = params.encoding
   }
   const fileNode = state.entities.get(path)
-  if (!fileNode.isDir) {
+  if (!!fileNode && !fileNode.isDir) {
     return api
       .readFile(path, encoding)
       .then(loadNodeData)

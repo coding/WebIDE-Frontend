@@ -1,0 +1,71 @@
+.dash-setmyplugin .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dash-setmyplugin .plugin-name {
+    font-size: 24px;
+    color: #fff;
+}
+.dash-setmyplugin .goto {
+    padding: 6px 14px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ccc;
+    background-color: #3b3b3b;
+}
+.dash-setmyplugin .desc {
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-setmyplugin .info {
+    display: flex;
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-setmyplugin .info .item {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.dash-setmyplugin .info .key {
+    margin-right: 6px;
+}
+.dash-setmyplugin .info .rate-user-count {
+    margin-left: 5px;
+}
+.dash-setmyplugin .plugin-status {
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: #5c5c5c;
+}
+.dash-setmyplugin .plugin-status .click {
+    color: #39f;
+    cursor: pointer;
+}
+.dash-setmyplugin .tab {
+    display: flex;
+    margin-top: 40px;
+    border-bottom: 1px solid #555;
+}
+.dash-setmyplugin .tab-item {
+    padding: 5px 20px;
+    margin-bottom: -1px;
+    border: 1px solid transparent;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color .3s ease;
+}
+.dash-setmyplugin .tab-item.on {
+    border-left-color: #555;
+    border-top-color: #555;
+    border-right-color: #555;
+    border-bottom-color: #333;
+}
+.dash-setmyplugin .panel-title {
+    width: 100%;
+    padding: 20px 0;
+}

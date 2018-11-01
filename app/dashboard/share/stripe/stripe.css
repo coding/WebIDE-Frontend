@@ -1,0 +1,35 @@
+.dash-stripe {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+}
+.dash-stripe .line {
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    transition: transform .2s ease-in-out;
+    position: absolute;
+    left: 0;
+}
+.dash-stripe .line.up {
+    top: 2px;
+}
+.dash-stripe.on .line.up {
+    transform: rotate(45deg);
+    top: 9px;
+}
+.dash-stripe .line.mid {
+    opacity: 1;
+    top: 9px;
+}
+.dash-stripe.on .line.mid {
+    opacity: 0;
+}
+.dash-stripe .line.low {
+    bottom: 2px;
+}
+.dash-stripe.on .line.low {
+    transform: rotate(-45deg);
+    bottom: 9px;
+}

@@ -6,33 +6,56 @@ import './mask.css';
 import i18n from '../../utils/i18n';
 
 class Mask extends Component {
+    state = { operating: false }
+
     render() {
-        const { maskState, switchMaskToOff } = this.props;
-        const { showMask, message, isWarn, noCancel, okText, okHandle } = maskState;
-        const okMethod = noCancel ? switchMaskToOff : okHandle;
+        const { operating } = this.state;
+        const { isMaskOn, message, isWarn, ccText, okText, opText, hideMask } = this.props;
         return (
-            <div className={`dash-mask${showMask ? ' active' : ''}`} onClick={switchMaskToOff}>
+            <div className={`dash-mask${isMaskOn ? ' active' : ''}`} onClick={hideMask}>
                 <div className="prompt" onClick={event => event.stopPropagation()}>
                     <div className="message">{message}</div>
                     <div className="control">
-                        {!noCancel ? <button className="com-button default" onClick={switchMaskToOff}>{i18n('global.cancel')}</button> : ''}
-                        <button className={`com-button${isWarn ? ' warn' : ' primary'}`} onClick={okMethod}>{okText}</button>
+                        {ccText ? <button className="com-button default" onClick={hideMask}>{ccText}</button> : ''}
+                        <button className={`com-button${isWarn ? ' warn' : ' primary'}`} onClick={this.handleOKButton}>{!operating ? okText : opText}</button>
                     </div>
                 </div>
             </div>
         );
     }
+
+    handleOKButton = () => {
+        let { ccText, okHandle, hideMask } = this.props;
+        okHandle = ccText ? okHandle : hideMask;
+        if (this.state.operating === false) {
+            this.setState({ operating: true });
+        }
+        okHandle();
+    }
+
+    componentDidUpdate() {
+        if (this.state.operating === true && !this.props.message) {
+            this.setState({ operating: false });
+        }
+    }
 }
 
 const mapState = (state) => {
+    const maskState = state.maskState;
     return {
-        maskState: state.maskState,
+        isMaskOn: maskState.isMaskOn,
+        message: maskState.message,
+        isWarn: maskState.isWarn,
+        ccText: maskState.ccText,
+        okText: maskState.okText || i18n('global.ok'),
+        opText: maskState.opText || maskState.okText,
+        okHandle: maskState.okHandle,
     }
 }
 
 const mapDispatch = (dispatch) => {
     return {
-        switchMaskToOff: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
+        hideMask: () => dispatch({ type: 'SWITCH_MASK_TO_OFF' }),
     }
 }
 

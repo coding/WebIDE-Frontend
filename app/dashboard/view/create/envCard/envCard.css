@@ -1,27 +1,62 @@
 .dash-create .env-card {
-    width: calc(25% - 15px);
+    width: calc(25% - 14px);
     height: 60px;
 }
 .dash-create .env-card .inner {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    width: 100%;
+    height: 100%;
 }
 .dash-create .env-card .main {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    width: 100%;
     font-weight: 700;
 }
 .dash-create .env-card .main img {
     height: 18px;
     margin-right: 10px;
 }
+.dash-create .env-card .title {
+    color: #fff;
+}
 .dash-create .env-card .desc {
+    width: 100%;
     margin-top: 3px;
     font-size: 12px;
     color: #ccc;
 }
 
+@media screen and (min-width: 1800px) {
+    .dash-create .env-card {
+        height: 80px;
+    }
+    .dash-create .env-card .main img {
+        height: 24px;
+    }
+    .dash-create .env-card .title {
+        font-size: 16px;
+    }
+    .dash-create .env-card .desc {
+        font-size: 14px;
+    }
+}
 @media screen and (max-width: 1440px) {
     .dash-create .env-card {
-        width: calc(33% - 15px);
+        width: calc(33.3% - 14px);
+    }
+}
+@media screen and (max-width: 1150px) {
+    .dash-create .env-card {
+        width: calc(50% - 14px);
+    }
+}
+@media screen and (max-width: 860px) {
+    .dash-create .env-card {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
     }
 }

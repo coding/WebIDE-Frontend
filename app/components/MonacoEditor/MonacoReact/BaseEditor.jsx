@@ -38,10 +38,6 @@ class MonacoEditor extends React.PureComponent {
 
     const model = monaco.editor.getModel(this.editor.uri)
 
-    reaction(() => initialOptions.theme, (theme) => {
-      monaco.editor.setTheme(theme)
-    })
-
     reaction(() => initialOptions.tabSize, (tabSize) => {
       if (model) {
         model.updateOptions({
@@ -62,9 +58,9 @@ class MonacoEditor extends React.PureComponent {
     this.containerElement.appendChild(this.editorElement)
     const { monacoEditor } = this.editor
     const { tab } = this.props
-    if (this.props.active) {
-      monacoEditor.focus()
-    }
+    // if (this.props.active) {
+    //   monacoEditor.focus()
+    // }
     this.didmount = true
     monacoEditor.onDidChangeModelContent((event) => {
       const value = monacoEditor.getValue()
@@ -120,10 +116,6 @@ class MonacoEditor extends React.PureComponent {
         }
         this.editor.model = model
         monacoEditor.setModel(model)
-
-        if (this.editor.selection) {
-          monacoEditor.setSelection(this.editor.selection)
-        }
         const { client, openeduri } = languageClient
         if (client && client.state === 3 && this.props.active && this.didmount) {
           if (!openeduri.get(path)) {

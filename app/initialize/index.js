@@ -5,7 +5,7 @@ import config from '../config'
 import api from '../backendAPI'
 import { stepFactory } from '../utils'
 import i18n from 'utils/createI18n'
-import { loadPackagesByType, mountPackagesByType } from '../components/Plugins/actions'
+import { loadPackagesByType, mountPackagesByType, loadPackagesByUser } from '../components/Plugins/actions'
 import CodingSDK from '../CodingSDK'
 import state from './state'
 import { persistTask } from '../mobxStore'
@@ -31,7 +31,7 @@ function checkEnable (enable) {
 
 async function initialize () {
   const step = stepFactory()
-  let stepNum = 2
+  let stepNum = 3
   await step('[0] prepare data', async () => {
     window.CodingSDK = CodingSDK
     window.React = React
@@ -45,6 +45,15 @@ async function initialize () {
   await step('[1] load required package', async() => {
     try {
       await loadPackagesByType('Required', state, true)
+    } catch (err) {
+      return true
+    }
+    return true
+  })
+
+  await step('[2] load required user package', async() => {
+    try {
+      await loadPackagesByUser()
     } catch (err) {
       return true
     }

@@ -10,6 +10,7 @@ const barStyleFactory = (index, style) => {
     right: '-100%',
     bottom: 'initial',
     top: `${2 + index * 4}rem`,
+    zIndex: 20,
     fontSize: '12px',
     padding: '8px',
   })

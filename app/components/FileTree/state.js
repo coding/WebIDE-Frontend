@@ -117,5 +117,7 @@ class FileTreeNode extends TreeNode {
   /* end extend */
 }
 
+const fileIconProviders = observable.map()
+
 export default state
-export { FileTreeNode, TreeNode }
+export { FileTreeNode, TreeNode, fileIconProviders }

@@ -203,7 +203,7 @@ class MarkdownEditor extends Component {
   }
 }
 
-MarkdownEditor.PropTypes = {
+MarkdownEditor.propTypes = {
   tab: PropTypes.object,
   content: PropTypes.string,
 }

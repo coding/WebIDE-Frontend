@@ -1,24 +1,36 @@
 import uniqueId from 'lodash/uniqueId'
 import React from 'react'
 import { render } from 'react-dom'
-import { observe, observable, computed, action, extendObservable } from 'mobx'
+import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
 import * as monaco from 'monaco-editor'
 import mime from 'mime-types'
+import { Services } from 'monaco-languageclient'
 
+import codeEditorService from './codeEditorService'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
-import { toDefinition } from 'components/MonacoEditor/actions'
+import { createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
 import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
+import config from 'config'
+
+reaction(() => initialOptions.theme, (theme) => {
+  monaco.editor.setTheme(theme)
+})
 
 const state = observable({
   entities: observable.map({}),
-  options: observable.map({})
+  options: observable.map({}),
+  mountListeners: [],
+  activeMonacoEditor: null,
+  editors: new Map(),
+  activeEditorListeners: [],
+  installed: false,
 })
 
 const typeDetect = (title, types) => {
@@ -61,11 +73,33 @@ class EditorInfo {
         model
       },
       {
-        editorService: {
-          openEditor: toDefinition
-        }
+        codeEditorService
       }
     )
+
+    if (!state.installed) {
+      // install Monaco language client services
+      const services = createMonacoServices(monacoEditor, { rootUri: `file://${config._ROOT_URI_}` })
+      Services.install(services)
+      // MonacoServices.install(monacoEditor)
+      state.installed = true
+    }
+
+    state.editors.set(this.uri, monacoEditor)
+
+    monacoEditor.onDidFocusEditorText(() => {
+      state.activeMonacoEditor = monacoEditor
+      if (state.activeEditorListeners && state.activeEditorListeners.length > 0) {
+        for (const activeEditorListener of state.activeEditorListeners) {
+          activeEditorListener({ uri: this.uri, editor: monacoEditor })
+        }
+      }
+    })
+    if (state.mountListeners && state.mountListeners.length > 0) {
+      for (const mountListener of state.mountListeners) {
+        mountListener(monacoEditor)
+      }
+    }
 
     this.disposers.push(observe(this, 'content', (change) => {
       const content = change.newValue || ''
@@ -105,16 +139,15 @@ class EditorInfo {
     })
 
     if (props.selection) {
-      const { startLineNumber, startColumn } = props.selection
-      const selection = new monaco.Selection(
-        startLineNumber,
-        startColumn,
-        startLineNumber,
-        startColumn
-      )
-      this.selection = selection
-      monacoEditor.setSelection(selection)
-      monacoEditor.revealLineInCenter(startLineNumber, 1)
+      const pos = {
+        lineNumber: props.selection.startLineNumber,
+        column: props.selection.startColumn,
+      }
+      setTimeout(() => {
+        monacoEditor.setSelection(props.selection)
+        monacoEditor.revealPositionInCenter(pos, 1)
+        monacoEditor.focus()
+      }, 0)
     }
 
     monacoEditor._editorInfo = this
@@ -133,8 +166,15 @@ class EditorInfo {
   @observable
   cursorPosition = { ln: 1, col: 1 }
 
-  setCursor (...args) {
-    // TODO
+  setCursor (position) {
+    const [lineNumber, column] = position.split(':')
+    const pos = {
+      lineNumber: Number(lineNumber),
+      column: Number(column),
+    }
+    this.monacoEditor.setPosition(pos)
+    this.monacoEditor.revealPositionInCenter(pos, 1)
+    this.monacoEditor.focus()
   }
 
   @computed
@@ -164,13 +204,16 @@ class EditorInfo {
           }
         }
       ])
-      monacoEditor.setSelection({
-        startLineNumber: line,
-        startColumn: 1,
-        endLineNumber: line,
-        endColumn: 1
-      })
-      monacoEditor.revealLineInCenter(line, 1)
+
+      const pos = {
+        lineNumber: line,
+        column: 1
+      }
+
+      setTimeout(() => {
+        monacoEditor.setPosition(pos)
+        monacoEditor.revealPositionInCenter(pos, 1)
+      }, 0)
     }
   }
 

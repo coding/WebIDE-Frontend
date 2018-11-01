@@ -1,8 +1,9 @@
-export const workspaceCountReducer = (workspaceCount = 0, action) => {
-    if (action.type === 'STORE_WORKSPACE_COUNT' && action.payload) {
-        return action.payload;
+export const workspaceReducer = (wsState = { wsCount: 0, wsLimit: 5, canCreate: true }, action) => {
+    if (action.type === 'STORE_WORKSPACE' && action.payload) {
+        const canCreate = action.payload.wsCount < wsState.wsLimit;
+        return { ...wsState, canCreate, ...action.payload };
     } else {
-        return workspaceCount;
+        return wsState;
     }
 }
 

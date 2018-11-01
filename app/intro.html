@@ -13,14 +13,14 @@
   <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
   <script src="   //studio-res.coding.net/StudioWebResource/Scripts/swiper.min.js"></script>
   <link rel="stylesheet" href="//studio-res.coding.net/StudioWebResource/Scripts/swiper.min.css">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
   <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?bc38dcf3aea6333c859d874c60648216";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-65952334-9');
   </script>
   <style>
     .react-tabs__tab-list {
@@ -246,6 +246,9 @@
     }
 
     .user {
+      display: flex;
+      align-items: center;
+      height: 36px;
       float: right;
     }
     .user a {
@@ -269,6 +272,7 @@
     .user .user-info .avatar {
       width: 36px;
       height: 36px;
+      vertical-align: middle;
       border-radius: 50%;
       border: 1px solid #fff;
     }
@@ -400,17 +404,17 @@
       top: 0;
       left: 0;
       right: 0;
-      padding: 24px;
+      padding: 30px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
     }
 
     .page-header .logo {
-      background: url("https://dn-coding-net-production-pp.qbox.me/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat;
+      /* background: url("https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat; */
       background-size: 176px 24px;
       height: 24px;
       width: 176px;
-      padding-top: 20px;
+      /* padding-top: 20px; */
       overflow: hidden;
       display: inline-block;
       z-index: 1;
@@ -868,7 +872,7 @@
       width: 160px;
       height: 43.07692307692308px;
       display: inline-block;
-      background-image: url("https://dn-coding-net-production-pp.qbox.me/e849c85b-0dd3-4588-a1b4-86431dcb4e4d.png");
+      background-image: url("https://dn-coding-net-production-pp.codehub.cn/e849c85b-0dd3-4588-a1b4-86431dcb4e4d.png");
       background-size: 160px 43.07692307692308px;
       overflow: hidden;
       background-repeat: no-repeat;
@@ -1291,7 +1295,7 @@
         </div>
         <div class="content">
           <h2>最极客的云端开发体验</h2>
-          <p>用户可以通过 Cloud Studio 创建项目的工作空间, 提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
+          <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
           <p>动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
           <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
           <a class="btn-try" href="javascript:void(0)" onClick="handleTry()">立即体验</a>
@@ -1303,7 +1307,7 @@
               <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
             </div>
             <div class="nav-item">
-              <a href="https://dev.tencent.com/cs" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
+              <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
             </div>
             <div class="nav-item">
               <a href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
@@ -1321,7 +1325,14 @@
         </section>
       </div>
       <div class="page-header">
-        <a href="/" class="logo"></a>
+        <div class="logo">
+          <a href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">
+              <img
+                  src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
+                  srcset="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x"
+              />
+          </a>
+        </div>
         <ul class="nav">
           <li class="drop-down-wrap">
             功能
@@ -1331,7 +1342,7 @@
                   <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
                 </div>
                 <div class="item">
-                  <a href="https://dev.tencent.com/cs" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
+                  <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
                 </div>
               </div>
             </div>
@@ -1375,7 +1386,7 @@
             </div>
           </div>
           <div class="img-container">
-            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p2.dc9b885f.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p2@2x.c470c016.png 2x"
+            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p2.dc9b885f.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p2@2x.c470c016.png 2x"
               alt="一键切换开发环境">
           </div>
         </div>
@@ -1383,7 +1394,7 @@
       <div class="section-container">
         <div class="section-content">
           <div class="img-container">
-            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p3.30cb4fb4.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p3@2x.76689a62.png 2x"
+            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p3.30cb4fb4.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p3@2x.76689a62.png 2x"
               alt="实时协同编辑">
           </div>
           <div class="text-container">
@@ -1407,7 +1418,7 @@
             </div>
           </div>
           <div class="img-container">
-            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p4.514023d3.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p4@2x.7e1108c6.png 2x"
+            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p4.514023d3.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p4@2x.7e1108c6.png 2x"
               alt="全功能终端">
           </div>
         </div>
@@ -1415,7 +1426,7 @@
       <div class="section-container">
         <div class="section-content">
           <div class="img-container">
-            <img class="inner" src="https://dn-coding-net-production-static.qbox.me/static/media/CS-p5.695383d8.png" srcset="https://dn-coding-net-production-static.qbox.me/static/media/CS-p5@2x.e7d550e2.png 2x"
+            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p5.695383d8.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p5@2x.e7d550e2.png 2x"
               alt="实时进度保存">
           </div>
           <div class="text-container">
@@ -1469,7 +1480,7 @@
       <a href="/signin" class="btn">登录</a>
     </div>
     <div class="user-info" id="user-info">
-      <a href="https://coding.net/user/account" target="_blank" rel="noopener noreferrer">
+      <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
         <img src="" alt="avatar" class="avatar">
       </a>
       <div class="dropdown">
@@ -1482,9 +1493,9 @@
           <li>
             <a href="/dashboard" rel="noopener noreferrer">控制台</a>
           </li>
-          <li>
+          <!-- <li>
             <a href="javascript:void(0)" onclick="logout()">退出</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>
@@ -1584,17 +1595,17 @@
         } else {
           const pathname = location.pathname;
           hasLogin = true
-          if (pathname === '/') {
-            location.href = '/dashboard';
-          } else {
-            if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-              res.data.avatar = "https://coding.net" + res.data.avatar;
-            }
-            $('#user-info img').attr('src', res.data.avatar);
-
-            $('#user-info .username').html(res.data.name);
-            $('.user').hide().html($('#user-info')).fadeIn();
+          // if (pathname === '/') {
+            // location.href = '/dashboard';
+          // } else {
+          if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
+            res.data.avatar = "https://coding.net" + res.data.avatar;
           }
+          $('#user-info img').attr('src', res.data.avatar);
+
+          $('#user-info .username').html(res.data.name);
+          $('.user').hide().html($('#user-info')).fadeIn();
+          // }
         }
       }).fail(function () {
       }).always(function () {

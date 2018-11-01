@@ -1,10 +1,13 @@
 import { registerAction } from 'utils/actions'
 import { PluginRegistry } from 'utils/plugins'
+import React from 'react'
 import { autorun, observable } from 'mobx'
 import config from 'config'
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import store from './store'
 import api from '../../backendAPI'
 
+const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
 export const PLUGIN_REGISTER_VIEW = 'PLUGIN_REGISTER_VIEW'
 export const PLUGIN_UNREGISTER_VIEW = 'PLUGIN_UNREGISTER_VIEW'
@@ -15,7 +18,7 @@ export const updatePackageList = registerAction(PACKAGE_UPDATE_LIST, () => {
   .then((result) => {
     store.list.replace(result.map(e => {
       const current = store.list.find(obj => obj.name === e.name)
-      return ({ enabled: current ? current.enabled || false : false, ...e })
+      return ({ enabled: current ? current.enabled || false : false, userPlugin: false, ...e })
     }))
   })
 })
@@ -126,6 +129,7 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
 
 export const PRELOAD_REQUIRED_EXTENSION = 'PRELOAD_REQUIRED_EXTENSION'
 
+export const PRELOAD_USER_EXTENSION = 'PRELOAD_USER_EXTENSION'
 
 // 插件申明加载时机，
 export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
@@ -142,7 +146,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
       } else {
         store.list.replace(list)
       }
-      if (group) {
+      if (group) {        
         return fetchPackageGroup('required', store.list, type, data)
       }
       for (const pkg of filterList) {
@@ -151,6 +155,43 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
     })
   }
 )
+
+const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
+
+export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
+  return api.fetchUserPackageScript(`${pkg.version}/index.js`)
+    .then((script) => {
+      localStorage.setItem(pkg.name, script)
+      return pkg.name
+    })
+    .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
+})
+
+export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
+  const userPackagePromise = api.fetchUserPackagelist()
+  return userPackagePromise.then(async (response) => {
+    if (response.code === 0) {
+      const { data } = response
+      const convert = data.map((p) => ({
+        name: p.pluginName,
+        author: p.createdBy,
+        description: p.remark,
+        displayName: p.pluginName,
+        enabled: true,
+        id: p.id,
+        requirement: 'Required',
+        status: 'Available',
+        version: p.currentVersion,
+        userPlugin: true,
+      }))
+
+      for (const pkg of convert) {
+        store.list.push(pkg)
+        await fetchUserPackage(pkg)
+      }
+    }
+  })
+})
 
 export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
@@ -195,7 +236,6 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
     // children 的 shape
     const { position, key, label, view, app, instanceId, status } = child
     const generateViewId = `${position}.${key}${instanceId ? `.${instanceId}` : ''}`
-
     store.plugins.set(generateViewId, observable({
       // 可修改位置
       viewId: generateViewId,
@@ -211,6 +251,111 @@ export const pluginRegister = registerAction(PLUGIN_REGISTER_VIEW,
         // you can do other mapping such as status initialize in this callback
       callback(store.plugins.get(generateViewId), child, store)
     }
+  })
+})
+
+const wsUrl = config.wsURL
+const firstSlashIdx = wsUrl.indexOf('/', 8)
+const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
+
+/**
+ * 连接到远程 hmr 
+ */
+export const startRemoteHMRServer = registerAction('plugin:mount', () => {
+  const devSocket = io.connect(host, {
+    forceNew: true,
+    reconnection: false,
+    autoConnect: true,
+    transports: ['websocket'],
+    path: `${path}/tty/${config.shardingGroup}/${config.spaceKey}/connect-other-service`,
+    query: {
+      port: 65000
+    }
+  })
+
+  devSocket.on('connect_error', () => {
+    notify({ notifyType: NOTIFY_TYPE.ERROR, message: '无法连接到插件开发服务，请确保已经执行 yarn start 且服务正常启动' })
+  })
+
+  devSocket.on('progress', (progress) => {
+    store.pluginDevState.progress = progress
+  })
+
+  devSocket.on('connect', () => {
+    notify({
+      notifyType: NOTIFY_TYPE.INFO,
+      message: '连接成功'
+    })
+
+    store.pluginDevState.online = true
+    devSocket.on('firstsend', ({ codingPackage, script }) => {
+      const packageUniqueName = `${codingPackage.name}_${codingPackage.version}`
+      const plugins = PluginRegistry.findAll(packageUniqueName)
+      if (!plugins || plugins.length === 0) {
+        try {
+          window.codingPackageJsonp.current = packageUniqueName
+          eval(`${script}`)
+          window.codingPackageJsonp.current = ''
+          const plugin = window.codingPackageJsonp.data[0]
+          const { Manager = (() => null), key } = plugin
+          const manager = new Manager()
+          plugin.detaultInstance = manager
+          const getInfo = store.list.get(key || packageUniqueName) || {}
+          PluginRegistry.set(key || packageUniqueName, { ...plugin, pkgId: packageUniqueName, info: getInfo, loadType: 'Required' })
+          manager.pluginWillMount()
+          localStorage.setItem(packageUniqueName, script)
+          firstPending = false
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    })
+
+    registerAction('plugin:unmount', () => {
+      const { infomation: { name, version } } = store.pluginDevState
+      togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
+      devSocket.disconnect()
+    })
+
+    registerAction('plugin:remount', () => {
+      const { infomation: { name, version } } = store.pluginDevState
+      togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
+      devSocket.disconnect()
+
+      const timer = setTimeout(() => {
+        clearTimeout(timer)
+        startRemoteHMRServer()
+      }, 500)
+    })
+    devSocket.on('hmrfile', ({ codingPackage, script }) => {
+      const packageUniqueName = `${codingPackage.name}_${codingPackage.version}`
+      const plugins = PluginRegistry.findAll(packageUniqueName)
+      if (plugins && plugins.length > 0) {
+        plugins.forEach((plugin) => {
+          if (plugin.detaultInstance.pluginWillUnmount) {
+            plugin.detaultInstance.pluginWillUnmount()
+          }
+          PluginRegistry.delete(plugin.key)
+        })
+      }
+      localStorage.setItem(packageUniqueName, script)
+      togglePackage({ pkgId: packageUniqueName, shouldEnable: true, type: 'reload', data: null })
+    })
+  })
+
+  devSocket.on('disconnect', () => {
+    notify({
+      notifyType: NOTIFY_TYPE.INFO,
+      message: '插件开发服务已断开连接'
+    })
+    store.pluginDevState.online = false
+    const { infomation: { name, version } } = store.pluginDevState
+    togglePackage({ pkgId: `${name}_${version}`, shouldEnable: false })
+  })
+  devSocket.on('change', (message) => {
+    const { codingIdePackage } = message
+    store.pluginDevState.infomation = codingIdePackage
+    devSocket.emit('readfile', { name: codingIdePackage.name, version: codingIdePackage.version })
   })
 })
 
@@ -246,7 +391,7 @@ export const pluginUnRegister = registerAction(PLUGIN_UNREGISTER_VIEW,
 export const injectComponent = (position, label, getComponent, callback) => {
   const key = label.key
   const extension = PluginRegistry.get(key)
-  const view = key && getComponent(extension || {}, PluginRegistry, store) // ge your package conteng get all package install cache, get the store
+  const view = key && getComponent && getComponent(extension || {}, PluginRegistry, store)// ge your package conteng get all package install cache, get the store
   let app;
   Object.values(PluginRegistry._plugins).forEach(plugin => {
     if (label.mime && key === plugin.key) {

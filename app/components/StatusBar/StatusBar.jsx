@@ -4,6 +4,8 @@ import { dispatchCommand } from 'commands'
 import { EditorWidgets } from 'components/Editor'
 import { observer } from 'mobx-react'
 import languageState from 'components/MonacoEditor/LanguageClientState'
+import PluginArea from 'components/Plugins/component'
+import { STATUSBAR } from 'components/Plugins/constants'
 import configState from '../../config'
 import UploadWidgets from './UploadWidgets'
 import state from './state'
@@ -24,8 +26,9 @@ const StatusBar = observer(({ messages=[] }) => {
         <span></span>
       </div>}
       <div className='status-widget-container right'>
+        <PluginArea className='status-bar-plugin-area' position={STATUSBAR.WIDGET} />
         <EditorWidgets />
-        <GitBranchWidget ref={ com => window.refs.GitBranchWidget = com}
+        <GitBranchWidget ref={com => window.refs.GitBranchWidget = com}
         /></div>
     </div>
   )

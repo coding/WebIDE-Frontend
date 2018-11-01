@@ -1,5 +1,9 @@
-import * as workspaceAPI from './workspaceAPI';
+import * as globalAPI from './global';
+import * as wsAPI from './ws';
+import * as pluginAPI from './plugin';
 
 export default {
-    ...workspaceAPI,
+    ...globalAPI,
+    ...wsAPI,
+    ...pluginAPI,
 }
