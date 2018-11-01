@@ -46,15 +46,9 @@ export default observer(({ content }) => (
             <th>Win {i18n`settings.keymap.keymap`}</th>
           </tr>
         </thead>
-        <thead>
-          系统快捷键
-        </thead>
         <tbody>
           {keymapStore.systemKeymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} />)}
         </tbody>
-        <thead>
-          插件快捷键
-        </thead>
         {keymapStore.pluginsKeymaps.map(keyConfig => (
           <tbody key={keyConfig.name}>
             <thead>{keyConfig.contribution}</thead>
