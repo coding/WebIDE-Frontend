@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import './prePublish.css';
+
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
@@ -13,11 +15,13 @@ class PrePublish extends Component {
                     <div className="publish-tip">{i18n('plugin.prePublishTip')}</div>
                     {hasPrePublish && <div className="plugin-status">{i18n('plugin.hasPrePublish')}</div>}
                 </div>
-                {
-                    !hasPrePublish ? (
-                        <button className="com-button primary" onClick={this.handlePrePublish}>{i18n('plugin.prePublish')}</button>
-                    ) : <button className="com-button primary" onClick={this.handleCancelPrePublish}>{i18n('plugin.cancelPrePublish')}</button>
-                }
+                <div className="pre-publish-button">
+                    {
+                        !hasPrePublish ? (
+                            <button className="com-button primary" onClick={this.handlePrePublish}>{i18n('plugin.prePublish')}</button>
+                        ) : <button className="com-button primary" onClick={this.handleCancelPrePublish}>{i18n('plugin.cancelPrePublish')}</button>
+                    }
+                </div>
             </div>
         );
     }

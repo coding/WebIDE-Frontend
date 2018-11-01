@@ -10,6 +10,7 @@ import Inbox from '../../../share/inbox';
 import TemplateCard from '../templateCard';
 import NoData from '../../../share/noData';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import config from '../../../utils/config';
 
 class Local extends Component {
     state = {
@@ -71,9 +72,7 @@ class Local extends Component {
         const { workspaceName, templateId } = this.state;
         const { showLoading, hideLoading } = this.props;
         const option = {
-            cpuLimit: 2,
-            memory: 2048,
-            storage: 2,
+            ...config.hardware,
             workspaceName,
             ownerName: 'codingide',
             projectName: 'empty-template',

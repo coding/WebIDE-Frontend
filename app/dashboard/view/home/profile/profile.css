@@ -47,6 +47,7 @@
     position: absolute;
     bottom: 70px;
     left: 15px;
+    z-index: 20;
 }
 .dash-profile .menu-item {
     display: block;

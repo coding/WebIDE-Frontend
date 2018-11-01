@@ -28,7 +28,7 @@ function parseStatus(pluginVersions) {
     }
     const v = pub[pub.length - 1];
     const auditStatus = v.auditStatus; // 1 审核中; 2 审核成功; 3 审核失败
-    const buildStatus = v.auditStatus; // 1 构建中; 2 构建成功; 3 构建失败
+    const buildStatus = v.buildStatus; // 1 构建中; 2 构建成功; 3 构建失败
     let status = 0;
     if (auditStatus === 1) {
         // 审核中

@@ -60,15 +60,15 @@ class Setting extends Component {
                 </div>
                 <div className="plugin-status">{i18n(`plugin.status${status}`, { version })}</div>
                 <div className="tab">
-                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.baseSetting')}</div>
+                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.prePublish')}</div>
                     <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.officialPublish')}</div>
-                    <div className={`tab-item${tab === 4 ? ' on' : ''}`} onClick={() => this.handleTab(4)}>{i18n('plugin.versionHistory')}</div>
+                    <div className={`tab-item${tab === 4 ? ' on' : ''}`} onClick={() => this.handleTab(4)}>{i18n('plugin.baseSetting')}</div>
                 </div>
-                {tab === 1 && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPluginInfo} />}
+                {tab === 1 && <History historyVersions={historyVersions} />}
                 {tab === 2 && <PrePublish {...this.state} release={this.handleRelease} refresh={this.fetchPluginInfo} />}
                 {tab === 3 && <Publish version={version} pluginId={pluginId} status={status} release={this.handleRelease} />}
-                {tab === 4 && <History historyVersions={historyVersions} />}
+                {tab === 4 && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPluginInfo} />}
             </div>
         );
     }

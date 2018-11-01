@@ -13,6 +13,7 @@ import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import ToolTip from '../../../share/toolTip';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import config from '../../../utils/config';
 
 class Coding extends Component {
     state = {
@@ -184,9 +185,7 @@ class Coding extends Component {
         const { type, ownerName, projectName, envId, templateId } = this.state;
         const { globalKey, showLoading, hideLoading } = this.props;
         const workspaceOption = {
-            cpuLimit: 2,
-            memory: 2048,
-            storage: 2,
+            ...config.hardware,
             source: 'Coding',
             //desc,
             ownerName: ownerName || globalKey,
@@ -218,6 +217,7 @@ class Coding extends Component {
                 joinTeam: false,
                 teamGK: globalKey,
             };
+            // 模板方式先创建项目
             api.createProject(projectOption).then(res => {
                 if (res.code === 0) {
                     this.handleCreateWorkspace(workspaceOption);

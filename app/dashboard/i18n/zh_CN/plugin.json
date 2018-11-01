@@ -27,5 +27,11 @@
     "baseSetting": "基本设置",
     "officialPublish": "正式发布",
     "prePublish": "预发布",
-    "versionHistory": "版本历史"
+    "versionHistory": "版本历史",
+    "publishTime": "发布时间",
+    "statusPending": "审核中",
+    "statusAuditFail": "审核失败",
+    "statusPublished": "发布成功",
+    "statusBuildFail": "构建失败",
+    "noVersionHistory": "暂无版本历史"
 }
