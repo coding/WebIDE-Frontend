@@ -50,7 +50,7 @@ class Intro extends Component {
             <TabPanel>
               <div className='tab-panel'>
                 <div className='tab-panel-img'>
-                  <img src='https://dn-coding-net-production-pp.qbox.me/5f892a55-9e72-4a2b-a834-92c883deebd0.png' alt='feature_1'/>
+                  <img src='https://dn-coding-net-production-pp.codehub.cn/5f892a55-9e72-4a2b-a834-92c883deebd0.png' alt='feature_1'/>
                 </div>
                 <div className='tab-panel-intro'>
                   <h3>一键切换开发环境</h3>
@@ -63,7 +63,7 @@ class Intro extends Component {
             <TabPanel>
               <div className='tab-panel'>
                 <div className='tab-panel-img'>
-                  <img src='https://dn-coding-net-production-pp.qbox.me/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png' alt='feature_2'/>
+                  <img src='https://dn-coding-net-production-pp.codehub.cn/b0e4ce12-a4ed-4f78-b7c6-e2dcf66d32df.png' alt='feature_2'/>
                 </div>
                 <div className='tab-panel-intro'>
                   <h3>多人协作</h3>
@@ -78,7 +78,7 @@ class Intro extends Component {
             <TabPanel>
               <div className='tab-panel'>
                 <div className='tab-panel-img'>
-                  <img src='https://dn-coding-net-production-pp.qbox.me/cfa1e9da-9246-4da6-896f-009c445fc9fa.png' alt='feature_3' />
+                  <img src='https://dn-coding-net-production-pp.codehub.cn/cfa1e9da-9246-4da6-896f-009c445fc9fa.png' alt='feature_3' />
                 </div>
                 <div className='tab-panel-intro'>
                   <h3>支持 Unicode 宽字符</h3>
@@ -100,11 +100,11 @@ class Intro extends Component {
               clickable: true
             }}>
               <div>
-                <img src='https://dn-coding-net-production-pp.qbox.me/3c2d37c6-1e83-4811-acf2-2c779094ef53.png' alt='screen-1' />
+                <img src='https://dn-coding-net-production-pp.codehub.cn/3c2d37c6-1e83-4811-acf2-2c779094ef53.png' alt='screen-1' />
                 <div className="desc">小程序开发</div>
               </div>
               <div>
-                <img src='https://dn-coding-net-production-pp.qbox.me/4837bb50-5338-42e8-8f3a-a24974e6e891.png' alt='screen-2' />
+                <img src='https://dn-coding-net-production-pp.codehub.cn/4837bb50-5338-42e8-8f3a-a24974e6e891.png' alt='screen-2' />
                 <div className="desc">协同编辑</div>
               </div>
             </Swiper>

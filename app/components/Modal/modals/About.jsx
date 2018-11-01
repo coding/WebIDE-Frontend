@@ -14,7 +14,7 @@ const Alert = (props) => {
         <div className='logo-item'>
           <div className='coding-logo'>
             <a href='https://coding.net' target='_blank' rel='noopener noreferrer' >
-              <img src='https://dn-coding-net-production-pp.qbox.me/600bb772-e8ae-462c-966f-fef4637cb2bb.png' alt='Coding Logo' />
+              <img src='https://dn-coding-net-production-pp.codehub.cn/600bb772-e8ae-462c-966f-fef4637cb2bb.png' alt='Coding Logo' />
             </a>
           </div>
           <div className='info'>出品</div>
@@ -22,7 +22,7 @@ const Alert = (props) => {
         <div className='logo-item'>
           <div className='tencent-logo'>
             <a href='https://cloud.tencent.com/' target='_blank' rel='noopener noreferrer'>
-              <img src='https://dn-coding-net-production-pp.qbox.me/ebeeacca-4e0e-4348-ab33-168eb069afcb.png' alt='Tecent Logo' />
+              <img src='https://dn-coding-net-production-pp.codehub.cn/ebeeacca-4e0e-4348-ab33-168eb069afcb.png' alt='Tecent Logo' />
             </a>
           </div>
           <div className='info'>提供计算支持</div>
