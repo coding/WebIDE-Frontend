@@ -83,7 +83,7 @@ const keymapStore = observable({
       label: i18n`settings.keymap.toggleFormat`
     },
     {
-      command: 'edit:toggle_comment',
+      command: 'edit:toggle_monaco_comment',
       mac: 'cmd+/',
       win: 'ctrl+/',
       label: i18n`settings.keymap.toggleComment`
