@@ -40,9 +40,9 @@ const PanelContent = ({ panel }) => {
     case 'PANEL_RIGHT':
       return (
         <SidePanelContainer side='right'>
-          {/* <SidePanelView key='project' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
+          <SidePanelView key='project' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
             <PluginDev />
-          </SidePanelView>*/}
+          </SidePanelView>
         </SidePanelContainer>
       )
 
