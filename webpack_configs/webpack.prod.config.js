@@ -110,6 +110,12 @@ module.exports = merge(
           NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         }
       }),
-    ]
+    ],
+    module: {
+      rules: [{
+        test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)/i,
+        use: [{loader: 'url-loader'}]
+      }]
+    }
   }
 )
