@@ -3,14 +3,12 @@ import PropTypes from 'prop-types'
 import config from 'config'
 import { request } from 'utils'
 
-const previewPic = 'https://coding-net-production-static.codehub.cn/static/5d487aa5c207cf1ca5a36524acb953f1.gif';
-
 class ImageEditor extends Component {
   constructor (props) {
     super(props)
     this.state = {
       imageUrl: null,
-      background: null,
+      isAlphaBackground: null,
     }
   }
 
@@ -48,9 +46,7 @@ class ImageEditor extends Component {
           break;
         }
       }
-      if (isAlphaBackground) {
-        this.setState({ background: `url("${previewPic}") right bottom #eee` });
-      }
+      this.setState({ isAlphaBackground });
     }
   }
 
@@ -59,7 +55,7 @@ class ImageEditor extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.background) {
+    if (this.state.isAlphaBackground) {
       return;
     }
     this.handleAlphaBackground();
@@ -77,9 +73,9 @@ class ImageEditor extends Component {
   }
 
   render () {
-    const { imageUrl, background } = this.state;
-    const img = background
-      ? <img className="editor-image-preview" style={{ background }} alt="preview" src={imageUrl} />
+    const { imageUrl, isAlphaBackground } = this.state;
+    const img = isAlphaBackground
+      ? <img className="editor-image-preview" alt="preview" src={imageUrl} style={{background: `url(${require('../../../../static/5d487aa5c207cf1ca5a36524acb953f1.gif')})`}} />
       : <img className="editor-image-preview" alt="preview" src={imageUrl} />;
     if (!imageUrl) {
       return (
