@@ -29,7 +29,7 @@ class ThirdParty extends Component {
         this.fetchThirdParty();
     }
 
-    fetchThirdParty() {
+    fetchThirdParty = () => {
         api.getEnablePlugin().then(res => {
             if (res.code === 0) {
                 this.setState({ plugins: res.data });
