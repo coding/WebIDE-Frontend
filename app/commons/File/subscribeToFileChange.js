@@ -1,6 +1,6 @@
 import config from 'config'
 import api from 'backendAPI'
-import emitter, { FILE_CHANGE } from 'utils/emitter'
+import emitter, { FILE_CHANGE, OFFLINE_WS_SYSTEM } from 'utils/emitter'
 import { autorun } from 'mobx'
 import { FsSocketClient } from 'backendAPI/websocketClients'
 import store, { getState, dispatch } from 'store'
@@ -106,7 +106,8 @@ export default function subscribeToFileChange () {
     client.subscribe(`/topic/ws/${config.spaceKey}/system`, (frame) => {
       const data = frame.body;
       if (data === 'quit') {
-        api.closeWebsocketClient();
+        api.closeWebsocketClient()
+        emitter.emit(OFFLINE_WS_SYSTEM)
       }
     })
   })

@@ -27,7 +27,7 @@ import {
   JAVA_PROJECT_CONFIGURATION_UPDATE,
   LANGUAGE_PROGRESS_REPORT,
 } from 'components/MonacoEditor/languageRequestTypes'
-import { emitter } from 'utils'
+import emitter, { SOCKET_RETRY, OFFLINE_WS_SYSTEM } from 'utils/emitter'
 import isConfigFile from './utils/isConfigFile'
 
 const languageState = observable({
@@ -85,6 +85,7 @@ export class LanguageClient {
    * 会发送 initialize 消息对服务端进行初始化
    */
   initialize = () => {
+    emitter.on(OFFLINE_WS_SYSTEM, this.destory)
     this.socket = createWebSocket()
     this.ioToWebSocket = {
       send: (message) => {
@@ -94,7 +95,7 @@ export class LanguageClient {
       onclose: this.socket.onclose,
       close: this.socket.close,
     }
-    this.services = createMonacoServices(null, { rootUri: `file://${this.__WORKSPACE_URI__}` })
+    // this.services = createMonacoServices(null, { rootUri: `file://${this.__WORKSPACE_URI__}` })
     /**
      * monaco-langclient中给socket对象添加了onopen事件
      * 连接成功以后手动触发onopen
@@ -254,4 +255,11 @@ reaction(() => config.mainLanguage, (lang) => {
       createClient(lang)
     }
   }, 1000)
+})
+
+emitter.on(SOCKET_RETRY, () => {
+  const lang = config.mainLanguage
+  if (!languageState.clients.get(lang)) {
+    createClient(lang)
+  }
 })
