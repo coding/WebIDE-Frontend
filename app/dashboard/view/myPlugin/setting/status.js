@@ -23,7 +23,7 @@ function parseStatus(pluginVersions) {
             hasPrePublish = item.isPreDeploy;
             preVersionId = item.id;
         } else {
-            pub.push(item);
+            pub.unshift(item);
         }
     }
     const v = pub[pub.length - 1];
