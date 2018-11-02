@@ -115,15 +115,15 @@ class User extends Component {
 
 const Header = ({ handleSignout, userProfile }) => (
   <div className='page-header'>
-    <a href='/' className='logo'>Cloud Studio</a>
+    <a href="/"><img href='/' className='logo' src={`${window.serverConfig.BACKEND_URL+"/versions/logo"}`}></img></a>
     <ul className='nav'>
-      <li>
+      {/* <li>
         <a href='/intro'>产品介绍</a>
       </li>
       <li>
         <a href='https://coding.net/help/doc/cloud-studio' target='_blank' rel='noopener noreferrer'>帮助</a>
       </li>
-      {/* <li>
+      <li>
         <a href='/changelog'>更新日志</a>
       </li> */}
     </ul>
