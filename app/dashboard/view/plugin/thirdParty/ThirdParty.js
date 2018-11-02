@@ -18,7 +18,7 @@ class ThirdParty extends Component {
             <div className="dash-thirdparty view">
                 {
                     plugins.length ? (
-                        plugins.map(plugin => <Card key={plugin.id} {...plugin} fetchThirdParty={this.fetchThirdParty} belong={1} />)
+                        plugins.map(plugin => <Card key={plugin.id} {...plugin} refresh={this.fetchThirdParty} belong={1} />)
                     ) : <NoData />
                 }
             </div>
@@ -32,7 +32,7 @@ class ThirdParty extends Component {
     fetchThirdParty() {
         api.getEnablePlugin().then(res => {
             if (res.code === 0) {
-                this.setState({ plugins: res.data || [] });
+                this.setState({ plugins: res.data });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || res.message });
             }
