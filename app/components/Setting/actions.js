@@ -11,38 +11,38 @@ let sourceFolderSlash = []
 let libraryFolderSlash = []
 
 const setFolders = function () {
-  const { currentResolve } = state
-  const sourceFolder = currentResolve.attributes['java.source.folder']
-  const libraryFolder = currentResolve.attributes['java.library.folder']
-  sourceFolderSlash.forEach((i) => {
-    const r = FileTreeState.shrinkPath.directories.remove(i)
-  })
-  sourceFolderSlash = sourceFolder.map((i) => `/${i}`)
-  libraryFolderSlash.forEach((i) => {
-    const r = FileTreeState.shrinkPath.directories.remove(i)
-  })
-  libraryFolderSlash = libraryFolder.map((i) => `/${i}`)
-  FileTreeState.shrinkPath.directories = FileTreeState.shrinkPath.directories.concat(sourceFolderSlash).concat(libraryFolderSlash)
-  FileTreeState.shrinkPath.enabled = true
+  // const { currentResolve } = state
+  // const sourceFolder = currentResolve.attributes['java.source.folder']
+  // const libraryFolder = currentResolve.attributes['java.library.folder']
+  // sourceFolderSlash.forEach((i) => {
+  //   const r = FileTreeState.shrinkPath.directories.remove(i)
+  // })
+  // sourceFolderSlash = sourceFolder.map((i) => `/${i}`)
+  // libraryFolderSlash.forEach((i) => {
+  //   const r = FileTreeState.shrinkPath.directories.remove(i)
+  // })
+  // libraryFolderSlash = libraryFolder.map((i) => `/${i}`)
+  // FileTreeState.shrinkPath.directories = FileTreeState.shrinkPath.directories.concat(sourceFolderSlash).concat(libraryFolderSlash)
+  // FileTreeState.shrinkPath.enabled = true
 
-  const sourcePath = `/${state.mavenResolve.attributes['java.source.folder']}/`
-  config.javaSourcePath = sourcePath
+  // const sourcePath = `/${state.mavenResolve.attributes['java.source.folder']}/`
+  // config.javaSourcePath = sourcePath
 }
 
 export const fetchProjectType = function () {
-  api.fetchProjectType().then((res) => {
-    state.estimated = res.estimated
-    if (res.estimated) {
-      state.projectResolve = res.estimations
-    } else {
-      settings.projectsetting.projectType.value = res.type
-      settings.projectsetting.sourcePath.value = res.attributes['java.source.folder'][0]
-      settings.projectsetting.library.value = res.attributes['java.library.folder'][0]
-      state.projectResolve = res
-      state.selectedResolve = res.type
-      setFolders()
-    }
-  })
+  // api.fetchProjectType().then((res) => {
+  //   state.estimated = res.estimated
+  //   if (res.estimated) {
+  //     state.projectResolve = res.estimations
+  //   } else {
+  //     settings.projectsetting.projectType.value = res.type
+  //     settings.projectsetting.sourcePath.value = res.attributes['java.source.folder'][0]
+  //     settings.projectsetting.library.value = res.attributes['java.library.folder'][0]
+  //     state.projectResolve = res
+  //     state.selectedResolve = res.type
+  //     setFolders()
+  //   }
+  // })
 }
 
 export const putProjectType = function (projectConfigDto) {

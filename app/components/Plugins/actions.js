@@ -159,7 +159,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
 const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
 
 export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
-  return api.fetchUserPackageScript(`${pkg.version}/index.js`)
+  return api.fetchUserPackageScript(pkg.filePath)
     .then((script) => {
       localStorage.setItem(pkg.name, script)
       return pkg.name
@@ -183,6 +183,7 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
         status: 'Available',
         version: p.currentVersion,
         userPlugin: true,
+        filePath: p.pluginFilePath
       }))
 
       for (const pkg of convert) {

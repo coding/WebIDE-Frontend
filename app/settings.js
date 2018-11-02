@@ -470,49 +470,6 @@ const settings = observable({
       },
     }
   }),
-  projectsetting: new DomainSetting({
-    _keys: ['projectType', 'sourcePath', 'library'],
-    requireConfirm: true,
-    projectType: {
-      name: 'modal.projectType',
-      value: 'blank',
-      options: typeOptions,
-      reaction () {
-      },
-    },
-    sourcePath: {
-      name: 'modal.sourceFolder',
-      value: '/src/main/java',
-      extra: FolderSelector,
-      reaction () {
-      },
-    },
-    library: {
-      name: 'modal.libraryFolder',
-      value: '/lib',
-      extra: FolderSelector,
-      reaction () {
-      },
-    },
-    confirmCallBack ([type, source, library]) {
-      const projectConfigDto = {
-        type,
-      }
-      if (type === 'blank') {
-        projectConfigDto.attributes = {
-          'java.source.folder': [],
-          'java.library.folder': [],
-        }
-      } else {
-        projectConfigDto.attributes = {
-          'java.source.folder': trim(source, '/').split(','),
-          'java.library.folder': trim(library, '/').split(','),
-        }
-      }
-
-      putProjectType(projectConfigDto)
-    }
-  }),
   // classpathsetting: new DomainSetting({
     // _keys: ['project']
   // })
