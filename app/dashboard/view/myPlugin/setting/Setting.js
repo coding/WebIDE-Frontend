@@ -36,7 +36,7 @@ class Setting extends Component {
 
     render() {
         const { pluginId, pluginName, remark, historyVersions, version, pluginType, avgScore, countScoreUser, status, spaceKey, tab } = this.state;
-        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
+        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">

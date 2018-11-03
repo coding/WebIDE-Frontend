@@ -16,7 +16,7 @@ class About extends Component {
 
     render() {
         const { width, height } = this.state;
-        const url = window === window.top ? '/changelog' : `${config.tencentOrigin}/changelog`;
+        const url = window === window.top ? '/changelog' : `${config.studioOrigin}/changelog`;
         return (
             <div className="dash-about" style={{ width, height }}>
                 <div className="up"></div>

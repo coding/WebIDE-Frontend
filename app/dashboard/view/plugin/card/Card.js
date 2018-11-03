@@ -8,14 +8,17 @@ import api from '../../../api';
 import config from '../../../utils/config';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
+const httpReg = /^http/;
+
 class Card extends Component {
     render() {
-        const { id, pluginName, remark, src, createdBy, spaceKey, belong } = this.props;
+        const { id, pluginName, remark, userAvatar, createdBy, spaceKey, belong } = this.props;
         const to = {
             pathname: '/dashboard/plugin/developedbyme/setting',
             state: { pluginId: id },
         };
-        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
+        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
+        const src = httpReg.test(userAvatar) ? userAvatar : `${config.devOrigin}${userAvatar}`;
         return (
             <div className="plugin-card">
                 <div className="top">
@@ -42,11 +45,11 @@ class Card extends Component {
     }
 
     handleUninstall = (pluginId) => {
-        const { fetchThirdParty } = this.props;
+        const { refresh } = this.props;
         // status 为 2 表示禁用
         api.uninstallPlugin({ pluginId, status: 2 }).then(res => {
             if (res.code === 0) {
-                fetchThirdParty();
+                refresh();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }

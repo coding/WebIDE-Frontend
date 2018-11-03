@@ -1,5 +1,6 @@
 const config = {
-    tencentOrigin: 'https://studio.dev.tencent.com',
+    devOrigin: 'https://dev.tencent.com',
+    studioOrigin: 'https://studio.dev.tencent.com',
     hardware: {
         cpuLimit: 2,
         memory: 2048,

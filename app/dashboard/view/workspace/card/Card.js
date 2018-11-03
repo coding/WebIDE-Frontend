@@ -99,7 +99,7 @@ class Card extends Component {
             if (res.code === 0) {
                 handleFetch();
                 if (shouldOpen) {
-                    const url = window === window.top ? `/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
+                    const url = window === window.top ? `/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
                     window.open(url);
                 } else {
                     notify({ message: res.msg });
@@ -142,7 +142,7 @@ class Card extends Component {
 }
 
 const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }) => {
-    const url = window === window.top ? `/ws/${spaceKey}` : `${config.tencentOrigin}/ws/${spaceKey}`;
+    const url = window === window.top ? `/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,
