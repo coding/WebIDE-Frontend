@@ -19,7 +19,7 @@ export default {
           }
         },
         trace: {
-          server: 'verbose'
+          server: 'off'
         },
         import: {
           gradle: {
@@ -103,6 +103,9 @@ export default {
     workspaceFolders: [],
     settings: {
       pyls: {
+        trace: {
+          server: 'off'
+        },
         configurationSources: ['pycodestyle'],
         rope: { ropeFolder: null, extensionModules: null },
         plugins: {

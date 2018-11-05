@@ -59,3 +59,7 @@ export const fetchUserPackagelist = () => {
 export const fetchUserPackageScript = (url) => {
   return axios.get(url).then(res => res.data)
 }
+
+export const fethUserPreDeployPlugins = () => {
+  return request.get('/user-plugin/pre/deploy/list')
+}

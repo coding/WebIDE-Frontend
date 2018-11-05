@@ -15,7 +15,8 @@ const store = {
     infomation: null,
     online: false,
   }),
-  pluginSettingsItem: observable.map()
+  pluginSettingsItem: observable.map(),
+  preDeployPlugins: observable([])
 }
 
 // for test
