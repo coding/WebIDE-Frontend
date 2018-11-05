@@ -1,0 +1,9 @@
+.dash-setmyplugin .pre-publish-button {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+.dash-setmyplugin .pre-publish-button button {
+    padding: 10px 30px;
+    font-size: 16px;
+}

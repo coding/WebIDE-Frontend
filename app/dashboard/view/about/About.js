@@ -16,7 +16,7 @@ class About extends Component {
 
     render() {
         const { width, height } = this.state;
-        const url = window === window.top ? '/changelog' : `${config.tencentOrigin}/changelog`;
+        const url = window === window.top ? '/changelog' : `${config.studioOrigin}/changelog`;
         return (
             <div className="dash-about" style={{ width, height }}>
                 <div className="up"></div>
@@ -26,7 +26,7 @@ class About extends Component {
                         <div className="beta">beta</div>
                     </div>
                     <div className="desc">
-                        <span className="version">V 3.0</span>
+                        <span className="version">V 3.3</span>
                         <a href={url} target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
                     </div>
                 </div>

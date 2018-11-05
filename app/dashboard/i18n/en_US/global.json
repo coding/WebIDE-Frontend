@@ -68,5 +68,6 @@
     "message": "Messages",
     "readAllNotification": "Read All Notification",
     "readAllMessage": "Read All Message",
-    "createdTime": "Created Time"
+    "noNotification": "No Notification yet",
+    "noMessage": "No Messages yet"
 }

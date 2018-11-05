@@ -16,6 +16,7 @@ const closeFileTab = async (e, tab, removeTab, activateTab) => {
     removeTab(tab.id)
     return
   }
+  activateTab(tab.id)
   const editor = tab.editorInfo.monacoEditor
 
   const content = (editor && editor.getValue) ? editor.getValue() : ''
@@ -27,7 +28,6 @@ const closeFileTab = async (e, tab, removeTab, activateTab) => {
     })
     if (confirmed) {
       Modal.dismissModal()
-      console.log('ah')
       dispatchCommand('file:save')
     } else {
       Modal.dismissModal()

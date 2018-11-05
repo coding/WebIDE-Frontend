@@ -12,6 +12,7 @@ import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import ToolTip from '../../../share/toolTip';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import config from '../../../utils/config';
 
 class Git extends Component {
     state = {
@@ -88,9 +89,7 @@ class Git extends Component {
         const { url, envId } = this.state;
         const { showLoading, hideLoading } = this.props;
         const option = {
-            cpuLimit: 2,
-            memory: 2048,
-            storage: 2,
+            ...config.hardware,
             source: 'Import',
             //desc,
             url,

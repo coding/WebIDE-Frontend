@@ -101,6 +101,7 @@ class Workspace extends Component {
         if (!hideWelcome) {
             this.setState({ showWelcome: true });
         }
+        this.fetchWorkspaceLimit();
         this.handleFetch();
         this.interval = setInterval(() => {
             this.fetchWS();
@@ -151,7 +152,10 @@ class Workspace extends Component {
                 }
             }
             // 保存 workspace 数量
-            storeWorkspace({ wsCount: workspaces.length + workspacesCollaborative.length });
+            storeWorkspace({
+                wsTotal: workspaces.length + workspacesCollaborative.length,
+                wsCount: workspaces.length,
+            });
             this.setState({ workspaces, workspacesCollaborative });
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
@@ -215,6 +219,15 @@ class Workspace extends Component {
             }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
+    }
+
+    fetchWorkspaceLimit() {
+        const { storeWorkspace } = this.props;
+        api.getWorkspaceLimit().then(res => {
+            if (res.code === 0) {
+                storeWorkspace({ wsLimit: res.data.workspace });
+            }
         });
     }
 

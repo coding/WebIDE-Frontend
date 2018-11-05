@@ -15,11 +15,7 @@ const getSettingValueHelper = store => Object.keys(store)
 
 export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 
-const tabIds = ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP']
-
-if (!config.switchOldEditor) {
-  tabIds.push('LANGUAGESERVER')
-}
+const tabIds = ['GENERAL', 'APPEARANCE', 'EDITOR', 'KEYMAP', 'LANGUAGESERVER']
 
 export const pluginSettingStore = observable({})
 

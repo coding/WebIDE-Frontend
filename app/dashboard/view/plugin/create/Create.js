@@ -8,6 +8,7 @@ import Inbox from '../../../share/inbox';
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import config from '../../../utils/config';
 
 class Create extends Component {
     state = {
@@ -105,7 +106,14 @@ class Create extends Component {
         const { showLoading, hideLoading } = this.props;
         showLoading({ message: i18n('plugin.creatingPlugin') });
         // pluginTemplateId 是固定的
-        api.createPlugin({ pluginName, repoName, typeId, pluginTemplateId: 8, remark }).then(res => {
+        api.createPlugin({
+            ...config.hardware,
+            pluginName,
+            repoName,
+            typeId,
+            pluginTemplateId: 8,
+            remark,
+        }).then(res => {
             hideLoading();
             if (res.code === 0) {
                 this.props.history.push({ pathname: '/dashboard/workspace' });

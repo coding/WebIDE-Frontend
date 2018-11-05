@@ -1,15 +1,17 @@
+const defaultOption = {
+    historyVersions: [],
+    version: '0.0.0',
+    versionId: '',
+    status: 0,
+    hasPrePublish: false,
+    preVersionId: '',
+}
+
 function parseStatus(pluginVersions) {
     const len = pluginVersions.length;
     if (len === 0) {
         // 尚未发布
-        return {
-            historyVersions: [],
-            version: '0.0.0',
-            versionId: '',
-            status: 0,
-            hasPrePublish: false,
-            preVersionId: '',
-        };
+        return defaultOption;
     }
     const pub = [];
     const pre = [];
@@ -23,12 +25,20 @@ function parseStatus(pluginVersions) {
             hasPrePublish = item.isPreDeploy;
             preVersionId = item.id;
         } else {
-            pub.push(item);
+            pub.unshift(item);
         }
     }
-    const v = pub[pub.length - 1];
+    const v = pub[0];
+    if (!v || typeof v !== 'object') {
+        // 尚未正式发布
+        return {
+            ...defaultOption,
+            hasPrePublish,
+            preVersionId,
+        };
+    }
     const auditStatus = v.auditStatus; // 1 审核中; 2 审核成功; 3 审核失败
-    const buildStatus = v.auditStatus; // 1 构建中; 2 构建成功; 3 构建失败
+    const buildStatus = v.buildStatus; // 1 构建中; 2 构建成功; 3 构建失败
     let status = 0;
     if (auditStatus === 1) {
         // 审核中

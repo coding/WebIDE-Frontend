@@ -250,7 +250,7 @@ export default languageState
 
 reaction(() => config.mainLanguage, (lang) => {
   setTimeout(() => {
-    if (!languageState.clients.get(lang) && !config.switchOldEditor) {
+    if (!languageState.clients.get(lang)) {
       createClient(lang)
     }
   }, 1000)

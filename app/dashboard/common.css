@@ -63,10 +63,9 @@
 }
 .com-button {
     min-width: 70px;
-    height: 35px;
-    padding: 5px 10px;
+    padding: 7px 10px;
     border: none;
-    border-radius: 3px;
+    border-radius: 2px;
     font-size: 14px;
     color: #fff;
     background-color: #18f;
