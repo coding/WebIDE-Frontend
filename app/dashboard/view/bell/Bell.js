@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 
 import './bell.css';
 
-import api from '../../../api';
-import i18n from '../../../utils/i18n';
+import Notification from './notification';
+import Message from './message';
+
+import api from '../../api';
+import NoticeSocket from '../../api/socket';
+import i18n from '../../utils/i18n';
 
 class Bell extends Component {
     state = {
@@ -15,8 +19,10 @@ class Bell extends Component {
     render() {
         const { tab, nList, mList } = this.state;
         const { on, togglePanel } = this.props;
-        const nHave = nList.length > 0;
-        const mHave = mList.length > 0;
+        const nLen = nList.length > 0;
+        const mLen = mList.length > 0;
+        const nHave = nList.some(v => Number(v.status) === 0);
+        const mHave = mList.some(v => Number(v.status) === 0);
         const haveBell = nHave || mHave;
         return (
             <div className="dash-bell">
@@ -45,24 +51,24 @@ class Bell extends Component {
                     </div>
                     <div className="view">
                         {tab === 1 && (
-                            nHave ? (
-                                nList.map(n => <Row key={n.id} {...n} markNotification={this.markNotification} />)
+                            nLen ? (
+                                nList.map(n => <Notification key={n.id} {...n} markReaded={this.markReaded} />)
                             ) : <div className="no-bell">{i18n('global.noNotification')}</div>
                         )}
                         {tab === 2 && (
-                            mHave ? (
-                                mList.map(m => <Row key={m.id} {...m} />)
+                            mLen ? (
+                                mList.map(m => <Message key={m.id} {...m} markReaded={this.markReaded} />)
                             ) : <div className="no-bell">{i18n('global.noMessage')}</div>
                         )}
                     </div>
-                    {tab === 1 && nHave && (
+                    {tab === 1 && nLen && (
                         <div className="readall">
                             <a href="https://dev.tencent.com/user/notifications/basic" target="_blank" rel="noopener noreferrer">
                                 {i18n('global.readAllNotification')}
                             </a>
                         </div>
                     )}
-                    {tab === 2 && mHave && (
+                    {tab === 2 && mLen && (
                         <div className="readall">
                             <a href="https://dev.tencent.com/user/messages/basic" target="_blank" rel="noopener noreferrer">
                                 {i18n('global.readAllMessage')}
@@ -87,9 +93,11 @@ class Bell extends Component {
         });
     }
 
-    markNotification = (id) => {
-        api.notificationMarkRead({ id }).then(res => {
-            //console.log(res);
+    markReaded = (id) => {
+        api.markReaded({ id }).then(res => {
+            if (res.code === 0) {
+                this.fetchNotification();
+            }
         });
     }
 
@@ -101,23 +109,25 @@ class Bell extends Component {
         });
     }
 
+    connectSocket() {
+        new Promise((resolve, reject) => {
+            try {
+                const noticeSocket = new NoticeSocket({ globalKey: 'veedrin' });
+                noticeSocket.successCallback = (stompClient) => {
+                    connectedResolve(stompClient);
+                    resolve(true);
+                };
+                noticeSocket.errorCallback = () => {};
+                noticeSocket.connect();
+            } catch (err) {
+                reject(err);
+                console.log(err);
+            }
+        });
+    }
+
     toggleTab = (tab) => {
         this.setState({ tab });
-    }
-}
-
-const Row = ({ id, content, reminded, markNotification }) => {
-    if (reminded) {
-        return (
-            <div className="view-item" dangerouslySetInnerHTML={{ __html: content }}></div>
-        );
-    } else {
-        return (
-            <div className="view-item unread" onClick={() => markNotification(id)}>
-                <div className="dot"></div>
-                <span dangerouslySetInnerHTML={{ __html: content }}></span>
-            </div>
-        );
     }
 }
 

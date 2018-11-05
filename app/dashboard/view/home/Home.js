@@ -8,7 +8,7 @@ import cloudstudio from '../../static/cloudstudio.svg';
 import api from '../../api';
 import i18n from '../../utils/i18n';
 import Stripe from '../../share/stripe';
-import Bell from './bell';
+import Bell from '../bell';
 import Profile from './profile';
 import Banner from '../banner';
 import Workspace from '../workspace';
@@ -26,7 +26,7 @@ class Home extends Component {
         const { isBellOn } = this.state;
         const { isMbarOn, wsTotal, hideMbar } = this.props;
         return (
-            <div id="dash-container" onClick={(event) => this.toggleBellPanel(event, { turnOff: true })}>
+            <div id="dash-container" onClick={this.turnOffBellPanel}>
                 <div className="dash-mbar">
                     <div className="logo">
                         <Link to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="logo" /></Link>
@@ -137,14 +137,13 @@ class Home extends Component {
         });
     }
 
-    toggleBellPanel = (event, { turnOff }) => {
+    toggleBellPanel = (event) => {
         event.stopPropagation();
-        // toggle 通知和私信面板
-        if (turnOff) {
-            this.setState({ isBellOn: false });
-        } else {
-            this.setState(prevState => ({ isBellOn: !prevState.isBellOn }));
-        }
+        this.setState(prevState => ({ isBellOn: !prevState.isBellOn }));
+    }
+
+    turnOffBellPanel = () => {
+        this.setState({ isBellOn: false });
     }
 }
 

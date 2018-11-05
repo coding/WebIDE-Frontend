@@ -26,7 +26,7 @@ class About extends Component {
                         <div className="beta">beta</div>
                     </div>
                     <div className="desc">
-                        <span className="version">V 3.0</span>
+                        <span className="version">V 3.3</span>
                         <a href={url} target="_blank" rel="noopener noreferrer">{i18n('global.changelog')}</a>
                     </div>
                 </div>

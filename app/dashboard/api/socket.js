@@ -1,24 +1,26 @@
 import { Stomp } from 'stompjs/lib/stomp';
 import SockJS from 'sockjs-client';
 import getBackoff from '../utils/backoff';
-import config from 'app/config';
+import getCookie from '../utils/cookie';
 
-class NoticeWebSocket {
+const wsURL = getCookie('WS_URL') || __WS_URL__ || __BACKEND_URL__ || window.location.origin;
+
+class NoticeSocket {
     constructor() {
         if (!this.backoff) {
             this.backoff = getBackoff({ min: 50, max: 5000 });
         }
         this.headers = {
-            globalKey: config.globalKey,
+            globalKey: 'veedrin',
         };
-        this.baseURL = `${config.wsURL}/ot/sockjs/`;
+        this.baseURL = `${wsURL}/ot/sockjs/`;
     }
 
     connect() {
         if (!this.ws || !this.client) {
             this.ws = new SockJS(this.baseURL);
             this.client = Stomp.over(this.ws);
-            this.client.debug = false; // stop console.logging PING/PONG
+            this.client.debug = false;
         }
         const success = () => {
             this.backoff.reset();
@@ -45,4 +47,4 @@ class NoticeWebSocket {
     send() {}
 }
 
-export default NoticeWebSocket;
+export default NoticeSocket;

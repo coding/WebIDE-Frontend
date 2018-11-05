@@ -4,7 +4,7 @@ export const getNotification = () => {
     return axios.get('/workspaces/notification?page=1&pageSize=10');
 }
 
-export const notificationMarkRead = (data) => {
+export const markReaded = (data) => {
     return axios.post('/workspaces/notification/mark-read', data);
 }
 

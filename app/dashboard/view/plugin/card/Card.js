@@ -42,11 +42,11 @@ class Card extends Component {
     }
 
     handleUninstall = (pluginId) => {
-        const { fetchThirdParty } = this.props;
+        const { refresh } = this.props;
         // status 为 2 表示禁用
         api.uninstallPlugin({ pluginId, status: 2 }).then(res => {
             if (res.code === 0) {
-                fetchThirdParty();
+                refresh();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
