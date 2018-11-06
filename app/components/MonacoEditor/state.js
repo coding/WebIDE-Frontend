@@ -126,6 +126,15 @@ class EditorInfo {
       monacoEditor.focus()
     }
 
+    monacoEditor.addAction({
+      id: 'custom-comment',
+      label: 'comment',
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_SLASH
+      ],
+      run: () => { /* no */ }
+    })
+
     monacoEditor.onDidChangeCursorPosition((event) => {
       this.selections = monacoEditor.getSelections()
       const {
