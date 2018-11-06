@@ -81,7 +81,6 @@ class EditorInfo {
       // install Monaco language client services
       const services = createMonacoServices(monacoEditor, { rootUri: `file://${config._ROOT_URI_}` })
       Services.install(services)
-      // MonacoServices.install(monacoEditor)
       state.installed = true
     }
 
@@ -181,7 +180,7 @@ class EditorInfo {
   get mode () {
     if (!this.filePath) return 'plaintext'
     const mode = is.string(this.languageMode)
-      ? findModeByName(this.languageMode).aliases[0]
+      ? findModeByName(this.languageMode) && findModeByName(this.languageMode).aliases[0]
       : this.languageMode
     return mode
   }
