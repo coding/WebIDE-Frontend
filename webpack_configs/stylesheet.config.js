@@ -25,6 +25,10 @@ module.exports = function (paths) {
           use: ['file-loader']
           // loader: "url?limit=10000&mimetype=image/svg+xml"
         }, {
+          test: /\.gif\??([a-f\d]+)?(v=\d+\.\d+\.\d+)?$/,
+          use: ['file-loader']
+          // loader: "url?limit=10000&mimetype=image/svg+xml"
+        }, {
           test: /\.styl$/,
           use: [
             'style-loader',
