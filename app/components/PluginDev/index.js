@@ -6,7 +6,7 @@ import { pluginDevStore } from 'components/Plugins/store'
 @observer
 class PluginDev extends PureComponent {
   handleGoDoc = () => {
-    window.open('codingide.coding.me/WebIDE-Plugin-Template/#/')
+    window.open('https://leadream.coding.me/plugins-docs')
   }
 
   render () {
