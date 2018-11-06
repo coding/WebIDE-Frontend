@@ -12,17 +12,19 @@ const httpReg = /^http/;
 
 class Card extends Component {
     render() {
-        const { id, pluginName, remark, userAvatar, createdBy, spaceKey, belong } = this.props;
+        const { id, pluginName, remark, userAvatar, createdBy, spaceKey, repoUrl, belong } = this.props;
         const to = {
             pathname: '/dashboard/plugin/developedbyme/setting',
             state: { pluginId: id },
         };
-        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
-        const src = httpReg.test(userAvatar) ? userAvatar : `${config.devOrigin}${userAvatar}`;
+        const marketHref = window === window.top ? `${window.location.origin}/plugins/plugin/${id}` : `${config.studioOrigin}/plugins/plugin/${id}`;
+        const titleHref = belong === 1 ? marketHref : repoUrl;
+        const wsHref = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
+        const src = httpReg.test(userAvatar) ? userAvatar : `${config.qcloudOrigin}${userAvatar}`;
         return (
             <div className="plugin-card">
                 <div className="top">
-                    <a className="name" href="javascript:;" target="_blank" rel="noopener noreferrer">{pluginName}</a>
+                    <a className="name" href={titleHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
                     <div className="author">
                         <img src={src} />
                         <span>{createdBy}</span>
@@ -37,7 +39,7 @@ class Card extends Component {
                 {belong === 3 && (
                     <div className="control">
                         <Link className="button" to={to}>{i18n('global.setting')}</Link>
-                        <a className="button" href={href} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
+                        <a className="button" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
                     </div>
                 )}
             </div>
