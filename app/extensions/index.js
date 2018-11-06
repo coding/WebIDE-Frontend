@@ -6,7 +6,7 @@ import * as command from './command'
 import * as modal from './Modal.ext.js'
 import * as actions from './actions'
 import * as terminal from './Terminal.ext.js'
-import PluginApp, {
+import PluginContext, {
   appRegistry,
   registerPluginConfiguration,
   getPluginConfiguration,
@@ -21,7 +21,7 @@ export default {
   editor,
   menu,
   command,
-  PluginApp,
+  PluginContext,
   appRegistry,
   modal,
   actions,

@@ -7,7 +7,7 @@ import { createProvider, connectAdvanced } from 'react-redux'
 
 import settings from '../settings'
 
-class PluginApp {
+class PluginContext {
   constructor (options) {
     this.sdk = new CodingSDK(options) || ''
     this.inializeData = this.sdk.getData() || {}
@@ -120,4 +120,4 @@ export const IPropertiesType = {
   boolean: 'boolean'
 }
 
-export default PluginApp
+export default PluginContext

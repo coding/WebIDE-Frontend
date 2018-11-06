@@ -1,6 +1,5 @@
 import { registerAction } from 'utils/actions'
 import { PluginRegistry } from 'utils/plugins'
-import React from 'react'
 import { autorun, observable } from 'mobx'
 import config from 'config'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
@@ -159,7 +158,7 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
 const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
 
 export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
-  return api.fetchUserPackageScript(`${pkg.version}/index.js`)
+  return api.fetchUserPackageScript(pkg.filePath)
     .then((script) => {
       localStorage.setItem(pkg.name, script)
       return pkg.name
@@ -167,30 +166,50 @@ export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
 })
 
+const loadUserPackages = async (packages) => {
+  const convert = packages.map((p) => ({
+    name: p.pluginName,
+    author: p.createdBy || '',
+    description: p.remark,
+    displayName: p.pluginName,
+    enabled: true,
+    id: p.id,
+    requirement: 'Required',
+    status: 'Available',
+    version: p.currentVersion || '[pre deploy]',
+    userPlugin: true,
+    filePath: p.pluginFilePath
+  }))
+
+  /* eslint-disable */
+  for (const pkg of convert) {
+    store.list.push(pkg)
+    try {
+      await fetchUserPackage(pkg)
+      /* eslint-enable */
+    } catch (err) {
+      console.error(`Failed to load plugin ${pkg.name}: ${err.message}.`)
+    }
+  }
+}
+
 export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
   const userPackagePromise = api.fetchUserPackagelist()
-  return userPackagePromise.then(async (response) => {
-    if (response.code === 0) {
-      const { data } = response
-      const convert = data.map((p) => ({
-        name: p.pluginName,
-        author: p.createdBy,
-        description: p.remark,
-        displayName: p.pluginName,
-        enabled: true,
-        id: p.id,
-        requirement: 'Required',
-        status: 'Available',
-        version: p.currentVersion,
-        userPlugin: true,
-      }))
+  const preDeployPackagePromise = api.fethUserPreDeployPlugins()
+  return Promise.all([userPackagePromise, preDeployPackagePromise])
+    .then(async ([userpackages, preDeployPackages]) => {
+      const userPlugins = userpackages.data
+      const preDeployPlugins = preDeployPackages.data
+      const enableUserPackages = userPlugins.reduce((pre, cur) => {
+        if (!preDeployPlugins.find(prePackage => prePackage.id === cur.id)) {
+          pre.push(cur)
+        }
+        return pre
+      }, [])
+      store.preDeployPlugins = preDeployPlugins
 
-      for (const pkg of convert) {
-        store.list.push(pkg)
-        await fetchUserPackage(pkg)
-      }
-    }
-  })
+      loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+    })
 })
 
 export const mountPackagesByType = (type) => {
@@ -274,7 +293,7 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
   })
 
   devSocket.on('connect_error', () => {
-    notify({ notifyType: NOTIFY_TYPE.ERROR, message: '无法连接到插件开发服务，请确保已经执行 yarn start 且服务正常启动' })
+    notify({ notifyType: NOTIFY_TYPE.ERROR, message: '无法连接到插件服务，请确保已经执行 yarn start 且正常启动' })
   })
 
   devSocket.on('progress', (progress) => {
@@ -346,7 +365,7 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
   devSocket.on('disconnect', () => {
     notify({
       notifyType: NOTIFY_TYPE.INFO,
-      message: '插件开发服务已断开连接'
+      message: '插件已断开连接'
     })
     store.pluginDevState.online = false
     const { infomation: { name, version } } = store.pluginDevState
