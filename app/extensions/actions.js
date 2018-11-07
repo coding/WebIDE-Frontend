@@ -14,11 +14,11 @@ export function infoNotify (message) {
 }
 
 export function setStatusBarMessage (text, hideAfterEver) {
-  statusBarState.messages.push(text)
+  statusBarState.messages.set(text, text)
 
   function dispose (timeout = 0) {
     setTimeout(() => {
-      statusBarState.messages = statusBarState.messages.filter((msg) => msg !== text)
+      statusBarState.messages.delete(text)
     }, timeout)
   }
 
