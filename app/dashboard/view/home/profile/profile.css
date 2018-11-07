@@ -13,7 +13,7 @@
 .dash-profile:hover .panel {
     opacity: 1;
     pointer-events: all;
-    bottom: 60px;
+    bottom: 36px;
 }
 .dash-profile .avatar {
     width: 30px;
@@ -37,7 +37,7 @@
 }
 .dash-profile .panel {
     width: 140px;
-    height: 136px;
+    height: 172px;
     border-radius: 3px;
     background-color: #333;
     box-shadow: 3px 0 30px rgba(0, 0, 0, .2);

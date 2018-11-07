@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" style="height:100%;width:100%;">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <title>Cloud Studio | 腾讯云开发者平台 | 技术赋能，助力开发</title>
+    <meta name="keywords" content="腾讯云,Git,Svn,代码托管,Pages,WebIDE,Cloud Studio,持续集成,开发协作,团队协作,项目管理,敏捷开发,缺陷管理,在线IDE,CI,代码管理,CODING,腾讯云开发者平台">
+    <meta name="description" content="腾讯云开发者平台是腾讯云为开发者提供的在线研发管理工具，提供 Git/Svn 代码托管，项目管理，持续集成，云端开发工具 Cloud Studio 等一整套 SaaS 产品。">
+    <link href="//imgcache.qq.com/qcloud/app/resource/ac/favicon.ico" rel="icon" type="image/x-icon">
+    <style type="text/css">
+        html{overflow: hidden;}
+        .iframe-loader {
+		    position: fixed;
+		    left: 0px;
+		    top: 0px;
+		    width: 100%;
+		    height: 100%;
+            z-index: 9999;
+            background-color: rgb(249,249,249);
+        }
+        @keyframes lds-spinner {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        @-webkit-keyframes lds-spinner {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        .lds-spinner {
+            position: fixed;
+		    left: 50%;
+            top: 40%;
+        }
+        .lds-spinner div {
+            position: absolute;
+            -webkit-animation: lds-spinner linear 1s infinite;
+            animation: lds-spinner linear 1s infinite;
+            background: #00a4ff;
+            width: 10px;
+            height: 32px;
+            border-radius: 40%;
+            -webkit-transform-origin: 5px 56px;
+            transform-origin: 5px 56px;
+        }
+        .lds-spinner div:nth-child(1) {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-animation-delay: -0.916666666666667s;
+            animation-delay: -0.916666666666667s;
+        }
+        .lds-spinner div:nth-child(2) {
+            -webkit-transform: rotate(30deg);
+            transform: rotate(30deg);
+            -webkit-animation-delay: -0.833333333333333s;
+            animation-delay: -0.833333333333333s;
+        }
+        .lds-spinner div:nth-child(3) {
+            -webkit-transform: rotate(60deg);
+            transform: rotate(60deg);
+            -webkit-animation-delay: -0.75s;
+            animation-delay: -0.75s;
+        }
+        .lds-spinner div:nth-child(4) {
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+            -webkit-animation-delay: -0.666666666666667s;
+            animation-delay: -0.666666666666667s;
+        }
+        .lds-spinner div:nth-child(5) {
+            -webkit-transform: rotate(120deg);
+            transform: rotate(120deg);
+            -webkit-animation-delay: -0.583333333333333s;
+            animation-delay: -0.583333333333333s;
+        }
+        .lds-spinner div:nth-child(6) {
+            -webkit-transform: rotate(150deg);
+            transform: rotate(150deg);
+            -webkit-animation-delay: -0.5s;
+            animation-delay: -0.5s;
+        }
+        .lds-spinner div:nth-child(7) {
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+            -webkit-animation-delay: -0.416666666666667s;
+            animation-delay: -0.416666666666667s;
+        }
+        .lds-spinner div:nth-child(8) {
+            -webkit-transform: rotate(210deg);
+            transform: rotate(210deg);
+            -webkit-animation-delay: -0.333333333333333s;
+            animation-delay: -0.333333333333333s;
+        }
+        .lds-spinner div:nth-child(9) {
+            -webkit-transform: rotate(240deg);
+            transform: rotate(240deg);
+            -webkit-animation-delay: -0.25s;
+            animation-delay: -0.25s;
+        }
+        .lds-spinner div:nth-child(10) {
+            -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+            -webkit-animation-delay: -0.166666666666667s;
+            animation-delay: -0.166666666666667s;
+        }
+        .lds-spinner div:nth-child(11) {
+            -webkit-transform: rotate(300deg);
+            transform: rotate(300deg);
+            -webkit-animation-delay: -0.083333333333333s;
+            animation-delay: -0.083333333333333s;
+        }
+        .lds-spinner div:nth-child(12) {
+            -webkit-transform: rotate(330deg);
+            transform: rotate(330deg);
+            -webkit-animation-delay: 0s;
+            animation-delay: 0s;
+        }
+        .lds-spinner {
+            width: 150px !important;
+            height: 150px !important;
+            -webkit-transform: translate(-75px, -75px) scale(0.75) translate(75px, 75px);
+            transform: translate(-75px, -75px) scale(0.75) translate(75px, 75px);
+        }
+    </style>
+</head>
+<body style="height:100%;width:100%;margin:0px;">
+    <div class="iframe-loader" id="loading"><div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+</body>
+<script type="text/javascript">
+    // 禁止自身被 iframe 嵌套
+    try {
+        if (window.top.window.location.href !== window.location.href) {
+            window.top.window.location.href = window.location.href;
+        }
+    } catch (e) {}
+
+    var tencentDomain = 'studio.dev.tencent.com',
+        codingDomain = 'ide.test:8060/intro';
+
+    // coding studio domain regex exp
+    var studioRegex = new RegExp('^http[s]?:\/\/' + codingDomain.replace(/\./g, '\\.') + '.*$', 'i');
+
+    window.utils = (function () {
+        var iframeDomain = window.location.protocol + '//' + codingDomain;
+        return {
+            // 获取当前路径信息
+            getPath: function(domain, href) {
+                domain = typeof(domain) === 'undefined' ? tencentDomain : domain;
+                href = typeof(href) === 'undefined' ? window.location.href : href;
+                
+                var regex = new RegExp('^http[s]?:\/\/(?:' + domain + '/)(.*)$', 'i');
+                var match = regex.exec(href);
+                if (match !== null) {
+                    return match[1] ? match[1] === '/' ? '' : match[1] : '';
+                }
+                return '';
+            },
+            
+            // 修改 iframe 节点
+            changeIframeSrc: function(url) {
+                var path = this.getPath();
+                url = typeof(url) === 'undefined' ? iframeDomain + '/' + path : url;
+                document.getElementsByTagName('body')[0].innerHTML = '<iframe id="iframe" src="' + url + '" style="height:100%;width:100%;margin:0px;display:block;" frameBorder="0" scrolling="auto" allowfullscreen="true"></iframe>';
+            }
+        };
+    }());
+
+    // 页面强制刷新的时候改变下 iframe
+    window.utils.changeIframeSrc();
+
+    window.onload = function() {
+        // PV&UV 上报
+        if (typeof(pgvMain) === 'function') {
+            pgvMain({virtualDomain: 'studio.qcloud.dev.qq.com'});
+        }
+    }
+
+    /**
+     * 页面的路由同步
+     */
+    function onMessage(messageEvent) {
+        var origin = messageEvent.origin || messageEvent.originalEvent.origin;
+        // 去除端口
+        origin = origin.replace(/(:\d+)/g, '');
+        
+        if (studioRegex.test(origin)) {
+            var data = messageEvent.data;
+            if (
+                typeof(data) === 'object' &&
+                data.state &&
+                typeof(data.state) === 'object' &&
+                data.state.type === 'redirect' &&
+                data.path
+            ) {
+                window.location.href = data.path;
+            } else if (typeof(data) === 'object' && data.path) {
+                window.history.replaceState(data.state || null, data.profile || null, data.path);
+            }
+        }
+    };
+
+    if (window.addEventListener) {
+        window.addEventListener('message', onMessage, false);
+    } else if (window.attachEvent) {
+        window.attachEvent('onmessage', onMessage);
+    } else {
+        alert('请升级浏览器');
+    }
+
+</script>
+<script type="text/javascript" src="https://pingjs.qq.com/tcss.ping.https.js"></script>
+</html>

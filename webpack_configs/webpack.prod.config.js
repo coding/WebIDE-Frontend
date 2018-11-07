@@ -76,6 +76,7 @@ module.exports = merge(
         // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
         filename: (staticDir ? '../' : '') + introEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/intro.html'),
+        backendUrl: str(process.env.BACKEND_URL || '')
         // favicon: ICO_PATH,
       }),
       new HtmlWebpackPlugin({
@@ -84,6 +85,7 @@ module.exports = merge(
         // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
         filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+        backendUrl: str(process.env.BACKEND_URL || '')
         // favicon: ICO_PATH,
       }),
       new HtmlWebpackPlugin({

@@ -26,7 +26,7 @@ class Profile extends Component {
                     <a className="menu-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">{i18n('global.devPlatform')}</a>
                     <a className="menu-item" href="https://dev.tencent.com/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">{i18n('global.docs')}</a>
                     <a className="menu-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer">{i18n('global.feedback')}</a>
-                    {/* <a className="menu-item" href="javascript:;" onClick={this.handleLogout}>{i18n('global.logout')}</a> */}
+                    <a className="menu-item" href="javascript:;" onClick={this.handleLogout}>{i18n('global.logout')}</a>
                 </div>
             </div>
         );
@@ -47,8 +47,11 @@ class Profile extends Component {
         api.logout().then(res => {
             if (res.code === 0) {
                 this.props.logOut();
-                window.top.postMessage({ path: '/intro' }, '*');
-                window.location.href = '/intro';
+                // window.top.postMessage({ path: '/intro' }, '*');
+                // window.location.href = '/intro';
+                window.top.postMessage({ state: {
+                    type: 'redirect'
+                }, path: 'https://cloud.tencent.com/login/quit?s_url=' + window.location.href }, '*');
             }
         });
     }
