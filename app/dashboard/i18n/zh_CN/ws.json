@@ -3,7 +3,6 @@
     "creatingWS": "正在创建工作空间...",
     "myWorkspace": "我的工作空间",
     "workspaceName": "工作空间名",
-    "gotoWS": "进入工作空间",
     "projectName": "项目名",
     "otherGitRepo": "其他 Git 仓库",
     "noRemoteRepo": "无来源",

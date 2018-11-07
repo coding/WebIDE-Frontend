@@ -17,12 +17,13 @@ class Create extends Component {
         repoName: '',
         typeId: 0,
         remark: '',
+        iknow: false,
     }
 
     render() {
-        const { types, pluginName, repoName, typeId, remark } = this.state;
+        const { types, pluginName, repoName, typeId, remark, iknow } = this.state;
         const { canCreate, wsLimit } = this.props;
-        const disabled = !canCreate || !pluginName || !repoName || !typeId || !remark;
+        const disabled = !canCreate || !pluginName || !repoName || !typeId || !remark || (remark.length > 255) || !iknow;
         return (
             <div className="dash-create-plugin">
                 <div className="title">{i18n('plugin.createPlugin')}</div>
@@ -50,6 +51,18 @@ class Create extends Component {
                     <div className="board-label">{i18n('global.desc')}*</div>
                     <div className="board-content">
                         <Inbox type="textarea" holder="plugin.inputPluginDesc" value={remark} onChange={this.handleRemark} />
+                    </div>
+                </div>
+                <div className="com-board">
+                    <div className="board-label none"></div>
+                    <div className="board-content">
+                        <div className="must-read">
+                            {i18n('plugin.createWSTip')}
+                            <div className="action" onClick={this.handleKnow}>
+                                <i className={`fa fa-${iknow ? 'check-square' : 'square'}`}></i>
+                                {i18n('plugin.iknow')}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="com-board">
@@ -95,6 +108,10 @@ class Create extends Component {
 
     handleRemark = (event) => {
         this.setState({ remark: event.target.value });
+    }
+
+    handleKnow = () => {
+        this.setState(prevState => ({ iknow: !prevState.iknow }));
     }
 
     handleBack = () => {

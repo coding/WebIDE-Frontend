@@ -65,6 +65,7 @@ function parseStatus(pluginVersions) {
         status,
         hasPrePublish,
         preVersionId,
+        auditRemark: v.auditRemark || '存在安全隐患',
     };
 }
 

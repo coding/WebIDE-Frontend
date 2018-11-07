@@ -31,17 +31,22 @@ class Setting extends Component {
         status: 0,
         hasPrePublish: false,
         preVersionId: '',
+        auditRemark: '',
         tab: 1,
     }
+    timer = null
 
     render() {
-        const { pluginId, pluginName, remark, historyVersions, version, pluginType, avgScore, countScoreUser, status, spaceKey, tab } = this.state;
+        const { pluginId, pluginName, remark, historyVersions, version, auditRemark, pluginType, avgScore, countScoreUser, status, repoUrl, spaceKey, tab } = this.state;
         const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">
                     <div className="plugin-name">{pluginName}</div>
-                    <a className="goto" href={href} target="_blank" rel="noopener noreferrer">{i18n('ws.gotoWS')}</a>
+                    <div>
+                        <a className="goto" href={repoUrl} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
+                        <a className="goto" href={href} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
+                    </div>
                 </div>
                 <div className="desc">{remark}</div>
                 <div className="info">
@@ -58,7 +63,7 @@ class Setting extends Component {
                         <span className="rate-user-count">({kilo(countScoreUser)})</span>
                     </div>
                 </div>
-                <div className="plugin-status">{i18n(`plugin.status${status}`, { version })}</div>
+                <div className="plugin-status">{i18n(`plugin.status${status}`, { version, reason: auditRemark })}</div>
                 <div className="tab">
                     <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.prePublish')}</div>
@@ -75,6 +80,9 @@ class Setting extends Component {
 
     componentDidMount() {
         this.fetchPluginInfo();
+        this.timer = setTimeout(() => {
+            this.fetchPluginInfo();
+        }, 10000);
     }
 
     fetchPluginInfo = () => {
@@ -83,7 +91,7 @@ class Setting extends Component {
             api.getPluginInfo(state.pluginId).then(res => {
                 if (res.code === 0) {
                     const { pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, spaceKey } = res.data;
-                    const { historyVersions, version, versionId, status, hasPrePublish, preVersionId } = parseStatus(pluginVersions);
+                    const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, auditRemark } = parseStatus(pluginVersions);
                     this.setState({
                         pluginId: state.pluginId,
                         pluginName,
@@ -100,6 +108,7 @@ class Setting extends Component {
                         status,
                         hasPrePublish,
                         preVersionId,
+                        auditRemark,
                     });
                 } else {
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
@@ -130,6 +139,10 @@ class Setting extends Component {
             hideLoading();
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timer);
     }
 }
 

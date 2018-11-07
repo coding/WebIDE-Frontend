@@ -1,5 +1,6 @@
 .dash-profile {
-    height: 60px;
+    height: 30px;
+    margin-bottom: 15px;
     position: relative;
 }
 .dash-profile .profile {

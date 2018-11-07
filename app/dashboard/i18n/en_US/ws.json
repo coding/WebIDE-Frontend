@@ -3,7 +3,6 @@
     "creatingWS": "Creating workspace...",
     "myWorkspace": "My Workspaces",
     "workspaceName": "Workspace Name",
-    "gotoWS": "Goto workspace",
     "projectName": "Project Name",
     "otherGitRepo": "Other Git Repos",
     "noRemoteRepo": "No Source",

@@ -13,6 +13,7 @@ class NewPlugin extends Component {
                     <div className="avatar"></div>
                     <div className="content">
                         <div className="title">{i18n('plugin.createCSPlugin')}</div>
+                        <div className="desc a" onClick={this.handleOpenDoc}>{i18n('plugin.howToCreatePlugin')}</div>
                     </div>
                 </Link>
             ) : (
@@ -25,6 +26,11 @@ class NewPlugin extends Component {
                 </div>
             )
         );
+    }
+
+    handleOpenDoc = (event) => {
+        event.preventDefault();
+        window.open('https://studio.dev.tencent.com/plugins-docs');
     }
 }
 

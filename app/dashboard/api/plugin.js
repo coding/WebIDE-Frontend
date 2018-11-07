@@ -9,7 +9,7 @@ export const getBuiltinPlugin = () => {
 }
 
 export const getMyPlugin = () => {
-    return axios.get('/user-plugin/dev/list');
+    return axios.get('/user-plugin/dev/list?page=0&size=100');
 }
 
 export const getPluginTypes = () => {

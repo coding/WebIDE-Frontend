@@ -84,8 +84,8 @@
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    /* 减去 logo 50，减去 avatar 60，减去 bell 45 */
-    height: calc(100% - 155px);
+    /* 减去 logo 50，减去 avatar 45，减去 bell 45 */
+    height: calc(100% - 140px);
 }
 .dash-sidebar .nav-item {
     width: 100%;

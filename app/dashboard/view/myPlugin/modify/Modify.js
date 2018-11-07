@@ -54,7 +54,7 @@ class Modify extends Component {
         api.modifyPluginInfo({
             pluginId,
             pluginName,
-            remark,
+            remark: encodeURI(remark),
         }).then(res => {
             if (res && res.code === 0) {
                 refresh();

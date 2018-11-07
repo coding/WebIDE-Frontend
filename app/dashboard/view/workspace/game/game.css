@@ -1,0 +1,12 @@
+.dash-game {
+    padding: 15px;
+    margin-bottom: 30px;
+    border-radius: 3px;
+    color: #333;
+    background-color: #fff;
+}
+.dash-game .fa-bullhorn {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #18f;
+}
