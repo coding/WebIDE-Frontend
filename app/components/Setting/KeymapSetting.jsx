@@ -38,6 +38,7 @@ export default observer(({ content }) => (
           settingItem={settingItem}
         />
       )}
+      <p>{i18n`settings.keymap.sysKeymap`}</p>
       <table className="keymap-list">
         <thead>
           <tr>
@@ -46,32 +47,34 @@ export default observer(({ content }) => (
             <th>Win {i18n`settings.keymap.keymap`}</th>
           </tr>
         </thead>
-        <thead>
-          系统快捷键
-        </thead>
         <tbody>
           {keymapStore.systemKeymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} />)}
         </tbody>
+      </table>
+      <p>{i18n`settings.keymap.pluginKeymap`}</p>
+      <table className="keymap-list">
         <thead>
-          插件快捷键
+          <tr>
+            <th>{i18n`settings.keymap.command`}</th>
+            <th>Mac {i18n`settings.keymap.keymap`}</th>
+            <th>Win {i18n`settings.keymap.keymap`}</th>
+            <th>{i18n`settings.keymap.pluginSource`}</th>
+          </tr>
         </thead>
         {keymapStore.pluginsKeymaps.map(keyConfig => (
           <tbody key={keyConfig.name}>
             <thead>{keyConfig.contribution}</thead>
             {
-              keyConfig.keymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} />)
+              keyConfig.keymaps.map((keymap, index) => <Row key={`${keymap.command}-${index}`} {...keymap} source={keyConfig.name} />)
             }
           </tbody>
         ))}
-        <tbody>
-          
-        </tbody>
       </table>
     </div>
   </div>
 ))
 
-const Row = ({ label, mac, win }) => {
+const Row = ({ label, mac, win, source }) => {
   const macKeyS = mac.split('+')
   const winKeys = win.split('+')
   return (
@@ -79,6 +82,7 @@ const Row = ({ label, mac, win }) => {
       <td>{label}</td>
       <td>{macKeyS.map(key => <span className="key" key={key}>{key}</span>)}</td>
       <td>{winKeys.map(key => <span className="key" key={key}>{key}</span>)}</td>
+      {source && <td>{source}</td>}
     </tr>
   );
 }

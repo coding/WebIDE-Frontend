@@ -6,7 +6,7 @@ import { pluginDevStore } from 'components/Plugins/store'
 @observer
 class PluginDev extends PureComponent {
   handleGoDoc = () => {
-    window.open('https://leadream.coding.me/plugins-docs')
+    window.open('/plugins-docs')
   }
 
   render () {
@@ -23,6 +23,10 @@ class PluginDev extends PureComponent {
           </span>
         </div>
         <div className='plugin-detail-panel'>
+          <p className='plugin-detail-campaign'>
+            插件开发大赛正在进行中，
+            <a onClick={() => window.open('/campaign/favorite-plugins')}>了解更多</a>
+          </p>
           <p className='plugin-name'>
             {pluginDevStore.infomation &&
               (pluginDevStore.infomation.displayName || pluginDevStore.infomation.name)}
