@@ -38,6 +38,8 @@ const config = observable({
   isDefault: false,
   willExpire: false,
   rehydrated: false,
+  // 是否为插件开发工作空间
+  __PLUGIN_DEV__: false,
   fileicons: 'default',
   tencentOrigin: 'https://studio.dev.tencent.com',
   get previewURL () {
