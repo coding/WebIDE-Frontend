@@ -40,10 +40,10 @@ const PanelContent = observer(({ panel }) => {
 
     case 'PANEL_RIGHT':
       return (
-        config.__PLUGIN_DEV__ && <SidePanelContainer side='right'>
-          <SidePanelView key='project' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
+        <SidePanelContainer side='right' shouldRender={config.__PLUGIN_DEV__}>
+          {config.__PLUGIN_DEV__ && <SidePanelView key='plugins' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
             <PluginDev />
-          </SidePanelView>
+          </SidePanelView>}
         </SidePanelContainer>
       )
 
