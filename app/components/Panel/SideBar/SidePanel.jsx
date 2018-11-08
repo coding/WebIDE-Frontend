@@ -1,15 +1,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import { observer } from 'mobx-react'
 import { SIDEBAR } from 'components/Plugins/constants'
 import { pluginRegister } from '../../Plugins/actions'
 import PluginArea from '../../Plugins/component'
 
+@observer
 class SidePanelContainer extends Component {
   componentWillMount () {
     const children = this.getChildren()
-    const { side } = this.props
+    this.innerPluginRegister(children)
+  }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.shouldRender && nextProps.shouldRender !== this.props.shouldRender) {
+      const { children } = nextProps
+      const nextChildren = Array.isArray(children) ? children : [children]
+      this.innerPluginRegister(nextChildren)
+    }
+  }
+
+  innerPluginRegister = (children) => {
+    const { side } = this.props
     const mapChildrenToRegister = children.map((child, idx) => ({
       label: child.props.label,
       position: SIDEBAR[side.toUpperCase()],
@@ -21,10 +34,12 @@ class SidePanelContainer extends Component {
       label.status.set('active', child.active)
     })
   }
+
   getChildren () {
     if (!this.props.children) return []
     return Array.isArray(this.props.children) ? this.props.children : [this.props.children]
   }
+
   render () {
     const { side } = this.props
     return (
