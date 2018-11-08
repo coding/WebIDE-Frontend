@@ -29,6 +29,7 @@ class Setting extends Component {
         avgScore: 0,
         countScoreUser: 0,
         repoName: '',
+        repoUrl: '',
         status: 0,
         hasPrePublish: false,
         preVersionId: '',
@@ -54,7 +55,7 @@ class Setting extends Component {
             repoName,
             tab,
         } = this.state;
-        const href = `${window === window.top ? window.location.origin : config.studioOrigin}/ws?ownerName=${createdBy}&projectName=${repoName}`;
+        const href = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">
@@ -106,7 +107,7 @@ class Setting extends Component {
         if (state && state.pluginId) {
             api.getPluginInfo(state.pluginId).then(res => {
                 if (res.code === 0) {
-                    const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName } = res.data;
+                    const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
                     const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, auditRemark } = parseStatus(pluginVersions);
                     this.setState({
                         createdBy,
@@ -119,6 +120,7 @@ class Setting extends Component {
                         countScoreUser,
                         pluginType: pluginTypes[0].typeName,
                         repoName,
+                        repoUrl,
                         historyVersions,
                         version,
                         versionId,

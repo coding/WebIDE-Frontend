@@ -21,7 +21,7 @@ class Card extends Component {
         };
         const marketHref = window === window.top ? `${window.location.origin}/plugins/plugin/${id}` : `${config.studioOrigin}/plugins/plugin/${id}`;
         const titleHref = belong === 1 ? marketHref : repoUrl;
-        const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws?ownerName=${createdBy}&projectName=${repoName}`;
+        const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         const src = httpReg.test(userAvatar) ? userAvatar : `${config.qcloudOrigin}${userAvatar}`;
         return (
             < div className = "plugin-card" >
