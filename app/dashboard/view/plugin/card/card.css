@@ -26,7 +26,25 @@
 .dash-plugin .plugin-card .author {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     color: #666;
+}
+.dash-plugin .plugin-card .right {
+    display: flex;
+    align-items: center;
+}
+.dash-plugin .plugin-card .version {
+    flex-shrink: 0;
+    color: #666;
+}
+.dash-plugin .plugin-card .tag {
+    flex-shrink: 0;
+    padding: 1px 3px;
+    margin-left: 5px;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #333;
+    background-color: #ccc;
 }
 .dash-plugin .plugin-card .author img {
     width: 20px;

@@ -5,6 +5,8 @@ import { withRouter } from 'react-router';
 import './create.css';
 
 import Inbox from '../../../share/inbox';
+import Know from '../../../share/know';
+
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
@@ -56,13 +58,7 @@ class Create extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        <div className="must-read">
-                            {i18n('plugin.createWSTip')}
-                            <div className="action" onClick={this.handleKnow}>
-                                <i className={`fa fa-${iknow ? 'check-square' : 'square'}`}></i>
-                                {i18n('plugin.iknow')}
-                            </div>
-                        </div>
+                        <Know iknow={iknow} handler={this.handleKnow} />
                     </div>
                 </div>
                 <div className="com-board">
@@ -110,8 +106,8 @@ class Create extends Component {
         this.setState({ remark: event.target.value });
     }
 
-    handleKnow = () => {
-        this.setState(prevState => ({ iknow: !prevState.iknow }));
+    handleKnow = (iknow) => {
+        this.setState({ iknow });
     }
 
     handleBack = () => {

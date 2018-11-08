@@ -21,17 +21,3 @@
 .dash-create-plugin .plugin-type .type.on {
     background-color: #18f;
 }
-.dash-create-plugin .must-read {
-    padding: 10px;
-    border-radius: 2px;
-    color: #ccc;
-    background-color: #4a4a4a;
-    user-select: none;
-}
-.dash-create-plugin .must-read .action {
-    padding-top: 10px;
-    cursor: pointer;
-}
-.dash-create-plugin .must-read .action i {
-    margin-right: 10px;
-}

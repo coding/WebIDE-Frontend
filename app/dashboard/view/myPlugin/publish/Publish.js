@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import './publish.css';
 
 import Inbox from '../../../share/inbox';
+import Know from '../../../share/know';
+
 import i18n from '../../../utils/i18n';
 
 class Publish extends Component {
@@ -12,6 +14,7 @@ class Publish extends Component {
         minor: 0,
         patch: 0,
         desc: '',
+        iknow: false,
     }
 
     render() {
@@ -20,11 +23,11 @@ class Publish extends Component {
         if (status === 1) {
             return <div className="cannot-publish">{i18n('plugin.cannotPublish')}</div>;
         }
-        const { v, major, minor, patch, desc } = this.state;
+        const { v, major, minor, patch, desc, iknow } = this.state;
         // 新版本必须高于老版本
         const oldNum = v.major * 10000 + v.minor * 100 + v.patch;
         const newNum = major * 10000 + minor * 100 + patch;
-        const disabled = (newNum <= oldNum) || !desc;
+        const disabled = (newNum <= oldNum) || !desc || !iknow;
         return (
             <div className="panel">
                 <div className="panel-title">
@@ -51,6 +54,12 @@ class Publish extends Component {
                     <div className="board-label">{i18n('plugin.releaseNote')}*</div>
                     <div className="board-content">
                         <Inbox type="textarea" holder="plugin.inputReleaseNote" value={desc} onChange={this.handleDesc} />
+                    </div>
+                </div>
+                <div className="com-board">
+                    <div className="board-label none"></div>
+                    <div className="board-content">
+                        <Know iknow={iknow} handler={this.handleKnow} />
                     </div>
                 </div>
                 <div className="com-board">
@@ -95,6 +104,10 @@ class Publish extends Component {
 
     handleDesc = (event) => {
         this.setState({ desc: event.target.value });
+    }
+
+    handleKnow = (iknow) => {
+        this.setState({ iknow });
     }
 
     handlePublish = () => {

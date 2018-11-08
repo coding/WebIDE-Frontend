@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import './workspace.css';
 
 import Intro from './intro';
-import Game from './game';
 import Card from './card';
 import NewWs from './newWS';
 import NewPlugin from './newPlugin';
@@ -29,7 +28,6 @@ class Workspace extends Component {
         return (
             <div className="dash-workspace">
                 {showWelcome && <Intro handler={this.handleWelcome} />}
-                <Game />
                 <div className="card-box">
                     <NewWs />
                     <NewPlugin />

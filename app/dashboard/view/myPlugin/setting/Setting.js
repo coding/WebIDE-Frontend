@@ -18,6 +18,7 @@ import parseStatus from './status';
 
 class Setting extends Component {
     state = {
+        createdBy: '',
         pluginId: '',
         pluginName: '',
         remark: '',
@@ -27,7 +28,7 @@ class Setting extends Component {
         pluginType: '',
         avgScore: 0,
         countScoreUser: 0,
-        spaceKey: '',
+        repoName: '',
         status: 0,
         hasPrePublish: false,
         preVersionId: '',
@@ -37,8 +38,23 @@ class Setting extends Component {
     timer = null
 
     render() {
-        const { pluginId, pluginName, remark, historyVersions, version, auditRemark, pluginType, avgScore, countScoreUser, status, repoUrl, spaceKey, tab } = this.state;
-        const href = window === window.top ? `${window.location.origin}/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
+        const {
+            createdBy,
+            pluginId,
+            pluginName,
+            remark,
+            historyVersions,
+            version,
+            auditRemark,
+            pluginType,
+            avgScore,
+            countScoreUser,
+            status,
+            repoUrl,
+            repoName,
+            tab,
+        } = this.state;
+        const href = `${window === window.top ? window.location.origin : config.studioOrigin}/ws?ownerName=${createdBy}&projectName=${repoName}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">
@@ -90,9 +106,10 @@ class Setting extends Component {
         if (state && state.pluginId) {
             api.getPluginInfo(state.pluginId).then(res => {
                 if (res.code === 0) {
-                    const { pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, spaceKey } = res.data;
+                    const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName } = res.data;
                     const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, auditRemark } = parseStatus(pluginVersions);
                     this.setState({
+                        createdBy,
                         pluginId: state.pluginId,
                         pluginName,
                         newPluginName: pluginName,
@@ -101,7 +118,7 @@ class Setting extends Component {
                         avgScore,
                         countScoreUser,
                         pluginType: pluginTypes[0].typeName,
-                        spaceKey,
+                        repoName,
                         historyVersions,
                         version,
                         versionId,

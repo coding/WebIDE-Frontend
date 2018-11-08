@@ -20,6 +20,15 @@
     line-height: 1.5;
     border: 1px solid #555;
 }
+.dash-setmyplugin .versions-table tr td:nth-child(1) {
+    width: 60px;
+}
+.dash-setmyplugin .versions-table tr td:nth-child(3) {
+    width: 100px;
+}
+.dash-setmyplugin .versions-table tr td:nth-child(5) {
+    width: 160px;
+}
 .dash-setmyplugin .versions-table thead tr {
     background-color: #434343;
 }
