@@ -950,6 +950,8 @@
         $('.page-header .logo').css('filter', 'invert(100%)');
       }
     })
+    
+    var REDIRECT_URL = 'https://studio.dev.tencent.com';
 
     function logout() {
       $.ajax({
@@ -966,7 +968,7 @@
         window.location = '/intro'
         window.top.postMessage({ state: {
           type: 'redirect'
-        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + window.location.href }, '*');
+        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
       });
     }
 

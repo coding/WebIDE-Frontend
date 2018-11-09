@@ -9,6 +9,7 @@ import i18n from '../../../utils/i18n';
 import api from '../../../api';
 
 const httpReg = /^http/;
+const REDIRECT_URL = 'https://studio.dev.tencent.com';
 
 class Profile extends Component {
     render() {
@@ -51,7 +52,7 @@ class Profile extends Component {
                 // window.location.href = '/intro';
                 window.top.postMessage({ state: {
                     type: 'redirect'
-                }, path: 'https://cloud.tencent.com/login/quit?s_url=' + window.location.href }, '*');
+                }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
             }
         });
     }

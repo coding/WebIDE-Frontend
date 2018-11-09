@@ -1561,7 +1561,7 @@
       timestamp = new Date() / 1000 - 1521809751;
       count.update(totalCount + (timestamp * 1000));
     }, 6000)
-
+    var REDIRECT_URL = 'https://studio.dev.tencent.com'
     function logout() {
       $.ajax({
         url: <%= htmlWebpackPlugin.options.backendUrl %> + "/logout",
@@ -1577,7 +1577,7 @@
         window.location = '/intro'
         window.top.postMessage({ state: {
           type: 'redirect'
-        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + window.location.href }, '*');
+        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
       });
     }
 
