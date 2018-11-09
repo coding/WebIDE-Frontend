@@ -33,6 +33,7 @@ class Setting extends Component {
         status: 0,
         hasPrePublish: false,
         preVersionId: '',
+        isPrePublishBuilding: false,
         auditRemark: '',
         tab: 1,
     }
@@ -55,14 +56,15 @@ class Setting extends Component {
             repoName,
             tab,
         } = this.state;
-        const href = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
+        const repoHref = `${config.devOrigin}/u/${createdBy}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">
                     <div className="plugin-name">{pluginName}</div>
                     <div>
-                        <a className="goto" href={repoUrl} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
-                        <a className="goto" href={href} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
+                        <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
+                        <a className="goto" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
                     </div>
                 </div>
                 <div className="desc">{remark}</div>
@@ -81,6 +83,12 @@ class Setting extends Component {
                     </div>
                 </div>
                 <div className="plugin-status">{i18n(`plugin.status${status}`, { version, reason: auditRemark })}</div>
+                {status === 4 && (
+                    <div className="recall">
+                        {i18n('plugin.beforeRecallAudit')}
+                        <span className="click" onClick={this.recallAudit}>&nbsp;{i18n('plugin.recallAudit')}</span>
+                    </div>
+                )}
                 <div className="tab">
                     <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.prePublish')}</div>
@@ -108,7 +116,7 @@ class Setting extends Component {
             api.getPluginInfo(state.pluginId).then(res => {
                 if (res.code === 0) {
                     const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
-                    const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, auditRemark } = parseStatus(pluginVersions);
+                    const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, isPrePublishBuilding, auditRemark } = parseStatus(pluginVersions);
                     this.setState({
                         createdBy,
                         pluginId: state.pluginId,
@@ -127,6 +135,7 @@ class Setting extends Component {
                         status,
                         hasPrePublish,
                         preVersionId,
+                        isPrePublishBuilding,
                         auditRemark,
                     });
                 } else {
@@ -146,7 +155,7 @@ class Setting extends Component {
 
     handleRelease = (option) => {
         const { showLoading, hideLoading } = this.props;
-        showLoading({ message: i18n('plugin.publishingPlugin') });
+        showLoading({ message: i18n('plugin.publishing') });
         api.publishPlugin(option).then(res => {
             hideLoading();
             if (res.code === 0) {
@@ -156,6 +165,22 @@ class Setting extends Component {
             }
         }).catch(err => {
             hideLoading();
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
+    }
+
+    recallAudit = () => {
+        const { versionId } = this.state;
+        const { showLoading, hideLoading } = this.props;
+        showLoading({ message: i18n('plugin.publishing') });
+        api.recallAudit({ pluginVersionId: versionId }).then(res => {
+            hideLoading();
+            if (res.code === 0) {
+                this.fetchPluginInfo();
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
+        }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }

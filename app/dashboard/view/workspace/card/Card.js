@@ -27,6 +27,14 @@ class Card extends Component {
             opText: i18n('global.deleting'),
             okHandle: this.handleDelete,
         }
+        const quitOption = {
+            message: i18n('ws.quitNotice'),
+            isWarn: true,
+            ccText: i18n('global.cancel'),
+            okText: i18n('global.quit'),
+            opText: i18n('global.quiting'),
+            okHandle: this.handleDelete,
+        }
         const restoreOption = {
             message: i18n('ws.restoreNotice'),
             isWarn: false,
@@ -68,10 +76,19 @@ class Card extends Component {
                                     </div>
                                 )
                             }
-                            <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
-                                <i className="fa fa-trash-o"></i>
-                                <span>{i18n('global.delete')}</span>
-                            </div>
+                            {
+                                globalKey === ownerGlobalKey ? (
+                                    <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
+                                        <i className="fa fa-trash-o"></i>
+                                        <span>{i18n('global.delete')}</span>
+                                    </div>
+                                ) : (
+                                    <div className="act" onClick={(event) => this.handleMask(quitOption, event)}>
+                                        <i className="fa fa-sign-out"></i>
+                                        <span>{i18n('global.quit')}</span>
+                                    </div>
+                                )
+                            }
                         </div>
                     ) : (
                         <div className="control">

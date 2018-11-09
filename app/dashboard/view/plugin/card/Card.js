@@ -40,7 +40,10 @@ class Card extends Component {
                         </div>
                     )}
                 </div>
-                <div className="desc">{remark}</div>
+                <div className="desc">
+                    <span>{remark}</span>
+                    <span className="ellipsis"></span>
+                </div>
                 {belong === 1 && (
                     <div className="control">
                         <button className="button" onClick={() => this.handleUninstall(id)}>{i18n('global.uninstall')}</button>

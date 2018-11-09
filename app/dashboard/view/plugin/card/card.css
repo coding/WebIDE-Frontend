@@ -57,6 +57,15 @@
     height: 60px;
     color: #b1b1b1;
     overflow: hidden;
+    position: relative;
+}
+.dash-plugin .plugin-card .desc .ellipsis {
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(to right, transparent, #3b3b3b);
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 .dash-plugin .plugin-card .control {
     display: flex;

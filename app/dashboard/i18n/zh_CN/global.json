@@ -69,5 +69,7 @@
     "readAllNotification": "查看全部通知",
     "readAllMessage": "查看全部私信",
     "noNotification": "没有通知",
-    "noMessage": "没有私信"
+    "noMessage": "没有私信",
+    "quit": "退出",
+    "quiting": "退出中"
 }

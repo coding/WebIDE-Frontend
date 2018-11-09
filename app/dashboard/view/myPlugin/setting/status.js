@@ -5,6 +5,7 @@ const defaultOption = {
     status: 0,
     hasPrePublish: false,
     preVersionId: '',
+    isPrePublishBuilding: false,
 }
 
 function parseStatus(pluginVersions) {
@@ -14,15 +15,17 @@ function parseStatus(pluginVersions) {
         return defaultOption;
     }
     const pub = [];
-    const pre = [];
+    //const pre = [];
     let hasPrePublish = false;
     let preVersionId = '';
+    let isPrePublishBuilding = false;
     for (let i = 0; i < len; i++) {
         const item = pluginVersions[i];
         // 预发布的版本。isPreDeploy = true 代表 已经预发布，isPreDeploy = false 并且 isDeleted = true 代表已经取消预发布
         if (item.isPreDeploy || item.isDeleted) {
-            pre.push(item);
+            //pre.push(item);
             hasPrePublish = item.isPreDeploy;
+            isPrePublishBuilding = item.buildStatus === 1;
             preVersionId = item.id;
         } else {
             pub.unshift(item);
@@ -35,6 +38,7 @@ function parseStatus(pluginVersions) {
             ...defaultOption,
             hasPrePublish,
             preVersionId,
+            isPrePublishBuilding,
         };
     }
     const auditStatus = v.auditStatus; // 1 审核中; 2 审核成功; 3 审核失败
@@ -45,11 +49,11 @@ function parseStatus(pluginVersions) {
         status = 1;
     } else if (auditStatus === 2) {
         if (buildStatus === 1) {
-            // 审核中(其实是构建中)
-            status = 1;
+            // 构建中
+            status = 3;
         } else if (buildStatus === 2) {
             // 发布成功
-            status = 3;
+            status = 5;
         } else if (buildStatus === 3) {
             // 构建失败
             status = 4;
@@ -65,6 +69,7 @@ function parseStatus(pluginVersions) {
         status,
         hasPrePublish,
         preVersionId,
+        isPrePublishBuilding,
         auditRemark: v.auditRemark || '存在安全隐患',
     };
 }

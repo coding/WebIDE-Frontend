@@ -24,6 +24,7 @@
     "stopNotice": "Please confirm whether to stop this workspace?",
     "restoreNotice": "Please confirm whether to restore?",
     "deleteNotice": "After the deletion, the workspace automatically reserves for you for a day, before which you can resume at any time, otherwise it will be permanently deleted. Please confirm whether to delete?",
+    "quitNotice": "Please confirm whether to quit collaboration？",
     "hasWSOpendNotice": "You have an open workspace, if you want to open another, click the stop button below.",
     "existingProject": "Existing Project",
     "templateProject": "Create Project by template",

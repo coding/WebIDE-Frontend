@@ -41,7 +41,10 @@
     border-radius: 2px;
     background-color: #5c5c5c;
 }
-.dash-setmyplugin .plugin-status .click {
+.dash-setmyplugin .recall {
+    margin-top: 20px;
+}
+.dash-setmyplugin .recall .click {
     color: #39f;
     cursor: pointer;
 }

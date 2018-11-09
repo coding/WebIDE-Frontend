@@ -57,6 +57,7 @@
     padding: 0 10px;
     line-height: 34px;
     color: #ccc;
+    cursor: pointer;
     transition: background-color .3s ease;
 }
 .dash-profile .menu-item:last-child {

@@ -21,13 +21,17 @@ class Publish extends Component {
         const { status } = this.props;
         // 审核中无法发布
         if (status === 1) {
-            return <div className="cannot-publish">{i18n('plugin.cannotPublish')}</div>;
+            return <div className="cannot-publish">{i18n('plugin.cannotPublishForAuditing')}</div>;
+        }
+        // 构建中无法发布
+        if (status === 3) {
+            return <div className="cannot-publish">{i18n('plugin.cannotPublishForBuilding')}</div>;
         }
         const { v, major, minor, patch, desc, iknow } = this.state;
         // 新版本必须高于老版本
         const oldNum = v.major * 10000 + v.minor * 100 + v.patch;
         const newNum = major * 10000 + minor * 100 + patch;
-        const disabled = (newNum <= oldNum) || !desc || !iknow;
+        const disabled = (newNum <= oldNum) || !desc || desc.length > 255 || !iknow;
         return (
             <div className="panel">
                 <div className="panel-title">
