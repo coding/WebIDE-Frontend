@@ -105,7 +105,7 @@ class Setting extends Component {
 
     componentDidMount() {
         this.fetchPluginInfo();
-        this.timer = setTimeout(() => {
+        this.timer = setInterval(() => {
             this.fetchPluginInfo();
         }, 10000);
     }

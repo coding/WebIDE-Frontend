@@ -2,21 +2,15 @@ import React, { Component } from 'react';
 
 import './prePublish.css';
 
-import Know from '../../../share/know';
-
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
-class PrePublish extends Component {
-    state = {
-        iknow: false,
-    }
+const pushHref = 'https://studio.dev.tencent.com/plugins-docs/#推送到远端仓库';
 
+class PrePublish extends Component {
     render() {
-        const { iknow } = this.state;
         const { hasPrePublish, isPrePublishBuilding } = this.props;
-        const disabled = !iknow;
         return (
             <div className="panel">
                 <div className="panel-title">
@@ -27,26 +21,26 @@ class PrePublish extends Component {
                         </div>
                     )}
                 </div>
-                <Know iknow={iknow} handler={this.handleKnow} />
                 <div className="pre-publish-button">
+                    <div className="pre-push-tip">
+                        <i className="fa fa-exclamation-circle"></i>
+                        {i18n('plugin.publishTip')}
+                        <a href={pushHref} target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                    </div>
                     {
                         !hasPrePublish ? (
-                            <button className="com-button primary" disabled={disabled} onClick={this.handlePrePublish}>
+                            <button className="com-button primary" onClick={this.handlePrePublish}>
                                 {i18n('plugin.prePublish')}
                             </button>
                         ) : (
                             !isPrePublishBuilding ? (
-                                <button className="com-button primary" disabled={disabled} onClick={this.handleCancelPrePublish}>{i18n('plugin.cancelPrePublish')}</button>
+                                <button className="com-button primary" onClick={this.handleCancelPrePublish}>{i18n('plugin.cancelPrePublish')}</button>
                             ) : <button className="com-button default building">{i18n('plugin.state3')}</button>
                         )
                     }
                 </div>
             </div>
         );
-    }
-
-    handleKnow = (iknow) => {
-        this.setState({ iknow });
     }
 
     handlePrePublish = () => {

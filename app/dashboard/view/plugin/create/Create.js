@@ -5,7 +5,6 @@ import { withRouter } from 'react-router';
 import './create.css';
 
 import Inbox from '../../../share/inbox';
-import Know from '../../../share/know';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
@@ -19,13 +18,12 @@ class Create extends Component {
         repoName: '',
         typeId: 0,
         remark: '',
-        iknow: false,
     }
 
     render() {
-        const { types, pluginName, repoName, typeId, remark, iknow } = this.state;
+        const { types, pluginName, repoName, typeId, remark } = this.state;
         const { canCreate, wsLimit } = this.props;
-        const disabled = !canCreate || !pluginName || !repoName || !typeId || !remark || (remark.length > 255) || !iknow;
+        const disabled = !canCreate || !pluginName || (pluginName.length > 255) || !repoName || !typeId || !remark || (remark.length > 255);
         return (
             <div className="dash-create-plugin">
                 <div className="title">{i18n('plugin.createPlugin')}</div>
@@ -53,12 +51,6 @@ class Create extends Component {
                     <div className="board-label">{i18n('global.desc')}*</div>
                     <div className="board-content">
                         <Inbox type="textarea" holder="plugin.inputPluginDesc" value={remark} onChange={this.handleRemark} />
-                    </div>
-                </div>
-                <div className="com-board">
-                    <div className="board-label none"></div>
-                    <div className="board-content">
-                        <Know iknow={iknow} handler={this.handleKnow} />
                     </div>
                 </div>
                 <div className="com-board">
@@ -104,10 +96,6 @@ class Create extends Component {
 
     handleRemark = (event) => {
         this.setState({ remark: event.target.value });
-    }
-
-    handleKnow = (iknow) => {
-        this.setState({ iknow });
     }
 
     handleBack = () => {

@@ -22,8 +22,13 @@
 .dash-setmyplugin .version-dot {
     margin: 0 10px;
 }
-.dash-setmyplugin .publish-tip {
+.dash-setmyplugin .push-tip {
     width: 100%;
     margin-bottom: 10px;
-    color: #898989;
+    color: #ccc;
+}
+.dash-setmyplugin .push-tip i {
+    margin-right: 5px;
+    font-size: 16px;
+    color: #fff;
 }

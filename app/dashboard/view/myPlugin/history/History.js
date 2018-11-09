@@ -14,7 +14,12 @@ const Row = ({ buildVersion, description, auditStatus, buildStatus, auditRemark,
             <td>{description}</td>
             <td>
                 {i18n(getStatus(auditStatus, buildStatus))}
-                {buildLog && <i className="fa fa-bug" onClick={() => handlePop(buildLog)}></i>}
+                {buildLog && (
+                    <span className="log" onClick={() => handlePop(buildLog)}>
+                        <i className="fa fa-bug"></i>
+                        <span>Log</span>
+                    </span>
+                )}
             </td>
             <td>{auditRemark}</td>
             <td>{getFormatTime(createdDate)}</td>

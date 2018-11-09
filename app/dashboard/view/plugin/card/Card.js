@@ -13,22 +13,25 @@ const httpReg = /^http/;
 
 class Card extends Component {
     render() {
-        const { id, pluginName, remark, userAvatar, createdBy, repoName, repoUrl, pluginVersions, belong } = this.props;
+        const { id, pluginName, remark, userAvatar, createdBy, repoName, pluginVersions, belong } = this.props;
         const { version, hasPrePublish, status } = parseStatus(pluginVersions);
         const to = {
             pathname: '/dashboard/plugin/developedbyme/setting',
             state: { pluginId: id },
         };
-        const marketHref = window === window.top ? `${window.location.origin}/plugins/plugin/${id}` : `${config.studioOrigin}/plugins/plugin/${id}`;
-        const titleHref = belong === 1 ? marketHref : repoUrl;
+        const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${id}` : `${config.studioOrigin}/plugins/detail/${id}`;
         const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         const src = httpReg.test(userAvatar) ? userAvatar : `${config.qcloudOrigin}${userAvatar}`;
         return (
             < div className = "plugin-card" >
                 <div className="top">
-                    <a className="name" href={titleHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
+                    {
+                        status === 5 ? (
+                            <a className="name" href={marketHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
+                        ) : <span className="name">{pluginName}</span>
+                    }
                     {belong === 1 && (
-                        <div className="author">
+                        <div className="right">
                             <img src={src} />
                             <span>{createdBy}</span>
                         </div>

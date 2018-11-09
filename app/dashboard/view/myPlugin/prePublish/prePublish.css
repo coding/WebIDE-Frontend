@@ -1,7 +1,19 @@
 .dash-setmyplugin .pre-publish-button {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     padding-top: 20px;
+}
+.dash-setmyplugin .pre-push-tip {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #ccc;
+}
+.dash-setmyplugin .pre-push-tip i {
+    margin-right: 5px;
+    font-size: 16px;
+    color: #fff;
 }
 .dash-setmyplugin .pre-publish-button button {
     padding: 10px 30px;

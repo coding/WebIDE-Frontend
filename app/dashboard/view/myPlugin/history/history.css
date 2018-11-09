@@ -24,7 +24,7 @@
     width: 60px;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(3) {
-    width: 120px;
+    width: 150px;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(5) {
     width: 160px;
@@ -32,11 +32,15 @@
 .dash-setmyplugin .versions-table thead tr {
     background-color: #434343;
 }
-.dash-setmyplugin .versions-table .fa {
-    margin-left: 10px;
-    font-size: 16px;
+.dash-setmyplugin .versions-table .log {
+    padding: 0 2px;
+    margin-left: 8px;
+    border: 1px solid #555;
     color: #f44;
     cursor: pointer;
+}
+.dash-setmyplugin .versions-table .fa {
+    margin-right: 2px;
 }
 .dash-setmyplugin .history .pop {
     background-color: rgba(0, 0, 0, .8);

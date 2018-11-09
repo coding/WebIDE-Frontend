@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import './publish.css';
 
 import Inbox from '../../../share/inbox';
-import Know from '../../../share/know';
 
 import i18n from '../../../utils/i18n';
+
+const pushHref = 'https://studio.dev.tencent.com/plugins-docs/#推送到远端仓库';
 
 class Publish extends Component {
     state = {
@@ -14,7 +15,6 @@ class Publish extends Component {
         minor: 0,
         patch: 0,
         desc: '',
-        iknow: false,
     }
 
     render() {
@@ -27,16 +27,14 @@ class Publish extends Component {
         if (status === 3) {
             return <div className="cannot-publish">{i18n('plugin.cannotPublishForBuilding')}</div>;
         }
-        const { v, major, minor, patch, desc, iknow } = this.state;
+        const { v, major, minor, patch, desc } = this.state;
         // 新版本必须高于老版本
         const oldNum = v.major * 10000 + v.minor * 100 + v.patch;
         const newNum = major * 10000 + minor * 100 + patch;
-        const disabled = (newNum <= oldNum) || !desc || desc.length > 255 || !iknow;
+        const disabled = (newNum <= oldNum) || !desc || desc.length > 255;
         return (
             <div className="panel">
-                <div className="panel-title">
-                    <div className="publish-tip">{i18n('plugin.publishTip')}</div>
-                </div>
+                <div className="panel-title"></div>
                 <div className="com-board">
                     <div className="board-label">
                         {i18n('global.release')}
@@ -63,12 +61,11 @@ class Publish extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        <Know iknow={iknow} handler={this.handleKnow} />
-                    </div>
-                </div>
-                <div className="com-board">
-                    <div className="board-label none"></div>
-                    <div className="board-content">
+                        <div className="push-tip">
+                            <i className="fa fa-exclamation-circle"></i>
+                            {i18n('plugin.publishTip')}
+                            <a href={pushHref} target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                        </div>
                         <button className="com-button primary" disabled={disabled} onClick={this.handlePublish}>{i18n('global.publish')}</button>
                     </div>
                 </div>
@@ -108,10 +105,6 @@ class Publish extends Component {
 
     handleDesc = (event) => {
         this.setState({ desc: event.target.value });
-    }
-
-    handleKnow = (iknow) => {
-        this.setState({ iknow });
     }
 
     handlePublish = () => {

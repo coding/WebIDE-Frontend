@@ -23,21 +23,12 @@ class Bell extends Component {
         const mLen = mList.length > 0;
         const nHave = nList.some(v => Number(v.status) === 0);
         const mHave = mList.some(v => Number(v.status) === 0);
-        const haveBell = nHave || mHave;
         return (
             <div className="dash-bell">
-                {
-                    haveBell ? (
-                        <div className="bell" onClick={togglePanel}>
-                            <i className="fa fa-bell"></i>
-                            <div className="dot"></div>
-                        </div>
-                    ) : (
-                        <div className="bell">
-                            <i className="fa fa-bell"></i>
-                        </div>
-                    )
-                }
+                <div className="bell" onClick={togglePanel}>
+                    <i className="fa fa-bell"></i>
+                    <div className="dot"></div>
+                </div>
                 <div className={`panel${on ? ' on' : ''}`} onClick={(event) => event.stopPropagation()}>
                     <div className="tab">
                         <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.toggleTab(1)}>
