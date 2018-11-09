@@ -5,14 +5,14 @@ $bar-height = 30px;
   display: flex;
   align-items: stretch;
   min-height: $bar-height;
-  max-height: 30px;
-  overflow: hidden;
   noSelect();
 
   .status-bar-plugin-area {
     display: flex;
     justify-content center;
-    align-items: center;    
+    align-items: center;
+    max-height: 30px;
+    overflow: hidden;
   }
 
   .status-widget-container {
