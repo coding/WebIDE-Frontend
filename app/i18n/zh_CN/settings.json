@@ -44,7 +44,10 @@
     "toggleFormat": "代码格式化",
     "toggleComment": "切换注释",
     "into_zenmode": "进入禅模式",
-    "exit_zenmode": "退出禅模式"
+    "exit_zenmode": "退出禅模式",
+    "sysKeymap": "系统快捷键",
+    "pluginKeymap": "插件快捷键",
+    "pluginSource": "来源插件"
    },
    "appearance": {
       "main": "样式",

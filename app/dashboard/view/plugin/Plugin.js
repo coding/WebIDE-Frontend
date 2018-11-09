@@ -8,13 +8,16 @@ import ThirdParty from './thirdParty';
 import Builtin from './builtin';
 import DevelopedByMe from './developedByMe';
 import Setting from '../myPlugin/setting';
+
 import i18n from '../../utils/i18n';
+import config from '../../utils/config';
 
 const routes = ['thirdparty', 'builtin', 'developedbyme'];
 
 class Plugin extends Component {
     render() {
         const path = this.props.location.pathname;
+        const href = window === window.top ? `${window.location.origin}/plugins` : `${config.studioOrigin}/plugins`;
         return (
             <div className="dash-plugin">
                 {
@@ -25,7 +28,7 @@ class Plugin extends Component {
                                 <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/builtin">{i18n('global.builtin')}</NavLink>
                                 <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/developedbyme">{i18n('global.developedbyme')}</NavLink>
                             </div>
-                            <a className="view-market" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">
+                            <a className="view-market" href={href} target="_blank" rel="noopener noreferrer">
                                 <i className="fa fa-external-link"></i>
                                 {i18n('plugin.viewPluginMarket')}
                             </a>

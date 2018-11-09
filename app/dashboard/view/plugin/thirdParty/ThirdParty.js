@@ -32,7 +32,7 @@ class ThirdParty extends Component {
     fetchThirdParty = () => {
         api.getEnablePlugin().then(res => {
             if (res.code === 0) {
-                this.setState({ plugins: res.data || [] });
+                this.setState({ plugins: res.data });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || res.message });
             }

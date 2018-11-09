@@ -56,6 +56,9 @@
     width: 100%;
     margin-top: 10px;
 }
+.dash-workspace .new .desc.a {
+    color: #39f;
+}
 
 @media screen and (min-width: 1800px) {
     .dash-workspace .new .avatar {

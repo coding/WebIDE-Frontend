@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 
 import './workspace.css';
 
-import i18n from '../../utils/i18n';
-import api from '../../api';
 import Intro from './intro';
 import Card from './card';
 import NewWs from './newWS';
 import NewPlugin from './newPlugin';
+
+import api from '../../api';
+import i18n from '../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Workspace extends Component {
@@ -152,10 +153,7 @@ class Workspace extends Component {
                 }
             }
             // 保存 workspace 数量
-            storeWorkspace({
-                wsTotal: workspaces.length + workspacesCollaborative.length,
-                wsCount: workspaces.length,
-            });
+            storeWorkspace({ wsCount: workspaces.length });
             this.setState({ workspaces, workspacesCollaborative });
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });

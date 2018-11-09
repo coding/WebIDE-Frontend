@@ -13,9 +13,10 @@ import SearchPanel from '../Search/search'
 import config from '../../config'
 import PluginDev from 'components/PluginDev'
 import FileTreeToolBar from 'components/FileTreeToolBar'
+import { observer } from 'mobx-react'
 
 
-const PanelContent = ({ panel }) => {
+const PanelContent = observer(({ panel }) => {
   switch (panel.contentType) {
     case 'MENUBAR':
       return <MenuBar />
@@ -39,10 +40,10 @@ const PanelContent = ({ panel }) => {
 
     case 'PANEL_RIGHT':
       return (
-        <SidePanelContainer side='right'>
-          <SidePanelView key='project' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
+        <SidePanelContainer side='right' shouldRender={config.__PLUGIN_DEV__}>
+          {config.__PLUGIN_DEV__ && <SidePanelView key='plugins' label={{ text: i18n`panel.right.plugin`, icon: 'fa fa-cubes', weight: 2 }}>
             <PluginDev />
-          </SidePanelView>
+          </SidePanelView>}
         </SidePanelContainer>
       )
 
@@ -82,6 +83,6 @@ const PanelContent = ({ panel }) => {
   }
 
   return <div>Panel Placeholder</div>
-}
+})
 
 export default PanelContent

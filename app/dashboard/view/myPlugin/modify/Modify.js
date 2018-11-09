@@ -14,7 +14,7 @@ class Modify extends Component {
 
     render() {
         const { pluginName, remark } = this.state;
-        const disabled = !pluginName || !remark;
+        const disabled = !pluginName || !remark || remark.length > 255;
         return (
             <div className="panel">
                 <div className="panel-title"></div>
@@ -54,7 +54,7 @@ class Modify extends Component {
         api.modifyPluginInfo({
             pluginId,
             pluginName,
-            remark,
+            remark: encodeURI(remark),
         }).then(res => {
             if (res && res.code === 0) {
                 refresh();

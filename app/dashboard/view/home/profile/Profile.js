@@ -8,12 +8,13 @@ import './profile.css';
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
 
-const httpsReg = /http(?:s)?/;
+const httpReg = /^http/;
+const REDIRECT_URL = 'https://studio.dev.tencent.com';
 
 class Profile extends Component {
     render() {
         const { name, avatar } = this.props.user;
-        const src = httpsReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
+        const src = httpReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
         return (
             <div className="dash-profile">
                 <div className="profile">
@@ -26,7 +27,7 @@ class Profile extends Component {
                     <a className="menu-item" href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">{i18n('global.devPlatform')}</a>
                     <a className="menu-item" href="https://dev.tencent.com/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">{i18n('global.docs')}</a>
                     <a className="menu-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer">{i18n('global.feedback')}</a>
-                    {/* <a className="menu-item" href="javascript:;" onClick={this.handleLogout}>{i18n('global.logout')}</a> */}
+                    <div className="menu-item" onClick={this.handleLogout}>{i18n('global.logout')}</div>
                 </div>
             </div>
         );
@@ -47,8 +48,11 @@ class Profile extends Component {
         api.logout().then(res => {
             if (res.code === 0) {
                 this.props.logOut();
-                window.top.postMessage({ path: '/intro' }, '*');
-                window.location.href = '/intro';
+                // window.top.postMessage({ path: '/intro' }, '*');
+                // window.location.href = '/intro';
+                window.top.postMessage({ state: {
+                    type: 'redirect'
+                }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
             }
         });
     }
@@ -62,7 +66,7 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
     return {
-        logIn: (userState) => dispatch({ type: 'USER_LOG_IN', payload: userState }),
+        logIn: (payload) => dispatch({ type: 'USER_LOG_IN', payload }),
         logOut: () => dispatch({ type: 'USER_LOG_OUT' }),
     }
 }

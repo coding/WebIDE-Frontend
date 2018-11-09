@@ -57,5 +57,9 @@ export const fetchUserPackagelist = () => {
 }
 
 export const fetchUserPackageScript = (url) => {
-  return axios.get(`https://cs-addon-1255989204.cos.ap-shanghai.myqcloud.com/${config.globalKey}/plugin/${url}`).then(res => res.data)
+  return axios.get(url).then(res => res.data)
+}
+
+export const fethUserPreDeployPlugins = () => {
+  return request.get('/user-plugin/pre/deploy/list')
 }

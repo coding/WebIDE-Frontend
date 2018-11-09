@@ -78,8 +78,24 @@ const setLanguageSetting = (data) => {
   }
 }
 
+const fetchPackageJsonFile = () => {
+  api.readFile('/package.json')
+    .then(res => {
+      const content = JSON.parse(res.content)
+      if (content && content.codingIdePackage && content.codingIdePackage.type === 'plugin') {
+        config.__PLUGIN_DEV__ = true
+      }
+    })
+}
+
 export const fetchProjectRoot = registerAction('fs:init', () =>
   fetchPath('/').then((data) => {
+    /**
+     * 插件工作空间判断
+     */
+    if (data.find(file => file.path === '/package.json')) {
+      fetchPackageJsonFile()
+    }
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
       if (res.code === 0 && res.data) {
         setLanguageSetting(res.data.default)

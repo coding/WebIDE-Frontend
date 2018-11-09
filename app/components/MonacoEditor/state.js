@@ -81,7 +81,6 @@ class EditorInfo {
       // install Monaco language client services
       const services = createMonacoServices(monacoEditor, { rootUri: `file://${config._ROOT_URI_}` })
       Services.install(services)
-      // MonacoServices.install(monacoEditor)
       state.installed = true
     }
 
@@ -126,6 +125,15 @@ class EditorInfo {
       })
       monacoEditor.focus()
     }
+
+    monacoEditor.addAction({
+      id: 'custom-comment',
+      label: 'comment',
+      keybindings: [
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_SLASH
+      ],
+      run: () => { /* no */ }
+    })
 
     monacoEditor.onDidChangeCursorPosition((event) => {
       this.selections = monacoEditor.getSelections()
@@ -181,7 +189,7 @@ class EditorInfo {
   get mode () {
     if (!this.filePath) return 'plaintext'
     const mode = is.string(this.languageMode)
-      ? findModeByName(this.languageMode).aliases[0]
+      ? findModeByName(this.languageMode) && findModeByName(this.languageMode).aliases[0]
       : this.languageMode
     return mode
   }

@@ -45,7 +45,10 @@
     "toggleFormat": "Code Format",
     "toggleComment": "Toggle Comment",
     "into_zenmode": "Into Zen Mode",
-    "exit_zenmode": "Exit Zen Mode"
+    "exit_zenmode": "Exit Zen Mode",
+    "sysKeymap": "System Keybindings",
+    "pluginKeymap": "Plugins Keybindings",
+    "pluginSource": "Keybindings Source"
    },
    "appearance": {
       "main": "Appearance Setting",

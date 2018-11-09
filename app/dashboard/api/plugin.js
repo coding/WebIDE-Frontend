@@ -9,7 +9,7 @@ export const getBuiltinPlugin = () => {
 }
 
 export const getMyPlugin = () => {
-    return axios.get('/user-plugin/dev/list');
+    return axios.get('/user-plugin/dev/list?page=0&size=100');
 }
 
 export const getPluginTypes = () => {
@@ -46,4 +46,8 @@ export const publishPlugin = (data) => {
 
 export const cancelPrePublish = (data) => {
     return axios.post('/user-plugin/pre/deploy/cancel', data);
+}
+
+export const recallAudit = (data) => {
+    return axios.put('/user-plugin/call/audit', data);
 }

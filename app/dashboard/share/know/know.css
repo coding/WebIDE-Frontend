@@ -1,0 +1,14 @@
+.dash-know {
+    padding: 10px;
+    border-radius: 2px;
+    color: #ccc;
+    background-color: #474747;
+    user-select: none;
+}
+.dash-know .action {
+    padding-top: 10px;
+    cursor: pointer;
+}
+.dash-know .action i {
+    margin-right: 10px;
+}

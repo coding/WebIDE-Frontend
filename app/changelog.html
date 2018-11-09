@@ -950,26 +950,31 @@
         $('.page-header .logo').css('filter', 'invert(100%)');
       }
     })
+    
+    var REDIRECT_URL = 'https://studio.dev.tencent.com';
 
     function logout() {
       $.ajax({
-        url: "https://studio.coding.net/backend/logout",
+        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/logout",
         type: "GET",
         contentType: "application/vnd.coding.v2+json",
         xhrFields: {
           withCredentials: true
         },
         crossDomain: true
+      }).done(function () {
       }).fail(function () {
-        window.location = '/signin'
       }).always(function () {
-        window.location = '/signin'
+        window.location = '/intro'
+        window.top.postMessage({ state: {
+          type: 'redirect'
+        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
       });
     }
 
     function getUserInfo() {
       $.ajax({
-        url: "https://studio.coding.net/backend/user/current",
+        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/user/current",
         type: "GET",
         contentType: "application/vnd.coding.v2+json",
         xhrFields: {
@@ -981,7 +986,7 @@
           $('.user').html($('.login'));
         } else {
           if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-            res.data.avatar = "https://coding.net" + res.data.avatar;
+            res.data.avatar = "https://qcloud.coding.net" + res.data.avatar;
           }
           $('#user-info img').attr('src', res.data.avatar);
 

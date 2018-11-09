@@ -1,6 +1,6 @@
 .com-board {
     display: flex;
-    padding-bottom: 40px;
+    padding-bottom: 30px;
 }
 .com-board.short-padding {
     padding-bottom: 20px;

@@ -13,7 +13,6 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Create extends Component {
     state = {
-        canCreateWS: true,
         projects: [],
         templates: [],
         envs: [],
@@ -22,7 +21,7 @@ class Create extends Component {
     };
 
     render() {
-        const { canCreateWS, projects, templates, envs, importFrom, isToolTipOn } = this.state;
+        const { projects, templates, envs, importFrom, isToolTipOn } = this.state;
         return (
             <div className="dash-create">
                 <div className="com-board">
