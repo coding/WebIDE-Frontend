@@ -46,7 +46,7 @@ async function initialize () {
     try {
       await loadPackagesByType('Required', state, true)
     } catch (err) {
-      return true
+      throw new Error(err.message)
     }
     return true
   })
@@ -55,7 +55,7 @@ async function initialize () {
     try {
       await loadPackagesByUser()
     } catch (err) {
-      return true
+      throw new Error(err.message)
     }
     return true
   })

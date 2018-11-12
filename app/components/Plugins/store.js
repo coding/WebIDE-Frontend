@@ -16,7 +16,13 @@ const store = {
     online: false,
   }),
   pluginSettingsItem: observable.map(),
-  preDeployPlugins: observable([])
+  preDeployPlugins: observable([]),
+  pluginProjectInfomation: observable({
+    pluginName: '',
+    description: '',
+    version: '',
+    pluginId: null,
+  })
 }
 
 // for test
@@ -25,5 +31,6 @@ export const pluginConfigEventStore = observable({})
 
 export const pluginDevStore = store.pluginDevState
 export const pluginSettingsItem = store.pluginSettingsItem
+export const pluginProjectInfomation = store.pluginProjectInfomation
 
 export default store

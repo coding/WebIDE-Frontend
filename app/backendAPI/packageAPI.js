@@ -63,3 +63,11 @@ export const fetchUserPackageScript = (url) => {
 export const fethUserPreDeployPlugins = () => {
   return request.get('/user-plugin/pre/deploy/list')
 }
+
+export const fetchPackageInfomation = () => {
+  return request.get(`/user-plugin/info/${config.spaceKey}`)
+}
+
+export const getMyPlugin = () => {
+  return request.get('/user-plugin/dev/list?page=0&size=100')
+}

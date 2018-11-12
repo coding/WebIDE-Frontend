@@ -43,7 +43,7 @@ async function initialize ({ persist }) {
     try {
       await loadPackagesByType('Required', state, true)
     } catch (err) {
-      return true
+      throw new Error(err.message)
     }
     return true
   })
