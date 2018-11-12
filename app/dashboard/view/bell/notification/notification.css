@@ -1,10 +1,8 @@
 .dash-bell .view-notification {
-    padding: 10px 10px 10px 16px;
-    margin-bottom: 2px;
+    display: flex;
+    padding: 10px;
     word-break: break-all;
-    background-color: #434343;
     transition: background-color .2s;
-    position: relative;
 }
 .dash-bell .view-notification:hover {
     background-color: #555;
@@ -12,8 +10,17 @@
 .dash-bell .view-notification.unread {
     cursor: pointer;
 }
+.dash-bell .view-notification .point {
+    width: 10px;
+}
 .dash-bell .view-notification .dot {
-    position: absolute;
-    top: 17px;
-    left: 8px;
+    margin-top: 8px;
+}
+.dash-bell .view-notification .content {
+    width: 250px;
+    max-height: 50px;
+    overflow: hidden;
+}
+.dash-bell .view-notification .content.spread {
+    max-height: none;
 }

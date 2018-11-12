@@ -43,5 +43,7 @@
     "gameTip": "The Cloud Studio plugin development contest is in progress. If you are interested in the editor plugin, you can click the button below to participate in the contest. If your plugin is popular with developers, you will also receive a grand prize. ",
     "beforeRecallAudit": "Fix the plugin and push it to apply",
     "recallAudit": "Re-Audit",
-    "prePublishBuilding": "Your Pre-Publish is been building, please wait..."
+    "prePublishBuilding": "Your Pre-Publish is been building, please wait...",
+    "searchPlugin": "Search Plugins",
+    "userCount": " person rating"
 }

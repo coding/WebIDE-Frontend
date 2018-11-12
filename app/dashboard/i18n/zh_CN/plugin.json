@@ -43,5 +43,7 @@
     "gameTip": "Cloud Studio 插件开发大赛正在进行中，如果你对编辑器插件感兴趣可以点击下方按钮参加比赛。如果你的插件受到开发者欢迎，还将获得大奖。",
     "beforeRecallAudit": "修复插件并推送后可以申请",
     "recallAudit": "重新审核",
-    "prePublishBuilding": "您的预发布正在构建中，请稍候..."
+    "prePublishBuilding": "您的预发布正在构建中，请稍候...",
+    "searchPlugin": "搜索插件",
+    "userCount": "人评分"
 }

@@ -57,11 +57,16 @@ class Setting extends Component {
             tab,
         } = this.state;
         const repoHref = `${config.devOrigin}/u/${createdBy}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${pluginId}` : `${config.studioOrigin}/plugins/detail/${pluginId}`;
         const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         return (
             <div className="dash-setmyplugin">
                 <div className="top">
-                    <div className="plugin-name">{pluginName}</div>
+                    {
+                        status === 5 ? (
+                            <a className="plugin-name" href={marketHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
+                        ) : <div className="plugin-name">{pluginName}</div>
+                    }
                     <div>
                         <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
                         <a className="goto" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
@@ -79,7 +84,7 @@ class Setting extends Component {
                     </div>
                     <div className="item">
                         <Star score={avgScore} />
-                        <span className="rate-user-count">({kilo(countScoreUser)})</span>
+                        <span className="rate-user-count">({kilo(countScoreUser)} {i18n('plugin.userCount')})</span>
                     </div>
                 </div>
                 <div className="plugin-status">{i18n(`plugin.status${status}`, { version, reason: auditRemark })}</div>

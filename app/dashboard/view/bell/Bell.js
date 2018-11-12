@@ -6,7 +6,6 @@ import Notification from './notification';
 import Message from './message';
 
 import api from '../../api';
-import NoticeSocket from '../../api/socket';
 import i18n from '../../utils/i18n';
 
 class Bell extends Component {
@@ -18,18 +17,17 @@ class Bell extends Component {
 
     render() {
         const { tab, nList, mList } = this.state;
-        const { on, togglePanel } = this.props;
         const nLen = nList.length > 0;
         const mLen = mList.length > 0;
         const nHave = nList.some(v => Number(v.status) === 0);
         const mHave = mList.some(v => Number(v.status) === 0);
         return (
             <div className="dash-bell">
-                <div className="bell" onClick={togglePanel}>
+                <div className="bell">
                     <i className="fa fa-bell"></i>
                     <div className="dot"></div>
                 </div>
-                <div className={`panel${on ? ' on' : ''}`} onClick={(event) => event.stopPropagation()}>
+                <div className="panel" onClick={(event) => event.stopPropagation()}>
                     <div className="tab">
                         <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.toggleTab(1)}>
                             {i18n('global.notification')}
@@ -96,23 +94,6 @@ class Bell extends Component {
         api.getMessage().then(res => {
             if (res.code === 0) {
                 this.setState({ mList: res.data });
-            }
-        });
-    }
-
-    connectSocket() {
-        new Promise((resolve, reject) => {
-            try {
-                const noticeSocket = new NoticeSocket({ globalKey: 'veedrin' });
-                noticeSocket.successCallback = (stompClient) => {
-                    connectedResolve(stompClient);
-                    resolve(true);
-                };
-                noticeSocket.errorCallback = () => {};
-                noticeSocket.connect();
-            } catch (err) {
-                reject(err);
-                console.log(err);
             }
         });
     }

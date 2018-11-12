@@ -1,8 +1,13 @@
 .dash-bell {
-    padding: 0 15px;
-    margin-bottom: 15px;
+    padding: 10px 15px 0;
+    margin-bottom: 10px;
     font-size: 12px;
     position: relative;
+}
+.dash-bell:hover .panel {
+    opacity: 1;
+    visibility: visible;
+    bottom: 40px;
 }
 .dash-bell .dot {
     width: 4px;
@@ -19,9 +24,12 @@
     border-radius: 50%;
     font-size: 16px;
     color: #3b3b3b;
-    background-color: #fff;
+    background-color: #aaa;
     cursor: pointer;
     position: relative;
+}
+.dash-bell .bell:hover {
+    background-color: #fff;
 }
 .dash-bell .bell .dot {
     width: 6px;
@@ -31,17 +39,19 @@
     right: 1px;
 }
 .dash-bell .panel {
-    display: none;
-    width: 350px;
+    width: 285px;
+    border-left: 2px solid #3a3a3a;
+    border-right: 2px solid #3a3a3a;
+    border-radius: 3px;
+    opacity: 0;
+    visibility: hidden;
     background-color: #3a3a3a;
     box-shadow: 3px 0 30px rgba(0, 0, 0, .2);
+    transition: opacity .4s ease, visibility .4s ease, bottom .4s ease;
     position: absolute;
-    bottom: 40px;
+    bottom: 30px;
     left: 15px;
     z-index: 10;
-}
-.dash-bell .panel.on {
-    display: block;
 }
 .dash-bell .panel .tab {
     display: flex;
@@ -66,8 +76,7 @@
     right: -3px;
 }
 .dash-bell .panel .view {
-    max-height: 400px;
-    padding-top: 2px;
+    max-height: 330px;
     background-color: #333;
     overflow-y: auto;
 }
@@ -79,6 +88,10 @@
 .dash-bell .panel .view ul {
     padding-left: 30px;
     list-style: disc;
+}
+.dash-bell .panel .view p {
+    margin: 6px 0;
+    font-size: 12px;
 }
 .dash-bell .panel .view blockquote {
     margin: 0;

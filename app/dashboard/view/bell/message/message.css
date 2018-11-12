@@ -1,29 +1,39 @@
 .dash-bell .view-message {
-    padding: 10px 10px 10px 16px;
-    margin-bottom: 2px;
+    display: flex;
+    padding: 10px;
     word-break: break-all;
-    background-color: #434343;
+    transition: background-color .2s ease;
 }
 .dash-bell .view-message.unread {
     cursor: pointer;
 }
-.dash-bell .view-message .from {
-    display: flex;
-    align-items: center;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #535353;
+.dash-bell .view-message:hover {
+    background-color: #555;
 }
-.dash-bell .view-message .from .dot {
-    margin-right: 6px;
+.dash-bell .view-message .point {
+    width: 10px;
 }
-.dash-bell .view-message .from img {
-    width: 18px;
-    height: 18px;
+.dash-bell .view-message .dot {
+    margin: 12px 6px 0 0;
+}
+.dash-bell .view-message .avatar {
+    width: 28px;
+    height: 28px;
     margin-right: 6px;
     border-radius: 50%;
     background-color: #fff;
 }
-.dash-bell .view-message .from .name {
-    font-size: 16px;
+.dash-bell .view-message .main {
+    width: 217px;
+}
+.dash-bell .view-message .main .name {
+    color: #999;
+}
+.dash-bell .view-message .main .content {
+    max-height: 60px;
+    color: #bbb;
+    overflow: hidden;
+}
+.dash-bell .view-message .main .content.spread {
+    max-height: none;
 }
