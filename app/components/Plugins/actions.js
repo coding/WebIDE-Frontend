@@ -200,6 +200,7 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
     .then(async ([userpackages, preDeployPackages]) => {
       const userPlugins = userpackages.data
       const preDeployPlugins = preDeployPackages.data
+      // 同一插件（Id 相同）不同版本（正式版、预发布）同时加载，只加载预发布版本
       const enableUserPackages = userPlugins.reduce((pre, cur) => {
         if (!preDeployPlugins.find(prePackage => prePackage.id === cur.id)) {
           pre.push(cur)
