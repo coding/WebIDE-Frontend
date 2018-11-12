@@ -850,7 +850,7 @@
     <div class="intro-foot">
       <div class="menu">
         <div class="row">
-          <span class="menu-item">服务支持 QQ 群:875684377</span>
+          <span class="menu-item">服务支持 QQ 群: 875684377</span>
           <a class="menu-item" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档帮助</a>
         </div>
         <div class="row">
@@ -866,11 +866,14 @@
         <span class="divide">|</span>
         <a href="https://dev.tencent.com/security" target="_blank" rel="noopener noreferrer">安全策略</a>
       </div>
-      <div class="copyright">Copyright &copy; 2013-{year} Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
+      <div class="copyright">Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
     </div>
   </div>
 
   <script>
+    // 计算年份
+    document.querySelector('#year').innerHTML = new Date().getFullYear();
+
     // 给顶层 window 发消息
     const $postMessage = document.querySelectorAll('.post-message');
     for (let i = 0; i < $postMessage.length; i++) {
@@ -979,27 +982,24 @@
 
     var container;
     var camera, scene, renderer;
-
     var geometry, group;
-
-    var mouseX = 0,
-      mouseY = 0;
-
+    var mouseX = 0, mouseY = 0;
     var windowHalfX = document.documentElement.clientWidth / 2;
     var windowHalfY = 600 / 2;
-
     document.addEventListener('mousemove', onDocumentMouseMove, false);
 
     init();
     animate();
 
+    // 3d
     function init() {
-
       ////////////////////////////////////
       // Setup Container
       ////////////////////////////////////
       container = document.createElement('div');
-      document.querySelector('#canvas').innerHTML = container;
+      const $canvas = document.querySelector('#canvas');
+      $canvas.innerHTML = '';
+      $canvas.appendChild(container);
 
 
       scene = new THREE.Scene();
@@ -1008,7 +1008,7 @@
 
       var material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        vertexColors: THREE.FaceColors
+        vertexColors: THREE.FaceColors,
       });
 
       // Set Cube Size
