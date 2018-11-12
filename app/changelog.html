@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1">
@@ -8,206 +7,42 @@
   <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
   <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
   <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
-  <script src="//studio-res.coding.net/StudioWebResource/Scripts/jquery.min.js"></script>
-  <script src="<%= webpackConfig.output.publicPath + 'marked/marked.min.js' %>"></script>
   <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
-  <style>
-    .react-tabs__tab-list {
-      border-bottom: 1px solid #aaa;
-      margin: 0 0 10px;
-      padding: 0;
-    }
-
-    .react-tabs__tab {
-      display: inline-block;
-      border: 1px solid transparent;
-      border-bottom: none;
-      bottom: -1px;
-      position: relative;
-      list-style: none;
-      padding: 6px 12px;
-      cursor: pointer;
-    }
-
-    .react-tabs__tab--selected {
-      background: #fff;
-      border-color: #aaa;
-      color: black;
-      border-radius: 5px 5px 0 0;
-    }
-
-    .react-tabs__tab--disabled {
-      color: GrayText;
-      cursor: default;
-    }
-
-    .react-tabs__tab:focus {
-      /* box-shadow: 0 0 5px hsl(208, 99%, 50%); */
-      border-color: hsl(208, 99%, 50%);
-      outline: none;
-    }
-
-    /* .react-tabs__tab:focus:after {
-        content: "";
-        position: absolute;
-        height: 5px;
-        left: -4px;
-        right: -4px;
-        bottom: -5px;
-        background: hsl(208, 99%, 50%);
-      } */
-
-    .react-tabs__tab-panel {
-      display: none;
-    }
-
-    .react-tabs__tab-panel--selected {
-      display: block;
-    }
-  </style>
+  <script src="<%= webpackConfig.output.publicPath + 'marked/marked.min.js' %>"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-65952334-9');
+  </script>
 
   <style>
-    .ide-container {
-      font-size: 10px;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-
-    .ide-container * {
+    *, *:before, *:after {
       box-sizing: border-box;
     }
-
-    .ide-container *:before,
-    .ide-container *:after {
-      box-sizing: border-box;
-    }
-
-    .ide-container {
-      font-size: $font-size;
-      font-family: $font-family;
-      line-height: 1;
-      color: $text-color;
-      background-color: $base-background-color;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-
-    .ide-container input,
-    .ide-container button,
-    .ide-container select,
-    .ide-container textarea {
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-    }
-
-    .ide-container a {
-      color: $link-color;
-      text-decoration: none;
-    }
-
-    .ide-container a:hover,
-    .ide-container a:focus {
-      color: $link-hover-color;
-      text-decoration: $link-hover-decoration;
-    }
-
-    .ide-container figure {
-      margin: 0;
-    }
-
-    .ide-container img {
-      vertical-align: middle;
-    }
-
-    .ide-container .img-rounded {
-      border-radius: $border-radius-large;
-    }
-
-    .ide-container .img-thumbnail {
-      padding: $thumbnail-padding;
-      line-height: $line-height-base;
-      background-color: $thumbnail-bg;
-      border: 1px solid $thumbnail-border;
-      border-radius: $thumbnail-border-radius;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .ide-container .img-circle {
-      border-radius: 50%;
-    }
-
-    .ide-container hr {
-      margin-top: $line-height-computed;
-      margin-bottom: $line-height-computed;
-      border: 0;
-      border-top: 1px solid $hr-border;
-    }
-
-    .ide-container .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: -1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-
-    .ide-container .sr-only-focusable:active,
-    .ide-container .sr-only-focusable:focus {
-      position: static;
-      width: auto;
-      height: auto;
-      margin: 0;
-      overflow: visible;
-      clip: auto;
-    }
-
-    .ide-container [role="button"] {
-      cursor: pointer;
-    }
-
     html,
     body,
     #root {
       font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
       -webkit-font-smoothing: antialiased;
+      width: 100%;
+      min-width: 300px;
+      height: 100vh;
+      margin: 0;
     }
-
-    *[tabindex]:focus {
-      outline: 0 none;
+    a {
+      color: #06f;
+      text-decoration: none;
+      transition: color .2s ease;
     }
-
-    .ide-container ::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
+    a:hover {
+      color: #3788e4;
     }
-
-    .ide-container ::-webkit-scrollbar-button {
-      width: 0;
-      height: 0;
-      display: none;
+    a:active {
+      color: #2277d7;
     }
-
-    .ide-container ::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
-
-    .CodeMirror-vscrollbar,
-    .CodeMirror-hscrollbar {
-      pointer-events: auto !important;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    *:before,
-    *:after {
-      box-sizing: border-box;
-    }
-
     input,
     button,
     select,
@@ -216,7 +51,6 @@
       font-size: inherit;
       line-height: inherit;
     }
-
     ul,
     ol {
       list-style-type: none;
@@ -224,401 +58,326 @@
       margin: 0;
       padding: 0;
     }
-
     hr {
       border: 0;
       border-top: 1px solid #808080;
     }
+  </style>
 
-    .user {
-      float: right;
-    }
-
-    .user .user-info {
-      position: relative;
-      display: flex;
-      font-size: 14px;
-      color: #fff;
-      letter-spacing: 0;
-      text-align: right;
-    }
-
-    .user .user-info .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: 1px solid #fff;
-    }
-
-    .user .user-info .dropdown button {
-      margin-top: 2px;
-      border: none;
-      background: none;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      box-shadow: none;
-      padding: 6px 10px;
-    }
-
-    .user .user-info .dropdown button .caret {
-      border-top: 4px dashed;
-      border-top-style: solid 9;
-      margin-left: 10px;
-    }
-
-    .user .user-info .dropdown .dropdown-menu {
-      right: 0;
-      left: initial;
-    }
-
-    .user .user-info .dropdown .dropdown-menu .fa,
-    .user .user-info .dropdown .dropdown-menu .icon {
-      color: #999;
-      margin-right: 10px;
-      width: 14px;
-    }
-
-    .user .user-info .dropdown.open .dropdown-menu {
-      display: block;
-    }
-
-    .user .user-info .dropdown .dropdown-menu>li>a:hover,
-    .user .user-info .dropdown .dropdown-menu>li>a:focus {
-      text-decoration: none;
-      color: #262626;
-      background-color: #f5f5f5;
-    }
-
-    .user .button {
-      display: inline-block;
-      padding: 0 2em;
-      text-transform: none;
-      line-height: 2em;
-      height: 2em;
-      background-image: none;
-      -webkit-border-radius: 2em;
-      -moz-border-radius: 2em;
-      -ms-border-radius: 2em;
-      -o-border-radius: 2em;
-      border-radius: 2em;
-      border: none;
-      outline: 0;
-      cursor: pointer;
-      background: #fff;
-      margin: 5px;
-      color: #666;
-      font-size: 14px;
-      line-height: 26px;
-      text-decoration: none;
-    }
-
-    .user .btn-default:active:hover,
-    .user .btn-default.active:hover,
-    .user .open>.dropdown-toggle.btn-default:hover,
-    .user .btn-default:active:focus,
-    .user .btn-default.active:focus,
-    .user .open>.dropdown-toggle.btn-default:focus,
-    .user .btn-default:active.focus,
-    .user .btn-default.active.focus,
-    .user .open>.dropdown-toggle.btn-default.focus {
-      color: #fff;
-      background: none;
-      border: none;
-    }
-
-    .user .caret {
-      display: inline-block;
-      width: 0;
-      height: 0;
-      margin-left: 10px;
-      vertical-align: middle;
-      border-top: 4px dashed;
-      border-top: 4px solid 9;
-      border-right: 4px solid transparent;
-      border-left: 4px solid transparent;
-    }
-
-    .user .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 1000;
-      display: none;
-      float: left;
-      min-width: 160px;
-      padding: 5px 0;
-      margin: 2px 0 0;
-      list-style: none;
-      font-size: 14px;
-      text-align: left;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      border-radius: 4px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-      background-clip: padding-box;
-    }
-
-    .user .dropdown-menu>li>a {
-      display: block;
-      padding: 3px 20px;
-      clear: both;
-      font-weight: normal;
-      line-height: 1.42857143;
-      color: #333;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-
-    .page-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 24px;
-      display: flex;
-    }
-
-    .page-header .logo {
-      background: url("//studio-res.coding.net/StudioWebResource/Images/CloudStudio-Logo-Light.svg") -10px -9px no-repeat;
-      height: 0px;
-      width: 161px;
-      padding-top: 20px;
-      overflow: hidden;
-      display: inline-block;
-      z-index: 1;
-      transition-delay: 0.4s;
-      transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-    }
-
-    .page-header .nav {
-      display: block;
-      display: flex;
-      flex: 1;
-    }
-
-    .page-header .nav li {
-      padding-left: 30px;
-    }
-
-    .page-header .nav a {
-      font-size: 16px;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .page-header .nav-right {
-      flex: 1;
-      text-align: right;
-    }
-
-    .page-header .nav-right a {
-      font-size: 16px;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    #global_footer {
-      text-align: left;
-    }
-
-    #global_footer .record {
-      background: #232f40;
-      color: #76808e;
-    }
-
-    #global_footer .record_info {
-      text-align: right;
-      font-size: 12px;
-    }
-
-    #global_footer .record_info p {
-      margin: 0;
-      height: 18px;
-      line-height: 18px;
-    }
-
-    #global_footer .record_info a {
-      color: #76808e;
-      text-decoration: none;
-    }
-
-    #global_footer .record_info a:hover {
-      color: #ddd;
-    }
-
-    #global_footer .record_img_info {
-      width: 980px;
-      margin: 30px auto 0 !important;
-      padding: 30px 0;
-    }
-
-    .intro-page {
-      font-family: PingFangSC-Regular;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    .intro-page .intro-header {
-      height: 70px;
+  <style>
+    .intro-pc-head {
       width: 100%;
-      background: #1e2229;
-      text-align: center;
+      color: #e3e6e8;
+      background-color: #2c303b;
     }
-
-    .intro-page .intro-header #canvas {
-      position: absolute;
-      top: 0px;
-      width: 100%;
-      height: 600px;
+    .intro-pc-head .chief {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 60px;
+        padding: 0 30px;
+        font-size: 14px;
     }
-
-    .intro-page .intro-header .content {
-      position: absolute;
-      top: 0px;
-      width: 100%;
-      /* background: rgba(0, 0, 0, 0.439); */
-      height: 600px;
+    .intro-pc-head .chief a {
+        color: #e3e6e8;
     }
-
-    .intro-page .intro-header h2 {
-      font-size: 48px;
-      color: #fff;
-      letter-spacing: 2px;
-      text-align: center;
-      line-height: 70px;
-      padding-top: 150px;
-      margin: 0;
-      font-weight: normal;
+    .intro-pc-head .chief .left {
+        display: flex;
+        align-items: center;
+        height: 100%;
     }
-
-    .intro-page .intro-header p {
-      font-size: 16px;
-      color: #fff;
-      letter-spacing: 1px;
-      text-align: center;
-      line-height: 28px;
-      text-shadow: 0 1px 1px #232f40;
-      width: 920px;
-      margin: 0 auto;
-      padding-top: 20px;
+    .intro-pc-head .chief .left .logo img {
+        height: 24px;
+        vertical-align: middle;
     }
-
-    .intro-page .intro-header ul {
-      width: 860px;
-      margin: 0 auto;
-      font-size: 14px;
-      color: #fff;
-      letter-spacing: 0.88px;
-      margin-top: 60px;
-      display: flex;
+    .intro-pc-head .chief .prod {
+        display: flex;
+        align-items: center;
+        height: 30px;
+        margin-left: 30px;
+        position: relative;
     }
-
-    .intro-page .intro-header ul li {
-      flex: 1;
+    .intro-pc-head .chief .prod:hover .prod-menu {
+        height: 125px;
+        opacity: 1;
     }
-
-    .intro-page .intro-header ul li:before {
-      content: '';
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      background: #06f;
-      border-radius: 100px;
-      margin-right: 8px;
+    .intro-pc-head .chief .prod-menu {
+        width: 140px;
+        height: 0;
+        font-size: 12px;
+        opacity: 0;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .05), -10px 0 20px rgba(0, 0, 0, .05), 10px 0 20px rgba(0, 0, 0, .05);
+        transition: height .16s, opacity .16s;
+        position: absolute;
+        top: 30px;
+        left: -12px;
+        z-index: 100;
     }
-
-    .mobile-nav-btn {
-      display: none;
+    .intro-pc-head .chief .prod-menu::after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid #fff;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        position: absolute;
+        top: 0;
+        left: 15px;
     }
-
-    .intro-page .intro-header .content .content-tips {
-      display: none;
+    .intro-pc-head .chief .prod-menu .blank {
+        height: 14px;
     }
-
-    .intro-page .intro-header .btn-try {
-      background: #06f;
-      font-size: 18px;
-      color: #fff;
-      line-height: 24px;
-      text-decoration: none;
-      padding: 12px 44px;
-      margin-top: 60px;
-      border-radius: 0;
-      display: inline-block;
-      border-radius: 2px;
-      transition: all 0.5s ;
+    .intro-pc-head .chief .prod-menu .item {
+        display: block;
+        padding: 10px 15px;
+        text-align: left;
+        color: #000;
+        background-color: #fff;
+        cursor: pointer;
+        transition: background-color .1s ease;
     }
-
-    .intro-page .intro-header .btn-try:hover {
-      background: #003d99;
-      opacity: 0.8;
+    .intro-pc-head .chief .prod-menu .item.one {
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
     }
-
-    .tab-item-container {
-      margin-bottom: 60px;
+    .intro-pc-head .chief .prod-menu .item.two {
+        color: #00a4ff;
     }
-
-    .tab-item-container .tab-mobile-intro h4 {
-      font-family: PingFangSC-Medium;
-      font-size: 20px;
-      color: #000000;
-      margin: 0px;
-      text-align: left;
+    .intro-pc-head .chief .prod-menu .item.three {
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
     }
-
-    .tab-item-container .tab-mobile-intro p {
-      font-family: PingFangSC-Regular;
-      font-size: 16px;
-      color: #425063;
-      text-align: left;
-      margin-bottom: 26px;
+    .intro-pc-head .chief .prod-menu .item:hover {
+        background-color: #f5f7fa;
+    }
+    .intro-pc-head .chief .help {
+        margin-left: 30px;
+    }
+    .intro-pc-head .chief .help:hover {
+        color: #00a4ff;
+    }
+    .intro-pc-head .chief .right {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    .intro-pc-head .chief .right img {
+        width: 36px;
+        height: 36px;
+        vertical-align: middle;
+        border-radius: 50%;
+    }
+    .intro-pc-head .chief .right .user {
+        font-size: 14px;
+        user-select: none;
+        cursor: pointer;
+    }
+    .intro-pc-head .chief .right .name {
+        margin: 0 10px;
+    }
+    .intro-pc-head .chief .right .user-menu {
+        display: none;
+        padding: 10px 40px;
+        border-radius: 2px;
+        font-size: 14px;
+        color: #333;
+        background-color: #fff;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .05), -10px 0 20px rgba(0, 0, 0, .05), 10px 0 20px rgba(0, 0, 0, .05);
+        cursor: pointer;
+        position: absolute;
+        top: 40px;
+        right: 0;
+    }
+    .intro-pc-head .chief .right .user-menu.on {
+        display: block;
+    }
+    .intro-pc-head .chief .divide {
+        margin: 0 10px;
+    }
+    .intro-pc-head .sub {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        padding: 0 30px;
+        border-top: 1px solid #3d404b;
+        font-size: 12px;
+    }
+    .intro-pc-head .sub a {
+        color: #e3e6e8;
+    }
+    .intro-pc-head .sub-menu {
+        margin-right: 30px;
+        position: relative;
+    }
+    .intro-pc-head .sub-menu.on a {
+        color: #00a4ff;
+    }
+    .intro-pc-head .sub-menu:hover a {
+        color: #00a4ff;
+    }
+    .intro-pc-head .sub-menu .new {
+        top: -4px;
+        right: -35px;
+    }
+    .intro-mobile-head {
+        display: none;
+        width: 100%;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+    }
+    .intro-mobile-head .chief {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 60px;
+        padding: 0 20px;
+        background-color: #2b303b;
+    }
+    .intro-mobile-head .chief .logo img {
+        height: 20px;
+    }
+    .intro-mobile-head .stripe {
+        width: 18px;
+        height: 15px;
+        cursor: pointer;
+        position: relative;
+    }
+    .intro-mobile-head .stripe .line {
+        width: 100%;
+        height: 3px;
+        background: #fff;
+        transition: transform .2s ease;
+        position: absolute;
+        left: 0;
+    }
+    .intro-mobile-head .stripe .line.up {
+        top: 0px;
+    }
+    .intro-mobile-head .stripe.on .line.up {
+        transform: rotate(45deg);
+        top: 6px;
+    }
+    .intro-mobile-head .stripe .line.mid {
+        opacity: 1;
+        transition: opacity .2s .15s ease;
+        top: 6px;
+    }
+    .intro-mobile-head .stripe.on .line.mid {
+        opacity: 0;
+        transition: opacity .2s ease;
+    }
+    .intro-mobile-head .stripe .line.low {
+        bottom: 0px;
+    }
+    .intro-mobile-head .stripe.on .line.low {
+        transform: rotate(-45deg);
+        bottom: 6px;
+    }
+    .intro-mobile-head .dropdown {
+        width: 100%;
+        height: 0;
+        font-size: 16px;
+        color: #e3e6e8;
+        background-color: #15171a;
+        overflow: auto;
+        transition: height .2s ease;
+    }
+    .intro-mobile-head .dropdown.on {
+        height: calc(100vh - 60px);
+    }
+    .intro-mobile-head .dropdown a {
+        color: #e3e6e8;
+    }
+    .intro-mobile-head .dropdown .title {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 0 20px;
+    }
+    .intro-mobile-head .dropdown .title img {
+        width: 42px;
+        height: 42px;
+        vertical-align: middle;
+        border-radius: 50%;
+    }
+    .intro-mobile-head .dropdown .title.production {
+        color: #8a8b8c;
+    }
+    .intro-mobile-head .dropdown .title.help {
+        border-top: 1px solid #3d404b;
+        border-bottom: 1px solid #3d404b;
+    }
+    .intro-mobile-head .dropdown .menu {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 0 20px 0 50px;
+        border-top: 1px solid #3d404b;
+    }
+    .intro-mobile-head .dropdown .blank {
+        height: 20px;
+    }
+    .intro-mobile-head .dropdown .cs-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: 50px;
+        padding: 0 20px 0 50px;
+        border-top: 1px solid #3d404b;
+    }
+    .intro-mobile-head .dropdown .cs.on .cs-inner i {
+        transform: rotate(180deg);
+    }
+    .intro-mobile-head .dropdown .cs-inner i {
+        transition: transform .2s ease;
+    }
+    .intro-mobile-head .dropdown .cs-dropdown {
+        height: 0;
+        overflow: hidden;
+        transition: height .2s ease;
+    }
+    .intro-mobile-head .dropdown .cs.on .cs-dropdown {
+        height: 200px;
+    }
+    .intro-mobile-head .dropdown .cs-menu {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 0 20px 0 50px;
+        border-top: 1px solid #3d404b;
+        background-color: #2b303b;
+        position: relative;
+    }
+    .intro-mobile-head .dropdown .cs-menu.on a {
+        color: #00a4ff;
+    }
+    .intro-mobile-head .cs-menu .new {
+        top: 13px;
+        left: 116px;
+    }
+    @media screen and (max-width: 800px) {
+        .intro-pc-head {
+            display: none;
+        }
+        .intro-mobile-head {
+            display: block;
+        }
     }
   </style>
 
   <style>
-    .dropdown .btn {
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .user a.btn {
-      width: 88px;
-      height: 30px;
-      background: #EBEFF5;
-      font-size: 14px;
-      color: #000000;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      margin-left: 10px;
-      text-decoration: none;
-      line-height: 30px;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .user a.btn-primary {
-      background: #0066FF;
-      color: #FFF;
-      border-radius: 2px;
-    }
-
-    .mobile-record {
-      display: none;
-    }
-
     .changelog-container {
       max-width: 70em;
       margin: 0 auto;
-      padding: 30px;
+      padding: 30px 30px 90px;
     }
 
     .changelog-detail {
@@ -631,7 +390,7 @@
       text-decoration: none;
     }
 
-    .changelog-container h1 + p {
+    .changelog-container h1+p {
       margin: 2em 0;
     }
 
@@ -663,141 +422,70 @@
       position: relative;
       margin-right: 15px;
     }
+    @media screen and (max-width: 800px) {
+      .changelog-container {
+        padding-top: 90px;
+      }
+    }
   </style>
 
   <style>
-    @media (max-width: 834px) {
-      .page-header {
-        display: flex;
+    .intro-foot {
+      width: 100%;
+      padding: 40px 50px 20px;
+      background-color: #1f2530;
+    }
+    .intro-foot .menu {
+      display: flex;
+      justify-content: center;
+      color: #fff;
+    }
+    .intro-foot .menu .row {
+      margin-bottom: 20px;
+    }
+    .intro-foot .menu a {
+      color: #fff;
+    }
+    .intro-foot .menu-item {
+      margin: 0 20px;
+    }
+    .intro-foot .strategy {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      color: #a5a7ac;
+    }
+    .intro-foot .strategy a {
+      color: #a5a7ac;
+    }
+    .intro-foot .strategy .divide {
+      margin: 0 10px;
+    }
+    .intro-foot .copyright {
+      padding-top: 6px;
+      text-align: center;
+      font-size: 12px;
+      color: #a5a7ac;
+    }
+
+    @media screen and (max-width: 800px) {
+      .intro-foot .menu {
+        flex-wrap: wrap;
         justify-content: space-between;
       }
-
-      .page-header .nav {
-        display: none;
-      }
-      .page-header .user {
-        display: none !important;
-      }
-
-      .page-header .mobile-nav-btn {
-        width: 30px;
-        height: 30px;
-        padding: 0px;
-        border: none;
-        background-color: transparent;
+      .intro-foot .menu .row {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        outline: none;
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-      }
-      
-      .page-header .mobile-nav-btn > span {
-        width: 22px;
-        height: 2px;
-        background-color: #FFFFFF;
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-        transition-delay: 0s;
-      }
-
-      .record_img_info {
-        display: none;
-      }
-
-      .mobile-record {
+        justify-content: space-between;
         width: 100%;
-        height: 132px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
       }
-
-      .mobile-record img {
-        width: 284px;
-        max-width: 284px;
-        position: initial !important;
+      .intro-foot .menu-item {
+        margin: 0;
       }
-
-      .record-info-mobile {
-        width: 293px;
-        height: 36px;
-        font-family: PingFangSC-Regular;
-        font-size: 12px;
-        color: #FFFFFF;
-        letter-spacing: 0;
-        text-align: center;
-        line-height: 18px;
-      }s
-
-      .record-info-mobile > p {
-        margin: 0px;
-      }
-
-      .record-info-mobile > p > a {
-        text-decoration: none;
-        color: #FFFFFF;
-      }
-
-      .counter-logo-mobile {
-        height: 48px;
-        line-height: 48px;
-      }
-
-      .counter-text-mobile {
-        height: 38px;
-        line-height: 38px;
-      }
-
-      .counter-count-mobile {
-        height: 38px;
-        line-height: 38px;
-      }
-
-      .btn-rotate-to {
-        z-index: 10;
-        transform: rotate(90deg);
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-      }
-      .rotate-line-to-t {
-        margin-bottom: 0px !important;
-        transform: translateY(5px) rotate(45deg);
-        transition-delay: 0.2s;
-      }
-      .rotate-line-to-b {
-        transform: translateY(3px) rotate(-45deg);
-        transition-delay: 0.2s;
-      }
-
-      .menu-show {
-        background-color: #000 !important;
-      }
-
-      .mobile-intro-menu {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background-color: #fff;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        z-index: 1;
-        transition: all 0.3s ease-in;
-        transition-delay: 0.25s;
-        justify-content: flex-end;
-        height: 0px;
-      }
-
-      .mobile-intro-menu a {
-        padding-left: 20px;
-        padding-right: 20px;
-        line-height: 60px;
-        display: block;
-        text-decoration: none;
-        color: #333;
-        text-align: left;
+    }
+    @media screen and (max-width: 320px) {
+      .intro-foot {
+        padding: 40px 30px;
       }
     }
   </style>
@@ -805,207 +493,224 @@
 
 <body>
   <div id="root">
-    <div data-reactroot="" class="intro-page">
-      <div class="intro-header">
-        <section class="mobile-intro-menu">
-          <a href="/intro">产品介绍</a>
-          <a href="https://coding.net/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">帮助</a>
-          <a href="/changelog">更新日志</a>
-        </section>
-      </div>
-      <div class="page-header">
-        <a href="/" class="logo">Cloud Studio</a>
-        <ul class="nav">
-          <li>
-            <a href="/intro">产品介绍</a>
-          </li>
-          <li>
-            <a href="https://coding.net/help/doc/cloud-studio" target="_blank" rel="noopener noreferrer">帮助</a>
-          </li>
-          <li>
-            <a href="/changelog">更新日志</a>
-          </li>
-        </ul>
-        <div class="user" id="user">
-
-        </div>
-        <button class="mobile-nav-btn">
-          <span style="margin-bottom: 6px"></span>
-          <span></span>
-        </button>
-      </div>
-
-      <div class="changelog-container">
-        <h1>Cloud Studio 更新日志</h1>
-        <p>在团队的努力下，Cloud Studio 持续进行着快速的产品迭代，为开发者提供最好的云端开发体验。如果您对产品有任何意见与建议，欢迎随时<a href="https://coding.net/feedback" target="_blank" rel="noopener noreferrer">反馈</a>。
-        </p>
-
-        <div class="changelog-detail"></div>
-      </div>
-
-      <div id="global_footer">
-        <div class="record">
-          <div class="record_img_info">
-            <a href="https://coding.net/index">
-              <img src="https://dn-coding-net-production-pp.codehub.cn/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png" height="36" width="353" style="position: absolute;">
-            </a>
-            <div class="record_info">
-              <p>
-                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a> | 
-                <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
-                <!-- react-text: 70 -->|
-                <!-- /react-text -->
-                <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
-                <!-- react-text: 72 -->|
-                <!-- /react-text -->
-                <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
-              </p>
-              <p>
-                <a href="https://coding.net/index">© 2018 Coding.net</a>
-                <!-- react-text: 76 -->|
-                <!-- /react-text -->
-                <a href="http://www.miitbeian.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备14029750号</a>
-                <!-- react-text: 78 -->| 深圳市扣钉网络科技有限公司
-                <!-- /react-text -->
-              </p>
+    <div class="intro-pc-head">
+      <div class="chief">
+        <div class="left">
+          <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+            <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
+              srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
+            />
+          </a>
+          <div class="prod">
+            <div>产品</div>
+            <div class="prod-menu">
+              <div class="blank"></div>
+              <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+              <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
+              <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
             </div>
           </div>
-          <section class="mobile-record">
-            <a href="https://coding.net/index">
-              <img src="https://dn-coding-net-production-pp.codehub.cn/0905c8a9-5b33-4819-83d4-3cd0528b0c86.png">
+          <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
+        </div>
+        <div id="pc-has-not-login" class="right">
+          <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
+          <span class="divide">|</span>
+          <a href="https://dev.tencent.com/login" target="_blank" rel="noopener noreferrer">登录</a>
+        </div>
+        <div id="pc-has-login" class="right" style="display: none;">
+          <div className="title">
+            <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+              <img src="javascript:;" alt="avatar" />
             </a>
-            <div class="record-info-mobile">
-              <p style="margin-top: 10px">
-                <a href='https://coding.net/about' target='_blank' rel='noopener noreferrer'>关于我们</a>
-                <a href="https://coding.net/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
-                <a href="https://coding.net/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
-                <a href="https://coding.net/security" target="_blank" rel="noopener noreferrer">安全策略</a>
-              </p>
-              <p>
-                <a href="https://coding.net/index">© 2017 Coding.net</a>
-                <a href="http://www.miitbeian.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备14029750号</a>
-              </p>
-            </div>
-          </section>
+          </div>
+        </div>
+      </div>
+      <div class="sub">
+        <div class="sub-menu">
+          <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+        </div>
+        <div class="sub-menu">
+          <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+        </div>
+        <div class="sub-menu">
+          <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+        </div>
+        <div class="sub-menu on">
+          <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
         </div>
       </div>
     </div>
-  </div>
-  <div class='hidden'>
-    <div class="login">
-      <a href="https://coding.net/register" target="_blank" class="btn btn-primary">注册</a>
-      <a href="/signin" class="btn">登录</a>
-    </div>
-    <div class="user-info" id="user-info">
-      <a href="https://coding.net/user/account" target="_blank" rel="noopener noreferrer">
-        <img src="" alt="avatar" class="avatar">
-      </a>
-      <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-          type="button">
-          <span class="username"></span>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="aria-labelledby">
-          <li>
-            <a href="https://coding.net" target="_blank" rel="noopener noreferrer">Coding.net</a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" onclick="logout()">Logout</a>
-          </li>
-        </ul>
+    <div class="intro-mobile-head">
+      <div class="chief">
+        <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
+            srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
+          />
+        </a>
+        <div id="stripe" class="stripe">
+          <div class="line up"></div>
+          <div class="line mid"></div>
+          <div class="line low"></div>
+        </div>
+      </div>
+      <div id="mobile-dropdown" class="dropdown">
+        <div class="title production">产品</div>
+        <a class="menu" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+        <div id="cs-menu" class="cs">
+          <div class="cs-inner">
+            <span>Cloud Studio</span>
+            <i class="fa fa-caret-down"></i>
+          </div>
+          <div class="cs-dropdown">
+            <div class="cs-menu">
+              <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+            </div>
+            <div class="cs-menu">
+              <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+            </div>
+            <div class="cs-menu">
+              <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+            </div>
+            <div class="cs-menu on">
+              <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+            </div>
+          </div>
+        </div>
+        <a class="menu" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
+        <a class="title help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
+        <div class="blank"></div>
+        <div id="mobile-has-login" class="title" style="display: none;">
+          <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+            <img src="javascript:;" alt="avatar" />
+          </a>
+        </div>
+        <div id="mobile-has-not-login">
+          <a class="title" href="https://dev.tencent.com/login" target="_blank" rel="noopener noreferrer">登录</a>
+          <a class="title" href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
+        </div>
+        <div class="blank"></div>
       </div>
     </div>
+    <div class="changelog-container">
+      <h1>Cloud Studio 更新日志</h1>
+      <p>
+        在团队的努力下，Cloud Studio 持续进行着快速的产品迭代，为开发者提供最好的云端开发体验。如果您对产品有任何意见与建议，欢迎随时<a href="https://coding.net/feedback"
+        target="_blank" rel="noopener noreferrer">反馈</a>。
+      </p>
+      <div class="changelog-detail"></div>
+    </div>
+    <div class="intro-foot">
+      <div class="menu">
+        <div class="row">
+          <span class="menu-item">服务支持 QQ 群:875684377</span>
+          <a class="menu-item" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档帮助</a>
+        </div>
+        <div class="row">
+          <a class="menu-item" href="https://cloud.tencent.com" target="_blank" rel="noopener noreferrer">腾讯云官网</a>
+          <a class="menu-item" href="https://cloud.tencent.com/developer" target="_blank" rel="noopener noreferrer">腾讯云+社区</a>
+          <a class="menu-item" href="https://dev.tencent.com/about" target="_blank" rel="noopener noreferrer">关于我们</a>
+        </div>
+      </div>
+      <div class="strategy">
+        <a href="https://dev.tencent.com/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
+        <span class="divide">|</span>
+        <a href="https://dev.tencent.com/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
+        <span class="divide">|</span>
+        <a href="https://dev.tencent.com/security" target="_blank" rel="noopener noreferrer">安全策略</a>
+      </div>
+      <div class="copyright">Copyright &copy; 2013-{year} Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
+    </div>
   </div>
+
   <script>
-    $('.dropdown').click(function () {
-      $(this).toggleClass('open');
-    })
-    $('.react-tabs__tab').click(function () {
-      var selected = $('.react-tabs__tab--selected').removeClass('react-tabs__tab--selected').attr('aria-controls');
-      $('#' + selected).removeClass('react-tabs__tab-panel--selected');
+    // 给顶层 window 发消息
+    const $postMessage = document.querySelectorAll('.post-message');
+    for (let i = 0; i < $postMessage.length; i++) {
+      const $item = $postMessage[i];
+      $item.addEventListener('click', function () {
+        window.top.postMessage({
+          state: { type: 'redirect' },
+          path: $item.getAttribute('href'),
+        }, '*');
+      });
+    }
 
-      selected = $(this).addClass('react-tabs__tab--selected').attr('aria-controls');
-      $('#' + selected).addClass('react-tabs__tab-panel--selected');
-    })
-
-    $('.mobile-nav-btn').click(function () {
-      $('.mobile-intro-menu').show();
-      let topLine = $('.mobile-nav-btn span')[0];
-      let bottomLine = $('.mobile-nav-btn span')[1];
-      if ($('.mobile-nav-btn').hasClass('btn-rotate-to')) {
-        $('.mobile-nav-btn').removeClass('btn-rotate-to');
-        $(topLine).removeClass('rotate-line-to-t menu-show');
-        $(bottomLine).removeClass('rotate-line-to-b menu-show');
-        $('.mobile-intro-menu').css('height', 0);
-        $('.page-header .logo').css('filter', 'invert(0%)');
-        setTimeout(function() {
-          $('.mobile-intro-menu').hide();
-        }, 500);
+    // 移动端点击
+    const $stripe = document.querySelector('#stripe');
+    const $mobileDropdown = document.querySelector('#mobile-dropdown');
+    $stripe.addEventListener('click', function () {
+      if (!$stripe.classList.contains('on')) {
+        $stripe.classList.add('on');
       } else {
-        $('.mobile-nav-btn').addClass('btn-rotate-to');
-        $(topLine).addClass('rotate-line-to-t menu-show');
-        $(bottomLine).addClass('rotate-line-to-b menu-show');
-        $('.mobile-intro-menu').css('height', 240);
-        $('.page-header .logo').css('filter', 'invert(100%)');
+        $stripe.classList.remove('on');
       }
-    })
-    
-    var REDIRECT_URL = 'https://studio.dev.tencent.com';
+      if (!$mobileDropdown.classList.contains('on')) {
+        $mobileDropdown.classList.add('on');
+      } else {
+        $mobileDropdown.classList.remove('on');
+      }
+    });
+    const $csMenu = document.querySelector('#cs-menu');
+    $csMenu.addEventListener('click', function () {
+      if (!$csMenu.classList.contains('on')) {
+        $csMenu.classList.add('on');
+      } else {
+        $csMenu.classList.remove('on');
+      }
+    });
 
-    function logout() {
-      $.ajax({
-        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/logout",
-        type: "GET",
-        contentType: "application/vnd.coding.v2+json",
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain: true
-      }).done(function () {
-      }).fail(function () {
-      }).always(function () {
-        window.location = '/intro'
-        window.top.postMessage({ state: {
-          type: 'redirect'
-        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
-      });
-    }
-
+    // 请求用户信息
+    let hasLogin = false;
     function getUserInfo() {
-      $.ajax({
-        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/user/current",
-        type: "GET",
-        contentType: "application/vnd.coding.v2+json",
-        xhrFields: {
-          withCredentials: true
+      fetch(<%= htmlWebpackPlugin.options.backendUrl %> + '/user/current', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/vnd.coding.v2+json',
+          'X-Requested-With': 'XMLHttpRequest',
         },
-        crossDomain: true
-      }).done(function (res) {
-        if (res.code === 1000) {
-          $('.user').html($('.login'));
-        } else {
-          if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-            res.data.avatar = "https://qcloud.coding.net" + res.data.avatar;
+      }).then(res => res.json()).then(res => {
+        const $pcHasNotLogin = document.querySelector('#pc-has-not-login');
+        const $mobileHasNotLogin = document.querySelector('#mobile-has-not-login');
+        const $pcHasLogin = document.querySelector('#pc-has-login');
+        const $mobileHasLogin = document.querySelector('#mobile-has-login');
+        if (res.code === 0) {
+          hasLogin = true;
+          let avatar = res.data.avatar;
+          $pcHasNotLogin.style.display = 'none';
+          $mobileHasNotLogin.style.display = 'none';
+          $pcHasLogin.style.display = 'flex';
+          $mobileHasLogin.style.display = 'flex';
+          if (!/^http/i.test(avatar)) {
+            avatar = 'https://qcloud.coding.net' + avatar;
           }
-          $('#user-info img').attr('src', res.data.avatar);
-
-          $('#user-info .username').html(res.data.name);
-          $('.user').hide().html($('#user-info')).fadeIn();
-
+          $pcHasLogin.querySelector('img').setAttribute('src', avatar);
+          $mobileHasLogin.querySelector('img').setAttribute('src', avatar);
+        } else if (res.code === 1000) {
+          $pcHasNotLogin.style.display = 'flex';
+          $mobileHasNotLogin.style.display = 'flex';
+          $pcHasLogin.style.display = 'none';
+          $mobileHasLogin.style.display = 'none';
         }
-      }).fail(function () {
-      }).always(function () {
       });
     }
 
+    // 填充 markdown
     function renderMD (callback) {
-      $.get("<%= __CHANGELOG_PATH__ +  'changelog.md' %>", function(data, status) {
-        var html = marked.parse(data);
-        $('.changelog-detail').html(html);
-
+      fetch("<%= __CHANGELOG_PATH__ +  'changelog.md' %>", {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/vnd.coding.v2+json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      }).then(res => res.text()).then(res => {
+        const html = marked.parse(res);
+        document.querySelector('.changelog-detail').innerHTML = html;
         // We need html to set clock icon
-        document.querySelectorAll('h2').forEach(function(node) {
+        document.querySelectorAll('h2').forEach(function (node) {
           node.insertAdjacentHTML(
             'afterbegin',
             '<span class="icon"><span>'
@@ -1014,21 +719,8 @@
       });
     }
 
-    $('.mobile-intro-menu').hide();
     getUserInfo();
-
-    // Render changelog page
     renderMD();
-
-  </script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-65952334-9');
   </script>
 </body>
 
