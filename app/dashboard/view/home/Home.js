@@ -53,7 +53,7 @@ class Home extends Component {
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin">{i18n('global.plugin')}</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/setting">{i18n('global.setting')}</NavLink>
                     </div>
-                    <Bell on={isBellOn} togglePanel={this.toggleBellPanel} />
+                    {/* <Bell on={isBellOn} togglePanel={this.toggleBellPanel} /> */}
                     <Profile />
                 </div>
                 <div className="dash-main">
