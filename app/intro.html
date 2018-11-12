@@ -383,7 +383,32 @@
       background: #1e2229;
       text-align: center;
     }
-    .intro-canvas h2 {
+    .intro-canvas #canvas {
+      width: 100%;
+      height: 600px;
+    }
+    .intro-canvas .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      width: 100%;
+      height: 600px;
+      position: absolute;
+      top: 100px;
+    }
+    .intro-canvas .content .name {
+      width: 180px;
+      margin: 0 auto 50px;
+      border-bottom: 4px solid #00a4ff;
+      font-size: 22px;
+      color: #fff;
+    }
+    .intro-canvas .content .name img {
+      width: calc(100% + 24px);
+      margin-left: -12px;
+    }
+    .intro-canvas .content h2 {
       color: #fff;
       font-size: 64px;
       font-weight: 700;
@@ -392,7 +417,7 @@
       padding-bottom: 20px;
       text-align: center;
     }
-    .intro-canvas p {
+    .intro-canvas .content p {
       color: #fff;
       font-size: 18px;
       letter-spacing: 1px;
@@ -401,21 +426,6 @@
       text-align: center;
       text-shadow: 0 1px 1px #232f40;
       width: 920px;
-    }
-
-    .intro-canvas #canvas {
-      width: 100%;
-      height: 600px;
-    }
-
-    .intro-canvas .content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      height: 600px;
-      position: absolute;
-      top: 100px;
     }
     .intro-canvas .content .content-tips {
       display: none;
@@ -434,7 +444,6 @@
       transition: all 0.5s ;
       margin: 40px auto 0 auto;
     }
-
     .intro-canvas .btn-try:hover {
       background: #003d99;
       opacity: 0.8;
@@ -444,9 +453,11 @@
         padding: 0;
         top: 0;
       }
+      .intro-canvas .content .name {
+        padding-top: 80px;
+      }
       .intro-canvas .content h2 {
         width: 300px;
-        padding-top: 98px;
         margin: 0 auto;
         font-size: 54px;
         font-family: PingFangSC-Medium;
@@ -764,6 +775,9 @@
         <canvas width="1547" height="600" style="width: 1547px; height: 600px;"></canvas>
       </div>
       <div class="content">
+        <div class="name">
+          <img src="./static/CloudStudio-Logo.svg" />
+        </div>
         <h2>最极客的云端开发体验</h2>
         <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
         <p>动态计算资源调整，可以完成各种应用的开发编译与部署。</p>

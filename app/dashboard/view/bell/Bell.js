@@ -21,6 +21,7 @@ class Bell extends Component {
         const mLen = mList.length > 0;
         const nHave = nList.some(v => Number(v.status) === 0);
         const mHave = mList.some(v => Number(v.status) === 0);
+        //const haveBell = nList.some()
         return (
             <div className="dash-bell">
                 <div className="bell">
