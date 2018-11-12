@@ -61,7 +61,7 @@ class PluginDev extends PureComponent {
             {pluginProjectInfomation.description}
           </p>
           <p className='plugin-description'>
-            {pluginProjectInfomation.version && `当前版本：${pluginProjectInfomation.version}`}
+            {`当前版本：${pluginProjectInfomation.version || ''}`}
           </p>
           <div className='plugin-dev-server'>
             <p>请先确保已在终端内启动插件(yarn start)</p>
