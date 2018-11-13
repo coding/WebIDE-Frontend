@@ -2,24 +2,12 @@
 <html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <title>Cloud Studio - 开启云端开发模式 WebIDE</title>
     <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
     <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
     <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
     <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
-    <script src=" //studio-res.coding.net/StudioWebResource/Scripts/three.min.js "></script>
-    <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
-    <link rel="stylesheet" href="//studio-res.coding.net/StudioWebResource/Scripts/swiper.min.css">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-65952334-9');
-    </script>
-
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -409,8 +397,11 @@
             font-weight: 700;
             color: #fff;
         }
+        .intro-canvas .content .desc-mobile {
+            display: none;
+        }
         .intro-canvas .content p {
-            width: 950px;
+            width: 980px;
             margin: 0 auto;
             line-height: 30px;
             text-align: center;
@@ -444,27 +435,32 @@
                 padding: 0;
                 top: 0;
             }
+            .intro-canvas .content .desc-pc {
+                display: none;
+            }
+            .intro-canvas .content .desc-mobile {
+                display: block;
+            }
             .intro-canvas .content .name {
+                width: 138px;
                 padding-top: 80px;
+                margin-bottom: 30px;
             }
             .intro-canvas .content h2 {
-                width: 300px;
+                width: 230px;
                 margin: 0 auto;
-                line-height: 70px;
                 letter-spacing: 2.25px;
-                font-size: 54px;
+                font-size: 38px;
                 font-family: PingFangSC-Medium;
             }
             .intro-canvas .content p {
                 box-sizing: content-box;
                 width: 300px;
-                line-height: 20px;
                 font-size: 13px;
             }
             .intro-canvas .content .content-tips {
                 display: inline-block;
-                margin-top: 32px;
-                line-height: 40px;
+                margin-top: 20px;
                 text-align: center;
                 letter-spacing: 1px;
                 font-size: 13px;
@@ -498,8 +494,12 @@
             filter: invert(100%);
             transform: translateY(3px);
         }
+        .intro-counter .counter-count-mobile {
+            display: flex;
+            align-items: center;
+        }
         .intro-counter .num {
-            margin-left: 8px;
+            margin: 0 8px;
             font-size: 32px;
             font-family: DINAlternate-Bold;
             color: #00a4ff;
@@ -595,6 +595,7 @@
         .intro-foot .menu {
             display: flex;
             justify-content: center;
+            font-size: 14px;
             color: #fff;
         }
         .intro-foot .menu .row {
@@ -677,7 +678,7 @@
                 <div id="pc-has-login" class="right" style="display: none;">
                     <div className="title">
                         <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
-                            <img src="javascript:;" alt="avatar" />
+                            <img src="" alt="avatar" />
                         </a>
                     </div>
                 </div>
@@ -738,7 +739,7 @@
                 <div class="blank"></div>
                 <div id="mobile-has-login" class="title" style="display: none;">
                     <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
-                        <img src="javascript:;" alt="avatar" />
+                        <img src="" alt="avatar" />
                     </a>
                 </div>
                 <div id="mobile-has-not-login">
@@ -757,9 +758,15 @@
                     <img src="<%= webpackConfig.output.publicPath + 'static/CloudStudio-Logo.svg' %>" />
                 </div>
                 <h2>最极客的云端开发体验</h2>
-                <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境，并且支持自定义域名指向，动态计算资源</p>
-                <p>调整，可以完成各种应用的开发编译与部署。Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境,</p>
-                <p>分享给团队的其他成员。</p>
+                <div class="desc-pc">
+                    <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, </p>
+                    <p>可以完成各种应用的开发编译与部署。Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境,</p>
+                    <p>分享给团队的其他成员。</p>
+                </div>
+                <div class="desc-mobile">
+                    <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, 可以完成各种应用的开发编译与部署。</p>
+                    <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
+                </div>
                 <button class="btn-try" onClick="handleTry()">立即体验</button>
                 <span class="content-tips">需使用桌面版体验</span>
             </div>
@@ -771,8 +778,7 @@
             </div>
             <div class="counter-text-mobile">上进行在线开发的用户累计使用时间为</div>
             <div class="counter-count-mobile">
-                <span class="num" id="countNum">-,---,---,---</span>
-                秒
+                <span class="num" id="countNum">-,---,---,---</span>秒
             </div>
         </div>
         <div class="section-container">
@@ -866,6 +872,16 @@
         </div>
     </div>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-65952334-9');
+    </script>
+    <script src=" //studio-res.coding.net/StudioWebResource/Scripts/three.min.js "></script>
+    <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
     <script>
         // 计算年份
         document.querySelector('#year').innerHTML = new Date().getFullYear();
@@ -974,6 +990,7 @@
 
         getUserInfo();
 
+        // three.js
         var container;
         var camera, scene, renderer;
         var geometry, group;
@@ -982,10 +999,6 @@
         var windowHalfY = 600 / 2;
         document.addEventListener('mousemove', onDocumentMouseMove, false);
 
-        init();
-        animate();
-
-        // 3d
         function init() {
             ////////////////////////////////////
             // Setup Container
@@ -1135,6 +1148,9 @@
 
             renderer.render(scene, camera);
         }
+
+        init();
+        animate();
     </script>
 </body>
 </html>

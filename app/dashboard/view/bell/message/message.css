@@ -2,13 +2,13 @@
     display: flex;
     padding: 10px;
     word-break: break-all;
-    transition: background-color .2s ease;
+    transition: background-color .3s ease;
 }
 .dash-bell .view-message.unread {
     cursor: pointer;
 }
 .dash-bell .view-message:hover {
-    background-color: #555;
+    background-color: #444;
 }
 .dash-bell .view-message .point {
     width: 10px;

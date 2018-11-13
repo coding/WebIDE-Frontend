@@ -17,18 +17,19 @@ class Bell extends Component {
 
     render() {
         const { tab, nList, mList } = this.state;
+        const { on, togglePanel } = this.props;
         const nLen = nList.length > 0;
         const mLen = mList.length > 0;
         const nHave = nList.some(v => Number(v.status) === 0);
         const mHave = mList.some(v => Number(v.status) === 0);
-        //const haveBell = nList.some()
+        const haveBell = nHave || mHave;
         return (
             <div className="dash-bell">
-                <div className="bell">
+                <div className="bell" onClick={togglePanel}>
                     <i className="fa fa-bell"></i>
-                    <div className="dot"></div>
+                    {haveBell && <div className="dot"></div>}
                 </div>
-                <div className="panel" onClick={(event) => event.stopPropagation()}>
+                <div className={`panel${on ? ' on' : ''}`} onClick={(event) => event.stopPropagation()}>
                     <div className="tab">
                         <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.toggleTab(1)}>
                             {i18n('global.notification')}
@@ -83,18 +84,18 @@ class Bell extends Component {
         });
     }
 
-    markReaded = (id) => {
-        api.markReaded({ id }).then(res => {
-            if (res.code === 0) {
-                this.fetchNotification();
-            }
-        });
-    }
-
     fetchMessage() {
         api.getMessage().then(res => {
             if (res.code === 0) {
                 this.setState({ mList: res.data });
+            }
+        });
+    }
+
+    markReaded = (id) => {
+        api.markReaded({ id }).then(res => {
+            if (res.code === 0) {
+                this.fetchNotification();
             }
         });
     }

@@ -20,13 +20,14 @@ import About from '../about';
 class Home extends Component {
     state = {
         isBellOn: false,
+        isProfileOn: false,
     }
 
     render() {
-        const { isBellOn } = this.state;
+        const { isBellOn, isProfileOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
         return (
-            <div id="dash-container" onClick={this.turnOffBellPanel}>
+            <div id="dash-container" onClick={this.turnOffPanel}>
                 <div className="dash-mbar">
                     <div className="logo">
                         <Link to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="logo" /></Link>
@@ -53,8 +54,8 @@ class Home extends Component {
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin">{i18n('global.plugin')}</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/setting">{i18n('global.setting')}</NavLink>
                     </div>
-                    {/* <Bell on={isBellOn} togglePanel={this.toggleBellPanel} /> */}
-                    <Profile />
+                    <Bell on={isBellOn} togglePanel={this.toggleBellPanel} />
+                    <Profile on={isProfileOn} togglePanel={this.toggleProfilePanel} />
                 </div>
                 <div className="dash-main">
                     <Banner />
@@ -82,10 +83,17 @@ class Home extends Component {
         }
         // 给顶层 window 发送消息
         history.listen(route => {
-            window.top.postMessage({ path: route.pathname }, '*');
+            window.top.postMessage({
+                path: route.pathname,
+                state: route.state,
+            }, '*');
             gtag('config', 'UA-65952334-9', {'page_path': route.pathname});
         });
-        window.top.postMessage({ path: window.location.pathname }, '*');
+        const historyState = window.history.state;
+        window.top.postMessage({
+            path: window.location.pathname,
+            state: (historyState && historyState.state) ? historyState.state : undefined,
+        }, '*');
         gtag('config', 'UA-65952334-9', {'page_path': window.location.pathname});
         // 获取工作空间数量信息
         this.fetchWorkspaceCount();
@@ -123,11 +131,28 @@ class Home extends Component {
 
     toggleBellPanel = (event) => {
         event.stopPropagation();
+        if (this.state.isProfileOn) {
+            this.setState({ isProfileOn: false });
+        }
         this.setState(prevState => ({ isBellOn: !prevState.isBellOn }));
     }
 
-    turnOffBellPanel = () => {
-        this.setState({ isBellOn: false });
+    toggleProfilePanel = (event) => {
+        event.stopPropagation();
+        if (this.state.isBellOn) {
+            this.setState({ isBellOn: false });
+        }
+        this.setState(prevState => ({ isProfileOn: !prevState.isProfileOn }));
+    }
+
+    turnOffPanel = () => {
+        const { isBellOn, isProfileOn } = this.state;
+        if (isBellOn || isProfileOn) {
+            this.setState({
+                isBellOn: false,
+                isProfileOn: false,
+            });
+        }
     }
 }
 

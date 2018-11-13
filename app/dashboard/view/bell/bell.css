@@ -1,13 +1,13 @@
 .dash-bell {
+    width: 60px;
     padding: 10px 15px 0;
     margin-bottom: 10px;
     font-size: 12px;
+    user-select: none;
     position: relative;
 }
-.dash-bell:hover .panel {
-    opacity: 1;
-    visibility: visible;
-    bottom: 40px;
+.dash-bell:hover .bell {
+    background-color: #fff;
 }
 .dash-bell .dot {
     width: 4px;
@@ -24,12 +24,10 @@
     border-radius: 50%;
     font-size: 16px;
     color: #3b3b3b;
-    background-color: #aaa;
+    background-color: #bbb;
     cursor: pointer;
+    transition: background-color .3s ease;
     position: relative;
-}
-.dash-bell .bell:hover {
-    background-color: #fff;
 }
 .dash-bell .bell .dot {
     width: 6px;
@@ -52,6 +50,11 @@
     bottom: 30px;
     left: 15px;
     z-index: 10;
+}
+.dash-bell .panel.on {
+    opacity: 1;
+    visibility: visible;
+    bottom: 40px;
 }
 .dash-bell .panel .tab {
     display: flex;
@@ -76,7 +79,7 @@
     right: -3px;
 }
 .dash-bell .panel .view {
-    max-height: 330px;
+    height: 330px;
     background-color: #333;
     overflow-y: auto;
 }

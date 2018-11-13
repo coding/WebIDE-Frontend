@@ -88,12 +88,6 @@ class Setting extends Component {
                     </div>
                 </div>
                 <div className="plugin-status">{i18n(`plugin.status${status}`, { version, reason: auditRemark })}</div>
-                {status === 4 && (
-                    <div className="recall">
-                        {i18n('plugin.beforeRecallAudit')}
-                        <span className="click" onClick={this.recallAudit}>&nbsp;{i18n('plugin.recallAudit')}</span>
-                    </div>
-                )}
                 <div className="tab">
                     <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.prePublish')}</div>

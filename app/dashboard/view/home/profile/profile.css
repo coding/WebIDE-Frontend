@@ -3,6 +3,7 @@
     height: 30px;
     padding-top: 5px;
     margin-bottom: 15px;
+    user-select: none;
     position: relative;
 }
 .dash-profile .profile {
@@ -12,17 +13,12 @@
     padding: 0 15px;
     cursor: pointer;
 }
-.dash-profile:hover .panel {
-    opacity: 1;
-    visibility: visible;
-    bottom: 32px;
-}
 .dash-profile .avatar {
     width: 30px;
     height: 30px;
     border-radius: 50%;
 }
-.dash-profile:hover .caret {
+.dash-profile.on .caret {
     transform: rotate(-180deg);
 }
 .dash-profile .name {
@@ -51,6 +47,11 @@
     bottom: 42px;
     left: 15px;
     z-index: 20;
+}
+.dash-profile.on .panel {
+    opacity: 1;
+    visibility: visible;
+    bottom: 32px;
 }
 .dash-profile .menu-item {
     display: block;

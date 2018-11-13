@@ -38,8 +38,12 @@ class Card extends Component {
                     )}
                     {belong === 3 && (
                         <div className="right">
-                            {status !== 0 && <div className="version">v{version}</div>}
-                            <div className="tag">{hasPrePublish ? i18n('plugin.prePublish') : i18n(`plugin.state${status}`)}</div>
+                            {status === 5 && <div className="version">v{version}</div>}
+                            {
+                                hasPrePublish ? (
+                                    <div className="tag">{i18n('plugin.prePublish')}</div>
+                                ) : (status === 5 && <div className="tag">{i18n('plugin.published')}</div>)
+                            }
                         </div>
                     )}
                 </div>

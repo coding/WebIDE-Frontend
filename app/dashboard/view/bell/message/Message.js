@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import './message.css';
 
+import completeUrl from '../../../utils/completeUrl';
+
 class Message extends Component {
     state = {
         spread: false,
@@ -17,7 +19,7 @@ class Message extends Component {
                     <div className="point">
                         <div className="dot"></div>
                     </div>
-                    <img className="avatar" src={avatar} alt="avatar" />
+                    <img className="avatar" src={completeUrl(avatar)} alt="avatar" />
                     <div className="main">
                         <div className="name">{name}</div>
                         <div className={`content${spread ? ' spread' : ''}`} dangerouslySetInnerHTML={{ __html: this.parseTag(content) }}></div>
@@ -28,7 +30,7 @@ class Message extends Component {
             return (
                 <div className="view-message unread" onClick={this.handleSpread}>
                     <div className="point"></div>
-                    <img className="avatar" src={avatar} alt="avatar" />
+                    <img className="avatar" src={completeUrl(avatar)} alt="avatar" />
                     <div className="main">
                         <div className="name">{name}</div>
                         <div className={`content${spread ? ' spread' : ''}`} dangerouslySetInnerHTML={{ __html: this.parseTag(content) }}></div>
