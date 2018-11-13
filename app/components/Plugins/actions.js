@@ -60,7 +60,7 @@ export const togglePackage = registerAction(PACKAGE_TOGGLE,
         const { Manager = (() => null), key } = plugin
         const manager = new Manager()
         plugin.detaultInstance = manager
-        const getInfo = store.list.get(key || pkgId) || info || {}
+        const getInfo = info || {}
         PluginRegistry.set(key || pkgId, { ...plugin, pkgId, info: getInfo, loadType: type })
         if (manager.init) {
           manager.init(data, action)
