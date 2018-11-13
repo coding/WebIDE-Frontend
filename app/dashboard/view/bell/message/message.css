@@ -2,7 +2,6 @@
     display: flex;
     padding: 10px;
     word-break: break-all;
-    transition: background-color .3s ease;
 }
 .dash-bell .view-message.unread {
     cursor: pointer;
@@ -19,7 +18,7 @@
 .dash-bell .view-message .avatar {
     width: 28px;
     height: 28px;
-    margin-right: 6px;
+    margin: 3px 6px 0 0;
     border-radius: 50%;
     background-color: #fff;
 }
@@ -27,13 +26,30 @@
     width: 217px;
 }
 .dash-bell .view-message .main .name {
+    font-size: 14px;
     color: #999;
 }
 .dash-bell .view-message .main .content {
-    max-height: 60px;
+    max-height: 20px;
     color: #bbb;
     overflow: hidden;
+    position: relative;
+}
+.dash-bell .view-message .main .content::after {
+    content: '';
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(to right, transparent, #333);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.dash-bell .view-message:hover .content::after {
+    background: linear-gradient(to right, transparent, #444);
 }
 .dash-bell .view-message .main .content.spread {
     max-height: none;
+}
+.dash-bell .view-message .main .content img {
+    height: 18px;
 }

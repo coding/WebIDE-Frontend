@@ -2,7 +2,6 @@
     display: flex;
     padding: 10px;
     word-break: break-all;
-    transition: background-color .3s ease;
 }
 .dash-bell .view-notification:hover {
     background-color: #444;
@@ -18,8 +17,21 @@
 }
 .dash-bell .view-notification .content {
     width: 250px;
-    max-height: 50px;
+    max-height: 20px;
     overflow: hidden;
+    position: relative;
+}
+.dash-bell .view-notification .content::after {
+    content: '';
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(to right, transparent, #333);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.dash-bell .view-notification:hover .content::after {
+    background: linear-gradient(to right, transparent, #444);
 }
 .dash-bell .view-notification .content.spread {
     max-height: none;

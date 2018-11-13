@@ -46,7 +46,7 @@
     position: absolute;
     bottom: 42px;
     left: 15px;
-    z-index: 20;
+    z-index: 30;
 }
 .dash-profile.on .panel {
     opacity: 1;

@@ -49,7 +49,7 @@
     position: absolute;
     bottom: 30px;
     left: 15px;
-    z-index: 10;
+    z-index: 30;
 }
 .dash-bell .panel.on {
     opacity: 1;
@@ -93,7 +93,7 @@
     list-style: disc;
 }
 .dash-bell .panel .view p {
-    margin: 6px 0;
+    margin: 0;
     font-size: 12px;
 }
 .dash-bell .panel .view blockquote {
