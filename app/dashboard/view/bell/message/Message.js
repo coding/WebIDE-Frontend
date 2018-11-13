@@ -11,11 +11,11 @@ class Message extends Component {
 
     render() {
         const { spread } = this.state;
-        const { id, sender, content, status } = this.props;
-        const { name, avatar } = sender;
+        const { id, friend, content, status, markReaded } = this.props;
+        const { name, avatar, global_key } = friend;
         if (Number(status) === 0) {
             return (
-                <div className="view-message unread" onClick={() => this.handleSpreadAndMarkReaded(id)}>
+                <div className="view-message unread" onClick={() => markReaded({ id, name: global_key})}>
                     <div className="point">
                         <div className="dot"></div>
                     </div>
@@ -28,7 +28,7 @@ class Message extends Component {
             );
         } else {
             return (
-                <div className="view-message unread" onClick={this.handleSpread}>
+                <div className="view-message" onClick={() => markReaded({ id, name: global_key })}>
                     <div className="point"></div>
                     <img className="avatar" src={completeUrl(avatar)} alt="avatar" />
                     <div className="main">
@@ -52,7 +52,6 @@ class Message extends Component {
     parseTag = (content) => {
         const container = document.createElement('div')
         container.innerHTML = content;
-
         let str = '<p>';
         for (const item of container.children) {
             str += item.innerHTML;

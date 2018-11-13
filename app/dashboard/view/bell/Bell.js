@@ -7,6 +7,7 @@ import Message from './message';
 
 import api from '../../api';
 import i18n from '../../utils/i18n';
+import config from '../../utils/config';
 
 class Bell extends Component {
     state = {
@@ -48,7 +49,7 @@ class Bell extends Component {
                         )}
                         {tab === 2 && (
                             mLen ? (
-                                mList.map(m => <Message key={m.id} {...m} markReaded={this.markReaded} />)
+                                mList.map(m => <Message key={m.id} {...m} markReaded={this.markMessageReaded} />)
                             ) : <div className="no-bell">{i18n('global.noMessage')}</div>
                         )}
                     </div>
@@ -98,6 +99,12 @@ class Bell extends Component {
                 this.fetchNotification();
             }
         });
+    }
+
+    markMessageReaded = ({ id, name }) => {
+        const { mList } = this.state;
+        this.setState({ mList: mList.map(v => v.id === id ? { ...v, status: '1' } : v) });
+        window.open(`${config.devOrigin}/user/messages/history/${name}`);
     }
 
     toggleTab = (tab) => {
