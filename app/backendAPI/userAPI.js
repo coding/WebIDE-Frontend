@@ -13,7 +13,7 @@ export function login ({
   captcha,
   remember_me
 }) {
-  return request.post(`/login${location.search ? location.search : '?return_url=/ws/default'}`, {
+  return request.post(`/login${location.search ? location.search : '?return_url=/dashboard'}`, {
     password,
     email,
     captcha,
@@ -25,7 +25,7 @@ export function login ({
 export function loginCode ({
   code
 }) {
-  return request.post(`/login${location.search ? location.search : '?return_url=/ws/default'}`, {
+  return request.post(`/login${location.search ? location.search : '?return_url=/dashboard'}`, {
     code
   })
 }

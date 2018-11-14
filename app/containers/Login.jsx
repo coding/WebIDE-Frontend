@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { autorun } from 'mobx';
 import VideoCover from 'react-video-cover'
-import i18n from 'utils/createI18n'
+// import i18n from 'utils/createI18n'
 import api from '../backendAPI'
 import Header from './Header'
 import cx from 'classnames'
@@ -46,7 +46,7 @@ class Login extends Component {
       const url = suffix.indexOf('&') === -1 ? `${suffix}?hasJump=true` : `${suffix.replace('&', '?')}&hasJump=true`;
       window.open(url, '_self');
     } else {
-      const url = searchUrl ? `${window.location.origin}/ws/default?${searchUrl}&hasJump=true` : `${window.location.origin}/ws/default?hasJump=true`;
+      const url = searchUrl ? `${window.location.origin}/dashboard?${searchUrl}&hasJump=true` : `${window.location.origin}/dashboard?hasJump=true`;
       window.open(url, '_self');
     }
   }

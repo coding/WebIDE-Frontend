@@ -59,7 +59,7 @@ module.exports = function(options = {}) {
       main: [path.join(PROJECT_ROOT, 'app')],
       dashboard: [path.join(PROJECT_ROOT, 'app/dashboard.jsx')],
       // workspaces: [path.join(PROJECT_ROOT, 'app/workspaces_standalone')],
-      // login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
+      login: [path.join(PROJECT_ROOT, 'app/login.jsx')],
       // intro: [path.join(PROJECT_ROOT, 'app/intro.jsx')],
       vendor: ['@babel/polyfill', 'react', 'react-dom', 'redux', 'react-redux']
     },
