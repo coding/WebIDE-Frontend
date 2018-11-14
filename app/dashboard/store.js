@@ -6,6 +6,7 @@ import { switchLoadingReducer } from './view/loading/reducer';
 import { userReducer } from './view/home/profile/reducer';
 import { workspaceReducer, hasWorkspaceOpendReducer } from './view/workspace/reducer';
 import { switchMbarReducer } from './share/stripe/reducer';
+import { versionPopReducer } from './view/versionPop/reducer';
 
 const reducers = combineReducers({
     language: switchLanguageReducer,
@@ -15,6 +16,7 @@ const reducers = combineReducers({
     wsState: workspaceReducer,
     hasWorkspaceOpend: hasWorkspaceOpendReducer,
     isMbarOn: switchMbarReducer,
+    versionPop: versionPopReducer,
 });
 
 const languageStorage = localStorage.getItem('cloudstudio-dashboard-language') || 'zh_CN';

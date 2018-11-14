@@ -22,19 +22,21 @@ class Setting extends Component {
         pluginId: '',
         pluginName: '',
         remark: '',
-        historyVersions: [],
-        version: '0.0.0',
-        versionId: '',
         pluginType: '',
         avgScore: 0,
         countScoreUser: 0,
         repoName: '',
         repoUrl: '',
+        historyVersions: [],
         status: 0,
-        hasPrePublish: false,
-        preVersionId: '',
-        isPrePublishBuilding: false,
+        version: '0.0.0',
+        versionId: '',
+        log: '',
         auditRemark: '',
+        hasPrePublish: false,
+        preStatus: 0,
+        preVersionId: '',
+        preLog: '',
         tab: 1,
     }
     timer = null
@@ -45,15 +47,17 @@ class Setting extends Component {
             pluginId,
             pluginName,
             remark,
-            historyVersions,
-            version,
-            auditRemark,
             pluginType,
             avgScore,
             countScoreUser,
-            status,
             repoUrl,
             repoName,
+            historyVersions,
+            status,
+            version,
+            auditRemark,
+            hasPrePublish,
+            preStatus,
             tab,
         } = this.state;
         const repoHref = `${config.devOrigin}/u/${createdBy}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
@@ -61,61 +65,84 @@ class Setting extends Component {
         const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         return (
             <div className="dash-setmyplugin">
-                <div className="top">
-                    {
-                        status === 5 ? (
-                            <a className="plugin-name" href={marketHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
-                        ) : <div className="plugin-name">{pluginName}</div>
-                    }
-                    <div>
-                        <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
-                        <a className="goto" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
+                <div className="overview">
+                    <div className="top">
+                        <div className="name">{pluginName}</div>
+                        <div>
+                            <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
+                            <a className="goto" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
+                        </div>
+                    </div>
+                    <div className="desc">{remark}</div>
+                    <div className="info">
+                        <div className="item">
+                            <span className="key">{i18n('plugin.currentRelease')}:</span>
+                            <span>{version ? `v${version}` : 'null'}</span>
+                        </div>
+                        <div className="item">
+                            <span className="key">{i18n('global.category')}:</span>
+                            <span>{pluginType}</span>
+                        </div>
+                        <div className="item">
+                            <Star score={avgScore} />
+                            <span className="rate-user-count">({kilo(countScoreUser)} {i18n('plugin.userCount')})</span>
+                        </div>
+                    </div>
+                    <div className="status">
+                        {i18n(`plugin.status${status}`, { version, reason: auditRemark })}
+                        {status === 5 && (
+                            <span>
+                                <a href={marketHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.status5Click')}</a>
+                                {i18n('plugin.status5After')}
+                            </span>
+                        )}
+                        {status === 4 && (
+                            <span>
+                                <span className="click" onClick={this.popForBuildingFail}>{i18n('plugin.status4Click')}</span>
+                                {i18n('global.period')}
+                            </span>
+                        )}
+                    </div>
+                    {hasPrePublish && preStatus === 2 && (
+                        <div className="pre">
+                            <i className="fa fa-exclamation-circle"></i>
+                            {i18n('plugin.nowPrePublish')}
+                            <span className="click" onClick={this.cancelPrePublish}>{i18n('plugin.cancelPrePublish')}</span>
+                            {i18n('global.period')}
+                        </div>
+                    )}
+                    <div className="tab">
+                        <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.baseSetting')}</div>
+                        <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('global.publish')}</div>
+                        <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.versionHistory')}</div>
                     </div>
                 </div>
-                <div className="desc">{remark}</div>
-                <div className="info">
-                    <div className="item">
-                        <span className="key">{i18n('plugin.currentRelease')}:</span>
-                        <span>{version ? `v${version}` : 'null'}</span>
+                {tab === 1 && pluginName && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPlugin} />}
+                {tab === 2 && (
+                    <div className="panel">
+                        <PrePublish hasPrePublish={hasPrePublish} preStatus={preStatus} release={this.handleRelease} cancelRelease={this.cancelPrePublish} refresh={this.fetchPlugin} />
+                        <Publish version={version} status={status} release={this.handleRelease} />
                     </div>
-                    <div className="item">
-                        <span className="key">{i18n('global.category')}:</span>
-                        <span>{pluginType}</span>
-                    </div>
-                    <div className="item">
-                        <Star score={avgScore} />
-                        <span className="rate-user-count">({kilo(countScoreUser)} {i18n('plugin.userCount')})</span>
-                    </div>
-                </div>
-                <div className="plugin-status">{i18n(`plugin.status${status}`, { version, reason: auditRemark })}</div>
-                <div className="tab">
-                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.versionHistory')}</div>
-                    <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.prePublish')}</div>
-                    <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.officialPublish')}</div>
-                    <div className={`tab-item${tab === 4 ? ' on' : ''}`} onClick={() => this.handleTab(4)}>{i18n('plugin.baseSetting')}</div>
-                </div>
-                {tab === 1 && <History historyVersions={historyVersions} />}
-                {tab === 2 && <PrePublish {...this.state} release={this.handleRelease} refresh={this.fetchPluginInfo} />}
-                {tab === 3 && <Publish version={version} pluginId={pluginId} status={status} release={this.handleRelease} />}
-                {tab === 4 && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPluginInfo} />}
+                )}
+                {tab === 3 && <History historyVersions={historyVersions} />}
             </div>
         );
     }
 
     componentDidMount() {
-        this.fetchPluginInfo();
+        this.fetchPlugin();
         this.timer = setInterval(() => {
-            this.fetchPluginInfo();
+            this.fetchPlugin();
         }, 10000);
     }
 
-    fetchPluginInfo = () => {
+    fetchPlugin = () => {
         const state = this.props.location.state;
         if (state && state.pluginId) {
             api.getPluginInfo(state.pluginId).then(res => {
                 if (res.code === 0) {
                     const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
-                    const { historyVersions, version, versionId, status, hasPrePublish, preVersionId, isPrePublishBuilding, auditRemark } = parseStatus(pluginVersions);
+                    const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
                     this.setState({
                         createdBy,
                         pluginId: state.pluginId,
@@ -129,13 +156,15 @@ class Setting extends Component {
                         repoName,
                         repoUrl,
                         historyVersions,
+                        status,
                         version,
                         versionId,
-                        status,
-                        hasPrePublish,
-                        preVersionId,
-                        isPrePublishBuilding,
+                        log,
                         auditRemark,
+                        hasPrePublish,
+                        preStatus,
+                        preVersionId,
+                        preLog,
                     });
                 } else {
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
@@ -153,12 +182,13 @@ class Setting extends Component {
     }
 
     handleRelease = (option) => {
+        const { pluginId } = this.state;
         const { showLoading, hideLoading } = this.props;
         showLoading({ message: i18n('plugin.publishing') });
-        api.publishPlugin(option).then(res => {
+        api.publishPlugin({ ...option, pluginId }).then(res => {
             hideLoading();
             if (res.code === 0) {
-                this.fetchPluginInfo();
+                this.fetchPlugin();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -168,19 +198,26 @@ class Setting extends Component {
         });
     }
 
-    recallAudit = () => {
-        const { versionId } = this.state;
-        const { showLoading, hideLoading } = this.props;
-        showLoading({ message: i18n('plugin.publishing') });
-        api.recallAudit({ pluginVersionId: versionId }).then(res => {
-            hideLoading();
+    cancelPrePublish = () => {
+        const { preVersionId } = this.state;
+        const { hideVersionPop } = this.props;
+        api.cancelPrePublish({ versionId: preVersionId }).then(res => {
             if (res.code === 0) {
-                this.fetchPluginInfo();
+                this.fetchPlugin();
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
         }).catch(err => {
             notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
+        hideVersionPop();
+    }
+
+    popForBuildingFail = () => {
+        this.props.showVersionPop({
+            type: 2,
+            desc: i18n('plugin.status4Desc', { version: this.state.version }),
+            log: this.state.log,
         });
     }
 
@@ -191,6 +228,8 @@ class Setting extends Component {
 
 const mapDispatch = (dispatch) => {
     return {
+        showVersionPop: (payload) => dispatch({ type: 'SHOW_VERSION_POP', payload }),
+        hideVersionPop: () => dispatch({ type: 'HIDE_VERSION_POP' }),
         showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
         hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
     }

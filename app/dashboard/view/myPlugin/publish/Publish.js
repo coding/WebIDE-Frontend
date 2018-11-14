@@ -21,11 +21,21 @@ class Publish extends Component {
         const { status } = this.props;
         // 审核中无法发布
         if (status === 1) {
-            return <div className="cannot-publish">{i18n('plugin.cannotPublishForAuditing')}</div>;
+            return (
+                <div>
+                    <div className="panel-sub-title">{i18n('plugin.officialPublish')}</div>
+                    <div className="cannot-publish">{i18n('plugin.cannotPublishForAuditing')}</div>
+                </div>
+            );
         }
         // 构建中无法发布
         if (status === 3) {
-            return <div className="cannot-publish">{i18n('plugin.cannotPublishForBuilding')}</div>;
+            return (
+                <div>
+                    <div className="panel-sub-title">{i18n('plugin.officialPublish')}</div>
+                    <div className="cannot-publish">{i18n('plugin.cannotPublishForBuilding')}</div>
+                </div>
+            );
         }
         const { v, major, minor, patch, desc } = this.state;
         // 新版本必须高于老版本
@@ -33,11 +43,11 @@ class Publish extends Component {
         const newNum = major * 10000 + minor * 100 + patch;
         const disabled = (newNum <= oldNum) || !desc || desc.length > 255;
         return (
-            <div className="panel">
-                <div className="panel-title"></div>
+            <div>
+                <div className="panel-sub-title">{i18n('plugin.officialPublish')}</div>
                 <div className="com-board">
                     <div className="board-label">
-                        {i18n('global.release')}
+                        {i18n('plugin.newVersion')}
                         *
                         <a className="version-url" href="https://semver.org/lang/zh-CN/" target="_blank" rel="noopener noreferrer">
                             <i className="fa fa-question-circle"></i>
@@ -109,10 +119,9 @@ class Publish extends Component {
 
     handlePublish = () => {
         const { major, minor, patch, desc } = this.state;
-        const { pluginId, release } = this.props;
+        const { release } = this.props;
         // 预发布与发布是同一个接口，isPreDeploy字段不同
         const option = {
-            pluginId,
             version: `${major}.${minor}.${patch}`,
             description: desc,
             isPreDeploy: false,

@@ -7,7 +7,7 @@ import is from './is';
 
 const slotReg = /{{([a-z]+)}}/gi;
 
-const compileTemplate = (template, slot, dict, language) => {
+const compileTemplate = (template, slot = {}, dict, language) => {
     const chain = template.split('.');
     let map = dict;
     for (let i = 0, n = chain.length; i < n; i++) {

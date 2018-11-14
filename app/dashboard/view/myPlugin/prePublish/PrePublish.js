@@ -1,74 +1,109 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import './prePublish.css';
 
-import api from '../../../api';
-import i18n from '../../../utils/i18n';
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
+import ToolTip from '../../../share/toolTip';
 
-const pushHref = 'https://studio.dev.tencent.com/plugins-docs/#推送到远端仓库';
+import i18n from '../../../utils/i18n';
 
 class PrePublish extends Component {
+    state = {
+        isTTOn: false,
+    }
+
     render() {
-        const { hasPrePublish, isPrePublishBuilding } = this.props;
+        const { isTTOn } = this.state;
+        const { hasPrePublish, preStatus } = this.props;
         return (
-            <div className="panel">
-                <div className="panel-title">
-                    <div className="publish-tip">{i18n('plugin.prePublishTip')}</div>
-                    {hasPrePublish && (
-                        <div className="plugin-status">
-                            {!isPrePublishBuilding ? i18n('plugin.hasPrePublish') : i18n('plugin.prePublishBuilding')}
-                        </div>
-                    )}
+            <div>
+                <div className="panel-sub-title">
+                    {i18n('plugin.prePublish')}
+                    <span className="prepublish-tooltip">
+                        <i className="fa fa-question-circle" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}></i>
+                        <ToolTip on={isTTOn} message={isTTOn ? i18n('plugin.prePublishTip') : ''} placement="left" />
+                    </span>
                 </div>
-                <div className="pre-publish-button">
-                    <div className="pre-push-tip">
-                        <i className="fa fa-exclamation-circle"></i>
-                        {i18n('plugin.publishTip')}
-                        <a href={pushHref} target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                {!hasPrePublish && (
+                    <div className="prepublish-status">
+                        {i18n('plugin.preStat0')}
+                        <span className="click" onClick={this.popForPrePublish}>{i18n('plugin.preStat0Click')}</span>
+                        {i18n('global.period')}
                     </div>
-                    {
-                        !hasPrePublish ? (
-                            <button className="com-button primary" onClick={this.handlePrePublish}>
-                                {i18n('plugin.prePublish')}
-                            </button>
-                        ) : (
-                            !isPrePublishBuilding ? (
-                                <button className="com-button primary" onClick={this.handleCancelPrePublish}>{i18n('plugin.cancelPrePublish')}</button>
-                            ) : <button className="com-button default building">{i18n('plugin.state3')}</button>
-                        )
-                    }
-                </div>
+                )}
+                {hasPrePublish && preStatus === 1 && (
+                    <div className="prepublish-status">
+                        {i18n('plugin.preStat1')}
+                    </div>
+                )}
+                {hasPrePublish && preStatus === 2 && (
+                    <div className="prepublish-status">
+                        {i18n('plugin.preStat2')}
+                        <span className="click" onClick={this.popForHasPrePublish}>{i18n('plugin.preStat2Click')}</span>
+                        {i18n('global.period')}
+                    </div>
+                )}
+                {hasPrePublish && preStatus === 3 && (
+                    <div className="prepublish-status">
+                        {i18n('plugin.preStat3')}
+                        <span className="click" onClick={this.popForPrePublishBuildingFail}>{i18n('plugin.preStat3Click')}</span>
+                        {i18n('global.period')}
+                    </div>
+                )}
             </div>
         );
     }
 
+    handleTT = () => {
+        this.setState(prevState => ({ isTTOn: !prevState.isTTOn }));
+    }
+
+    popForPrePublish = () => {
+        this.props.showVersionPop({
+            type: 1,
+            desc: i18n('plugin.preStat0Desc'),
+            action: i18n('plugin.preStat0Action'),
+            method: this.handlePrePublish,
+        });
+    }
+
+    popForPrePublishBuildingFail = () => {
+        this.props.showVersionPop({
+            type: 1,
+            desc: i18n('plugin.preStat3Desc'),
+            log: this.props.preLog,
+            action: i18n('plugin.preStat3Action'),
+            method: this.handlePrePublish,
+        });
+    }
+
+    popForHasPrePublish = () => {
+        this.props.showVersionPop({
+            type: 1,
+            desc: i18n('plugin.preStat2Desc'),
+            action: i18n('plugin.preStat2Action'),
+            method: this.props.cancelRelease,
+        });
+    }
+
     handlePrePublish = () => {
-        const { pluginId, release } = this.props;
+        const { release, hideVersionPop } = this.props;
         // 预发布与发布是同一个接口，isPreDeploy字段不同
         const option = {
-            pluginId,
             version: '',
             description: '[pre publish]',
             isPreDeploy: true,
         }
         release(option);
-        this.setState({ iknow : false });
-    }
-
-    handleCancelPrePublish = () => {
-        const { preVersionId, refresh } = this.props;
-        this.setState({ iknow: false });
-        api.cancelPrePublish({ versionId: preVersionId }).then(res => {
-            if (res.code === 0) {
-                refresh();
-            } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-            }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
-        });
+        hideVersionPop();
     }
 }
 
-export default PrePublish;
+const mapDispatch = (dispatch) => {
+    return {
+        showVersionPop: (payload) => dispatch({ type: 'SHOW_VERSION_POP', payload }),
+        hideVersionPop: () => dispatch({ type: 'HIDE_VERSION_POP' }),
+    }
+}
+
+export default connect(null, mapDispatch)(PrePublish);

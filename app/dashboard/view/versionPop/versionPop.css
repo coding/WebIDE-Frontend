@@ -1,0 +1,73 @@
+.dash-versionpop {
+    display: none;
+    background-color: rgba(0, 0, 0, .6);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+.dash-versionpop.on {
+    display: block;
+}
+.dash-versionpop .board {
+    width: 600px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #333;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, .3);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.dash-versionpop .board .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 35px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #3c3c3c;
+}
+.dash-versionpop .board .title i {
+    display: flex;
+    align-items: flex-end;
+    width: 12px;
+    height: 12px;
+    font-size: 16px;
+    color: #aaa;
+    cursor: pointer;
+    transition: transform .3s ease;
+}
+.dash-versionpop .board .title i:hover {
+    transform: rotate(90deg);
+}
+.dash-versionpop .board .desc {
+    padding: 20px 0;
+}
+.dash-versionpop .board .log {
+    height: 400px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #000;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-y: auto;
+}
+.dash-versionpop .board .log::-webkit-scrollbar {
+    border-radius: 4px;
+    background-color: #222;
+}
+.dash-versionpop .board .tip {
+    width: 100%;
+    margin-top: 10px;
+    color: #999;
+}
+.dash-versionpop .board .tip i {
+    margin-right: 5px;
+    font-size: 16px;
+}
+.dash-versionpop .board button {
+    margin-top: 10px;
+}

@@ -12,6 +12,7 @@ import Home from './dashboard/view/home';
 import Mask from './dashboard/view/mask';
 import Loading from './dashboard/view/loading';
 import Notification from 'components/Notification';
+import VersionPop from 'dashboard/view/versionPop';
 
 ReactDOM.render(
     <Provider store={store}>
@@ -23,6 +24,7 @@ ReactDOM.render(
                 <Mask />
                 <Loading />
                 <Notification />
+                <VersionPop />
             </div>
         </BrowserRouter>
     </Provider>
