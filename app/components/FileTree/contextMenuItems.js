@@ -55,14 +55,6 @@ const items = [
   },
   divider,
   {
-    name: i18n`fileTree.contextMenu.gitBlame`,
-    icon: 'fa',
-    command: (c) => {
-      gitBlameNode(c)
-    },
-    id: 'filetree_menu_gitBlame',
-  },
-  {
     name: i18n`fileTree.contextMenu.ignore`,
     icon: 'fa',
     command: 'file:add_ignore',
