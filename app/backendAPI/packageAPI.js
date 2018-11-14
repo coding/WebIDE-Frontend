@@ -45,7 +45,7 @@ export const enablePackageHotReload = (target) => {
   socket.on('change', (data) => {
     if (!data) return
     if (target) {
-      console.log(`plugin is reloading from ${target}`, data)
+      console.log(`[Package Hot Reload] Plugin is reloading from ${target}.`, data)
       data.codingIdePackage.TARGET = target
     }
     fetchPackage(data.codingIdePackage, 'reload')
