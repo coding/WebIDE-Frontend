@@ -14,7 +14,12 @@ const Row = ({ buildVersion, description, auditStatus, buildStatus, auditRemark,
             <td>{description}</td>
             <td>
                 {i18n(getStatus(auditStatus, buildStatus))}
-                {buildLog && <i className="fa fa-bug" onClick={() => handlePop(buildLog)}></i>}
+                {buildLog && (
+                    <span className="log" onClick={() => handlePop(buildLog)}>
+                        <i className="fa fa-bug"></i>
+                        <span>Log</span>
+                    </span>
+                )}
             </td>
             <td>{auditRemark}</td>
             <td>{getFormatTime(createdDate)}</td>
@@ -36,20 +41,22 @@ class History extends Component {
         }
         return (
             <div className="history">
-                <table className="versions-table">
-                    <thead>
-                        <tr>
-                            <th>{i18n('global.release')}</th>
-                            <th>{i18n('plugin.releaseNote')}</th>
-                            <th>{i18n('global.status')}</th>
-                            <th>{i18n('plugin.auditOpinion')}</th>
-                            <th>{i18n('plugin.publishTime')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {historyVersions.map(v => <Row key={v.id} {...v} handlePop={this.handlePop} />)}
-                    </tbody>
-                </table>
+                <div className="table-wrap">
+                    <table className="versions-table">
+                        <thead>
+                            <tr>
+                                <th>{i18n('global.release')}</th>
+                                <th>{i18n('plugin.releaseNote')}</th>
+                                <th>{i18n('global.status')}</th>
+                                <th>{i18n('plugin.auditOpinion')}</th>
+                                <th>{i18n('plugin.publishTime')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {historyVersions.map(v => <Row key={v.id} {...v} handlePop={this.handlePop} />)}
+                        </tbody>
+                    </table>
+                </div>
                 {isPopOn && (
                     <div className="pop">
                         <div className="terminal">

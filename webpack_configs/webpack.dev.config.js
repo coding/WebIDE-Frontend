@@ -36,7 +36,7 @@ const dashboardEntryHtmlName = 'dashboard.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 const introEntryHtmlName = 'intro.html'
-// const changelogEntryHtmlName = 'changelog.html'
+const changelogEntryHtmlName = 'changelog.html'
 const exportEntryHtmlName = 'export.html'
 const iframeEntryHtmlName = 'iframe-test.html'
 
@@ -79,7 +79,6 @@ const config = merge(
       excludeChunks: ['workspaces', 'login','dashboard'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
-      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
@@ -94,7 +93,6 @@ const config = merge(
       excludeChunks: ['workspaces', 'main','dashboard'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/account.html'),
-      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
@@ -102,25 +100,29 @@ const config = merge(
       excludeChunks: ['workspaces', 'main','dashboard'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
-      // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       inject: false,
-      // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
-      backendUrl: str(process.env.BACKEND_URL || '')
-      // favicon: ICO_PATH,
+      backendUrl: str(process.env.BACKEND_URL || ''),
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+      backendUrl: str(process.env.BACKEND_URL || ''),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       inject: false,
       filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
-      
+
     }),
-    
+
     // new HtmlWebpackPlugin({
     //   title: 'Cloud Studio',
     //   inject: false,

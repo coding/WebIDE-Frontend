@@ -7,17 +7,18 @@ import './profile.css';
 
 import i18n from '../../../utils/i18n';
 import api from '../../../api';
+import config from '../../../utils/config';
 
 const httpReg = /^http/;
-const REDIRECT_URL = 'https://studio.dev.tencent.com';
 
 class Profile extends Component {
     render() {
-        const { name, avatar } = this.props.user;
+        const { user, on, togglePanel } = this.props;
+        const { name, avatar } = user;
         const src = httpReg.test(avatar) ? avatar : `https://coding.net${avatar}`;
         return (
-            <div className="dash-profile">
-                <div className="profile">
+            <div className={`dash-profile${on ? ' on' : ''}`}>
+                <div className="profile" onClick={togglePanel}>
                     {avatar && <img className="avatar" src={src} alt="avatar" />}
                     <span className="name">{name}</span>
                     <i className="caret fa fa-caret-up"></i>
@@ -48,11 +49,10 @@ class Profile extends Component {
         api.logout().then(res => {
             if (res.code === 0) {
                 this.props.logOut();
-                // window.top.postMessage({ path: '/intro' }, '*');
-                // window.location.href = '/intro';
-                window.top.postMessage({ state: {
-                    type: 'redirect'
-                }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
+                window.top.postMessage({
+                    state: { type: 'redirect' },
+                    path: `https://cloud.tencent.com/login/quit?s_url=${config.studioOrigin}`,
+                }, '*');
             }
         });
     }

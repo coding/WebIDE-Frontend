@@ -5,10 +5,13 @@
     font-size: 18px;
     color: #a1a1a1;
 }
-.dash-setmyplugin .history .versions-table {
+.dash-setmyplugin .history .table-wrap {
     width: 100%;
-    margin-top: 40px;
+    padding: 40px 0 5px;
     overflow: auto;
+}
+.dash-setmyplugin .history .versions-table {
+    min-width: 100%;
     border-collapse: collapse;
 }
 .dash-setmyplugin .versions-table tr {
@@ -21,22 +24,36 @@
     border: 1px solid #555;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(1) {
-    width: 60px;
+    min-width: 60px;
+}
+.dash-setmyplugin .versions-table tr td:nth-child(2) {
+    min-width: 200px;
+    max-width: 600px;
+    word-break: break-all;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(3) {
-    width: 120px;
+    min-width: 150px;
+}
+.dash-setmyplugin .versions-table tr td:nth-child(4) {
+    min-width: 200px;
+    max-width: 600px;
+    word-break: break-all;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(5) {
-    width: 160px;
+    min-width: 160px;
 }
 .dash-setmyplugin .versions-table thead tr {
     background-color: #434343;
 }
-.dash-setmyplugin .versions-table .fa {
-    margin-left: 10px;
-    font-size: 16px;
+.dash-setmyplugin .versions-table .log {
+    padding: 0 2px;
+    margin-left: 8px;
+    border: 1px solid #555;
     color: #f44;
     cursor: pointer;
+}
+.dash-setmyplugin .versions-table .fa {
+    margin-right: 2px;
 }
 .dash-setmyplugin .history .pop {
     background-color: rgba(0, 0, 0, .8);

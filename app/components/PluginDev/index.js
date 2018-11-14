@@ -1,12 +1,33 @@
 import React, { PureComponent } from 'react'
 import { observer } from 'mobx-react'
 import { dispatchCommand } from 'commands'
-import { pluginDevStore } from 'components/Plugins/store'
+import api from 'backendAPI'
+import { pluginDevStore, pluginProjectInfomation } from 'components/Plugins/store'
 
 @observer
 class PluginDev extends PureComponent {
+  componentDidMount () {
+    api.getMyPlugin()
+      .then((res) => {
+        if (res.data) {
+          const projectRepoUrl = (config.project && config.project.httpsUrl) || ''
+          const projectInfomation = res.data.find(project => project.repoUrl === projectRepoUrl)
+          if (projectInfomation) {
+            pluginProjectInfomation.pluginName = projectInfomation.pluginName
+            pluginProjectInfomation.description = projectInfomation.remark
+            pluginProjectInfomation.version = projectInfomation.currentVersion
+            pluginProjectInfomation.pluginId = projectInfomation.id
+          }
+        }
+      })
+  }
+
   handleGoDoc = () => {
     window.open('/plugins-docs')
+  }
+
+  handleDeploy = () => {
+    window.open('/dashboard/plugin/developedbyme/setting')
   }
 
   render () {
@@ -17,10 +38,16 @@ class PluginDev extends PureComponent {
             <i className='icon fa fa-cubes' />
             {i18n`plugin.header`}
           </p>
-          <span onClick={this.handleGoDoc}>
-            <i className='fa fa-book' aria-hidden />
-            开发文档
-          </span>
+          <p>
+            <span onClick={this.handleDeploy} style={{ cursor: 'pointer', marginRight: 10 }}>
+              <i className='fa fa-upload' aria-hidden />
+              发布插件
+            </span>
+            <span onClick={this.handleGoDoc} style={{ cursor: 'pointer' }}>
+              <i className='fa fa-book' aria-hidden />
+              开发文档
+            </span>
+          </p>
         </div>
         <div className='plugin-detail-panel'>
           {/* <p className='plugin-detail-campaign'>
@@ -28,14 +55,13 @@ class PluginDev extends PureComponent {
             <a onClick={() => window.open('/campaign/favorite-plugins')}>了解更多</a>
           </p>*/}
           <p className='plugin-name'>
-            {pluginDevStore.infomation &&
-              (pluginDevStore.infomation.displayName || pluginDevStore.infomation.name)}
+            {pluginProjectInfomation.pluginName}
           </p>
           <p className='plugin-description'>
-            {pluginDevStore.infomation && pluginDevStore.infomation.description}
+            {pluginProjectInfomation.description}
           </p>
           <p className='plugin-description'>
-            {pluginDevStore.infomation && `当前版本：${pluginDevStore.infomation.version}`}
+            {`当前版本：${pluginProjectInfomation.version || ''}`}
           </p>
           <div className='plugin-dev-server'>
             <p>请先确保已在终端内启动插件(yarn start)</p>

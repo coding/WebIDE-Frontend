@@ -1,1802 +1,1156 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1">
-  <title>Cloud Studio - 开启云端开发模式 WebIDE</title>
-  <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
-  <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
-  <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
-  <script src="//studio-res.coding.net/StudioWebResource/Scripts/jquery.min.js"></script>
-  <script src=" //studio-res.coding.net/StudioWebResource/Scripts/three.min.js "></script>
-  <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
-  <script src="   //studio-res.coding.net/StudioWebResource/Scripts/swiper.min.js"></script>
-  <link rel="stylesheet" href="//studio-res.coding.net/StudioWebResource/Scripts/swiper.min.css">
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-65952334-9');
-  </script>
-  <style>
-    .react-tabs__tab-list {
-      border-bottom: 1px solid #aaa;
-      margin: 0 0 10px;
-      padding: 0;
-    }
-
-    .react-tabs__tab {
-      display: inline-block;
-      border: 1px solid transparent;
-      border-bottom: none;
-      bottom: -1px;
-      position: relative;
-      list-style: none;
-      padding: 6px 12px;
-      cursor: pointer;
-    }
-
-    .react-tabs__tab--selected {
-      background: #fff;
-      border-color: #aaa;
-      color: black;
-      border-radius: 5px 5px 0 0;
-    }
-
-    .react-tabs__tab--disabled {
-      color: GrayText;
-      cursor: default;
-    }
-
-    .react-tabs__tab:focus {
-      /* box-shadow: 0 0 5px hsl(208, 99%, 50%); */
-      border-color: hsl(208, 99%, 50%);
-      outline: none;
-    }
-
-    /* .react-tabs__tab:focus:after {
-        content: "";
-        position: absolute;
-        height: 5px;
-        left: -4px;
-        right: -4px;
-        bottom: -5px;
-        background: hsl(208, 99%, 50%);
-      } */
-
-    .react-tabs__tab-panel {
-      display: none;
-    }
-
-    .react-tabs__tab-panel--selected {
-      display: block;
-    }
-  </style>
-
-  <style>
-    .ide-container {
-      font-size: 10px;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-
-    .ide-container * {
-      box-sizing: border-box;
-    }
-
-    .ide-container *:before,
-    .ide-container *:after {
-      box-sizing: border-box;
-    }
-
-    .ide-container {
-      font-size: $font-size;
-      font-family: $font-family;
-      line-height: 1;
-      color: $text-color;
-      background-color: $base-background-color;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-
-    .ide-container input,
-    .ide-container button,
-    .ide-container select,
-    .ide-container textarea {
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-    }
-
-    .ide-container a {
-      color: $link-color;
-      text-decoration: none;
-    }
-
-    .ide-container a:hover,
-    .ide-container a:focus {
-      color: $link-hover-color;
-      text-decoration: $link-hover-decoration;
-    }
-
-    .ide-container figure {
-      margin: 0;
-    }
-
-    .ide-container img {
-      vertical-align: middle;
-    }
-
-    .ide-container .img-rounded {
-      border-radius: $border-radius-large;
-    }
-
-    .ide-container .img-thumbnail {
-      padding: $thumbnail-padding;
-      line-height: $line-height-base;
-      background-color: $thumbnail-bg;
-      border: 1px solid $thumbnail-border;
-      border-radius: $thumbnail-border-radius;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .ide-container .img-circle {
-      border-radius: 50%;
-    }
-
-    .ide-container hr {
-      margin-top: $line-height-computed;
-      margin-bottom: $line-height-computed;
-      border: 0;
-      border-top: 1px solid $hr-border;
-    }
-
-    .ide-container .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      margin: -1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-
-    .ide-container .sr-only-focusable:active,
-    .ide-container .sr-only-focusable:focus {
-      position: static;
-      width: auto;
-      height: auto;
-      margin: 0;
-      overflow: visible;
-      clip: auto;
-    }
-
-    .ide-container [role="button"] {
-      cursor: pointer;
-    }
-
-    html,
-    body,
-    #root {
-      font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
-      -webkit-font-smoothing: antialiased;
-      width: 100%;
-      min-width: 300px;
-      height: 100vh;
-      margin: 0;
-    }
-
-    *[tabindex]:focus {
-      outline: 0 none;
-    }
-
-    .ide-container ::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
-    }
-
-    .ide-container ::-webkit-scrollbar-button {
-      width: 0;
-      height: 0;
-      display: none;
-    }
-
-    .ide-container ::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
-
-    .CodeMirror-vscrollbar,
-    .CodeMirror-hscrollbar {
-      pointer-events: auto !important;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    *:before,
-    *:after {
-      box-sizing: border-box;
-    }
-
-    input,
-    button,
-    select,
-    textarea {
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-    }
-
-    ul,
-    ol {
-      list-style-type: none;
-      list-style-image: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    hr {
-      border: 0;
-      border-top: 1px solid #808080;
-    }
-
-    .user {
-      display: flex;
-      align-items: center;
-      height: 36px;
-      float: right;
-    }
-    .user a {
-      color: #fff;
-      text-decoration: none;
-    }
-    .user .divide {
-      padding: 0 4px;
-      color: #fff;
-    }
-
-    .user .user-info {
-      position: relative;
-      display: flex;
-      font-size: 14px;
-      color: #fff;
-      letter-spacing: 0;
-      text-align: right;
-    }
-
-    .user .user-info .avatar {
-      width: 36px;
-      height: 36px;
-      vertical-align: middle;
-      border-radius: 50%;
-      border: 1px solid #fff;
-    }
-
-    .user .user-info .dropdown button {
-      margin-top: 2px;
-      border: none;
-      background: none;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      box-shadow: none;
-      padding: 6px 10px;
-    }
-
-    .user .user-info .dropdown button .caret {
-      border-top: 4px dashed;
-      border-top-style: solid 9;
-      margin-left: 10px;
-    }
-
-    .user .user-info .dropdown .dropdown-menu {
-      right: 0;
-      left: initial;
-    }
-
-    .user .user-info .dropdown .dropdown-menu .fa,
-    .user .user-info .dropdown .dropdown-menu .icon {
-      color: #999;
-      margin-right: 10px;
-      width: 14px;
-    }
-
-    .user .user-info .dropdown.open .dropdown-menu {
-      display: block;
-    }
-
-    .user .user-info .dropdown .dropdown-menu>li>a:hover,
-    .user .user-info .dropdown .dropdown-menu>li>a:focus {
-      text-decoration: none;
-      color: #262626;
-      background-color: #f5f5f5;
-    }
-
-    .user .button {
-      display: inline-block;
-      padding: 0 2em;
-      text-transform: none;
-      line-height: 2em;
-      height: 2em;
-      background-image: none;
-      -webkit-border-radius: 2em;
-      -moz-border-radius: 2em;
-      -ms-border-radius: 2em;
-      -o-border-radius: 2em;
-      border-radius: 2em;
-      border: none;
-      outline: 0;
-      cursor: pointer;
-      background: #fff;
-      margin: 5px;
-      color: #666;
-      font-size: 14px;
-      line-height: 26px;
-      text-decoration: none;
-    }
-
-    .user .btn-default:active:hover,
-    .user .btn-default.active:hover,
-    .user .open>.dropdown-toggle.btn-default:hover,
-    .user .btn-default:active:focus,
-    .user .btn-default.active:focus,
-    .user .open>.dropdown-toggle.btn-default:focus,
-    .user .btn-default:active.focus,
-    .user .btn-default.active.focus,
-    .user .open>.dropdown-toggle.btn-default.focus {
-      color: #fff;
-      background: none;
-      border: none;
-    }
-
-    .user .caret {
-      display: inline-block;
-      width: 0;
-      height: 0;
-      margin-left: 10px;
-      vertical-align: middle;
-      border-top: 4px dashed;
-      border-top: 4px solid 9;
-      border-right: 4px solid transparent;
-      border-left: 4px solid transparent;
-    }
-
-    .user .dropdown-menu {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 1000;
-      display: none;
-      float: left;
-      min-width: 160px;
-      padding: 5px 0;
-      margin: 2px 0 0;
-      list-style: none;
-      font-size: 14px;
-      text-align: left;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      border-radius: 4px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-      background-clip: padding-box;
-    }
-
-    .user .dropdown-menu>li>a {
-      display: block;
-      padding: 3px 20px;
-      clear: both;
-      font-weight: normal;
-      line-height: 1.42857143;
-      color: #333;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-
-    .page-header {
-      font-size: 14px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 30px;
-      display: flex;
-      align-items: center;
-    }
-
-    .page-header .logo {
-      /* background: url("https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png") no-repeat; */
-      background-size: 176px 24px;
-      height: 24px;
-      width: 176px;
-      /* padding-top: 20px; */
-      overflow: hidden;
-      display: inline-block;
-      z-index: 1;
-      transition-delay: 0.4s;
-      transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-    }
-
-    .page-header .nav {
-      display: block;
-      display: flex;
-      flex: 1;
-    }
-
-    .page-header .nav li {
-      padding-left: 30px;
-    }
-
-    .page-header .nav a {
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .drop-down-wrap {
-      position: relative;
-    }
-
-    .drop-down-wrap:hover .drop-down-container {
-      display: block;
-    }
-
-    .drop-down-wrap .drop-down-container {
-      display: none;
-      padding-top: 10px;
-      position: absolute;
-      top: 20px;
-    }
-
-    .drop-down-wrap .drop-down-container::before {
-      content: '';
-      border: 8px solid transparent;
-      border-bottom-color: #fff;
-      position: absolute;
-      top: -4px;
-      left: 10px;
-    }
-
-    .drop-down-wrap .drop-down-container .drop-down {
-      background: #fff;
-      border: 1px solid #f5f6f8;
-      border-radius: 2px 2px 2px 2px;
-      color: #202d40;
-      font-size: 12px;
-      position: relative;
-      width: 110px;
-    }
-
-    .drop-down-wrap .drop-down-container .drop-down .item {
-      cursor: pointer;
-      height: 36px;
-      line-height: 36px;
-      padding-left: 10px;
-      text-align: left!important;
-    }
-
-    .drop-down-wrap .drop-down-container .drop-down .item:hover {
-      background-color: #f5f7fa;
-    }
-
-    .drop-down-wrap .drop-down-container .drop-down .item a {
-      color: #202d40;
-    }
-
-    .page-header .nav-right {
-      flex: 1;
-      text-align: right;
-    }
-
-    .page-header .nav-right a {
-      font-size: 16px;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    #global_footer {
-      text-align: left;
-    }
-
-    #global_footer .record {
-      background: #232f40;
-      color: #76808e;
-    }
-
-    #global_footer .record_info {
-      text-align: right;
-      font-size: 12px;
-    }
-
-    #global_footer .record_info p {
-      margin: 0;
-      height: 18px;
-      line-height: 18px;
-    }
-
-    #global_footer .record_info a {
-      color: #76808e;
-      text-decoration: none;
-    }
-
-    #global_footer .record_info a:hover {
-      color: #ddd;
-    }
-
-    #global_footer .record_img_info {
-      width: 980px;
-      margin: 30px auto 0 !important;
-      padding: 30px 0;
-    }
-
-    .intro-page {
-      font-family: PingFangSC-Regular;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      text-align: center;
-      justify-content: center;
-      min-height: 560px;
-      background: #323a45;
-      color: #fff;
-    }
-
-    .intro-page .intro-header {
-      height: 600px;
-      width: 100%;
-      background: #1e2229;
-      text-align: center;
-    }
-    .intro-page .intro-header h2 {
-      color: #fff;
-      font-size: 64px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      margin: 0;
-      padding-bottom: 20px;
-      text-align: center;
-    }
-    .intro-page .intro-header p {
-      color: #fff;
-      font-size: 18px;
-      letter-spacing: 1px;
-      line-height: 34px;
-      margin: 0 auto;
-      text-align: center;
-      text-shadow: 0 1px 1px #232f40;
-      width: 920px;
-    }
-
-    .intro-page .intro-header #canvas {
-      position: absolute;
-      top: 0px;
-      width: 100%;
-      height: 600px;
-    }
-
-    .intro-page .intro-header .content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      height: 600px;
-      position: absolute;
-      top: 0;
-    }
-
-    .mobile-nav-btn {
-      display: none;
-    }
-
-    .intro-page .intro-header .content .content-tips {
-      display: none;
-    }
-
-    .intro-page .intro-header .btn-try {
-      background: #06f;
-      font-size: 18px;
-      color: #fff;
-      line-height: 24px;
-      text-decoration: none;
-      padding: 12px 44px;
-      margin-top: 60px;
-      border-radius: 0;
-      display: inline-block;
-      border-radius: 2px;
-      transition: all 0.5s ;
-      margin: 40px auto 0 auto;
-    }
-
-    .intro-page .intro-header .btn-try:hover {
-      background: #003d99;
-      opacity: 0.8;
-    }
-
-    .intro-page .intro-counter {
-      align-items: center;
-      background: #f7f8fa;
-      color: #000;
-      display: flex;
-      font-size: 16px;
-      font-weight: 700;
-      justify-content: center;
-      padding: 80px 0;
-    }
-
-    .intro-page .intro-counter .logo {
-      background: url("//studio-res.coding.net/StudioWebResource/Images/CloudStudio-Logo-Light.svg") -10px -9px no-repeat;
-      height: 20px;
-      width: 161px;
-      display: inline-block;
-      filter: invert(100%);
-      margin: 0 12px;
-      transform: translateY(3px);
-    }
-
-    .intro-page .intro-counter .num {
-      font-family: DINAlternate-Bold;
-      font-size: 32px;
-      color: #00a4ff;
-      margin-left: 8px;
-    }
-
-    .intro-page .intro-feature {
-      padding-top: 80px;
-      background: #fff;
-    }
-
-    .intro-page .intro-feature h2 {
-      font-size: 48px;
-      color: #000;
-      letter-spacing: 2px;
-      text-align: center;
-      font-weight: normal;
-      margin: 0;
-      margin-bottom: 60px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-list {
-      width: 978px;
-      border: none;
-      display: flex;
-      margin: 0 auto;
-    }
-
-    .intro-feature .tabs-mobile {
-      display: none;
-    }
-
-    .tab-item-container {
-      margin-bottom: 60px;
-    }
-
-    .intro-feature .tabs-mobile .tab-item-container h3 {
-      font-family: PingFangSC-Regular;
-      width: 300px;
-      font-size: 20px;
-      color: #0066FF;
-      text-align: center;
-      padding-bottom: 16px;
-      margin: 0 auto;
-      border-bottom: 2px solid #0066FF;
-    }
-
-    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-panel {
-      background: #FFFFFF;
-      box-shadow: 0 0 20px 0 rgba(3,65,157,0.10);
-      padding: 10px;
-      width: 320px;
-      height: 230px;
-      margin: 24px auto;
-    }
-
-    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-panel img {
-      width: 300px;
-      height: 210px;
-    }
-
-    .intro-feature .tabs-mobile .tab-item-container .tab-mobile-intro {
-      width: 300px;
-      margin: 0 auto;
-    }
-
-    .tab-item-container .tab-mobile-intro h4 {
-      font-family: PingFangSC-Medium;
-      font-size: 20px;
-      color: #000000;
-      margin: 0px;
-      text-align: left;
-    }
-
-    .tab-item-container .tab-mobile-intro p {
-      font-family: PingFangSC-Regular;
-      font-size: 16px;
-      color: #425063;
-      text-align: left;
-      margin-bottom: 26px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-list .react-tabs__tab {
-      flex: 1;
-      border: none;
-      border-bottom: 2px solid;
-      border-color: rgba(66, 80, 99, 0.3);
-      font-size: 20px;
-      color: #425063;
-      text-align: center;
-      padding-bottom: 18px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-list .react-tabs__tab--selected {
-      border-color: #06f;
-      color: #06f;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel {
-      padding: 60px 0 100px 0;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel {
-      width: 940px;
-      margin: 0 auto;
-      height: 340px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-img {
-      background: #fff;
-      box-shadow: 0 0 34px 0 rgba(3, 65, 157, 0.1);
-      width: 460px;
-      height: 340px;
-      padding: 30px;
-      float: left;
-      margin-right: 80px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-img img {
-      width: 400px;
-      height: 280px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro {
-      font-size: 20px;
-      color: #000;
-      text-align: left;
-      float: left;
-      width: 352px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro h2 {
-      font-size: 20px;
-      color: #000;
-      margin: 0;
-      padding-bottom: 16px;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro p {
-      font-size: 16px;
-      color: #425063;
-      padding-bottom: 28px;
-      margin-bottom: 0;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-panel .tab-panel .tab-panel-intro h3 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .intro-page .intro-swiper {
-      background: #f7fcff;
-      padding-top: 80px;
-      padding-bottom: 80px;
-    }
-
-    .intro-page .intro-swiper h2 {
-      font-size: 48px;
-      color: #000;
-      letter-spacing: 2px;
-      text-align: center;
-      font-weight: normal;
-      margin: 0;
-      margin-bottom: 60px;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c {
-      background: #fff;
-      box-shadow: 0 0 34px 0 rgba(3, 65, 157, 0.1);
-      padding: 30px;
-      width: 980px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-slide img {
-      width: 920px;
-      height: 527px;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-slide .desc {
-      font-size: 16px;
-      color: #232f40;
-      letter-spacing: 0;
-      padding-top: 20px;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-pagination {
-      text-align: right;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-pagination-fraction,
-    .intro-page .intro-swiper .intro-swiper-c .swiper-pagination-custom,
-    .intro-page .intro-swiper .intro-swiper-c .swiper-container-horizontal>.swiper-pagination-bullets {
-      bottom: 0;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-pagination-bullet {
-      background: #cbd0d9;
-      width: 12px;
-      height: 12px;
-      opacity: 1;
-      margin: 0 6px;
-    }
-
-    .intro-page .intro-swiper .intro-swiper-c .swiper-pagination-bullet-active {
-      background: #76808e;
-    }
-
-    .intro-page .intro-corp {
-      padding: 90px 0;
-      text-align: center;
-      font-size: 16px;
-      color: #232f40;
-      letter-spacing: 0;
-    }
-
-    .intro-page .intro-corp .logo {
-      background: url("//studio-res.coding.net/StudioWebResource/Images/CloudStudio-Logo-Light.svg") 10px -9px no-repeat;
-      height: 27px;
-      width: 217px;
-      display: inline-block;
-      filter: invert(100%);
-      margin: 0 12px;
-      background-size: 100%;
-      transform: translateY(5px);
-    }
-
-    .intro-page .intro-corp .c-logo-icon {
-      width: 160px;
-      height: 43.07692307692308px;
-      display: inline-block;
-      background-image: url("https://dn-coding-net-production-pp.codehub.cn/e849c85b-0dd3-4588-a1b4-86431dcb4e4d.png");
-      background-size: 160px 43.07692307692308px;
-      overflow: hidden;
-      background-repeat: no-repeat;
-      margin: 0 12px;
-      transform: translateY(10px);
-    }
-  </style>
-
-  <style>
-    .dropdown .btn {
-      cursor: pointer;
-    }
-
-    .intro-page .intro-feature .react-tabs__tab-list .react-tabs__tab {
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .user a.btn {
-      width: 88px;
-      height: 30px;
-      background: #EBEFF5;
-      font-size: 14px;
-      color: #000000;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      margin-left: 10px;
-      text-decoration: none;
-      line-height: 30px;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .user a.btn-primary {
-      background: #0066FF;
-      color: #FFF;
-      border-radius: 2px;
-    }
-
-    .mobile-record {
-      display: none;
-    }
-
-    .mobile-intro-menu {
-      display: none;
-    }
-  </style>
-
-  <style>
-    @media (max-width: 834px) {
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .page-header .nav {
-        display: none;
-      }
-      .page-header .user {
-        display: none !important;
-      }
-
-      .page-header .mobile-nav-btn {
-        width: 30px;
-        height: 30px;
-        padding: 0px;
-        border: none;
-        background-color: transparent;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        outline: none;
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-      }
-
-      .page-header .mobile-nav-btn > span {
-        width: 22px;
-        height: 2px;
-        background-color: #FFFFFF;
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-        transition-delay: 0s;
-      }
-
-      .intro-page .intro-header .content h2 {
-        font-size: 54px;
-        width: 300px;
-        margin: 0 auto;
-        padding-top: 98px;
-        font-family: PingFangSC-Medium;
-        letter-spacing: 2.25px;
-        line-height: 70px;
-      }
-      .intro-page .intro-header .content p {
-        box-sizing: content-box;
-        width: 300px;
-        font-size: 13px;
-        line-height: 20px;
-      }
-      .intro-page .intro-header .content ul {
-        width: 300px;
-        flex-flow: row wrap;
-        margin-top: 20px;
-      }
-      .intro-page .intro-header .content ul li {
-        margin-top: 10px;
-        width: 50%;
-        flex: auto;
-      }
-      .intro-page .intro-header .content a {
-        display: none;
-      }
-      .intro-page .intro-header .content .content-tips {
-        display: inline-block;
-        opacity: 0.5;
-        margin-top: 32px;
-        font-family: PingFangSC-Medium;
-        font-size: 13px;
-        color: #FFFFFF;
-        letter-spacing: 1px;
-        text-align: center;
-        line-height: 40px;
-      }
-
-      .btn-try {
-        display: none;
-      }
-
-      .intro-page .intro-counter {
-        height: 183px;
-        padding: 30px 44px;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-
-      .intro-feature .react-tabs {
-        display: none;
-      }
-      .intro-feature .tabs-mobile {
-        display: block;
-      }
-
-      .intro-page .intro-swiper .intro-swiper-c {
-        width: 320px;
-        padding: 10px;
-      }
-
-      .intro-page .intro-swiper .intro-swiper-c .swiper-slide img {
-        width: 300px;
-        height: 171px;
-      }
-
-      .record_img_info {
-        display: none;
-      }
-
-      .mobile-record {
-        width: 100%;
-        height: 132px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-      }
-
-      .mobile-record img {
-        width: 284px;
-        max-width: 284px;
-        position: initial !important;
-      }
-
-      .intro-page .intro-corp {
-        padding: 40px 0px 30px 0px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .intro-page .intro-corp span {
-        margin-top: 16px;
-        display: inline-block;
-      }
-
-      .intro-page .intro-corp .c-surrpot {
-        margin-top: 20px;
-      }
-      .record-info-mobile {
-        width: 293px;
-        height: 36px;
-        font-family: PingFangSC-Regular;
-        font-size: 12px;
-        color: #FFFFFF;
-        letter-spacing: 0;
-        text-align: center;
-        line-height: 18px;
-      }
-
-      .record-info-mobile > p {
-        margin: 0px;
-      }
-
-      .record-info-mobile > p > a {
-        text-decoration: none;
-        color: #FFFFFF;
-      }
-
-      .counter-logo-mobile {
-        height: 48px;
-        line-height: 48px;
-      }
-
-      .counter-text-mobile {
-        height: 38px;
-        line-height: 38px;
-      }
-
-      .counter-count-mobile {
-        height: 38px;
-        line-height: 38px;
-      }
-
-      .btn-rotate-to {
-        z-index: 2000;
-        transform: rotate(90deg);
-        transition: all 0.4s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-      }
-      .rotate-line-to-t {
-        margin-bottom: 0px !important;
-        transform: translateY(5px) rotate(45deg);
-        transition-delay: 0.2s;
-      }
-      .rotate-line-to-b {
-        transform: translateY(3px) rotate(-45deg);
-        transition-delay: 0.2s;
-      }
-
-      .menu-show {
-        background-color: #000 !important;
-      }
-
-      .mobile-intro-menu {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 0px;
-        background-color: #fff;
-        overflow: hidden;
-        transition: all .2s .1s ease-in;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-      }
-      .mobile-intro-menu .nav {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        padding-top: 100px;
-      }
-      .mobile-intro-menu .nav .nav-item {
-        font-size: 18px;
-        margin-bottom: 40px;
-      }
-      .mobile-intro-menu .nav .nav-item a {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-      }
-    }
-  </style>
-
-  <style>
-    .section-container:nth-child(even) {
-      background-color: #fff;
-    }
-    .section-container:nth-child(odd) {
-      background-color: #f7f8fa;
-    }
-    .section-container .section-content {
-      align-items: center;
-      display: flex;
-      justify-content: space-between;
-      margin: 0 auto;
-      max-width: 1160px;
-      padding: 120px 30px;
-      color: #000;
-    }
-    .section-container .section-content .text-container {
-      flex: 1 0 368px;
-      max-width: 368px;
-      text-align: left;
-    }
-    .section-container .section-content .text-container .title {
-      font-size: 36px;
-      font-weight: 700;
-      padding-bottom: 16px;
-    }
-    .section-container .section-content .text-container .desc {
-      font-size: 16px;
-      line-height: 24px;
-    }
-    .section-container .section-content .img-container {
-      max-width: 707px;
-      text-align: right;
-      width: 100%;
-    }
-    .section-container .section-content .img-container img {
-      width: 95%;
-    }
-    .footer-container {
-      align-items: center;
-      background-color: #1f2530;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      height: 150px;
-      justify-content: center;
-      padding: 0 20px;
-      text-align: center;
-    }
-    .footer-container .nav {
-      display: flex;
-      flex-wrap: wrap;
-      font-size: 14px;
-      justify-content: center;
-      margin-bottom: 15px;
-      opacity: .8;
-    }
-    .footer-container .nav .item {
-      color: #fff;
-      font-size: 14px;
-      margin-right: 40px;
-      text-decoration: unset;
-    }
-    .footer-container .items {
-      font-size: 12px;
-      margin-bottom: 3px;
-      opacity: .6;
-    }
-    .footer-container .items a {
-      color: #fff;
-      text-decoration: unset;
-    }
-    .footer-container .right {
-      color: #fff;
-      font-size: 12px;
-      opacity: .6;
-    }
-    @media only screen and (max-width: 768px) {
-      .section-container .section-content {
-        flex-direction: column;
-        padding: 88px 30px;
-      }
-      .section-container:nth-child(odd) .section-content {
-        flex-direction: column-reverse;
-      }
-      .section-container .section-content .text-container {
-        flex: auto;
-      }
-      .section-container .section-content .text-container {
-        flex: auto;
-      }
-      .section-container .section-content .text-container .desc {
-        padding-bottom: 48px;
-      }
-      .section-container .section-content .img-container img {
-        width: 100%;
-      }
-    }
-    @media only screen and (max-width: 414px) {
-      .section-container .section-content {
-        padding-bottom: 65px;
-        padding-top: 40px;
-      }
-      .section-container .section-content .text-container {
-        text-align: center;
-        width: auto;
-      }
-      .footer-container {
-        height: 200px;
-      }
-      .footer-container .nav {
-        color: #fff;
-        flex-direction: column;
-        font-size: 14px;
-        justify-content: center;
-        margin-bottom: 4px;
-      }
-      .footer-container .nav .first-row,
-      .footer-container .nav .second-row {
-        margin-bottom: 20px;
-      }
-      .footer-container .nav .first-row a,
-      .footer-container .nav .second-row a {
-        margin-right: 10px;
-      }
-      .footer-container .nav .item {
-        font-size: 14px;
-      }
-      .footer-container .items {
-        margin-bottom: 12px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>Cloud Studio - 开启云端开发模式 WebIDE</title>
+    <meta name="Keywords" content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio">
+    <meta name="Description" content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。">
+    <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
+    <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html, body, #root {
+            width: 100%;
+            min-width: 300px;
+            height: 100vh;
+            margin: 0;
+            font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            color: #06f;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+        a:hover {
+            color: #3788e4;
+        }
+        a:active {
+            color: #2277d7;
+        }
+        input, button, select, textarea {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+        }
+        ul, ol {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+            list-style-image: none;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #808080;
+        }
+    </style>
+
+    <style>
+        .intro-pc-head {
+            width: 100%;
+            color: #e3e6e8;
+            background-color: #2c303b;
+        }
+        .intro-pc-head .chief {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 60px;
+            padding: 0 30px;
+            font-size: 14px;
+        }
+        .intro-pc-head .chief a {
+            color: #e3e6e8;
+        }
+        .intro-pc-head .chief .left {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        .intro-pc-head .chief .left .logo img {
+            height: 24px;
+            vertical-align: middle;
+        }
+        .intro-pc-head .chief .prod {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            margin-left: 30px;
+            position: relative;
+        }
+        .intro-pc-head .chief .prod:hover .prod-menu {
+            height: 125px;
+            opacity: 1;
+        }
+        .intro-pc-head .chief .prod-menu {
+            width: 140px;
+            height: 0;
+            font-size: 12px;
+            opacity: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .05), -10px 0 20px rgba(0, 0, 0, .05), 10px 0 20px rgba(0, 0, 0, .05);
+            transition: height .16s, opacity .16s;
+            position: absolute;
+            top: 30px;
+            left: -12px;
+            z-index: 100;
+        }
+        .intro-pc-head .chief .prod-menu::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid #fff;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            position: absolute;
+            top: 0;
+            left: 15px;
+        }
+        .intro-pc-head .chief .prod-menu .blank {
+            height: 14px;
+        }
+        .intro-pc-head .chief .prod-menu .item {
+            display: block;
+            padding: 10px 15px;
+            text-align: left;
+            color: #000;
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color .1s ease;
+        }
+        .intro-pc-head .chief .prod-menu .item.one {
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+        .intro-pc-head .chief .prod-menu .item.two {
+            color: #00a4ff;
+        }
+        .intro-pc-head .chief .prod-menu .item.three {
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+        .intro-pc-head .chief .prod-menu .item:hover {
+            background-color: #f5f7fa;
+        }
+        .intro-pc-head .chief .help {
+            margin-left: 30px;
+        }
+        .intro-pc-head .chief .help:hover {
+            color: #00a4ff;
+        }
+        .intro-pc-head .chief .right {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .intro-pc-head .chief .right img {
+            width: 36px;
+            height: 36px;
+            vertical-align: middle;
+            border-radius: 50%;
+        }
+        .intro-pc-head .chief .right .user {
+            font-size: 14px;
+            user-select: none;
+            cursor: pointer;
+        }
+        .intro-pc-head .chief .right .name {
+            margin: 0 10px;
+        }
+        .intro-pc-head .chief .right .user-menu {
+            display: none;
+            padding: 10px 40px;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #333;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .05), -10px 0 20px rgba(0, 0, 0, .05), 10px 0 20px rgba(0, 0, 0, .05);
+            cursor: pointer;
+            position: absolute;
+            top: 40px;
+            right: 0;
+        }
+        .intro-pc-head .chief .right .user-menu.on {
+            display: block;
+        }
+        .intro-pc-head .chief .divide {
+            margin: 0 10px;
+        }
+        .intro-pc-head .sub {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            padding: 0 30px;
+            border-top: 1px solid #3d404b;
+            font-size: 12px;
+        }
+        .intro-pc-head .sub a {
+            color: #e3e6e8;
+        }
+        .intro-pc-head .sub-menu {
+            margin-right: 30px;
+            position: relative;
+        }
+        .intro-pc-head .sub-menu.on a {
+            color: #00a4ff;
+        }
+        .intro-pc-head .sub-menu:hover a {
+            color: #00a4ff;
+        }
+        .intro-pc-head .sub-menu .new {
+            top: -4px;
+            right: -35px;
+        }
+        .intro-mobile-head {
+            display: none;
+            width: 100%;
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .intro-mobile-head .chief {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 60px;
+            padding: 0 20px;
+            background-color: #2b303b;
+        }
+        .intro-mobile-head .chief .logo img {
+            height: 20px;
+        }
+        .intro-mobile-head .stripe {
+            width: 18px;
+            height: 15px;
+            cursor: pointer;
+            position: relative;
+        }
+        .intro-mobile-head .stripe .line {
+            width: 100%;
+            height: 3px;
+            background: #fff;
+            transition: transform .2s ease;
+            position: absolute;
+            left: 0;
+        }
+        .intro-mobile-head .stripe .line.up {
+            top: 0px;
+        }
+        .intro-mobile-head .stripe.on .line.up {
+            transform: rotate(45deg);
+            top: 6px;
+        }
+        .intro-mobile-head .stripe .line.mid {
+            opacity: 1;
+            transition: opacity .2s .15s ease;
+            top: 6px;
+        }
+        .intro-mobile-head .stripe.on .line.mid {
+            opacity: 0;
+            transition: opacity .2s ease;
+        }
+        .intro-mobile-head .stripe .line.low {
+            bottom: 0px;
+        }
+        .intro-mobile-head .stripe.on .line.low {
+            transform: rotate(-45deg);
+            bottom: 6px;
+        }
+        .intro-mobile-head .dropdown {
+            width: 100%;
+            height: 0;
+            font-size: 16px;
+            color: #e3e6e8;
+            background-color: #15171a;
+            overflow: auto;
+            transition: height .2s ease;
+        }
+        .intro-mobile-head .dropdown.on {
+            height: calc(100vh - 60px);
+        }
+        .intro-mobile-head .dropdown a {
+            color: #e3e6e8;
+        }
+        .intro-mobile-head .dropdown .title {
+            display: flex;
+            align-items: center;
+            height: 50px;
+            padding: 0 20px;
+        }
+        .intro-mobile-head .dropdown .title img {
+            width: 42px;
+            height: 42px;
+            vertical-align: middle;
+            border-radius: 50%;
+        }
+        .intro-mobile-head .dropdown .title.production {
+            color: #8a8b8c;
+        }
+        .intro-mobile-head .dropdown .title.help {
+            border-top: 1px solid #3d404b;
+            border-bottom: 1px solid #3d404b;
+        }
+        .intro-mobile-head .dropdown .menu {
+            display: flex;
+            align-items: center;
+            height: 50px;
+            padding: 0 20px 0 50px;
+            border-top: 1px solid #3d404b;
+        }
+        .intro-mobile-head .dropdown .blank {
+            height: 20px;
+        }
+        .intro-mobile-head .dropdown .cs-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+            padding: 0 20px 0 50px;
+            border-top: 1px solid #3d404b;
+        }
+        .intro-mobile-head .dropdown .cs.on .cs-inner i {
+            transform: rotate(180deg);
+        }
+        .intro-mobile-head .dropdown .cs-inner i {
+            transition: transform .2s ease;
+        }
+        .intro-mobile-head .dropdown .cs-dropdown {
+            height: 0;
+            overflow: hidden;
+            transition: height .2s ease;
+        }
+        .intro-mobile-head .dropdown .cs.on .cs-dropdown {
+            height: 200px;
+        }
+        .intro-mobile-head .dropdown .cs-menu {
+            display: flex;
+            align-items: center;
+            height: 50px;
+            padding: 0 20px 0 50px;
+            border-top: 1px solid #3d404b;
+            background-color: #2b303b;
+            position: relative;
+        }
+        .intro-mobile-head .dropdown .cs-menu.on a {
+            color: #00a4ff;
+        }
+        .intro-mobile-head .cs-menu .new {
+            top: 13px;
+            left: 116px;
+        }
+        @media screen and (max-width: 800px) {
+            .intro-pc-head {
+                display: none;
+            }
+            .intro-mobile-head {
+                display: block;
+            }
+        }
+    </style>
+
+    <style>
+        .intro-canvas {
+            width: 100%;
+            height: 600px;
+            text-align: center;
+            background: #1e2229;
+        }
+        .intro-canvas #canvas {
+            width: 100%;
+            height: 600px;
+        }
+        .intro-canvas .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content: center;
+            width: 100%;
+            height: 600px;
+            position: absolute;
+            top: 100px;
+        }
+        .intro-canvas .content .name {
+            width: 178px;
+            margin: 0 auto 50px;
+            border-bottom: 4px solid #00a4ff;
+            color: #fff;
+        }
+        .intro-canvas .content .name img {
+            width: calc(100% + 24px);
+            margin-left: -12px;
+        }
+        .intro-canvas .content h2 {
+            padding-bottom: 20px;
+            margin: 0;
+            text-align: center;
+            letter-spacing: 2px;
+            font-size: 46px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .intro-canvas .content .desc-mobile {
+            display: none;
+        }
+        .intro-canvas .content p {
+            width: 980px;
+            margin: 0 auto;
+            line-height: 30px;
+            text-align: center;
+            letter-spacing: 1px;
+            font-size: 16px;
+            color: #fff;
+            text-shadow: 0 1px 1px #232f40;
+        }
+        .intro-canvas .content .content-tips {
+            display: none;
+        }
+        .intro-canvas .btn-try {
+            display: inline-block;
+            padding: 12px 54px;
+            margin: 60px auto 0;
+            line-height: 24px;
+            border: none;
+            border-radius: 2px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #00a4ff;
+            opacity: 1;
+            outline: none;
+            transition: opacity 0.5s;
+        }
+        .intro-canvas .btn-try:hover {
+            opacity: 0.8;
+        }
+        @media screen and (max-width: 800px) {
+            .intro-canvas .content {
+                padding: 0;
+                top: 0;
+            }
+            .intro-canvas .content .desc-pc {
+                display: none;
+            }
+            .intro-canvas .content .desc-mobile {
+                display: block;
+            }
+            .intro-canvas .content .name {
+                width: 138px;
+                padding-top: 80px;
+                margin-bottom: 30px;
+            }
+            .intro-canvas .content h2 {
+                width: 230px;
+                margin: 0 auto;
+                letter-spacing: 2.25px;
+                font-size: 38px;
+                font-family: PingFangSC-Medium;
+            }
+            .intro-canvas .content p {
+                box-sizing: content-box;
+                width: 300px;
+                font-size: 13px;
+            }
+            .intro-canvas .content .content-tips {
+                display: inline-block;
+                margin-top: 20px;
+                text-align: center;
+                letter-spacing: 1px;
+                font-size: 13px;
+                font-family: PingFangSC-Medium;
+                color: #FFFFFF;
+                opacity: 0.5;
+            }
+            .intro-canvas .content .btn-try {
+                display: none;
+            }
+        }
+    </style>
+
+    <style>
+        .intro-counter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            background: #f7f8fa;
+        }
+        .intro-counter .logo {
+            display: inline-block;
+            width: 161px;
+            height: 20px;
+            margin: 0 12px;
+            background: url("//studio-res.coding.net/StudioWebResource/Images/CloudStudio-Logo-Light.svg") -10px -9px no-repeat;
+            filter: invert(100%);
+            transform: translateY(3px);
+        }
+        .intro-counter .counter-count-mobile {
+            display: flex;
+            align-items: center;
+        }
+        .intro-counter .num {
+            margin: 0 8px;
+            font-size: 32px;
+            font-family: DINAlternate-Bold;
+            color: #00a4ff;
+        }
+        @media screen and (max-width: 800px) {
+            .intro-counter {
+                height: 183px;
+                padding: 30px 44px;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+        }
+    </style>
+
+    <style>
+        .section-container:nth-child(odd) {
+            background-color: #fff;
+        }
+        .section-container:nth-child(even) {
+            background-color: #f7f8fa;
+        }
+        .section-container .section-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1160px;
+            padding: 120px 30px;
+            margin: 0 auto;
+            color: #000;
+        }
+        .section-container .section-content .text-container {
+            flex: 1 0 368px;
+            max-width: 368px;
+            text-align: left;
+        }
+        .section-container .section-content .text-container .title {
+            padding-bottom: 16px;
+            font-size: 36px;
+            font-weight: 700;
+        }
+        .section-container .section-content .text-container .desc {
+            line-height: 24px;
+            font-size: 16px;
+        }
+        .section-container .section-content .img-container {
+            width: 100%;
+            max-width: 707px;
+            text-align: right;
+        }
+        .section-container .section-content .img-container img {
+            width: 95%;
+        }
+        @media only screen and (max-width: 768px) {
+            .section-container .section-content {
+                flex-direction: column;
+                padding: 88px 30px;
+            }
+            .section-container:nth-child(odd) .section-content {
+                flex-direction: column-reverse;
+            }
+            .section-container .section-content .text-container {
+                flex: auto;
+            }
+            .section-container .section-content .text-container {
+                flex: auto;
+            }
+            .section-container .section-content .text-container .desc {
+                padding-bottom: 48px;
+            }
+            .section-container .section-content .img-container img {
+                width: 100%;
+            }
+        }
+
+        @media only screen and (max-width: 414px) {
+            .section-container .section-content {
+                padding-bottom: 65px;
+                padding-top: 40px;
+            }
+            .section-container .section-content .text-container {
+                width: auto;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <style>
+        .intro-foot {
+            width: 100%;
+            padding: 40px 50px 20px;
+            background-color: #1f2530;
+        }
+        .intro-foot .menu {
+            display: flex;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+        }
+        .intro-foot .menu .row {
+            margin-bottom: 20px;
+        }
+        .intro-foot .menu a {
+            color: #fff;
+        }
+        .intro-foot .menu-item {
+            margin: 0 20px;
+        }
+        .intro-foot .strategy {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: #a5a7ac;
+        }
+        .intro-foot .strategy a {
+            color: #a5a7ac;
+        }
+        .intro-foot .strategy .divide {
+            margin: 0 10px;
+        }
+        .intro-foot .copyright {
+            padding-top: 6px;
+            text-align: center;
+            font-size: 12px;
+            color: #a5a7ac;
+        }
+
+        @media screen and (max-width: 800px) {
+            .intro-foot .menu {
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .intro-foot .menu .row {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+            .intro-foot .menu-item {
+                margin: 0;
+            }
+        }
+        @media screen and (max-width: 320px) {
+            .intro-foot {
+                padding: 40px 30px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div id="root">
-    <div data-reactroot="" class="intro-page">
-      <div class="intro-header">
-        <div id="canvas">
-          <div>
-            <canvas width="1547" height="600" style="width: 1547px; height: 600px;"></canvas>
-          </div>
-        </div>
-        <div class="content">
-          <h2>最极客的云端开发体验</h2>
-          <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境，并且支持自定义域名指向，</p>
-          <p>动态计算资源调整，可以完成各种应用的开发编译与部署。</p>
-          <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
-          <a class="btn-try" href="javascript:void(0)" onClick="handleTry()">立即体验</a>
-          <span class="content-tips">需使用桌面版体验</span>
-        </div>
-        <section class="mobile-intro-menu">
-          <div class="nav">
-            <div class="nav-item">
-              <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
-            </div>
-            <div class="nav-item">
-              <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
-            </div>
-            <div class="nav-item">
-              <a href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
-            </div>
-            <div class="nav-item">
-              <a href="https://e.coding.net/" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
-            </div>
-            <div class="nav-item">
-              <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
-            </div>
-            <div class="nav-item">
-              <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="page-header">
-        <div class="logo">
-          <a href="https://dev.tencent.com/" target="_blank" rel="noopener noreferrer">
-              <img
-                  src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
-                  srcset="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x"
-              />
-          </a>
-        </div>
-        <ul class="nav">
-          <li class="drop-down-wrap">
-            功能
-            <div class="drop-down-container">
-              <div class="drop-down">
-                <div class="item">
-                  <a href="https://dev.tencent.com/production" target="_blank" rel="noopener noreferrer">项目与代码托管</a>
+    <div id="root">
+        <div class="intro-pc-head">
+            <div class="chief">
+                <div class="left">
+                    <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+                        <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
+                            srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
+                        />
+                    </a>
+                    <div class="prod">
+                        <div>产品</div>
+                        <div class="prod-menu">
+                            <div class="blank"></div>
+                            <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+                            <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
+                            <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
+                        </div>
+                    </div>
+                    <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
                 </div>
-                <div class="item">
-                  <a href="https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">Cloud Studio</a>
+                <div id="pc-has-not-login" class="right">
+                    <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
+                    <span class="divide">|</span>
+                    <a href="https://dev.tencent.com/login" target="_blank" rel="noopener noreferrer">登录</a>
                 </div>
-              </div>
+                <div id="pc-has-login" class="right" style="display: none;">
+                    <div className="title">
+                        <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+                            <img src="" alt="avatar" />
+                        </a>
+                    </div>
+                </div>
             </div>
-          </li>
-          <li>
-            <a href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
-          </li>
-          <li>
-            <a href="https://e.coding.net/" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
-          </li>
-        </ul>
-        <div class="user" id="user">
-          <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
-          <span class="divide">|</span>
-          <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
-        </div>
-        <button class="mobile-nav-btn">
-          <span style="margin-bottom: 6px"></span>
-          <span></span>
-        </button>
-      </div>
-      <div class="intro-counter">
-        <div class="counter-logo-mobile">
-          在
-          <div class="logo"></div>
-        </div>
-        <div class="counter-text-mobile">上进行在线开发的用户累计使用时间为</div>
-        <div class="counter-count-mobile">
-          <span class="num" id="countNum">-,---,---,---</span>
-          秒
-        </div>
-      </div>
-      <div class="section-container">
-        <div class="section-content">
-          <div class="text-container">
-            <div class="title">
-              一键切换开发环境
+            <div class="sub">
+                <div class="sub-menu on">
+                    <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                </div>
+                <div class="sub-menu">
+                    <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+                </div>
+                <div class="sub-menu">
+                    <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                </div>
+                <div class="sub-menu">
+                    <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                </div>
             </div>
-            <div class="desc">
-              Cloud Studio 预置近 20 种开发环境，一键切换，开发者也可以保存自己配置的开发环境，告别烦杂的环境部署工作，将精力专注于代码的编写之上。
-            </div>
-          </div>
-          <div class="img-container">
-            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p2.dc9b885f.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p2@2x.c470c016.png 2x"
-              alt="一键切换开发环境">
-          </div>
         </div>
-      </div>
-      <div class="section-container">
-        <div class="section-content">
-          <div class="img-container">
-            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p3.30cb4fb4.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p3@2x.76689a62.png 2x"
-              alt="实时协同编辑">
-          </div>
-          <div class="text-container">
-            <div class="title">
-              实时协同编辑
+        <div class="intro-mobile-head">
+            <div class="chief">
+                <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+                    <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
+                        srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
+                    />
+                </a>
+                <div id="stripe" class="stripe">
+                    <div class="line up"></div>
+                    <div class="line mid"></div>
+                    <div class="line low"></div>
+                </div>
             </div>
-            <div class="desc">
-              支持聊天室，支持多人协同操作，实时展示协作者的代码进度，多光标显示，输入内容一目了然。
+            <div id="mobile-dropdown" class="dropdown">
+                <div class="title production">产品</div>
+                <a class="menu" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+                <div id="cs-menu" class="cs">
+                    <div class="cs-inner">
+                        <span>Cloud Studio</span>
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="cs-dropdown">
+                        <div class="cs-menu on">
+                            <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                        </div>
+                        <div class="cs-menu">
+                            <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+                        </div>
+                        <div class="cs-menu">
+                            <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                        </div>
+                        <div class="cs-menu">
+                            <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                        </div>
+                    </div>
+                </div>
+                <a class="menu" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
+                <a class="title help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
+                <div class="blank"></div>
+                <div id="mobile-has-login" class="title" style="display: none;">
+                    <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+                        <img src="" alt="avatar" />
+                    </a>
+                </div>
+                <div id="mobile-has-not-login">
+                    <a class="title" href="https://dev.tencent.com/login" target="_blank" rel="noopener noreferrer">登录</a>
+                    <a class="title" href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
+                </div>
+                <div class="blank"></div>
             </div>
-          </div>
         </div>
-      </div>
-      <div class="section-container">
-        <div class="section-content">
-          <div class="text-container">
-            <div class="title">
-              全功能终端
+        <div class="intro-canvas">
+            <div id="canvas">
+                <canvas width="1547" height="600" style="width: 1547px; height: 600px;"></canvas>
             </div>
-            <div class="desc">
-              兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持，默认用户 sudo 免密码，用户可以自由安装偏好的软件包。
+            <div class="content">
+                <div class="name">
+                    <img src="<%= webpackConfig.output.publicPath + 'static/CloudStudio-Logo.svg' %>" />
+                </div>
+                <h2>最极客的云端开发体验</h2>
+                <div class="desc-pc">
+                    <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, </p>
+                    <p>可以完成各种应用的开发编译与部署。Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境,</p>
+                    <p>分享给团队的其他成员。</p>
+                </div>
+                <div class="desc-mobile">
+                    <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, 可以完成各种应用的开发编译与部署。</p>
+                    <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
+                </div>
+                <button class="btn-try" onClick="handleTry()">立即体验</button>
+                <span class="content-tips">需使用桌面版体验</span>
             </div>
-          </div>
-          <div class="img-container">
-            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p4.514023d3.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p4@2x.7e1108c6.png 2x"
-              alt="全功能终端">
-          </div>
         </div>
-      </div>
-      <div class="section-container">
-        <div class="section-content">
-          <div class="img-container">
-            <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p5.695383d8.png" srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p5@2x.e7d550e2.png 2x"
-              alt="实时进度保存">
-          </div>
-          <div class="text-container">
-            <div class="title">
-              实时进度保存
+        <div class="intro-counter">
+            <div class="counter-logo-mobile">
+                在
+                <div class="logo"></div>
             </div>
-            <div class="desc">
-              开发进度、开发环境、代码文件自动实时云端存储，无需手动保存，大大降低了误操作和浏览器性能问题带来的代码丢失风险。
+            <div class="counter-text-mobile">上进行在线开发的用户累计使用时间为</div>
+            <div class="counter-count-mobile">
+                <span class="num" id="countNum">-,---,---,---</span>秒
             </div>
-          </div>
         </div>
-      </div>
-      <footer class="footer-container">
-        <div class="nav">
-          <div class="first-row">
-            <a href="https://dev.tencent.com/help" target="_blank" class="item">
-              文档帮助
-            </a>
-            <a href="https://www.cloud.tencent.com" class="item" target="_blank">
-              腾讯云官网
-            </a>
-          </div>
-          <div class="second-row">
-            <a href="https://cloud.tencent.com/developer" class="item" target="_blank">
-              腾讯云+社区
-            </a>
-            <a href="https://dev.tencent.com/about" target="_blank" class="item">
-              关于我们
-            </a>
-            <a href="https://feedback.coding.net/" target="_blank" class="item" style="margin-right: 0">
-              在线反馈
-            </a>
-          </div>
+        <div class="section-container">
+            <div class="section-content">
+                <div class="text-container">
+                    <div class="title">
+                        一键切换开发环境
+                    </div>
+                    <div class="desc">
+                        Cloud Studio 预置近 20 种开发环境，一键切换，开发者也可以保存自己配置的开发环境，告别烦杂的环境部署工作，将精力专注于代码的编写之上。
+                    </div>
+                </div>
+                <div class="img-container">
+                    <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p2.dc9b885f.png"
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p2@2x.c470c016.png 2x" alt="一键切换开发环境"
+                    />
+                </div>
+            </div>
         </div>
-        <div class="items">
-          <a href="https://dev.tencent.com/privacy" target="_blank">隐私策略</a>
-          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-          <a href="https://dev.tencent.com/terms" target="_blank">服务条款</a>
-          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-          <a href="https://dev.tencent.com/security" target="_blank">安全策略</a>
+        <div class="section-container">
+            <div class="section-content">
+                <div class="img-container">
+                    <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p3.30cb4fb4.png"
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p3@2x.76689a62.png 2x" alt="实时协同编辑"
+                    />
+                </div>
+                <div class="text-container">
+                    <div class="title">
+                        实时协同编辑
+                    </div>
+                    <div class="desc">
+                        支持聊天室，支持多人协同操作，实时展示协作者的代码进度，多光标显示，输入内容一目了然。
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="right">
-          Copyright © 2013-2018 Tencent Cloud. All Rights Reserved. 腾讯云 版权所有&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;粤B2-20090059
+        <div class="section-container">
+            <div class="section-content">
+                <div class="text-container">
+                    <div class="title">
+                        全功能终端
+                    </div>
+                    <div class="desc">
+                        兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持，默认用户 sudo 免密码，用户可以自由安装偏好的软件包。
+                    </div>
+                </div>
+                <div class="img-container">
+                    <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p4.514023d3.png"
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p4@2x.7e1108c6.png 2x" alt="全功能终端"
+                    />
+                </div>
+            </div>
         </div>
-      </footer>
+        <div class="section-container">
+            <div class="section-content">
+                <div class="img-container">
+                    <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p5.695383d8.png"
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p5@2x.e7d550e2.png 2x" alt="实时进度保存"
+                    />
+                </div>
+                <div class="text-container">
+                    <div class="title">
+                        实时进度保存
+                    </div>
+                    <div class="desc">
+                        开发进度、开发环境、代码文件自动实时云端存储，无需手动保存，大大降低了误操作和浏览器性能问题带来的代码丢失风险。
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="intro-foot">
+            <div class="menu">
+                <div class="row">
+                    <span class="menu-item">服务支持 QQ 群: 875684377</span>
+                    <a class="menu-item" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档帮助</a>
+                </div>
+                <div class="row">
+                    <a class="menu-item" href="https://cloud.tencent.com" target="_blank" rel="noopener noreferrer">腾讯云官网</a>
+                    <a class="menu-item" href="https://cloud.tencent.com/developer" target="_blank" rel="noopener noreferrer">腾讯云+社区</a>
+                    <a class="menu-item" href="https://dev.tencent.com/about" target="_blank" rel="noopener noreferrer">关于我们</a>
+                </div>
+            </div>
+            <div class="strategy">
+                <a href="https://dev.tencent.com/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
+                <span class="divide">|</span>
+                <a href="https://dev.tencent.com/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
+                <span class="divide">|</span>
+                <a href="https://dev.tencent.com/security" target="_blank" rel="noopener noreferrer">安全策略</a>
+            </div>
+            <div class="copyright">Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
+        </div>
     </div>
-  </div>
-  <div class='hidden'>
-    <div class="login">
-      <a href="https://coding.net/register" target="_blank" class="btn btn-primary">注册</a>
-      <a href="/signin" class="btn">登录</a>
-    </div>
-    <div class="user-info" id="user-info">
-      <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
-        <img src="" alt="avatar" class="avatar">
-      </a>
-      <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
-          type="button">
-          <span class="username"></span>
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="aria-labelledby">
-          <li>
-            <a href="/dashboard" rel="noopener noreferrer">控制台</a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" onclick="logout()">退出</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <script>
-    $('.dropdown').click(function () {
-      $(this).toggleClass('open');
-    })
-    $('.react-tabs__tab').click(function () {
-      var selected = $('.react-tabs__tab--selected').removeClass('react-tabs__tab--selected').attr('aria-controls');
-      $('#' + selected).removeClass('react-tabs__tab-panel--selected');
 
-      selected = $(this).addClass('react-tabs__tab--selected').attr('aria-controls');
-      $('#' + selected).addClass('react-tabs__tab-panel--selected');
-    })
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65952334-9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-65952334-9');
+    </script>
+    <script src=" //studio-res.coding.net/StudioWebResource/Scripts/three.min.js "></script>
+    <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
+    <script>
+        // 计算年份
+        document.querySelector('#year').innerHTML = new Date().getFullYear();
 
-    $('.mobile-nav-btn').click(function () {
-      let topLine = $('.mobile-nav-btn span')[0];
-      let bottomLine = $('.mobile-nav-btn span')[1];
-      if ($('.mobile-nav-btn').hasClass('btn-rotate-to')) {
-        $('.mobile-nav-btn').removeClass('btn-rotate-to');
-        $(topLine).removeClass('rotate-line-to-t menu-show');
-        $(bottomLine).removeClass('rotate-line-to-b menu-show');
-        $('.mobile-intro-menu').css('height', 0);
-        $('.page-header .logo').css('opacity', 1);
-      } else {
-        $('.mobile-nav-btn').addClass('btn-rotate-to');
-        $(topLine).addClass('rotate-line-to-t menu-show');
-        $(bottomLine).addClass('rotate-line-to-b menu-show');
-        $('.mobile-intro-menu').css('height', '100%');
-        $('.page-header .logo').css('opacity', 0);
-      }
-    })
+        // 给顶层 window 发消息
+        const $postMessage = document.querySelectorAll('.post-message');
+        for (let i = 0; i < $postMessage.length; i++) {
+            const $item = $postMessage[i];
+            $item.addEventListener('click', function() {
+                window.top.postMessage({
+                    state: { type: 'redirect' },
+                    path: $item.getAttribute('href'),
+                }, '*');
+            });
+        }
 
-    var mySwiper = new Swiper('.swiper-container', {
-      autoplay: {
-        delay: 10000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true
-      },
-      loop: true
-    })
+        // 请求用户信息
+        let hasLogin = false;
+        function getUserInfo() {
+            fetch(<%= htmlWebpackPlugin.options.backendUrl %> + '/user/current', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/vnd.coding.v2+json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            }).then(res => res.json()).then(res => {
+                const $pcHasNotLogin = document.querySelector('#pc-has-not-login');
+                const $mobileHasNotLogin = document.querySelector('#mobile-has-not-login');
+                const $pcHasLogin = document.querySelector('#pc-has-login');
+                const $mobileHasLogin = document.querySelector('#mobile-has-login');
+                if (res.code === 0) {
+                    hasLogin = true;
+                    let avatar = res.data.avatar;
+                    $pcHasNotLogin.style.display = 'none';
+                    $mobileHasNotLogin.style.display = 'none';
+                    $pcHasLogin.style.display = 'flex';
+                    $mobileHasLogin.style.display = 'flex';
+                    if (!/^http/i.test(avatar)) {
+                        avatar = 'https://qcloud.coding.net' + avatar;
+                    }
+                    $pcHasLogin.querySelector('img').setAttribute('src', avatar);
+                    $mobileHasLogin.querySelector('img').setAttribute('src', avatar);
+                } else if (res.code === 1000) {
+                    $pcHasNotLogin.style.display = 'flex';
+                    $mobileHasNotLogin.style.display = 'flex';
+                    $pcHasLogin.style.display = 'none';
+                    $mobileHasLogin.style.display = 'none';
+                }
+            });
+        }
 
-    var options = {
-      useEasing: true,
-      useGrouping: true,
-      separator: ',',
-      decimal: '.',
-    };
-    var countStart = 1521809751;
-    var totalCount = 1521809751;
-    var timestamp = new Date() / 1000 - 1521809751;
-    var count = new CountUp('countNum', countStart, (totalCount + timestamp * 1000), 0, 0.1, options);
-    if (!count.error) {
-      count.start();
-    } else {
-      console.error(count.error);
-    }
-    setInterval(function () {
-      timestamp = new Date() / 1000 - 1521809751;
-      count.update(totalCount + (timestamp * 1000));
-    }, 6000)
-    var REDIRECT_URL = 'https://studio.dev.tencent.com'
-    function logout() {
-      $.ajax({
-        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/logout",
-        type: "GET",
-        contentType: "application/vnd.coding.v2+json",
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain: true
-      }).done(function () {
-      }).fail(function () {
-      }).always(function () {
-        window.location = '/intro'
-        window.top.postMessage({ state: {
-          type: 'redirect'
-        }, path: 'https://cloud.tencent.com/login/quit?s_url=' + REDIRECT_URL }, '*');
-      });
-    }
+        // 移动端点击
+        const $stripe = document.querySelector('#stripe');
+        const $mobileDropdown = document.querySelector('#mobile-dropdown');
+        $stripe.addEventListener('click', function() {
+            if (!$stripe.classList.contains('on')) {
+                $stripe.classList.add('on');
+            } else {
+                $stripe.classList.remove('on');
+            }
+            if (!$mobileDropdown.classList.contains('on')) {
+                $mobileDropdown.classList.add('on');
+            } else {
+                $mobileDropdown.classList.remove('on');
+            }
+        });
+        const $csMenu = document.querySelector('#cs-menu');
+        $csMenu.addEventListener('click', function() {
+            if (!$csMenu.classList.contains('on')) {
+                $csMenu.classList.add('on');
+            } else {
+                $csMenu.classList.remove('on');
+            }
+        });
 
-    var hasLogin = false;
-
-    function getUserInfo() {
-      $.ajax({
-        url: <%= htmlWebpackPlugin.options.backendUrl %> + "/user/current",
-        type: "GET",
-        contentType: "application/vnd.coding.v2+json",
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain: true
-      }).done(function (res) {
-        if (res.code === 1000) {
-          //$('.user').html($('.login'));
+        // 计数
+        var options = {
+            useEasing: true,
+            useGrouping: true,
+            separator: ',',
+            decimal: '.',
+        };
+        var countStart = 1521809751;
+        var totalCount = 1521809751;
+        var timestamp = new Date() / 1000 - 1521809751;
+        var count = new CountUp('countNum', countStart, (totalCount + timestamp * 1000), 0, 0.1, options);
+        if (!count.error) {
+            count.start();
         } else {
-          const pathname = location.pathname;
-          hasLogin = true
-          // if (pathname === '/') {
-            // location.href = '/dashboard';
-          // } else {
-          if (!(/^(http|https):\/\/[^ "]+$/.test(res.data.avatar))) {
-            res.data.avatar = "https://qcloud.coding.net" + res.data.avatar;
-          }
-          $('#user-info img').attr('src', res.data.avatar);
-
-          $('#user-info .username').html(res.data.name);
-          $('.user').hide().html($('#user-info')).fadeIn();
-          // }
+            console.error(count.error);
         }
-      }).fail(function () {
-      }).always(function () {
-      });
-    }
+        setInterval(function () {
+            timestamp = new Date() / 1000 - 1521809751;
+            count.update(totalCount + (timestamp * 1000));
+        }, 6000);
 
-    function handleTry () {
-      if (hasLogin) {
-        location.href = '/dashboard';
-      } else {
-        window.open("https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com")
-      }
-    }
-
-    getUserInfo();
-
-    var container;
-    var camera, scene, renderer;
-
-    var geometry, group;
-
-    var mouseX = 0,
-      mouseY = 0;
-
-    var windowHalfX = document.documentElement.clientWidth / 2;
-    var windowHalfY = 600 / 2;
-
-    document.addEventListener('mousemove', onDocumentMouseMove, false);
-
-    init();
-    animate();
-
-    // var $ = document.getElementById;
-
-    // $(".re-render").click(function() {
-    //     init();
-    // });
-
-    function init() {
-
-      ////////////////////////////////////
-      // Setup Container
-      ////////////////////////////////////
-      container = document.createElement('div');
-      $("#canvas").html(container);
-
-
-      scene = new THREE.Scene();
-
-      group = new THREE.Group();
-
-      var material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        vertexColors: THREE.FaceColors
-      });
-
-      // Set Cube Size
-      geometry = new THREE.BoxGeometry(30, 30, 30);
-
-      // Set cube color
-      grey = new THREE.Color(0x0F141D);
-      blue = new THREE.Color(0x17243E);
-      light = new THREE.Color(0x2D3442);
-      var colors = [grey, blue, light];
-
-      for (var i = 0; i < 3; i++) {
-        geometry.faces[4 * i].color = colors[i];
-        geometry.faces[4 * i + 1].color = colors[i];
-        geometry.faces[4 * i + 2].color = colors[i];
-        geometry.faces[4 * i + 3].color = colors[i];
-      }
-
-      // Creat cubes
-      for (var i = 0; i < 200; i++) {
-        var mesh = new THREE.Mesh(geometry, material);
-        mesh.position.x = Math.random() * 1400 - 700;
-        mesh.position.y = Math.random() * 1400 - 700;
-        mesh.position.z = Math.random() * 1400 - 700;
-
-        mesh.rotation.x = Math.random() * 2 * Math.PI;
-        mesh.rotation.y = Math.random() * 2 * Math.PI;
-
-        // Scale Cube between 0.2 to 4
-        var xScale = Math.random() * (4 - 0.2) + 0.2;
-        mesh.scale.x = xScale;
-        mesh.scale.y = xScale;
-        mesh.scale.z = xScale;
-
-        mesh.matrixAutoUpdate = false;
-        mesh.updateMatrix();
-
-        group.add(mesh);
-      }
-
-
-      scene.add(group);
-
-      ////////////////////////////////////
-      // Setup Camera
-      ////////////////////////////////////
-      camera = new THREE.PerspectiveCamera(30, document.documentElement.clientWidth / 600, 1, 10000);
-      camera.position.z = 500;
-
-      ////////////////////////////////////
-      // Lighting
-      ////////////////////////////////////
-
-      // create a point light
-      var pointLight = new THREE.DirectionalLight(0xD0E3FF);
-
-      // set its position
-      pointLight.position.x = 20;
-      pointLight.position.y = 120;
-      pointLight.position.z = 0;
-
-      // add to the scene
-      scene.add(pointLight);
-
-      ////////////////////////////////////
-      // Rendering
-      ////////////////////////////////////
-
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setClearColor(0x101317);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.setSize(document.documentElement.clientWidth, 600);
-      renderer.sortObjects = false;
-
-      container.appendChild(renderer.domElement);
-      window.addEventListener('resize', onWindowResize, false);
-    }
-
-    /////////////////////////////////
-    // Feel free to resize that windah, Y'all!
-    // We all know a good pen should resize when you be adjustin' that little screen dat errythang renders into, knah mean?
-    ////////////////////////////////////
-    function onWindowResize() {
-      windowHalfX = document.documentElement.clientWidth / 2;
-      // windowHalfY = window.innerHeight / 2;
-
-      camera.aspect = document.documentElement.clientWidth / 600;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(document.documentElement.clientWidth, 600);
-    }
-
-    function onDocumentMouseMove(event) {
-      if ((event.clientY + window.scrollY) < 600) {
-        mouseX = (event.clientX - windowHalfX) * 3;
-        mouseY = (event.clientY - windowHalfY) * 3;
-        if (mouseX > 1200) {
-          mouseX = 1200;
+        function handleTry () {
+            if (hasLogin) {
+                location.href = '/dashboard';
+            } else {
+                window.open("https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com")
+            }
         }
-        if (mouseX < -1200) {
-          mouseX = -1200;
+
+        getUserInfo();
+
+        // three.js
+        var container;
+        var camera, scene, renderer;
+        var geometry, group;
+        var mouseX = 0, mouseY = 0;
+        var windowHalfX = document.documentElement.clientWidth / 2;
+        var windowHalfY = 600 / 2;
+        document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+        function init() {
+            ////////////////////////////////////
+            // Setup Container
+            ////////////////////////////////////
+            container = document.createElement('div');
+            const $canvas = document.querySelector('#canvas');
+            $canvas.innerHTML = '';
+            $canvas.appendChild(container);
+
+            scene = new THREE.Scene();
+
+            group = new THREE.Group();
+
+            var material = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                vertexColors: THREE.FaceColors,
+            });
+
+            // Set Cube Size
+            geometry = new THREE.BoxGeometry(30, 30, 30);
+
+            // Set cube color
+            grey = new THREE.Color(0x0F141D);
+            blue = new THREE.Color(0x17243E);
+            light = new THREE.Color(0x2D3442);
+            var colors = [grey, blue, light];
+
+            for (var i = 0; i < 3; i++) {
+                geometry.faces[4 * i].color = colors[i];
+                geometry.faces[4 * i + 1].color = colors[i];
+                geometry.faces[4 * i + 2].color = colors[i];
+                geometry.faces[4 * i + 3].color = colors[i];
+            }
+
+            // Creat cubes
+            for (var i = 0; i < 200; i++) {
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.position.x = Math.random() * 1400 - 700;
+                mesh.position.y = Math.random() * 1400 - 700;
+                mesh.position.z = Math.random() * 1400 - 700;
+
+                mesh.rotation.x = Math.random() * 2 * Math.PI;
+                mesh.rotation.y = Math.random() * 2 * Math.PI;
+
+                // Scale Cube between 0.2 to 4
+                var xScale = Math.random() * (4 - 0.2) + 0.2;
+                mesh.scale.x = xScale;
+                mesh.scale.y = xScale;
+                mesh.scale.z = xScale;
+
+                mesh.matrixAutoUpdate = false;
+                mesh.updateMatrix();
+
+                group.add(mesh);
+            }
+
+
+            scene.add(group);
+
+            ////////////////////////////////////
+            // Setup Camera
+            ////////////////////////////////////
+            camera = new THREE.PerspectiveCamera(30, document.documentElement.clientWidth / 600, 1, 10000);
+            camera.position.z = 500;
+
+            ////////////////////////////////////
+            // Lighting
+            ////////////////////////////////////
+
+            // create a point light
+            var pointLight = new THREE.DirectionalLight(0xD0E3FF);
+
+            // set its position
+            pointLight.position.x = 20;
+            pointLight.position.y = 120;
+            pointLight.position.z = 0;
+
+            // add to the scene
+            scene.add(pointLight);
+
+            ////////////////////////////////////
+            // Rendering
+            ////////////////////////////////////
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setClearColor(0x101317);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(document.documentElement.clientWidth, 600);
+            renderer.sortObjects = false;
+
+            container.appendChild(renderer.domElement);
+            window.addEventListener('resize', onWindowResize, false);
         }
-      }
-    }
 
-    function animate() {
-      // requestAnimationFrame(animate);
-      setTimeout( function() {
-        requestAnimationFrame( animate );
-      }, 1000 / 30 );
+        /////////////////////////////////
+        // Feel free to resize that windah, Y'all!
+        // We all know a good pen should resize when you be adjustin' that little screen dat errythang renders into, knah mean?
+        ////////////////////////////////////
+        function onWindowResize() {
+            windowHalfX = document.documentElement.clientWidth / 2;
+            // windowHalfY = window.innerHeight / 2;
 
-      render();
-    }
+            camera.aspect = document.documentElement.clientWidth / 600;
+            camera.updateProjectionMatrix();
 
-    function render() {
+            renderer.setSize(document.documentElement.clientWidth, 600);
+        }
 
-      var time = Date.now() * 0.001;
+        function onDocumentMouseMove(event) {
+            if ((event.clientY + window.scrollY) < 600) {
+                mouseX = (event.clientX - windowHalfX) * 3;
+                mouseY = (event.clientY - windowHalfY) * 3;
+                if (mouseX > 1200) {
+                    mouseX = 1200;
+                }
+                if (mouseX < -1200) {
+                    mouseX = -1200;
+                }
+            }
+        }
 
-      var rx = Math.sin(time * 0.3) * 0.5,
-        ry = Math.sin(time * 0.3) * 0.5,
-        rz = Math.sin(time * 0.3) * 0.5;
+        function animate() {
+            // requestAnimationFrame(animate);
+            setTimeout(function() {
+                requestAnimationFrame( animate );
+            }, 1000 / 30);
 
-      camera.position.x += (mouseX - camera.position.x) * .05;
-      camera.position.y += (-mouseY - camera.position.y) * .05;
+            render();
+        }
 
-      camera.lookAt(scene.position);
+        function render() {
 
-      group.rotation.x = rx / 5;
-      group.rotation.y = ry / 5;
-      group.rotation.z = rz / 5;
+            var time = Date.now() * 0.001;
 
-      renderer.render(scene, camera);
-    }
-  </script>
+            var rx = Math.sin(time * 0.3) * 0.5,
+                ry = Math.sin(time * 0.3) * 0.5,
+                rz = Math.sin(time * 0.3) * 0.5;
+
+            camera.position.x += (mouseX - camera.position.x) * .05;
+            camera.position.y += (-mouseY - camera.position.y) * .05;
+
+            camera.lookAt(scene.position);
+
+            group.rotation.x = rx / 5;
+            group.rotation.y = ry / 5;
+            group.rotation.z = rz / 5;
+
+            renderer.render(scene, camera);
+        }
+
+        init();
+        animate();
+    </script>
 </body>
-
 </html>

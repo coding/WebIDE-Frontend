@@ -3,7 +3,8 @@
 // canCreate 能否继续创建
 export const workspaceReducer = (state = { wsCount: 0, wsLimit: 5, canCreate: true }, action) => {
     if (action.type === 'STORE_WORKSPACE' && action.payload) {
-        const canCreate = action.payload.wsCount < state.wsLimit;
+        const count = action.payload.wsCount;
+        const canCreate = count ? count < state.wsLimit : true;
         return { ...state, canCreate, ...action.payload };
     } else {
         return state;

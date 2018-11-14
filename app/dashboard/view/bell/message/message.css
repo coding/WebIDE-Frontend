@@ -1,29 +1,55 @@
 .dash-bell .view-message {
-    padding: 10px 10px 10px 16px;
-    margin-bottom: 2px;
+    display: flex;
+    padding: 10px;
     word-break: break-all;
-    background-color: #434343;
 }
 .dash-bell .view-message.unread {
     cursor: pointer;
 }
-.dash-bell .view-message .from {
-    display: flex;
-    align-items: center;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #535353;
+.dash-bell .view-message:hover {
+    background-color: #444;
 }
-.dash-bell .view-message .from .dot {
-    margin-right: 6px;
+.dash-bell .view-message .point {
+    width: 10px;
 }
-.dash-bell .view-message .from img {
-    width: 18px;
-    height: 18px;
-    margin-right: 6px;
+.dash-bell .view-message .dot {
+    margin: 12px 6px 0 0;
+}
+.dash-bell .view-message .avatar {
+    width: 28px;
+    height: 28px;
+    margin: 3px 6px 0 0;
     border-radius: 50%;
     background-color: #fff;
 }
-.dash-bell .view-message .from .name {
-    font-size: 16px;
+.dash-bell .view-message .main {
+    width: 217px;
+}
+.dash-bell .view-message .main .name {
+    font-size: 14px;
+    color: #999;
+}
+.dash-bell .view-message .main .content {
+    max-height: 20px;
+    color: #bbb;
+    overflow: hidden;
+    position: relative;
+}
+.dash-bell .view-message .main .content::after {
+    content: '';
+    width: 60px;
+    height: 20px;
+    background: linear-gradient(to right, transparent, #333);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.dash-bell .view-message:hover .content::after {
+    background: linear-gradient(to right, transparent, #444);
+}
+.dash-bell .view-message .main .content.spread {
+    max-height: none;
+}
+.dash-bell .view-message .main .content img {
+    height: 18px;
 }
