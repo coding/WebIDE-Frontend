@@ -41,7 +41,7 @@
    "ttyConnectFailed": "Cannot connect to current environment, please try others",
    "workspaceLimit": "You can only create {limit} workspaces.",
    "workspaceRunLimit": "You can only open {limit} workspace once",
-   "returnDefault": "return default workspace",
+   "returnDefault": "return dashboard",
    "projectPublic": "Public",
    "projectPrivate": "Private",
    "machineOutofDate": "Trial of machine has expired",
