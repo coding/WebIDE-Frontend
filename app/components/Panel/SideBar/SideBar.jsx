@@ -38,19 +38,21 @@ SideBarLabel.propTypes = {
 }
 
 const SideBar = observer(({ side }) => (
-  <PluginArea
-    className={`bar side-bar ${side}`}
-    position={SIDEBAR[side.toUpperCase()]}
-    filter={plugin => !plugin.status.hidden}
-    getChildView={plugin => (
-      <SideBarLabel
-        key={plugin.viewId}
-        label={plugin.label}
-        onClick={() => toggleSidePanelView(plugin.viewId)}
-        isActive={plugin.status.get('active')}
-      />
-      )}
-  />))
+  <div className="side-bar-container">
+    <PluginArea
+      className={`bar side-bar ${side}`}
+      position={SIDEBAR[side.toUpperCase()]}
+      filter={plugin => !plugin.status.hidden}
+      getChildView={plugin => (
+        <SideBarLabel
+          key={plugin.viewId}
+          label={plugin.label}
+          onClick={() => toggleSidePanelView(plugin.viewId)}
+          isActive={plugin.status.get('active')}
+        />
+        )}
+    />
+  </div>))
 
 
 SideBar.propTypes = {
