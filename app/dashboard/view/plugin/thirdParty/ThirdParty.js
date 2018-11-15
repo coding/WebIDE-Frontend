@@ -5,6 +5,7 @@ import './thirdParty.css';
 import Card from '../card';
 import Inbox from '../../../share/inbox';
 import NoData from '../../../share/noData';
+import Topbar from '../topbar';
 
 import api from '../../../api';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
@@ -19,7 +20,8 @@ class ThirdParty extends Component {
     render() {
         const { plugins, search } = this.state;
         return (
-            <div className="dash-thirdparty view">
+            <div className="dash-thirdparty plugin-list">
+                <Topbar />
                 <div className="search">
                     <Inbox holder="plugin.searchPlugin" value={search} onChange={this.handleSearch} />
                 </div>

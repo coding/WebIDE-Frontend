@@ -282,6 +282,7 @@
         .intro-mobile-head .dropdown .title {
             display: flex;
             align-items: center;
+            width: 100%;
             height: 50px;
             padding: 0 20px;
         }
@@ -347,6 +348,14 @@
             top: 13px;
             left: 116px;
         }
+        .intro-mobile-head #mobile-has-login {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .intro-mobile-head #mobile-has-not-login {
+            display: flex;
+            flex-wrap: wrap;
+        }
         @media screen and (max-width: 800px) {
             .intro-pc-head {
                 display: none;
@@ -411,14 +420,12 @@
             color: #fff;
             text-shadow: 0 1px 1px #232f40;
         }
-        .intro-canvas .content .content-tips {
-            display: none;
-        }
-        .intro-canvas .btn-try {
+        .intro-canvas .goto-dashboard {
             display: inline-block;
-            padding: 12px 54px;
+            width: 180px;
+            padding: 12px 0;
             margin: 60px auto 0;
-            line-height: 24px;
+            text-align: center;
             border: none;
             border-radius: 2px;
             font-size: 18px;
@@ -428,7 +435,7 @@
             outline: none;
             transition: opacity 0.5s;
         }
-        .intro-canvas .btn-try:hover {
+        .intro-canvas .goto-dashboard:hover {
             opacity: 0.8;
         }
         @media screen and (max-width: 800px) {
@@ -459,18 +466,11 @@
                 width: 300px;
                 font-size: 13px;
             }
-            .intro-canvas .content .content-tips {
-                display: inline-block;
+            .intro-canvas .goto-dashboard {
+                width: 130px;
+                padding: 10px 0;
                 margin-top: 20px;
-                text-align: center;
-                letter-spacing: 1px;
-                font-size: 13px;
-                font-family: PingFangSC-Medium;
-                color: #FFFFFF;
-                opacity: 0.5;
-            }
-            .intro-canvas .content .btn-try {
-                display: none;
+                font-size: 16px;
             }
         }
     </style>
@@ -665,7 +665,7 @@
                         <div class="prod-menu">
                             <div class="blank"></div>
                             <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
-                            <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
+                            <a class="item two post-message" href="/">Cloud Studio</a>
                             <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
                         </div>
                     </div>
@@ -686,16 +686,16 @@
             </div>
             <div class="sub">
                 <div class="sub-menu on">
-                    <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                    <a class="post-message" href="/intro">产品介绍</a>
                 </div>
                 <div class="sub-menu">
                     <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                 </div>
                 <div class="sub-menu">
-                    <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                    <a class="post-message" href="/plugins">插件市场</a>
                 </div>
                 <div class="sub-menu">
-                    <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                    <a class="post-message" href="/changelog">更新日志</a>
                 </div>
             </div>
         </div>
@@ -722,16 +722,16 @@
                     </div>
                     <div class="cs-dropdown">
                         <div class="cs-menu on">
-                            <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                            <a class="post-message" href="/intro">产品介绍</a>
                         </div>
                         <div class="cs-menu">
                             <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                         </div>
                         <div class="cs-menu">
-                            <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                            <a class="post-message" href="/plugins">插件市场</a>
                         </div>
                         <div class="cs-menu">
-                            <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                            <a class="post-message" href="/changelog">更新日志</a>
                         </div>
                     </div>
                 </div>
@@ -768,8 +768,7 @@
                     <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, 可以完成各种应用的开发编译与部署。</p>
                     <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
                 </div>
-                <button class="btn-try" onClick="handleTry()">立即体验</button>
-                <span class="content-tips">需使用桌面版体验</span>
+                <button class="goto-dashboard" onClick="handleGotoDashboard()">立即体验</button>
             </div>
         </div>
         <div class="intro-counter">
@@ -915,6 +914,7 @@
                 const $mobileHasNotLogin = document.querySelector('#mobile-has-not-login');
                 const $pcHasLogin = document.querySelector('#pc-has-login');
                 const $mobileHasLogin = document.querySelector('#mobile-has-login');
+                const $gotoDashboard = document.querySelector('.goto-dashboard');
                 if (res.code === 0) {
                     hasLogin = true;
                     let avatar = res.data.avatar;
@@ -927,11 +927,15 @@
                     }
                     $pcHasLogin.querySelector('img').setAttribute('src', avatar);
                     $mobileHasLogin.querySelector('img').setAttribute('src', avatar);
+                    // 立即体验按钮
+                    $gotoDashboard.innerHTML = '进入工作空间';
                 } else if (res.code === 1000) {
                     $pcHasNotLogin.style.display = 'flex';
                     $mobileHasNotLogin.style.display = 'flex';
                     $pcHasLogin.style.display = 'none';
                     $mobileHasLogin.style.display = 'none';
+                    // 立即体验按钮
+                    $gotoDashboard.innerHTML = '立即体验';
                 }
             });
         }
@@ -981,9 +985,9 @@
             count.update(totalCount + (timestamp * 1000));
         }, 6000);
 
-        function handleTry () {
+        function handleGotoDashboard () {
             if (hasLogin) {
-                location.href = '/dashboard';
+                location.href = '/dashboard/workspace';
             } else {
                 window.open("https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com")
             }

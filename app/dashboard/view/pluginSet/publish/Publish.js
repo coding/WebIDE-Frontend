@@ -46,7 +46,7 @@ class Publish extends Component {
             <div>
                 <div className="panel-sub-title">{i18n('plugin.officialPublish')}</div>
                 <div className="com-board">
-                    <div className="board-label">
+                    <div className="board-label publish-label">
                         {i18n('plugin.newVersion')}
                         *
                         <a className="version-url" href="https://semver.org/lang/zh-CN/" target="_blank" rel="noopener noreferrer">
@@ -63,7 +63,7 @@ class Publish extends Component {
                     </div>
                 </div>
                 <div className="com-board">
-                    <div className="board-label">{i18n('plugin.releaseNote')}*</div>
+                    <div className="board-label publish-label">{i18n('plugin.releaseNote')}*</div>
                     <div className="board-content">
                         <Inbox type="textarea" holder="plugin.inputReleaseNote" value={desc} onChange={this.handleDesc} />
                     </div>
@@ -73,7 +73,7 @@ class Publish extends Component {
                     <div className="board-content">
                         <div className="push-tip">
                             <i className="fa fa-exclamation-circle"></i>
-                            {i18n('plugin.publishTip')}
+                            {i18n('plugin.pushTip')}
                             <a href={pushHref} target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
                         </div>
                         <button className="com-button primary" disabled={disabled} onClick={this.handlePublish}>{i18n('global.publish')}</button>

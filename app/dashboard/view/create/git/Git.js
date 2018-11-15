@@ -18,11 +18,10 @@ class Git extends Component {
     state = {
         url: '',
         envId: 'ide-tty',
-        isToolTipOn: false,
     }
 
     render() {
-        const { url, envId, isToolTipOn } = this.state;
+        const { url, envId } = this.state;
         const { canCreate, wsLimit, envs, language } = this.props;
         const disabled = !canCreate || !url || !envId;
         return (
@@ -40,10 +39,9 @@ class Git extends Component {
                     <div className="board-label">
                         {i18n('global.env')}
                         *
-                        <span className="git-env-tooltip">
-                            <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
-                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.envTip') : ''} placement="left" />
-                        </span>
+                        <ToolTip message={i18n('ws.envTip')} placement="left">
+                            <i className="fa fa-question-circle"></i>
+                        </ToolTip>
                     </div>
                     <div className="board-content negative-margin env">
                         {
@@ -67,10 +65,6 @@ class Git extends Component {
                 </div>
             </div>
         );
-    }
-
-    handleEnvToolTip = () => {
-        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     handleUrl = (event) => {

@@ -1,0 +1,55 @@
+.dash-pluginset .overview .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dash-pluginset .overview .name {
+    font-size: 24px;
+    color: #fff;
+}
+.dash-pluginset .overview .goto {
+    padding: 5px 10px;
+    margin-left: 10px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ccc;
+    background-color: #3b3b3b;
+}
+.dash-pluginset .overview .desc {
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-pluginset .overview .info {
+    display: flex;
+    margin-top: 20px;
+    color: #898989;
+}
+.dash-pluginset .overview .info .item {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+.dash-pluginset .overview .info .key {
+    margin-right: 6px;
+}
+.dash-pluginset .overview .info .rate-user-count {
+    margin-left: 5px;
+}
+.dash-pluginset .overview .status {
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #3b3b3b;
+}
+.dash-pluginset .overview .pre {
+    margin-top: 10px;
+    color: #fff;
+}
+.dash-pluginset .overview .pre i {
+    margin-right: 5px;
+}
+.dash-pluginset .overview .click {
+    color: #39f;
+    cursor: pointer;
+}

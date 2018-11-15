@@ -69,7 +69,7 @@ function parseStatus(pluginVersions) {
         version: v.buildVersion,
         versionId: v.id,
         log: v.buildLog,
-        auditRemark: v.auditRemark || '存在安全隐患',
+        auditRemark: v.auditRemark || '未知',
         hasPrePublish,
         preStatus,
         preVersionId,

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import cx from 'classnames'
 import api from 'backendAPI'
 import { isFunction } from 'utils/is'
@@ -11,6 +10,7 @@ import { MENUBAR } from '../../components/Plugins/constants'
 import { injectComponent } from '../../components/Plugins/actions'
 import Offline from '../../components/Offline/Offline'
 import { getCurrentBranch } from '../Git/actions'
+import config from 'config'
 
 class MenuBar extends Component {
   static propTypes = {
@@ -52,22 +52,26 @@ class MenuBar extends Component {
   }
 
   render () {
-    const { items } = this.props
+    const { items } = this.props;
+    const dashboardUrl = window === window.top ? '/dashboard/workspace' : `${config.tencentOrigin}/dashboard/workspace`;
     return (
       <div className='menu-bar-container'>
-        <ul className='menu-bar'>
-          { items.map((menuBarItem, i) =>
-            <MenuBarItem item={menuBarItem}
-              isActive={this.state.activeItemIndex == i}
-              shouldHoverToggleActive={this.state.activeItemIndex > -1}
-              toggleActive={this.activateItemAtIndex}
-              key={`menu-bar-${menuBarItem.key}`}
-              index={i}
-              onOpen={menuBarItem.onOpen}
-              activatePrevTopLevelMenuItem={this.activatePrevMenuItem}
-              activateNextTopLevelMenuItem={this.activateNextMenuItem}
-            />) }
-        </ul>
+        <div className="menu-bar-left">
+          <a className="dashboard-menu" href={dashboardUrl} target="_blank"><i className="fa fa-dashboard"></i></a>
+          <ul className='menu-bar'>
+            {items.map((menuBarItem, i) =>
+              <MenuBarItem item={menuBarItem}
+                isActive={this.state.activeItemIndex == i}
+                shouldHoverToggleActive={this.state.activeItemIndex > -1}
+                toggleActive={this.activateItemAtIndex}
+                key={`menu-bar-${menuBarItem.key}`}
+                index={i}
+                onOpen={menuBarItem.onOpen}
+                activatePrevTopLevelMenuItem={this.activatePrevMenuItem}
+                activateNextTopLevelMenuItem={this.activateNextMenuItem}
+              />)}
+          </ul>
+        </div>
         <PluginArea className='menu-bar-right' position={MENUBAR.WIDGET} />
       </div>
     )

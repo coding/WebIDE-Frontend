@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './card.css';
+import repoIcon from '../../../static/repo.png';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
@@ -10,7 +11,7 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
     render() {
-        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
+        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -47,8 +48,14 @@ class Card extends Component {
         const canotOpen = hasWSOpend && workingStatus !== 'Online';
         const title = `${ownerName}/${projectName}`;
         const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
+        const hasRepo = (repoUrl && !repoUrl.includes('codingide')) ? true : false;
         return (
             <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
+                {hasRepo && (
+                    <div className="badge">
+                        <img src={repoIcon} onClick={this.handleRepoUrl} />
+                    </div>
+                )}
                 <div className="inner" title={attr}>
                     <div className="title">{title}</div>
                     <div className="desc">
@@ -101,6 +108,14 @@ class Card extends Component {
                 }
             </Href>
         );
+    }
+
+    handleRepoUrl = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const { ownerGlobalKey, repoUrl } = this.props;
+        const repoHref = `${config.devOrigin}/u/${ownerGlobalKey}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        window.open(repoHref);
     }
 
     handleMask = (options, event) => {

@@ -1,0 +1,36 @@
+.plugin-list .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 20px;
+    margin: 0 10px 30px;
+    border-bottom: 1px solid #494949;
+}
+.plugin-list .topbar .nav {
+    display: flex;
+    flex-wrap: wrap;
+}
+.plugin-list .topbar .nav-item {
+    margin-right: 50px;
+    font-weight: 700;
+    color: #a1a1a1;
+    cursor: pointer;
+}
+.plugin-list .topbar .nav-item.on {
+    color: #fff;
+}
+.plugin-list .topbar .view-market i {
+    margin-right: 5px;
+}
+
+@media screen and (max-width: 580px) {
+    .plugin-list .topbar .nav-item {
+        width: 100%;
+        margin-top: 20px;
+        margin-right: 0;
+    }
+    .plugin-list .topbar .view-market {
+        display: none;
+    }
+}

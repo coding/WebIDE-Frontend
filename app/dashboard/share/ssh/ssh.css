@@ -12,13 +12,33 @@
     cursor: pointer;
     position: relative;
 }
-.com-ssh .ssh-content .ssh-clipboard {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-}
-/* 自定义 tooltip 样式 */
-.com-ssh .ssh-content .dash-tooltip {
-    width: 70px;
+.com-ssh .ssh-content .ssh-tooltip {
+    width: 80px;
+    height: 37px;
+    padding: 10px;
     text-align: center;
+    border-radius: 2px;
+    font-size: 12px;
+    color: #ccc;
+    background-color: rgba(0, 0, 0, .9);
+    opacity: 0;
+    word-break: break-all;
+    transition: opacity .3s ease, top .3s ease;
+    position: absolute;
+    top: -35px;
+    right: 0;
+}
+.com-ssh .ssh-content .ssh-tooltip::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, .65);
+    position: absolute;
+    left: calc(50% - 5px);
+    bottom: -10px;
+}
+.com-ssh .ssh-content .ssh-tooltip.on {
+    opacity: 1;
+    top: -42px;
 }

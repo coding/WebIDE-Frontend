@@ -167,12 +167,12 @@ class Workspace extends Component {
             const item = res[i];
             const ws = {};
             ws.spaceKey = item.spaceKey;
-            ws.projectIconUrl = item.projectIconUrl;
             ws.ownerGlobalKey = item.ownerGlobalKey;
             // codingide 是无来源创建的特殊项目名
             ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
             ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
+            ws.repoUrl = item.projectHtmlUrl;
             ws.createDate = item.createDate;
             ws.lastModifiedDate = item.lastModifiedDate;
             ws.workingStatus = item.workingStatus;
@@ -202,11 +202,11 @@ class Workspace extends Component {
                     const item = res[i];
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
-                    ws.projectIconUrl = item.project.iconUrl;
                     // codingide 是无来源创建的特殊项目名
                     ws.ownerName = item.project.ownerName !== 'codingide' ? item.project.ownerName : item.owner.globalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
+                    ws.repoUrl = item.projectHtmlUrl;
                     ws.deleteTime = item.deleteTime || item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspacesInvalid.push(ws);

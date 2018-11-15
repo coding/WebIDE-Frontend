@@ -4,12 +4,6 @@
     margin: 0 10px 20px;
     position: relative;
 }
-.dash-workspace .ws-card .spacekey {
-    padding: 16px 12px 2px 2px;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
 .dash-workspace .ws-card .inner {
     display: flex;
     flex-wrap: wrap;
@@ -26,6 +20,16 @@
 }
 .dash-workspace .ws-card .inner:hover {
     background-color: #555;
+}
+.dash-workspace .ws-card .badge {
+    padding: 12px 12px 0 2px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.dash-workspace .ws-card .badge img {
+    height: 16px;
+    vertical-align: middle;
 }
 .dash-workspace .ws-card .title {
     width: calc(100% - 20px);

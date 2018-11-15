@@ -24,12 +24,10 @@ class Coding extends Component {
         envId: 'ide-tty',
         filter: '',
         isSync: false,
-        isEnvTTOn: false,
-        isSyncTTOn: false,
     };
 
     render() {
-        const { type, ownerName, projectName, templateId, envId, filter, isSync, isEnvTTOn, isSyncTTOn } = this.state;
+        const { type, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
         let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
@@ -58,11 +56,10 @@ class Coding extends Component {
                                 <div className="project-head-right">
                                     <Inbox holder="global.search" value={filter} onChange={this.handleFilter} />
                                     <div className="sync" onClick={this.handleSync}>
-                                        <span onMouseEnter={this.handleSyncTT} onMouseLeave={this.handleSyncTT}>
+                                        <ToolTip message={i18n('ws.syncTip')} placement="right">
                                             <i className={`fa fa-refresh${!isSync ? '' : ' fa-spin'}`}></i>
                                             {!isSync ? i18n('global.sync') : i18n('global.syncing')}
-                                        </span>
-                                        <ToolTip on={isSyncTTOn} message={isSyncTTOn ? i18n('ws.syncTip') : ''} placement="right" />
+                                        </ToolTip>
                                     </div>
                                 </div>
                             )}
@@ -94,10 +91,9 @@ class Coding extends Component {
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="coding-env-tooltip">
-                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvTT} onMouseLeave={this.handleEnvTT}></i>
-                                <ToolTip on={isEnvTTOn} message={isEnvTTOn ? i18n('ws.envTip') : ''} placement="left" />
-                            </span>
+                            <ToolTip message={i18n('ws.envTip')} placement="left">
+                                <i className="fa fa-question-circle"></i>
+                            </ToolTip>
                         </div>
                         <div className="board-content negative-margin env">
                             {
@@ -136,14 +132,6 @@ class Coding extends Component {
             templateId: -1,
             envId: 'ide-tty',
         });
-    }
-
-    handleEnvTT = () => {
-        this.setState(prevState => ({ isEnvTTOn: !prevState.isEnvTTOn }));
-    }
-
-    handleSyncTT = () => {
-        this.setState(prevState => ({ isSyncTTOn: !prevState.isSyncTTOn }));
     }
 
     handleFilter = (event) => {

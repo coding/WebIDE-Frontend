@@ -1,0 +1,28 @@
+.dash-pluginset .tab {
+    display: flex;
+    margin-top: 30px;
+    border-bottom: 1px solid #555;
+}
+.dash-pluginset .tab-item {
+    padding: 10px 20px;
+    margin-bottom: -1px;
+    border: 1px solid transparent;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color .2s ease;
+}
+.dash-pluginset .tab-item.on {
+    border-left-color: #555;
+    border-top-color: #555;
+    border-right-color: #555;
+    border-bottom-color: #333;
+}
+.dash-pluginset .panel {
+    padding-top: 20px;
+}
+.dash-pluginset .panel-sub-title {
+    margin-bottom: 10px;
+    color: #fff;
+}

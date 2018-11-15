@@ -17,22 +17,20 @@ class Create extends Component {
         templates: [],
         envs: [],
         importFrom: 'coding',
-        isToolTipOn: false,
     };
 
     render() {
-        const { projects, templates, envs, importFrom, isToolTipOn } = this.state;
+        const { projects, templates, envs, importFrom } = this.state;
         return (
             <div className="dash-create">
                 <div className="com-board">
                     <div className="board-label">{i18n('global.source')}*</div>
                     <div className="board-content radio">
                         <div className="radio-option radio-dev-platform" onClick={() => this.handleImportFrom('coding')}>
-                            <span onMouseEnter={this.handleToolTip} onMouseLeave={this.handleToolTip}>
+                            <ToolTip message={i18n('ws.oldCoding')} placement="center">
                                 <Radio checked={importFrom === 'coding'} />
                                 <span>{i18n('global.tencentCloudDevPlatform')}</span>
-                            </span>
-                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.oldCoding') : ''} placement="center" />
+                            </ToolTip>
                         </div>
                         <div className="radio-option" onClick={() => this.handleImportFrom('git')}>
                             <Radio checked={importFrom === 'git'} />
@@ -55,10 +53,6 @@ class Create extends Component {
         this.fetchCodingProject();
         this.fetchTemplateProject();
         this.fetchEnvList();
-    }
-
-    handleToolTip = () => {
-        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     fetchCodingProject = () => {
