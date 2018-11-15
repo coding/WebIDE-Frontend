@@ -31,7 +31,7 @@ class Intro extends Component {
               <li>一键切换开发环境</li>
               <li>开发资源动态调整</li>
             </ul>
-            <a href='/ws/default' className='btn btn-try'>立即体验</a>
+            <a href='/dashboard' className='btn btn-try'>立即体验</a>
           </div>
         </div>
         <Header />

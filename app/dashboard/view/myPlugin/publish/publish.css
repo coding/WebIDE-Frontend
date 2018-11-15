@@ -25,10 +25,9 @@
 .dash-setmyplugin .push-tip {
     width: 100%;
     margin-bottom: 10px;
-    color: #ccc;
+    color: #999;
 }
 .dash-setmyplugin .push-tip i {
     margin-right: 5px;
     font-size: 16px;
-    color: #fff;
 }

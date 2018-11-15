@@ -7,7 +7,7 @@
 }
 .dash-setmyplugin .history .table-wrap {
     width: 100%;
-    padding: 40px 0 5px;
+    padding-bottom: 5px;
     overflow: auto;
 }
 .dash-setmyplugin .history .versions-table {
@@ -32,7 +32,7 @@
     word-break: break-all;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(3) {
-    min-width: 150px;
+    min-width: 130px;
 }
 .dash-setmyplugin .versions-table tr td:nth-child(4) {
     min-width: 200px;
@@ -51,9 +51,6 @@
     border: 1px solid #555;
     color: #f44;
     cursor: pointer;
-}
-.dash-setmyplugin .versions-table .fa {
-    margin-right: 2px;
 }
 .dash-setmyplugin .history .pop {
     background-color: rgba(0, 0, 0, .8);

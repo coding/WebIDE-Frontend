@@ -71,5 +71,6 @@
     "noNotification": "没有通知",
     "noMessage": "没有私信",
     "quit": "退出",
-    "quiting": "退出中"
+    "quiting": "退出中",
+    "period": "。"
 }

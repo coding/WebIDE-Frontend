@@ -4,8 +4,8 @@ const defaultOption = {
     versionId: '',
     status: 0,
     hasPrePublish: false,
+    preStatus: 0,
     preVersionId: '',
-    isPrePublishBuilding: false,
 }
 
 function parseStatus(pluginVersions) {
@@ -16,15 +16,17 @@ function parseStatus(pluginVersions) {
     }
     const pub = [];
     let hasPrePublish = false;
+    let preStatus = 0;
     let preVersionId = '';
-    let isPrePublishBuilding = false;
+    let preLog = '';
     for (let i = 0; i < len; i++) {
         const item = pluginVersions[i];
         // 预发布的版本。isPreDeploy = true 代表 已经预发布，isPreDeploy = false 并且 isDeleted = true 代表已经取消预发布
         if (item.isPreDeploy || item.isDeleted) {
             hasPrePublish = item.isPreDeploy;
-            isPrePublishBuilding = item.buildStatus === 1;
+            preStatus = item.buildStatus;
             preVersionId = item.id;
+            preLog = item.buildLog;
         } else {
             pub.unshift(item);
         }
@@ -35,8 +37,9 @@ function parseStatus(pluginVersions) {
         return {
             ...defaultOption,
             hasPrePublish,
+            preStatus,
             preVersionId,
-            isPrePublishBuilding,
+            preLog,
         };
     }
     const auditStatus = v.auditStatus; // 1 审核中; 2 审核成功; 3 审核失败
@@ -62,13 +65,15 @@ function parseStatus(pluginVersions) {
     }
     return {
         historyVersions: pub,
+        status,
         version: v.buildVersion,
         versionId: v.id,
-        status,
-        hasPrePublish,
-        preVersionId,
-        isPrePublishBuilding,
+        log: v.buildLog,
         auditRemark: v.auditRemark || '存在安全隐患',
+        hasPrePublish,
+        preStatus,
+        preVersionId,
+        preLog,
     };
 }
 

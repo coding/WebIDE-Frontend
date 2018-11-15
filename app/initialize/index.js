@@ -42,7 +42,7 @@ async function initialize () {
     return true
   })
 
-  await step('[1] load required package', async() => {
+  await step('[1] Load required package.', async() => {
     try {
       await loadPackagesByType('Required', state, true)
     } catch (err) {
@@ -51,7 +51,7 @@ async function initialize () {
     return true
   })
 
-  await step('[2] load required user package', async() => {
+  await step('[2] Load required user package.', async() => {
     try {
       await loadPackagesByUser()
     } catch (err) {
@@ -60,7 +60,7 @@ async function initialize () {
     return true
   })
 
-  await step('=== Run steps in stepCache ===', async() => {
+  await step('[START] Run steps in stepCache.', async() => {
     /*async function goto (key, hasNext = true) {
       if (!hasNext) {
         return true
@@ -80,23 +80,23 @@ async function initialize () {
         await step(`[${stepNum++}] ${value.desc}`, value.func)
       }
     }
-    console.log('=== End running stepCache ===')
+    console.log('[END] End running stepCache.')
     return true
   })
 
 
-  await step(`[${stepNum++}] mount required package`, () => {
+  await step(`[${stepNum++}] Mount required package.`, () => {
     mountPackagesByType('Required')
     return true
   })
 
-  await step(`[${stepNum++}] persist Store`, () => {
+  await step(`[${stepNum++}] Persist Store.`, () => {
     persistTask()
     return true
   })
 
   if (config.packageDev) {
-    await step(`[${stepNum++}] enable package server hotreload`,
+    await step(`[${stepNum++}] Enable package server hotreload.`,
     () => {
       const ports = __PACKAGE_PORTS__
       if (ports && ports.length) {

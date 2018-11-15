@@ -17,7 +17,7 @@ class Root extends Component {
   }
 }
 
-Root = connect(null)(Root)
+// Root = connect(null)(Root)
 
 export default () => {
   return (

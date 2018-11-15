@@ -1,13 +1,13 @@
-.dash-setmyplugin .top {
+.dash-setmyplugin .overview .top {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.dash-setmyplugin .plugin-name {
+.dash-setmyplugin .overview .name {
     font-size: 24px;
     color: #fff;
 }
-.dash-setmyplugin .goto {
+.dash-setmyplugin .overview .goto {
     padding: 5px 10px;
     margin-left: 10px;
     border: 1px solid #555;
@@ -15,46 +15,51 @@
     color: #ccc;
     background-color: #3b3b3b;
 }
-.dash-setmyplugin .desc {
+.dash-setmyplugin .overview .desc {
     margin-top: 20px;
     color: #898989;
 }
-.dash-setmyplugin .info {
+.dash-setmyplugin .overview .info {
     display: flex;
     margin-top: 20px;
     color: #898989;
 }
-.dash-setmyplugin .info .item {
+.dash-setmyplugin .overview .info .item {
     display: flex;
     align-items: center;
     margin-right: 30px;
 }
-.dash-setmyplugin .info .key {
+.dash-setmyplugin .overview .info .key {
     margin-right: 6px;
 }
-.dash-setmyplugin .info .rate-user-count {
+.dash-setmyplugin .overview .info .rate-user-count {
     margin-left: 5px;
 }
-.dash-setmyplugin .plugin-status {
-    padding: 10px 20px;
+.dash-setmyplugin .overview .status {
+    padding: 15px;
     margin-top: 20px;
-    border-radius: 2px;
-    background-color: #5c5c5c;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #3b3b3b;
 }
-.dash-setmyplugin .recall {
-    margin-top: 20px;
+.dash-setmyplugin .overview .pre {
+    margin-top: 10px;
+    color: #fff;
 }
-.dash-setmyplugin .recall .click {
+.dash-setmyplugin .overview .pre i {
+    margin-right: 5px;
+}
+.dash-setmyplugin .overview .click {
     color: #39f;
     cursor: pointer;
 }
 .dash-setmyplugin .tab {
     display: flex;
-    margin-top: 40px;
+    margin-top: 30px;
     border-bottom: 1px solid #555;
 }
 .dash-setmyplugin .tab-item {
-    padding: 5px 15px;
+    padding: 10px 20px;
     margin-bottom: -1px;
     border: 1px solid transparent;
     border-top-left-radius: 4px;
@@ -69,7 +74,10 @@
     border-right-color: #555;
     border-bottom-color: #333;
 }
-.dash-setmyplugin .panel-title {
-    width: 100%;
-    padding: 20px 0;
+.dash-setmyplugin .panel {
+    padding-top: 20px;
+}
+.dash-setmyplugin .panel-sub-title {
+    margin-bottom: 10px;
+    color: #fff;
 }

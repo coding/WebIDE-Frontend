@@ -11,7 +11,7 @@ const qsParsed = qs.parse(window.location.search.slice(1))
 
 const stepCache = observable.map({
   getSpaceKey: {
-    desc: 'Get spaceKey from window.location',
+    desc: 'Get spaceKey from window.location.',
     func: async () => {
     // case 0: isTry
       if (qsParsed.isTry) return true
@@ -30,7 +30,7 @@ const stepCache = observable.map({
     }
   },
   checkExist: {
-    desc: 'Check if workspace exist',
+    desc: 'Check if workspace exist.',
     enable: () => config.spaceKey,
     func: () => api.isWorkspaceExist()
   },
@@ -83,10 +83,7 @@ const stepCache = observable.map({
     desc: 'Prevent accidental close',
     func: () => {
       window.onbeforeunload = function () {
-        if (config.preventAccidentalClose) {
-          return 'Do you really want to leave this site? Changes you made may not be saved.'
-        }
-        return void 0
+        return 'Do you really want to leave this site? Changes you made may not be saved.'
       }
       return true
     }

@@ -17,7 +17,6 @@ class Modify extends Component {
         const disabled = !pluginName || !remark || remark.length > 255;
         return (
             <div className="panel">
-                <div className="panel-title"></div>
                 <div className="com-board">
                     <div className="board-label">{i18n('plugin.pluginName')}*</div>
                     <div className="board-content">

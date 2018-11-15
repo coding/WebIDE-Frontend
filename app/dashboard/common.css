@@ -7,6 +7,7 @@
 }
 .com-board .board-label {
     width: 130px;
+    padding-top: 7px;
 }
 .com-board .board-content {
     width: calc(100% - 130px);

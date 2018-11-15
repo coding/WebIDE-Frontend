@@ -74,17 +74,17 @@ class PluginDev extends PureComponent {
               <span>{pluginDevStore.progress && pluginDevStore.progress.progress}%</span>
               <span>{pluginDevStore.progress && pluginDevStore.progress.msg}</span>
             </p>
+            {pluginDevStore.online && (
+              <button className='btn btn-default' style={{ marginRight: '10px' }} onClick={() => dispatchCommand('plugin:remount')}>
+                重载插件
+              </button>
+            )}
             <button
               className='btn btn-default'
               onClick={() => dispatchCommand(pluginDevStore.online ? 'plugin:unmount' : 'plugin:mount')}
             >
               {pluginDevStore.online ? '卸载插件' : '加载插件'}
             </button>
-            {pluginDevStore.online && (
-              <button className='btn btn-default' style={{ marginLeft: '10px' }} onClick={() => dispatchCommand('plugin:remount')}>
-                重载插件
-              </button>
-            )}
           </div>
         </div>
       </div>

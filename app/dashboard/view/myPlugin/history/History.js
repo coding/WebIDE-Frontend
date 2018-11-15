@@ -7,19 +7,13 @@ import i18n from '../../../utils/i18n';
 import { getFormatTime } from '../../../utils/date';
 import getStatus from './status';
 
-const Row = ({ buildVersion, description, auditStatus, buildStatus, auditRemark, buildLog, createdDate, handlePop }) => {
+const Row = ({ buildVersion, description, auditStatus, buildStatus, auditRemark, createdDate }) => {
     return (
         <tr>
             <td>{buildVersion}</td>
             <td>{description}</td>
             <td>
                 {i18n(getStatus(auditStatus, buildStatus))}
-                {buildLog && (
-                    <span className="log" onClick={() => handlePop(buildLog)}>
-                        <i className="fa fa-bug"></i>
-                        <span>Log</span>
-                    </span>
-                )}
             </td>
             <td>{auditRemark}</td>
             <td>{getFormatTime(createdDate)}</td>
@@ -40,7 +34,7 @@ class History extends Component {
             return <div className="no-version-history">{i18n('plugin.noVersionHistory')}</div>;
         }
         return (
-            <div className="history">
+            <div className="panel history">
                 <div className="table-wrap">
                     <table className="versions-table">
                         <thead>
