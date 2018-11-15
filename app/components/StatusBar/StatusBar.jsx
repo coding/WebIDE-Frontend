@@ -20,7 +20,7 @@ const StatusBar = observer(({ messages=[] }) => {
       </div>
       <UploadWidgets />
       <div className='status-messages'>
-        {messages.map(message => <div className='status-message'>{message}</div>)}
+        {messages.map((message, idx) => <div className='status-message' key={`${message}-${idx}`}>{message}</div>)}
       </div>
       {state.displayBar && <div className='status-progress'>
         <span></span>

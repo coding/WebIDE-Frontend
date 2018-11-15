@@ -45,7 +45,7 @@ class FsSocketClient {
         this.shouldClose = false;
         return;
       }
-      log('fsSocket error', this.socket)
+      log('[FS Socket] FsSocket error', this.socket)
       switch (this.socket.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
@@ -65,7 +65,7 @@ class FsSocketClient {
 
   reconnect () {
     if (config.fsSocketConnected) return
-    log(`try reconnect fsSocket ${this.backoff.attempts}`)
+    log(`[FS Socket] Try reconnect fsSocket ${this.backoff.attempts}`)
     // unset this.socket
     this.socket = undefined
     if (this.backoff.attempts <= this.maxAttempts) {
@@ -160,13 +160,14 @@ class TtySocketClient {
   }
 
   reconnect () {
-    log(`try reconnect ttySocket ${this.backoff.attempts}`)
+    log(`[TTY Socket] Try reconnect ttySocket ${this.backoff.attempts}`)
     if (this.backoff.attempts <= this.maxAttempts && !this.socket.connected) {
       const timer = setTimeout(() => {
         this.connect()
+        clearTimeout(timer)
       }, this.backoff.duration())
     } else {
-      warn(`TTY reconnection fail after ${this.backoff.attempts} attempts`)
+      warn(`[TTY Socket] TTY reconnection fail after ${this.backoff.attempts} attempts`)
       this.backoff.reset()
     }
   }

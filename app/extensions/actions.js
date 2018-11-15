@@ -6,11 +6,11 @@ export function notification (params) {
 }
 
 export function errorNotify (message) {
-  notify({ notifyType: 'ERROR', message })
+  notify({ notifyType: 'error', message })
 }
 
 export function infoNotify (message) {
-  notify({ notifyType: 'INFO', message })
+  notify({ notifyType: 'info', message })
 }
 
 export function setStatusBarMessage (text, hideAfterEver) {

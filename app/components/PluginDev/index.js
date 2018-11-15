@@ -40,7 +40,7 @@ class PluginDev extends PureComponent {
           </p>
           <p>
             <span onClick={this.handleDeploy} style={{ cursor: 'pointer', marginRight: 10 }}>
-              <i className='fa fa-upload' aria-hidden />
+              <i className='fa fa-paper-plane' aria-hidden />
               发布插件
             </span>
             <span onClick={this.handleGoDoc} style={{ cursor: 'pointer' }}>
@@ -75,7 +75,11 @@ class PluginDev extends PureComponent {
               <span>{pluginDevStore.progress && pluginDevStore.progress.msg}</span>
             </p>
             {pluginDevStore.online && (
-              <button className='btn btn-default' style={{ marginRight: '10px' }} onClick={() => dispatchCommand('plugin:remount')}>
+              <button
+                className='btn btn-default'
+                style={{ marginRight: '10px', color: '#2D9CDB' }}
+                onClick={() => dispatchCommand('plugin:remount')}
+              >
                 重载插件
               </button>
             )}
