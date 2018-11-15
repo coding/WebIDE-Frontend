@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor'
 
 const customLanguages = [
+  'vue'
 ]
 
 function registerCustomLanguages () {
