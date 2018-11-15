@@ -58,8 +58,8 @@ class Workspace extends Component {
                 {workspacesCollaborative.length > 0 && (
                     <div className="collaborate">
                         <div className="caption">
-                            <div>{i18n('ws.invitedWorkspace')} ({workspacesCollaborative.length})</div>
-                            <div className="tip">{i18n('ws.invitedWorkspaceTip')}</div>
+                            <div>{i18n('ws.collaborativeWorkspace')} ({workspacesCollaborative.length})</div>
+                            <div className="tip">{i18n('ws.collaborativeWorkspaceTip')}</div>
                         </div>
                         <div className="card-box">
                             {

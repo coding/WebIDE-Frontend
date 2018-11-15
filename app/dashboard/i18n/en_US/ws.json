@@ -29,6 +29,6 @@
     "existingProject": "Existing Project",
     "templateProject": "Create Project by template",
     "noProject": "This is empty, please click the 'Sync' button in the upper right corner to sync the CODING project list, or click 'Create Project by template' above to create a new project.",
-    "invitedWorkspace": "Invited collaborative workspaces",
-    "invitedWorkspaceTip": "Workspaces that are invited to collaborate are not subject to restrictions."
+    "collaborativeWorkspace": "Collaborative workspaces",
+    "collaborativeWorkspaceTip": "Workspaces that are collaborative are not subject to restrictions."
 }

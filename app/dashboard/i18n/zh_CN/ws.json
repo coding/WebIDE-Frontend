@@ -29,6 +29,6 @@
     "existingProject": "已有项目",
     "templateProject": "从模板创建",
     "noProject": "这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。",
-    "invitedWorkspace": "被邀请协作的工作空间",
-    "invitedWorkspaceTip": "被邀请协作的工作空间不在限制之列。"
+    "collaborativeWorkspace": "协作的工作空间",
+    "collaborativeWorkspaceTip": "协作的工作空间不在限制之列。"
 }
