@@ -34,7 +34,6 @@ export function openNewEditor (config) {
 export function registerLanguage (languageConf) {
   const { contribution } = languageConf
   monaco.languages.register(contribution)
-  console.log(contribution)
   monaco.languages.onLanguage(contribution.id, () => contribution.loader().then((mod) => {
     monaco.languages.setMonarchTokensProvider(contribution.id, mod.language)
     monaco.languages.setLanguageConfiguration(contribution.id, mod.conf)

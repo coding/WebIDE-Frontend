@@ -284,7 +284,7 @@ class EditorInfo {
 
   setMode (name) {
     if (name !== this.languageMode) {
-      const model = monaco.editor.getModel(`inmemory://model/${this.id}`)
+      const model = monaco.editor.getModel(this.uri)
       monaco.editor.setModelLanguage(model, name)
       this.languageMode = name
     }
