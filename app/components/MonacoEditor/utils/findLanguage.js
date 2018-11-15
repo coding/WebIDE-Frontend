@@ -1,5 +1,4 @@
 import languages, { supportLangServer } from './languages'
-import modeInfos from './modeInfos'
 
 function findLangueByExt (ext) {
   return languages.find(l => l.exts.some(e => e === ext))
@@ -7,9 +6,10 @@ function findLangueByExt (ext) {
 
 function findLanguageByextensions (ext) {
   let currentExt = ext
+  const monacoLanguages = monaco.languages.getLanguages()
   if (!currentExt.startsWith('.')) currentExt = `.${currentExt}`
-  for (let i = 0; i < modeInfos.length; i++) {
-    const info = modeInfos[i]
+  for (let i = 0; i < monacoLanguages.length; i++) {
+    const info = monacoLanguages[i]
     if (info.extensions) {
       for (let j = 0; j < info.extensions.length; j++) {
         if (info.extensions[j] === currentExt) return info
@@ -54,8 +54,9 @@ function findLanguagesByFileList (files) {
 
 function findModeByName (name) {
   name = name.toLowerCase()
-  for (let i = 0; i < modeInfos.length; i++) {
-    const info = modeInfos[i]
+  const monacoLanguages = monaco.languages.getLanguages()
+  for (let i = 0; i < monacoLanguages.length; i++) {
+    const info = monacoLanguages[i]
     if (info.id.toLowerCase() === name) return info
     if (info.aliases) {
       for (let j = 0; j < info.aliases.length; j++) {
