@@ -66,12 +66,10 @@ function tryIdentificationWorkSpaceType (files) {
 }
 
 const setLanguageSetting = (data) => {
-  if (is.array(data)) {
-    if (data.length > 0) {
-      showModal({ type: 'ProjectTypeSelector', position: 'center', data })
-    }
-  } else {
-    const { type, srcPath } = data
+  if (data.length > 1) {
+    showModal({ type: 'ProjectTypeSelector', position: 'center', data })
+  } else if (data.length === 1) {
+    const { type, srcPath } = data[0]
     config.mainLanguage = capitalize(type)
     settings.languageserver.projectType.value = capitalize(type)
     settings.languageserver.sourcePath.value = srcPath
