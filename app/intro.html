@@ -686,16 +686,16 @@
             </div>
             <div class="sub">
                 <div class="sub-menu on">
-                    <a class="post-message" href="/intro">产品介绍</a>
+                    <a href="/intro">产品介绍</a>
                 </div>
                 <div class="sub-menu">
                     <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                 </div>
                 <div class="sub-menu">
-                    <a class="post-message" href="/plugins">插件市场</a>
+                    <a href="/plugins">插件市场</a>
                 </div>
                 <div class="sub-menu">
-                    <a class="post-message" href="/changelog">更新日志</a>
+                    <a href="/changelog">更新日志</a>
                 </div>
             </div>
         </div>
@@ -722,16 +722,16 @@
                     </div>
                     <div class="cs-dropdown">
                         <div class="cs-menu on">
-                            <a class="post-message" href="/intro">产品介绍</a>
+                            <a href="/intro">产品介绍</a>
                         </div>
                         <div class="cs-menu">
                             <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                         </div>
                         <div class="cs-menu">
-                            <a class="post-message" href="/plugins">插件市场</a>
+                            <a href="/plugins">插件市场</a>
                         </div>
                         <div class="cs-menu">
-                            <a class="post-message" href="/changelog">更新日志</a>
+                            <a href="/changelog">更新日志</a>
                         </div>
                     </div>
                 </div>
@@ -887,16 +887,7 @@
         document.querySelector('#year').innerHTML = new Date().getFullYear();
 
         // 给顶层 window 发消息
-        const $postMessage = document.querySelectorAll('.post-message');
-        for (let i = 0; i < $postMessage.length; i++) {
-            const $item = $postMessage[i];
-            $item.addEventListener('click', function() {
-                window.top.postMessage({
-                    state: { type: 'redirect' },
-                    path: $item.getAttribute('href'),
-                }, '*');
-            });
-        }
+        window.top.postMessage({ state: { type: 'redirect' }, path: window.location.href }, '*');
 
         // 请求用户信息
         let hasLogin = false;
