@@ -28,11 +28,14 @@ class Coding extends Component {
 
     render() {
         const { type, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
-        let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
+        let { globalKey = '', canCreate, wsLimit, projects, templates, envs, language } = this.props;
+        // 搜索
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
-        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId));
+        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
+        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
+        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId)) || shouldModifyGlobalkey;
         return (
             <div>
                 {type === 2 && (
@@ -111,7 +114,18 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        {shouldModifyGlobalkey && (
+                            <div className="should-modify-globalkey">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.modifyGlobalkey')}
+                            </div>
+                        )}
+                        {!canCreate && (
+                            <div className="can-not-create-ws-tip">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.limitTip', { limit: wsLimit })}
+                            </div>
+                        )}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
