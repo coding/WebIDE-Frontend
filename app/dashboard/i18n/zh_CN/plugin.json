@@ -1,7 +1,7 @@
 {
     "createPlugin": "创建插件",
     "createCSPlugin": "新建 Cloud Studio 插件",
-    "howToCreatePlugin": "如何开发一款 CS 插件？",
+    "howToCreatePlugin": "如何开发一款 Cloud Studio 插件？",
     "pluginName": "插件名",
     "repoName": "仓库名",
     "inputPluginName": "给您的插件起个响亮的名字",
@@ -21,7 +21,7 @@
     "cannotPublishForAuditing": "上次发布正在审核中，暂时无法发布",
     "cannotPublishForBuilding": "上次发布正在构建中，暂时无法发布",
     "publishing": "正在发布...",
-    "baseSetting": "基本设置",
+    "pluginInfo": "插件信息",
     "officialPublish": "正式发布",
     "prePublish": "预发布",
     "versionHistory": "版本历史",

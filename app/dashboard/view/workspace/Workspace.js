@@ -150,6 +150,13 @@ class Workspace extends Component {
                 const item = wsCol[i];
                 if (!wsNor.find(ws => ws.spaceKey === item.spaceKey)) {
                     workspacesCollaborative.push(item);
+                } else {
+                    // 我邀请别人的协作空间也要有 invitedStatus
+                    for (let i = 0; i < workspaces.length; i++) {
+                        if (item.spaceKey === workspaces[i].spaceKey) {
+                            workspaces[i].invitedStatus = 'Enabled';
+                        }
+                    }
                 }
             }
             // 保存 workspace 数量
@@ -167,7 +174,6 @@ class Workspace extends Component {
             const item = res[i];
             const ws = {};
             ws.spaceKey = item.spaceKey;
-            ws.ownerGlobalKey = item.ownerGlobalKey;
             // codingide 是无来源创建的特殊项目名
             ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
@@ -177,6 +183,7 @@ class Workspace extends Component {
             ws.lastModifiedDate = item.lastModifiedDate;
             ws.workingStatus = item.workingStatus;
             ws.collaborative = item.collaborative;
+            ws.invitedStatus = item.invitedStatus;
             array.push(ws);
             if (item.workingStatus === 'Online') {
                 // 自己邀请别人算一个已打开的 workspaces，别人邀请自己不算

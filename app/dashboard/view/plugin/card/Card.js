@@ -14,9 +14,9 @@ const httpReg = /^http/;
 class Card extends Component {
     render() {
         const { id, pluginName, remark, userAvatar, createdBy, repoName, pluginVersions, belong } = this.props;
-        const { version, hasPrePublish, status } = parseStatus(pluginVersions);
+        const { version, status, hasPrePublish, preStatus } = parseStatus(pluginVersions);
         const to = {
-            pathname: '/dashboard/plugin/mime/manage',
+            pathname: '/dashboard/plugin/mine/manage/',
             state: { pluginId: id },
         };
         const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${id}` : `${config.studioOrigin}/plugins/detail/${id}`;
@@ -40,7 +40,7 @@ class Card extends Component {
                         <div className="right">
                             {status === 5 && <div className="version">v{version}</div>}
                             {
-                                hasPrePublish ? (
+                                (hasPrePublish && preStatus === 2) ? (
                                     <div className="tag">{i18n('plugin.prePublish')}</div>
                                 ) : (status === 5 && <div className="tag">{i18n('plugin.published')}</div>)
                             }

@@ -46,18 +46,18 @@ class PluginSet extends Component {
             <div className="dash-pluginset">
                 <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
                 <div className="tab">
-                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('plugin.baseSetting')}</div>
-                    <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('global.publish')}</div>
-                    <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.versionHistory')}</div>
+                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('global.publish')}</div>
+                    <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.versionHistory')}</div>
+                    <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.pluginInfo')}</div>
                 </div>
-                {tab === 1 && pluginName && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPlugin} />}
-                {tab === 2 && (
+                {tab === 1 && (
                     <div className="panel">
                         <PrePublish {...prePublishProps} release={this.handleRelease} cancelRelease={this.cancelPrePublish} />
                         <Publish version={version} status={status} release={this.handleRelease} />
                     </div>
                 )}
-                {tab === 3 && <History historyVersions={historyVersions} />}
+                {tab === 2 && <History historyVersions={historyVersions} />}
+                {tab === 3 && pluginName && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPlugin} />}
             </div>
         );
     }
@@ -106,7 +106,7 @@ class PluginSet extends Component {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         } else {
-            this.props.history.push({ pathname: '/dashboard/plugin/mime' });
+            this.props.history.push({ pathname: '/dashboard/plugin/mine' });
         }
     }
 

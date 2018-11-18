@@ -117,7 +117,7 @@ class Create extends Component {
 
     handleCreate = () => {
         const { pluginName, repoName, typeId, remark } = this.state;
-        const { showLoading, hideLoading } = this.props;
+        const { globalKey, showLoading, hideLoading } = this.props;
         showLoading({ message: i18n('plugin.creatingPlugin') });
         // pluginTemplateId 是固定的
         api.createPlugin({
@@ -130,7 +130,10 @@ class Create extends Component {
         }).then(res => {
             hideLoading();
             if (res.code === 0) {
+                // 第一次打开工作空间加上 open=README.md
+                const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${globalKey}&projectName=${repoName}&open=README.md`;
                 this.props.history.push({ pathname: '/dashboard/workspace' });
+                window.open(wsHref);
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }

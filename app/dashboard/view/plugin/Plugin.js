@@ -6,7 +6,7 @@ import './plugin.css';
 import Create from './create';
 import ThirdParty from './thirdParty';
 import Builtin from './builtin';
-import Mime from './mime';
+import Mine from './mine';
 import PluginSet from '../pluginSet';
 
 class Plugin extends Component {
@@ -16,8 +16,8 @@ class Plugin extends Component {
                 <Route exact path="/dashboard/plugin/create" component={Create} />
                 <Route exact path="/dashboard/plugin/thirdparty" component={ThirdParty} />
                 <Route exact path="/dashboard/plugin/builtin" component={Builtin} />
-                <Route exact path="/dashboard/plugin/mime" component={Mime} />
-                <Route exact path="/dashboard/plugin/mime/manage" component={PluginSet} />
+                <Route exact path="/dashboard/plugin/mine" component={Mine} />
+                <Route exact path="/dashboard/plugin/mine/manage" component={PluginSet} />
             </Switch>
         );
     }

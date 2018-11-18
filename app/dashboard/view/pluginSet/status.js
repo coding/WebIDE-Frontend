@@ -23,7 +23,8 @@ function parseStatus(pluginVersions) {
         const item = pluginVersions[i];
         // 预发布的版本。isPreDeploy = true 代表 已经预发布，isPreDeploy = false 并且 isDeleted = true 代表已经取消预发布
         if (item.isPreDeploy || item.isDeleted) {
-            hasPrePublish = item.isPreDeploy;
+            // 构建失败时，也会标记删除
+            hasPrePublish = item.isPreDeploy || (item.isDeleted && item.buildStatus === 3);
             preStatus = item.buildStatus;
             preVersionId = item.id;
             preLog = item.buildLog;

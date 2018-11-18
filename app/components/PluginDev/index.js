@@ -27,7 +27,7 @@ class PluginDev extends PureComponent {
   }
 
   handleDeploy = () => {
-    window.open('/dashboard/plugin/mime/manage')
+    window.open('/dashboard/plugin/mine/manage')
   }
 
   render () {

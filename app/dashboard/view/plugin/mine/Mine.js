@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './mime.css';
+import './mine.css';
 
 import Card from '../card';
 import NoData from '../../../share/noData';
@@ -9,7 +9,7 @@ import Topbar from '../topbar';
 import api from 'dashboard/api/index';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
-class Mime extends Component {
+class Mine extends Component {
     state = {
         plugins: [],
     }
@@ -17,7 +17,7 @@ class Mime extends Component {
     render() {
         const { plugins } = this.state;
         return (
-            <div className="dash-mime plugin-list">
+            <div className="dash-mine plugin-list">
                 <Topbar />
                 {
                     plugins.length ? (
@@ -41,4 +41,4 @@ class Mime extends Component {
     }
 }
 
-export default Mime;
+export default Mine;

@@ -1,7 +1,7 @@
 {
     "createPlugin": "Create Plugin",
     "createCSPlugin": "Create Cloud Studio Plugin",
-    "howToCreatePlugin": "How to create a CS plugin?",
+    "howToCreatePlugin": "How to create a Cloud Studio plugin?",
     "pluginName": "Plugin Name",
     "repoName": "Repo Name",
     "inputPluginName": "Give your plugin a resounding name",
@@ -21,7 +21,7 @@
     "cannotPublishForAuditing": "The last release is under review and is temporarily unavailable",
     "cannotPublishForBuilding": "The last release is been building and is temporarily unavailable",
     "publishing": "Publishing...",
-    "baseSetting": "Basic Settings",
+    "pluginInfo": "Plugin Info",
     "officialPublish": "Publish",
     "prePublish": "Pre Publish",
     "versionHistory": "Version History",

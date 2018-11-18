@@ -14,7 +14,7 @@ const Topbar = () => {
             <div className="nav">
                 <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/thirdparty">{i18n('global.thirdparty')}</NavLink>
                 <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/builtin">{i18n('global.builtin')}</NavLink>
-                <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/mime">{i18n('global.mime')}</NavLink>
+                <NavLink className="nav-item" activeClassName="on" to="/dashboard/plugin/mine">{i18n('global.mine')}</NavLink>
             </div>
             <a className="view-market" href={href} target="_blank" rel="noopener noreferrer">
                 <i className="fa fa-external-link"></i>
