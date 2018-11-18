@@ -12,7 +12,7 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 class Card extends Component {
     render() {
         const { globalKey, hasWSOpend } = this.props;
-        const { ownerName, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, invitedStatus } = this.props;
+        const { spaceKey, ownerName, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, invitedStatus } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -51,7 +51,7 @@ class Card extends Component {
         const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
         const hasRepo = (repoUrl && !repoUrl.includes('codingide')) ? true : false;
         return (
-            <Href invalid={invalid} ownerName={ownerName} projectName={projectName} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
+            <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
                 {hasRepo && (
                     <div className="badge">
                         <img src={repoIcon} onClick={this.handleRepoUrl} />
@@ -178,8 +178,8 @@ class Card extends Component {
     }
 }
 
-const Href = ({ invalid, ownerName, projectName, canotOpen, handleMask, handleStop, children }) => {
-    const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${ownerName}&projectName=${projectName}`;
+const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }) => {
+    const href = window === window.top ? `/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,
@@ -194,7 +194,7 @@ const Href = ({ invalid, ownerName, projectName, canotOpen, handleMask, handleSt
     if (invalid) {
         return <div className="ws-card">{children}</div>;
     } else {
-        return <a className="ws-card" href={wsHref} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className="ws-card" href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 
