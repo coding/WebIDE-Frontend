@@ -887,7 +887,7 @@
         document.querySelector('#year').innerHTML = new Date().getFullYear();
 
         // 给顶层 window 发消息
-        window.top.postMessage({ state: { type: 'redirect' }, path: window.location.href }, '*');
+        window.top.postMessage({ path: window.top.location.href }, '*');
 
         // 请求用户信息
         let hasLogin = false;
