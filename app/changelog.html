@@ -632,7 +632,7 @@
         const $postMessage = document.querySelectorAll('.post-message');
         for (let i = 0; i < $postMessage.length; i++) {
             const $item = $postMessage[i];
-            $item.addEventListener('click', function () {
+            $item.addEventListener('click', function() {
                 window.top.postMessage({
                     state: { type: 'redirect' },
                     path: $item.getAttribute('href'),
