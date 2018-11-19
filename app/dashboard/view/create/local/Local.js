@@ -20,8 +20,10 @@ class Local extends Component {
 
     render() {
         const { workspaceName, templateId } = this.state;
-        const { canCreate, wsLimit, templates } = this.props;
-        const disabled = !canCreate || !workspaceName || !templateId;
+        const { globalKey = '', canCreate, wsLimit, templates } = this.props;
+        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
+        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
+        const disabled = !canCreate || !workspaceName || !templateId || shouldModifyGlobalkey;
         return (
             <div>
                 <div className="com-board">
@@ -47,7 +49,18 @@ class Local extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        {shouldModifyGlobalkey && (
+                            <div className="should-modify-globalkey">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.modifyGlobalkey')}
+                            </div>
+                        )}
+                        {!canCreate && (
+                            <div className="can-not-create-ws-tip">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.limitTip', { limit: wsLimit })}
+                            </div>
+                        )}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
@@ -96,6 +109,7 @@ class Local extends Component {
 
 const mapState = (state) => {
     return {
+        globalKey: state.userState.global_key,
         canCreate: state.wsState.canCreate,
         wsLimit: state.wsState.wsLimit,
     };

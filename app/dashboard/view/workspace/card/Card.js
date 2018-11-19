@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './card.css';
+import repoIcon from '../../../static/repo.png';
 
 import api from '../../../api';
 import i18n from '../../../utils/i18n';
@@ -10,7 +11,8 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Card extends Component {
     render() {
-        const { globalKey, ownerGlobalKey, spaceKey, ownerName, projectName, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, hasWSOpend } = this.props;
+        const { globalKey, hasWSOpend } = this.props;
+        const { spaceKey, ownerName, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, invitedStatus } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -47,8 +49,14 @@ class Card extends Component {
         const canotOpen = hasWSOpend && workingStatus !== 'Online';
         const title = `${ownerName}/${projectName}`;
         const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
+        const hasRepo = (repoUrl && !repoUrl.includes('codingide')) ? true : false;
         return (
             <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
+                {hasRepo && (
+                    <div className="badge">
+                        <img src={repoIcon} onClick={this.handleRepoUrl} />
+                    </div>
+                )}
                 <div className="inner" title={attr}>
                     <div className="title">{title}</div>
                     <div className="desc">
@@ -61,7 +69,11 @@ class Card extends Component {
                         </div>
                         <div className={`state${!collaborative ? ' off' : ''}`}>
                             <span className="dot red"></span>
-                            <span>{i18n('global.collaborating')}</span>
+                            <span>
+                                {invitedStatus === 'Request' && i18n('ws.colStat1')}
+                                {invitedStatus === 'Enabled' && i18n('ws.colStat2')}
+                                {invitedStatus === 'Rejected' && i18n('ws.colStat3')}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -69,7 +81,7 @@ class Card extends Component {
                     workingStatus !== 'Invalid' ? (
                         <div className="control">
                             {
-                                workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
+                                workingStatus === 'Online' && (globalKey === ownerName) && (
                                     <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
                                         <i className="fa fa-stop-circle-o"></i>
                                         <span>{i18n('global.stop')}</span>
@@ -77,7 +89,7 @@ class Card extends Component {
                                 )
                             }
                             {
-                                globalKey === ownerGlobalKey ? (
+                                globalKey === ownerName ? (
                                     <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
                                         <i className="fa fa-trash-o"></i>
                                         <span>{i18n('global.delete')}</span>
@@ -101,6 +113,14 @@ class Card extends Component {
                 }
             </Href>
         );
+    }
+
+    handleRepoUrl = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const { ownerName, repoUrl } = this.props;
+        const repoHref = `${config.devOrigin}/u/${ownerName}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        window.open(repoHref);
     }
 
     handleMask = (options, event) => {
@@ -159,7 +179,7 @@ class Card extends Component {
 }
 
 const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }) => {
-    const url = window === window.top ? `/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
+    const href = window === window.top ? `/ws/${spaceKey}` : `${config.studioOrigin}/ws/${spaceKey}`;
     const hasWorkspaceOpendOption = {
         message: i18n('ws.hasWSOpendNotice'),
         isWarn: true,
@@ -174,7 +194,7 @@ const Href = ({ invalid, spaceKey, canotOpen, handleMask, handleStop, children }
     if (invalid) {
         return <div className="ws-card">{children}</div>;
     } else {
-        return <a className="ws-card" href={url} target="_blank" rel="noopener noreferrer">{children}</a>;
+        return <a className="ws-card" href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
     }
 }
 

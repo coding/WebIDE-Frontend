@@ -1,9 +1,6 @@
 import * as monaco from 'monaco-editor'
 
 const customLanguages = [
-  'shell',
-  'clojure',
-  'scheme',
   'vue'
 ]
 

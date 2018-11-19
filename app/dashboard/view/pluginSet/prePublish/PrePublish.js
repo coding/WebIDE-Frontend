@@ -8,21 +8,15 @@ import ToolTip from '../../../share/toolTip';
 import i18n from '../../../utils/i18n';
 
 class PrePublish extends Component {
-    state = {
-        isTTOn: false,
-    }
-
     render() {
-        const { isTTOn } = this.state;
         const { hasPrePublish, preStatus } = this.props;
         return (
             <div>
                 <div className="panel-sub-title">
                     {i18n('plugin.prePublish')}
-                    <span className="prepublish-tooltip">
-                        <i className="fa fa-question-circle" onMouseEnter={this.handleTT} onMouseLeave={this.handleTT}></i>
-                        <ToolTip on={isTTOn} message={isTTOn ? i18n('plugin.prePublishTip') : ''} placement="left" />
-                    </span>
+                    <ToolTip message={i18n('plugin.prePublishTip')} placement="left">
+                        <i className="fa fa-question-circle"></i>
+                    </ToolTip>
                 </div>
                 {!hasPrePublish && (
                     <div className="prepublish-status">
@@ -52,10 +46,6 @@ class PrePublish extends Component {
                 )}
             </div>
         );
-    }
-
-    handleTT = () => {
-        this.setState(prevState => ({ isTTOn: !prevState.isTTOn }));
     }
 
     popForPrePublish = () => {

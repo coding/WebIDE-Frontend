@@ -27,7 +27,7 @@ class PluginDev extends PureComponent {
   }
 
   handleDeploy = () => {
-    window.open('/dashboard/plugin/developedbyme/setting')
+    window.open('/dashboard/plugin/mine/manage')
   }
 
   render () {
@@ -40,7 +40,7 @@ class PluginDev extends PureComponent {
           </p>
           <p>
             <span onClick={this.handleDeploy} style={{ cursor: 'pointer', marginRight: 10 }}>
-              <i className='fa fa-upload' aria-hidden />
+              <i className='fa fa-paper-plane' aria-hidden />
               发布插件
             </span>
             <span onClick={this.handleGoDoc} style={{ cursor: 'pointer' }}>
@@ -50,10 +50,10 @@ class PluginDev extends PureComponent {
           </p>
         </div>
         <div className='plugin-detail-panel'>
-          {/* <p className='plugin-detail-campaign'>
+          <p className='plugin-detail-campaign'>
             插件开发大赛正在进行中，
-            <a onClick={() => window.open('/campaign/favorite-plugins')}>了解更多</a>
-          </p>*/}
+            <a onClick={() => window.open('/campaign/favorite-plugins/')}>了解更多</a>
+          </p>
           <p className='plugin-name'>
             {pluginProjectInfomation.pluginName}
           </p>
@@ -75,7 +75,11 @@ class PluginDev extends PureComponent {
               <span>{pluginDevStore.progress && pluginDevStore.progress.msg}</span>
             </p>
             {pluginDevStore.online && (
-              <button className='btn btn-default' style={{ marginRight: '10px' }} onClick={() => dispatchCommand('plugin:remount')}>
+              <button
+                className='btn btn-default'
+                style={{ marginRight: '10px', color: '#2D9CDB' }}
+                onClick={() => dispatchCommand('plugin:remount')}
+              >
                 重载插件
               </button>
             )}

@@ -45,7 +45,10 @@ class Term extends Component {
       terminalManager.resize(terminal, cols, rows);
     });
     // TODO autorun this.termDOM
-    setTimeout(() => terminal.sizeToFit(), 2000) // 以防万一
+    const timer = setTimeout(() => {
+      terminal.sizeToFit()
+      clearTimeout(timer)
+    }, 2000) // 以防万一
     emitter.on(E.PANEL_RESIZED, this.onResize.bind(this))
     emitter.on(E.THEME_CHANGED, this.onTheme.bind(this))
 

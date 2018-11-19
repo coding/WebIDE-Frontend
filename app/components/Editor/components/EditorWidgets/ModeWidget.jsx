@@ -26,12 +26,12 @@ export default class ModeWidget extends Component {
   }
 
   makeModeMenuItems () {
-    const languageInfos = monacoModeInfos
+    const languageInfos = monaco.languages.getLanguages()
     return languageInfos.map((mode) => ({
-      key: mode.name || mode.id,
-      name: mode.name || mode.aliases[0],
+      key: mode.id,
+      name: mode.aliases[0] || mode.id,
       command: () => {
-        this.setMode(mode.name || mode.id)
+        this.setMode(mode.id)
       },
     }))
   }

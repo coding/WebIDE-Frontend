@@ -6,6 +6,26 @@
   background-color: $base-top-menu-bar-background;
   // border-bottom: 1px solid transparent;
   noSelect();
+  .menu-bar-left {
+    display: flex;
+    align-items: center;
+  }
+  a.dashboard-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 100%;
+    border-right: 1px solid #444;
+    color: #fff;
+    text-decoration: none;
+  }
+  a.dashboard-menu:active {
+    color: #fff;
+  }
+  a.dashboard-menu:visited {
+    color: #fff;
+  }
 }
 
 .menu-bar-right {
@@ -62,12 +82,6 @@
   }
 }
 
-// .menu-bar-item-logo {
-//   width: 42px;
-//   height: 19px;
-//   background: url('~static/logo.svg') no-repeat center;
-//   background-size: 40px 34px;
-// }
 .menu-bar-item-logo {
   display: flex;
   justify-content: flex-end;

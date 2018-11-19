@@ -18,7 +18,7 @@
     "wsTip": "您总共可以创建 {{limit}} 个工作空间，但每次只能运行 1 个。",
     "noWSTip": "欢迎来到 Cloud Studio，您可以在这里创建工作空间, 我们为您准备了完整的 Linux 环境，可以用来完成各种应用的开发编译与部署。",
     "deletedWSTip": "删除后项目自动保留一天，在此期间你可以恢复，否则将永久删除。",
-    "sshTip": "目前 Cloud Studio 导入外部项目只支持 SSH 协议，请先将下面的 SSH key (点击图标复制) 添加到导入来源 Git 仓库的公钥列表中。",
+    "sshTip": "目前 Cloud Studio 导入外部项目只支持 SSH 协议，请先将 SSH key (点击下面方框任意位置复制) 添加到导入来源 Git 仓库的公钥列表中。",
     "syncTip": "正在同步您在腾讯云开发者平台的项目，如果没有找到想要的项目可以等待同步完成再选择。",
     "envTip": "Cloud Studio 内置常用的环境，如 Node.js、Python、Java 等，帮助你摆脱繁琐配置，快速进入开发。运行环境还支持一键切换，保存和恢复。",
     "stopNotice": "请确认是否停止该工作空间？",
@@ -29,6 +29,10 @@
     "existingProject": "已有项目",
     "templateProject": "从模板创建",
     "noProject": "这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。",
-    "invitedWorkspace": "被邀请协作的工作空间",
-    "invitedWorkspaceTip": "被邀请协作的工作空间不在限制之列。"
+    "collaborativeWorkspace": "协作的工作空间",
+    "collaborativeWorkspaceTip": "协作的工作空间不在限制之列。",
+    "modifyGlobalkey": "请先到腾讯云开发者平台完善账户信息",
+    "colStat1": "申请协作中",
+    "colStat2": "协作中",
+    "colStat3": "申请协作被拒绝"
 }

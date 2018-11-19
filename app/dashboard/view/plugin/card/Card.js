@@ -7,16 +7,16 @@ import i18n from '../../../utils/i18n';
 import api from '../../../api';
 import config from '../../../utils/config';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
-import parseStatus from '../../myPlugin/setting/status';
+import parseStatus from '../../pluginSet/status';
 
 const httpReg = /^http/;
 
 class Card extends Component {
     render() {
         const { id, pluginName, remark, userAvatar, createdBy, repoName, pluginVersions, belong } = this.props;
-        const { version, hasPrePublish, status } = parseStatus(pluginVersions);
+        const { version, status, hasPrePublish, preStatus } = parseStatus(pluginVersions);
         const to = {
-            pathname: '/dashboard/plugin/developedbyme/setting',
+            pathname: '/dashboard/plugin/mine/manage/',
             state: { pluginId: id },
         };
         const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${id}` : `${config.studioOrigin}/plugins/detail/${id}`;
@@ -40,7 +40,7 @@ class Card extends Component {
                         <div className="right">
                             {status === 5 && <div className="version">v{version}</div>}
                             {
-                                hasPrePublish ? (
+                                (hasPrePublish && preStatus === 2) ? (
                                     <div className="tag">{i18n('plugin.prePublish')}</div>
                                 ) : (status === 5 && <div className="tag">{i18n('plugin.published')}</div>)
                             }
@@ -58,7 +58,7 @@ class Card extends Component {
                 )}
                 {belong === 3 && (
                     <div className="control">
-                        <Link className="button" to={to}>{i18n('global.setting')}</Link>
+                        <Link className="button" to={to}>{i18n('global.manage')}</Link>
                         <a className="button" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
                     </div>
                 )}

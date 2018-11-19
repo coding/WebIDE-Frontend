@@ -29,9 +29,9 @@
     position: relative;
 }
 /* 自定义 tooltip 样式 */
-.sync .dash-tooltip.on {
+.sync .dash-tooltip .tooltip {
     width: 220px;
-    bottom: 25px;
+    right: 0;
 }
 .com-board .project-head-right .sync i {
     margin-right: 5px;
@@ -68,11 +68,10 @@
     margin-right: 10px;
 }
 /* 自定义 tooltip 样式 */
-.coding-env-tooltip {
+.dash-create .board-label .dash-tooltip {
     padding-left: 4px;
-    position: relative;
 }
-.coding-env-tooltip .dash-tooltip {
+.dash-create .board-label .dash-tooltip .tooltip {
     width: 220px;
 }
 

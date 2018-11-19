@@ -7,7 +7,7 @@ function getStatus(auditStatus, buildStatus) {
         status = 'plugin.state1';
     } else if (auditStatus === 2) {
         if (buildStatus === 1) {
-            // 是构建中
+            // 构建中
             status = 'plugin.state3';
         } else if (buildStatus === 2) {
             // 发布成功

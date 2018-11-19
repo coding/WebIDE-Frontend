@@ -1,33 +1,36 @@
-.dash-setmyplugin .cannot-publish {
+.dash-pluginset .cannot-publish {
     width: 100%;
     padding-top: 60px;
     text-align: center;
     font-size: 18px;
     color: #a1a1a1;
 }
-.dash-setmyplugin .version-url {
+.dash-pluginset .publish-label {
+    padding-top: 8px;
+}
+.dash-pluginset .version-url {
     padding-left: 4px;
     color: #ccc;
 }
-.dash-setmyplugin .version-number {
+.dash-pluginset .version-number {
     width: 70px;
     padding-right: 5px;
 }
-.dash-setmyplugin .version-tip {
+.dash-pluginset .version-tip {
     width: 100%;
     margin-top: 10px;
     font-size: 12px;
     color: #898989;
 }
-.dash-setmyplugin .version-dot {
+.dash-pluginset .version-dot {
     margin: 0 10px;
 }
-.dash-setmyplugin .push-tip {
+.dash-pluginset .push-tip {
     width: 100%;
     margin-bottom: 10px;
     color: #999;
 }
-.dash-setmyplugin .push-tip i {
+.dash-pluginset .push-tip i {
     margin-right: 5px;
     font-size: 16px;
 }

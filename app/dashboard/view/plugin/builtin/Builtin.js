@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 
 import './builtin.css';
-import api from 'dashboard/api/index';
+
 import NoData from '../../../share/noData';
+import Topbar from '../topbar';
+
+import api from 'dashboard/api/index';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 class Builtin extends Component {
@@ -13,7 +16,8 @@ class Builtin extends Component {
     render() {
         const { plugins } = this.state;
         return (
-            <div className="dash-builtin view">
+            <div className="dash-builtin plugin-list">
+                <Topbar />
                 {
                     plugins.length ? (
                         plugins.map(plugin => <Card key={plugin.id} {...plugin} />)

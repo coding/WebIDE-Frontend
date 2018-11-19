@@ -24,17 +24,18 @@ class Coding extends Component {
         envId: 'ide-tty',
         filter: '',
         isSync: false,
-        isEnvTTOn: false,
-        isSyncTTOn: false,
     };
 
     render() {
-        const { type, ownerName, projectName, templateId, envId, filter, isSync, isEnvTTOn, isSyncTTOn } = this.state;
-        let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
+        const { type, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
+        let { globalKey = '', canCreate, wsLimit, projects, templates, envs, language } = this.props;
+        // 搜索
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
-        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId));
+        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
+        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
+        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId)) || shouldModifyGlobalkey;
         return (
             <div>
                 {type === 2 && (
@@ -58,11 +59,10 @@ class Coding extends Component {
                                 <div className="project-head-right">
                                     <Inbox holder="global.search" value={filter} onChange={this.handleFilter} />
                                     <div className="sync" onClick={this.handleSync}>
-                                        <span onMouseEnter={this.handleSyncTT} onMouseLeave={this.handleSyncTT}>
+                                        <ToolTip message={i18n('ws.syncTip')} placement="right">
                                             <i className={`fa fa-refresh${!isSync ? '' : ' fa-spin'}`}></i>
                                             {!isSync ? i18n('global.sync') : i18n('global.syncing')}
-                                        </span>
-                                        <ToolTip on={isSyncTTOn} message={isSyncTTOn ? i18n('ws.syncTip') : ''} placement="right" />
+                                        </ToolTip>
                                     </div>
                                 </div>
                             )}
@@ -94,10 +94,9 @@ class Coding extends Component {
                         <div className="board-label">
                             {i18n('global.env')}
                             *
-                            <span className="coding-env-tooltip">
-                                <i className="fa fa-question-circle" onMouseEnter={this.handleEnvTT} onMouseLeave={this.handleEnvTT}></i>
-                                <ToolTip on={isEnvTTOn} message={isEnvTTOn ? i18n('ws.envTip') : ''} placement="left" />
-                            </span>
+                            <ToolTip message={i18n('ws.envTip')} placement="left">
+                                <i className="fa fa-question-circle"></i>
+                            </ToolTip>
                         </div>
                         <div className="board-content negative-margin env">
                             {
@@ -115,7 +114,18 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        {shouldModifyGlobalkey && (
+                            <div className="should-modify-globalkey">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.modifyGlobalkey')}
+                            </div>
+                        )}
+                        {!canCreate && (
+                            <div className="can-not-create-ws-tip">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.limitTip', { limit: wsLimit })}
+                            </div>
+                        )}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
@@ -136,14 +146,6 @@ class Coding extends Component {
             templateId: -1,
             envId: 'ide-tty',
         });
-    }
-
-    handleEnvTT = () => {
-        this.setState(prevState => ({ isEnvTTOn: !prevState.isEnvTTOn }));
-    }
-
-    handleSyncTT = () => {
-        this.setState(prevState => ({ isSyncTTOn: !prevState.isSyncTTOn }));
     }
 
     handleFilter = (event) => {

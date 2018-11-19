@@ -1,58 +1,58 @@
-.dash-setmyplugin .no-version-history {
+.dash-pluginset .no-version-history {
     width: 100%;
     padding-top: 60px;
     text-align: center;
     font-size: 18px;
     color: #a1a1a1;
 }
-.dash-setmyplugin .history .table-wrap {
+.dash-pluginset .history .table-wrap {
     width: 100%;
     padding-bottom: 5px;
     overflow: auto;
 }
-.dash-setmyplugin .history .versions-table {
+.dash-pluginset .history .versions-table {
     min-width: 100%;
     border-collapse: collapse;
 }
-.dash-setmyplugin .versions-table tr {
+.dash-pluginset .versions-table tr {
     background-color: #333;
 }
-.dash-setmyplugin .versions-table tr th,
-.dash-setmyplugin .versions-table tr td {
+.dash-pluginset .versions-table tr th,
+.dash-pluginset .versions-table tr td {
     padding: .5em;
     line-height: 1.5;
     border: 1px solid #555;
 }
-.dash-setmyplugin .versions-table tr td:nth-child(1) {
+.dash-pluginset .versions-table tr td:nth-child(1) {
     min-width: 60px;
 }
-.dash-setmyplugin .versions-table tr td:nth-child(2) {
+.dash-pluginset .versions-table tr td:nth-child(2) {
     min-width: 200px;
     max-width: 600px;
     word-break: break-all;
 }
-.dash-setmyplugin .versions-table tr td:nth-child(3) {
+.dash-pluginset .versions-table tr td:nth-child(3) {
     min-width: 130px;
 }
-.dash-setmyplugin .versions-table tr td:nth-child(4) {
+.dash-pluginset .versions-table tr td:nth-child(4) {
     min-width: 200px;
     max-width: 600px;
     word-break: break-all;
 }
-.dash-setmyplugin .versions-table tr td:nth-child(5) {
+.dash-pluginset .versions-table tr td:nth-child(5) {
     min-width: 160px;
 }
-.dash-setmyplugin .versions-table thead tr {
+.dash-pluginset .versions-table thead tr {
     background-color: #434343;
 }
-.dash-setmyplugin .versions-table .log {
+.dash-pluginset .versions-table .log {
     padding: 0 2px;
     margin-left: 8px;
     border: 1px solid #555;
     color: #f44;
     cursor: pointer;
 }
-.dash-setmyplugin .history .pop {
+.dash-pluginset .history .pop {
     background-color: rgba(0, 0, 0, .8);
     position: fixed;
     top: 0;
@@ -61,7 +61,7 @@
     right: 0;
     z-index: 10;
 }
-.dash-setmyplugin .history .terminal {
+.dash-pluginset .history .terminal {
     width: 1200px;
     height: 800px;
     border: 1px solid #272727;
@@ -72,33 +72,33 @@
     top: calc(50% - 400px);
     left: calc(50% - 600px);
 }
-.dash-setmyplugin .history .terminal .title {
+.dash-pluginset .history .terminal .title {
     display: flex;
     align-items: center;
     height: 24px;
     padding: 0 5px;
     background-color: #e2e0e2;
 }
-.dash-setmyplugin .history .terminal .dot {
+.dash-pluginset .history .terminal .dot {
     width: 12px;
     height: 12px;
     margin: 0 5px;
     border: 1px solid;
     border-radius: 50%;
 }
-.dash-setmyplugin .history .terminal .dot.red {
+.dash-pluginset .history .terminal .dot.red {
     border-color: #e14631;
     background-color: #ff6058;
 }
-.dash-setmyplugin .history .terminal .dot.orange {
+.dash-pluginset .history .terminal .dot.orange {
     border-color: #e0a114;
     background-color: #ffbe2e;
 }
-.dash-setmyplugin .history .terminal .dot.green {
+.dash-pluginset .history .terminal .dot.green {
     border-color: #16ad29;
     background-color: #2aca41;
 }
-.dash-setmyplugin .history .terminal .content {
+.dash-pluginset .history .terminal .content {
     width: 100%;
     height: calc(100% - 24px);
     padding: 5px;
@@ -107,7 +107,7 @@
     word-break: break-all;
     overflow-y: auto;
 }
-.dash-setmyplugin .history .dismiss {
+.dash-pluginset .history .dismiss {
     width: 40px;
     height: 40px;
     line-height: 35px;
@@ -124,22 +124,22 @@
     bottom: calc(50% - 450px);
     left: calc(50% - 20px);
 }
-.dash-setmyplugin .history .dismiss:hover {
+.dash-pluginset .history .dismiss:hover {
     transform: rotate(135deg);
 }
 
 @media screen and (max-width: 1200px) {
-    .dash-setmyplugin .history .terminal {
+    .dash-pluginset .history .terminal {
         width: calc(100% - 20px);
         left: 10px;
     }
 }
 @media screen and (max-height: 920px) {
-    .dash-setmyplugin .history .terminal {
+    .dash-pluginset .history .terminal {
         height: calc(100% - 70px);
         top: 10px;
     }
-    .dash-setmyplugin .history .dismiss {
+    .dash-pluginset .history .dismiss {
         bottom: 10px;
     }
 }

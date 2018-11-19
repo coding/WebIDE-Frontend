@@ -7,7 +7,6 @@
 }
 .com-board .board-label {
     width: 130px;
-    padding-top: 7px;
 }
 .com-board .board-content {
     width: calc(100% - 130px);
@@ -24,7 +23,7 @@
 }
 .com-board .radio .radio-option {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin-right: 30px;
     cursor: pointer;
 }
