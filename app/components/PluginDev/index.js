@@ -50,10 +50,10 @@ class PluginDev extends PureComponent {
           </p>
         </div>
         <div className='plugin-detail-panel'>
-          {/* <p className='plugin-detail-campaign'>
+          <p className='plugin-detail-campaign'>
             插件开发大赛正在进行中，
-            <a onClick={() => window.open('/campaign/favorite-plugins')}>了解更多</a>
-          </p>*/}
+            <a onClick={() => window.open('/campaign/favorite-plugins/')}>了解更多</a>
+          </p>
           <p className='plugin-name'>
             {pluginProjectInfomation.pluginName}
           </p>

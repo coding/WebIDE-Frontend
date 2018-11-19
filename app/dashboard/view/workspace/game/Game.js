@@ -10,7 +10,7 @@ class Game extends Component {
             <div className="dash-game">
                 <i className="fa fa-bullhorn"></i>
                 {i18n('plugin.gameTip')}
-                <a href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
+                <a href="https://studio.dev.tencent.com/campaign/favorite-plugins/" target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
             </div>
         );
     }
