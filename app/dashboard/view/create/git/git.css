@@ -5,11 +5,3 @@
     display: flex;
     flex-wrap: wrap;
 }
-/* 自定义 tooltip 样式 */
-.git-env-tooltip {
-    padding-left: 4px;
-    position: relative;
-}
-.git-env-tooltip .dash-tooltip {
-    width: 220px;
-}

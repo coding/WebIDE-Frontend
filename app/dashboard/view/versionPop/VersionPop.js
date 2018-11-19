@@ -23,7 +23,7 @@ class VersionPop extends Component {
                     {type === 1 && (
                         <div className="tip">
                             <i className="fa fa-exclamation-circle"></i>
-                            {i18n('plugin.publishTip')}
+                            {i18n('plugin.prePushTip')}
                             <a href={pushHref} target="_blank" rel="noopener noreferrer">{i18n('global.more')}</a>
                         </div>
                     )}

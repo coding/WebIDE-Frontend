@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 
-import './developedByMe.css';
+import './mine.css';
 
 import Card from '../card';
 import NoData from '../../../share/noData';
+import Topbar from '../topbar';
+
 import api from 'dashboard/api/index';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
-class DevelopedByMe extends Component {
+class Mine extends Component {
     state = {
         plugins: [],
     }
@@ -15,7 +17,8 @@ class DevelopedByMe extends Component {
     render() {
         const { plugins } = this.state;
         return (
-            <div className="dash-myplugin view">
+            <div className="dash-mine plugin-list">
+                <Topbar />
                 {
                     plugins.length ? (
                         plugins.map(plugin => <Card key={plugin.id} {...plugin} belong={3} />)
@@ -38,4 +41,4 @@ class DevelopedByMe extends Component {
     }
 }
 
-export default DevelopedByMe;
+export default Mine;

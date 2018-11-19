@@ -10,7 +10,7 @@
    "requestCollaborationReject": "您的申请被拒绝了",
    "loadingWorkspaceFailed": "加载工作空间失败",
    "onSocketError": "已断线",
-   "requestCollaboration": "加入工作空间",
+   "requestCollaboration": "申请加入工作空间",
    "connecting": "连接",
    "checkingUserinfo": "正在查询用户信息...",
    "checkingTencent": "正在查询腾讯云信息...",

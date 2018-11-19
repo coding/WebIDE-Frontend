@@ -83,7 +83,7 @@
             position: relative;
         }
         .intro-pc-head .chief .prod:hover .prod-menu {
-            height: 125px;
+            height: 121px;
             opacity: 1;
         }
         .intro-pc-head .chief .prod-menu {
@@ -95,7 +95,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, .05), -10px 0 20px rgba(0, 0, 0, .05), 10px 0 20px rgba(0, 0, 0, .05);
             transition: height .16s, opacity .16s;
             position: absolute;
-            top: 30px;
+            top: 28px;
             left: -12px;
             z-index: 100;
         }
@@ -103,16 +103,16 @@
             content: '';
             width: 0;
             height: 0;
-            border-top: 7px solid transparent;
-            border-bottom: 7px solid #fff;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid #fff;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
             position: absolute;
             top: 0;
-            left: 15px;
+            left: 20px;
         }
         .intro-pc-head .chief .prod-menu .blank {
-            height: 14px;
+            height: 10px;
         }
         .intro-pc-head .chief .prod-menu .item {
             display: block;
@@ -282,6 +282,7 @@
         .intro-mobile-head .dropdown .title {
             display: flex;
             align-items: center;
+            width: 100%;
             height: 50px;
             padding: 0 20px;
         }
@@ -346,6 +347,14 @@
         .intro-mobile-head .cs-menu .new {
             top: 13px;
             left: 116px;
+        }
+        .intro-mobile-head #mobile-has-login {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .intro-mobile-head #mobile-has-not-login {
+            display: flex;
+            flex-wrap: wrap;
         }
         @media screen and (max-width: 800px) {
             .intro-pc-head {
@@ -490,7 +499,7 @@
                         <div class="prod-menu">
                             <div class="blank"></div>
                             <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
-                            <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
+                            <a class="item two post-message" href="/">Cloud Studio</a>
                             <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
                         </div>
                     </div>
@@ -511,16 +520,16 @@
             </div>
             <div class="sub">
                 <div class="sub-menu">
-                    <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                    <a class="post-message" href="/intro">产品介绍</a>
                 </div>
                 <div class="sub-menu">
                     <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                 </div>
                 <div class="sub-menu">
-                    <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                    <a class="post-message" href="/plugins">插件市场</a>
                 </div>
                 <div class="sub-menu on">
-                    <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                    <a class="post-message" href="/changelog">更新日志</a>
                 </div>
             </div>
         </div>
@@ -547,16 +556,16 @@
                     </div>
                     <div class="cs-dropdown">
                         <div class="cs-menu">
-                            <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
+                            <a class="post-message" href="/intro">产品介绍</a>
                         </div>
                         <div class="cs-menu">
                             <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
                         </div>
                         <div class="cs-menu">
-                            <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
+                            <a class="post-message" href="/plugins">插件市场</a>
                         </div>
                         <div class="cs-menu on">
-                            <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
+                            <a class="post-message" href="/changelog">更新日志</a>
                         </div>
                     </div>
                 </div>
@@ -625,8 +634,8 @@
             const $item = $postMessage[i];
             $item.addEventListener('click', function() {
                 window.top.postMessage({
-                state: { type: 'redirect' },
-                path: $item.getAttribute('href'),
+                    state: { type: 'redirect' },
+                    path: $item.getAttribute('href'),
                 }, '*');
             });
         }

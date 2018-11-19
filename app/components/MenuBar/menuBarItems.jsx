@@ -10,23 +10,12 @@ import logo from '../../../static/CloudStudio-Logo.svg';
 
 const divider = { isDivider: true };
 
-const dashboardUrl = window === window.top ? '/dashboard' : `${config.tencentOrigin}/dashboard`;
-
 const menuBarItems = observable([
   {
     key: 'meta',
     name: (<div className="menu-bar-item-logo"><img className="logo" src={logo} alt="logo" /><div className='beta'>beta</div></div>),
     className: 'coding-logo',
     items: [
-      {
-        key: 'settings',
-        name: i18n`menuBarItems.meta.dashboard`,
-        icon: 'octicon octicon-browser',
-        command: () => {
-          window.open(dashboardUrl)
-        },
-        canopen: true
-      },
       {
         key: 'settings',
         name: i18n`menuBarItems.meta.main`,

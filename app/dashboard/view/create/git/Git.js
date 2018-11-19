@@ -18,13 +18,14 @@ class Git extends Component {
     state = {
         url: '',
         envId: 'ide-tty',
-        isToolTipOn: false,
     }
 
     render() {
-        const { url, envId, isToolTipOn } = this.state;
-        const { canCreate, wsLimit, envs, language } = this.props;
-        const disabled = !canCreate || !url || !envId;
+        const { url, envId } = this.state;
+        const { globalKey = '', canCreate, wsLimit, envs, language } = this.props;
+        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
+        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
+        const disabled = !canCreate || !url || !envId || shouldModifyGlobalkey;
         return (
             <div>
                 <div className="com-board">
@@ -40,10 +41,9 @@ class Git extends Component {
                     <div className="board-label">
                         {i18n('global.env')}
                         *
-                        <span className="git-env-tooltip">
-                            <i className="fa fa-question-circle" onMouseEnter={this.handleEnvToolTip} onMouseLeave={this.handleEnvToolTip}></i>
-                            <ToolTip on={isToolTipOn} message={isToolTipOn ? i18n('ws.envTip') : ''} placement="left" />
-                        </span>
+                        <ToolTip message={i18n('ws.envTip')} placement="left">
+                            <i className="fa fa-question-circle"></i>
+                        </ToolTip>
                     </div>
                     <div className="board-content negative-margin env">
                         {
@@ -60,17 +60,24 @@ class Git extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        {shouldModifyGlobalkey && (
+                            <div className="should-modify-globalkey">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.modifyGlobalkey')}
+                            </div>
+                        )}
+                        {!canCreate && (
+                            <div className="can-not-create-ws-tip">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.limitTip', { limit: wsLimit })}
+                            </div>
+                        )}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
                 </div>
             </div>
         );
-    }
-
-    handleEnvToolTip = () => {
-        this.setState(prevState => ({ isToolTipOn: !prevState.isToolTipOn }));
     }
 
     handleUrl = (event) => {
@@ -112,6 +119,7 @@ class Git extends Component {
 
 const mapState = (state) => {
     return {
+        globalKey: state.userState.global_key,
         language: state.language,
         canCreate: state.wsState.canCreate,
         wsLimit: state.wsState.wsLimit,

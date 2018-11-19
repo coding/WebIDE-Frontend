@@ -58,8 +58,8 @@ class Workspace extends Component {
                 {workspacesCollaborative.length > 0 && (
                     <div className="collaborate">
                         <div className="caption">
-                            <div>{i18n('ws.invitedWorkspace')} ({workspacesCollaborative.length})</div>
-                            <div className="tip">{i18n('ws.invitedWorkspaceTip')}</div>
+                            <div>{i18n('ws.collaborativeWorkspace')} ({workspacesCollaborative.length})</div>
+                            <div className="tip">{i18n('ws.collaborativeWorkspaceTip')}</div>
                         </div>
                         <div className="card-box">
                             {
@@ -150,6 +150,13 @@ class Workspace extends Component {
                 const item = wsCol[i];
                 if (!wsNor.find(ws => ws.spaceKey === item.spaceKey)) {
                     workspacesCollaborative.push(item);
+                } else {
+                    // 我邀请别人的协作空间也要有 invitedStatus
+                    for (let i = 0; i < workspaces.length; i++) {
+                        if (item.spaceKey === workspaces[i].spaceKey) {
+                            workspaces[i].invitedStatus = 'Enabled';
+                        }
+                    }
                 }
             }
             // 保存 workspace 数量
@@ -167,16 +174,16 @@ class Workspace extends Component {
             const item = res[i];
             const ws = {};
             ws.spaceKey = item.spaceKey;
-            ws.projectIconUrl = item.projectIconUrl;
-            ws.ownerGlobalKey = item.ownerGlobalKey;
             // codingide 是无来源创建的特殊项目名
             ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
             ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
+            ws.repoUrl = item.projectHtmlUrl;
             ws.createDate = item.createDate;
             ws.lastModifiedDate = item.lastModifiedDate;
             ws.workingStatus = item.workingStatus;
             ws.collaborative = item.collaborative;
+            ws.invitedStatus = item.invitedStatus;
             array.push(ws);
             if (item.workingStatus === 'Online') {
                 // 自己邀请别人算一个已打开的 workspaces，别人邀请自己不算
@@ -202,11 +209,11 @@ class Workspace extends Component {
                     const item = res[i];
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
-                    ws.projectIconUrl = item.project.iconUrl;
                     // codingide 是无来源创建的特殊项目名
                     ws.ownerName = item.project.ownerName !== 'codingide' ? item.project.ownerName : item.owner.globalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
+                    ws.repoUrl = item.projectHtmlUrl;
                     ws.deleteTime = item.deleteTime || item.lastModifiedDate;
                     ws.workingStatus = item.workingStatus;
                     workspacesInvalid.push(ws);

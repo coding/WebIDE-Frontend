@@ -1,7 +1,8 @@
 .dash-create .radio-option.radio-dev-platform {
     position: relative;
 }
-.dash-create .radio-option.radio-dev-platform .dash-tooltip {
+/* 自定义 tooltip 样式 */
+.dash-create .radio-option.radio-dev-platform .dash-tooltip .tooltip {
     width: 130px;
     text-align: center;
 }

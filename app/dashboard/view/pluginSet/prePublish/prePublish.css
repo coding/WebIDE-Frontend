@@ -1,34 +1,33 @@
 /* 自定义 tooltip 样式 */
-.dash-setmyplugin .prepublish-tooltip {
+.dash-pluginset .dash-tooltip {
     padding-left: 4px;
-    position: relative;
 }
-.dash-setmyplugin .prepublish-tooltip .dash-tooltip {
+.dash-pluginset .dash-tooltip .tooltip {
     width: 220px;
 }
-.dash-setmyplugin .prepublish-status {
+.dash-pluginset .prepublish-status {
     margin-bottom: 40px;
 }
-.dash-setmyplugin .prepublish-status .click {
+.dash-pluginset .prepublish-status .click  {
     color: #39f;
     cursor: pointer;
 }
-.dash-setmyplugin .pre-push-tip {
+.dash-pluginset .pre-push-tip {
     width: 100%;
     margin-bottom: 10px;
     text-align: center;
     color: #ccc;
 }
-.dash-setmyplugin .pre-push-tip i {
+.dash-pluginset .pre-push-tip i {
     margin-right: 5px;
     font-size: 16px;
     color: #fff;
 }
-.dash-setmyplugin .pre-publish-button button {
+.dash-pluginset .pre-publish-button button {
     padding: 10px 30px;
     font-size: 16px;
 }
-.dash-setmyplugin .pre-publish-button button.building {
+.dash-pluginset .pre-publish-button button.building {
     border-color: #444;
     background-color: transparent;
     cursor: default;

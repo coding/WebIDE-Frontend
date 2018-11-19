@@ -1,4 +1,9 @@
 .dash-tooltip {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+.dash-tooltip .tooltip {
     width: 120px;
     padding: 10px;
     text-align: left;
@@ -8,26 +13,28 @@
     background-color: rgba(0, 0, 0, .9);
     opacity: 0;
     word-break: break-all;
+    pointer-events: none;
     transition: opacity .3s ease, bottom .3s ease;
     position: absolute;
-    bottom: 20px;
+    bottom: 18px;
     z-index: 50;
 }
-.dash-tooltip.center {
+.dash-tooltip .tooltip.center {
     left: 50%;
     transform: translate(-50%, 0);
 }
-.dash-tooltip.left {
+.dash-tooltip .tooltip.left {
     left: -10px;
 }
-.dash-tooltip.right {
+.dash-tooltip .tooltip.right {
     right: -10px;
 }
-.dash-tooltip.on {
+.dash-tooltip .tooltip.on {
     opacity: 1;
-    bottom: 30px;
+    pointer-events: all;
+    bottom: 28px;
 }
-.dash-tooltip::after {
+.dash-tooltip .tooltip::after {
     content: '';
     width: 0;
     height: 0;
@@ -36,12 +43,12 @@
     position: absolute;
     bottom: -10px;
 }
-.dash-tooltip.center::after {
+.dash-tooltip .tooltip.center::after {
     left: calc(50% - 5px);
 }
-.dash-tooltip.left::after {
+.dash-tooltip .tooltip.left::after {
     left: 15px;
 }
-.dash-tooltip.right::after {
+.dash-tooltip .tooltip.right::after {
     right: 15px;
 }

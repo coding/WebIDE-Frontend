@@ -18,7 +18,7 @@
     "wsTip": "You can create {{limit}} workspaces in total, but run only one at a time. ",
     "noWSTip": "You can create a workspace to start your work here.",
     "deletedWSTip": "After deleting, the project will be automatically kept for one day, and you can recover it again during the period, otherwise it will be permanently deleted.",
-    "sshTip": "Currently, Cloud Studio import external projects only support SSH protocol. Please add the following SSH key (click icon to copy) to the list of public keys imported into the source Git repository. ",
+    "sshTip": "Currently, Cloud Studio import external projects only support SSH protocol. Please add the following SSH key (click anywhere in the box below to copy) to the list of public keys imported into the source Git repository. ",
     "syncTip": "Syncing your project on the Tencent Cloud Dev Platform. If you don't find the item you want, you can wait for the sync to complete and choose again.",
     "envTip": "Cloud Studio has built-in common environments such as Node.js, Python, Java, etc. to help you get rid of the cumbersome configuration and get to the development quickly. The operating environment also supports one-click switching, saving and recovery.",
     "stopNotice": "Please confirm whether to stop this workspace?",
@@ -29,6 +29,10 @@
     "existingProject": "Existing Project",
     "templateProject": "Create Project by template",
     "noProject": "This is empty, please click the 'Sync' button in the upper right corner to sync the CODING project list, or click 'Create Project by template' above to create a new project.",
-    "invitedWorkspace": "Invited collaborative workspaces",
-    "invitedWorkspaceTip": "Workspaces that are invited to collaborate are not subject to restrictions."
+    "collaborativeWorkspace": "Collaborative workspaces",
+    "collaborativeWorkspaceTip": "Workspaces that are collaborative are not subject to restrictions.",
+    "modifyGlobalkey": "Please go to the Tencent Cloud Dev Platform to improve your account information.",
+    "colStat1": "Collaboration Requesting",
+    "colStat2": "Collaborating",
+    "colStat3": "Collaboration Rejected"
 }

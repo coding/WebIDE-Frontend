@@ -22,8 +22,10 @@ class Create extends Component {
 
     render() {
         const { types, pluginName, repoName, typeId, remark } = this.state;
-        const { canCreate, wsLimit } = this.props;
-        const disabled = !canCreate || !pluginName || (pluginName.length > 255) || !repoName || !typeId || !remark || (remark.length > 255);
+        const { globalKey = '', canCreate, wsLimit } = this.props;
+        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
+        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
+        const disabled = !canCreate || !pluginName || (pluginName.length > 255) || !repoName || !typeId || !remark || (remark.length > 255) || shouldModifyGlobalkey;
         return (
             <div className="dash-create-plugin">
                 <div className="title">{i18n('plugin.createPlugin')}</div>
@@ -56,7 +58,18 @@ class Create extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {!canCreate && <div className="can-not-create-ws-tip">{i18n('ws.limitTip', { limit: wsLimit })}</div>}
+                        {shouldModifyGlobalkey && (
+                            <div className="should-modify-globalkey">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.modifyGlobalkey')}
+                            </div>
+                        )}
+                        {!canCreate && (
+                            <div className="can-not-create-ws-tip">
+                                <i className="fa fa-exclamation-circle"></i>
+                                {i18n('ws.limitTip', { limit: wsLimit })}
+                            </div>
+                        )}
                         <button className="com-button primary" disabled={disabled} onClick={this.handleCreate}>{i18n('global.create')}</button>
                         <button className="com-button default" onClick={this.handleBack}>{i18n('global.back')}</button>
                     </div>
@@ -104,7 +117,7 @@ class Create extends Component {
 
     handleCreate = () => {
         const { pluginName, repoName, typeId, remark } = this.state;
-        const { showLoading, hideLoading } = this.props;
+        const { globalKey, showLoading, hideLoading } = this.props;
         showLoading({ message: i18n('plugin.creatingPlugin') });
         // pluginTemplateId 是固定的
         api.createPlugin({
@@ -117,7 +130,10 @@ class Create extends Component {
         }).then(res => {
             hideLoading();
             if (res.code === 0) {
+                // 第一次打开工作空间加上 open=README.md
+                const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${globalKey}&projectName=${repoName}&open=README.md`;
                 this.props.history.push({ pathname: '/dashboard/workspace' });
+                window.open(wsHref);
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
@@ -136,6 +152,7 @@ const Type = ({ id, typeName, on, handler }) => {
 
 const mapState = (state) => {
     return {
+        globalKey: state.userState.global_key,
         canCreate: state.wsState.canCreate,
         wsLimit: state.wsState.wsLimit,
     }
