@@ -133,7 +133,9 @@ class Create extends Component {
                 // 第一次打开工作空间加上 open=README.md
                 const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${globalKey}&projectName=${repoName}&open=README.md`;
                 this.props.history.push({ pathname: '/dashboard/workspace' });
-                window.open(wsHref);
+                // 解决浏览器拦截 open 方法
+                const windowReference = window.top.open('');
+                windowReference.location.href = wsHref;
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
