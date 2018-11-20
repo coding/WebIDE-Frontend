@@ -225,13 +225,14 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
       }, [])
       store.preDeployPlugins = preDeployPlugins
 
-      loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+      await loadUserPackages([...enableUserPackages, ...preDeployPlugins])
     })
 })
 
 export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
   plugins.forEach((plugin) => {
+    console.log(`[Plugin] ${plugin.key} will mount.`)
     plugin.detaultInstance.pluginWillMount(plugin)
   })
 }
