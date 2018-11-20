@@ -17,7 +17,7 @@ import parseStatus from './status';
 class PluginSet extends Component {
     state = {
         createdBy: '',
-        pluginId: '',
+        pluginId: window.top.location.pathname.split('/').pop(),
         pluginName: '',
         remark: '',
         pluginType: '',
@@ -70,44 +70,39 @@ class PluginSet extends Component {
     }
 
     fetchPlugin = () => {
-        const state = this.props.location.state;
-        if (state && state.pluginId) {
-            api.getPluginInfo(state.pluginId).then(res => {
-                if (res.code === 0) {
-                    const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
-                    const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
-                    this.setState({
-                        createdBy,
-                        pluginId: state.pluginId,
-                        pluginName,
-                        newPluginName: pluginName,
-                        remark,
-                        newRemark: remark,
-                        avgScore,
-                        countScoreUser,
-                        pluginType: pluginTypes[0].typeName,
-                        repoName,
-                        repoUrl,
-                        historyVersions,
-                        status,
-                        version,
-                        versionId,
-                        log,
-                        auditRemark,
-                        hasPrePublish,
-                        preStatus,
-                        preVersionId,
-                        preLog,
-                    });
-                } else {
-                    notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-                }
-            }).catch(err => {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
-            });
-        } else {
-            this.props.history.push({ pathname: '/dashboard/plugin/mine' });
-        }
+        const { pluginId } = this.state;
+        api.getPluginInfo(pluginId).then(res => {
+            if (res.code === 0) {
+                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
+                const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
+                this.setState({
+                    createdBy,
+                    pluginName,
+                    newPluginName: pluginName,
+                    remark,
+                    newRemark: remark,
+                    avgScore,
+                    countScoreUser,
+                    pluginType: pluginTypes[0].typeName,
+                    repoName,
+                    repoUrl,
+                    historyVersions,
+                    status,
+                    version,
+                    versionId,
+                    log,
+                    auditRemark,
+                    hasPrePublish,
+                    preStatus,
+                    preVersionId,
+                    preLog,
+                });
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
     }
 
     handleTab = (tab) => {
