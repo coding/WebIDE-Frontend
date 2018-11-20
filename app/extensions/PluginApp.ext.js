@@ -4,6 +4,7 @@ import { pluginSettingStore } from 'components/Setting/state'
 import { pluginConfigEventStore, pluginSettingsItem } from 'components/Plugins/store'
 import emitter, { THEME_CHANGED } from 'utils/emitter'
 import { createProvider, connectAdvanced } from 'react-redux'
+import uuidv1 from 'uuid/v1'
 
 import settings from '../settings'
 
@@ -118,6 +119,10 @@ export const IPropertiesType = {
   string: 'string',
   array: 'array',
   boolean: 'boolean'
+}
+
+export function generatePluginKey () {
+  return uuidv1()
 }
 
 export default PluginContext
