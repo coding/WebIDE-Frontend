@@ -164,10 +164,13 @@ export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
       return pkg.name
     })
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
+    .catch(err => {
+      throw new Error(err.message)
+    })
 })
 
-const loadUserPackages = async (packages) => {
-  const convert = packages.map((p) => ({
+const loadUserPackages = (packages) => {
+  const convertTasks = packages.map((p) => ({
     name: p.pluginName,
     author: p.createdBy || '',
     description: p.remark,
@@ -180,17 +183,30 @@ const loadUserPackages = async (packages) => {
     userPlugin: true,
     filePath: p.pluginFilePath
   }))
+  .map((pkg) => {
+    store.list.push(pkg)
+    console.log(`[Plugin] Load ${pkg.name}...`)
+    return fetchUserPackage(pkg)
+  })
+
+  return Promise.all(convertTasks)
+    .then((_) => {
+    })
+    .catch((err) => {
+      throw new Error(err.message)
+    })
 
   /* eslint-disable */
-  for (const pkg of convert) {
-    store.list.push(pkg)
-    try {
-      await fetchUserPackage(pkg)
-      /* eslint-enable */
-    } catch (err) {
-      console.error(`Failed to load plugin ${pkg.name}: ${err.message}.`)
-    }
-  }
+  // for (const pkg of convertTasks) {
+  //   store.list.push(pkg)
+  //   fetchUserPackage(pkg)
+  //     .then(() => {
+  //       console.log(`[Plugin-${pkg.name}] load success.`)
+  //     })
+  //     .catch((err) => {
+  //       console.error(`Failed to load plugin ${pkg.name}: ${err.message}.`)
+  //     })
+  // }
 }
 
 export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {

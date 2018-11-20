@@ -34,6 +34,7 @@ function persistStore (store, transform) {
             autoRehydrate(store)
           } else {
             dispatchCommand('global:show_env')
+            dispatchCommand('file:open_welcome')
           }
           fileState.initData.set('_init', false)
           config.hasRehydrated = true

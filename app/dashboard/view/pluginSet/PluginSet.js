@@ -50,13 +50,13 @@ class PluginSet extends Component {
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.pluginInfo')}</div>
                 </div>
-                {tab === 1 && (
+                {tab === 1 && pluginName && (
                     <div className="panel">
                         <PrePublish {...prePublishProps} release={this.handleRelease} cancelRelease={this.cancelPrePublish} />
                         <Publish version={version} status={status} release={this.handleRelease} />
                     </div>
                 )}
-                {tab === 2 && <History historyVersions={historyVersions} />}
+                {tab === 2 && pluginName && <History historyVersions={historyVersions} />}
                 {tab === 3 && pluginName && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPlugin} />}
             </div>
         );

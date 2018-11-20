@@ -12,7 +12,7 @@
     display: block;
 }
 .dash-versionpop .board {
-    width: 600px;
+    width: 1200px;
     padding: 15px;
     border-radius: 4px;
     background-color: #333;
@@ -47,7 +47,7 @@
     padding: 20px 0;
 }
 .dash-versionpop .board .log {
-    height: 400px;
+    height: 500px;
     padding: 15px;
     border-radius: 4px;
     background-color: #000;
@@ -70,4 +70,10 @@
 }
 .dash-versionpop .board button {
     margin-top: 10px;
+}
+
+@media screen and (max-width: 1240px) {
+    .dash-versionpop .board {
+        width: calc(100% - 40px);
+    }
 }
