@@ -119,6 +119,7 @@ const config = merge(
       title: 'Coding WebIDE',
       inject: false,
       filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
+      iframeUrl: str('ide.test:8060/intro'),
       template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
 
     }),

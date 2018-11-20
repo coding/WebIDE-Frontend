@@ -144,7 +144,7 @@
     } catch (e) {}
 
     var tencentDomain = 'studio.dev.tencent.com',
-        codingDomain = 'ide.test:8060/intro';
+        codingDomain = <%= htmlWebpackPlugin.options.iframeUrl %>;
 
     // coding studio domain regex exp
     var studioRegex = new RegExp('^http[s]?:\/\/' + codingDomain.replace(/\./g, '\\.') + '.*$', 'i');
