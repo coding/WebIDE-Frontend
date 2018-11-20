@@ -17,6 +17,7 @@ const changelogEntryHtmlName = 'changelog.html'
 const maintainEntryHtmlName = 'maintain.html'
 const workspacesEntryHtmlName = 'index.html'
 const exportEntryHtmlName = 'export.html'
+const iframeEntryHtmlName = 'iframe-test.html'
 
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
@@ -102,6 +103,12 @@ module.exports = merge(
         filename: (staticDir ? '../' : '') + maintainEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/maintain.html'),
         // favicon: ICO_PATH,
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
       }),
       // new webpack.HashedModuleIdsPlugin(),
       new webpack.DefinePlugin({
