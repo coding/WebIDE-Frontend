@@ -1,3 +1,5 @@
+import { errorNotify } from '../extensions/actions'
+
 export const PluginRegistry = {
   _plugins: {},
   get packages () {
@@ -10,6 +12,10 @@ export const PluginRegistry = {
     return this._plugins[key]
   },
   set (key, plugin) {
+    if (this._plugins[key]) {
+      console.error(`PluginKey ${key} repeated, plugin will be replaced.`)
+      errorNotify(`PluginKey ${key} repeated, plugin will be replaced.`)
+    }
     this._plugins[key] = plugin
   },
   find (pkgId) {
