@@ -15,10 +15,6 @@ class Card extends Component {
     render() {
         const { id, pluginName, remark, userAvatar, createdBy, repoName, pluginVersions, belong } = this.props;
         const { version, status, hasPrePublish, preStatus } = parseStatus(pluginVersions);
-        const to = {
-            pathname: '/dashboard/plugin/mine/manage/',
-            state: { pluginId: id },
-        };
         const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${id}` : `${config.studioOrigin}/plugins/detail/${id}`;
         const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
         const src = httpReg.test(userAvatar) ? userAvatar : `${config.qcloudOrigin}${userAvatar}`;
@@ -58,7 +54,7 @@ class Card extends Component {
                 )}
                 {belong === 3 && (
                     <div className="control">
-                        <Link className="button" to={to}>{i18n('global.manage')}</Link>
+                        <Link className="button" to={`/dashboard/plugin/mine/${id}`}>{i18n('global.manage')}</Link>
                         <a className="button" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
                     </div>
                 )}

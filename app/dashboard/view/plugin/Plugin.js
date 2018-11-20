@@ -17,7 +17,7 @@ class Plugin extends Component {
                 <Route exact path="/dashboard/plugin/thirdparty" component={ThirdParty} />
                 <Route exact path="/dashboard/plugin/builtin" component={Builtin} />
                 <Route exact path="/dashboard/plugin/mine" component={Mine} />
-                <Route exact path="/dashboard/plugin/mine/manage" component={PluginSet} />
+                <Route exact path="/dashboard/plugin/mine/:id" component={PluginSet} />
             </Switch>
         );
     }
