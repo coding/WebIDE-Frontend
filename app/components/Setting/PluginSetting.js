@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import { observable } from 'mobx'
+import { isString } from 'lodash'
 import { observer } from 'mobx-react'
 import { toJS } from 'mobx'
 import { pluginSettingStore } from './state'
@@ -35,7 +36,7 @@ class PluingSettingItem extends PureComponent {
             ) : (
               <input
                 className='form-control'
-                value={settingSate[propKey] || propItem.default || ''}
+                value={(isString ? settingSate[propKey] : propItem.default) || ''}
                 onChange={e => this.handleChange(e.target.value)}
               />
             )}
