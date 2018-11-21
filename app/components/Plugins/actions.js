@@ -165,7 +165,7 @@ export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
     })
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
     .catch(err => {
-      throw new Error(err.message)
+      throw new Error(`[Plugin] ${pkg.name} load failed. ${err.message}`)
     })
 })
 
@@ -190,12 +190,6 @@ const loadUserPackages = (packages) => {
   })
 
   return Promise.all(convertTasks)
-    .then((_) => {
-    })
-    .catch((err) => {
-      throw new Error(err.message)
-    })
-
   /* eslint-disable */
   // for (const pkg of convertTasks) {
   //   store.list.push(pkg)
@@ -224,8 +218,11 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
         return pre
       }, [])
       store.preDeployPlugins = preDeployPlugins
-
-      await loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+      try {
+        await loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+      } catch (err) {
+        console.error(err.message)
+      }
     })
 })
 
@@ -233,7 +230,11 @@ export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
   plugins.forEach((plugin) => {
     console.log(`[Plugin] ${plugin.key} will mount.`)
-    plugin.detaultInstance.pluginWillMount(plugin)
+    try {
+      plugin.detaultInstance.pluginWillMount(plugin)
+    } catch (err) {
+      console.log(`[Plugin] ${plugin.key} mount failed. ${err.message}`)
+    }
   })
 }
 
