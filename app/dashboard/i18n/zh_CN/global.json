@@ -71,5 +71,8 @@
     "noMessage": "没有私信",
     "quit": "退出",
     "quiting": "退出中",
-    "period": "。"
+    "period": "。",
+    "globalTip1": "系统检测到您的用户名尚未修改。",
+    "globalTip2": "请先进入 [ 腾讯云开发者平台 > 个人设置 ] 修改后再重新登录使用。",
+    "gotoModify": "前往修改"
 }
