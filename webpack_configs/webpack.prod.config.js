@@ -108,7 +108,7 @@ module.exports = merge(
         title: 'Coding WebIDE',
         inject: false,
         filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
-        iframeUrl: str('dev-platform.staging.ide/intro'),
+        iframeUrl: str('dev-platform.staging.ide'),
         template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
       }),
       // new webpack.HashedModuleIdsPlugin(),
