@@ -5,8 +5,7 @@ import { NavLink, Link, Switch, Route, Redirect } from 'react-router-dom';
 import './home.css';
 import cloudstudio from '../../static/cloudstudio.svg';
 
-import api from '../../api';
-import i18n from '../../utils/i18n';
+import Mask from './mask';
 import Stripe from '../../share/stripe';
 import Bell from '../bell';
 import Profile from './profile';
@@ -17,15 +16,26 @@ import Plugin from '../plugin';
 import Setting from '../setting';
 import About from '../about';
 
+import api from '../../api';
+import i18n from '../../utils/i18n';
+
 class Home extends Component {
-    state = {
-        isBellOn: false,
-        isProfileOn: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            isMaskOn: true,
+            isBellOn: false,
+            isProfileOn: false,
+        };
+        this.fetchUserProfile();
     }
 
     render() {
-        const { isBellOn, isProfileOn } = this.state;
+        const { isMaskOn, isBellOn, isProfileOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
+        if (isMaskOn) {
+            return <Mask />;
+        }
         return (
             <div id="dash-container" onClick={this.turnOffPanel}>
                 <div className="dash-mbar">
@@ -95,8 +105,6 @@ class Home extends Component {
             state: (historyState && historyState.state) ? historyState.state : undefined,
         }, '*');
         gtag('config', 'UA-65952334-9', {'page_path': window.location.pathname});
-        // 获取工作空间数量信息
-        this.fetchWorkspaceCount();
         // 缩放页面时，关闭 mbar
         window.addEventListener('resize', () => {
             const { isMbarOn } = this.props;
@@ -106,7 +114,23 @@ class Home extends Component {
         });
     }
 
-    fetchWorkspaceCount() {
+    fetchUserProfile = () => {
+        api.getUserProfile().then(res => {
+            if (res.code === 0) {
+                if (!/^dtid_[a-z0-9]+/i.test(res.data.global_key)) {
+                    this.props.logIn(res.data);
+                    this.setState({ isMaskOn: false });
+                    // 获取工作空间数量信息
+                    this.fetchWorkspaceCount();
+                }
+            } else {
+                window.top.postMessage({ path: '/intro' }, '*');
+                window.location.href = '/intro';
+            }
+        });
+    }
+
+    fetchWorkspaceCount = () => {
         const { storeWorkspace } = this.props;
         // 获取工作空间
         // 获取创建工作空间数量限制
@@ -165,9 +189,8 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
     return {
-        storeWorkspace: (payload) => {
-            dispatch({ type: 'STORE_WORKSPACE', payload })
-        },
+        logIn: (payload) => dispatch({ type: 'USER_LOG_IN', payload }),
+        storeWorkspace: (payload) => dispatch({ type: 'STORE_WORKSPACE', payload }),
         hideMbar: () => dispatch({ type: 'SWITCH_MBAR_TO_OFF' }),
     }
 }
