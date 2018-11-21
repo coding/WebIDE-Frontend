@@ -471,7 +471,7 @@
     .intro-page {
       font-family: PingFangSC-Regular;
       position: absolute;
-      top: 0;
+      top: 28px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -879,6 +879,17 @@
     .mobile-record {
       display: none;
     }
+    .top-banner {
+      height: 28px;
+      background: #0466ff;
+      color: #FFF;
+      text-align: center;
+      font-size: 14px;
+      line-height: 28px;
+    }
+    .top-banner a {
+      color: #FFF;
+    }
   </style>
 
   <style>
@@ -1095,12 +1106,17 @@
         color: #333;
         text-align: left;
       }
+      .top-banner {
+        font-size: 2vw;
+      }
     }
+    
   </style>
 </head>
 
 <body>
   <div id="root">
+    <div class="top-banner">Cloud Studio 现已在腾讯云开发者平台中全面升级，详情参见 <a href="https://studio.coding.net/export?/home" >这里</a></div>
     <div data-reactroot="" class="intro-page">
       <div class="intro-header">
         <div id="canvas">

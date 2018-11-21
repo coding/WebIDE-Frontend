@@ -33,9 +33,10 @@ class GlobalPrompt extends Component {
     promptMessage.push({
       content: (
         <p>
-          Cloud Studio 已在腾讯云开发者平台中全面升级，升级后您可以获得更好体验，详情参见{' '}
+          Cloud Studio 现已在腾讯云开发者平台中全面升级，此版本
+          <strong>将于 11 月 30 日正式停止服务</strong>，{' '}
           <a href='/export' target='_blank' rel='noopener noreferrer'>
-          这里
+          查看详情
           </a>{' '}
         </p>
       ),

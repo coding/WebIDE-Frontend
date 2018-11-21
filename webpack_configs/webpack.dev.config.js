@@ -35,7 +35,8 @@ const PROJECT_ROOT = path.resolve(__dirname, '..')
 const mainEntryHtmlName = 'workspace.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
-// const changelogEntryHtmlName = 'changelog.html'
+const changelogEntryHtmlName = 'changelog.html'
+const introEntryHtmlName = 'intro.html'
 const exportEntryHtmlName = 'export.html'
 
 const staticDir = ''
@@ -104,13 +105,20 @@ const config = merge(
       template: path.join(PROJECT_ROOT, 'app/export.html'),
       // favicon: ICO_PATH,
     }),
-    // new HtmlWebpackPlugin({
-    //   title: 'Cloud Studio',
-    //   inject: false,
-    //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
-    //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
-    //   // favicon: ICO_PATH,
-    // }),
+    new HtmlWebpackPlugin({
+      title: 'Cloud Studio',
+      inject: false,
+      filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+      // favicon: ICO_PATH,
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Cloud Studio',
+      inject: false,
+      filename: (staticDir ? '../' : '') + introEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/intro.html'),
+      // favicon: ICO_PATH,
+    }),
     new webpack.DefinePlugin({
       __DEV__: true,
       __RUN_MODE__: str(process.env.RUN_MODE || ''),
