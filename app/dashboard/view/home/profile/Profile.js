@@ -34,17 +34,6 @@ class Profile extends Component {
         );
     }
 
-    componentDidMount() {
-        api.getUserProfile().then(res => {
-            if (res.code === 0) {
-                this.props.logIn(res.data);
-            } else {
-                window.top.postMessage({ path: '/intro' }, '*');
-                window.location.href = '/intro';
-            }
-        });
-    }
-
     handleLogout = () => {
         api.logout().then(res => {
             if (res.code === 0) {
@@ -66,7 +55,6 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
     return {
-        logIn: (payload) => dispatch({ type: 'USER_LOG_IN', payload }),
         logOut: () => dispatch({ type: 'USER_LOG_OUT' }),
     }
 }
