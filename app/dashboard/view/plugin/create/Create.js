@@ -13,6 +13,7 @@ import config from '../../../utils/config';
 
 class Create extends Component {
     state = {
+        created: false,
         types: [],
         PluginName: '',
         repoName: '',
@@ -90,6 +91,18 @@ class Create extends Component {
         });
     }
 
+    componentDidUpdate() {
+        const { created, repoName } = this.state;
+        const { history, globalKey } = this.props;
+        // 第一次打开工作空间加上 open=README.md
+        if (created) {
+            // 异步请求代码内打开新页面会被浏览器拦截，所以在这里打开新页面
+            const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${globalKey}&projectName=${repoName}&open=README.md`;
+            window.open(wsHref);
+            history.push({ pathname: '/dashboard/workspace' });
+        }
+    }
+
     handlePluginName = (event) => {
         this.setState({ pluginName: event.target.value });
     }
@@ -117,7 +130,7 @@ class Create extends Component {
 
     handleCreate = () => {
         const { pluginName, repoName, typeId, remark } = this.state;
-        const { globalKey, showLoading, hideLoading } = this.props;
+        const { showLoading, hideLoading } = this.props;
         showLoading({ message: i18n('plugin.creatingPlugin') });
         // pluginTemplateId 是固定的
         api.createPlugin({
@@ -130,12 +143,7 @@ class Create extends Component {
         }).then(res => {
             hideLoading();
             if (res.code === 0) {
-                // 第一次打开工作空间加上 open=README.md
-                const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${globalKey}&projectName=${repoName}&open=README.md`;
-                this.props.history.push({ pathname: '/dashboard/workspace' });
-                // 解决浏览器拦截 open 方法
-                const windowReference = window.top.open('');
-                windowReference.location.href = wsHref;
+                this.setState({ created: true });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
