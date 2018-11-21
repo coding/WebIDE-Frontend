@@ -17,7 +17,7 @@ import parseStatus from './status';
 class PluginSet extends Component {
     state = {
         createdBy: '',
-        pluginId: window.top.location.pathname.split('/').pop(),
+        pluginId: this.props.match.params.id,
         pluginName: '',
         remark: '',
         pluginType: '',
@@ -78,9 +78,7 @@ class PluginSet extends Component {
                 this.setState({
                     createdBy,
                     pluginName,
-                    newPluginName: pluginName,
                     remark,
-                    newRemark: remark,
                     avgScore,
                     countScoreUser,
                     pluginType: pluginTypes[0].typeName,
