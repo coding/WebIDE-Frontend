@@ -60,7 +60,7 @@ class Card extends Component {
                 <div className="inner" title={attr}>
                     <div className="title">{title}</div>
                     <div className="desc">
-                        {workingStatus !== 'Invalid' ? getModifiedTime(Date.now(), lastModifiedDate) : getDeletedTime(Date.now(), deleteTime)}
+                        {workingStatus !== 'Invalid' ? getModifiedTime(lastModifiedDate) : getDeletedTime(deleteTime)}
                     </div>
                     <div className="status">
                         <div className={`state${workingStatus !== 'Online' ? ' off' : ''}`}>
