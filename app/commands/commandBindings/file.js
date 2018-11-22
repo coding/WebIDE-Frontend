@@ -5,7 +5,7 @@ import * as Modal from '../../components/Modal/actions'
 import uniqueId from 'lodash/uniqueId'
 import TabStore from 'components/Tab/store'
 import TabState from 'components/Tab/state'
-import FileState from 'commons/File/state'
+import FileState, { extState } from 'commons/File/state'
 import FileStore from 'commons/File/store'
 import { notify, NOTIFY_TYPE } from '../../components/Notification/actions'
 import i18n from 'utils/createI18n'
@@ -158,6 +158,9 @@ export function openFile (obj, callback) {
   return api.readFile(path, encoding || currentEncoding).then((data) => {
     FileStore.loadNodeData(data)
     FileState.initData.set(path, {})
+    for (const listener of extState.didOpenListeners) {
+      listener(FileState.entities.get(path))
+    }
     return data
   }).then(() => {
     const activeTabGroup = TabStore.getState().activeTabGroup
