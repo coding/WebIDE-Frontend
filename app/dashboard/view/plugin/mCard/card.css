@@ -53,7 +53,8 @@
     overflow: hidden;
     position: relative;
 }
-.plugin-list .plugin-card .desc .ellipsis {
+.plugin-list .plugin-card .desc::after {
+    content: '';
     width: 60px;
     height: 20px;
     background: linear-gradient(to right, transparent, #3b3b3b);

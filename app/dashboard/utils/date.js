@@ -6,7 +6,7 @@ const twoDigit = (num) => {
 
 export const getModifiedTime = (now, lastModified) => {
     const ms = now - lastModified;
-    const d = Math.floor(ms / 3600000 / 24);
+    const d = Math.ceil(ms / 3600000 / 24);
     if (d > 0) {
         return i18n('global.lastModified', { days: d });
     } else {
@@ -16,7 +16,7 @@ export const getModifiedTime = (now, lastModified) => {
 
 export const getDeletedTime = (now, lastModified) => {
     const ms = now - lastModified;
-    const d = Math.floor(ms / 3600000 / 24);
+    const d = Math.ceil(ms / 3600000 / 24);
     if (d > 0) {
         return i18n('global.deletedDaysAgo', { days: d });
     } else {
