@@ -2,7 +2,6 @@ import _ from 'lodash'
 import extendObservableStrict from 'utils/extendObservableStrict'
 import PaneScope from 'commons/Pane/state'
 import { extendObservable, computed, action } from 'mobx'
-import config from '../../config'
 
 const { state, BasePane } = PaneScope()
 
@@ -40,8 +39,8 @@ class Panel extends BasePane {
 
   @computed get disableResizeBar () {
     // if a panel is not resizable, then resize bar must be disabled
-    
-    const adjacentPanel = this.next //this.prev || 
+
+    const adjacentPanel = this.next //this.prev ||
 
     if (!adjacentPanel || adjacentPanel.hidden) return true
 
