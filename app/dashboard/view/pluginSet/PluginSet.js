@@ -17,7 +17,7 @@ import parseStatus from './status';
 class PluginSet extends Component {
     state = {
         createdBy: '',
-        pluginId: '',
+        pluginId: this.props.match.params.id,
         pluginName: '',
         remark: '',
         pluginType: '',
@@ -50,13 +50,13 @@ class PluginSet extends Component {
                     <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.versionHistory')}</div>
                     <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.pluginInfo')}</div>
                 </div>
-                {tab === 1 && (
+                {tab === 1 && pluginName && (
                     <div className="panel">
                         <PrePublish {...prePublishProps} release={this.handleRelease} cancelRelease={this.cancelPrePublish} />
                         <Publish version={version} status={status} release={this.handleRelease} />
                     </div>
                 )}
-                {tab === 2 && <History historyVersions={historyVersions} />}
+                {tab === 2 && pluginName && <History historyVersions={historyVersions} />}
                 {tab === 3 && pluginName && <Modify pluginId={pluginId} pluginName={pluginName} remark={remark} refresh={this.fetchPlugin} />}
             </div>
         );
@@ -70,44 +70,37 @@ class PluginSet extends Component {
     }
 
     fetchPlugin = () => {
-        const state = this.props.location.state;
-        if (state && state.pluginId) {
-            api.getPluginInfo(state.pluginId).then(res => {
-                if (res.code === 0) {
-                    const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
-                    const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
-                    this.setState({
-                        createdBy,
-                        pluginId: state.pluginId,
-                        pluginName,
-                        newPluginName: pluginName,
-                        remark,
-                        newRemark: remark,
-                        avgScore,
-                        countScoreUser,
-                        pluginType: pluginTypes[0].typeName,
-                        repoName,
-                        repoUrl,
-                        historyVersions,
-                        status,
-                        version,
-                        versionId,
-                        log,
-                        auditRemark,
-                        hasPrePublish,
-                        preStatus,
-                        preVersionId,
-                        preLog,
-                    });
-                } else {
-                    notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-                }
-            }).catch(err => {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
-            });
-        } else {
-            this.props.history.push({ pathname: '/dashboard/plugin/mine' });
-        }
+        const { pluginId } = this.state;
+        api.getPluginInfo(pluginId).then(res => {
+            if (res.code === 0) {
+                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
+                const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
+                this.setState({
+                    createdBy,
+                    pluginName,
+                    remark,
+                    avgScore,
+                    countScoreUser,
+                    pluginType: pluginTypes[0].typeName,
+                    repoName,
+                    repoUrl,
+                    historyVersions,
+                    status,
+                    version,
+                    versionId,
+                    log,
+                    auditRemark,
+                    hasPrePublish,
+                    preStatus,
+                    preVersionId,
+                    preLog,
+                });
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
+            }
+        }).catch(err => {
+            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
+        });
     }
 
     handleTab = (tab) => {

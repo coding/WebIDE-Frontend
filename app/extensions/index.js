@@ -12,7 +12,8 @@ import PluginContext, {
   getPluginConfiguration,
   registerPluginConfigChangeHandler,
   IPropertiesType,
-  createAdvancedProviderAndConnect
+  createAdvancedProviderAndConnect,
+  generatePluginKey
 } from './PluginApp.ext.js'
 
 export default {
@@ -30,5 +31,6 @@ export default {
   getPluginConfiguration,
   registerPluginConfigChangeHandler,
   IPropertiesType,
-  createAdvancedProviderAndConnect
+  createAdvancedProviderAndConnect,
+  generatePluginKey
 }

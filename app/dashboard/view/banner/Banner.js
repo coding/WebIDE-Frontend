@@ -69,7 +69,11 @@ const BreadCrumb = ({ breadcrumbs }) => {
                 } else if (index < breadcrumbs.length - 1) {
                     return <Link key={bc.name} className="crumb" to={bc.route}>{i18n(`global.${bc.name}`)}</Link>;
                 } else {
-                    return <span key={bc.name}>{i18n(`global.${bc.name}`)}</span>
+                    if (Number.isNaN(Number(bc.name))) {
+                        return <span key={bc.name}>{i18n(`global.${bc.name}`)}</span>
+                    } else {
+                        return <span key={bc.name}>{bc.name}</span>
+                    }
                 }
             })}
         </div>

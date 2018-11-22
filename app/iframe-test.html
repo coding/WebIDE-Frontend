@@ -144,7 +144,7 @@
     } catch (e) {}
 
     var tencentDomain = 'studio.dev.tencent.com',
-        codingDomain = 'ide.test:8060/intro';
+        codingDomain = <%= htmlWebpackPlugin.options.iframeUrl %>;
 
     // coding studio domain regex exp
     var studioRegex = new RegExp('^http[s]?:\/\/' + codingDomain.replace(/\./g, '\\.') + '.*$', 'i');
@@ -156,7 +156,7 @@
             getPath: function(domain, href) {
                 domain = typeof(domain) === 'undefined' ? tencentDomain : domain;
                 href = typeof(href) === 'undefined' ? window.location.href : href;
-                
+
                 var regex = new RegExp('^http[s]?:\/\/(?:' + domain + '/)(.*)$', 'i');
                 var match = regex.exec(href);
                 if (match !== null) {
@@ -164,7 +164,7 @@
                 }
                 return '';
             },
-            
+
             // 修改 iframe 节点
             changeIframeSrc: function(url) {
                 var path = this.getPath();
@@ -191,7 +191,7 @@
         var origin = messageEvent.origin || messageEvent.originalEvent.origin;
         // 去除端口
         origin = origin.replace(/(:\d+)/g, '');
-        
+
         if (studioRegex.test(origin)) {
             var data = messageEvent.data;
             if (

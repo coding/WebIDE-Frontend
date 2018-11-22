@@ -185,7 +185,7 @@ export function registerActiveEditorChangeHandler (fn) {
 }
 
 function _registerCodeSnippets (language, snippetsProvider) {
-  monaco.languages.registerCompletionItemProvider(language, {
+  return monaco.languages.registerCompletionItemProvider(language, {
     provideCompletionItems () {
       return isFunction(snippetsProvider) ? snippetsProvider() : snippetsProvider
     }
@@ -194,11 +194,13 @@ function _registerCodeSnippets (language, snippetsProvider) {
 
 export function registerCodeSnippetsProvider (languages, snippetsProvider) {
   if (isArray(languages)) {
+    const disposes = []
     for (const lang of languages) {
-      _registerCodeSnippets(lang, snippetsProvider)
+      disposes.push(_registerCodeSnippets(lang, snippetsProvider))
     }
+    return disposes
   } else {
-    _registerCodeSnippets(languages, snippetsProvider)
+    return [_registerCodeSnippets(languages, snippetsProvider)]
   }
 }
 

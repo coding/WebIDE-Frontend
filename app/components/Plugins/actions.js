@@ -164,10 +164,13 @@ export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
       return pkg.name
     })
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
+    .catch(err => {
+      throw new Error(`[Plugin] ${pkg.name} load failed. ${err.message}`)
+    })
 })
 
-const loadUserPackages = async (packages) => {
-  const convert = packages.map((p) => ({
+const loadUserPackages = (packages) => {
+  const convertTasks = packages.map((p) => ({
     name: p.pluginName,
     author: p.createdBy || '',
     description: p.remark,
@@ -180,17 +183,24 @@ const loadUserPackages = async (packages) => {
     userPlugin: true,
     filePath: p.pluginFilePath
   }))
-
-  /* eslint-disable */
-  for (const pkg of convert) {
+  .map((pkg) => {
     store.list.push(pkg)
-    try {
-      await fetchUserPackage(pkg)
-      /* eslint-enable */
-    } catch (err) {
-      console.error(`Failed to load plugin ${pkg.name}: ${err.message}.`)
-    }
-  }
+    console.log(`[Plugin] Load ${pkg.name}...`)
+    return fetchUserPackage(pkg)
+  })
+
+  return Promise.all(convertTasks)
+  /* eslint-disable */
+  // for (const pkg of convertTasks) {
+  //   store.list.push(pkg)
+  //   fetchUserPackage(pkg)
+  //     .then(() => {
+  //       console.log(`[Plugin-${pkg.name}] load success.`)
+  //     })
+  //     .catch((err) => {
+  //       console.error(`Failed to load plugin ${pkg.name}: ${err.message}.`)
+  //     })
+  // }
 }
 
 export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
@@ -208,15 +218,23 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
         return pre
       }, [])
       store.preDeployPlugins = preDeployPlugins
-
-      loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+      try {
+        await loadUserPackages([...enableUserPackages, ...preDeployPlugins])
+      } catch (err) {
+        console.error(err.message)
+      }
     })
 })
 
 export const mountPackagesByType = (type) => {
   const plugins = PluginRegistry.findAllByType(type)
   plugins.forEach((plugin) => {
-    plugin.detaultInstance.pluginWillMount(plugin)
+    console.log(`[Plugin] ${plugin.key} will mount.`)
+    try {
+      plugin.detaultInstance.pluginWillMount(plugin)
+    } catch (err) {
+      console.log(`[Plugin] ${plugin.key} mount failed. ${err.message}`)
+    }
   })
 }
 
