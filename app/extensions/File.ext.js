@@ -1,5 +1,5 @@
 import dispatchCommand from 'commands/dispatchCommand'
-import FileState from 'commons/File/state'
+import FileState, { extState } from 'commons/File/state'
 import * as fileApi from 'backendAPI/fileAPI'
 import { fileIconProviders } from 'components/FileTree/state'
 import { fileIconOptions } from 'settings'
@@ -21,12 +21,23 @@ export function getFileContent (filePath) {
   })
 }
 
+function removeFileDidOpenListener (fn) {
+  extState.didOpenListeners = extState.didOpenListeners.filter(f => f !== fn)
+}
+
+export function onDidFileOpen (fn) {
+  extState.didOpenListeners.push(fn)
+  return () => {
+    removeFileDidOpenListener(fn)
+  }
+}
+
 export function removeFileNodeCreatedListener (fn) {
-  FileState.createdListeners = FileState.createdListeners.filter(f => f !== fn)
+  extState.createdListeners = extState.createdListeners.filter(f => f !== fn)
 }
 
 export function onDidFileNodeCreated (fn) {
-  FileState.createdListeners.push(fn)
+  extState.createdListeners.push(fn)
   return () => {
     removeFileNodeCreatedListener(fn)
   }

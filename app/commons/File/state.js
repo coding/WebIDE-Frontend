@@ -20,7 +20,12 @@ const state = observable({
   get root () {
     return this.entities.get(ROOT_PATH)
   },
+})
+
+// for plugin
+const extState = observable({
   createdListeners: [],
+  didOpenListeners: [],
 })
 
 // state.entities.intercept((change) => {
@@ -45,8 +50,8 @@ class FileNode {
     }
     state.entities.set(this.path, this)
     // 文件创建钩子
-    if (state.createdListeners && state.createdListeners.length > 0) {
-      for (const createdListener of state.createdListeners) {
+    if (extState.createdListeners && extState.createdListeners.length > 0) {
+      for (const createdListener of extState.createdListeners) {
         createdListener(this)
       }
     }
@@ -171,4 +176,4 @@ function hydrate (json) {
 }
 
 export default state
-export { state, FileNode, hydrate }
+export { state, FileNode, hydrate, extState }
