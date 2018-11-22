@@ -1,3 +1,3 @@
-import TCard from './Tcard';
+import TCard from './TCard';
 
 export default TCard;
