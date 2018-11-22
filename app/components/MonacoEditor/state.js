@@ -302,9 +302,7 @@ class EditorInfo {
       filePath: String,
       gitBlame: Object
     })
-    if (!this.file && props.content) {
-      this._content = props.content
-    }
+    this._content = props.content || ''
 
     if (props.monacoEditor) {
       this.monacoEditor = props.monacoEditor
