@@ -57,7 +57,8 @@
     content: '';
     width: 60px;
     height: 20px;
-    background: linear-gradient(to right, transparent, #3b3b3b);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), #3b3b3b);
+    background: -webkit-linear-gradient(0deg, rgba(255, 255, 255, 0),#3b3b3b);
     position: absolute;
     bottom: 0;
     right: 0;
