@@ -220,6 +220,7 @@ export function openFile (obj, callback) {
 
 function createFileWithContent (content) {
   return function createFileAtPath (path) {
+    path = path.startsWith('/') ? path : `/${path}`
     if (content) {
       return api.createFile(path, content)
         .then((res) => {

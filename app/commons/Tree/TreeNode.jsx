@@ -153,6 +153,7 @@ class TreeNode extends Component {
           ref={r => (this.nodeDOM = r)}
           onClick={e => selectNode(node)}
           onDoubleClick={e => openNode(node)}
+          onTouchStart={e => openNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
