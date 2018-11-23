@@ -50,7 +50,7 @@
     "lastModified": "最后更新于 {{days}} 天前",
     "lastModifiedToday": "最后更新于 今天",
     "deletedDaysAgo": "删除于 {{days}} 天前",
-    "deletedTime": "删除于 {{hours}} 小时 {{minutes}} 分 {{seconds}} 秒前",
+    "deletedTime": "删除于 {{hours}} 小时 {{minutes}} 分钟前",
     "copyed": "复制完成",
     "noDesc": "[暂无描述]",
     "manage": "管理",

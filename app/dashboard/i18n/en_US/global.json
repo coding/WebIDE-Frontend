@@ -50,7 +50,7 @@
     "lastModified": "Last modified {{days}} days ago",
     "lastModifiedToday": "Last modified Today",
     "deletedDaysAgo": "Deleted {{days}} days ago",
-    "deletedTime": "Deleted {{hours}} hours {{minutes}} minutes {{seconds}} seconds ago",
+    "deletedTime": "Deleted {{hours}} hours {{minutes}} minutes ago",
     "copyed": "Copyed",
     "noDesc": "[No Description]",
     "manage": "Manage",

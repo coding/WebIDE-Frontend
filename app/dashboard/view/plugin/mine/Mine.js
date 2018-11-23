@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './mine.css';
 
-import Card from '../card';
+import MCard from '../mCard';
 import NoData from '../../../share/noData';
 import Topbar from '../topbar';
 
@@ -21,7 +21,7 @@ class Mine extends Component {
                 <Topbar />
                 {
                     plugins.length ? (
-                        plugins.map(plugin => <Card key={plugin.id} {...plugin} belong={3} />)
+                        plugins.map(plugin => <MCard key={plugin.id} {...plugin} />)
                     ) : <NoData />
                 }
             </div>

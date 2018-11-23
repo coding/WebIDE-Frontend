@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './thirdParty.css';
 
-import Card from '../card';
+import TCard from '../tCard';
 import Inbox from '../../../share/inbox';
 import NoData from '../../../share/noData';
 import Topbar from '../topbar';
@@ -27,7 +27,7 @@ class ThirdParty extends Component {
                 </div>
                 {
                     plugins.length ? (
-                        plugins.map(plugin => <Card key={plugin.id} {...plugin} refresh={this.fetchThirdParty} belong={1} />)
+                        plugins.map(plugin => <TCard key={plugin.id} {...plugin} refresh={this.fetchThirdParty} />)
                     ) : <NoData />
                 }
             </div>
