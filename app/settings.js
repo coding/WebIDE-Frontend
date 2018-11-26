@@ -421,7 +421,6 @@ const settings = observable({
     confirmCallBack ([lang, path]) {
       const prevFolder = config._ROOT_URI_
       const prevLang = config.mainLanguage
-      console.log(lang)
       config.mainLanguage = lang
       if (path !== '/') {
         config._WORKSPACE_SUB_FOLDER_ = path

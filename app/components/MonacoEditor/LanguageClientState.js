@@ -186,7 +186,6 @@ export class LanguageClient {
     this.client.sendRequest(JAVA_CLASS_PATH_REQUEST, params)
 
   fetchOmnisharpMetadata = params => {
-    console.log(params)
     return this.client.sendRequest(OMNISHARP_METADATA, params)
   }
 

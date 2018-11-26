@@ -29,7 +29,6 @@ class MonacoEditor extends React.PureComponent {
     let { editorInfo } = props
     if (!editorInfo) editorInfo = new EditorInfo()
     const fileExt = editorInfo.filePath ? editorInfo.filePath.split('.').pop() : ''
-    console.log(fileExt)
     this.language = findLangueByExt(fileExt) ? findLangueByExt(fileExt).language : ''
     this.editor = editorInfo
     this.editorElement = editorInfo.monacoElement
