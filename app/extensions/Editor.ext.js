@@ -7,6 +7,7 @@ import editorState from 'components/MonacoEditor/state'
 import tabStore from 'components/Tab/store'
 import Color from 'color'
 import { monacoThemeOptions } from '../settings'
+import { editorSet } from 'components/MonacoEditor/Editors';
 
 export function getActiveEditor () {
   const { EditorTabState } = mobxStore
@@ -42,6 +43,15 @@ export function registerLanguage (languageConf) {
 
 export function registerFormattingEditProvider (languageId, provider) {
   // todo
+}
+
+export function registerEditorViewByContentTypes(editor, contentTypes) {
+  // 注册编辑器
+  editorSet.unshift({ editor, contentTypes });
+  // dispose
+  return () => {
+    editorSet = editorSet.filter(editor => String(editor.contentTypes) !== String(contentTypes));
+  }
 }
 
 export function registerContentProvider (component, conf) {

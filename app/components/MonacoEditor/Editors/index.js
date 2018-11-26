@@ -7,9 +7,8 @@ import HtmlEditor from './HtmlEditor'
 import MarkDownEditor from './MarkDownEditor'
 import UnknownEditor from 'components/Editor/components/UnknownEditor'
 import ImageEditor from 'components/Editor/components/ImageEditor'
-import pluginStore from '../../Plugins/store'
 
-const editorSet = [
+export const editorSet = [
   {
     editorType: 'htmlEditor',
     editor: HtmlEditor,
@@ -39,16 +38,15 @@ function matchEditorByContentType(editorType, contentType) {
       if (set.editorType === editorType) {
         return set.editor;
       }
-    } else if (set.mime) {
-      if (set.mime.includes(contentType)) {
+    } else if (set.contentTypes && Array.isArray(set.contentTypes)) {
+      // 插件形式的编辑器视图会 unshift 到 editorSet 中。通过 contentTypes 拦截。
+      if (set.contentTypes.includes(contentType)) {
         return set.editor;
       }
     }
   }
   return UnknownEditor;
 }
-// 编辑器插件数组
-let pluginArray = [];
 
 const EditorWrapper = observer(({ tab, active }) => {
   // loading
@@ -61,22 +59,11 @@ const EditorWrapper = observer(({ tab, active }) => {
   }
   const { editor, editorInfo } = tab;
   const file = editor.file || {};
-  // 编辑器插件
-  if (!pluginArray.length) {
-    pluginArray = pluginStore.plugins.values().filter(plugin => plugin.label.mime);
-    for (let i = 0, n = pluginArray.length; i < n; i++) {
-      const plugin = pluginArray[i];
-      editorSet.unshift({
-        mime: plugin.label.mime,
-        editor: plugin.app,
-      });
-    }
-  }
   // key is crutial here, it decides whether the component should re-construct
   // or keep using the existing instance.
   const key = `editor_${file.path}`;
   const editorElement = matchEditorByContentType(editor.editorType, editor.contentType);
-  return React.createElement(editorElement, { editor, editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
+  return React.createElement(editorElement, { editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
 })
 
 EditorWrapper.propTypes = {
