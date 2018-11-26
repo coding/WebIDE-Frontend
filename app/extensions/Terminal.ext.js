@@ -5,8 +5,8 @@ class Terminal {
   constructor (xterm) {
     this.name = xterm.id
     this.sendText = (text) => {
-      const textArr = text.split(' ')
-      xterm.emit('data', textArr)
+      xterm.emit('data', 'clear\r')
+      xterm.emit('data', text + '\r')
     }
 
     this.active = () => {
@@ -34,5 +34,10 @@ export function registerTerminalOpenHandler (fn) {
 
 export function createTerminal (id, shellPath) {
   addTerminal({ id, cwd: shellPath })
-  return new Terminal(state.terminalManager.getTermById(id))
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const term = state.tabs.get(id).terminal
+      resolve(new Terminal(term))
+    }, 0)
+  })
 }
