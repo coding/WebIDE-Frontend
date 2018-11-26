@@ -29,6 +29,7 @@ class MonacoEditor extends React.PureComponent {
     let { editorInfo } = props
     if (!editorInfo) editorInfo = new EditorInfo()
     const fileExt = editorInfo.filePath ? editorInfo.filePath.split('.').pop() : ''
+    console.log(fileExt)
     this.language = findLangueByExt(fileExt) ? findLangueByExt(fileExt).language : ''
     this.editor = editorInfo
     this.editorElement = editorInfo.monacoElement
@@ -100,15 +101,15 @@ class MonacoEditor extends React.PureComponent {
          *  Stopped,      // 5
          * }
          */
-        const uri = path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`
+        const uri = path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`
         let model = monaco.editor.getModel(uri)
         if (!model) {
           model = monaco.editor.createModel(
             content,
             lowerCase(this.language),
-            monaco.Uri.parse(path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`)
+            monaco.Uri.parse(path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`)
           )
-          this.uri = path.startsWith('jdt://') ? path : `file://${languageClient._ROOT_URI_}${path}`
+          this.uri = path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`
           const tmpModel = monaco.editor.getModel(`inmemory://model/${this.editor.id}`)
           if (tmpModel) {
             tmpModel.dispose()
@@ -121,7 +122,7 @@ class MonacoEditor extends React.PureComponent {
           if (!openeduri.get(path)) {
             languageClient.openTextDocument({
               textDocument: {
-                uri: `file://${languageClient._ROOT_URI_}${path}`,
+                uri: path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`,
                 languageId: lowerCase(this.language),
                 text: content,
                 version: 1,

@@ -419,34 +419,59 @@ const settings = observable({
     _keys: ['projectType', 'sourcePath'],
     requireConfirm: true,
     confirmCallBack ([lang, path]) {
-      setLanguageServerOne({ type: lang, srcPath: path })
-        .then((res) => {
-          if (res.code === 0) {
-            const prevFolder = config._ROOT_URI_
-            const prevLang = config.mainLanguage
-            config.mainLanguage = lang
-            if (path !== '/') {
-              config._WORKSPACE_SUB_FOLDER_ = path
-              config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+      const prevFolder = config._ROOT_URI_
+      const prevLang = config.mainLanguage
+      console.log(lang)
+      config.mainLanguage = lang
+      if (path !== '/') {
+        config._WORKSPACE_SUB_FOLDER_ = path
+        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+      }
+      const client = LanguageState.clients.get(prevLang)
+      if (client) {
+        if (lang !== prevLang) {
+          client.destory()
+            .then(() => createLanguageClient(lang))
+        } else {
+          client.workSpaceFoldersChange({
+            event: {
+              added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+              removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
             }
-            const client = LanguageState.clients.get(prevLang)
-            if (client) {
-              if (lang !== prevLang) {
-                client.destory()
-                  .then(() => createLanguageClient(lang))
-              } else {
-                client.workSpaceFoldersChange({
-                  event: {
-                    added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
-                    removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
-                  }
-                })
-              }
-            } else {
-              createLanguageClient(lang)
-            }
-          }
-        })
+          })
+        }
+      } else {
+        createLanguageClient(lang)
+      }
+      // setLanguageServerOne({ type: lang, srcPath: path })
+      //   .then((res) => {
+      //     if (res.code === 0) {
+      //       const prevFolder = config._ROOT_URI_
+      //       const prevLang = config.mainLanguage
+      //       console.log(lang)
+      //       config.mainLanguage = lang
+      //       if (path !== '/') {
+      //         config._WORKSPACE_SUB_FOLDER_ = path
+      //         config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+      //       }
+      //       const client = LanguageState.clients.get(prevLang)
+      //       if (client) {
+      //         if (lang !== prevLang) {
+      //           client.destory()
+      //             .then(() => createLanguageClient(lang))
+      //         } else {
+      //           client.workSpaceFoldersChange({
+      //             event: {
+      //               added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
+      //               removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+      //             }
+      //           })
+      //         }
+      //       } else {
+      //         createLanguageClient(lang)
+      //       }
+      //     }
+      //   })
     },
     projectType: {
       name: 'modal.projectType',
