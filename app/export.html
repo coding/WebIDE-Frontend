@@ -209,6 +209,32 @@
       margin-top: 10px;
     }
 
+    @media screen and (max-width: 700px) {  
+      .title {
+          padding: 0 20px;
+          margin-top: 30px;
+          text-align: center;
+      }
+
+      main {
+        height: initial;
+      }
+
+      .intro {
+        padding: 0 20px;
+        width: initial;
+      }
+
+      .start-btn {
+        margin-top: 15px;
+      }
+
+      .logo {
+        margin: 30px 0;
+        position: initial;
+      }
+    }
+
     ::-webkit-scrollbar-thumb {
       height: 231px;
       background: #181C23;
@@ -287,6 +313,14 @@
       }, 2000)
     }
 
+    var titleChildren = []
+    titleChildren.push(m('span', '携手腾讯云, '))
+    if (document.body.clientWidth <= 700) {
+      titleChildren.push(m('br'))
+    }
+    titleChildren.push(m('span', 'Cloud Studio 全面升级'))
+
+
     // View
     var Home = {
         view: function() {
@@ -294,7 +328,7 @@
             m('main', [
               m('h1', {
                 class: 'title'
-              }, '携手腾讯云，Cloud Studio 全面升级'),
+              }, titleChildren),
               m('div', {
                   class: 'intro'
               },[
