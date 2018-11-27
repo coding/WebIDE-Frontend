@@ -1178,6 +1178,7 @@
         }
         // 点击观看视频
         const $videoPop = document.querySelector('#video-pop');
+        const $video = document.querySelector('video');
         function handleViewVideo() {
             if (!$videoPop.classList.contains('on')) {
                 $videoPop.classList.add('on');
@@ -1185,6 +1186,7 @@
         }
         function handleCloseVideo() {
             $videoPop.classList.remove('on');
+            $video.pause();
         }
         // 插件比赛广告图片
         const $campaignImg = document.querySelector('#campaign-img');
