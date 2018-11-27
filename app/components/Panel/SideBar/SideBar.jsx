@@ -12,6 +12,7 @@ label = {
   text: String,
   icon: String,
   viewId: String,
+  onlyIcon: Boolean
 }
 */
 
@@ -26,7 +27,7 @@ const SideBarLabel = ({ label, isActive, onClick }) => (
     <div className='side-bar-label-container'>
       <div className='side-bar-label-content'>
         <i className={cx('icon', label.icon)} />
-        <span>{label.text}</span>
+        {!label.onlyIcon && <span>{label.text}</span>}
       </div>
     </div>
   </div>
