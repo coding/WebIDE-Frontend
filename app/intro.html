@@ -928,7 +928,7 @@
                 </div>
             </div>
             <div id="video-pop" onClick="handleCloseVideo()">
-                <div class="board">
+                <div class="board" onClick="stopBubble(event)">
                     <video preload controls>
                         <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4">
                         </source>
@@ -1187,6 +1187,9 @@
         function handleCloseVideo() {
             $videoPop.classList.remove('on');
             $video.pause();
+        }
+        function stopBubble(event) {
+            event.stopPropagation();
         }
         // 插件比赛广告图片
         const $campaignImg = document.querySelector('#campaign-img');
