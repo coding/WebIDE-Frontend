@@ -11,5 +11,13 @@
    },
    "right": {
     "plugin": "Plugin Development"
-  }
+   },
+   "checkbox": {
+      "case": "Case Sensitive",
+      "word": "Word Match",
+      "pattern": "Pattern Match"
+   },
+   "result": {
+      "blank": "Search Result Is 0"
+   }
 }

@@ -25,6 +25,7 @@ const config = observable({
   // isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
+  searchSocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
   supportLangServer: [
     { lang: 'java', files: ['pom.xml', 'settings.gradle'], file: 'pom.xml' },

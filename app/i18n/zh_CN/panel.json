@@ -11,5 +11,13 @@
    },
    "right": {
      "plugin": "插件开发"
+   },
+   "checkbox": {
+      "case": "大小写",
+      "word": "单词匹配",
+      "pattern": "正则匹配"
+   },
+   "result": {
+      "blank": "查询结果为 0 条"
    }
 }

@@ -10,7 +10,7 @@ import * as Modal from './components/Modal/actions'
 import * as SideBarActions from './components/Panel/SideBar/actions'
 import { notify, NOTIFY_TYPE } from './components/Notification/actions'
 import api from '../app/backendAPI'
-import { closeWebsocketClient, closeTtySocketClient } from '../app/backendAPI/workspaceAPI'
+import { closeWebsocketClient, closeTtySocketClient, closeSearchWebsocketClient } from '../app/backendAPI/workspaceAPI'
 import * as Panel from './components/Panel/actions'
 import * as File from './commons/File'
 import initializeState from './containers/Initialize/state'
@@ -62,7 +62,8 @@ export default class {
   get socketManager () {
     return ({
       closeWebsocketClient,
-      closeTtySocketClient
+      closeTtySocketClient,
+      closeSearchWebsocketClient
     })
   }
 

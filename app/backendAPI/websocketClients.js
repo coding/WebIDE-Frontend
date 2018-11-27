@@ -5,6 +5,7 @@ import emitter, * as E from 'utils/emitter'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
+import * as searchAPI from 'backendAPI/searchAPI'
 
 const log = console.log || (x => x)
 const warn = console.warn || (x => x)
@@ -93,6 +94,9 @@ class FsSocketClient {
     if (TtySocketClient.$$singleton) {
       TtySocketClient.$$singleton.close();
     }
+    if(SearchSocketClient.$$singleton) {
+      SearchSocketClient.$$singleton.close();
+    }
   }
 }
 
@@ -179,4 +183,104 @@ class TtySocketClient {
   }
 }
 
-export { FsSocketClient, TtySocketClient }
+class SearchSocketClient {
+  constructor () {
+      if (SearchSocketClient.$$singleton) return SearchSocketClient.$$singleton
+
+      const wsUrl = config.wsURL
+      const firstSlashIdx = wsUrl.indexOf('/', 8)
+      const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
+      
+      const url = `${host}:8066/search/sockjs`
+
+      this.sockJSConfigs = [url, {}, {server: `${config.spaceKey}`, transports: 'websocket'}]
+
+      this.backoff = getBackoff({
+        delayMin: 1500,
+        delayMax: 10000,
+      })
+      this.maxAttempts = 5
+  
+      SearchSocketClient.$$singleton = this
+      emitter.on(E.SOCKET_RETRY, () => {
+        this.reconnect()
+      })
+  }
+
+  connect () {
+    if (!this.socket || !this.stompClient) {
+      this.socket = new SockJS(...this.sockJSConfigs)
+      this.stompClient = Stomp.over(this.socket)
+      this.stompClient.debug = false // stop logging PING/PONG
+    }
+    const success = () => {
+      runInAction(() => config.searchSocketConnected = true)
+      this.backoff.reset()
+      this.successCallback(this.stompClient)
+    }
+    const error = (frame) => {
+      if (this.shouldClose) {
+        this.shouldClose = false;
+        return;
+      }
+      log('[SEARCH Socket] SearchSocket error', this.socket)
+      switch (this.socket.readyState) {
+        case SockJS.CLOSING:
+        case SockJS.CLOSED:
+          runInAction(() => config.searchSocketConnected = false)
+          this.reconnect()
+          break
+        case SockJS.OPEN:
+          log('FRAME ERROR', frame)
+          break
+        default:
+      }
+      this.errorCallback(frame)
+    }
+
+    this.stompClient.connect({}, success, error)
+  }
+
+  reconnect () {
+    if (config.searchSocketConnected) return
+    log(`[SEARCH Socket] reconnect searchSocket ${this.backoff.attempts}`)
+    // unset this.socket
+    this.socket = undefined
+    if (this.backoff.attempts <= this.maxAttempts) {
+      const retryDelay = this.backoff.duration()
+      log(`Retry after ${retryDelay}ms`)
+      const timer = setTimeout(
+        this.connect.bind(this)
+      , retryDelay)
+    } else {
+      // must emit ，ops correct?
+      // emitter.emit(E.SOCKET_TRIED_FAILED)
+      notify({ message: i18n`global.onSocketError`, notifyType: NOTIFY_TYPE.ERROR })
+      this.backoff.reset()
+      warn('Sock connected failed, something may be broken, reload page and try again')
+    }
+  }
+
+  close () {
+    const self = this
+    if (config.searchSocketConnected) {
+      searchAPI.searchWorkspaceDown();
+      self.shouldClose = true;
+      self.socket.close();
+      // must emit ???
+      // emitter.emit(E.SOCKET_TRIED_FAILED);
+      runInAction(() => config.searchSocketConnected = false);
+    }
+  }
+
+  subscribe = (topic, process) => {
+      this.stompClient.subscribe(topic, process);
+  }
+
+  send = (mapping, headers, data) => {
+      this.stompClient.send(mapping, headers, data);
+  }
+}
+
+
+export { FsSocketClient, TtySocketClient, SearchSocketClient }
