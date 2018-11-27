@@ -78,7 +78,7 @@ module.exports = merge(
         filename: (staticDir ? '../' : '') + introEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/intro.html'),
         backendUrl: str(process.env.BACKEND_URL || ''),
-        staticUrl: path.join('/rs2/static/'),
+        staticUrl: path.join('/rs2/'),
       }),
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',
