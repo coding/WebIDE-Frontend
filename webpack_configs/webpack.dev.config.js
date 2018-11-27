@@ -107,6 +107,7 @@ const config = merge(
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
       backendUrl: str(process.env.BACKEND_URL || ''),
+      staticUrl: path.join('/static/'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',

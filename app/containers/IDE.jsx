@@ -9,10 +9,21 @@ import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import GlobalPrompt from './GlobalPrompt'
 
+const Bulletin = ({ close }) => {
+  return (
+    <div className="ide-bulletin">
+      <span>{i18n`global.eventStreamBulletin1`}</span>
+      <a href="https://mp.weixin.qq.com/s/IaOWxG0XLvn2znvvP1dmwA" target="_blank">{i18n`global.eventStreamBulletin2`}</a>
+      <span>{i18n`global.eventStreamBulletin3`}</span>
+      <i className="fa fa-remove" onClick={close}></i>
+    </div>
+  );
+}
+
 class IDE extends Component {
   constructor (props) {
     super(props)
-    this.state = { isReady: false }
+    this.state = { isReady: false, isBulletinOn: true }
   }
 
   componentWillMount () {  // initLifecycle_3: IDE specific init
@@ -28,17 +39,28 @@ class IDE extends Component {
         dismissAfter: 12000
       })
     }
+    // 公告
+    const isBulletinOn = !localStorage.getItem('hide-cs-eventstream-bulletin');
+    if (!isBulletinOn) {
+      this.setState({ isBulletinOn: false });
+    }
   }
 
   render () {
     if (!this.state.isReady) return null
     return (
       <div className='ide-container'>
+        {this.state.isBulletinOn && <Bulletin close={this.closeBulletin} />}
         <GlobalPrompt />
         <PanelsContainer />
         <Utilities />
       </div>
     )
+  }
+
+  closeBulletin = () => {
+    this.setState({ isBulletinOn: false });
+    localStorage.setItem('hide-cs-eventstream-bulletin', true);
   }
 }
 

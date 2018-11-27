@@ -9,7 +9,7 @@
     position: absolute;
     top: 10px;
     left: 50%;
-    z-index: 100;
+    z-index: 300;
 }
 .dash-bulletin i {
     cursor: pointer;
