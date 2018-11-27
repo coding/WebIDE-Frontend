@@ -436,8 +436,10 @@
         }
         .intro-canvas .button {
             display: flex;
-            justify-content: center;
-            margin-top: 60px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 376px;
+            margin: 60px auto 0;
         }
         .intro-canvas .goto-dashboard {
             width: 180px;
@@ -456,7 +458,6 @@
             box-sizing: border-box;
             width: 180px;
             padding: 12px 0;
-            margin-left: 16px;
             border: 1px solid #fff;
             border-radius: 2px;
             font-size: 18px;
@@ -472,21 +473,29 @@
         }
         #video-pop {
             display: none;
-            width: 85%;
-            max-width: 1200px;
-            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, .9);
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             z-index: 10;
         }
         #video-pop.on {
             display: block;
         }
-        #video-pop video {
+        #video-pop .board {
+            width: 100%;
+            max-width: 1200px;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+        #video-pop .board video {
             width: 100%;
         }
-        #video-pop i.fa-remove {
+        #video-pop .board i.fa-remove {
             font-size: 22px;
             color: #fff;
             cursor: pointer;
@@ -528,6 +537,7 @@
             }
             .intro-canvas .button {
                 margin-top: 20px;
+                width: 270px;
             }
             .intro-canvas .goto-dashboard {
                 width: 130px;
@@ -535,7 +545,9 @@
                 font-size: 16px;
             }
             .intro-canvas .view-video {
-                display: none;
+                width: 130px;
+                padding: 10px 0;
+                font-size: 16px;
             }
         }
     </style>
@@ -915,11 +927,14 @@
                     <button class="view-video" onClick="handleViewVideo()">观看视频</button>
                 </div>
             </div>
-            <div id="video-pop">
-                <video preload loop controls>
-                    <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4"></source>
-                </video>
-                <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
+            <div id="video-pop" onClick="handleCloseVideo()">
+                <div class="board">
+                    <video preload controls>
+                        <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4">
+                        </source>
+                    </video>
+                    <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
+                </div>
             </div>
         </div>
         <div class="intro-banner">
