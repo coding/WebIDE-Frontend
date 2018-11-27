@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -9,10 +10,15 @@
     <link rel="shortcut icon" href="//studio-res.coding.net/StudioWebResource/Images/favicon.ico">
     <link rel="stylesheet" href="<%= webpackConfig.output.publicPath + 'font-awesome/css/font-awesome.min.css' %>">
     <style>
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
-        html, body, #root {
+
+        html,
+        body,
+        #root {
             width: 100%;
             min-width: 300px;
             height: 100vh;
@@ -20,28 +26,38 @@
             font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
             -webkit-font-smoothing: antialiased;
         }
+
         a {
             color: #06f;
             text-decoration: none;
             transition: color .2s ease;
         }
+
         a:hover {
             color: #3788e4;
         }
+
         a:active {
             color: #2277d7;
         }
-        input, button, select, textarea {
+
+        input,
+        button,
+        select,
+        textarea {
             font-family: inherit;
             font-size: inherit;
             line-height: inherit;
         }
-        ul, ol {
+
+        ul,
+        ol {
             padding: 0;
             margin: 0;
             list-style-type: none;
             list-style-image: none;
         }
+
         hr {
             border: 0;
             border-top: 1px solid #808080;
@@ -54,6 +70,7 @@
             color: #e3e6e8;
             background-color: #2c303b;
         }
+
         .intro-pc-head .chief {
             display: flex;
             justify-content: space-between;
@@ -63,18 +80,22 @@
             padding: 0 30px;
             font-size: 14px;
         }
+
         .intro-pc-head .chief a {
             color: #e3e6e8;
         }
+
         .intro-pc-head .chief .left {
             display: flex;
             align-items: center;
             height: 100%;
         }
+
         .intro-pc-head .chief .left .logo img {
             height: 24px;
             vertical-align: middle;
         }
+
         .intro-pc-head .chief .prod {
             display: flex;
             align-items: center;
@@ -82,10 +103,12 @@
             margin-left: 30px;
             position: relative;
         }
+
         .intro-pc-head .chief .prod:hover .prod-menu {
             height: 121px;
             opacity: 1;
         }
+
         .intro-pc-head .chief .prod-menu {
             width: 140px;
             height: 0;
@@ -99,6 +122,7 @@
             left: -12px;
             z-index: 100;
         }
+
         .intro-pc-head .chief .prod-menu::after {
             content: '';
             width: 0;
@@ -111,9 +135,11 @@
             top: 0;
             left: 20px;
         }
+
         .intro-pc-head .chief .prod-menu .blank {
             height: 10px;
         }
+
         .intro-pc-head .chief .prod-menu .item {
             display: block;
             padding: 10px 15px;
@@ -123,45 +149,56 @@
             cursor: pointer;
             transition: background-color .1s ease;
         }
+
         .intro-pc-head .chief .prod-menu .item.one {
             border-top-left-radius: 2px;
             border-top-right-radius: 2px;
         }
+
         .intro-pc-head .chief .prod-menu .item.two {
             color: #00a4ff;
         }
+
         .intro-pc-head .chief .prod-menu .item.three {
             border-bottom-left-radius: 2px;
             border-bottom-right-radius: 2px;
         }
+
         .intro-pc-head .chief .prod-menu .item:hover {
             background-color: #f5f7fa;
         }
+
         .intro-pc-head .chief .help {
             margin-left: 30px;
         }
+
         .intro-pc-head .chief .help:hover {
             color: #00a4ff;
         }
+
         .intro-pc-head .chief .right {
             display: flex;
             align-items: center;
             position: relative;
         }
+
         .intro-pc-head .chief .right img {
             width: 36px;
             height: 36px;
             vertical-align: middle;
             border-radius: 50%;
         }
+
         .intro-pc-head .chief .right .user {
             font-size: 14px;
             user-select: none;
             cursor: pointer;
         }
+
         .intro-pc-head .chief .right .name {
             margin: 0 10px;
         }
+
         .intro-pc-head .chief .right .user-menu {
             display: none;
             padding: 10px 40px;
@@ -175,12 +212,15 @@
             top: 40px;
             right: 0;
         }
+
         .intro-pc-head .chief .right .user-menu.on {
             display: block;
         }
+
         .intro-pc-head .chief .divide {
             margin: 0 10px;
         }
+
         .intro-pc-head .sub {
             display: flex;
             align-items: center;
@@ -189,19 +229,24 @@
             border-top: 1px solid #3d404b;
             font-size: 12px;
         }
+
         .intro-pc-head .sub a {
             color: #e3e6e8;
         }
+
         .intro-pc-head .sub-menu {
             margin-right: 30px;
             position: relative;
         }
+
         .intro-pc-head .sub-menu.on a {
             color: #00a4ff;
         }
+
         .intro-pc-head .sub-menu:hover a {
             color: #00a4ff;
         }
+
         .intro-pc-head .sub-menu .new {
             padding: 1px 3px;
             line-height: 1;
@@ -213,6 +258,7 @@
             top: -4px;
             right: -35px;
         }
+
         .intro-mobile-head {
             display: none;
             width: 100%;
@@ -222,6 +268,7 @@
             left: 0;
             z-index: 100;
         }
+
         .intro-mobile-head .chief {
             display: flex;
             justify-content: space-between;
@@ -231,15 +278,18 @@
             padding: 0 20px;
             background-color: #2b303b;
         }
+
         .intro-mobile-head .chief .logo img {
             height: 20px;
         }
+
         .intro-mobile-head .stripe {
             width: 18px;
             height: 15px;
             cursor: pointer;
             position: relative;
         }
+
         .intro-mobile-head .stripe .line {
             width: 100%;
             height: 3px;
@@ -248,29 +298,36 @@
             position: absolute;
             left: 0;
         }
+
         .intro-mobile-head .stripe .line.up {
             top: 0px;
         }
+
         .intro-mobile-head .stripe.on .line.up {
             transform: rotate(45deg);
             top: 6px;
         }
+
         .intro-mobile-head .stripe .line.mid {
             opacity: 1;
             transition: opacity .2s .15s ease;
             top: 6px;
         }
+
         .intro-mobile-head .stripe.on .line.mid {
             opacity: 0;
             transition: opacity .2s ease;
         }
+
         .intro-mobile-head .stripe .line.low {
             bottom: 0px;
         }
+
         .intro-mobile-head .stripe.on .line.low {
             transform: rotate(-45deg);
             bottom: 6px;
         }
+
         .intro-mobile-head .dropdown {
             width: 100%;
             height: 0;
@@ -280,12 +337,15 @@
             overflow: auto;
             transition: height .2s ease;
         }
+
         .intro-mobile-head .dropdown.on {
             height: calc(100vh - 60px);
         }
+
         .intro-mobile-head .dropdown a {
             color: #e3e6e8;
         }
+
         .intro-mobile-head .dropdown .title {
             display: flex;
             align-items: center;
@@ -293,19 +353,23 @@
             height: 50px;
             padding: 0 20px;
         }
+
         .intro-mobile-head .dropdown .title img {
             width: 42px;
             height: 42px;
             vertical-align: middle;
             border-radius: 50%;
         }
+
         .intro-mobile-head .dropdown .title.production {
             color: #8a8b8c;
         }
+
         .intro-mobile-head .dropdown .title.help {
             border-top: 1px solid #3d404b;
             border-bottom: 1px solid #3d404b;
         }
+
         .intro-mobile-head .dropdown .menu {
             display: flex;
             align-items: center;
@@ -313,9 +377,11 @@
             padding: 0 20px 0 50px;
             border-top: 1px solid #3d404b;
         }
+
         .intro-mobile-head .dropdown .blank {
             height: 20px;
         }
+
         .intro-mobile-head .dropdown .cs-inner {
             display: flex;
             justify-content: space-between;
@@ -325,20 +391,25 @@
             padding: 0 20px 0 50px;
             border-top: 1px solid #3d404b;
         }
+
         .intro-mobile-head .dropdown .cs.on .cs-inner i {
             transform: rotate(180deg);
         }
+
         .intro-mobile-head .dropdown .cs-inner i {
             transition: transform .2s ease;
         }
+
         .intro-mobile-head .dropdown .cs-dropdown {
             height: 0;
             overflow: hidden;
             transition: height .2s ease;
         }
+
         .intro-mobile-head .dropdown .cs.on .cs-dropdown {
             height: 250px;
         }
+
         .intro-mobile-head .dropdown .cs-menu {
             display: flex;
             align-items: center;
@@ -348,9 +419,11 @@
             background-color: #2b303b;
             position: relative;
         }
+
         .intro-mobile-head .dropdown .cs-menu.on a {
             color: #00a4ff;
         }
+
         .intro-mobile-head .cs-menu .new {
             padding: 1px 3px;
             line-height: 1;
@@ -362,18 +435,22 @@
             top: 13px;
             left: 116px;
         }
+
         .intro-mobile-head #mobile-has-login {
             display: flex;
             flex-wrap: wrap;
         }
+
         .intro-mobile-head #mobile-has-not-login {
             display: flex;
             flex-wrap: wrap;
         }
+
         @media screen and (max-width: 800px) {
             .intro-pc-head {
                 display: none;
             }
+
             .intro-mobile-head {
                 display: block;
             }
@@ -387,10 +464,12 @@
             text-align: center;
             background: #1e2229;
         }
+
         .intro-canvas #canvas {
             width: 100%;
             height: 600px;
         }
+
         .intro-canvas .content {
             display: flex;
             flex-direction: column;
@@ -401,17 +480,20 @@
             position: absolute;
             top: 100px;
         }
+
         .intro-canvas .content .name {
             width: 178px;
             margin: 0 auto 50px;
             border-bottom: 4px solid #00a4ff;
             color: #fff;
         }
+
         .intro-canvas .content .name img {
             width: calc(100% + 22px);
             margin-left: -11px;
             vertical-align: middle;
         }
+
         .intro-canvas .content h2 {
             padding-bottom: 20px;
             margin: 0;
@@ -421,9 +503,11 @@
             font-weight: 700;
             color: #fff;
         }
+
         .intro-canvas .content .desc-mobile {
             display: none;
         }
+
         .intro-canvas .content p {
             width: 980px;
             margin: 0 auto;
@@ -434,14 +518,13 @@
             color: #fff;
             text-shadow: 0 1px 1px #232f40;
         }
-        .intro-canvas .button {
-            display: flex;
-            justify-content: center;
-            margin-top: 60px;
-        }
+
         .intro-canvas .goto-dashboard {
+            display: inline-block;
             width: 180px;
             padding: 12px 0;
+            margin: 60px auto 0;
+            text-align: center;
             border: none;
             border-radius: 2px;
             font-size: 18px;
@@ -449,70 +532,33 @@
             background-color: #00a4ff;
             opacity: 1;
             outline: none;
-            cursor: pointer;
             transition: opacity 0.5s;
         }
-        .intro-canvas .view-video {
-            box-sizing: border-box;
-            width: 180px;
-            padding: 12px 0;
-            margin-left: 16px;
-            border: 1px solid #fff;
-            border-radius: 2px;
-            font-size: 18px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, .0);
-            opacity: 1;
-            outline: none;
-            cursor: pointer;
-            transition: opacity 0.5s;
-        }
+
         .intro-canvas .goto-dashboard:hover {
             opacity: 0.8;
         }
-        #video-pop {
-            display: none;
-            width: 85%;
-            max-width: 1200px;
-            transform: translate(-50%, -50%);
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            z-index: 10;
-        }
-        #video-pop.on {
-            display: block;
-        }
-        #video-pop video {
-            width: 100%;
-        }
-        #video-pop i.fa-remove {
-            font-size: 22px;
-            color: #fff;
-            cursor: pointer;
-            position: absolute;
-            top: -25px;
-            right: -20px;
-        }
-        #video-pop i.fa-remove:hover {
-            color: #ccc;
-        }
+
         @media screen and (max-width: 800px) {
             .intro-canvas .content {
                 padding: 0;
                 top: 0;
             }
+
             .intro-canvas .content .desc-pc {
                 display: none;
             }
+
             .intro-canvas .content .desc-mobile {
                 display: block;
             }
+
             .intro-canvas .content .name {
                 width: 138px;
                 padding-top: 80px;
                 margin-bottom: 30px;
             }
+
             .intro-canvas .content h2 {
                 width: 230px;
                 margin: 0 auto;
@@ -520,86 +566,18 @@
                 font-size: 38px;
                 font-family: PingFangSC-Medium;
             }
+
             .intro-canvas .content p {
                 box-sizing: content-box;
                 width: 300px;
                 font-size: 13px;
             }
-            .intro-canvas .button {
-                margin-top: 20px;
-            }
+
             .intro-canvas .goto-dashboard {
                 width: 130px;
                 padding: 10px 0;
+                margin-top: 20px;
                 font-size: 16px;
-            }
-            .intro-canvas .view-video {
-                display: none;
-            }
-        }
-    </style>
-
-    <style>
-        .intro-banner {
-            width: 100%;
-            height: 120px;
-            overflow: hidden;
-            position: relative;
-        }
-        .intro-banner img.pc-img {
-            width: 100%;
-            height: 100%;
-            vertical-align: middle;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .intro-banner img.mobile-img {
-            display: none;
-            width: 100%;
-            vertical-align: middle;
-        }
-        .intro-banner .desc {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            font-size: 20px;
-            font-weight: 500;
-            color: #fff;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .intro-banner .desc button {
-            width: 100px;
-            height: 30px;
-            border: none;
-            border-radius: 23px 23px 23px 23px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #fff;
-            background: linear-gradient(-90deg, #006eff 0%, #00a4ff 50.56%, #00e8ff 100%);
-            box-shadow: 0 6px 14px 0 rgba(0, 194, 255, .6);
-            outline: none;
-            cursor: pointer;
-        }
-        @media screen and (max-width: 800px) {
-            .intro-banner img.pc-img {
-                display: none;
-            }
-            .intro-banner img.mobile-img {
-                display: block;
-            }
-            .intro-banner .desc {
-                flex-wrap: wrap;
-                width: 264px;
-                font-size: 14px;
-            }
-            .intro-banner .desc button {
-                margin-top: 10px;
             }
         }
     </style>
@@ -615,6 +593,7 @@
             color: #000;
             background: #f7f8fa;
         }
+
         .intro-counter .logo {
             display: inline-block;
             width: 161px;
@@ -624,16 +603,19 @@
             filter: invert(100%);
             transform: translateY(3px);
         }
+
         .intro-counter .counter-count-mobile {
             display: flex;
             align-items: center;
         }
+
         .intro-counter .num {
             margin: 0 8px;
             font-size: 32px;
             font-family: DINAlternate-Bold;
             color: #00a4ff;
         }
+
         @media screen and (max-width: 800px) {
             .intro-counter {
                 height: 183px;
@@ -648,9 +630,11 @@
         .section-container:nth-child(odd) {
             background-color: #fff;
         }
+
         .section-container:nth-child(even) {
             background-color: #f7f8fa;
         }
+
         .section-container .section-content {
             display: flex;
             justify-content: space-between;
@@ -660,45 +644,56 @@
             margin: 0 auto;
             color: #000;
         }
+
         .section-container .section-content .text-container {
             flex: 1 0 368px;
             max-width: 368px;
             text-align: left;
         }
+
         .section-container .section-content .text-container .title {
             padding-bottom: 16px;
             font-size: 36px;
             font-weight: 700;
         }
+
         .section-container .section-content .text-container .desc {
             line-height: 24px;
             font-size: 16px;
         }
+
         .section-container .section-content .img-container {
             width: 100%;
             max-width: 707px;
             text-align: right;
         }
+
         .section-container .section-content .img-container img {
             width: 95%;
         }
+
         @media only screen and (max-width: 768px) {
             .section-container .section-content {
                 flex-direction: column;
                 padding: 88px 30px;
             }
+
             .section-container:nth-child(odd) .section-content {
                 flex-direction: column-reverse;
             }
+
             .section-container .section-content .text-container {
                 flex: auto;
             }
+
             .section-container .section-content .text-container {
                 flex: auto;
             }
+
             .section-container .section-content .text-container .desc {
                 padding-bottom: 48px;
             }
+
             .section-container .section-content .img-container img {
                 width: 100%;
             }
@@ -709,6 +704,7 @@
                 padding-bottom: 65px;
                 padding-top: 40px;
             }
+
             .section-container .section-content .text-container {
                 width: auto;
                 text-align: center;
@@ -722,21 +718,26 @@
             padding: 40px 50px 20px;
             background-color: #1f2530;
         }
+
         .intro-foot .menu {
             display: flex;
             justify-content: center;
             font-size: 14px;
             color: #fff;
         }
+
         .intro-foot .menu .row {
             margin-bottom: 20px;
         }
+
         .intro-foot .menu a {
             color: #fff;
         }
+
         .intro-foot .menu-item {
             margin: 0 20px;
         }
+
         .intro-foot .strategy {
             display: flex;
             justify-content: center;
@@ -744,12 +745,15 @@
             font-size: 12px;
             color: #a5a7ac;
         }
+
         .intro-foot .strategy a {
             color: #a5a7ac;
         }
+
         .intro-foot .strategy .divide {
             margin: 0 10px;
         }
+
         .intro-foot .copyright {
             padding-top: 6px;
             text-align: center;
@@ -762,15 +766,18 @@
                 flex-wrap: wrap;
                 justify-content: space-between;
             }
+
             .intro-foot .menu .row {
                 display: flex;
                 justify-content: space-between;
                 width: 100%;
             }
+
             .intro-foot .menu-item {
                 margin: 0;
             }
         }
+
         @media screen and (max-width: 320px) {
             .intro-foot {
                 padding: 40px 30px;
@@ -786,16 +793,18 @@
                 <div class="left">
                     <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
                         <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
-                            srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
-                        />
+                            srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x"
+                            alt="logo" />
                     </a>
                     <div class="prod">
                         <div>产品</div>
                         <div class="prod-menu">
                             <div class="blank"></div>
-                            <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+                            <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING
+                                个人版</a>
                             <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
-                            <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
+                            <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING
+                                企业版</a>
                         </div>
                     </div>
                     <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
@@ -803,7 +812,8 @@
                 <div id="pc-has-not-login" class="right">
                     <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
                     <span class="divide">|</span>
-                    <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
+                    <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank"
+                        rel="noopener noreferrer">登录</a>
                 </div>
                 <div id="pc-has-login" class="right" style="display: none;">
                     <div className="title">
@@ -836,8 +846,8 @@
             <div class="chief">
                 <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
                     <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
-                        srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt=""
-                    />
+                        srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x"
+                        alt="logo" />
                 </a>
                 <div id="stripe" class="stripe">
                     <div class="line up"></div>
@@ -881,7 +891,8 @@
                     </a>
                 </div>
                 <div id="mobile-has-not-login">
-                    <a class="title" href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
+                    <a class="title" href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com"
+                        target="_blank" rel="noopener noreferrer">登录</a>
                     <a class="title" href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
                 </div>
                 <div class="blank"></div>
@@ -905,27 +916,10 @@
                     <p>用户可以通过 Cloud Studio 创建项目的工作空间, 它提供了完整的 Linux 环境, 并且支持自定义域名指向, 动态计算资源调整, 可以完成各种应用的开发编译与部署。</p>
                     <p>Cloud Studio 还提供了分享开发环境的功能, 用户可以保存当前的开发环境, 分享给团队的其他成员。</p>
                 </div>
-                <div class="button">
-                    <button class="goto-dashboard" onClick="handleGotoDashboard()">立即体验</button>
-                    <button class="view-video" onClick="handleViewVideo()">观看视频</button>
-                </div>
-            </div>
-            <div id="video-pop">
-                <video preload loop controls>
-                    <source type="video/mp4" src="./static/campaign.mp4"></source>
-                </video>
-                <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
+                <button class="goto-dashboard" onClick="handleGotoDashboard()">立即体验</button>
             </div>
         </div>
-        <div class="intro-banner">
-            <img class="pc-img" id="campaign-img" src="./static/2560x120@2x.png" alt="" />
-            <img class="mobile-img" src="./static/750x120@2x.png" alt="" />
-            <div class="desc">
-                <span>「我最喜爱的 Cloud Studio 插件评选大赛」上线啦！写插件，赢 Macbook Pro！</span>
-                <button>马上参与</button>
-            </div>
-        </div>
-        <!-- <div class="intro-counter">
+        <div class="intro-counter">
             <div class="counter-logo-mobile">
                 在
                 <div class="logo"></div>
@@ -934,34 +928,21 @@
             <div class="counter-count-mobile">
                 <span class="num" id="countNum">-,---,---,---</span>秒
             </div>
-        </div> -->
-        <div class="section-container">
-            <div class="section-content">
-                <div class="img-container">
-                    <img class="inner" src="./static/plug.png"
-                        srcset="./static/plug@2x.png 2x" alt="强大的插件系统"
-                    />
-                </div>
-                <div class="text-container">
-                    <div class="title">强大的插件系统</div>
-                    <div class="desc">
-                        强大的插件系统，极大地扩展了 Cloud Studio 的使用边界。开发者可以安装插件市场中的插件来提升使用体验，也可以自己开发插件打造自己的专属 IDE。
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="section-container">
             <div class="section-content">
                 <div class="text-container">
-                    <div class="title">一键切换开发环境</div>
+                    <div class="title">
+                        一键切换开发环境
+                    </div>
                     <div class="desc">
                         Cloud Studio 预置近 20 种开发环境，一键切换，开发者也可以保存自己配置的开发环境，告别烦杂的环境部署工作，将精力专注于代码的编写之上。
                     </div>
                 </div>
                 <div class="img-container">
                     <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p2.dc9b885f.png"
-                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p2@2x.c470c016.png 2x" alt="一键切换开发环境"
-                    />
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p2@2x.c470c016.png 2x"
+                        alt="一键切换开发环境" />
                 </div>
             </div>
         </div>
@@ -969,11 +950,13 @@
             <div class="section-content">
                 <div class="img-container">
                     <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p3.30cb4fb4.png"
-                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p3@2x.76689a62.png 2x" alt="实时协同编辑"
-                    />
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p3@2x.76689a62.png 2x"
+                        alt="实时协同编辑" />
                 </div>
                 <div class="text-container">
-                    <div class="title">实时协同编辑</div>
+                    <div class="title">
+                        实时协同编辑
+                    </div>
                     <div class="desc">
                         支持聊天室，支持多人协同操作，实时展示协作者的代码进度，多光标显示，输入内容一目了然。
                     </div>
@@ -983,15 +966,18 @@
         <div class="section-container">
             <div class="section-content">
                 <div class="text-container">
-                    <div class="title">全功能终端</div>
+                    <div class="title">
+                        全功能终端
+                    </div>
                     <div class="desc">
-                        兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持，默认用户 sudo 免密码，用户可以自由安装偏好的软件包。
+                        兼容标准的终端模拟器，支持 Bash，Zsh，Fish 等各种 Shell，支持自定义 PS1。默认集成了 Zsh 和 oh-my-zsh 以达到更好的输入支持，默认用户 sudo
+                        免密码，用户可以自由安装偏好的软件包。
                     </div>
                 </div>
                 <div class="img-container">
                     <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p4.514023d3.png"
-                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p4@2x.7e1108c6.png 2x" alt="全功能终端"
-                    />
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p4@2x.7e1108c6.png 2x"
+                        alt="全功能终端" />
                 </div>
             </div>
         </div>
@@ -999,11 +985,13 @@
             <div class="section-content">
                 <div class="img-container">
                     <img class="inner" src="https://coding-net-production-static.codehub.cn/static/media/CS-p5.695383d8.png"
-                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p5@2x.e7d550e2.png 2x" alt="实时进度保存"
-                    />
+                        srcset="https://coding-net-production-static.codehub.cn/static/media/CS-p5@2x.e7d550e2.png 2x"
+                        alt="实时进度保存" />
                 </div>
                 <div class="text-container">
-                    <div class="title">实时进度保存</div>
+                    <div class="title">
+                        实时进度保存
+                    </div>
                     <div class="desc">
                         开发进度、开发环境、代码文件自动实时云端存储，无需手动保存，大大降低了误操作和浏览器性能问题带来的代码丢失风险。
                     </div>
@@ -1029,7 +1017,8 @@
                 <span class="divide">|</span>
                 <a href="https://dev.tencent.com/security" target="_blank" rel="noopener noreferrer">安全策略</a>
             </div>
-            <div class="copyright">Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
+            <div class="copyright">Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights
+                Reserved. 腾讯云 版权所有</div>
         </div>
     </div>
 
@@ -1042,11 +1031,10 @@
         gtag('config', 'UA-65952334-9');
     </script>
     <script src=" //studio-res.coding.net/StudioWebResource/Scripts/three.min.js "></script>
-    <!-- <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script> -->
+    <script src="//studio-res.coding.net/StudioWebResource/Scripts/countUp.min.js"></script>
     <script>
         // 计算年份
         document.querySelector('#year').innerHTML = new Date().getFullYear();
-
         // 给顶层 window 发消息
         const $postMessage = document.querySelectorAll('.post-message');
         for (let i = 0; i < $postMessage.length; i++) {
@@ -1058,7 +1046,6 @@
                 }, '*');
             });
         }
-
         // 请求用户信息
         let hasLogin = false;
         function getUserInfo() {
@@ -1100,11 +1087,10 @@
                 }
             });
         }
-
         // 移动端点击
         const $stripe = document.querySelector('#stripe');
         const $mobileDropdown = document.querySelector('#mobile-dropdown');
-        $stripe.addEventListener('click', function() {
+        $stripe.addEventListener('click', function () {
             if (!$stripe.classList.contains('on')) {
                 $stripe.classList.add('on');
             } else {
@@ -1117,64 +1103,41 @@
             }
         });
         const $csMenu = document.querySelector('#cs-menu');
-        $csMenu.addEventListener('click', function() {
+        $csMenu.addEventListener('click', function () {
             if (!$csMenu.classList.contains('on')) {
                 $csMenu.classList.add('on');
             } else {
                 $csMenu.classList.remove('on');
             }
         });
-
         // 计数
-        // var options = {
-        //     useEasing: true,
-        //     useGrouping: true,
-        //     separator: ',',
-        //     decimal: '.',
-        // };
-        // var countStart = 1521809751;
-        // var totalCount = 1521809751;
-        // var timestamp = new Date() / 1000 - 1521809751;
-        // var count = new CountUp('countNum', countStart, (totalCount + timestamp * 1000), 0, 0.1, options);
-        // if (!count.error) {
-        //     count.start();
-        // } else {
-        //     console.error(count.error);
-        // }
-        // setInterval(function () {
-        //     timestamp = new Date() / 1000 - 1521809751;
-        //     count.update(totalCount + (timestamp * 1000));
-        // }, 6000);
-
-        // 立即体验
-        function handleGotoDashboard () {
+        var options = {
+            useEasing: true,
+            useGrouping: true,
+            separator: ',',
+            decimal: '.',
+        };
+        var countStart = 1521809751;
+        var totalCount = 1521809751;
+        var timestamp = new Date() / 1000 - 1521809751;
+        var count = new CountUp('countNum', countStart, (totalCount + timestamp * 1000), 0, 0.1, options);
+        if (!count.error) {
+            count.start();
+        } else {
+            console.error(count.error);
+        }
+        setInterval(function () {
+            timestamp = new Date() / 1000 - 1521809751;
+            count.update(totalCount + (timestamp * 1000));
+        }, 6000);
+        function handleGotoDashboard() {
             if (hasLogin) {
                 location.href = '/dashboard/workspace';
             } else {
                 window.open("https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com")
             }
         }
-        // 点击观看视频
-        const $videoPop = document.querySelector('#video-pop');
-        function handleViewVideo() {
-            if (!$videoPop.classList.contains('on')) {
-                $videoPop.classList.add('on');
-            }
-        }
-        function handleCloseVideo() {
-            $videoPop.classList.remove('on');
-        }
-        // 插件比赛广告图片
-        const $campaignImg = document.querySelector('#campaign-img');
-        function handleCampaign() {
-            const imgWidth = 2560 / 1440 * document.documentElement.clientWidth;
-            $campaignImg.style.width = imgWidth + 'px';
-        }
-        handleCampaign();
-        window.addEventListener('resize', function() { handleCampaign(); });
-
         getUserInfo();
-
         // three.js
         var container;
         var camera, scene, renderer;
@@ -1183,7 +1146,6 @@
         var windowHalfX = document.documentElement.clientWidth / 2;
         var windowHalfY = 600 / 2;
         document.addEventListener('mousemove', onDocumentMouseMove, false);
-
         function init() {
             ////////////////////////////////////
             // Setup Container
@@ -1192,92 +1154,70 @@
             const $canvas = document.querySelector('#canvas');
             $canvas.innerHTML = '';
             $canvas.appendChild(container);
-
             scene = new THREE.Scene();
-
             group = new THREE.Group();
-
             var material = new THREE.MeshBasicMaterial({
                 color: 0xffffff,
                 vertexColors: THREE.FaceColors,
             });
-
             // Set Cube Size
             geometry = new THREE.BoxGeometry(30, 30, 30);
-
             // Set cube color
             grey = new THREE.Color(0x0F141D);
             blue = new THREE.Color(0x17243E);
             light = new THREE.Color(0x2D3442);
             var colors = [grey, blue, light];
-
             for (var i = 0; i < 3; i++) {
                 geometry.faces[4 * i].color = colors[i];
                 geometry.faces[4 * i + 1].color = colors[i];
                 geometry.faces[4 * i + 2].color = colors[i];
                 geometry.faces[4 * i + 3].color = colors[i];
             }
-
             // Creat cubes
             for (var i = 0; i < 200; i++) {
                 var mesh = new THREE.Mesh(geometry, material);
                 mesh.position.x = Math.random() * 1400 - 700;
                 mesh.position.y = Math.random() * 1400 - 700;
                 mesh.position.z = Math.random() * 1400 - 700;
-
                 mesh.rotation.x = Math.random() * 2 * Math.PI;
                 mesh.rotation.y = Math.random() * 2 * Math.PI;
-
                 // Scale Cube between 0.2 to 4
                 var xScale = Math.random() * (4 - 0.2) + 0.2;
                 mesh.scale.x = xScale;
                 mesh.scale.y = xScale;
                 mesh.scale.z = xScale;
-
                 mesh.matrixAutoUpdate = false;
                 mesh.updateMatrix();
-
                 group.add(mesh);
             }
-
-
             scene.add(group);
-
             ////////////////////////////////////
             // Setup Camera
             ////////////////////////////////////
             camera = new THREE.PerspectiveCamera(30, document.documentElement.clientWidth / 600, 1, 10000);
             camera.position.z = 500;
-
             ////////////////////////////////////
             // Lighting
             ////////////////////////////////////
-
             // create a point light
             var pointLight = new THREE.DirectionalLight(0xD0E3FF);
-
             // set its position
             pointLight.position.x = 20;
             pointLight.position.y = 120;
             pointLight.position.z = 0;
-
             // add to the scene
             scene.add(pointLight);
-
             ////////////////////////////////////
             // Rendering
             ////////////////////////////////////
-
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setClearColor(0x101317);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(document.documentElement.clientWidth, 600);
             renderer.sortObjects = false;
-
             container.appendChild(renderer.domElement);
             window.addEventListener('resize', onWindowResize, false);
         }
-
         /////////////////////////////////
         // Feel free to resize that windah, Y'all!
         // We all know a good pen should resize when you be adjustin' that little screen dat errythang renders into, knah mean?
@@ -1285,13 +1225,10 @@
         function onWindowResize() {
             windowHalfX = document.documentElement.clientWidth / 2;
             // windowHalfY = window.innerHeight / 2;
-
             camera.aspect = document.documentElement.clientWidth / 600;
             camera.updateProjectionMatrix();
-
             renderer.setSize(document.documentElement.clientWidth, 600);
         }
-
         function onDocumentMouseMove(event) {
             if ((event.clientY + window.scrollY) < 600) {
                 mouseX = (event.clientX - windowHalfX) * 3;
@@ -1304,36 +1241,26 @@
                 }
             }
         }
-
         function animate() {
             // requestAnimationFrame(animate);
-            setTimeout(function() {
-                requestAnimationFrame( animate );
+            setTimeout(function () {
+                requestAnimationFrame(animate);
             }, 1000 / 30);
-
             render();
         }
-
         function render() {
-
             var time = Date.now() * 0.001;
-
             var rx = Math.sin(time * 0.3) * 0.5,
                 ry = Math.sin(time * 0.3) * 0.5,
                 rz = Math.sin(time * 0.3) * 0.5;
-
             camera.position.x += (mouseX - camera.position.x) * .05;
             camera.position.y += (-mouseY - camera.position.y) * .05;
-
             camera.lookAt(scene.position);
-
             group.rotation.x = rx / 5;
             group.rotation.y = ry / 5;
             group.rotation.z = rz / 5;
-
             renderer.render(scene, camera);
         }
-
         init();
         animate();
     </script>
