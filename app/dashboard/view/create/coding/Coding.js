@@ -4,14 +4,15 @@ import { withRouter } from 'react-router';
 
 import './coding.css';
 
-import api from '../../../api';
-import i18n from '../../../utils/i18n';
 import Inbox from '../../../share/inbox';
 import ProjectCard from '../projectCard';
 import TemplateCard from '../templateCard';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import ToolTip from '../../../share/toolTip';
+
+import api from '../../../api';
+import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 import config from '../../../utils/config';
 
@@ -28,14 +29,12 @@ class Coding extends Component {
 
     render() {
         const { type, ownerName, projectName, templateId, envId, filter, isSync } = this.state;
-        let { globalKey = '', canCreate, wsLimit, projects, templates, envs, language } = this.props;
+        let { canCreate, wsLimit, projects, templates, envs, language } = this.props;
         // 搜索
         if (filter) {
             projects = projects.filter(item => item.ownerName.toLowerCase().includes(filter) || item.name.toLowerCase().includes(filter));
         }
-        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
-        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
-        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId)) || shouldModifyGlobalkey;
+        const disabled = !canCreate || (type === 1 ? (!projectName || !envId) : (!projectName || !templateId));
         return (
             <div>
                 {type === 2 && (
@@ -114,12 +113,6 @@ class Coding extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {shouldModifyGlobalkey && (
-                            <div className="should-modify-globalkey">
-                                <i className="fa fa-exclamation-circle"></i>
-                                {i18n('ws.modifyGlobalkey')}
-                            </div>
-                        )}
                         {!canCreate && (
                             <div className="can-not-create-ws-tip">
                                 <i className="fa fa-exclamation-circle"></i>

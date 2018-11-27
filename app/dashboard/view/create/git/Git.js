@@ -4,13 +4,14 @@ import { withRouter } from 'react-router';
 
 import './git.css';
 
-import api from '../../../api';
-import i18n from '../../../utils/i18n';
 import Inbox from '../../../share/inbox';
 import SSH from '../../../share/ssh';
 import EnvCard from '../envCard';
 import NoData from '../../../share/noData';
 import ToolTip from '../../../share/toolTip';
+
+import api from '../../../api';
+import i18n from '../../../utils/i18n';
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 import config from '../../../utils/config';
 
@@ -22,10 +23,8 @@ class Git extends Component {
 
     render() {
         const { url, envId } = this.state;
-        const { globalKey = '', canCreate, wsLimit, envs, language } = this.props;
-        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
-        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
-        const disabled = !canCreate || !url || !envId || shouldModifyGlobalkey;
+        const { canCreate, wsLimit, envs, language } = this.props;
+        const disabled = !canCreate || !url || !envId;
         return (
             <div>
                 <div className="com-board">
@@ -60,12 +59,6 @@ class Git extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {shouldModifyGlobalkey && (
-                            <div className="should-modify-globalkey">
-                                <i className="fa fa-exclamation-circle"></i>
-                                {i18n('ws.modifyGlobalkey')}
-                            </div>
-                        )}
                         {!canCreate && (
                             <div className="can-not-create-ws-tip">
                                 <i className="fa fa-exclamation-circle"></i>
@@ -119,7 +112,6 @@ class Git extends Component {
 
 const mapState = (state) => {
     return {
-        globalKey: state.userState.global_key,
         language: state.language,
         canCreate: state.wsState.canCreate,
         wsLimit: state.wsState.wsLimit,
