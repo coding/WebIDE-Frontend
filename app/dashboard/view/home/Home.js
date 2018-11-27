@@ -118,11 +118,6 @@ class Home extends Component {
                 hideMbar();
             }
         });
-        // 公告
-        const isBulletinOn = !localStorage.getItem('hide-dash-eventstream-bulletin');
-        if (!isBulletinOn) {
-            this.setState({ isBulletinOn: false });
-        }
     }
 
     fetchUserProfile = () => {
@@ -193,7 +188,6 @@ class Home extends Component {
 
     closeBulletin = () => {
         this.setState({ isBulletinOn: false });
-        localStorage.setItem('hide-dash-eventstream-bulletin', true);
     }
 }
 

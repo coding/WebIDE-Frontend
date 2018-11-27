@@ -39,11 +39,6 @@ class IDE extends Component {
         dismissAfter: 12000
       })
     }
-    // 公告
-    const isBulletinOn = !localStorage.getItem('hide-cs-eventstream-bulletin');
-    if (!isBulletinOn) {
-      this.setState({ isBulletinOn: false });
-    }
   }
 
   render () {
@@ -60,7 +55,6 @@ class IDE extends Component {
 
   closeBulletin = () => {
     this.setState({ isBulletinOn: false });
-    localStorage.setItem('hide-cs-eventstream-bulletin', true);
   }
 }
 
