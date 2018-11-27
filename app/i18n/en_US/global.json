@@ -54,5 +54,8 @@
    "and": ". ",
    "loading": "Loading in progress, please wait",
    "offlineInfo": "Cloud Studio will be offline soon，please go to ide.coding.net for our web ide service.",
-   "gotoIDE": "Go to IDE"
+   "gotoIDE": "Go to IDE",
+   "eventStreamBulletin1": "Dear developer, due to ",
+   "eventStreamBulletin2": "[ event-stream package event ]",
+   "eventStreamBulletin3": " Impact, your plugin needs to manually delete the `yarn.lock` file and reinstall the dependencies, then push the code to release a new version or pre-release."
 }

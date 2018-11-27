@@ -119,7 +119,7 @@ class Home extends Component {
             }
         });
         // 公告
-        const isBulletinOn = !localStorage.getItem('hide-eventstream-bulletin');
+        const isBulletinOn = !localStorage.getItem('hide-dash-eventstream-bulletin');
         if (!isBulletinOn) {
             this.setState({ isBulletinOn: false });
         }
@@ -193,7 +193,7 @@ class Home extends Component {
 
     closeBulletin = () => {
         this.setState({ isBulletinOn: false });
-        localStorage.setItem('hide-eventstream-bulletin', true);
+        localStorage.setItem('hide-dash-eventstream-bulletin', true);
     }
 }
 
