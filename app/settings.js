@@ -11,7 +11,6 @@ import FolderSelector from 'components/Setting/FolderSelector'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 import { dismissModal } from 'components/Modal/actions'
 import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
-// import { projectState } from 'components/Setting/state'
 
 let LanguageState
 import('components/MonacoEditor/LanguageClientState').then(res => LanguageState = res.default)
@@ -33,11 +32,6 @@ window.themeVariables = observable.map({})
 const localStorage = window.localStorage
 let EditorState
 import('components/Editor/state').then(res => EditorState = res.default)
-
-const typeOptions = [
-  { name: 'Blank', value: 'blank' },
-  { name: 'Java', value: 'javac' }
-]
 
 if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
   localStorage.setItem('switchOldEditor', false)

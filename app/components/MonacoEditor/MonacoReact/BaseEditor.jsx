@@ -105,7 +105,7 @@ class MonacoEditor extends React.PureComponent {
         if (!model) {
           model = monaco.editor.createModel(
             content,
-            lowerCase(this.language),
+            this.language.toLowerCase(),
             monaco.Uri.parse(path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`)
           )
           this.uri = path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`
@@ -118,17 +118,17 @@ class MonacoEditor extends React.PureComponent {
         monacoEditor.setModel(model)
         const { client, openeduri } = languageClient
         if (client && client.state === 3 && this.props.active && this.didmount) {
-          if (!openeduri.get(path)) {
-            languageClient.openTextDocument({
-              textDocument: {
-                uri: path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`,
-                languageId: lowerCase(this.language),
-                text: content,
-                version: 1,
-              }
-            })
-            openeduri.set(path, content)
-          }
+          // if (!openeduri.get(path)) {
+          //   languageClient.openTextDocument({
+          //     textDocument: {
+          //       uri: path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`,
+          //       languageId: this.language.toLowerCase(),
+          //       text: content,
+          //       version: 1,
+          //     }
+          //   })
+          //   openeduri.set(path, content)
+          // }
         }
       }
     })

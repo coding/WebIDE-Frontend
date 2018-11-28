@@ -9,8 +9,9 @@ export default [
 export const supportLangServer = [
   { lang: 'Java', files: ['pom.xml', 'settings.gradle', 'build.gradle'], file: 'pom.xml' },
   { lang: 'Python', files: ['requirements.txt'], file: 'requirements.txt' },
-  // { lang: 'TypeScript', files: ['package.json'], file: 'package.json' },
-  { lang: 'C#', files: ['workspace.csproj'] },
+  { lang: 'TypeScript', files: ['package.json', 'tslint.json', 'tsconfig.json'], file: 'package.json' },
+  { lang: 'JavaScript', files: ['package.json', 'eslint.json', 'tsconfig.json'], file: 'package.json' },
+  // { lang: 'C#', files: ['workspace.csproj'] },
 ]
 
 export const documentSelectors = [
