@@ -38,7 +38,15 @@ class SideBarLabel extends Component {
   }
 
   componentDidMount() {
-    if (this.props.label.onlyIcon) {
+    this.computeOriginWidth();
+  }
+
+  componentDidUpdate() {
+    this.computeOriginWidth();
+  }
+
+  computeOriginWidth() {
+    if (this.props.label.onlyIcon && this.state.width === 'auto') {
       const originWidth = this.textRef.getBoundingClientRect().height;
       this.setState({ originWidth, width: 0 });
     }

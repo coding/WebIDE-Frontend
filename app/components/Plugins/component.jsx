@@ -12,11 +12,26 @@ function getChildren (children) {
 const PluginArea = observer(({ position = '', childProps = {}, children, getChildView, filter, ...others }) => {
   const pluginsArray = store.plugins.values().filter(plugin => plugin.position === position);
   // 如果侧边栏插件的数量超过 5 条，则只显示图标
-  if (pluginsArray.filter(plugin => {
-    return plugin.position === SIDEBAR.RIGHT || plugin.position === SIDEBAR.LEFT || plugin.position === SIDEBAR.BOTTOM;
-  }).length > 5) {
+  if (pluginsArray.filter(plugin => plugin.position === SIDEBAR.RIGHT).length > 5) {
     pluginsArray.map(plugin => {
-      if (plugin.label && typeof plugin.label === 'object') {
+      console.log(plugin.label)
+      if (plugin.position === SIDEBAR.RIGHT && plugin.label && typeof plugin.label === 'object') {
+        plugin.label.onlyIcon = true;
+      }
+      return plugin;
+    });
+  }
+  if (pluginsArray.filter(plugin => plugin.position === SIDEBAR.LEFT).length > 5) {
+    pluginsArray.map(plugin => {
+      if (plugin.position === SIDEBAR.LEFT && plugin.label && typeof plugin.label === 'object') {
+        plugin.label.onlyIcon = true;
+      }
+      return plugin;
+    });
+  }
+  if (pluginsArray.filter(plugin => plugin.position === SIDEBAR.BOTTOM).length > 5) {
+    pluginsArray.map(plugin => {
+      if (plugin.position === SIDEBAR.BOTTOM && plugin.label && typeof plugin.label === 'object') {
         plugin.label.onlyIcon = true;
       }
       return plugin;
