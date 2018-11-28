@@ -9,7 +9,7 @@ import Color from 'color'
 import { monacoThemeOptions } from '../settings'
 import { editorSet } from 'components/MonacoEditor/Editors';
 
-export function getActiveEditor () {
+export function getActiveEditor() {
   const { EditorTabState } = mobxStore
   const activeTab = EditorTabState.activeTab
   return activeTab
@@ -20,7 +20,7 @@ export function getActiveEditor () {
     : null
 }
 
-export function openNewEditor (config) {
+export function openNewEditor(config) {
   const { path, contentType, ...other } = config
   TabActions.createTab({
     icon: icons.getClassWithColor(path.split('/').pop()) || 'fa fa-file-text-o',
@@ -32,7 +32,7 @@ export function openNewEditor (config) {
   })
 }
 
-export function registerLanguage (languageConf) {
+export function registerLanguage(languageConf) {
   const { contribution } = languageConf
   monaco.languages.register(contribution)
   monaco.languages.onLanguage(contribution.id, () => contribution.loader().then((mod) => {
@@ -45,16 +45,20 @@ export function registerFormattingEditProvider (languageId, provider) {
   // todo
 }
 
-export function registerEditorViewByContentTypes(editor, contentTypes) {
+export function registerEditorView(editor, { contentTypes, extensions }) {
   // 注册编辑器
-  editorSet.unshift({ editor, contentTypes });
+  editorSet.unshift({ editor, contentTypes, extensions });
   // dispose
   return () => {
-    editorSet = editorSet.filter(editor => String(editor.contentTypes) !== String(contentTypes));
+    if (contentTypes && Array.isArray(contentTypes)) {
+      editorSet = editorSet.filter(editor => String(editor.contentTypes) !== String(contentTypes));
+    } else {
+      editorSet = editorSet.filter(editor => String(editor.extensions) !== String(extensions));
+    }
   }
 }
 
-export function registerContentProvider (component, conf) {
+export function registerContentProvider(component, conf) {
   const { name } = conf
   const type = `CUSTOM_EDITOR_VIEW_${name}`
   const activate = (editorType, title, props) => {

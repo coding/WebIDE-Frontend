@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import cx from 'classnames'
 import PluginArea from 'components/Plugins/component'
 import { SIDEBAR } from 'components/Plugins/constants'
 import { observer } from 'mobx-react'
@@ -16,22 +15,51 @@ label = {
 }
 */
 
+class SideBarLabel extends Component {
+  state = {
+    originWidth: 0,
+    width: 'auto',
+  }
+  textRef = null;
 
-const SideBarLabel = ({ label, isActive, onClick }) => (
-  <div className={
-      cx('side-bar-label', {
-        active: isActive
-      })}
-    onClick={onClick}
-  >
-    <div className='side-bar-label-container'>
-      <div className='side-bar-label-content'>
-        <i className={cx('icon', label.icon)} />
-        {!label.onlyIcon && <span>{label.text}</span>}
+  render() {
+    const { width } = this.state;
+    const { label, isActive, onClick } = this.props;
+    return (
+      <div className={`side-bar-label${isActive ? ' active' : ''}`} onClick={onClick}>
+        <div className='side-bar-label-container'>
+          <div className="side-bar-label-content" onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+            <i className={`icon${label.icon ? ` ${label.icon}` : ''}`} />
+            <span className="text" ref={this.handleTextRef} style={{ width }}>{label.text}</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  )
+    );
+  }
+
+  componentDidMount() {
+    if (this.props.label.onlyIcon) {
+      const originWidth = this.textRef.getBoundingClientRect().height;
+      this.setState({ originWidth, width: 0 });
+    }
+  }
+
+  handleTextRef = (ref) => {
+    this.textRef = ref;
+  }
+
+  mouseEnter = () => {
+    if (this.props.label.onlyIcon) {
+      this.setState({ width: this.state.originWidth });
+    }
+  }
+
+  mouseLeave = () => {
+    if (this.props.label.onlyIcon) {
+      this.setState({ width: 0 });
+    }
+  }
+}
 
 SideBarLabel.propTypes = {
   isActive: PropTypes.bool,

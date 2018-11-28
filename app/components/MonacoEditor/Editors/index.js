@@ -31,7 +31,8 @@ export const editorSet = [
   },
 ];
 
-function matchEditorByContentType(editorType, contentType) {
+// 插件形式的编辑器视图会 unshift 到 editorSet 中
+function matchEditorByContentType(editorType, contentType, extension) {
   for (let i = 0, n = editorSet.length; i < n; i++) {
     const set = editorSet[i];
     if (set.editorType) {
@@ -39,8 +40,13 @@ function matchEditorByContentType(editorType, contentType) {
         return set.editor;
       }
     } else if (set.contentTypes && Array.isArray(set.contentTypes)) {
-      // 插件形式的编辑器视图会 unshift 到 editorSet 中。通过 contentTypes 拦截。
+      // 通过 contentTypes 拦截。优先级更高
       if (set.contentTypes.includes(contentType)) {
+        return set.editor;
+      }
+    } else if (set.extensions && Array.isArray(set.extensions)) {
+      // 通过 extensions 拦截。优先级更低
+      if (set.extensions.includes(extension)) {
         return set.editor;
       }
     }
@@ -62,7 +68,7 @@ const EditorWrapper = observer(({ tab, active }) => {
   // key is crutial here, it decides whether the component should re-construct
   // or keep using the existing instance.
   const key = `editor_${file.path}`;
-  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType);
+  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType, editor.filePath.split('.').pop());
   return React.createElement(editorElement, { editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
 })
 
