@@ -2,7 +2,8 @@ import { observable } from 'mobx'
 
 export const ws = observable({
   name: '',
-  status: false
+  status: false,
+  first: true
 })
 
 export const searching = observable({
@@ -20,7 +21,7 @@ export const searched = observable({
   pattern: false,
   message: '',
   results: [],
-  end: true,
+  end: false,
   former: {
       taskId: '',
       results: []

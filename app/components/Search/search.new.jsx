@@ -67,7 +67,7 @@ export class SearchResultItem extends Component {
 }
 
 @observer
-class SearchPanel2 extends Component {
+class SearchPanel extends Component {
     componentDidMount () {
         subscribeToSearch()
     }
@@ -85,6 +85,9 @@ class SearchPanel2 extends Component {
     }
     
     searchTxt = () => {
+        if(state.ws.first) {
+            state.ws.first = false
+        }
         if(state.searching.isPattern) {
             delegate.searchPattern(state.searching);
         } else {
@@ -94,10 +97,11 @@ class SearchPanel2 extends Component {
     
     renderResult () {
         let content = '';
-        if (!state.searched.end) {
+        if (state.ws.first) {
+            content = ''
+        } else if (!state.searched.end) {
             content = 'Searching...'
-        } else if(state.searched.message != '') {
-            // todo 这里的错误信息是否显示
+        } else if(state.searched.message !== '') {
             content = state.searched.message;
         } else if (state.searched.results.length != 0) {
             const pattern = state.searching.pattern;
@@ -143,8 +147,10 @@ class SearchPanel2 extends Component {
                             onKeyDown={this.onKeyDown}
                             placeholder={i18n.get('panel.left.find')}
                         />
-
-                        <input title={i18n.get('panel.checkbox.case')}
+                    </div>
+                    <div className='search-checkbox'>
+                        <input 
+                            title={i18n.get('panel.checkbox.case')}
                             label={i18n.get('panel.checkbox.case')}
                             className='search-control-case-sensitive'
                             onChange={this.caseSensitive}
@@ -181,4 +187,4 @@ class SearchPanel2 extends Component {
 
 }
 
-export default SearchPanel2;
+export default SearchPanel;

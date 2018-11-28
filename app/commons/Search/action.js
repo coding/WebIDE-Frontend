@@ -33,7 +33,7 @@ function searchPattern() {
 }
 
 function commonSearch() {
-  if(!state.searched.end) {
+  if(!state.searched.end && !state.ws.first) {
     api.searchInterrupt(state.searched.taskId);
   }
   if(state.searched.taskId != null) {
@@ -41,6 +41,10 @@ function commonSearch() {
     state.searched.former.results = state.searched.results.splice(0, state.searched.results.length);
     state.searched.taskId = ''
   }
+  state.searched.taskId = ''
+  state.searched.pattern = state.searching.isPattern
+  state.searched.message = ''
+  state.searched.end = false
   state.searched.randomKey = randomForOne()
 }
 

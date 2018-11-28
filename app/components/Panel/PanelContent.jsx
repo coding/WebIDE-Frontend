@@ -9,8 +9,7 @@ import FileTree from '../FileTree'
 import SideBar from './SideBar/SideBar'
 import { SidePanelContainer, SidePanelView } from './SideBar/SidePanel'
 import FileList from '../Tab/fileList'
-import SearchPanel from '../Search/search'
-import SearchPanel2 from '../Search/search.new'
+import SearchPanel from '../Search/search.new'
 import config from '../../config'
 import PluginDev from 'components/PluginDev'
 import FileTreeToolBar from 'components/FileTreeToolBar'
@@ -58,11 +57,8 @@ const PanelContent = observer(({ panel }) => {
           <SidePanelView key='working' label={{ text: i18n`panel.left.working`, icon: 'fa fa-folder-open-o', weight: 1 }}>
             <FileList />
           </SidePanelView>
-          {/* <SidePanelView key='find' label={{ text: i18n`panel.left.find`, icon: 'fa fa-search' }}>
+          <SidePanelView key='find' label={{ text: i18n`panel.left.find`, icon: 'fa fa-search' }}>
             <SearchPanel />
-          </SidePanelView> */}
-          <SidePanelView key='find2' label={{ text: i18n`panel.left.find`, icon: 'fa fa-search' }}>
-            <SearchPanel2 />
           </SidePanelView>
         </SidePanelContainer>
       )

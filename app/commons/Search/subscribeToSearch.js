@@ -3,6 +3,7 @@ import { SearchSocketClient } from 'backendAPI/websocketClients'
 import { autorun } from 'mobx'
 import state from './state'
 import * as api from 'backendAPI/searchAPI'
+import debounce from 'lodash/debounce'
 
 
 export default function subscribeToSearch() {
@@ -75,25 +76,30 @@ export default function subscribeToSearch() {
             }
             if(result.randomKey === state.searched.randomKey) {
                 state.searched.message = results.message;
-                state.searched.end = true;
             }
         });
 
         // end result
         client.subscribe('/user/topic/search/end', response => {
-            let result = JSON.parse(response.body);
-            if(result == null) {
-                return ;
-            }
-            if(result.randomKey === state.searched.randomKey) {
-                state.searched.end = true;
-            }
+            end(response)
         });
 
         // modify workspace status to up and init workspace files in mem
         api.searchWorkspaceUp();
+
     })
 }
+
+// end 
+const end = debounce((response) => {
+        let result = JSON.parse(response.body);
+        if(result == null) {
+            return ;
+        }
+        if(result.randomKey === state.searched.randomKey) {
+            state.searched.end = true;
+        }
+    }, 500)
 
 function setData(result) {
     if(result.randomKey === state.searched.randomKey) {
@@ -125,7 +131,7 @@ function editWsStatus(result, wsStatus) {
                 break;
         }
     } else if(result.code == 1) {
-        log(result.message);
+        console.log(result.message);
     }
 }
 
@@ -135,11 +141,14 @@ function formatSearch(response, isPattern) {
         return ;
     }
     if(result.randomKey && result.randomKey === state.searched.randomKey) {
-        state.searched.taskId = result.taskId;
-        state.searched.isPattern = isPattern;
-        state.searched.message = '';
-        state.searched.end = false;
-    } else if(result.message) {
-        log(result.message);
+        if(result.message) {
+            state.searched.message = result.message
+            state.searched.end = true
+        } else {
+            state.searched.taskId = result.taskId;
+            state.searched.isPattern = isPattern;
+            state.searched.message = '';
+            state.searched.end = false;
+        }
     }
 }
