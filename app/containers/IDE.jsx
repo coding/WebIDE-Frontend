@@ -8,6 +8,8 @@ import emitter, { STORAGE_CHANGE } from 'utils/emitter'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
 import i18n from 'utils/createI18n'
 import GlobalPrompt from './GlobalPrompt'
+import config from 'config';
+import { autorun } from 'mobx';
 
 const Bulletin = ({ close }) => {
   return (
@@ -23,7 +25,7 @@ const Bulletin = ({ close }) => {
 class IDE extends Component {
   constructor (props) {
     super(props)
-    this.state = { isReady: false, isBulletinOn: true }
+    this.state = { isReady: false, isBulletinOn: false }
   }
 
   componentWillMount () {  // initLifecycle_3: IDE specific init
@@ -39,6 +41,11 @@ class IDE extends Component {
         dismissAfter: 12000
       })
     }
+    autorun(() => {
+      if (config.__PLUGIN_DEV__) {
+        this.setState({ isBulletinOn: true });
+      }
+    });
   }
 
   render () {
