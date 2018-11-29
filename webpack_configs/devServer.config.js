@@ -21,6 +21,7 @@ module.exports = function (options) {
           { from: /\/changelog/, to: '/changelog.html' },
           { from: /\/maintain/, to: '/maintain.html' },
           { from: /\/iframe/, to: '/iframe-test.html' },
+          { from: /\/export/, to: '/export.html' },
         ]
       }
     },
