@@ -20,6 +20,7 @@ module.exports = function (options) {
           { from: /\/intro/, to: '/intro.html' },
           { from: /\/changelog/, to: '/changelog.html' },
           { from: /\/maintain/, to: '/maintain.html' },
+          { from: /\/export/, to: '/export.html' },
         ]
       }
     },

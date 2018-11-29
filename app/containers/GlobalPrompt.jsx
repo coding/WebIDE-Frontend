@@ -30,18 +30,19 @@ class GlobalPrompt extends Component {
     // })
 
     // if (!localStorage.getItem('visited')) {
-    //   promptMessage.push({
-    //     content: (
-    //       <p>
-    //         WebIDE 现已全面升级为 Cloud Studio, 使用旧版 IDE 请点击{' '}
-    //         <a href='https://ide.coding.net' target='_blank' rel='noopener noreferrer'>
-    //           WebIDE
-    //         </a>{' '}
-    //       </p>
-    //     ),
-    //     id: `global-prompt-${id++}`,
-    //     type: 'update'
-    //   })
+    promptMessage.push({
+      content: (
+        <p>
+          WebIDE 现已在
+          <a href='https://dev.tencent.com/' target='_blank' rel='noopener noreferrer'>腾讯云开发者平台</a>中全面升级，此版本 <strong>将于 2018 年 11 月 30 日正式停止服务</strong>，详情参见{' '}
+          <a href='/export' target='_blank' rel='noopener noreferrer'>
+          这里
+          </a>{' '}
+        </p>
+      ),
+      id: `global-prompt-${id++}`,
+      type: 'update'
+    })
     // }
 
     if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
@@ -69,7 +70,7 @@ class GlobalPrompt extends Component {
           // </p>
           <p>
             {i18n`global.offlineInfo`}
-            <a href='https://ide.coding.net' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
+            <a href='https://studio.dev.tencent.com' rel='noopener noreferrer'>{i18n`global.gotoIDE`}</a>
           </p>
         ),
         id: `global-prompt-${id++}`,

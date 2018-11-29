@@ -26,6 +26,7 @@ module.exports = function(options = {}) {
     loginEntryHtmlName = 'login.html',
     introEntryHtmlName = 'intro.html',
     changelogEntryHtmlName = 'changelog.html',
+    exportEntryHtmlName = 'export.html',
     maintainEntryHtmlName = 'maintain.html',
     workspacesEntryHtmlName = 'index.html',
     staticDir = 'rs',
@@ -86,16 +87,24 @@ module.exports = function(options = {}) {
     },
     optimization: {
       splitChunks: {
-        cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            minSize: 30000,
-            minChunks: 1,
-            chunks: 'initial',
-            priority: 1
-          },
-        }
+          minChunks: 1,
+          chunks: 'all',
+          cacheGroups: {
+            commons: {
+              name: "commons",
+              chunks: "initial",
+              minChunks: 2
+            },
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true
+            }
+          }
       },
     },
     plugins: [

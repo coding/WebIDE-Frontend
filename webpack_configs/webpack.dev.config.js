@@ -36,6 +36,7 @@ const dashboardEntryHtmlName = 'dashboard.html'
 const accountEntryHtmlName = 'account.html'
 const loginEntryHtmlName = 'login.html'
 // const changelogEntryHtmlName = 'changelog.html'
+const exportEntryHtmlName = 'export.html'
 
 const staticDir = ''
 
@@ -73,38 +74,45 @@ const config = merge(
   { devtool: 'cheap-module-eval-source-map' },
   { plugins: [
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login'],
+      chunks: ['vendor', 'main'],
       filename: (staticDir ? '../' : '') + mainEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/index.html'),
       // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login'],
+      chunks: ['vendor', 'dashboard'],
       filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
+      chunks: ['vendor', 'workspaces'],
       filename: (staticDir ? '../' : '') + accountEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/account.html'),
       // favicon: ICO_PATH,
     }),
     new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
+      title: 'Cloud Studio',
       multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main'],
+      chunks: ['vendor', 'login'],
       filename: (staticDir ? '../' : '') + loginEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/login.html'),
       // favicon: ICO_PATH,
     }),
+    new HtmlWebpackPlugin({
+      title: 'Cloud Studio',
+      inject: false,
+      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
+      template: path.join(PROJECT_ROOT, 'app/export.html'),
+      // favicon: ICO_PATH,
+    }),
     // new HtmlWebpackPlugin({
-    //   title: 'Coding WebIDE',
+    //   title: 'Cloud Studio',
     //   inject: false,
     //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
     //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
