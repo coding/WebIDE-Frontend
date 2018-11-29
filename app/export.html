@@ -333,25 +333,23 @@
               },[
                 m('span', '为了优化 WebIDE 运行的基础设施，给用户提供体验更好、更稳定的产品服务，WebIDE 现已在'),
                 m('a', { href: 'https://dev.tencent.com/'}, '腾讯云开发者平台'),
-                m('span', '中全面升级，用户可长期免费使用。升级后，此版本后续不再做功能升级及维护，'),
-                m('strong', '并于 2018 年 11 月 30 日正式停止服务'),
-                m('span', '。为避免影响您的后续使用，建议您尽快将该版本数据迁移至'),
+                m('span', '中全面升级，用户可长期免费使用。此版本现已正式下线，建议您将该版本数据导出，并迁移至'),
                 m('a', { href: 'https://studio.dev.tencent.com/intro' }, ' 新版 Cloud Studio'),
                 m('span', '，迁移教程可参考'),
-                m('a', { href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate-ide' }, '这里'),
+                m('a', { href: 'https://dev.tencent.com/help/cloud-studio/webide-export', target: '_blank' }, '这里'),
                 m('span', '。'),
                 m('br'),
                 m('br'),
                 m('span', '如给您造成了不便，敬请谅解。我们将在新的平台，给您提供更优质的服务。感谢您的理解和支持。')
               ]),
-              // m('a', {
-              //   href: '?/list',
-              //   class: 'button start-btn'
-              // }, '开始导出')
               m('a', {
-                href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate-ide',
+                href: '?/list',
                 class: 'button start-btn'
-              }, '查看迁移教程')
+              }, '开始导出数据')
+              // m('a', {
+              //   href: 'https://dev.tencent.com/help/cloud-studio/how-to-migrate-ide',
+              //   class: 'button start-btn'
+              // }, '查看迁移教程')
             ]),
             m(Footer)
           ]
@@ -569,44 +567,44 @@
       }
     }
 
-    m.route.prefix('?')
-    m.route(document.body, '/home', {
-      '/list': List,
-      '/home': Home,
-    })
+    // m.route.prefix('?')
+    // m.route(document.body, '/home', {
+    //   '/list': List,
+    //   '/home': Home,
+    // })
 
-    // try{
-    //   ajax(function(xhr) {
-    //     var result = JSON.parse(xhr.responseText)
-    //     if (result.contents && result.contents.length) {
-    //       var lists = result.contents
+    try{
+      ajax(function(xhr) {
+        var result = JSON.parse(xhr.responseText)
+        if (result.contents && result.contents.length) {
+          var lists = result.contents
 
-    //       lists.map(function(item) {
-    //         var project = item.project
-    //         var iconUrl = project.iconUrl
+          lists.map(function(item) {
+            var project = item.project
+            var iconUrl = project.iconUrl
 
-    //         wsList.push({
-    //           spaceKey: item.spaceKey,
-    //           name: item.owner.globalKey + '/' + project.name,
-    //           time: formatDate(item.lastModifiedDate),
-    //           checked: true,
-    //           img: iconUrl.includes('http') ? iconUrl : IMG_URL + iconUrl,
-    //           ownerName: item.owner.globalKey
-    //         })
-    //       })
+            wsList.push({
+              spaceKey: item.spaceKey,
+              name: item.owner.globalKey + '/' + project.name,
+              time: formatDate(item.lastModifiedDate),
+              checked: true,
+              img: iconUrl.includes('http') ? iconUrl : IMG_URL + iconUrl,
+              ownerName: item.owner.globalKey
+            })
+          })
 
-    //       m.route.prefix('?')
-    //       m.route(document.body, '/home', {
-    //         '/list': List,
-    //         '/home': Home,
-    //       })
-    //     } else {
-    //       location.href = REDIRECT_URL
-    //     }
-    //   }, BASE_URL + 'workspaces?page=0&size=5&sort=lastModifiedDate,desc')
-    // } catch (e) {
-    //   location.href = REDIRECT_URL
-    // }
+          m.route.prefix('?')
+          m.route(document.body, '/home', {
+            '/list': List,
+            '/home': Home,
+          })
+        } else {
+          location.href = REDIRECT_URL
+        }
+      }, BASE_URL + 'workspaces?page=0&size=5&sort=lastModifiedDate,desc')
+    } catch (e) {
+      location.href = REDIRECT_URL
+    }
   </script>
 </body>
 </html>
