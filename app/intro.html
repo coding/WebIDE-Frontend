@@ -560,7 +560,7 @@
             position: relative;
         }
         .intro-banner img.pc-img {
-            width: 100%;
+            width: 2560px;
             height: 100%;
             vertical-align: middle;
             position: absolute;
@@ -1191,14 +1191,6 @@
         function stopBubble(event) {
             event.stopPropagation();
         }
-        // 插件比赛广告图片
-        const $campaignImg = document.querySelector('#campaign-img');
-        function handleCampaign() {
-            const imgWidth = 2560 / 1440 * document.documentElement.clientWidth;
-            $campaignImg.style.width = imgWidth + 'px';
-        }
-        handleCampaign();
-        window.addEventListener('resize', function() { handleCampaign(); });
 
         getUserInfo();
 
