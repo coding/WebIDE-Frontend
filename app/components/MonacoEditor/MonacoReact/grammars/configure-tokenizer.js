@@ -5,12 +5,6 @@ import { wireTmGrammars } from './set-grammars'
 
 import grammars from './grammars'
 
-/* eslint-disable */
-import cssGrammar from '!raw-loader!./tmGrammars/css.json.tmLanguage'
-import htmlGrammar from '!raw-loader!./tmGrammars/html.json.tmLanguage'
-import tsGrammar from '!raw-loader!./tmGrammars/TypeScriptReact.tmLanguage'
-/* eslint-enable */
-
 let wasmLoaded = false
 
 export async function liftOff (monaco) {
