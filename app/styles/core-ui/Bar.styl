@@ -72,10 +72,13 @@ $bar-size= 25px
     align-items: center;
     .icon {margin-right: 4px}
   }
+  .side-bar-label-content .text {
+    overflow: hidden;
+    transition: width .2s ease;
+  }
 
   &.left .side-bar-label-content {
     transform: rotate(180deg);
   }
 
 }
-

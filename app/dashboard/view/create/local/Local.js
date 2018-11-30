@@ -20,10 +20,8 @@ class Local extends Component {
 
     render() {
         const { workspaceName, templateId } = this.state;
-        const { globalKey = '', canCreate, wsLimit, templates } = this.props;
-        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
-        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
-        const disabled = !canCreate || !workspaceName || !templateId || shouldModifyGlobalkey;
+        const { canCreate, wsLimit, templates } = this.props;
+        const disabled = !canCreate || !workspaceName || !templateId;
         return (
             <div>
                 <div className="com-board">
@@ -49,12 +47,6 @@ class Local extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {shouldModifyGlobalkey && (
-                            <div className="should-modify-globalkey">
-                                <i className="fa fa-exclamation-circle"></i>
-                                {i18n('ws.modifyGlobalkey')}
-                            </div>
-                        )}
                         {!canCreate && (
                             <div className="can-not-create-ws-tip">
                                 <i className="fa fa-exclamation-circle"></i>
@@ -109,7 +101,6 @@ class Local extends Component {
 
 const mapState = (state) => {
     return {
-        globalKey: state.userState.global_key,
         canCreate: state.wsState.canCreate,
         wsLimit: state.wsState.wsLimit,
     };

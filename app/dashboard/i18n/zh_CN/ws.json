@@ -31,7 +31,6 @@
     "noProject": "这里是空的，请点击右上角的“同步”按钮将 CODING 项目列表同步过来，或者点击上面的“从模板创建”来创建一个新的项目。",
     "collaborativeWorkspace": "协作的工作空间",
     "collaborativeWorkspaceTip": "协作的工作空间不在限制之列。",
-    "modifyGlobalkey": "请先到腾讯云开发者平台完善账户信息",
     "colStat1": "申请协作中",
     "colStat2": "协作中",
     "colStat3": "申请协作被拒绝"

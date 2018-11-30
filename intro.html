@@ -436,10 +436,8 @@
         }
         .intro-canvas .button {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            width: 376px;
-            margin: 60px auto 0;
+            justify-content: center;
+            margin-top: 60px;
         }
         .intro-canvas .goto-dashboard {
             width: 180px;
@@ -458,11 +456,12 @@
             box-sizing: border-box;
             width: 180px;
             padding: 12px 0;
+            margin-left: 16px;
             border: 1px solid #fff;
             border-radius: 2px;
             font-size: 18px;
             color: #fff;
-            background-color: rgba(0, 0, 0, 0);
+            background-color: rgba(0, 0, 0, .0);
             opacity: 1;
             outline: none;
             cursor: pointer;
@@ -473,29 +472,21 @@
         }
         #video-pop {
             display: none;
-            background-color: rgba(0, 0, 0, .9);
+            width: 85%;
+            max-width: 1200px;
+            transform: translate(-50%, -50%);
             position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            top: 50%;
+            left: 50%;
             z-index: 10;
         }
         #video-pop.on {
             display: block;
         }
-        #video-pop .board {
-            width: 100%;
-            max-width: 1200px;
-            transform: translate(-50%, -50%);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-        }
-        #video-pop .board video {
+        #video-pop video {
             width: 100%;
         }
-        #video-pop .board i.fa-remove {
+        #video-pop i.fa-remove {
             font-size: 22px;
             color: #fff;
             cursor: pointer;
@@ -537,7 +528,6 @@
             }
             .intro-canvas .button {
                 margin-top: 20px;
-                width: 270px;
             }
             .intro-canvas .goto-dashboard {
                 width: 130px;
@@ -545,9 +535,7 @@
                 font-size: 16px;
             }
             .intro-canvas .view-video {
-                width: 130px;
-                padding: 10px 0;
-                font-size: 16px;
+                display: none;
             }
         }
     </style>
@@ -560,7 +548,7 @@
             position: relative;
         }
         .intro-banner img.pc-img {
-            width: 2560px;
+            width: 100%;
             height: 100%;
             vertical-align: middle;
             position: absolute;
@@ -587,10 +575,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .intro-banner .desc a {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .intro-banner .desc button {
             width: 100px;
             height: 30px;
             border: none;
@@ -615,7 +600,7 @@
                 width: 264px;
                 font-size: 14px;
             }
-            .intro-banner .desc a {
+            .intro-banner .desc button {
                 margin-top: 10px;
             }
         }
@@ -818,7 +803,7 @@
                     <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
                 </div>
                 <div id="pc-has-not-login" class="right">
-                    <a href="https://qcloud.coding.net/register" target="_blank" rel="noopener noreferrer">注册</a>
+                    <a href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
                     <span class="divide">|</span>
                     <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
                 </div>
@@ -899,7 +884,7 @@
                 </div>
                 <div id="mobile-has-not-login">
                     <a class="title" href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com" target="_blank" rel="noopener noreferrer">登录</a>
-                    <a class="title" href="https://qcloud.coding.net/register" target="_blank" rel="noopener noreferrer">注册</a>
+                    <a class="title" href="https://cloud.tencent.com/register" target="_blank" rel="noopener noreferrer">注册</a>
                 </div>
                 <div class="blank"></div>
             </div>
@@ -927,24 +912,19 @@
                     <button class="view-video" onClick="handleViewVideo()">观看视频</button>
                 </div>
             </div>
-            <div id="video-pop" onClick="handleCloseVideo()">
-                <div class="board" onClick="stopBubble(event)">
-                    <video preload controls>
-                        <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4">
-                        </source>
-                    </video>
-                    <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
-                </div>
+            <div id="video-pop">
+                <video preload loop controls>
+                    <source type="video/mp4" src="./static/campaign.mp4"></source>
+                </video>
+                <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
             </div>
         </div>
         <div class="intro-banner">
-            <img class="pc-img" id="campaign-img" src="<%= htmlWebpackPlugin.options.staticUrl + 'campaign.png' %>"
-                srcset="<%= htmlWebpackPlugin.options.staticUrl + 'campaign@2x.png' %>" alt="" />
-            <img class="mobile-img" src="<%= htmlWebpackPlugin.options.staticUrl + 'campaign-mobile.png' %>"
-                srcset="<%= htmlWebpackPlugin.options.staticUrl + 'campaign-mobile@2x.png' %>" alt="" />
+            <img class="pc-img" id="campaign-img" src="./static/2560x120@2x.png" alt="" />
+            <img class="mobile-img" src="./static/750x120@2x.png" alt="" />
             <div class="desc">
-                <span>「我最喜爱的 Cloud Studio 插件评选大赛」上线啦！写插件，赢 MacBook Pro！</span>
-                <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener">马上参与</a>
+                <span>「我最喜爱的 Cloud Studio 插件评选大赛」上线啦！写插件，赢 Macbook Pro！</span>
+                <button>马上参与</button>
             </div>
         </div>
         <!-- <div class="intro-counter">
@@ -960,8 +940,8 @@
         <div class="section-container">
             <div class="section-content">
                 <div class="img-container">
-                    <img class="inner" src="<%= htmlWebpackPlugin.options.staticUrl + 'plugin.png' %>"
-                        srcset="<%= htmlWebpackPlugin.options.staticUrl + 'plugin@2x.png' %>" alt="强大的插件系统"
+                    <img class="inner" src="./static/plug.png"
+                        srcset="./static/plug@2x.png 2x" alt="强大的插件系统"
                     />
                 </div>
                 <div class="text-container">
@@ -1178,7 +1158,6 @@
         }
         // 点击观看视频
         const $videoPop = document.querySelector('#video-pop');
-        const $video = document.querySelector('video');
         function handleViewVideo() {
             if (!$videoPop.classList.contains('on')) {
                 $videoPop.classList.add('on');
@@ -1186,11 +1165,15 @@
         }
         function handleCloseVideo() {
             $videoPop.classList.remove('on');
-            $video.pause();
         }
-        function stopBubble(event) {
-            event.stopPropagation();
+        // 插件比赛广告图片
+        const $campaignImg = document.querySelector('#campaign-img');
+        function handleCampaign() {
+            const imgWidth = 2560 / 1440 * document.documentElement.clientWidth;
+            $campaignImg.style.width = imgWidth + 'px';
         }
+        handleCampaign();
+        window.addEventListener('resize', function() { handleCampaign(); });
 
         getUserInfo();
 

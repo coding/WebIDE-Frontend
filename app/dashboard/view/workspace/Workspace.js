@@ -176,8 +176,9 @@ class Workspace extends Component {
             const item = res[i];
             const ws = {};
             ws.spaceKey = item.spaceKey;
-            // codingide 是无来源创建的特殊项目名
-            ws.ownerName = item.ownerName !== 'codingide' ? item.ownerName : item.ownerGlobalKey;
+            // ownerGlobalKey 是工作空间所有者的名字
+            // ownerName 是项目所有者的名字，有可能项目所有者不是你。codingide 是无来源创建的特殊项目名
+            ws.ownerGlobalKey = item.ownerGlobalKey;
             // 无远端仓库有一个 workspaceName 字段
             ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.projectName;
             ws.repoUrl = item.projectHtmlUrl;
@@ -211,8 +212,7 @@ class Workspace extends Component {
                     const item = res[i];
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
-                    // codingide 是无来源创建的特殊项目名
-                    ws.ownerName = item.project.ownerName !== 'codingide' ? item.project.ownerName : item.owner.globalKey;
+                    ws.ownerGlobalKey = item.ownerGlobalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
                     ws.repoUrl = item.projectHtmlUrl;

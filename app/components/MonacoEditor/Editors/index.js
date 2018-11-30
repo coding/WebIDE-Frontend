@@ -7,9 +7,8 @@ import HtmlEditor from './HtmlEditor'
 import MarkDownEditor from './MarkDownEditor'
 import UnknownEditor from 'components/Editor/components/UnknownEditor'
 import ImageEditor from 'components/Editor/components/ImageEditor'
-import pluginStore from '../../Plugins/store'
 
-const editorSet = [
+export const editorSet = [
   {
     editorType: 'htmlEditor',
     editor: HtmlEditor,
@@ -32,23 +31,28 @@ const editorSet = [
   },
 ];
 
-function matchEditorByContentType(editorType, contentType) {
+// 插件形式的编辑器视图会 unshift 到 editorSet 中
+function matchEditorByContentType(editorType, contentType, extension) {
   for (let i = 0, n = editorSet.length; i < n; i++) {
     const set = editorSet[i];
     if (set.editorType) {
       if (set.editorType === editorType) {
         return set.editor;
       }
-    } else if (set.mime) {
-      if (set.mime.includes(contentType)) {
+    } else if (set.contentTypes && Array.isArray(set.contentTypes)) {
+      // 通过 contentTypes 拦截。优先级更高
+      if (set.contentTypes.includes(contentType)) {
+        return set.editor;
+      }
+    } else if (set.extensions && Array.isArray(set.extensions)) {
+      // 通过 extensions 拦截。优先级更低
+      if (set.extensions.includes(extension)) {
         return set.editor;
       }
     }
   }
   return UnknownEditor;
 }
-// 编辑器插件数组
-let pluginArray = [];
 
 const EditorWrapper = observer(({ tab, active }) => {
   // loading
@@ -61,22 +65,11 @@ const EditorWrapper = observer(({ tab, active }) => {
   }
   const { editor, editorInfo } = tab;
   const file = editor.file || {};
-  // 编辑器插件
-  if (!pluginArray.length) {
-    pluginArray = pluginStore.plugins.values().filter(plugin => plugin.label.mime);
-    for (let i = 0, n = pluginArray.length; i < n; i++) {
-      const plugin = pluginArray[i];
-      editorSet.unshift({
-        mime: plugin.label.mime,
-        editor: plugin.app,
-      });
-    }
-  }
   // key is crutial here, it decides whether the component should re-construct
   // or keep using the existing instance.
   const key = `editor_${file.path}`;
-  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType);
-  return React.createElement(editorElement, { editor, editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
+  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType, editor.filePath.split('.').pop());
+  return React.createElement(editorElement, { editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
 })
 
 EditorWrapper.propTypes = {

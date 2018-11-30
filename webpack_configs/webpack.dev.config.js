@@ -107,6 +107,7 @@ const config = merge(
       filename: (staticDir ? '../' : '') + introEntryHtmlName,
       template: path.join(PROJECT_ROOT, 'app/intro.html'),
       backendUrl: str(process.env.BACKEND_URL || ''),
+      staticUrl: path.join('/static/'),
     }),
     new HtmlWebpackPlugin({
       title: 'Coding WebIDE',
@@ -121,6 +122,14 @@ const config = merge(
       filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
       iframeUrl: str('ide.test:8060/intro'),
       template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
+
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
+      iframeUrl: str('ide.test:8060/intro'),
+      template: path.join(PROJECT_ROOT, 'app/export.html'),
 
     }),
 

@@ -22,10 +22,3 @@
 .dash-create-plugin .plugin-type .type.on {
     background-color: #18f;
 }
-.should-modify-globalkey {
-    padding-bottom: 10px;
-    color: #757575;
-}
-.should-modify-globalkey i {
-    margin-right: 4px;
-}
