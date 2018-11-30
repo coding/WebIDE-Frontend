@@ -604,13 +604,7 @@
             outline: none;
             cursor: pointer;
         }
-        @media screen and (max-width: 800px) {
-            .intro-banner img.pc-img {
-                display: none;
-            }
-            .intro-banner img.mobile-img {
-                display: block;
-            }
+        @media screen and (max-width: 850px) {
             .intro-banner .desc {
                 flex-wrap: wrap;
                 width: 264px;
@@ -618,6 +612,14 @@
             }
             .intro-banner .desc a {
                 margin-top: 10px;
+            }
+        }
+        @media screen and (max-width: 420px) {
+            .intro-banner img.pc-img {
+                display: none;
+            }
+            .intro-banner img.mobile-img {
+                display: block;
             }
         }
     </style>
