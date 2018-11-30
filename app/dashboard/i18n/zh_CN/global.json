@@ -76,5 +76,8 @@
     "submitting": "提交中...",
     "eventStreamBulletin1": "尊敬的开发者，由于受 ",
     "eventStreamBulletin2": "[ event-stream 包事件 ]",
-    "eventStreamBulletin3": " 影响，您的插件需要手动删除 `yarn.lock` 文件并重新安装依赖，再推送代码发布新版本或预发布。"
+    "eventStreamBulletin3": " 影响，您的插件需要手动删除 `yarn.lock` 文件并重新安装依赖，再推送代码发布新版本或预发布。",
+    "globalTip1": "系统检测到您的用户名尚未修改。",
+    "globalTip2": "请先进入 [ 腾讯云开发者平台 > 个人设置 ] 修改后再重新登录使用。",
+    "gotoModify": "前往修改"
 }
