@@ -45,7 +45,13 @@ class EditorInfo {
     state.entities.set(this.id, this)
     EditorState.entities.set(this.id, this)
     this.update(props)
-    this.uri = this.filePath || `inmemory://model/${this.id}`
+    this.uri = this.filePath
+      ? (this.filePath.startsWith('jdt://')
+      || this.filePath.startsWith('omnisharp-metadata://')
+      ? this.filePath
+      : `file://${config._ROOT_URI_}${this.filePath}`)
+      : `inmemory://model/${this.id}`
+
     if (!props.filePath || this.isMonaco) {
       this.createMonacoEditorInstance(props)
     }
@@ -60,7 +66,6 @@ class EditorInfo {
     if (this.filePath) {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
-
     const model =
       monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
       monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))

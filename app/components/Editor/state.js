@@ -80,15 +80,6 @@ class Editor {
     //   }
     // })
 
-    autorun(() => {
-      if (this.tab && this.tab.isActive && this.tab.editor && this.tab.editor.cm) {
-        setTimeout(() => {
-          this.tab.editor.cm.refresh();
-          this.tab.editor.cm.focus();
-        }, 0);
-      }
-    })
-
     if (!this.file) {
       cm.setCursor(cm.posFromIndex(this.content.length))
     }

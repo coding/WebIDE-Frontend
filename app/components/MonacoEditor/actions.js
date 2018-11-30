@@ -46,7 +46,7 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
               selection: params.options.selection,
               content: data,
               readOnly: true,
-              filePath: name,
+              filePath: `${formattedUri.substr(0, formattedUri.length - 5)}java`,
             },
           })
         })
