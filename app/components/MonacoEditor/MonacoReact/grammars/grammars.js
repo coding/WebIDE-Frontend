@@ -1,0 +1,15 @@
+const grammars = new Map()
+grammars.set('css', 'source.css')
+grammars.set('html', 'text.html.basic')
+grammars.set('vue', 'text.html.vue')
+grammars.set('typescript', 'source.tsx')
+grammars.set('javascript', 'source.tsx')
+grammars.set('csharp', 'source.cs')
+grammars.set('bar', 'source.batchfile')
+grammars.set('clojure', 'source.clojure')
+grammars.set('coffeescript', 'source.coffee')
+grammars.set('cpp', 'source.cpp')
+grammars.set('c', 'source.c')
+grammars.set('go', 'source.go')
+
+export default grammars

@@ -132,7 +132,15 @@ module.exports = function(options = {}) {
         {
           from: path.join(PROJECT_ROOT, 'node_modules/marked'),
           to: 'marked'
-        }
+        },
+        {
+          from: path.join(PROJECT_ROOT, 'node_modules/onigasm/lib/onigasm.wasm'),
+          to: 'onigasm/2.2.1/onigasm.wasm'
+        },
+        {
+          from: path.join(PROJECT_ROOT, 'node_modules/monaco-textmate-languages'),
+          to: 'monaco-textmate-languages'
+        },
       ]),
       new MonacoWebpackPlugin(initMonacoPluginConfig),
       new HappyPack({
@@ -148,7 +156,12 @@ module.exports = function(options = {}) {
     module: {
       rules: [
         { test: /\.jsx?$/, exclude: /node_modules/, loader: 'happypack/loader?id=babel' },
-        { test: /\.md$/, use: ['raw-loader'] }
+        { test: /\.md$/, use: ['raw-loader'] },
+        {
+          test: /\.wasm$/,
+          use: ['file-loader'],
+          type: "javascript/auto",
+        }
       ]
     }
   }

@@ -13,9 +13,23 @@ import { findLangueByExt } from '../utils/findLanguage'
 import { EditorInfo } from '../state'
 import initialOptions from '../monacoDefaultOptions'
 import registerCustomLanguages from '../languages'
+import { liftOff } from './grammars/configure-tokenizer'
 
 registerCustomLanguages()
 
+monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+  noSemanticValidation: true,
+  noSyntaxValidation: true,
+})
+monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+  noSemanticValidation: true,
+  noSyntaxValidation: true,
+})
+
+// monaco.languages.typescript.getTypeScriptWorker()
+//   .then(() => {
+    
+//   })
 function noop () {}
 
 const Div = measure('div')
@@ -132,6 +146,7 @@ class MonacoEditor extends React.PureComponent {
         }
       }
     })
+    liftOff(monaco)
   }
 
   componentWillReceiveProps (nextProps) {

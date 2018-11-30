@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import React from 'react'
 import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
-import * as monaco from 'monaco-editor'
+ 
 import mime from 'mime-types'
 import { Services } from 'monaco-languageclient'
 
@@ -62,8 +62,8 @@ class EditorInfo {
     }
 
     const model =
-      monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
-      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
+      monaco.editor.getModel(monaco.Uri.parse(`file://${this.uri}`).toString()) ||
+      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(`file://${this.uri}`))
     this.uri = model.uri._formatted
     const monacoEditor = monaco.editor.create(
       this.monacoElement,

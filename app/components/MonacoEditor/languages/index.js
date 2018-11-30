@@ -1,4 +1,5 @@
-import * as monaco from 'monaco-editor'
+ 
+// const monaco = require('monaco-editor')
 
 const customLanguages = [
   'vue'
