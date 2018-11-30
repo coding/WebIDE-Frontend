@@ -1,3 +1,5 @@
+import languagesConfig from './languages'
+
 const monacoTextmate1 = require('monaco-textmate')
 
 class TokenizerState {
@@ -12,7 +14,7 @@ class TokenizerState {
   }
   equals (other) {
     if (
-      !other ||
+      !other || 
       !(other instanceof TokenizerState) ||
       other !== this ||
       other._ruleStack !== this._ruleStack
@@ -33,13 +35,17 @@ class TokenizerState {
 export function wireTmGrammars (monaco, registry, languages) {
   return Promise.all(
     Array.from(languages.keys()).map(async (languageId) => {
-      try {        
+      const languageContrubution = languagesConfig.find((lang) => lang.id === languageId)
+      if (languageContrubution) {
+        const { scopeName, ...contribution } = languageContrubution
+        monaco.languages.register({ ...contribution })
+      }
+      try {
         const grammar = await registry.loadGrammar(languages.get(languageId))
         monaco.languages.setTokensProvider(languageId, {
           getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
           tokenize: (line, state) => {
             const res = grammar.tokenizeLine(line, state.ruleStack)
-            console.log(res)
             return {
               endState: new TokenizerState(res.ruleStack),
               tokens: res.tokens.map(token => ({

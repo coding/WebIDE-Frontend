@@ -4,7 +4,7 @@ import { debounce, lowerCase } from 'lodash'
 import { measure } from '@pinyin/measure'
 import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor-core'
 
 import FileStore from 'commons/File/store'
 import languageState from 'components/MonacoEditor/LanguageClientState'
@@ -17,19 +17,8 @@ import { liftOff } from './grammars/configure-tokenizer'
 
 registerCustomLanguages()
 
-monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-  noSemanticValidation: true,
-  noSyntaxValidation: true,
-})
-monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-  noSemanticValidation: true,
-  noSyntaxValidation: true,
-})
+liftOff(monaco)
 
-// monaco.languages.typescript.getTypeScriptWorker()
-//   .then(() => {
-    
-//   })
 function noop () {}
 
 const Div = measure('div')
@@ -146,7 +135,6 @@ class MonacoEditor extends React.PureComponent {
         }
       }
     })
-    liftOff(monaco)
   }
 
   componentWillReceiveProps (nextProps) {

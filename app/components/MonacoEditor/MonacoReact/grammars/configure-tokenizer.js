@@ -1,5 +1,4 @@
 import { loadWASM } from 'onigasm' // peer dependency of 'monaco-textmate'
-import { Registry } from 'monaco-textmate' // peer dependency
 import { LanguageRegistry } from 'monaco-textmate-languages'
 import { wireTmGrammars } from './set-grammars'
 
