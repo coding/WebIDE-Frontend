@@ -191,8 +191,9 @@ class SearchSocketClient {
       const firstSlashIdx = wsUrl.indexOf('/', 8)
       const [host, path] = firstSlashIdx === -1 ? [wsUrl, ''] : [wsUrl.substring(0, firstSlashIdx), wsUrl.substring(firstSlashIdx)]
       
-      const url = `${host}:8066/search/sockjs`
-
+      // const url = `${host}:8066/search/sockjs`
+      const url = `${host}${path}/search/sockjs/${config.spaceKey}`
+      // http://dev.coding.ide/ide-ws/search/sockjs/kfddvb/info
       this.sockJSConfigs = [url, {}, {server: `${config.spaceKey}`, transports: 'websocket'}]
 
       this.backoff = getBackoff({

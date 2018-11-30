@@ -2,6 +2,7 @@ import { Component } from "react";
 import { observer } from 'mobx-react'
 import subscribeToSearch from 'commons/Search/subscribeToSearch'
 import state from 'commons/Search/state'
+import cx from 'classnames'
 import { openFile } from 'commands/commandBindings/file'
 import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
@@ -31,7 +32,6 @@ export class SearchResultItem extends Component {
         openFile({ path, editor: { filePath: path, selection } })
     }
 
-
     render() {
         const {fileName, pattern, path, results} = this.props;
         const resultSize = results.length;
@@ -40,7 +40,7 @@ export class SearchResultItem extends Component {
             <div className='search-item' key={path}>
                 <div className='search-item-path' onClick={this.handlePathClick}>
                 <i
-                    className={({
+                    className={cx({
                     'fa fa-caret-right': this.state.isFolded,
                     'fa fa-caret-down': !this.state.isFolded
                     })}
@@ -85,6 +85,9 @@ class SearchPanel extends Component {
     }
     
     searchTxt = () => {
+        if(state.searching.pattern.length == 0 || state.searching.pattern.trim() == '') {
+            return ;
+        }
         if(state.ws.first) {
             state.ws.first = false
         }
@@ -148,7 +151,7 @@ class SearchPanel extends Component {
                             placeholder={i18n.get('panel.left.find')}
                         />
                     </div>
-                    <div className='search-checkbox'>
+                    {/* <div className='search-checkbox'>
                         <input 
                             title={i18n.get('panel.checkbox.case')}
                             label={i18n.get('panel.checkbox.case')}
@@ -166,7 +169,7 @@ class SearchPanel extends Component {
                             className='search-control-pattern'
                             onChange={this.pattern}
                             type='checkbox'/>
-                    </div>
+                    </div> */}
                 </div>
                 {this.renderResult()}
             </div>
