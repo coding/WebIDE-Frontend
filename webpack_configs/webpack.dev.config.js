@@ -124,6 +124,14 @@ const config = merge(
       template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
 
     }),
+    new HtmlWebpackPlugin({
+      title: 'Coding WebIDE',
+      inject: false,
+      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
+      iframeUrl: str('ide.test:8060/intro'),
+      template: path.join(PROJECT_ROOT, 'app/export.html'),
+
+    }),
 
     // new HtmlWebpackPlugin({
     //   title: 'Cloud Studio',
