@@ -14,7 +14,6 @@ const PluginArea = observer(({ position = '', childProps = {}, children, getChil
   // 如果侧边栏插件的数量超过 5 条，则只显示图标
   if (pluginsArray.filter(plugin => plugin.position === SIDEBAR.RIGHT).length > 5) {
     pluginsArray.map(plugin => {
-      console.log(plugin.label)
       if (plugin.position === SIDEBAR.RIGHT && plugin.label && typeof plugin.label === 'object') {
         plugin.label.onlyIcon = true;
       }
