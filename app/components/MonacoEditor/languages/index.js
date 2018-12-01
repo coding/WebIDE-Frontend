@@ -1,9 +1,4 @@
- 
-// const monaco = require('monaco-editor')
-
-const customLanguages = [
-  'vue'
-]
+ const customLanguages = []
 
 function registerCustomLanguages () {
   customLanguages.forEach(async (v) => {

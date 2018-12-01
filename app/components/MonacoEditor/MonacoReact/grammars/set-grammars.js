@@ -39,26 +39,27 @@ export function wireTmGrammars (monaco, registry, languages) {
       if (languageContrubution) {
         const { scopeName, ...contribution } = languageContrubution
         monaco.languages.register({ ...contribution })
-      }
-      try {
-        const grammar = await registry.loadGrammar(languages.get(languageId))
-        monaco.languages.setTokensProvider(languageId, {
-          getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
-          tokenize: (line, state) => {
-            const res = grammar.tokenizeLine(line, state.ruleStack)
-            return {
-              endState: new TokenizerState(res.ruleStack),
-              tokens: res.tokens.map(token => ({
-                ...token,
-                // TODO: At the moment, monaco-editor doesn't seem to accept array of scopes
-                scopes: token.scopes[token.scopes.length - 1]
-              }))
+        try {
+          const grammar = await registry.loadGrammar(languages.get(languageId))
+          monaco.languages.setTokensProvider(languageId, {
+            getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
+            tokenize: (line, state) => {
+              const res = grammar.tokenizeLine(line, state.ruleStack)
+              return {
+                endState: new TokenizerState(res.ruleStack),
+                tokens: res.tokens.map(token => ({
+                  ...token,
+                  // TODO: At the moment, monaco-editor doesn't seem to accept array of scopes
+                  scopes: token.scopes[token.scopes.length - 1]
+                }))
+              }
             }
+          })
+        } catch (e) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(`${languageId} load failed.`)
+            console.warn(e) // eslint-disable-line
           }
-        })
-      } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn(e) // eslint-disable-line
         }
       }
     })

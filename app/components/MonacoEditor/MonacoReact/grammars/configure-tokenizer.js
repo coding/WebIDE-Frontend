@@ -19,8 +19,6 @@ export async function liftOff (monaco) {
     jsonFetcher: async (uri) => {
       return (await fetch(`${window.location.origin}/${uri}`)).text()
     },
-    // `jsonFetcher` also works (you must provide either of those)
-    // jsonFetcher: (uri) => (await fetch(uri)).json(),
   })
   await wireTmGrammars(monaco, registry, grammars)
 }

@@ -1,105 +1,95 @@
 export default [
   {
-    id: 'json',
-    scopeName: 'source.json',
-    extensions: [
-      '.json',
-      '.bowerrc',
-      '.jshintrc',
-      '.jscsrc',
-      '.eslintrc',
-      '.babelrc',
-      '.webmanifest'
-    ],
-    aliases: ['JSON'],
-    mimeType: ['application/json', 'application/manifest+json']
-  },
-  {
-    id: 'typescript',
-    scopeName: 'source.ts',
-    extensions: ['.ts'],
-    aliases: ['TypeScript React', 'typescript react'],
-    mimeType: ['application/typescript']
-  },
-  {
-    id: 'typescriptreact',
-    scopeName: 'source.tsx',
-    extensions: ['.tsx'],
-    aliases: ['TypeScript', 'typescript'],
-    mimeType: ['application/typescript']
-  },
-  {
-    id: 'plaintext',
-    extensions: ['.txt', '.gitignore', '.prefs'],
-    aliases: ['Plain Text', 'text'],
-    mimetypes: ['text/plain']
-  },
-  {
-    id: 'javascript',
-    extensions: ['.js', '.es6', '.jsx'],
-    firstLine: '^#!.*\\bnode',
-    filenames: ['jakefile'],
-    aliases: ['JavaScript', 'javascript', 'js'],
-    mimetypes: ['text/javascript']
-  },
-  {
     id: 'bat',
     extensions: ['.bat', '.cmd'],
-    aliases: ['Batch', 'bat']
+    aliases: ['Batch', 'bat'],
+    mimeType: ['application/bat'],
+    scopeName: 'source.batchfile'
+  },
+  {
+    id: 'clojure',
+    extensions: ['.clj', '.clojure'],
+    aliases: ['Clojure', 'clojure'],
+    mimeType: ['text/x-clojure'],
+    scopeName: 'source.clojure'
   },
   {
     id: 'coffeescript',
     extensions: ['.coffee'],
     aliases: ['CoffeeScript', 'coffeescript', 'coffee'],
-    mimetypes: ['text/x-coffeescript', 'text/coffeescript']
+    mimeType: ['text/x-coffeescript', 'text/coffeescript'],
+    scopeName: 'source.coffee'
   },
   {
     id: 'c',
     extensions: ['.c', '.h'],
-    aliases: ['C', 'c']
+    aliases: ['C', 'c'],
+    mimeType: ['text/x-c', 'text/plain', 'text/x-csrc'],
+    scopeName: 'source.c'
   },
   {
     id: 'cpp',
     extensions: ['.cpp', '.cc', '.cxx', '.hpp', '.hh', '.hxx'],
-    aliases: ['C++', 'Cpp', 'cpp']
+    aliases: ['C++', 'Cpp', 'cpp'],
+    mimeType: ['text/x-c', 'text/plain', 'text/x-c++src'],
+    scopeName: 'source.cpp'
   },
   {
     id: 'csharp',
     extensions: ['.cs', '.csx'],
-    aliases: ['C#', 'csharp']
-  },
-  {
-    id: 'csp',
-    extensions: [],
-    aliases: ['CSP', 'csp']
+    aliases: ['C#', 'csharp'],
+    mimeType: ['text/plain'],
+    scopeName: 'source.cs'
   },
   {
     id: 'css',
+    scopeName: 'source.css',
     extensions: ['.css'],
-    aliases: ['CSS', 'css'],
-    mimetypes: ['text/css']
+    mimeType: ['text/css'],
+    aliases: ['CSS']
   },
   {
     id: 'dockerfile',
     extensions: ['.dockerfile'],
     filenames: ['Dockerfile'],
-    aliases: ['Dockerfile']
+    aliases: ['Dockerfile'],
+    mimeType: ['text/x-dockerfile'],
+    scopeName: 'source.dockerfile'
   },
   {
     id: 'fsharp',
     extensions: ['.fs', '.fsi', '.ml', '.mli', '.fsx', '.fsscript'],
-    aliases: ['F#', 'FSharp', 'fsharp']
+    aliases: ['F#', 'FSharp', 'fsharp'],
+    mimeType: ['application/fsharp', 'application/fsharp-script', 'text/x-fsharp'],
+    scopeName: 'source.fsharp'
+  },
+  {
+    id: 'diff',
+    extensions: ['.diff', '.patch'],
+    aliases: ['Diff'],
+    mimeType: ['text/x-diff'],
+    scopeName: 'source.diff'
   },
   {
     id: 'go',
     extensions: ['.go'],
-    aliases: ['Go']
+    aliases: ['Go'],
+    mimtTypes: ['text/x-go'],
+    scopeName: 'source.go'
+  },
+  {
+    id: 'grovvy',
+    extensions: ['.groovy'],
+    aliases: ['Groovy'],
+    mimtTypes: ['text/x-groovy'],
+    scopeName: 'source.groovy'
   },
   {
     id: 'handlebars',
     extensions: ['.handlebars', '.hbs'],
     aliases: ['Handlebars', 'handlebars'],
-    mimetypes: ['text/x-handlebars-template']
+    mimeType: ['text/x-handlebars-template'],
+    scopeName: 'text.html.handlebars'
   },
   {
     id: 'html',
@@ -116,146 +106,234 @@ export default [
       '.wpy'
     ],
     aliases: ['HTML', 'htm', 'html', 'xhtml'],
-    mimetypes: ['text/html', 'text/x-jshtm', 'text/template', 'text/ng-template']
+    mimeType: ['text/html', 'text/x-jshtm', 'text/template', 'text/ng-template'],
+    scopeName: 'text.html.basic'
   },
   {
     id: 'ini',
     extensions: ['.ini', '.properties', '.gitconfig', '.editorconfig'],
     filenames: ['config', '.gitattributes', '.gitconfig', '.editorconfig'],
-    aliases: ['Ini', 'ini']
+    aliases: ['Ini', 'ini'],
+    mimeType: ['text/x-properties']
+  },
+  {
+    id: 'pug',
+    extensions: ['.jade', '.pug'],
+    aliases: ['Pug', 'Jade', 'jade'],
+    mimeType: ['text/x-pug'],
+    scopeName: 'text.jade'
   },
   {
     id: 'java',
     extensions: ['.java', '.jav', '.class'],
     aliases: ['Java', 'java'],
-    mimetypes: ['text/x-java-source', 'text/x-java']
+    mimeType: ['text/x-java-source', 'text/x-java'],
+    scopeName: 'source.java'
+  },
+  {
+    id: 'javascript',
+    scopeName: 'source.js',
+    extensions: ['.js', '.jsx', '.es6', '.mjs'],
+    mimeType: ['application/javascript'],
+    aliases: ['JavaScript']
+  },
+  {
+    id: 'json',
+    scopeName: 'source.json',
+    extensions: [
+      '.json',
+      '.bowerrc',
+      '.jshintrc',
+      '.jscsrc',
+      '.eslintrc',
+      '.babelrc',
+      '.webmanifest'
+    ],
+    mimeType: ['application/json', 'application/manifest+json'],
+    aliases: ['JSON']
   },
   {
     id: 'less',
     extensions: ['.less'],
     aliases: ['Less', 'less'],
-    mimetypes: ['text/x-less', 'text/less']
+    mimeType: ['text/x-less', 'text/less'],
+    scopeName: 'source.less'
+  },
+  {
+    id: 'livescript',
+    scopeName: 'source.livescript',
+    extensions: ['.ls'],
+    mimeType: ['text/x-livescript'],
+    aliases: ['LiveScript']
+  },
+  {
+    id: 'log',
+    scopeName: 'source.livescript',
+    extensions: ['.txt', '.text', '.conf', '.def', '.list', '.log'],
+    mimeType: ['text/plain'],
+    aliases: ['Plain Text']
   },
   {
     id: 'lua',
     extensions: ['.lua'],
-    aliases: ['Lua', 'lua']
+    aliases: ['Lua', 'lua'],
+    scopeName: 'source.lua',
+    mimeType: ['text/x-lua']
   },
   {
     id: 'markdown',
     extensions: ['.md', '.markdown', '.mdown', '.mkdn', '.mkd', '.mdwn', '.mdtxt', '.mdtext'],
-    aliases: ['Markdown', 'markdown']
-  },
-  {
-    id: 'msdax',
-    extensions: ['.dax', '.msdax'],
-    aliases: ['DAX', 'MSDAX']
-  },
-  {
-    id: 'mysql',
-    extensions: [],
-    aliases: ['MySQL', 'mysql']
+    aliases: ['Markdown', 'markdown'],
+    scopeName: 'text.html.markdown',
+    mimeType: ['text/x-markdown']
   },
   {
     id: 'objective-c',
     extensions: ['.m'],
-    aliases: ['Objective-C']
+    aliases: ['Objective-C'],
+    scopeName: 'source.objc',
+    mimeType: ['text/x-objectivec']
   },
   {
-    id: 'pgsql',
-    extensions: [],
-    aliases: ['PostgreSQL', 'postgres', 'pg', 'postgre']
+    id: 'perl',
+    extensions: ['.pl', '.pm'],
+    aliases: ['Perl'],
+    scopeName: 'source.perl',
+    mimeType: ['text/x-perl']
   },
   {
     id: 'php',
     extensions: ['.php', '.php4', '.php5', '.phtml', '.ctp'],
     aliases: ['PHP', 'php'],
-    mimetypes: ['application/x-php']
-  },
-  {
-    id: 'postiats',
-    extensions: ['.dats', '.sats', '.hats'],
-    aliases: ['ATS', 'ATS/Postiats']
+    scopeName: 'source.php',
+    mimeType: ['application/x-php']
   },
   {
     id: 'powershell',
     extensions: ['.ps1', '.psm1', '.psd1'],
-    aliases: ['PowerShell', 'powershell', 'ps', 'ps1']
+    scopeName: 'source.powershell',
+    aliases: ['PowerShell', 'powershell', 'ps', 'ps1'],
+    mimeType: ['application/x-powershell']
   },
   {
     id: 'pug',
     extensions: ['.jade', '.pug'],
-    aliases: ['Pug', 'Jade', 'jade']
+    scopeName: 'text.pug',
+    aliases: ['Pug', 'Jade', 'jade'],
+    mimeType: ['text/x-pug']
   },
   {
     id: 'python',
     extensions: ['.py', '.rpy', '.pyw', '.cpy', '.gyp', '.gypi'],
     aliases: ['Python', 'py'],
+    scopeName: 'source.python',
+    mimeType: ['text/x-python'],
     firstLine: '^#!/.*\\bpython[0-9.-]*\\b'
   },
   {
     id: 'r',
     extensions: ['.r', '.rhistory', '.rprofile', '.rt'],
-    aliases: ['R', 'r']
+    scopeName: 'source.r',
+    aliases: ['R', 'r'],
+    mimeType: ['text/x-rsrc']
   },
   {
     id: 'razor',
     extensions: ['.cshtml'],
     aliases: ['Razor', 'razor'],
-    mimetypes: ['text/x-cshtml']
-  },
-  {
-    id: 'redis',
-    extensions: ['.redis'],
-    aliases: ['redis']
-  },
-  {
-    id: 'redshift',
-    extensions: [],
-    aliases: ['Redshift', 'redshift']
+    scopeName: 'text.html.cshtml',
+    mimeType: ['text/x-cshtml']
   },
   {
     id: 'ruby',
     extensions: ['.rb', '.rbx', '.rjs', '.gemspec', '.pp'],
     filenames: ['rakefile'],
-    aliases: ['Ruby', 'rb']
+    aliases: ['Ruby', 'rb'],
+    scopeName: 'source.ruby'
   },
   {
     id: 'rust',
     extensions: ['.rs', '.rlib'],
-    aliases: ['Rust', 'rust']
+    scopeName: 'source.rust',
+    aliases: ['Rust', 'rust'],
+    mimeType: ['text/x-rustsrc']
   },
   {
-    id: 'sb',
-    extensions: ['.sb'],
-    aliases: ['Small Basic', 'sb']
+    id: 'sass',
+    extensions: ['.sass'],
+    aliases: ['Sass', 'sass'],
+    mimeType: ['text/x-sass'],
+    scopeName: 'source.sass'
   },
   {
     id: 'scss',
     extensions: ['.scss'],
     aliases: ['Sass', 'sass', 'scss'],
-    mimetypes: ['text/x-scss', 'text/scss']
+    scopeName: 'source.scss',
+    mimeType: ['text/x-scss', 'text/scss']
   },
   {
-    id: 'sol',
-    extensions: ['.sol'],
-    aliases: ['sol', 'solidity', 'Solidity']
+    id: 'shellscript',
+    extensions: ['.sh', '.bash'],
+    aliases: ['Shell Script', 'sh'],
+    scopeName: 'source.shell',
+    mimeType: ['text/x-sh']
+  },
+  {
+    id: 'smart',
+    extensions: ['.tpl'],
+    aliases: ['Smart'],
+    scopeName: 'source.smarty',
+    mimeType: ['text/x-smarty']
   },
   {
     id: 'sql',
     extensions: ['.sql'],
-    aliases: ['SQL']
+    aliases: ['SQL'],
+    mimeType: ['text/x-sql'],
+    scopeName: 'source.sql'
+  },
+  {
+    id: 'stylus',
+    extensions: ['.styl'],
+    aliases: ['Stylus', 'Stylus'],
+    scopeName: 'source.stylus',
+    mimeType: ['text/x-styl']
   },
   {
     id: 'swift',
     aliases: ['Swift', 'swift'],
     extensions: ['.swift'],
-    mimetypes: ['text/swift']
+    mimeType: ['text/swift'],
+    scopeName: 'source.swift'
+  },
+  {
+    id: 'typescript',
+    scopeName: 'source.ts',
+    extensions: ['.ts'],
+    aliases: ['TypeScript', 'typescript'],
+    mimeType: ['application/typescript']
+  },
+  {
+    id: 'typescriptreact',
+    scopeName: 'source.tsx',
+    extensions: ['.tsx'],
+    aliases: ['TypeScript React', 'typescript react'],
+    mimeType: ['application/typescript']
   },
   {
     id: 'vb',
     extensions: ['.vb'],
-    aliases: ['Visual Basic', 'vb']
+    scopeName: 'source.asp.vb.net',
+    aliases: ['Visual Basic', 'vb'],
+    mimeType: ['text/x-vb']
+  },
+  {
+    id: 'vue',
+    scopeName: 'text.html.vue',
+    extensions: ['.vue'],
+    aliases: ['Vue'],
+    mimeType: ['text/vue']
   },
   {
     id: 'xml',
@@ -276,37 +354,14 @@ export default [
     ],
     firstLine: '(\\<\\?xml.*)|(\\<svg)|(\\<\\!doctype\\s+svg)',
     aliases: ['XML', 'xml'],
-    mimetypes: ['text/xml', 'application/xml', 'application/xaml+xml', 'application/xml-dtd']
+    mimeType: ['text/xml', 'application/xml', 'application/xaml+xml', 'application/xml-dtd'],
+    scopeName: 'text.xml'
   },
   {
     id: 'yaml',
     extensions: ['.yaml', '.yml'],
     aliases: ['YAML', 'yaml', 'YML', 'yml'],
-    mimetypes: ['application/x-yaml']
-  },
-  {
-    id: 'shell',
-    extensions: ['.sh', '.bash'],
-    aliases: ['Shell Script', 'sh']
-  },
-  {
-    id: 'clojure',
-    extensions: ['.clj', '.clojure'],
-    aliases: ['Clojure', 'clojure']
-  },
-  {
-    id: 'scheme',
-    extensions: ['.scm', '.ss', '.sch', '.rkt'],
-    aliases: ['Scheme', 'scheme']
-  },
-  {
-    id: 'vue',
-    extensions: ['.vue'],
-    aliases: ['Vue', 'vuejs']
-  },
-  {
-    id: 'stylus',
-    extensions: ['.styl'],
-    aliases: ['Stylus', 'Stylus']
+    mimeType: ['application/x-yaml'],
+    scopeName: 'source.yaml'
   }
 ]
