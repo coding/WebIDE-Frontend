@@ -14,6 +14,7 @@ import config from 'config'
 import pluginStore from 'components/Plugins/store'
 import WelcomePage from './WelcomePage'
 import Changelog from './Changelog'
+import state from './state'
 
 const contextMenuItems = [
   {
@@ -30,15 +31,6 @@ const contextMenuItems = [
     command: 'tab:close_all'
   },
   { isDivider: true },
-  {
-    name: i18n`tab.contextMenu.verticalSplit`,
-    icon: '',
-    command: 'tab:split_v'
-  }, {
-    name: i18n`tab.contextMenu.horizontalSplit`,
-    icon: '',
-    command: 'tab:split_h'
-  }
 ]
 
 @observer
@@ -70,9 +62,27 @@ class TabContainer extends Component {
     })
   }
 
+  // Render split menu in correct time
+  renderItem = (tabGroup) => {
+    const isDisabled = tabGroup.tabs.length === 1
+
+    if (contextMenuItems.length === 4 || isDisabled) {
+      return contextMenuItems.concat([{
+        name: i18n`tab.contextMenu.verticalSplit`,
+        icon: '',
+        isDisabled,
+        command: 'tab:split_v'
+      }, {
+        name: i18n`tab.contextMenu.horizontalSplit`,
+        icon: '',
+        isDisabled,
+        command: 'tab:split_h'
+      }])
+    }
+  }
+
   componentWillUnmount () {
     if (this.dispose) {
-      console.log(this.dispose)
       this.dispose()
     }
   }
@@ -83,7 +93,7 @@ class TabContainer extends Component {
     return (
       <div className={cx('tab-container', { fullscreen: fullScreenActiveContent })}>
         <TabBar tabGroup={tabGroup}
-          contextMenuItems={contextMenuItems}
+          contextMenuItems={this.renderItem(tabGroup)}
           closePane={closePane}
           handleFullScreen={this.handleFullScreen}
         />
