@@ -93,7 +93,7 @@ export function createLanguageClient (services, connection) {
       initializationFailedHandler: (err) => {
         const detail = err instanceof Error ? err.message : ''
       },
-      diagnosticCollectionName: lowerCase(config.mainLanguage)
+      diagnosticCollectionName: config.mainLanguage.toLowerCase()
     },
     // services,
     connectionProvider: {
@@ -119,7 +119,7 @@ export function createWebSocket () {
     transports: ['websocket'],
     query: {
       ws: config.spaceKey,
-      language: lowerCase(config.mainLanguage)
+      language: config.mainLanguage.toLowerCase()
     }
   }
   return io.connect(

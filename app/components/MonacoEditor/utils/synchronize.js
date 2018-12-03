@@ -1,4 +1,5 @@
 export default {
   Java: '',
-  Python: 'pyls'
+  Python: 'pyls',
+  'C#': '',
 }
