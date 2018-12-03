@@ -11,3 +11,7 @@ export const markReaded = (data) => {
 export const getMessage = () => {
     return axios.get('/workspaces/message?page=1&pageSize=10');
 }
+
+export const renameGlobalKey = (data) => {
+    return axios.post('/user/modify-new-global-key', data);
+}
