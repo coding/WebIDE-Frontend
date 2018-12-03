@@ -1,6 +1,5 @@
 import isObject from 'lodash//isPlainObject'
 import { observable, reaction, extendObservable, computed, action, autorun } from 'mobx'
-import { trim, capitalize } from 'lodash'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED, TERM_FONTSIZE_CHANGED } from 'utils/emitter'
@@ -282,8 +281,8 @@ const settings = observable({
       name: 'settings.general.language',
       value: localeToLangs[getDefaultLangCode()],
       options: [
-      { name: 'settings.general.languageOption.english', value: 'English' },
-      { name: 'settings.general.languageOption.chinese', value: 'Chinese' },
+      { name: 'English', value: 'English' },
+      { name: '中文', value: 'Chinese' },
       ]
     },
     exclude_files: {

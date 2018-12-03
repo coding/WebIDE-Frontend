@@ -108,7 +108,8 @@
    "commitView": {
       "nnableToPreview": "无法预览",
       "nothingCommit": "你的当前工作目录无内容提交",
-      "initMessage": "由 Cloud Studio 更新，https://studio.dev.tencent.com"
+      "initMessage": "由 Cloud Studio 更新，https://studio.dev.tencent.com",
+      "all": "全选"
    },
    "unStash": {
       "branch": "新建分支并应用",

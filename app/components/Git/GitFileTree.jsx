@@ -59,7 +59,7 @@ class _GitFileTreeNode extends Component {
     return (
       <div className='filetree-node-container'>
         { node.isRoot ?
-          (<div className='filetree-node' ref={r => this.nodeDOM = r} >
+          (<div className='filetree-node' ref={r => this.nodeDOM = r}>
             { displayOnly ? null
             : <span className='filetree-node-checkbox'
                 style={{marginRight: 0}}

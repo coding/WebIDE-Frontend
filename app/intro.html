@@ -485,28 +485,13 @@
         #video-pop.on {
             display: block;
         }
-        #video-pop .board {
+        #video-pop video {
             width: 100%;
             max-width: 1200px;
             transform: translate(-50%, -50%);
             position: absolute;
             top: 50%;
             left: 50%;
-        }
-        #video-pop .board video {
-            width: 100%;
-        }
-        #video-pop .board i.fa-remove {
-            font-size: 22px;
-            color: #fff;
-            cursor: pointer;
-            transition: color .2s ease;
-            position: absolute;
-            top: -25px;
-            right: -20px;
-        }
-        #video-pop i.fa-remove:hover {
-            color: #aaa;
         }
         @media screen and (max-width: 800px) {
             .intro-canvas .content {
@@ -1012,13 +997,9 @@
                 </div>
             </div>
             <div id="video-pop" onClick="handleCloseVideo()">
-                <div class="board" onClick="stopBubble(event)">
-                    <video preload controls>
-                        <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4">
-                        </source>
-                    </video>
-                    <i class="fa fa-remove" onClick="handleCloseVideo()"></i>
-                </div>
+                <video preload controls onClick="stopBubble(event)">
+                    <source type="video/mp4" src="https://cs-res.codehub.cn/cloud-studio-plugins-intro.mp4"></source>
+                </video>
             </div>
         </div>
         <div class="intro-banner">
