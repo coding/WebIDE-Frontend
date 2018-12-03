@@ -1,0 +1,7 @@
+{
+  "id": "textile",
+  "extensions": [".textile"],
+  "aliases": ["Textile"],
+  "scopeName": "source.scala",
+  "mimeType": ["text.html.textile"]
+}

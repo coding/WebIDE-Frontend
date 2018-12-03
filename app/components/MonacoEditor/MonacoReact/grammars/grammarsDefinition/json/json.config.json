@@ -1,0 +1,18 @@
+{
+	"id": "json",
+	"scopeName": "source.json",
+	"extensions": [
+		".json",
+		".bowerrc",
+		".jshintrc",
+		".jscsrc",
+		".eslintrc",
+		".babelrc",
+		".webmanifest"
+	],
+	"mimeType": [
+		"application/json",
+		"application/manifest+json"
+	],
+	"aliases": ["JSON"]
+}

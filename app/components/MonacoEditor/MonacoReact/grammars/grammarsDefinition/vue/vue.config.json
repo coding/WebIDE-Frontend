@@ -1,0 +1,7 @@
+{
+    "id": "vue",
+    "scopeName": "text.html.vue",
+    "extensions": [".vue"],
+    "aliases": ["Vue"],
+    "mimeType": ["text/vue"]
+}

@@ -137,11 +137,7 @@ module.exports = function(options = {}) {
         {
           from: path.join(PROJECT_ROOT, 'node_modules/onigasm/lib/onigasm.wasm'),
           to: 'onigasm/2.2.1/onigasm.wasm'
-        },
-        {
-          from: path.join(PROJECT_ROOT, 'node_modules/monaco-textmate-languages'),
-          to: 'monaco-textmate-languages'
-        },
+        }
       ]),
       // new MonacoWebpackPlugin(initMonacoPluginConfig),
       new HappyPack({

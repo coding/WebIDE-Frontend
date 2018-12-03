@@ -1,0 +1,7 @@
+{
+  "id": "ini",
+  "extensions": [".ini", ".properties", ".gitconfig", ".editorconfig"],
+  "filenames": ["config", ".gitattributes", ".gitconfig", ".editorconfig"],
+  "aliases": ["Ini", "ini"],
+  "mimeType": ["text/x-properties"]
+}

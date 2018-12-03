@@ -1,0 +1,266 @@
+{
+    "fileTypes": ["slm"],
+    "foldingStartMarker": "^\\s*([-%#\\:\\.\\w\\=].*)\\s$",
+    "foldingStopMarker": "^\\s*$",
+    "keyEquivalent": "^~S",
+    "name": "Node Slm",
+    "patterns": [{
+        "captures": {
+            "1": {
+                "name": "punctuation.definition.prolog.slm"
+            }
+        },
+        "match": "^(! )($|\\s.*)",
+        "name": "meta.prolog.slm"
+    }, {
+        "captures": {
+            "1": {
+                "name": "punctuation.section.comment.slm"
+            }
+        },
+        "match": "^ *(\/)\\s*\\S.*$\\n?",
+        "name": "comment.line.slash.slm"
+    }, {
+        "begin": "^( *)(\/)\\s*$",
+        "beginCaptures": {
+            "2": {
+                "name": "punctuation.section.comment.slm"
+            }
+        },
+        "end": "^(?!\\1  )",
+        "name": "comment.block.slm",
+        "patterns": [{
+            "include": "text.slm"
+        }]
+    }, {
+        "begin": "^\\s*([.#]?[\\w.#_]+)",
+        "captures": {
+            "1": {
+                "name": "entity.name.tag.slm"
+            }
+        },
+        "end": "$",
+        "patterns": [{
+            "include": "#tag-stuff"
+        }]
+    }, {
+        "begin": "^\\s*([\\w.#_-]*[\\w]+)",
+        "captures": [{
+            "name": "entity.name.tag.slm"
+        }],
+        "end": "$|(?!\\.|#|\\{|\\[|=|-|~|\/)",
+        "patterns": [{
+            "begin": "\\{(?=.*\\}|.*\\|\\s*$)",
+            "end": "\\}|$|^(?!.*\\|\\s*$)",
+            "name": "meta.section.attributes.slm",
+            "patterns": [{
+                "include": "source.js"
+            }, {
+                "include": "#continuation"
+            }]
+        }, {
+            "begin": "\\[(?=.*\\]|.*\\|\\s*$)",
+            "end": "\\]|$|^(?!.*\\|\\s*$)",
+            "name": "meta.section.object.slm",
+            "patterns": [{
+                "include": "source.js"
+            }, {
+                "include": "#continuation"
+            }]
+        }, {
+            "include": "#jsline"
+        }, {
+            "match": "\/",
+            "name": "punctuation.terminator.tag.slm"
+        }]
+    }, {
+        "captures": {
+            "1": {
+                "name": "meta.escape.slm"
+            }
+        },
+        "match": "^\\s*(\\\\.)"
+    }, {
+        "begin": "^\\s*(?==='?|='?|-|~)",
+        "end": "$",
+        "patterns": [{
+            "include": "#jsline"
+        }]
+    }, {
+        "begin": "^\\s*(?=\\||')",
+        "end": "$",
+        "patterns": [{
+            "include": "text.html.basic"
+        }]
+    }],
+    "repository": {
+        "continuation": {
+            "captures": {
+                "1": {
+                    "name": "punctuation.separator.continuation.slm"
+                }
+            },
+            "match": "(\\|)\\s*\\n"
+        },
+        "delimited-js-a": {
+            "begin": "=\\(",
+            "end": "\\)(?=( \\w|$))",
+            "name": "source.js.embedded.slm",
+            "patterns": [{
+                "include": "source.js"
+            }]
+        },
+        "delimited-js-b": {
+            "begin": "=\\[",
+            "end": "\\](?=( \\w|$))",
+            "name": "source.js.embedded.slm",
+            "patterns": [{
+                "include": "source.js"
+            }]
+        },
+        "delimited-js-c": {
+            "begin": "=\\{",
+            "end": "\\}(?=( \\w|$))",
+            "name": "source.js.embedded.slm",
+            "patterns": [{
+                "include": "source.js"
+            }]
+        },
+        "entities": {
+            "patterns": [{
+                "captures": {
+                    "1": {
+                        "name": "punctuation.definition.entity.html"
+                    },
+                    "3": {
+                        "name": "punctuation.definition.entity.html"
+                    }
+                },
+                "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+                "name": "constant.character.entity.html"
+            }, {
+                "match": "&",
+                "name": "invalid.illegal.bad-ampersand.html"
+            }]
+        },
+        "interpolated-js": {
+            "begin": "=(?=\\b)",
+            "end": "\\s|\\w$",
+            "name": "source.js.embedded.html"
+        },
+        "jsline": {
+            "begin": "=='?|='?|-|~",
+            "contentName": "source.js.embedded.slm",
+            "end": "$",
+            "endCaptures": {
+                "1": {
+                    "name": "source.js.embedded.html"
+                },
+                "2": {
+                    "name": "keyword.control.js.start-block"
+                }
+            },
+            "name": "meta.line.js.slm",
+            "patterns": [{
+                "include": "source.js"
+            }, {
+                "include": "#continuation"
+            }]
+        },
+        "string-double-quoted": {
+            "begin": "\"",
+            "beginCaptures": [{
+                "name": "punctuation.definition.string.begin.html"
+            }],
+            "end": "\"",
+            "endCaptures": [{
+                "name": "punctuation.definition.string.end.html"
+            }],
+            "name": "string.quoted.double.html",
+            "patterns": [{
+                "include": "#entities"
+            }]
+        },
+        "string-single-quoted": {
+            "begin": "'",
+            "beginCaptures": [{
+                "name": "punctuation.definition.string.begin.html"
+            }],
+            "end": "'",
+            "endCaptures": [{
+                "name": "punctuation.definition.string.end.html"
+            }],
+            "name": "string.quoted.single.html",
+            "patterns": [{
+                "include": "#entities"
+            }]
+        },
+        "tag-generic-attribute": {
+            "match": "[\\w.#:-]+=",
+            "name": "entity.other.attribute-name.html"
+        },
+        "tag-id-attribute": {
+            "begin": "\\b(id)\\b\\s*(=)",
+            "captures": {
+                "1": {
+                    "name": "entity.other.attribute-name.id.html"
+                },
+                "2": {
+                    "name": "punctuation.separator.key-value.html"
+                }
+            },
+            "end": "(?<='|\")",
+            "name": "meta.attribute-with-value.id.html",
+            "patterns": [{
+                "begin": "\"",
+                "beginCaptures": [{
+                    "name": "punctuation.definition.string.begin.html"
+                }],
+                "contentName": "meta.toc-list.id.html",
+                "end": "\"",
+                "endCaptures": [{
+                    "name": "punctuation.definition.string.end.html"
+                }],
+                "name": "string.quoted.double.html",
+                "patterns": [{
+                    "include": "#entities"
+                }]
+            }, {
+                "begin": "'",
+                "beginCaptures": [{
+                    "name": "punctuation.definition.string.begin.html"
+                }],
+                "contentName": "meta.toc-list.id.html",
+                "end": "'",
+                "endCaptures": [{
+                    "name": "punctuation.definition.string.end.html"
+                }],
+                "name": "string.quoted.single.html",
+                "patterns": [{
+                    "include": "#entities"
+                }]
+            }]
+        },
+        "tag-stuff": {
+            "patterns": [{
+                "include": "#tag-id-attribute"
+            }, {
+                "include": "#tag-generic-attribute"
+            }, {
+                "include": "#string-double-quoted"
+            }, {
+                "include": "#string-single-quoted"
+            }, {
+                "include": "#interpolated-js"
+            }, {
+                "include": "#delimited-js-a"
+            }, {
+                "include": "#delimited-js-b"
+            }, {
+                "include": "#delimited-js-c"
+            }]
+        }
+    },
+    "scopeName": "text.slm",
+    "uuid": "36302CC1-1E76-4910-B7B6-F1915EBBA0D3"
+}

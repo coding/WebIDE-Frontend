@@ -1,4 +1,6 @@
- const customLanguages = []
+ const customLanguages = [
+   'markdown'
+ ]
 
 function registerCustomLanguages () {
   customLanguages.forEach(async (v) => {

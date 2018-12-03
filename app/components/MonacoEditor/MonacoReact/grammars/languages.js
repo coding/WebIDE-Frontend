@@ -181,13 +181,6 @@ export default [
     mimeType: ['text/x-lua']
   },
   {
-    id: 'markdown',
-    extensions: ['.md', '.markdown', '.mdown', '.mkdn', '.mkd', '.mdwn', '.mdtxt', '.mdtext'],
-    aliases: ['Markdown', 'markdown'],
-    scopeName: 'text.html.markdown',
-    mimeType: ['text/x-markdown']
-  },
-  {
     id: 'objective-c',
     extensions: ['.m'],
     aliases: ['Objective-C'],

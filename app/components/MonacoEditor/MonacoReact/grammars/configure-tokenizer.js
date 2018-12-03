@@ -15,9 +15,11 @@ export async function liftOff (monaco) {
     return
   }
   const registry = new LanguageRegistry({
-    basePath: 'monaco-textmate-languages',
+    basePath: 'grammarsDefinition',
     jsonFetcher: async (uri) => {
-      return (await fetch(`${window.location.origin}/${uri}`)).text()
+      const relativeUri = uri.replace('/grammars', '')
+      const result = require(`./${relativeUri}`)
+      return JSON.stringify(result)
     },
   })
   await wireTmGrammars(monaco, registry, grammars)

@@ -1,0 +1,7 @@
+{
+  "id": "objective-c",
+  "extensions": [".m"],
+  "aliases": ["Objective-C"],
+  "scopeName": "source.objc",
+  "mimeType": ["text/x-objectivec"]
+}

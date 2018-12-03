@@ -1,0 +1,7 @@
+{
+  "id": "csharp",
+  "extensions": [".cs", ".csx"],
+  "aliases": ["C#", "csharp"],
+  "mimeType": ["text/plain"],
+  "scopeName": "source.cs"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "sass",
+  "extensions": [".sass"],
+  "aliases": ["Sass", "sass"],
+  "mimeType": ["text/x-sass"],
+  "scopeName": "source.sass"
+}

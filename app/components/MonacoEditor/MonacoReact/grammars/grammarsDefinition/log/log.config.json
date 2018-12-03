@@ -1,0 +1,7 @@
+{
+  "id": "log",
+  "scopeName": "source.livescript",
+  "extensions": [".txt", ".text", ".conf", ".def", ".list", ".log"],
+  "mimeType": ["text/plain"],
+  "aliases": ["Plain Text"]
+}
