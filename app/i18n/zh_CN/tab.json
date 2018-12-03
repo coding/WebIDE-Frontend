@@ -8,7 +8,7 @@
       "close": "关闭标签",
       "closeOthers": "关闭其他标签",
       "closeAll": "关闭全部标签",
-      "verticalSplit": "垂直切分",
-      "horizontalSplit": "水平切分"
+      "verticalSplit": "上下切分",
+      "horizontalSplit": "左右切分"
    }
 }
