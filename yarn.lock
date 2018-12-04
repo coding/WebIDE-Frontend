@@ -6596,16 +6596,6 @@ moment@^2.18.1:
   version "2.18.1"
   resolved "http://registry.npm.taobao.org/moment/download/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
-monaco-css@^2.3.0:
-  version "2.3.0"
-  resolved "http://registry.npm.taobao.org/monaco-css/download/monaco-css-2.3.0.tgz#76a90b70885ffbcb1c06bdd0ca0d1c571145c89c"
-  integrity sha1-dqkLcIhf+8scBr3Qyg0cVxFFyJw=
-
-monaco-editor-core@0.15.5:
-  version "0.15.5"
-  resolved "http://registry.npm.taobao.org/monaco-editor-core/download/monaco-editor-core-0.15.5.tgz#145f1953a8e319282d92502252d68ef3486b6875"
-  integrity sha1-FF8ZU6jjGSgtklAiUtaO80hraHU=
-
 monaco-editor-textmate@^2.0.1:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/monaco-editor-textmate/download/monaco-editor-textmate-2.0.1.tgz#f33b4ddd89e0e47d6e364c7e1772bb7ea0c99c9f"
