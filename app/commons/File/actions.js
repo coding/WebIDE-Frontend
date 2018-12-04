@@ -95,7 +95,7 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
     }
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
       if (res.code === 0 && res.data) {
-        setLanguageSetting([res.data.default])
+        setLanguageSetting([res.data])
       } else {
         tryIdentificationWorkSpaceType(data)
           .then(setLanguageSetting)
