@@ -26,6 +26,7 @@ import {
   JAVA_UPDATE_DEBUG_SETTINGS,
   JAVA_PROJECT_CONFIGURATION_UPDATE,
   LANGUAGE_PROGRESS_REPORT,
+  OMNISHARP_METADATA,
 } from 'components/MonacoEditor/languageRequestTypes'
 import emitter, { SOCKET_RETRY, OFFLINE_WS_SYSTEM } from 'utils/emitter'
 import isConfigFile from './utils/isConfigFile'
@@ -105,8 +106,8 @@ export class LanguageClient {
       this.ioToWebSocket.onopen()
     })
 
-    this.socket.on('message', ({ data }) => {
-      this.ioToWebSocket.onmessage({ data })
+    this.socket.on('message', (response) => {
+      this.ioToWebSocket.onmessage({ data: response.data ? response.data : response })
     })
 
     this.start()
@@ -125,7 +126,6 @@ export class LanguageClient {
         this.client = createLanguageClient(
           this.services,
           connection,
-          this.curLanguage
         )
         this.client.onReady()
           .then(() => {
@@ -184,6 +184,10 @@ export class LanguageClient {
 
   fetchJavaClassContent = params =>
     this.client.sendRequest(JAVA_CLASS_PATH_REQUEST, params)
+
+  fetchOmnisharpMetadata = params => {
+    return this.client.sendRequest(OMNISHARP_METADATA, params)
+  }
 
   shutdown = () => this.client.sendRequest(ShutdownRequest.type)
 

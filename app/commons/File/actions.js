@@ -2,7 +2,6 @@ import flattenDeep from 'lodash/flattenDeep'
 import { registerAction } from 'utils/actions'
 import settings from 'settings'
 import is from 'utils/is'
-import { capitalize } from 'lodash'
 import { action, when } from 'mobx'
 import api from 'backendAPI'
 import config from 'config'
@@ -70,8 +69,8 @@ const setLanguageSetting = (data) => {
     showModal({ type: 'ProjectTypeSelector', position: 'center', data })
   } else if (data.length === 1) {
     const { type, srcPath } = data[0]
-    config.mainLanguage = capitalize(type)
-    settings.languageserver.projectType.value = capitalize(type)
+    config.mainLanguage = type
+    settings.languageserver.projectType.value = type
     settings.languageserver.sourcePath.value = srcPath
   }
 }
@@ -96,7 +95,7 @@ export const fetchProjectRoot = registerAction('fs:init', () =>
     }
     fetchLanguageServerSetting(config.spaceKey).then((res) => {
       if (res.code === 0 && res.data) {
-        setLanguageSetting(res.data.default)
+        setLanguageSetting([res.data])
       } else {
         tryIdentificationWorkSpaceType(data)
           .then(setLanguageSetting)
