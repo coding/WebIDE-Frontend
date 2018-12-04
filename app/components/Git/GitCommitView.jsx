@@ -18,11 +18,7 @@ var GitCommitView = ({isWorkingDirClean, ...actionProps}) => {
   : (<div>
       <GitFileTree
         statusFiles={statusFiles}
-        handleClick={(path) => {
-          diffFile({
-            path, newRef: 'HEAD', oldRef: '~~unstaged~~'
-          })
-        }}
+        handleClick={path => diffFile({ path, newRef: 'HEAD', oldRef: '~~unstaged~~' })}
       />
       <hr />
       <div className='git-commit-message-container'>
