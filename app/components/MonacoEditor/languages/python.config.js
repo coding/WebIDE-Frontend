@@ -23,7 +23,7 @@ export default {
       beforeText: new RegExp(
         '^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$'
       ),
-      action: { indentAction: _monaco.languages.IndentAction.Indent }
+      action: { indentAction: monaco.languages.IndentAction.Indent }
     }
   ],
   folding: {

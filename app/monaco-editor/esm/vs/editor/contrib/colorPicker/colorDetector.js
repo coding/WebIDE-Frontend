@@ -158,8 +158,6 @@ var ColorDetector = /** @class */ (function () {
             var color = "rgba(" + rgba.r + ", " + rgba.g + ", " + rgba.b + ", " + rgba.a + ")";
             var key = 'colorBox-' + subKey;
             if (!this._decorationsTypes[key] && !newDecorationsTypes[key]) {
-                console.log(this._codeEditorService)
-                console.log(key)
                 this._codeEditorService.registerDecorationType(key, {
                     before: {
                         contentText: ' ',

@@ -1,3 +1,5 @@
+const EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr']
+
 export default {
   wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
 
@@ -31,14 +33,14 @@ export default {
         'i'
       ),
       afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-      action: { indentAction: _monaco.languages.IndentAction.IndentOutdent }
+      action: { indentAction: monaco.languages.IndentAction.IndentOutdent }
     },
     {
       beforeText: new RegExp(
         `<(?!(?:${EMPTY_ELEMENTS.join('|')}))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$`,
         'i'
       ),
-      action: { indentAction: _monaco.languages.IndentAction.Indent }
+      action: { indentAction: monaco.languages.IndentAction.Indent }
     }
   ],
 

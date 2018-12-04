@@ -13,22 +13,22 @@ export default {
       // e.g. /** | */
       beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
       afterText: /^\s*\*\/$/,
-      action: { indentAction: _monaco.languages.IndentAction.IndentOutdent, appendText: ' * ' }
+      action: { indentAction: monaco.languages.IndentAction.IndentOutdent, appendText: ' * ' }
     },
     {
       // e.g. /** ...|
       beforeText: /^\s*\/\*\*(?!\/)([^\*]|\*(?!\/))*$/,
-      action: { indentAction: _monaco.languages.IndentAction.None, appendText: ' * ' }
+      action: { indentAction: monaco.languages.IndentAction.None, appendText: ' * ' }
     },
     {
       // e.g.  * ...|
       beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
-      action: { indentAction: _monaco.languages.IndentAction.None, appendText: '* ' }
+      action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' }
     },
     {
       // e.g.  */|
       beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
-      action: { indentAction: _monaco.languages.IndentAction.None, removeText: 1 }
+      action: { indentAction: monaco.languages.IndentAction.None, removeText: 1 }
     }
   ],
 
