@@ -7,8 +7,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
-// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
-// const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
+const MonacoWebpackPlugin = require('./monaco-editor-webpack-plugin')
+const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
 const HappyPack = require('happypack')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const os = require('os')
@@ -139,7 +139,7 @@ module.exports = function(options = {}) {
           to: 'onigasm/2.2.1/onigasm.wasm'
         }
       ]),
-      // new MonacoWebpackPlugin(initMonacoPluginConfig),
+      new MonacoWebpackPlugin(initMonacoPluginConfig),
       new HappyPack({
         id: 'babel',
         loaders: ['babel-loader?cacheDirectory'],

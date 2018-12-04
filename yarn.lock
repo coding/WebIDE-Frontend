@@ -199,6 +199,11 @@
   version "7.0.0-beta.52"
   resolved "http://registry.npm.taobao.org/@babel/helper-plugin-utils/download/@babel/helper-plugin-utils-7.0.0-beta.52.tgz#2f058c5f7c3a5fe4bc219036b2e78e11bddeb7ad"
 
+"@babel/helper-plugin-utils@^7.0.0":
+  version "7.0.0"
+  resolved "http://registry.npm.taobao.org/@babel/helper-plugin-utils/download/@babel/helper-plugin-utils-7.0.0.tgz#bbb3fbee98661c569034237cc03967ba99b4f250"
+  integrity sha1-u7P77phmHFaQNCN8wDlnupm08lA=
+
 "@babel/helper-regex@7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "http://registry.npm.taobao.org/@babel/helper-regex/download/@babel/helper-regex-7.0.0-beta.51.tgz#99722a3c0c704596afb123284b0a888a1a003d82"
@@ -459,6 +464,13 @@
   resolved "http://registry.npm.taobao.org/@babel/plugin-syntax-dynamic-import/download/@babel/plugin-syntax-dynamic-import-7.0.0-beta.51.tgz#9c0aeef57d0678e3726db171aa73e474a25de7f2"
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.51"
+
+"@babel/plugin-syntax-dynamic-import@^7.0.0":
+  version "7.0.0"
+  resolved "http://registry.npm.taobao.org/@babel/plugin-syntax-dynamic-import/download/@babel/plugin-syntax-dynamic-import-7.0.0.tgz#6dfb7d8b6c3be14ce952962f658f3b7eb54c33ee"
+  integrity sha1-bft9i2w74UzpUpYvZY87frVMM+4=
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
 
 "@babel/plugin-syntax-export-default-from@7.0.0-beta.51", "@babel/plugin-syntax-export-default-from@^7.0.0-beta.51":
   version "7.0.0-beta.51"
@@ -6583,6 +6595,11 @@ mocha@^4.0.1:
 moment@^2.18.1:
   version "2.18.1"
   resolved "http://registry.npm.taobao.org/moment/download/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
+
+monaco-css@^2.3.0:
+  version "2.3.0"
+  resolved "http://registry.npm.taobao.org/monaco-css/download/monaco-css-2.3.0.tgz#76a90b70885ffbcb1c06bdd0ca0d1c571145c89c"
+  integrity sha1-dqkLcIhf+8scBr3Qyg0cVxFFyJw=
 
 monaco-editor-core@0.15.5:
   version "0.15.5"

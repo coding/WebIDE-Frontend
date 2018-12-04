@@ -1,0 +1,47 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .margin-view-overlays .folding {
+	cursor: pointer;
+	background-repeat: no-repeat;
+	background-origin: border-box;
+	background-position: calc(50% + 2px) center;
+	background-size: auto calc(100% - 3px);
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+.monaco-editor .margin-view-overlays .folding {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTUgMTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE1IDE1OyI+DQo8cGF0aCBzdHlsZT0iZmlsbDojQjZCNkI2IiBkPSJNMTEsNHY3SDRWNEgxMSBNMTIsM0gzdjloOVYzTDEyLDN6Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojNkI2QjZCO3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iMTAiIHkxPSI3LjUiIHgyPSI1IiB5Mj0iNy41Ii8+DQo8L3N2Zz4=");
+}
+
+.monaco-editor.hc-black .margin-view-overlays .folding,
+.monaco-editor.vs-dark .margin-view-overlays .folding {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTUgMTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE1IDE1OyI+DQo8cGF0aCBzdHlsZT0iZmlsbDojNUE1QTVBIiBkPSJNMTEsNHY3SDRWNEgxMSBNMTIsM0gzdjloOVYzTDEyLDN6Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojQzVDNUM1O3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iMTAiIHkxPSI3LjUiIHgyPSI1IiB5Mj0iNy41Ii8+DQo8L3N2Zz4=");
+}
+
+.monaco-editor .margin-view-overlays:hover .folding,
+.monaco-editor .margin-view-overlays .folding.alwaysShowFoldIcons {
+	opacity: 1;
+}
+
+.monaco-editor .margin-view-overlays .folding.collapsed {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTUgMTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE1IDE1OyI+DQo8cmVjdCB4PSIzIiB5PSIzIiBzdHlsZT0iZmlsbDojRThFOEU4IiB3aWR0aD0iOSIgaGVpZ2h0PSI5Ii8+DQo8cGF0aCBzdHlsZT0iZmlsbDojQjZCNkI2IiBkPSJNMTEsNHY3SDRWNEgxMSBNMTIsM0gzdjloOVYzTDEyLDN6Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojNkI2QjZCO3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iMTAiIHkxPSI3LjUiIHgyPSI1IiB5Mj0iNy41Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojNkI2QjZCO3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iNy41IiB5MT0iNSIgeDI9IjcuNSIgeTI9IjEwIi8+DQo8L3N2Zz4=");
+	opacity: 1;
+}
+
+.monaco-editor.hc-black .margin-view-overlays .folding.collapsed,
+.monaco-editor.vs-dark .margin-view-overlays .folding.collapsed {
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTUgMTUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE1IDE1OyI+DQo8cmVjdCB4PSIzIiB5PSIzIiBzdHlsZT0ib3BhY2l0eTowLjE7ZmlsbDojRkZGRkZGIiB3aWR0aD0iOSIgaGVpZ2h0PSI5Ii8+DQo8cGF0aCBzdHlsZT0iZmlsbDojNUE1QTVBIiBkPSJNMTEsNHY3SDRWNEgxMSBNMTIsM0gzdjloOVYzTDEyLDN6Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojQzVDNUM1O3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iMTAiIHkxPSI3LjUiIHgyPSI1IiB5Mj0iNy41Ii8+DQo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojQzVDNUM1O3N0cm9rZS1taXRlcmxpbWl0OjEwIiB4MT0iNy41IiB5MT0iNSIgeDI9IjcuNSIgeTI9IjEwIi8+DQo8L3N2Zz4=");
+}
+
+.monaco-editor .inline-folded:after {
+	color: grey;
+	margin: 0.1em 0.2em 0 0.2em;
+	content: "⋯";
+	display: inline;
+	line-height: 1em;
+	cursor: pointer;
+}

@@ -4,7 +4,7 @@ import { debounce, lowerCase } from 'lodash'
 import { measure } from '@pinyin/measure'
 import { when, autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
-import * as monaco from 'monaco-editor-core'
+import * as monaco from 'monaco-editor'
 
 import FileStore from 'commons/File/store'
 import languageState from 'components/MonacoEditor/LanguageClientState'
@@ -14,6 +14,9 @@ import { EditorInfo } from '../state'
 import initialOptions from '../monacoDefaultOptions'
 import registerCustomLanguages from '../languages'
 import { liftOff } from './grammars/configure-tokenizer'
+
+// import 'monaco.languages.css'
+// import '../languageServices/css/monaco.contribution'
 
 registerCustomLanguages()
 
