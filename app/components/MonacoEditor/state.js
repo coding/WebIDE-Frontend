@@ -67,8 +67,8 @@ class EditorInfo {
       this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
     }
     const model =
-      monaco.editor.getModel(monaco.Uri.parse(`file://${this.uri}`).toString()) ||
-      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(`file://${this.uri}`))
+      monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
+      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
     this.uri = model.uri._formatted
     const monacoEditor = monaco.editor.create(
       this.monacoElement,

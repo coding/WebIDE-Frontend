@@ -121,7 +121,7 @@ const colorsAllowed = ({ foreground, background }) => {
   return true
 }
 
-const getTheme = (theme) => {
+export const getTheme = (theme) => {
   const { tokenColors = [], colors = {} } = theme
   const rules = tokenColors
     .filter(t => t.settings && t.scope && colorsAllowed(t.settings))
@@ -161,7 +161,7 @@ const getTheme = (theme) => {
   }
 }
 
-const getBase = (type) => {
+export const getBase = (type) => {
   if (type === 'dark') {
     return 'vs-dark'
   }
