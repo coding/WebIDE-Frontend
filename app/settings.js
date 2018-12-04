@@ -10,34 +10,21 @@ import monacoConfig from 'components/MonacoEditor/monacoDefaultOptions'
 import FolderSelector from 'components/Setting/FolderSelector'
 import { supportLangServer } from 'components/MonacoEditor/utils/languages'
 import { dismissModal } from 'components/Modal/actions'
-import { setLanguageServerOne, fetchLanguageServerSetting } from 'backendAPI/languageServerAPI'
-// import { projectState } from 'components/Setting/state'
+import { setLanguageServerOne } from 'backendAPI/languageServerAPI'
 
 let LanguageState
-import('components/MonacoEditor/LanguageClientState').then(res => LanguageState = res.default)
+import('components/MonacoEditor/LanguageClientState').then(res => (LanguageState = res.default))
 
 let createLanguageClient
-import('components/MonacoEditor/actions')
-  .then(res => createLanguageClient = res.createLanguageClient)
-
-let putProjectType
-import('components/Setting/actions')
-  .then(res => putProjectType = res.putProjectType)
-
-let projectState
-import('components/Setting/state')
-  .then(res => projectState = res.projectState)
+import('components/MonacoEditor/actions').then(
+  res => (createLanguageClient = res.createLanguageClient)
+)
 
 window.themeVariables = observable.map({})
 
 const localStorage = window.localStorage
 let EditorState
-import('components/Editor/state').then(res => EditorState = res.default)
-
-const typeOptions = [
-  { name: 'Blank', value: 'blank' },
-  { name: 'Java', value: 'javac' }
-]
+import('components/Editor/state').then(res => (EditorState = res.default))
 
 if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
   localStorage.setItem('switchOldEditor', false)
@@ -45,13 +32,11 @@ if (JSON.parse(localStorage.getItem('switchOldEditor')) === null) {
 
 let uiOptions = []
 if (config.isLib) {
-  uiOptions = [
-    { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
-  ]
+  uiOptions = [{ name: 'settings.appearance.uiThemeOption.dark', value: 'dark' }]
 } else {
   uiOptions = [
     { name: 'settings.appearance.uiThemeOption.light', value: 'light' },
-    { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' },
+    { name: 'settings.appearance.uiThemeOption.dark', value: 'dark' }
   ]
 }
 export const UIThemeOptions = uiOptions
@@ -71,16 +56,17 @@ const changeUITheme = (nextThemeId) => {
   }
   if (!window.themes) window.themes = {}
   if (UIThemeOptions.map(option => option.value).includes(nextThemeId)) {
-    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`)
-    .then((module) => {
-      const currentTheme = window.themes['@current']
-      if (currentTheme && currentTheme.unuse) currentTheme.unuse()
-      window.themes['@current'] = window.themes[nextThemeId] = module
-      module.use()
-      window.themeVariables.replace(
-       window.themes['@current'].locals || window.themes['@current'].default.locals
-     )
-    })
+    import(`!!style-loader/useable!css-loader!stylus-loader!./styles/${nextThemeId}/index.styl`).then(
+      (module) => {
+        const currentTheme = window.themes['@current']
+        if (currentTheme && currentTheme.unuse) currentTheme.unuse()
+        window.themes['@current'] = window.themes[nextThemeId] = module
+        module.use()
+        window.themeVariables.replace(
+          window.themes['@current'].locals || window.themes['@current'].default.locals
+        )
+      }
+    )
   }
   emitter.emit(THEME_CHANGED, nextThemeId)
 }
@@ -110,13 +96,7 @@ const localeToLangs = {
 }
 
 const getDefaultLangCode = () => {
-  const langProps = [
-    'language',
-    'languages',
-    'browserLanguage',
-    'systemLanguage',
-    'userLanguage',
-  ]
+  const langProps = ['language', 'languages', 'browserLanguage', 'systemLanguage', 'userLanguage']
   return langProps.reduce((defaultLangCode, attr) => {
     if (defaultLangCode) return defaultLangCode
     let languages = window.navigator[attr]
@@ -130,11 +110,11 @@ const getDefaultLangCode = () => {
   }, '')
 }
 
-const titleCase = (snake_case_str) => // eslint-disable-line
-  snake_case_str.split('_')
-  .map(str => str.charAt(0).toUpperCase() + str.substr(1))
-  .join(' ')
-
+const titleCase = snake_case_str =>
+  snake_case_str
+    .split('_')
+    .map(str => str.charAt(0).toUpperCase() + str.substr(1))
+    .join(' ')
 
 class DomainSetting {
   constructor (config) {
@@ -158,18 +138,22 @@ class DomainSetting {
     })
     extendObservable(this, config)
     // fixme: this is due to late resolve of EditorState
-    setTimeout(() => Object.entries(this).forEach(([key, settingItem]) => {
-      if (settingItem.reaction && is.function(settingItem.reaction)) {
-        reaction(() => settingItem.value, (value) => settingItem.reaction(value), {
-          name: settingItem.name || key,
-          fireImmediately: false,
-          delay: 1,
-        })
-      }
-    }), 1)
+    setTimeout(
+      () =>
+        Object.entries(this).forEach(([key, settingItem]) => {
+          if (settingItem.reaction && is.function(settingItem.reaction)) {
+            reaction(() => settingItem.value, value => settingItem.reaction(value), {
+              name: settingItem.name || key,
+              fireImmediately: false,
+              delay: 1
+            })
+          }
+        }),
+      1
+    )
   }
 
-  @observable _keys = [];
+  @observable _keys = []
   @computed
   get items () {
     return this._keys.map(key => this[key])
@@ -214,31 +198,24 @@ class DomainSetting {
   }
 }
 
-
 const settings = observable({
   _keys: ['general', 'appearance', 'editor', 'keymap', 'languageserver'],
   get items () {
     return this._keys.map(key => this[key])
   },
   appearance: new DomainSetting({
-    _keys: [
-      'ui_theme',
-      'syntax_theme',
-      'file_icon_theme',
-      'font_size',
-      'terminal_font_size'
-    ],
+    _keys: ['ui_theme', 'syntax_theme', 'file_icon_theme', 'font_size', 'terminal_font_size'],
     ui_theme: {
       name: 'settings.appearance.uiTheme',
       value: 'dark',
       options: UIThemeOptions,
-      reaction: changeUITheme,
+      reaction: changeUITheme
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
       value: 'vs-dark',
       options: monacoThemeOptions,
-      reaction: changeSyntaxTheme,
+      reaction: changeSyntaxTheme
     },
     file_icon_theme: {
       name: 'settings.appearance.file_icon_theme',
@@ -253,10 +230,12 @@ const settings = observable({
       value: 13,
       reaction (value) {
         monacoConfig.fontSize = value
-        dynamicStyle.set('codemirror font size',
-        `.CodeMirror {
+        dynamicStyle.set(
+          'codemirror font size',
+          `.CodeMirror {
           font-size: ${value}px;
-        }`)
+        }`
+        )
       }
     },
     terminal_font_size: {
@@ -264,15 +243,15 @@ const settings = observable({
       value: 12,
       minValue: 12,
       validator: (e) => {
-        const input = e.target;
+        const input = e.target
         if (input.value < 12) {
-          input.value = 12;
+          input.value = 12
         }
       },
       reaction (value) {
         emitter.emit(TERM_FONTSIZE_CHANGED, value)
       }
-    },
+    }
   }),
 
   general: new DomainSetting({
@@ -282,8 +261,8 @@ const settings = observable({
       name: 'settings.general.language',
       value: localeToLangs[getDefaultLangCode()],
       options: [
-      { name: 'settings.general.languageOption.english', value: 'English' },
-      { name: 'settings.general.languageOption.chinese', value: 'Chinese' },
+        { name: 'settings.general.languageOption.english', value: 'English' },
+        { name: 'settings.general.languageOption.chinese', value: 'Chinese' }
       ]
     },
     exclude_files: {
@@ -292,7 +271,7 @@ const settings = observable({
       reaction (value) {
         config.fileExcludePatterns = value.split(',')
       }
-    },
+    }
   }),
 
   editor: new DomainSetting({
@@ -303,7 +282,7 @@ const settings = observable({
       'indent_size',
       'tab_width',
       'trim_trailing_whitespace',
-      'insert_final_newline',
+      'insert_final_newline'
       // 'auto_save',
       // 'auto_wrap',
       // 'live_auto_completion',
@@ -320,7 +299,7 @@ const settings = observable({
       options: [
         { name: 'Unicode (UTF-8)', value: 'utf8' },
         { name: '中文简体 (GB18030)', value: 'gb18030' },
-        { name: '中文繁体 (Big5-HKSCS)', value: 'big5' },
+        { name: '中文繁体 (Big5-HKSCS)', value: 'big5' }
       ]
     },
     indent_style: {
@@ -400,13 +379,19 @@ const settings = observable({
         const keyboardMode = value.toLowerCase()
         switch (keyboardMode) {
           case 'sublime':
-            import('codemirror/keymap/sublime.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            import('codemirror/keymap/sublime.js').then(() => {
+              EditorState.options.keyMap = keyboardMode
+            })
             break
           case 'emacs':
-            import('codemirror/keymap/emacs.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            import('codemirror/keymap/emacs.js').then(() => {
+              EditorState.options.keyMap = keyboardMode
+            })
             break
           case 'vim':
-            import('codemirror/keymap/vim.js').then(() => { EditorState.options.keyMap = keyboardMode })
+            import('codemirror/keymap/vim.js').then(() => {
+              EditorState.options.keyMap = keyboardMode
+            })
             break
           case 'default':
           default:
@@ -419,26 +404,58 @@ const settings = observable({
     _keys: ['projectType', 'sourcePath'],
     requireConfirm: true,
     confirmCallBack ([lang, path]) {
-      setLanguageServerOne({ type: lang, srcPath: path })
-        .then((res) => {
+      const prevFolder = config._ROOT_URI_
+      const prevLang = config.mainLanguage
+      config.mainLanguage = lang
+      if (path !== '/') {
+        config._WORKSPACE_SUB_FOLDER_ = path
+        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+      }
+      const client = LanguageState.clients.get(prevLang)
+      if (client) {
+        if (lang !== prevLang) {
+          client.destory().then(() => createLanguageClient(lang))
+        } else {
+          client.workSpaceFoldersChange({
+            event: {
+              added: [
+                {
+                  uri: `file://${config._ROOT_URI_}`,
+                  name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}`
+                }
+              ],
+              removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+            }
+          })
+        }
+      } else {
+        setLanguageServerOne({ type: lang, srcPath: path }).then((res) => {
           if (res.code === 0) {
             const prevFolder = config._ROOT_URI_
             const prevLang = config.mainLanguage
             config.mainLanguage = lang
             if (path !== '/') {
               config._WORKSPACE_SUB_FOLDER_ = path
-              config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
+              config._ROOT_URI_ = `/data/coding-ide-home/workspace/${
+                config.spaceKey
+              }/working-dir${path}`
             }
             const client = LanguageState.clients.get(prevLang)
             if (client) {
               if (lang !== prevLang) {
-                client.destory()
-                  .then(() => createLanguageClient(lang))
+                client.destory().then(() => createLanguageClient(lang))
               } else {
                 client.workSpaceFoldersChange({
                   event: {
-                    added: [{ uri: `file://${config._ROOT_URI_}`, name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}` }],
-                    removed: [{ uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }]
+                    added: [
+                      {
+                        uri: `file://${config._ROOT_URI_}`,
+                        name: `JAVA-PROJECT-FOLDER-${config._ROOT_URI_}`
+                      }
+                    ],
+                    removed: [
+                      { uri: `file://${prevFolder}`, name: `JAVA-PROJECT-FOLDER-${prevFolder}` }
+                    ]
                   }
                 })
               }
@@ -447,6 +464,7 @@ const settings = observable({
             }
           }
         })
+      }
     },
     projectType: {
       name: 'modal.projectType',
@@ -457,7 +475,7 @@ const settings = observable({
         if (value !== config.mainLanguage) {
           // config.mainLanguage = value
         }
-      },
+      }
     },
     sourcePath: {
       name: 'modal.sourceFolder',
@@ -467,40 +485,44 @@ const settings = observable({
       reaction (value) {
         config._WORKSPACE_SUB_FOLDER_ = value
         config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${value}`
-      },
+      }
     }
-  }),
+  })
   // classpathsetting: new DomainSetting({
-    // _keys: ['project']
+  // _keys: ['project']
   // })
 })
 
 // for backward compatibility
 // add alias "settings.theme" -> "settings.appearance"
 extendObservable(settings, {
-  get theme () { return this.appearance }
-})
-
-reaction(() => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules })
-, ({ isEnabled, rules }) => {
-  if (isEnabled) {
-    const defaultRules = rules['*'] || {}
-    editorConfig.keys.forEach((key) => {
-      if (defaultRules.hasOwnProperty(key)) {
-        settings.editor[key].disabled = true
-        if (settings.editor[key].value !== defaultRules[key]) {
-          settings.editor[key].value = defaultRules[key]
-        }
-      } else {
-        settings.editor[key].disabled = false
-        settings.editor[key].value = settings.editor[key].defaultValue
-      }
-    })
-  } else {
-    editorConfig.keys.forEach((key) => {
-      settings.editor[key].disabled = false
-    })
+  get theme () {
+    return this.appearance
   }
 })
+
+reaction(
+  () => ({ isEnabled: editorConfig.isEnabled, rules: editorConfig.rules }),
+  ({ isEnabled, rules }) => {
+    if (isEnabled) {
+      const defaultRules = rules['*'] || {}
+      editorConfig.keys.forEach((key) => {
+        if (defaultRules.hasOwnProperty(key)) {
+          settings.editor[key].disabled = true
+          if (settings.editor[key].value !== defaultRules[key]) {
+            settings.editor[key].value = defaultRules[key]
+          }
+        } else {
+          settings.editor[key].disabled = false
+          settings.editor[key].value = settings.editor[key].defaultValue
+        }
+      })
+    } else {
+      editorConfig.keys.forEach((key) => {
+        settings.editor[key].disabled = false
+      })
+    }
+  }
+)
 
 export default settings

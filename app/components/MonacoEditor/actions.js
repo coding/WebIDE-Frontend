@@ -11,6 +11,7 @@ import LanguageState, { LanguageClient } from './LanguageClientState'
 import { supportLangServer } from './utils/languages'
 
 const INMEMORY = 'inmemory'
+const CSHARP_METADATE = 'omnisharp-metadata'
 const JDT = 'jdt'
 
 when(() => config.spaceKey !== '', () => {
@@ -21,14 +22,8 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
   const { resource } = params
   const { path, scheme } = resource
   if (scheme === INMEMORY) return false
-  if (scheme !== JDT) {
-    const relativePath = path.substring(config.__WORKSPACE_URI__.length)
-    openFile({
-      path: relativePath,
-      editor: { filePath: relativePath, selection: params.options && params.options.selection },
-    })
-  } else {
-    const languageClient = LanguageState.clients.get(config.mainLanguage)
+  const languageClient = LanguageState.clients.get(config.mainLanguage)
+  if (scheme === JDT) {
     const fileName = resource.path.split('/').pop()
     const name = fileName.endsWith('class') ? `${fileName.substr(0, fileName.length - 5)}java` : fileName
     const tabItem = TabState.tabs.get(`fake_${name}`)
@@ -51,15 +46,41 @@ export const toDefinition = registerAction('monaco:goto_definition', (params) =>
               selection: params.options.selection,
               content: data,
               readOnly: true,
-              filePath: formattedUri,
+              filePath: `${formattedUri.substr(0, formattedUri.length - 5)}java`,
             },
           })
         })
     }
+  } else if (scheme === CSHARP_METADATE) {
+    const uri = decodeURIComponent(resource.toString()).replace('[metadata] ', '').replace('omnisharp-metadata://', '')
+    const fileName = resource.path.split('/').pop()
+    const tabItem = TabState.tabs.get(`fake_${fileName}`)
+    if (tabItem) {
+      tabItem.activate()
+    } else {
+      languageClient.fetchOmnisharpMetadata({ uri })
+        .then((data) => {
+          createTab({
+            title: fileName,
+            id: `fake_${fileName}`,
+            icon: 'fa fa-file-o',
+            editor: {
+              selection: params.options.selection,
+              content: data,
+              readOnly: true,
+              filePath: resource.toString(),
+            },
+          })
+        })
+    }
+  } else {
+    const relativePath = path.substring(config.__WORKSPACE_URI__.length)
+    openFile({
+      path: relativePath,
+      editor: { filePath: relativePath, selection: params.options && params.options.selection },
+    })
   }
-  /**
-   * 
-   */
+
   return new Promise((resolve, reject) => {
     resolve({
       getControl: () => null

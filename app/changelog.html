@@ -437,22 +437,103 @@
     </style>
 
     <style>
+        .intro-connect {
+            padding: 70px 0 80px;
+            text-align: center;
+            background-color: #f7f8fa;
+        }
+        .intro-connect .connect {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .intro-connect .connect .title {
+            margin-bottom: 43px;
+            line-height: 60px;
+            font-size: 40px;
+            font-weight: 500;
+        }
+        .intro-connect .connect .content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .intro-connect .connect .item {
+            width: 33.33%;
+            line-height: 24px;
+            border-right: 1px solid #d8dde4;
+            font-size: 16px;
+            color: #202d40;
+        }
+        .intro-connect .connect .item:last-of-type {
+            border-right: none;
+        }
+        .intro-connect .connect .item .dec {
+            margin-bottom: 10px;
+            color: #606c80;
+        }
+        .intro-connect .connect .item a.detail {
+            color: #202d40;
+            text-decoration: unset;
+        }
+        .intro-connect .connect .statement {
+            padding: 60px 50px 0;
+            font-size: 12px;
+            color: #606c80;
+        }
+        @media only screen and (max-width: 800px) {
+            .intro-connect {
+                padding: 40px 0 50px;
+            }
+            .intro-connect .connect .title {
+                margin-bottom: 30px;
+                font-size: 30px;
+            }
+            .intro-connect .connect .content {
+                flex-direction: column;
+            }
+            .intro-connect .connect .item {
+                width: auto;
+                margin-bottom: 60px;
+                border-right: none;
+            }
+            .intro-connect .connect .item:last-of-type {
+                margin-bottom: 0;
+            }
+            .intro-connect .connect .item .dec {
+                font-size: 14px;
+            }
+            .intro-connect .connect .item .detail {
+                font-size: 20px;
+            }
+            .intro-connect .connect .statement {
+                padding-top: 40px;
+            }
+        }
+    </style>
+
+    <style>
         .intro-foot {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            padding: 40px 50px 20px;
+            height: 150px;
+            padding: 0 20px;
             background-color: #1f2530;
         }
         .intro-foot .menu {
             display: flex;
             justify-content: center;
-             font-size: 14px;
-            color: #fff;
+            font-size: 14px;
+            color: #d2d3d6;
         }
         .intro-foot .menu .row {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .intro-foot .menu a {
-            color: #fff;
+            color: #d2d3d6;
         }
         .intro-foot .menu-item {
             margin: 0 20px;
@@ -467,32 +548,34 @@
         .intro-foot .strategy a {
             color: #a5a7ac;
         }
-        .intro-foot .strategy .divide {
-            margin: 0 10px;
-        }
         .intro-foot .copyright {
-            padding-top: 6px;
+            padding-top: 4px;
             text-align: center;
             font-size: 12px;
             color: #a5a7ac;
         }
+        .intro-foot .divide {
+            margin: 0 12px;
+        }
         @media screen and (max-width: 800px) {
+            .intro-foot {
+                height: 200px;
+            }
             .intro-foot .menu {
                 flex-wrap: wrap;
                 justify-content: space-between;
             }
             .intro-foot .menu .row {
                 display: flex;
-                justify-content: space-between;
+                justify-content: center;
                 width: 100%;
+                margin-bottom: 20px;
             }
             .intro-foot .menu-item {
-                margin: 0;
+                margin: 0 10px;
             }
-        }
-        @media screen and (max-width: 320px) {
-            .intro-foot {
-                padding: 40px 30px;
+            .intro-foot .copyright {
+                padding-top: 12px;
             }
         }
     </style>
@@ -503,7 +586,7 @@
         <div class="intro-pc-head">
             <div class="chief">
                 <div class="left">
-                    <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+                    <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener">
                         <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
                             srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
                         />
@@ -512,21 +595,21 @@
                         <div>产品</div>
                         <div class="prod-menu">
                             <div class="blank"></div>
-                            <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+                            <a class="item one" href="https://dev.tencent.com" target="_blank" rel="noopener">CODING 个人版</a>
                             <a class="item two post-message" href="https://studio.dev.tencent.com">Cloud Studio</a>
-                            <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
+                            <a class="item three" href="https://e.coding.net" target="_blank" rel="noopener">CODING 企业版</a>
                         </div>
                     </div>
-                    <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
+                    <a class="help" href="https://dev.tencent.com/help" target="_blank" rel="noopener">文档</a>
                 </div>
                 <div id="pc-has-not-login" class="right">
-                    <a href="https://qcloud.coding.net/register" target="_blank" rel="noopener noreferrer">注册</a>
+                    <a href="https://qcloud.coding.net/register" target="_blank" rel="noopener">注册</a>
                     <span class="divide">|</span>
-                    <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com/changelog" target="_blank" rel="noopener noreferrer">登录</a>
+                    <a href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com/changelog" target="_blank" rel="noopener">登录</a>
                 </div>
                 <div id="pc-has-login" class="right" style="display: none;">
                     <div className="title">
-                        <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+                        <a href="https://dev.tencent.com/user" target="_blank" rel="noopener">
                             <img src="" alt="avatar" />
                         </a>
                     </div>
@@ -537,7 +620,7 @@
                     <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
                 </div>
                 <div class="sub-menu">
-                    <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+                    <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener">工作空间</a>
                 </div>
                 <div class="sub-menu">
                     <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
@@ -546,14 +629,14 @@
                     <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
                 </div>
                 <div class="sub-menu">
-                    <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener noreferrer">插件大赛</a>
+                    <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener">插件大赛</a>
                     <div class="new">NEW</div>
                 </div>
             </div>
         </div>
         <div class="intro-mobile-head">
             <div class="chief">
-                <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">
+                <a class="logo" href="https://dev.tencent.com" target="_blank" rel="noopener">
                     <img src="https://dn-coding-net-production-pp.codehub.cn/cd329f9b-3c29-4485-a061-af401cabb131.png"
                         srcSet="https://dn-coding-net-production-pp.codehub.cn/114dd24b-7ac5-45ce-8af7-3c741a153d05.png 2x" alt="logo"
                     />
@@ -566,7 +649,7 @@
             </div>
             <div id="mobile-dropdown" class="dropdown">
                 <div class="title production">产品</div>
-                <a class="menu" href="https://dev.tencent.com" target="_blank" rel="noopener noreferrer">CODING 个人版</a>
+                <a class="menu" href="https://dev.tencent.com" target="_blank" rel="noopener">CODING 个人版</a>
                 <div id="cs-menu" class="cs">
                     <div class="cs-inner">
                         <span>Cloud Studio</span>
@@ -577,7 +660,7 @@
                             <a class="post-message" href="https://studio.dev.tencent.com/intro">产品介绍</a>
                         </div>
                         <div class="cs-menu">
-                            <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener noreferrer">工作空间</a>
+                            <a href="https://studio.dev.tencent.com/dashboard/workspace" target="_blank" rel="noopener">工作空间</a>
                         </div>
                         <div class="cs-menu">
                             <a class="post-message" href="https://studio.dev.tencent.com/plugins">插件市场</a>
@@ -586,22 +669,22 @@
                             <a class="post-message" href="https://studio.dev.tencent.com/changelog">更新日志</a>
                         </div>
                         <div class="cs-menu">
-                            <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener noreferrer">插件大赛</a>
+                            <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener">插件大赛</a>
                             <div class="new">NEW</div>
                         </div>
                     </div>
                 </div>
-                <a class="menu" href="https://e.coding.net" target="_blank" rel="noopener noreferrer">CODING 企业版</a>
-                <a class="title help" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档</a>
+                <a class="menu" href="https://e.coding.net" target="_blank" rel="noopener">CODING 企业版</a>
+                <a class="title help" href="https://dev.tencent.com/help" target="_blank" rel="noopener">文档</a>
                 <div class="blank"></div>
                 <div id="mobile-has-login" class="title" style="display: none;">
-                    <a href="https://dev.tencent.com/user" target="_blank" rel="noopener noreferrer">
+                    <a href="https://dev.tencent.com/user" target="_blank" rel="noopener">
                         <img src="" alt="avatar" />
                     </a>
                 </div>
                 <div id="mobile-has-not-login">
-                    <a class="title" href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com/changelog" target="_blank" rel="noopener noreferrer">登录</a>
-                    <a class="title" href="https://qcloud.coding.net/register" target="_blank" rel="noopener noreferrer">注册</a>
+                    <a class="title" href="https://dev.tencent.com/login?return_url=https://studio.dev.tencent.com/changelog" target="_blank" rel="noopener">登录</a>
+                    <a class="title" href="https://qcloud.coding.net/register" target="_blank" rel="noopener">注册</a>
                 </div>
                 <div class="blank"></div>
             </div>
@@ -609,31 +692,53 @@
         <div class="changelog-container">
             <h1>Cloud Studio 更新日志</h1>
             <p>
-                在团队的努力下，Cloud Studio 持续进行着快速的产品迭代，为开发者提供最好的云端开发体验。如果您对产品有任何意见与建议，欢迎随时<a href="https://coding.net/feedback"
-                target="_blank" rel="noopener noreferrer">反馈</a>。
+                在团队的努力下，Cloud Studio 持续进行着快速的产品迭代，为开发者提供最好的云端开发体验。如果您对产品有任何意见与建议，欢迎随时<a href="https://feedback.coding.net/"
+                target="_blank" rel="noopener">反馈</a>。
             </p>
             <div class="changelog-detail"></div>
+        </div>
+        <div class="intro-connect">
+            <div class="connect">
+                <div class="title">联系我们</div>
+                <div class="content">
+                    <div class="item">
+                        <div class="dec">电话</div>
+                        <div class="detail">400-930-9163</div>
+                    </div>
+                    <div class="item">
+                        <div class="dec">邮箱</div>
+                        <a class="detail" href="mailto:support@coding.net" rel="noopener">support@coding.net</a>
+                    </div>
+                    <div class="item">
+                        <div class="dec">在线反馈</div>
+                        <a class="detail" href="https://feedback.coding.net" target="_blank" rel="noopener">https://feedback.coding.net/</a>
+                    </div>
+                </div>
+                <div class="statement">腾讯云开发者平台由腾讯云及 CODING 共同运营，目前由 CODING 团队提供运营服务。</div>
+            </div>
         </div>
         <div class="intro-foot">
             <div class="menu">
                 <div class="row">
-                    <span class="menu-item">服务支持 QQ 群: 875684377</span>
-                    <a class="menu-item" href="https://dev.tencent.com/help" target="_blank" rel="noopener noreferrer">文档帮助</a>
+                    <a class="menu-item" href="https://dev.tencent.com/help" target="_blank" rel="noopener">文档帮助</a>
+                    <a class="menu-item" href="https://cloud.tencent.com" target="_blank" rel="noopener">腾讯云官网</a>
                 </div>
                 <div class="row">
-                    <a class="menu-item" href="https://cloud.tencent.com" target="_blank" rel="noopener noreferrer">腾讯云官网</a>
-                    <a class="menu-item" href="https://cloud.tencent.com/developer" target="_blank" rel="noopener noreferrer">腾讯云+社区</a>
-                    <a class="menu-item" href="https://dev.tencent.com/about" target="_blank" rel="noopener noreferrer">关于我们</a>
+                    <a class="menu-item" href="https://cloud.tencent.com/developer" target="_blank" rel="noopener">腾讯云+社区</a>
+                    <a class="menu-item" href="https://dev.tencent.com/about" target="_blank" rel="noopener">关于我们</a>
+                    <a class="menu-item" href="https://feedback.coding.net/" target="_blank" rel="noopener">在线反馈</a>
                 </div>
             </div>
             <div class="strategy">
-                <a href="https://dev.tencent.com/privacy" target="_blank" rel="noopener noreferrer">隐私策略</a>
+                <a href="https://dev.tencent.com/privacy" target="_blank" rel="noopener">隐私策略</a>
                 <span class="divide">|</span>
-                <a href="https://dev.tencent.com/terms" target="_blank" rel="noopener noreferrer">服务条款</a>
+                <a href="https://dev.tencent.com/terms" target="_blank" rel="noopener">服务条款</a>
                 <span class="divide">|</span>
-                <a href="https://dev.tencent.com/security" target="_blank" rel="noopener noreferrer">安全策略</a>
+                <a href="https://dev.tencent.com/security" target="_blank" rel="noopener">安全策略</a>
             </div>
-            <div class="copyright">Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</div>
+            <div class="copyright">
+                <span>Copyright &copy; 2013-<span id="year">2018</span> Tencent Cloud. All Rights Reserved. 腾讯云 版权所有</span><span class="divide">|</span><span>粤B2-20090059</span>
+            </div>
         </div>
     </div>
 

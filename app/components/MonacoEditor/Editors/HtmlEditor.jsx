@@ -68,7 +68,7 @@ class HtmlEditor extends Component {
     }
 
     render() {
-        const { editor, tab, editorInfo } = this.props;
+        const { tab, editorInfo } = this.props;
         const { leftGrow, rightGrow, showBigSize, showPreview, previewUniqueId } = tab;
         const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
         const previewStyle = { flexGrow: rightGrow };
@@ -77,27 +77,21 @@ class HtmlEditor extends Component {
         return (
             <div className="html-editor-container">
                 <div className="preview-action">
-                    {
-                        showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>
-                    }
+                    {showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>}
                     <i className={eyeIcon} onClick={() => actions.togglePreview({ state: tab })}></i>
                 </div>
                 <div className="wrap">
                     <div id='editor_preview_html_editor' style={editorStyle}>
-                        <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
+                        <CodeEditor editorInfo={editorInfo} tab={tab} />
                     </div>
-                    {
-                        (showPreview && !showBigSize) && (
-                            <ResizeBar startResize={startResize} actions={actions} state={tab} />
-                        )
-                    }
-                    {
-                        showPreview && (
-                            <div id='editor_preview_html_preview' style={previewStyle}>
-                                <PreviewEditor url={`${config.previewURL}${editor.file.path}?r=${previewUniqueId}`} isResizing={tab.isResizing} />
-                            </div>
-                        )
-                    }
+                    {(showPreview && !showBigSize) && (
+                        <ResizeBar startResize={startResize} actions={actions} state={tab} />
+                    )}
+                    {showPreview && (
+                        <div id='editor_preview_html_preview' style={previewStyle}>
+                            <PreviewEditor url={`${config.previewURL}${editorInfo.filePath}?r=${previewUniqueId}`} isResizing={tab.isResizing} />
+                        </div>
+                    )}
                 </div>
             </div>
         );

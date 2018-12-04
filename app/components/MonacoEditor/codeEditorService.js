@@ -86,7 +86,7 @@ class CodeEditorService {
   openCodeEditor (input, source) {
     toDefinition(input)
     const editor = this.doOpenEditor(source, input)
-    return monaco.Promise.as(editor)
+    return monaco.Promise.as(null)
   }
 }
 
