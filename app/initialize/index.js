@@ -84,14 +84,13 @@ async function initialize () {
     return true
   })
 
-
-  await step(`[${stepNum++}] Mount required package.`, () => {
-    mountPackagesByType('Required')
+  await step(`[${stepNum++}] Persist Store.`, () => {
+    persistTask()
     return true
   })
 
-  await step(`[${stepNum++}] Persist Store.`, () => {
-    persistTask()
+  await step(`[${stepNum++}] Mount required package.`, () => {
+    mountPackagesByType('Required')
     return true
   })
 
