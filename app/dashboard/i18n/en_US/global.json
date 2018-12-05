@@ -76,8 +76,5 @@
     "submitting": "Submitting...",
     "eventStreamBulletin1": "Dear developer, due to ",
     "eventStreamBulletin2": "[ event-stream package event ]",
-    "eventStreamBulletin3": " Impact, your plugin needs to manually delete the `yarn.lock` file and reinstall the dependencies, then push the code to release a new version or pre-release.",
-    "globalTip1": "The system has detected that your username has not been modified.",
-    "globalTip2": "Please go to [ Tencent Cloud Dev Platform > Personal Settings ] and then log in again.",
-    "gotoModify": "Go to edit"
+    "eventStreamBulletin3": " Impact, your plugin needs to manually delete the `yarn.lock` file and reinstall the dependencies, then push the code to release a new version or pre-release."
 }

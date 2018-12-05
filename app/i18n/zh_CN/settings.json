@@ -5,10 +5,6 @@
    "general": {
       "main": "通用",
       "language": "语言",
-      "languageOption": {
-         "english": "英语",
-         "chinese": "中文"
-      },
       "switchOldEditor": "切回旧版编辑器",
       "hideFiles": "隐藏文件"
    },

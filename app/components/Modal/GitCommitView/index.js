@@ -103,7 +103,8 @@ class GitCommitView extends PureComponent {
       updateCommitMessage,
       commit,
       statusFiles,
-      toggleStaging
+      toggleStagingAll,
+      toggleStaging,
     } = this.props
     const { loading, original, modified, path, unknowFile } = this.state
     const initialCommitMessage = i18n.get('git.commitView.initMessage')
@@ -115,6 +116,7 @@ class GitCommitView extends PureComponent {
           <CommitFileList
             active={path}
             statusFiles={statusFiles}
+            toggleStagingAll={toggleStagingAll}
             toggleStaging={toggleStaging}
             handleClick={this.handleClickFile}
           />

@@ -6,6 +6,7 @@ import {
   GIT_STATUS_FOLD_NODE,
   GIT_STATUS_SELECT_NODE,
   GIT_STATUS_STAGE_NODE,
+  GIT_STATUS_STAGE_ALL,
   GIT_BRANCH,
   GIT_CHECKOUT,
   GIT_CHECKOUT_FAILED,
@@ -187,9 +188,10 @@ export default handleActions({
     const node = action.payload
     let statusFiles = state.statusFiles
     if (!node.isDir) {
-      statusFiles = state.statusFiles.set(node.path,
-        node.set('isStaged', !node.isStaged)
-      )
+      statusFiles = state.statusFiles.set(
+        node.path,
+        node.set('isStaged', !node.isStaged),
+      );
     } else {
       const stagedLeafNodes = node.leafNodes.filter(leafNodePath =>
         state.statusFiles.get(leafNodePath).get('isStaged')
@@ -207,6 +209,17 @@ export default handleActions({
     return { ...state, statusFiles }
   },
 
+  [GIT_STATUS_STAGE_ALL]: (state, action) => {
+    let statusFiles = state.statusFiles;
+    const allStaged = statusFiles.toArray().filter(v => !v.isDir).every(node => node.isStaged);
+    statusFiles = statusFiles.withMutations(statusFiles => {
+      statusFiles.filter(v => !v.isDir).toArray().forEach(node => {
+        statusFiles.set(node.path, node.set('isStaged', !allStaged));
+      });
+      return statusFiles;
+    });
+    return { ...state, statusFiles };
+  },
 
   [GIT_UPDATE_COMMIT_MESSAGE]: (state, action) => ({ ...state, commitMessage: action.payload }),
 

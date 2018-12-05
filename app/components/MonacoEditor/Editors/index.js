@@ -68,7 +68,11 @@ const EditorWrapper = observer(({ tab, active }) => {
   // key is crutial here, it decides whether the component should re-construct
   // or keep using the existing instance.
   const key = `editor_${file.path}`;
-  const editorElement = matchEditorByContentType(editor.editorType, editor.contentType, editor.filePath.split('.').pop());
+  const editorElement = matchEditorByContentType(
+    editor.editorType,
+    editor.contentType,
+    editor.filePath ? editor.filePath.split('.').pop() : '',
+  );
   return React.createElement(editorElement, { editorInfo, key, tab, active, language: config.mainLanguage, path: file.path, size: file.size });
 })
 

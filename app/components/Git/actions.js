@@ -357,6 +357,9 @@ export const selectNode = createAction(GIT_STATUS_SELECT_NODE, node => node)
 export const GIT_STATUS_STAGE_NODE = 'GIT_STATUS_STAGE_NODE'
 export const toggleStaging = createAction(GIT_STATUS_STAGE_NODE, node => node)
 
+export const GIT_STATUS_STAGE_ALL = 'GIT_STATUS_STAGE_ALL';
+export const toggleStagingAll = createAction(GIT_STATUS_STAGE_ALL);
+
 export const GIT_MERGE = 'GIT_MERGE'
 export const gitMerge = createAction(GIT_MERGE)
 export function mergeFile (path) {

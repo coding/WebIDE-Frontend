@@ -5,10 +5,6 @@
    "general": {
       "main": "General Setting",
       "language": "Language",
-      "languageOption": {
-         "english": "English",
-         "chinese": "Chinese"
-      },
       "switchOldEditor": "Switching old Editor",
       "hideFiles": "Hide Files"
    },
