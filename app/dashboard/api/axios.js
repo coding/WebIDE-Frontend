@@ -1,4 +1,5 @@
 import getCookie from '../utils/cookie';
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 
 const baseURL = getCookie('BACKEND_URL') || __BACKEND_URL__ || window.location.origin;
 
@@ -26,7 +27,11 @@ axios.get = (url, overrideHeaders = {}) => {
         method: 'GET',
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
-    }).then(res => res.json());
+    }).then(res => {
+        return res.json();
+    }).catch(err => {
+        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+    });
 }
 
 axios.post = (url, data, overrideHeaders = {}) => {
@@ -35,7 +40,11 @@ axios.post = (url, data, overrideHeaders = {}) => {
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
         body: parseFormdata(data),
-    }).then(res => res.json());
+    }).then(res => {
+        return res.json();
+    }).catch(err => {
+        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+    });
 }
 
 axios.put = (url, data, overrideHeaders = {}) => {
@@ -44,7 +53,11 @@ axios.put = (url, data, overrideHeaders = {}) => {
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
         body: parseFormdata(data),
-    }).then(res => res.json());
+    }).then(res => {
+        return res.json();
+    }).catch(err => {
+        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+    });
 }
 
 axios.delete = (url, data, overrideHeaders = {}) => {
@@ -53,7 +66,11 @@ axios.delete = (url, data, overrideHeaders = {}) => {
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
         body: parseFormdata(data),
-    }).then(res => res.json());
+    }).then(res => {
+        return res.json();
+    }).catch(err => {
+        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+    });
 }
 
 export default axios;
