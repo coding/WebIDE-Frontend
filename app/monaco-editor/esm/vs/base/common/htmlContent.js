@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { equals } from './arrays.js';
 var MarkdownString = /** @class */ (function () {
     function MarkdownString(value) {

@@ -2,33 +2,36 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import './standalone-tokens.css';
-import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
-import { OpenerService } from '../../browser/services/openerService.js';
-import { DiffNavigator } from '../../browser/widget/diffNavigator.js';
-import * as editorOptions from '../../common/config/editorOptions.js';
-import { BareFontInfo, FontInfo } from '../../common/config/fontInfo.js';
 import * as editorCommon from '../../common/editorCommon.js';
-import { FindMatch, TextModelResolvedOptions } from '../../common/model.js';
-import * as modes from '../../common/modes.js';
-import { NULL_STATE, nullTokenize } from '../../common/modes/nullMode.js';
-import { IEditorWorkerService } from '../../common/services/editorWorkerService.js';
-import { ITextModelService } from '../../common/services/resolverService.js';
-import { createWebWorker as actualCreateWebWorker } from '../../common/services/webWorker.js';
-import * as standaloneEnums from '../../common/standalone/standaloneEnums.js';
+import { ContentWidgetPositionPreference, OverlayWidgetPositionPreference, MouseTargetType } from '../../browser/editorBrowser.js';
+import { StandaloneEditor, StandaloneDiffEditor } from './standaloneCodeEditor.js';
+import { ScrollbarVisibility } from '../../../base/common/scrollable.js';
+import { DynamicStandaloneServices, StaticServices } from './standaloneServices.js';
+import { OpenerService } from '../../browser/services/openerService.js';
+import { IOpenerService } from '../../../platform/opener/common/opener.js';
 import { Colorizer } from './colorizer.js';
 import { SimpleEditorModelResolverService } from './simpleServices.js';
-import { StandaloneDiffEditor, StandaloneEditor } from './standaloneCodeEditor.js';
-import { DynamicStandaloneServices, StaticServices } from './standaloneServices.js';
-import { IStandaloneThemeService } from '../common/standaloneThemeService.js';
+import * as modes from '../../common/modes.js';
+import { createWebWorker as actualCreateWebWorker } from '../../common/services/webWorker.js';
+import { DiffNavigator } from '../../browser/widget/diffNavigator.js';
 import { ICommandService } from '../../../platform/commands/common/commands.js';
-import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import { IContextViewService } from '../../../platform/contextview/browser/contextView.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../platform/keybinding/common/keybinding.js';
+import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
+import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
+import { IEditorWorkerService } from '../../common/services/editorWorkerService.js';
+import { ITextModelService } from '../../common/services/resolverService.js';
+import { NULL_STATE, nullTokenize } from '../../common/modes/nullMode.js';
+import { IStandaloneThemeService } from '../common/standaloneThemeService.js';
+import { FontInfo, BareFontInfo } from '../../common/config/fontInfo.js';
+import * as editorOptions from '../../common/config/editorOptions.js';
+import { CursorChangeReason } from '../../common/controller/cursorEvents.js';
+import { OverviewRulerLane, EndOfLinePreference, DefaultEndOfLine, EndOfLineSequence, TrackedRangeStickiness, TextModelResolvedOptions, FindMatch } from '../../common/model.js';
 import { INotificationService } from '../../../platform/notification/common/notification.js';
-import { IOpenerService } from '../../../platform/opener/common/opener.js';
+import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 function withAllStandaloneServices(domElement, override, callback) {
     var services = new DynamicStandaloneServices(domElement, override);
     var simpleEditorModelResolverService = null;
@@ -51,7 +54,7 @@ function withAllStandaloneServices(domElement, override, callback) {
  * The editor will read the size of `domElement`.
  */
 export function create(domElement, options, override) {
-    return withAllStandaloneServices(domElement, override || {}, function (services) {
+    return withAllStandaloneServices(domElement, override, function (services) {
         return new StandaloneEditor(domElement, options, services, services.get(IInstantiationService), services.get(ICodeEditorService), services.get(ICommandService), services.get(IContextKeyService), services.get(IKeybindingService), services.get(IContextViewService), services.get(IStandaloneThemeService), services.get(INotificationService), services.get(IConfigurationService));
     });
 }
@@ -78,8 +81,8 @@ export function createDiffEditor(domElement, options, override) {
 export function createDiffNavigator(diffEditor, opts) {
     return new DiffNavigator(diffEditor, opts);
 }
-function doCreateModel(value, languageSelection, uri) {
-    return StaticServices.modelService.get().createModel(value, languageSelection, uri);
+function doCreateModel(value, mode, uri) {
+    return StaticServices.modelService.get().createModel(value, mode, uri);
 }
 /**
  * Create a new editor model.
@@ -94,15 +97,15 @@ export function createModel(value, language, uri) {
         if (firstLF !== -1) {
             firstLine = value.substring(0, firstLF);
         }
-        return doCreateModel(value, StaticServices.modeService.get().createByFilepathOrFirstLine(path, firstLine), uri);
+        return doCreateModel(value, StaticServices.modeService.get().getOrCreateModeByFilenameOrFirstLine(path, firstLine), uri);
     }
-    return doCreateModel(value, StaticServices.modeService.get().create(language), uri);
+    return doCreateModel(value, StaticServices.modeService.get().getOrCreateMode(language), uri);
 }
 /**
  * Change the language for a model.
  */
 export function setModelLanguage(model, languageId) {
-    StaticServices.modelService.get().setMode(model, StaticServices.modeService.get().create(languageId));
+    StaticServices.modelService.get().setMode(model, StaticServices.modeService.get().getOrCreateMode(languageId));
 }
 /**
  * Set the markers for a model.
@@ -204,7 +207,7 @@ function getSafeTokenizationSupport(language) {
 export function tokenize(text, languageId) {
     var modeService = StaticServices.modeService.get();
     // Needed in order to get the mode registered for subsequent look-ups
-    modeService.triggerMode(languageId);
+    modeService.getOrCreateMode(languageId);
     var tokenizationSupport = getSafeTokenizationSupport(languageId);
     var lines = text.split(/\r\n|\r|\n/);
     var result = [];
@@ -218,7 +221,7 @@ export function tokenize(text, languageId) {
     return result;
 }
 /**
- * Define a new theme or update an existing theme.
+ * Define a new theme or updte an existing theme.
  */
 export function defineTheme(themeName, themeData) {
     StaticServices.standaloneThemeService.get().defineTheme(themeName, themeData);
@@ -229,6 +232,33 @@ export function defineTheme(themeName, themeData) {
 export function setTheme(themeName) {
     StaticServices.standaloneThemeService.get().setTheme(themeName);
 }
+/**
+ * @internal
+ * --------------------------------------------
+ * This is repeated here so it can be exported
+ * because TS inlines const enums
+ * --------------------------------------------
+ */
+var ScrollType;
+(function (ScrollType) {
+    ScrollType[ScrollType["Smooth"] = 0] = "Smooth";
+    ScrollType[ScrollType["Immediate"] = 1] = "Immediate";
+})(ScrollType || (ScrollType = {}));
+/**
+ * @internal
+ * --------------------------------------------
+ * This is repeated here so it can be exported
+ * because TS inlines const enums
+ * --------------------------------------------
+ */
+var RenderLineNumbersType;
+(function (RenderLineNumbersType) {
+    RenderLineNumbersType[RenderLineNumbersType["Off"] = 0] = "Off";
+    RenderLineNumbersType[RenderLineNumbersType["On"] = 1] = "On";
+    RenderLineNumbersType[RenderLineNumbersType["Relative"] = 2] = "Relative";
+    RenderLineNumbersType[RenderLineNumbersType["Interval"] = 3] = "Interval";
+    RenderLineNumbersType[RenderLineNumbersType["Custom"] = 4] = "Custom";
+})(RenderLineNumbersType || (RenderLineNumbersType = {}));
 /**
  * @internal
  */
@@ -256,22 +286,22 @@ export function createMonacoEditorAPI() {
         defineTheme: defineTheme,
         setTheme: setTheme,
         // enums
-        ScrollbarVisibility: standaloneEnums.ScrollbarVisibility,
-        WrappingIndent: standaloneEnums.WrappingIndent,
-        OverviewRulerLane: standaloneEnums.OverviewRulerLane,
-        EndOfLinePreference: standaloneEnums.EndOfLinePreference,
-        DefaultEndOfLine: standaloneEnums.DefaultEndOfLine,
-        EndOfLineSequence: standaloneEnums.EndOfLineSequence,
-        TrackedRangeStickiness: standaloneEnums.TrackedRangeStickiness,
-        CursorChangeReason: standaloneEnums.CursorChangeReason,
-        MouseTargetType: standaloneEnums.MouseTargetType,
-        TextEditorCursorStyle: standaloneEnums.TextEditorCursorStyle,
-        TextEditorCursorBlinkingStyle: standaloneEnums.TextEditorCursorBlinkingStyle,
-        ContentWidgetPositionPreference: standaloneEnums.ContentWidgetPositionPreference,
-        OverlayWidgetPositionPreference: standaloneEnums.OverlayWidgetPositionPreference,
-        RenderMinimap: standaloneEnums.RenderMinimap,
-        ScrollType: standaloneEnums.ScrollType,
-        RenderLineNumbersType: standaloneEnums.RenderLineNumbersType,
+        ScrollbarVisibility: ScrollbarVisibility,
+        WrappingIndent: editorOptions.WrappingIndent,
+        OverviewRulerLane: OverviewRulerLane,
+        EndOfLinePreference: EndOfLinePreference,
+        DefaultEndOfLine: DefaultEndOfLine,
+        EndOfLineSequence: EndOfLineSequence,
+        TrackedRangeStickiness: TrackedRangeStickiness,
+        CursorChangeReason: CursorChangeReason,
+        MouseTargetType: MouseTargetType,
+        TextEditorCursorStyle: editorOptions.TextEditorCursorStyle,
+        TextEditorCursorBlinkingStyle: editorOptions.TextEditorCursorBlinkingStyle,
+        ContentWidgetPositionPreference: ContentWidgetPositionPreference,
+        OverlayWidgetPositionPreference: OverlayWidgetPositionPreference,
+        RenderMinimap: editorOptions.RenderMinimap,
+        ScrollType: ScrollType,
+        RenderLineNumbersType: RenderLineNumbersType,
         // classes
         InternalEditorOptions: editorOptions.InternalEditorOptions,
         BareFontInfo: BareFontInfo,

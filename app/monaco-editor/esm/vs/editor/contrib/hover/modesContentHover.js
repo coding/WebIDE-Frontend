@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,21 +15,21 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import * as nls from '../../../nls.js';
 import * as dom from '../../../base/browser/dom.js';
-import { CancellationToken } from '../../../base/common/cancellation.js';
-import { Color, RGBA } from '../../../base/common/color.js';
-import { MarkdownString, isEmptyMarkdownString, markedStringsEquals } from '../../../base/common/htmlContent.js';
-import { Disposable, combinedDisposable } from '../../../base/common/lifecycle.js';
-import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
-import { ModelDecorationOptions } from '../../common/model/textModel.js';
+import { Position } from '../../common/core/position.js';
 import { HoverProviderRegistry } from '../../common/modes.js';
-import { getColorPresentations } from '../colorPicker/color.js';
-import { ColorDetector } from '../colorPicker/colorDetector.js';
-import { ColorPickerModel } from '../colorPicker/colorPickerModel.js';
-import { ColorPickerWidget } from '../colorPicker/colorPickerWidget.js';
 import { getHover } from './getHover.js';
 import { HoverOperation } from './hoverOperation.js';
 import { ContentHoverWidget } from './hoverWidgets.js';
+import { MarkdownString, isEmptyMarkdownString, markedStringsEquals } from '../../../base/common/htmlContent.js';
+import { ModelDecorationOptions } from '../../common/model/textModel.js';
+import { ColorPickerModel } from '../colorPicker/colorPickerModel.js';
+import { ColorPickerWidget } from '../colorPicker/colorPickerWidget.js';
+import { ColorDetector } from '../colorPicker/colorDetector.js';
+import { Color, RGBA } from '../../../base/common/color.js';
+import { Disposable, combinedDisposable } from '../../../base/common/lifecycle.js';
+import { getColorPresentations } from '../colorPicker/color.js';
+import { CancellationToken } from '../../../base/common/cancellation.js';
 var $ = dom.$;
 var ColorHover = /** @class */ (function () {
     function ColorHover(range, color, provider) {
@@ -248,7 +246,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
         this._colorPicker = null;
         // update column from which to show
         var renderColumn = Number.MAX_VALUE;
-        var highlightRange = Range.lift(messages[0].range);
+        var highlightRange = messages[0].range;
         var fragment = document.createDocumentFragment();
         var isEmptyHoverContent = true;
         var containColorPicker = false;
@@ -296,7 +294,6 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
                             textEdits = [{ identifier: null, range: range_2, text: model_1.presentation.label, forceMoveMarkers: false }];
                             newRange = range_2.setEndPosition(range_2.endLineNumber, range_2.startColumn + model_1.presentation.label.length);
                         }
-                        _this._editor.pushUndoStop();
                         _this._editor.executeEdits('colorpicker', textEdits);
                         if (model_1.presentation.additionalTextEdits) {
                             textEdits = model_1.presentation.additionalTextEdits.slice();
@@ -324,7 +321,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
                     });
                     var colorChangeListener = model_1.onDidChangeColor(updateColorPresentations);
                     _this._colorPicker = widget_1;
-                    _this.showAt(range_2.getStartPosition(), range_2, _this._shouldFocus);
+                    _this.showAt(new Position(renderRange.startLineNumber, renderColumn), _this._shouldFocus);
                     _this.updateContents(fragment);
                     _this._colorPicker.layout();
                     _this.renderDisposable = combinedDisposable([colorListener, colorChangeListener, widget_1, markdownDisposeable]);
@@ -333,7 +330,7 @@ var ModesContentHoverWidget = /** @class */ (function (_super) {
         });
         // show
         if (!containColorPicker && !isEmptyHoverContent) {
-            this.showAt(new Position(renderRange.startLineNumber, renderColumn), highlightRange, this._shouldFocus);
+            this.showAt(new Position(renderRange.startLineNumber, renderColumn), this._shouldFocus);
             this.updateContents(fragment);
         }
         this._isChangingDecorations = true;

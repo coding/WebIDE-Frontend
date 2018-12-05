@@ -5,6 +5,7 @@ define('vs/language/json/workerManager',["require", "exports"], function (requir
      *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
+    var Promise = monaco.Promise;
     var STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
     var WorkerManager = /** @class */ (function () {
         function WorkerManager(defaults) {
@@ -46,8 +47,7 @@ define('vs/language/json/workerManager',["require", "exports"], function (requir
                     // passed in to the create() method
                     createData: {
                         languageSettings: this._defaults.diagnosticsOptions,
-                        languageId: this._defaults.languageId,
-                        enableSchemaRequest: this._defaults.diagnosticsOptions.enableSchemaRequest
+                        languageId: this._defaults.languageId
                     }
                 });
                 this._client = this._worker.getProxy();
@@ -61,15 +61,25 @@ define('vs/language/json/workerManager',["require", "exports"], function (requir
                 resources[_i] = arguments[_i];
             }
             var _client;
-            return this._getClient().then(function (client) {
+            return toShallowCancelPromise(this._getClient().then(function (client) {
                 _client = client;
             }).then(function (_) {
                 return _this._worker.withSyncedResources(resources);
-            }).then(function (_) { return _client; });
+            }).then(function (_) { return _client; }));
         };
         return WorkerManager;
     }());
     exports.WorkerManager = WorkerManager;
+    function toShallowCancelPromise(p) {
+        var completeCallback;
+        var errorCallback;
+        var r = new Promise(function (c, e) {
+            completeCallback = c;
+            errorCallback = e;
+        }, function () { });
+        p.then(completeCallback, errorCallback);
+        return r;
+    }
 });
 
 (function (factory) {
@@ -1003,9 +1013,8 @@ define('vs/language/json/workerManager',["require", "exports"], function (requir
         function is(value) {
             var candidate = value;
             return candidate &&
-                Is.string(candidate.name) && Is.number(candidate.kind) &&
+                Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
                 Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
-                (candidate.detail === void 0 || Is.string(candidate.detail)) &&
                 (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
                 (candidate.children === void 0 || Array.isArray(candidate.children));
         }
@@ -1643,6 +1652,47 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
             text: textEdit.newText
         };
     }
+    function toCompletionItem(entry) {
+        return {
+            label: entry.label,
+            insertText: entry.insertText,
+            sortText: entry.sortText,
+            filterText: entry.filterText,
+            documentation: entry.documentation,
+            detail: entry.detail,
+            kind: toCompletionItemKind(entry.kind),
+            textEdit: toTextEdit(entry.textEdit),
+            data: entry.data
+        };
+    }
+    function fromMarkdownString(entry) {
+        return {
+            kind: (typeof entry === 'string' ? ls.MarkupKind.PlainText : ls.MarkupKind.Markdown),
+            value: (typeof entry === 'string' ? entry : entry.value)
+        };
+    }
+    function fromCompletionItem(entry) {
+        var item = {
+            label: entry.label,
+            sortText: entry.sortText,
+            filterText: entry.filterText,
+            documentation: fromMarkdownString(entry.documentation),
+            detail: entry.detail,
+            kind: fromCompletionItemKind(entry.kind),
+            data: entry.data
+        };
+        if (typeof entry.insertText === 'object' && typeof entry.insertText.value === 'string') {
+            item.insertText = entry.insertText.value;
+            item.insertTextFormat = ls.InsertTextFormat.Snippet;
+        }
+        else {
+            item.insertText = entry.insertText;
+        }
+        if (entry.range) {
+            item.textEdit = ls.TextEdit.replace(fromRange(entry.range), item.insertText);
+        }
+        return item;
+    }
     var CompletionAdapter = /** @class */ (function () {
         function CompletionAdapter(_worker) {
             this._worker = _worker;
@@ -1654,10 +1704,10 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
             enumerable: true,
             configurable: true
         });
-        CompletionAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
+        CompletionAdapter.prototype.provideCompletionItems = function (model, position, token) {
             var wordInfo = model.getWordUntilPosition(position);
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.doComplete(resource.toString(), fromPosition(position));
             }).then(function (info) {
                 if (!info) {
@@ -1666,7 +1716,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                 var items = info.items.map(function (entry) {
                     var item = {
                         label: entry.label,
-                        insertText: entry.insertText || entry.label,
+                        insertText: entry.insertText,
                         sortText: entry.sortText,
                         filterText: entry.filterText,
                         documentation: entry.documentation,
@@ -1677,19 +1727,16 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                         item.range = toRange(entry.textEdit.range);
                         item.insertText = entry.textEdit.newText;
                     }
-                    if (entry.additionalTextEdits) {
-                        item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
-                    }
                     if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
-                        item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                        item.insertText = { value: item.insertText };
                     }
                     return item;
                 });
                 return {
                     isIncomplete: info.isIncomplete,
-                    suggestions: items
+                    items: items
                 };
-            });
+            }));
         };
         return CompletionAdapter;
     }());
@@ -1731,7 +1778,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         HoverAdapter.prototype.provideHover = function (model, position, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.doHover(resource.toString(), fromPosition(position));
             }).then(function (info) {
                 if (!info) {
@@ -1741,7 +1788,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                     range: toRange(info.range),
                     contents: toMarkedStringArray(info.contents)
                 };
-            });
+            }));
         };
         return HoverAdapter;
     }());
@@ -1784,7 +1831,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         DocumentSymbolAdapter.prototype.provideDocumentSymbols = function (model, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
                 if (!items) {
                     return;
                 }
@@ -1796,7 +1843,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                     range: toRange(item.location.range),
                     selectionRange: toRange(item.location.range)
                 }); });
-            });
+            }));
         };
         return DocumentSymbolAdapter;
     }());
@@ -1813,14 +1860,14 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         DocumentFormattingEditProvider.prototype.provideDocumentFormattingEdits = function (model, options, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.format(resource.toString(), null, fromFormattingOptions(options)).then(function (edits) {
                     if (!edits || edits.length === 0) {
                         return;
                     }
                     return edits.map(toTextEdit);
                 });
-            });
+            }));
         };
         return DocumentFormattingEditProvider;
     }());
@@ -1831,14 +1878,14 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         DocumentRangeFormattingEditProvider.prototype.provideDocumentRangeFormattingEdits = function (model, range, options, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.format(resource.toString(), fromRange(range), fromFormattingOptions(options)).then(function (edits) {
                     if (!edits || edits.length === 0) {
                         return;
                     }
                     return edits.map(toTextEdit);
                 });
-            });
+            }));
         };
         return DocumentRangeFormattingEditProvider;
     }());
@@ -1849,7 +1896,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         DocumentColorAdapter.prototype.provideDocumentColors = function (model, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
                 if (!infos) {
                     return;
                 }
@@ -1857,11 +1904,11 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                     color: item.color,
                     range: toRange(item.range)
                 }); });
-            });
+            }));
         };
         DocumentColorAdapter.prototype.provideColorPresentations = function (model, info, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
                 if (!presentations) {
                     return;
                 }
@@ -1877,7 +1924,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                     }
                     return item;
                 });
-            });
+            }));
         };
         return DocumentColorAdapter;
     }());
@@ -1888,7 +1935,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         }
         FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
                 if (!ranges) {
                     return;
                 }
@@ -1902,7 +1949,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
                     }
                     return result;
                 });
-            });
+            }));
         };
         return FoldingRangeAdapter;
     }());
@@ -1914,6 +1961,15 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
             case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
         }
         return void 0;
+    }
+    /**
+     * Hook a cancellation token to a WinJS Promise
+     */
+    function wireCancellationToken(token, promise) {
+        if (promise.cancel) {
+            token.onCancellationRequested(function () { return promise.cancel(); });
+        }
+        return promise;
     }
 });
 
@@ -3132,8 +3188,7 @@ define('vs/language/json/languageFeatures',["require", "exports", "vscode-langua
         return setProperty(text, path, void 0, formattingOptions);
     }
     exports.removeProperty = removeProperty;
-    function setProperty(text, originalPath, value, formattingOptions, getInsertionIndex) {
-        var path = originalPath.slice();
+    function setProperty(text, path, value, formattingOptions, getInsertionIndex) {
         var errors = [];
         var root = parser_1.parseTree(text, errors);
         var parent = void 0;

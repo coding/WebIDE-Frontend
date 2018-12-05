@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 /**
  * The empty string.
  */
@@ -89,8 +90,8 @@ export function ltrim(haystack, needle) {
     if (needleLen === 0 || haystack.length === 0) {
         return haystack;
     }
-    var offset = 0;
-    while (haystack.indexOf(needle, offset) === offset) {
+    var offset = 0, idx = -1;
+    while ((idx = haystack.indexOf(needle, offset)) === offset) {
         offset = offset + needleLen;
     }
     return haystack.substring(offset);
@@ -193,7 +194,7 @@ export function regExpLeadsToEndlessLoop(regexp) {
     // We check against an empty string. If the regular expression doesn't advance
     // (e.g. ends in an endless loop) it will match an empty string.
     var match = regexp.exec('');
-    return !!(match && regexp.lastIndex === 0);
+    return (match && regexp.lastIndex === 0);
 }
 /**
  * Returns first index of the string that is not whitespace.
@@ -242,6 +243,44 @@ export function compare(a, b) {
         return -1;
     }
     else if (a > b) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+export function compareIgnoreCase(a, b) {
+    var len = Math.min(a.length, b.length);
+    for (var i = 0; i < len; i++) {
+        var codeA = a.charCodeAt(i);
+        var codeB = b.charCodeAt(i);
+        if (codeA === codeB) {
+            // equal
+            continue;
+        }
+        if (isUpperAsciiLetter(codeA)) {
+            codeA += 32;
+        }
+        if (isUpperAsciiLetter(codeB)) {
+            codeB += 32;
+        }
+        var diff = codeA - codeB;
+        if (diff === 0) {
+            // equal -> ignoreCase
+            continue;
+        }
+        else if (isLowerAsciiLetter(codeA) && isLowerAsciiLetter(codeB)) {
+            //
+            return diff;
+        }
+        else {
+            return compare(a.toLowerCase(), b.toLowerCase());
+        }
+    }
+    if (a.length < b.length) {
+        return -1;
+    }
+    else if (a.length > b.length) {
         return 1;
     }
     else {
@@ -425,7 +464,7 @@ export function isFullWidthCharacter(charCode) {
 // -- UTF-8 BOM
 export var UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
 export function startsWithUTF8BOM(str) {
-    return !!(str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
+    return (str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
 }
 export function safeBtoa(str) {
     return btoa(encodeURIComponent(str)); // we use encodeURIComponent because btoa fails for non Latin 1 values

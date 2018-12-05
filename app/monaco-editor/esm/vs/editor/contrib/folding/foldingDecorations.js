@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { TrackedRangeStickiness } from '../../common/model.js';
 import { ModelDecorationOptions } from '../../common/model/textModel.js';
 var FoldingDecorationProvider = /** @class */ (function () {
     function FoldingDecorationProvider(editor) {
@@ -26,16 +27,16 @@ var FoldingDecorationProvider = /** @class */ (function () {
         return this.editor.changeDecorations(callback);
     };
     FoldingDecorationProvider.COLLAPSED_VISUAL_DECORATION = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         afterContentClassName: 'inline-folded',
         linesDecorationsClassName: 'folding collapsed'
     });
     FoldingDecorationProvider.EXPANDED_AUTO_HIDE_VISUAL_DECORATION = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         linesDecorationsClassName: 'folding'
     });
     FoldingDecorationProvider.EXPANDED_VISUAL_DECORATION = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         linesDecorationsClassName: 'folding alwaysShowFoldIcons'
     });
     return FoldingDecorationProvider;

@@ -2,10 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as arrays from '../../../base/common/arrays.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
+'use strict';
 import { LineTokens } from '../core/lineTokens.js';
+import * as arrays from '../../../base/common/arrays.js';
 import { Position } from '../core/position.js';
+import { onUnexpectedError } from '../../../base/common/errors.js';
 import { nullTokenize2 } from '../modes/nullMode.js';
 function getDefaultMetadata(topLevelLanguageId) {
     return ((topLevelLanguageId << 0 /* LANGUAGEID_OFFSET */)
@@ -309,13 +310,11 @@ var ModelLinesTokens = /** @class */ (function () {
     };
     ModelLinesTokens.prototype._tokenizeText = function (buffer, text, state) {
         var r = null;
-        if (this.tokenizationSupport) {
-            try {
-                r = this.tokenizationSupport.tokenize2(text, state, 0);
-            }
-            catch (e) {
-                onUnexpectedError(e);
-            }
+        try {
+            r = this.tokenizationSupport.tokenize2(text, state, 0);
+        }
+        catch (e) {
+            onUnexpectedError(e);
         }
         if (!r) {
             r = nullTokenize2(this.languageIdentifier.id, text, state, 0);
@@ -332,26 +331,24 @@ var ModelLinesTokens = /** @class */ (function () {
         // Validate all states up to and including endLineIndex
         for (var lineIndex = this._invalidLineStartIndex; lineIndex <= endLineIndex; lineIndex++) {
             var endStateIndex = lineIndex + 1;
-            var text = buffer.getLineContent(lineIndex + 1);
-            var lineStartState = this._getState(lineIndex);
             var r = null;
+            var text = buffer.getLineContent(lineIndex + 1);
             try {
                 // Tokenize only the first X characters
-                var freshState = lineStartState.clone();
+                var freshState = this._getState(lineIndex).clone();
                 r = this.tokenizationSupport.tokenize2(text, freshState, 0);
             }
             catch (e) {
                 onUnexpectedError(e);
             }
             if (!r) {
-                r = nullTokenize2(this.languageIdentifier.id, text, lineStartState, 0);
+                r = nullTokenize2(this.languageIdentifier.id, text, this._getState(lineIndex), 0);
             }
             this._setTokens(this.languageIdentifier.id, lineIndex, text.length, r.tokens);
             eventBuilder.registerChangedTokens(lineIndex + 1);
             this._setIsInvalid(lineIndex, false);
             if (endStateIndex < linesLength) {
-                var previousEndState = this._getState(endStateIndex);
-                if (previousEndState !== null && r.endState.equals(previousEndState)) {
+                if (this._getState(endStateIndex) !== null && r.endState.equals(this._getState(endStateIndex))) {
                     // The end state of this line remains the same
                     var nextInvalidLineIndex = lineIndex + 1;
                     while (nextInvalidLineIndex < linesLength) {

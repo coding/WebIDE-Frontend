@@ -2,38 +2,28 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+'use strict';
 import { Emitter } from '../../../base/common/event.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-var AbstractCodeEditorService = /** @class */ (function (_super) {
-    __extends(AbstractCodeEditorService, _super);
+var AbstractCodeEditorService = /** @class */ (function () {
     function AbstractCodeEditorService() {
-        var _this = _super.call(this) || this;
-        _this._onCodeEditorAdd = _this._register(new Emitter());
-        _this.onCodeEditorAdd = _this._onCodeEditorAdd.event;
-        _this._onCodeEditorRemove = _this._register(new Emitter());
-        _this._onDiffEditorAdd = _this._register(new Emitter());
-        _this._onDiffEditorRemove = _this._register(new Emitter());
-        _this._codeEditors = Object.create(null);
-        _this._diffEditors = Object.create(null);
-        return _this;
+        this._codeEditors = Object.create(null);
+        this._diffEditors = Object.create(null);
+        this._onCodeEditorAdd = new Emitter();
+        this._onCodeEditorRemove = new Emitter();
+        this._onDiffEditorAdd = new Emitter();
+        this._onDiffEditorRemove = new Emitter();
     }
     AbstractCodeEditorService.prototype.addCodeEditor = function (editor) {
         this._codeEditors[editor.getId()] = editor;
         this._onCodeEditorAdd.fire(editor);
     };
+    Object.defineProperty(AbstractCodeEditorService.prototype, "onCodeEditorAdd", {
+        get: function () {
+            return this._onCodeEditorAdd.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AbstractCodeEditorService.prototype.removeCodeEditor = function (editor) {
         if (delete this._codeEditors[editor.getId()]) {
             this._onCodeEditorRemove.fire(editor);
@@ -72,5 +62,5 @@ var AbstractCodeEditorService = /** @class */ (function (_super) {
         return editorWithWidgetFocus;
     };
     return AbstractCodeEditorService;
-}(Disposable));
+}());
 export { AbstractCodeEditorService };

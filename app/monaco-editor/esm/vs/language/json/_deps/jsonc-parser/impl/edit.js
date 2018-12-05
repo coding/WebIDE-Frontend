@@ -8,8 +8,7 @@ import { parseTree, findNodeAtLocation } from './parser.js';
 export function removeProperty(text, path, formattingOptions) {
     return setProperty(text, path, void 0, formattingOptions);
 }
-export function setProperty(text, originalPath, value, formattingOptions, getInsertionIndex) {
-    var path = originalPath.slice();
+export function setProperty(text, path, value, formattingOptions, getInsertionIndex) {
     var errors = [];
     var root = parseTree(text, errors);
     var parent = void 0;

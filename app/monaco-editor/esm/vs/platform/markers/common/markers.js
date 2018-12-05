@@ -2,9 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import { localize } from '../../../nls.js';
 import Severity from '../../../base/common/severity.js';
+export var MarkerTag;
+(function (MarkerTag) {
+    MarkerTag[MarkerTag["Unnecessary"] = 1] = "Unnecessary";
+})(MarkerTag || (MarkerTag = {}));
 export var MarkerSeverity;
 (function (MarkerSeverity) {
     MarkerSeverity[MarkerSeverity["Hint"] = 1] = "Hint";

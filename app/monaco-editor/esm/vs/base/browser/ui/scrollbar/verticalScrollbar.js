@@ -2,30 +2,29 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { StandardMouseWheelEvent } from '../../mouseEvent.js';
 import { AbstractScrollbar } from './abstractScrollbar.js';
-import { ARROW_IMG_SIZE } from './scrollbarArrow.js';
+import { StandardMouseWheelEvent } from '../../mouseEvent.js';
+import { ScrollbarVisibility } from '../../../common/scrollable.js';
 import { ScrollbarState } from './scrollbarState.js';
+import { ARROW_IMG_SIZE } from './scrollbarArrow.js';
 var VerticalScrollbar = /** @class */ (function (_super) {
     __extends(VerticalScrollbar, _super);
     function VerticalScrollbar(scrollable, options, host) {
         var _this = _super.call(this, {
             lazyRender: options.lazyRender,
             host: host,
-            scrollbarState: new ScrollbarState((options.verticalHasArrows ? options.arrowSize : 0), (options.vertical === 2 /* Hidden */ ? 0 : options.verticalScrollbarSize), 
+            scrollbarState: new ScrollbarState((options.verticalHasArrows ? options.arrowSize : 0), (options.vertical === ScrollbarVisibility.Hidden ? 0 : options.verticalScrollbarSize), 
             // give priority to vertical scroll bar over horizontal and let it scroll all the way to the bottom
             0),
             visibility: options.vertical,
@@ -56,7 +55,7 @@ var VerticalScrollbar = /** @class */ (function (_super) {
                 onActivate: function () { return _this._host.onMouseWheel(new StandardMouseWheelEvent(null, 0, -1)); },
             });
         }
-        _this._createSlider(0, Math.floor((options.verticalScrollbarSize - options.verticalSliderSize) / 2), options.verticalSliderSize, undefined);
+        _this._createSlider(0, Math.floor((options.verticalScrollbarSize - options.verticalSliderSize) / 2), options.verticalSliderSize, null);
         return _this;
     }
     VerticalScrollbar.prototype._updateSlider = function (sliderSize, sliderPosition) {

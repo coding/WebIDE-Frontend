@@ -5,6 +5,7 @@ define('vs/language/css/workerManager',["require", "exports"], function (require
      *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
+    var Promise = monaco.Promise;
     var STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
     var WorkerManager = /** @class */ (function () {
         function WorkerManager(defaults) {
@@ -60,15 +61,25 @@ define('vs/language/css/workerManager',["require", "exports"], function (require
                 resources[_i] = arguments[_i];
             }
             var _client;
-            return this._getClient().then(function (client) {
+            return toShallowCancelPromise(this._getClient().then(function (client) {
                 _client = client;
             }).then(function (_) {
                 return _this._worker.withSyncedResources(resources);
-            }).then(function (_) { return _client; });
+            }).then(function (_) { return _client; }));
         };
         return WorkerManager;
     }());
     exports.WorkerManager = WorkerManager;
+    function toShallowCancelPromise(p) {
+        var completeCallback;
+        var errorCallback;
+        var r = new Promise(function (c, e) {
+            completeCallback = c;
+            errorCallback = e;
+        }, function () { });
+        p.then(completeCallback, errorCallback);
+        return r;
+    }
 });
 
 (function (factory) {
@@ -1524,7 +1535,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                 if (model.getModeId() === languageId) {
                     monaco.editor.setModelMarkers(model, languageId, markers);
                 }
-            }).then(undefined, function (err) {
+            }).done(undefined, function (err) {
                 console.error(err);
             });
         };
@@ -1617,10 +1628,10 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
             enumerable: true,
             configurable: true
         });
-        CompletionAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
+        CompletionAdapter.prototype.provideCompletionItems = function (model, position, token) {
             var wordInfo = model.getWordUntilPosition(position);
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.doComplete(resource.toString(), fromPosition(position));
             }).then(function (info) {
                 if (!info) {
@@ -1629,7 +1640,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                 var items = info.items.map(function (entry) {
                     var item = {
                         label: entry.label,
-                        insertText: entry.insertText || entry.label,
+                        insertText: entry.insertText,
                         sortText: entry.sortText,
                         filterText: entry.filterText,
                         documentation: entry.documentation,
@@ -1644,15 +1655,15 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                         item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
                     }
                     if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
-                        item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                        item.insertText = { value: item.insertText };
                     }
                     return item;
                 });
                 return {
                     isIncomplete: info.isIncomplete,
-                    suggestions: items
+                    items: items
                 };
-            });
+            }));
         };
         return CompletionAdapter;
     }());
@@ -1694,7 +1705,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         HoverAdapter.prototype.provideHover = function (model, position, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.doHover(resource.toString(), fromPosition(position));
             }).then(function (info) {
                 if (!info) {
@@ -1704,7 +1715,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                     range: toRange(info.range),
                     contents: toMarkedStringArray(info.contents)
                 };
-            });
+            }));
         };
         return HoverAdapter;
     }());
@@ -1724,7 +1735,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         DocumentHighlightAdapter.prototype.provideDocumentHighlights = function (model, position, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.findDocumentHighlights(resource.toString(), fromPosition(position));
             }).then(function (entries) {
                 if (!entries) {
@@ -1736,7 +1747,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                         kind: toDocumentHighlightKind(entry.kind)
                     };
                 });
-            });
+            }));
         };
         return DocumentHighlightAdapter;
     }());
@@ -1754,14 +1765,14 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         DefinitionAdapter.prototype.provideDefinition = function (model, position, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.findDefinition(resource.toString(), fromPosition(position));
             }).then(function (definition) {
                 if (!definition) {
                     return;
                 }
                 return [toLocation(definition)];
-            });
+            }));
         };
         return DefinitionAdapter;
     }());
@@ -1773,14 +1784,14 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         ReferenceAdapter.prototype.provideReferences = function (model, position, context, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.findReferences(resource.toString(), fromPosition(position));
             }).then(function (entries) {
                 if (!entries) {
                     return;
                 }
                 return entries.map(toLocation);
-            });
+            }));
         };
         return ReferenceAdapter;
     }());
@@ -1812,11 +1823,11 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         RenameAdapter.prototype.provideRenameEdits = function (model, position, newName, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) {
                 return worker.doRename(resource.toString(), fromPosition(position), newName);
             }).then(function (edit) {
                 return toWorkspaceEdit(edit);
-            });
+            }));
         };
         return RenameAdapter;
     }());
@@ -1852,7 +1863,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         DocumentSymbolAdapter.prototype.provideDocumentSymbols = function (model, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
                 if (!items) {
                     return;
                 }
@@ -1864,7 +1875,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                     range: toRange(item.location.range),
                     selectionRange: toRange(item.location.range)
                 }); });
-            });
+            }));
         };
         return DocumentSymbolAdapter;
     }());
@@ -1875,7 +1886,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         DocumentColorAdapter.prototype.provideDocumentColors = function (model, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
                 if (!infos) {
                     return;
                 }
@@ -1883,11 +1894,11 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                     color: item.color,
                     range: toRange(item.range)
                 }); });
-            });
+            }));
         };
         DocumentColorAdapter.prototype.provideColorPresentations = function (model, info, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
                 if (!presentations) {
                     return;
                 }
@@ -1903,7 +1914,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                     }
                     return item;
                 });
-            });
+            }));
         };
         return DocumentColorAdapter;
     }());
@@ -1914,7 +1925,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
         }
         FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
             var resource = model.uri;
-            return this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
+            return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
                 if (!ranges) {
                     return;
                 }
@@ -1928,7 +1939,7 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
                     }
                     return result;
                 });
-            });
+            }));
         };
         return FoldingRangeAdapter;
     }());
@@ -1940,6 +1951,13 @@ define('vs/language/css/languageFeatures',["require", "exports", "vscode-languag
             case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
         }
         return void 0;
+    }
+    /**
+     * Hook a cancellation token to a WinJS Promise
+     */
+    function wireCancellationToken(token, promise) {
+        token.onCancellationRequested(function () { return promise.cancel(); });
+        return promise;
     }
 });
 

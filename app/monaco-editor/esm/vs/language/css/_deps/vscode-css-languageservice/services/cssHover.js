@@ -5,7 +5,7 @@
 'use strict';
 import * as nodes from '../parser/cssNodes.js';
 import * as languageFacts from './languageFacts.js';
-import { Range, MarkedString } from './../../vscode-languageserver-types/main.js';
+import { Range, MarkedString } from '../../vscode-languageserver-types/main.js';
 import { selectorToMarkedString, simpleSelectorToMarkedString } from './selectorPrinting.js';
 var CSSHover = /** @class */ (function () {
     function CSSHover() {

@@ -2,10 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Token, TokenizationResult, TokenizationResult2 } from '../../../common/core/token.js';
+'use strict';
 import * as modes from '../../../common/modes.js';
-import { NULL_MODE_ID, NULL_STATE } from '../../../common/modes/nullMode.js';
 import * as monarchCommon from './monarchCommon.js';
+import { Token, TokenizationResult, TokenizationResult2 } from '../../../common/core/token.js';
+import { NULL_STATE, NULL_MODE_ID } from '../../../common/modes/nullMode.js';
 var CACHE_STACK_DEPTH = 5;
 /**
  * Reuse the same stack elements up to a certain depth.
@@ -340,7 +341,7 @@ var MonarchTokenizer = /** @class */ (function () {
         if (!rules) {
             rules = monarchCommon.findRules(this._lexer, state.stack.state); // do parent matching
             if (!rules) {
-                throw monarchCommon.createError(this._lexer, 'tokenizer state is not defined: ' + state.stack.state);
+                monarchCommon.throwError(this._lexer, 'tokenizer state is not defined: ' + state.stack.state);
             }
         }
         var popOffset = -1;
@@ -368,7 +369,7 @@ var MonarchTokenizer = /** @class */ (function () {
             }
         }
         if (!hasEmbeddedPopRule) {
-            throw monarchCommon.createError(this._lexer, 'no rule containing nextEmbedded: "@pop" in tokenizer embedded state: ' + state.stack.state);
+            monarchCommon.throwError(this._lexer, 'no rule containing nextEmbedded: "@pop" in tokenizer embedded state: ' + state.stack.state);
         }
         return popOffset;
     };
@@ -393,11 +394,16 @@ var MonarchTokenizer = /** @class */ (function () {
         var embeddedModeData = lineState.embeddedModeData;
         var stack = lineState.stack;
         var pos = 0;
-        var groupMatching = null;
+        // regular expression group matching
+        // these never need cloning or equality since they are only used within a line match
+        var groupActions = null;
+        var groupMatches = null;
+        var groupMatched = null;
+        var groupRule = null;
         while (pos < lineLength) {
             var pos0 = pos;
             var stackLen0 = stack.depth;
-            var groupLen0 = groupMatching ? groupMatching.groups.length : 0;
+            var groupLen0 = groupActions ? groupActions.length : 0;
             var state = stack.state;
             var matches = null;
             var matched = null;
@@ -405,15 +411,17 @@ var MonarchTokenizer = /** @class */ (function () {
             var rule = null;
             var enteringEmbeddedMode = null;
             // check if we need to process group matches first
-            if (groupMatching) {
-                matches = groupMatching.matches;
-                var groupEntry = groupMatching.groups.shift();
-                matched = groupEntry.matched;
-                action = groupEntry.action;
-                rule = groupMatching.rule;
+            if (groupActions) {
+                matches = groupMatches;
+                matched = groupMatched.shift();
+                action = groupActions.shift();
+                rule = groupRule;
                 // cleanup if necessary
-                if (groupMatching.groups.length === 0) {
-                    groupMatching = null;
+                if (groupActions.length === 0) {
+                    groupActions = null;
+                    groupMatches = null;
+                    groupMatched = null;
+                    groupRule = null;
                 }
             }
             else {
@@ -427,7 +435,7 @@ var MonarchTokenizer = /** @class */ (function () {
                 if (!rules) {
                     rules = monarchCommon.findRules(this._lexer, state); // do parent matching
                     if (!rules) {
-                        throw monarchCommon.createError(this._lexer, 'tokenizer state is not defined: ' + state);
+                        monarchCommon.throwError(this._lexer, 'tokenizer state is not defined: ' + state);
                     }
                 }
                 // try each rule until we match
@@ -486,12 +494,12 @@ var MonarchTokenizer = /** @class */ (function () {
                 if (action.nextEmbedded) {
                     if (action.nextEmbedded === '@pop') {
                         if (!embeddedModeData) {
-                            throw monarchCommon.createError(this._lexer, 'cannot pop embedded mode if not inside one');
+                            monarchCommon.throwError(this._lexer, 'cannot pop embedded mode if not inside one');
                         }
                         embeddedModeData = null;
                     }
                     else if (embeddedModeData) {
-                        throw monarchCommon.createError(this._lexer, 'cannot enter embedded mode from within an embedded mode');
+                        monarchCommon.throwError(this._lexer, 'cannot enter embedded mode from within an embedded mode');
                     }
                     else {
                         enteringEmbeddedMode = monarchCommon.substituteMatches(this._lexer, action.nextEmbedded, matched, matches, state);
@@ -507,19 +515,19 @@ var MonarchTokenizer = /** @class */ (function () {
                         nextState = nextState.substr(1); // peel off starting '@'
                     }
                     if (!monarchCommon.findRules(this._lexer, nextState)) {
-                        throw monarchCommon.createError(this._lexer, 'trying to switch to a state \'' + nextState + '\' that is undefined in rule: ' + rule.name);
+                        monarchCommon.throwError(this._lexer, 'trying to switch to a state \'' + nextState + '\' that is undefined in rule: ' + rule.name);
                     }
                     else {
                         stack = stack.switchTo(nextState);
                     }
                 }
                 else if (action.transform && typeof action.transform === 'function') {
-                    throw monarchCommon.createError(this._lexer, 'action.transform not supported');
+                    monarchCommon.throwError(this._lexer, 'action.transform not supported');
                 }
                 else if (action.next) {
                     if (action.next === '@push') {
                         if (stack.depth >= this._lexer.maxStack) {
-                            throw monarchCommon.createError(this._lexer, 'maximum tokenizer stack size reached: [' +
+                            monarchCommon.throwError(this._lexer, 'maximum tokenizer stack size reached: [' +
                                 stack.state + ',' + stack.parent.state + ',...]');
                         }
                         else {
@@ -528,7 +536,7 @@ var MonarchTokenizer = /** @class */ (function () {
                     }
                     else if (action.next === '@pop') {
                         if (stack.depth <= 1) {
-                            throw monarchCommon.createError(this._lexer, 'trying to pop an empty stack in rule: ' + rule.name);
+                            monarchCommon.throwError(this._lexer, 'trying to pop an empty stack in rule: ' + rule.name);
                         }
                         else {
                             stack = stack.pop();
@@ -543,7 +551,7 @@ var MonarchTokenizer = /** @class */ (function () {
                             nextState = nextState.substr(1); // peel off starting '@'
                         }
                         if (!monarchCommon.findRules(this._lexer, nextState)) {
-                            throw monarchCommon.createError(this._lexer, 'trying to set a next state \'' + nextState + '\' that is undefined in rule: ' + rule.name);
+                            monarchCommon.throwError(this._lexer, 'trying to set a next state \'' + nextState + '\' that is undefined in rule: ' + rule.name);
                         }
                         else {
                             stack = stack.push(nextState);
@@ -556,34 +564,27 @@ var MonarchTokenizer = /** @class */ (function () {
             }
             // check result
             if (result === null) {
-                throw monarchCommon.createError(this._lexer, 'lexer rule has no well-defined action in rule: ' + rule.name);
+                monarchCommon.throwError(this._lexer, 'lexer rule has no well-defined action in rule: ' + rule.name);
             }
             // is the result a group match?
             if (Array.isArray(result)) {
-                if (groupMatching && groupMatching.groups.length > 0) {
-                    throw monarchCommon.createError(this._lexer, 'groups cannot be nested: ' + rule.name);
+                if (groupActions && groupActions.length > 0) {
+                    monarchCommon.throwError(this._lexer, 'groups cannot be nested: ' + rule.name);
                 }
                 if (matches.length !== result.length + 1) {
-                    throw monarchCommon.createError(this._lexer, 'matched number of groups does not match the number of actions in rule: ' + rule.name);
+                    monarchCommon.throwError(this._lexer, 'matched number of groups does not match the number of actions in rule: ' + rule.name);
                 }
                 var totalLen = 0;
                 for (var i = 1; i < matches.length; i++) {
                     totalLen += matches[i].length;
                 }
                 if (totalLen !== matched.length) {
-                    throw monarchCommon.createError(this._lexer, 'with groups, all characters should be matched in consecutive groups in rule: ' + rule.name);
+                    monarchCommon.throwError(this._lexer, 'with groups, all characters should be matched in consecutive groups in rule: ' + rule.name);
                 }
-                groupMatching = {
-                    rule: rule,
-                    matches: matches,
-                    groups: []
-                };
-                for (var i = 0; i < result.length; i++) {
-                    groupMatching.groups[i] = {
-                        action: result[i],
-                        matched: matches[i + 1]
-                    };
-                }
+                groupMatches = matches;
+                groupMatched = matches.slice(1);
+                groupActions = result.slice(0);
+                groupRule = rule;
                 pos -= matched.length;
                 // call recursively to initiate first result match
                 continue;
@@ -599,11 +600,11 @@ var MonarchTokenizer = /** @class */ (function () {
                 }
                 // check progress
                 if (matched.length === 0) {
-                    if (stackLen0 !== stack.depth || state !== stack.state || (!groupMatching ? 0 : groupMatching.groups.length) !== groupLen0) {
+                    if (stackLen0 !== stack.depth || state !== stack.state || (!groupActions ? 0 : groupActions.length) !== groupLen0) {
                         continue;
                     }
                     else {
-                        throw monarchCommon.createError(this._lexer, 'no progress in tokenizer in rule: ' + rule.name);
+                        monarchCommon.throwError(this._lexer, 'no progress in tokenizer in rule: ' + rule.name);
                         pos = lineLength; // must make progress or editor loops
                     }
                 }
@@ -614,7 +615,7 @@ var MonarchTokenizer = /** @class */ (function () {
                     var rest = result.substr('@brackets'.length);
                     var bracket = findBracket(this._lexer, matched);
                     if (!bracket) {
-                        throw monarchCommon.createError(this._lexer, '@brackets token returned but no bracket defined as: ' + matched);
+                        monarchCommon.throwError(this._lexer, '@brackets token returned but no bracket defined as: ' + matched);
                         bracket = { token: '', bracketType: 0 /* None */ };
                     }
                     tokenType = monarchCommon.sanitize(bracket.token + rest);
@@ -645,26 +646,31 @@ var MonarchTokenizer = /** @class */ (function () {
         return MonarchLineStateFactory.create(stack, embeddedModeData);
     };
     MonarchTokenizer.prototype._getNestedEmbeddedModeData = function (mimetypeOrModeId) {
-        var nestedModeId = this._locateMode(mimetypeOrModeId);
-        if (nestedModeId) {
-            var tokenizationSupport = modes.TokenizationRegistry.get(nestedModeId);
+        var nestedMode = this._locateMode(mimetypeOrModeId);
+        if (nestedMode) {
+            var tokenizationSupport = modes.TokenizationRegistry.get(nestedMode.getId());
             if (tokenizationSupport) {
-                return new EmbeddedModeData(nestedModeId, tokenizationSupport.getInitialState());
+                return new EmbeddedModeData(nestedMode.getId(), tokenizationSupport.getInitialState());
             }
         }
-        return new EmbeddedModeData(nestedModeId || NULL_MODE_ID, NULL_STATE);
+        var nestedModeId = nestedMode ? nestedMode.getId() : NULL_MODE_ID;
+        return new EmbeddedModeData(nestedModeId, NULL_STATE);
     };
     MonarchTokenizer.prototype._locateMode = function (mimetypeOrModeId) {
         if (!mimetypeOrModeId || !this._modeService.isRegisteredMode(mimetypeOrModeId)) {
             return null;
         }
         var modeId = this._modeService.getModeId(mimetypeOrModeId);
-        if (modeId) {
-            // Fire mode loading event
-            this._modeService.triggerMode(modeId);
+        // Fire mode loading event
+        this._modeService.getOrCreateMode(modeId);
+        var mode = this._modeService.getMode(modeId);
+        if (mode) {
+            // Re-emit tokenizationSupport change events from all modes that I ever embedded
             this._embeddedModes[modeId] = true;
+            return mode;
         }
-        return modeId;
+        this._embeddedModes[modeId] = true;
+        return null;
     };
     return MonarchTokenizer;
 }());

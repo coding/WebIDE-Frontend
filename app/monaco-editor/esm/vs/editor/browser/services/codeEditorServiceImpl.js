@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,13 +22,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import * as dom from '../../../base/browser/dom.js';
-import { dispose as disposeAll } from '../../../base/common/lifecycle.js';
 import * as strings from '../../../base/common/strings.js';
-import { URI } from '../../../base/common/uri.js';
-import { AbstractCodeEditorService } from './abstractCodeEditorService.js';
+import URI from '../../../base/common/uri.js';
+import * as dom from '../../../base/browser/dom.js';
 import { isThemeColor } from '../../common/editorCommon.js';
 import { OverviewRulerLane } from '../../common/model.js';
+import { AbstractCodeEditorService } from './abstractCodeEditorService.js';
+import { dispose as disposeAll } from '../../../base/common/lifecycle.js';
 import { IThemeService } from '../../../platform/theme/common/themeService.js';
 var CodeEditorServiceImpl = /** @class */ (function (_super) {
     __extends(CodeEditorServiceImpl, _super);
@@ -227,9 +225,6 @@ var DecorationCSSRules = /** @class */ (function () {
                 _this._removeCSS();
                 _this._buildCSS();
             });
-        }
-        else {
-            this._themeListener = null;
         }
     }
     DecorationCSSRules.prototype.dispose = function () {

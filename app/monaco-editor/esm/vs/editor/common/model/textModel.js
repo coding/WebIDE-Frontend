@@ -2,44 +2,41 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { onUnexpectedError } from '../../../base/common/errors.js';
+import URI from '../../../base/common/uri.js';
 import { Emitter } from '../../../base/common/event.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
-import { StopWatch } from '../../../base/common/stopwatch.js';
-import * as strings from '../../../base/common/strings.js';
-import { URI } from '../../../base/common/uri.js';
-import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
-import { Position } from '../core/position.js';
+import * as model from '../model.js';
+import { TokenizationRegistry } from '../modes.js';
+import { EditStack } from './editStack.js';
 import { Range } from '../core/range.js';
 import { Selection } from '../core/selection.js';
-import * as model from '../model.js';
-import { EditStack } from './editStack.js';
-import { guessIndentation } from './indentationGuesser.js';
-import { IntervalNode, IntervalTree, getNodeIsInOverviewRuler, recomputeMaxEnd } from './intervalTree.js';
-import { PieceTreeTextBufferBuilder } from './pieceTreeTextBuffer/pieceTreeTextBufferBuilder.js';
-import { InternalModelContentChangeEvent, ModelRawContentChangedEvent, ModelRawEOLChanged, ModelRawFlush, ModelRawLineChanged, ModelRawLinesDeleted, ModelRawLinesInserted } from './textModelEvents.js';
-import { SearchParams, TextModelSearch } from './textModelSearch.js';
-import { ModelLinesTokens, ModelTokensChangedEventBuilder } from './textModelTokens.js';
-import { getWordAtText } from './wordHelper.js';
-import { TokenizationRegistry } from '../modes.js';
-import { LanguageConfigurationRegistry } from '../modes/languageConfigurationRegistry.js';
+import { ModelRawContentChangedEvent, InternalModelContentChangeEvent, ModelRawFlush, ModelRawEOLChanged, ModelRawLineChanged, ModelRawLinesDeleted, ModelRawLinesInserted } from './textModelEvents.js';
+import { onUnexpectedError } from '../../../base/common/errors.js';
+import * as strings from '../../../base/common/strings.js';
+import { IntervalNode, IntervalTree, recomputeMaxEnd, getNodeIsInOverviewRuler } from './intervalTree.js';
+import { Disposable } from '../../../base/common/lifecycle.js';
+import { StopWatch } from '../../../base/common/stopwatch.js';
 import { NULL_LANGUAGE_IDENTIFIER } from '../modes/nullMode.js';
 import { ignoreBracketsInToken } from '../modes/supports.js';
 import { BracketsUtils } from '../modes/supports/richEditBrackets.js';
-var CHEAP_TOKENIZATION_LENGTH_LIMIT = 2048;
+import { Position } from '../core/position.js';
+import { LanguageConfigurationRegistry } from '../modes/languageConfigurationRegistry.js';
+import { getWordAtText } from './wordHelper.js';
+import { ModelLinesTokens, ModelTokensChangedEventBuilder } from './textModelTokens.js';
+import { guessIndentation } from './indentationGuesser.js';
+import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
+import { TextModelSearch, SearchParams } from './textModelSearch.js';
+import { PieceTreeTextBufferBuilder } from './pieceTreeTextBuffer/pieceTreeTextBufferBuilder.js';
 function createTextBufferBuilder() {
     return new PieceTreeTextBufferBuilder();
 }
@@ -66,7 +63,6 @@ function singleLetter(result) {
 }
 var LIMIT_FIND_COUNT = 999;
 export var LONG_LINE_BOUNDARY = 10000;
-var invalidFunc = function () { throw new Error("Invalid change accessor"); };
 var TextModel = /** @class */ (function (_super) {
     __extends(TextModel, _super);
     //#endregion
@@ -101,7 +97,7 @@ var TextModel = /** @class */ (function (_super) {
         _this._buffer = createTextBuffer(source, creationOptions.defaultEOL);
         _this._options = TextModel.resolveOptions(_this._buffer, creationOptions);
         var bufferLineCount = _this._buffer.getLineCount();
-        var bufferTextLength = _this._buffer.getValueLengthInRange(new Range(1, 1, bufferLineCount, _this._buffer.getLineLength(bufferLineCount) + 1), 0 /* TextDefined */);
+        var bufferTextLength = _this._buffer.getValueLengthInRange(new Range(1, 1, bufferLineCount, _this._buffer.getLineLength(bufferLineCount) + 1), model.EndOfLinePreference.TextDefined);
         // !!! Make a decision in the ctor and permanently respect this decision !!!
         // If a model is too large at construction time, it will never get tokenized,
         // under no circumstances.
@@ -184,11 +180,16 @@ var TextModel = /** @class */ (function (_super) {
     TextModel.prototype.dispose = function () {
         this._isDisposing = true;
         this._onWillDispose.fire();
+        this._commandManager = null;
+        this._decorations = null;
+        this._decorationsTree = null;
         this._tokenizationListener.dispose();
         this._languageRegistryListener.dispose();
         this._clearTimers();
+        this._tokens = null;
         this._isDisposed = true;
         // Null out members, such that any use of a disposed model will throw exceptions sooner rather than later
+        this._buffer = null;
         _super.prototype.dispose.call(this);
         this._isDisposing = false;
     };
@@ -254,7 +255,7 @@ var TextModel = /** @class */ (function (_super) {
     };
     TextModel.prototype.setEOL = function (eol) {
         this._assertNotDisposed();
-        var newEOL = (eol === 1 /* CRLF */ ? '\r\n' : '\n');
+        var newEOL = (eol === model.EndOfLineSequence.CRLF ? '\r\n' : '\n');
         if (this._buffer.getEOL() === newEOL) {
             // Nothing to do
             return;
@@ -498,12 +499,12 @@ var TextModel = /** @class */ (function (_super) {
         return fullModelValue;
     };
     TextModel.prototype.getValueInRange = function (rawRange, eol) {
-        if (eol === void 0) { eol = 0 /* TextDefined */; }
+        if (eol === void 0) { eol = model.EndOfLinePreference.TextDefined; }
         this._assertNotDisposed();
         return this._buffer.getValueInRange(this.validateRange(rawRange), eol);
     };
     TextModel.prototype.getValueLengthInRange = function (rawRange, eol) {
-        if (eol === void 0) { eol = 0 /* TextDefined */; }
+        if (eol === void 0) { eol = model.EndOfLinePreference.TextDefined; }
         this._assertNotDisposed();
         return this._buffer.getValueLengthInRange(this.validateRange(rawRange), eol);
     };
@@ -805,9 +806,6 @@ var TextModel = /** @class */ (function (_super) {
         if (!isRegex && searchString.indexOf('\n') < 0) {
             var searchParams = new SearchParams(searchString, isRegex, matchCase, wordSeparators);
             var searchData = searchParams.parseSearchRequest();
-            if (!searchData) {
-                return null;
-            }
             var lineCount = this.getLineCount();
             var searchRange = new Range(searchStart.lineNumber, searchStart.column, lineCount, this.getLineMaxColumn(lineCount));
             var ret = this.findMatchesLineByLine(searchRange, searchData, captureMatches, 1);
@@ -835,7 +833,7 @@ var TextModel = /** @class */ (function (_super) {
         this._commandManager.pushStackElement();
     };
     TextModel.prototype.pushEOL = function (eol) {
-        var currentEOL = (this.getEOL() === '\n' ? 0 /* LF */ : 1 /* CRLF */);
+        var currentEOL = (this.getEOL() === '\n' ? model.EndOfLineSequence.LF : model.EndOfLineSequence.CRLF);
         if (currentEOL === eol) {
             return;
         }
@@ -987,13 +985,7 @@ var TextModel = /** @class */ (function (_super) {
             for (var i = 0, len = contentChanges.length; i < len; i++) {
                 var change = contentChanges[i];
                 var _a = TextModel._eolCount(change.text), eolCount = _a[0], firstLineLength = _a[1];
-                try {
-                    this._tokens.applyEdits(change.range, eolCount, firstLineLength);
-                }
-                catch (err) {
-                    // emergency recovery => reset tokens
-                    this._tokens = new ModelLinesTokens(this._tokens.languageIdentifier, this._tokens.tokenizationSupport);
-                }
+                this._tokens.applyEdits(change.range, eolCount, firstLineLength);
                 this._onDidChangeDecorations.fire();
                 this._decorationsTree.acceptReplace(change.rangeOffset, change.rangeLength, change.text.length, change.forceMoveMarkers);
                 var startLineNumber = change.range.startLineNumber;
@@ -1138,11 +1130,10 @@ var TextModel = /** @class */ (function (_super) {
             onUnexpectedError(e);
         }
         // Invalidate change accessor
-        changeAccessor.addDecoration = invalidFunc;
-        changeAccessor.changeDecoration = invalidFunc;
-        changeAccessor.changeDecorationOptions = invalidFunc;
-        changeAccessor.removeDecoration = invalidFunc;
-        changeAccessor.deltaDecorations = invalidFunc;
+        changeAccessor.addDecoration = null;
+        changeAccessor.changeDecoration = null;
+        changeAccessor.removeDecoration = null;
+        changeAccessor.deltaDecorations = null;
         return result;
     };
     TextModel.prototype.deltaDecorations = function (oldDecorations, newDecorations, ownerId) {
@@ -1298,8 +1289,8 @@ var TextModel = /** @class */ (function (_super) {
         if (!node) {
             return;
         }
-        var nodeWasInOverviewRuler = (node.options.overviewRuler && node.options.overviewRuler.color ? true : false);
-        var nodeIsInOverviewRuler = (options.overviewRuler && options.overviewRuler.color ? true : false);
+        var nodeWasInOverviewRuler = (node.options.overviewRuler.color ? true : false);
+        var nodeIsInOverviewRuler = (options.overviewRuler.color ? true : false);
         if (nodeWasInOverviewRuler !== nodeIsInOverviewRuler) {
             // Delete + Insert due to an overview ruler status change
             this._decorationsTree.delete(node);
@@ -1445,16 +1436,7 @@ var TextModel = /** @class */ (function (_super) {
         }
     };
     TextModel.prototype.isCheapToTokenize = function (lineNumber) {
-        if (!this._tokens.isCheapToTokenize(lineNumber)) {
-            return false;
-        }
-        if (lineNumber < this._tokens.inValidLineStartIndex + 1) {
-            return true;
-        }
-        if (this.getLineLength(lineNumber) < CHEAP_TOKENIZATION_LENGTH_LIMIT) {
-            return true;
-        }
-        return false;
+        return this._tokens.isCheapToTokenize(lineNumber);
     };
     TextModel.prototype.tokenizeIfCheap = function (lineNumber) {
         if (this.isCheapToTokenize(lineNumber)) {
@@ -1561,8 +1543,7 @@ var TextModel = /** @class */ (function (_super) {
         // (1). First try checking right biased word
         var _a = TextModel._findLanguageBoundaries(lineTokens, tokenIndex), rbStartOffset = _a[0], rbEndOffset = _a[1];
         var rightBiasedWord = getWordAtText(position.column, LanguageConfigurationRegistry.getWordDefinition(lineTokens.getLanguageId(tokenIndex)), lineContent.substring(rbStartOffset, rbEndOffset), rbStartOffset);
-        // Make sure the result touches the original passed in position
-        if (rightBiasedWord && rightBiasedWord.startColumn <= _position.column && _position.column <= rightBiasedWord.endColumn) {
+        if (rightBiasedWord) {
             return rightBiasedWord;
         }
         // (2). Else, if we were at a language boundary, check the left biased word
@@ -1570,8 +1551,7 @@ var TextModel = /** @class */ (function (_super) {
             // edge case, where `position` sits between two tokens belonging to two different languages
             var _b = TextModel._findLanguageBoundaries(lineTokens, tokenIndex - 1), lbStartOffset = _b[0], lbEndOffset = _b[1];
             var leftBiasedWord = getWordAtText(position.column, LanguageConfigurationRegistry.getWordDefinition(lineTokens.getLanguageId(tokenIndex - 1)), lineContent.substring(lbStartOffset, lbEndOffset), lbStartOffset);
-            // Make sure the result touches the original passed in position
-            if (leftBiasedWord && leftBiasedWord.startColumn <= _position.column && _position.column <= leftBiasedWord.endColumn) {
+            if (leftBiasedWord) {
                 return leftBiasedWord;
             }
         }
@@ -1580,12 +1560,12 @@ var TextModel = /** @class */ (function (_super) {
     TextModel._findLanguageBoundaries = function (lineTokens, tokenIndex) {
         var languageId = lineTokens.getLanguageId(tokenIndex);
         // go left until a different language is hit
-        var startOffset = 0;
+        var startOffset;
         for (var i = tokenIndex; i >= 0 && lineTokens.getLanguageId(i) === languageId; i--) {
             startOffset = lineTokens.getStartOffset(i);
         }
         // go right until a different language is hit
-        var endOffset = lineTokens.getLineContent().length;
+        var endOffset;
         for (var i = tokenIndex, tokenCount = lineTokens.getCount(); i < tokenCount && lineTokens.getLanguageId(i) === languageId; i++) {
             endOffset = lineTokens.getEndOffset(i);
         }
@@ -1894,7 +1874,7 @@ var TextModel = /** @class */ (function (_super) {
             throw new Error('Illegal value for lineNumber');
         }
         var foldingRules = LanguageConfigurationRegistry.getFoldingRules(this._languageIdentifier.id);
-        var offSide = Boolean(foldingRules && foldingRules.offSide);
+        var offSide = foldingRules && foldingRules.offSide;
         var up_aboveContentLineIndex = -2; /* -2 is a marker for not having computed it */
         var up_aboveContentLineIndent = -1;
         var up_belowContentLineIndex = -2; /* -2 is a marker for not having computed it */
@@ -2046,7 +2026,7 @@ var TextModel = /** @class */ (function (_super) {
             throw new Error('Illegal value for endLineNumber');
         }
         var foldingRules = LanguageConfigurationRegistry.getFoldingRules(this._languageIdentifier.id);
-        var offSide = Boolean(foldingRules && foldingRules.offSide);
+        var offSide = foldingRules && foldingRules.offSide;
         var result = new Array(endLineNumber - startLineNumber + 1);
         var aboveContentLineIndex = -2; /* -2 is a marker for not having computed it */
         var aboveContentLineIndent = -1;
@@ -2125,7 +2105,7 @@ var TextModel = /** @class */ (function (_super) {
         tabSize: EDITOR_MODEL_DEFAULTS.tabSize,
         insertSpaces: EDITOR_MODEL_DEFAULTS.insertSpaces,
         detectIndentation: false,
-        defaultEOL: 1 /* LF */,
+        defaultEOL: model.DefaultEndOfLine.LF,
         trimAutoWhitespace: EDITOR_MODEL_DEFAULTS.trimAutoWhitespace,
         largeFileOptimizations: EDITOR_MODEL_DEFAULTS.largeFileOptimizations,
     };
@@ -2198,56 +2178,45 @@ function cleanClassName(className) {
 }
 var ModelDecorationOverviewRulerOptions = /** @class */ (function () {
     function ModelDecorationOverviewRulerOptions(options) {
-        this.color = options.color || strings.empty;
-        this.darkColor = options.darkColor || strings.empty;
-        this.position = (typeof options.position === 'number' ? options.position : model.OverviewRulerLane.Center);
+        this.color = strings.empty;
+        this.darkColor = strings.empty;
+        this.hcColor = strings.empty;
+        this.position = model.OverviewRulerLane.Center;
         this._resolvedColor = null;
+        if (options && options.color) {
+            this.color = options.color;
+        }
+        if (options && options.darkColor) {
+            this.darkColor = options.darkColor;
+            this.hcColor = options.darkColor;
+        }
+        if (options && options.hcColor) {
+            this.hcColor = options.hcColor;
+        }
+        if (options && options.hasOwnProperty('position')) {
+            this.position = options.position;
+        }
     }
-    ModelDecorationOverviewRulerOptions.prototype.getColor = function (theme) {
-        if (!this._resolvedColor) {
-            if (theme.type !== 'light' && this.darkColor) {
-                this._resolvedColor = this._resolveColor(this.darkColor, theme);
-            }
-            else {
-                this._resolvedColor = this._resolveColor(this.color, theme);
-            }
-        }
-        return this._resolvedColor;
-    };
-    ModelDecorationOverviewRulerOptions.prototype.invalidateCachedColor = function () {
-        this._resolvedColor = null;
-    };
-    ModelDecorationOverviewRulerOptions.prototype._resolveColor = function (color, theme) {
-        if (typeof color === 'string') {
-            return color;
-        }
-        var c = color ? theme.getColor(color.id) : null;
-        if (!c) {
-            return strings.empty;
-        }
-        return c.toString();
-    };
     return ModelDecorationOverviewRulerOptions;
 }());
 export { ModelDecorationOverviewRulerOptions };
 var ModelDecorationOptions = /** @class */ (function () {
     function ModelDecorationOptions(options) {
-        this.stickiness = options.stickiness || 0 /* AlwaysGrowsWhenTypingAtEdges */;
+        this.stickiness = options.stickiness || model.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges;
         this.zIndex = options.zIndex || 0;
-        this.className = options.className ? cleanClassName(options.className) : null;
-        this.hoverMessage = options.hoverMessage || null;
-        this.glyphMarginHoverMessage = options.glyphMarginHoverMessage || null;
+        this.className = options.className ? cleanClassName(options.className) : strings.empty;
+        this.hoverMessage = options.hoverMessage || [];
+        this.glyphMarginHoverMessage = options.glyphMarginHoverMessage || [];
         this.isWholeLine = options.isWholeLine || false;
         this.showIfCollapsed = options.showIfCollapsed || false;
-        this.collapseOnReplaceEdit = options.collapseOnReplaceEdit || false;
-        this.overviewRuler = options.overviewRuler ? new ModelDecorationOverviewRulerOptions(options.overviewRuler) : null;
-        this.glyphMarginClassName = options.glyphMarginClassName ? cleanClassName(options.glyphMarginClassName) : null;
-        this.linesDecorationsClassName = options.linesDecorationsClassName ? cleanClassName(options.linesDecorationsClassName) : null;
-        this.marginClassName = options.marginClassName ? cleanClassName(options.marginClassName) : null;
-        this.inlineClassName = options.inlineClassName ? cleanClassName(options.inlineClassName) : null;
+        this.overviewRuler = new ModelDecorationOverviewRulerOptions(options.overviewRuler);
+        this.glyphMarginClassName = options.glyphMarginClassName ? cleanClassName(options.glyphMarginClassName) : strings.empty;
+        this.linesDecorationsClassName = options.linesDecorationsClassName ? cleanClassName(options.linesDecorationsClassName) : strings.empty;
+        this.marginClassName = options.marginClassName ? cleanClassName(options.marginClassName) : strings.empty;
+        this.inlineClassName = options.inlineClassName ? cleanClassName(options.inlineClassName) : strings.empty;
         this.inlineClassNameAffectsLetterSpacing = options.inlineClassNameAffectsLetterSpacing || false;
-        this.beforeContentClassName = options.beforeContentClassName ? cleanClassName(options.beforeContentClassName) : null;
-        this.afterContentClassName = options.afterContentClassName ? cleanClassName(options.afterContentClassName) : null;
+        this.beforeContentClassName = options.beforeContentClassName ? cleanClassName(options.beforeContentClassName) : strings.empty;
+        this.afterContentClassName = options.afterContentClassName ? cleanClassName(options.afterContentClassName) : strings.empty;
     }
     ModelDecorationOptions.register = function (options) {
         return new ModelDecorationOptions(options);
@@ -2263,10 +2232,10 @@ ModelDecorationOptions.EMPTY = ModelDecorationOptions.register({});
  * The order carefully matches the values of the enum.
  */
 var TRACKED_RANGE_OPTIONS = [
-    ModelDecorationOptions.register({ stickiness: 0 /* AlwaysGrowsWhenTypingAtEdges */ }),
-    ModelDecorationOptions.register({ stickiness: 1 /* NeverGrowsWhenTypingAtEdges */ }),
-    ModelDecorationOptions.register({ stickiness: 2 /* GrowsOnlyWhenTypingBefore */ }),
-    ModelDecorationOptions.register({ stickiness: 3 /* GrowsOnlyWhenTypingAfter */ }),
+    ModelDecorationOptions.register({ stickiness: model.TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges }),
+    ModelDecorationOptions.register({ stickiness: model.TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges }),
+    ModelDecorationOptions.register({ stickiness: model.TrackedRangeStickiness.GrowsOnlyWhenTypingBefore }),
+    ModelDecorationOptions.register({ stickiness: model.TrackedRangeStickiness.GrowsOnlyWhenTypingAfter }),
 ];
 function _normalizeOptions(options) {
     if (options instanceof ModelDecorationOptions) {

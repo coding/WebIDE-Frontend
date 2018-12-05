@@ -2,30 +2,25 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { onUnexpectedError } from '../../../../base/common/errors.js';
 import * as strings from '../../../../base/common/strings.js';
 import { IndentAction } from '../languageConfiguration.js';
 var OnEnterSupport = /** @class */ (function () {
     function OnEnterSupport(opts) {
-        var _this = this;
         opts = opts || {};
         opts.brackets = opts.brackets || [
             ['(', ')'],
             ['{', '}'],
             ['[', ']']
         ];
-        this._brackets = [];
-        opts.brackets.forEach(function (bracket) {
-            var openRegExp = OnEnterSupport._createOpenBracketRegExp(bracket[0]);
-            var closeRegExp = OnEnterSupport._createCloseBracketRegExp(bracket[1]);
-            if (openRegExp && closeRegExp) {
-                _this._brackets.push({
-                    open: bracket[0],
-                    openRegExp: openRegExp,
-                    close: bracket[1],
-                    closeRegExp: closeRegExp,
-                });
-            }
+        this._brackets = opts.brackets.map(function (bracket) {
+            return {
+                open: bracket[0],
+                openRegExp: OnEnterSupport._createOpenBracketRegExp(bracket[0]),
+                close: bracket[1],
+                closeRegExp: OnEnterSupport._createCloseBracketRegExp(bracket[1]),
+            };
         });
         this._regExpRules = opts.regExpRules || [];
     }
@@ -33,20 +28,15 @@ var OnEnterSupport = /** @class */ (function () {
         // (1): `regExpRules`
         for (var i = 0, len = this._regExpRules.length; i < len; i++) {
             var rule = this._regExpRules[i];
-            var regResult = [{
-                    reg: rule.beforeText,
-                    text: beforeEnterText
-                }, {
-                    reg: rule.afterText,
-                    text: afterEnterText
-                }, {
-                    reg: rule.oneLineAboveText,
-                    text: oneLineAboveText
-                }].every(function (obj) {
-                return obj.reg ? obj.reg.test(obj.text) : true;
-            });
-            if (regResult) {
-                return rule.action;
+            if (rule.beforeText.test(beforeEnterText)) {
+                if (rule.afterText) {
+                    if (rule.afterText.test(afterEnterText)) {
+                        return rule.action;
+                    }
+                }
+                else {
+                    return rule.action;
+                }
             }
         }
         // (2): Special indent-outdent

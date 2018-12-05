@@ -2,11 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as arrays from './arrays.js';
 import * as strings from './strings.js';
 import * as paths from './paths.js';
 import { LRUCache } from './map.js';
-import { isThenable } from './async.js';
+import { TPromise } from './winjs.base.js';
 var GLOBSTAR = '**';
 var GLOB_SPLIT = '/';
 var PATH_REGEX = '[/\\\\]'; // any slash or backslash
@@ -239,7 +240,7 @@ function wrapRelativePattern(parsedPattern, arg2) {
         if (!paths.isEqualOrParent(path, arg2.base)) {
             return null;
         }
-        return parsedPattern(arg2.pathToRelative(arg2.base, path), basename);
+        return parsedPattern(paths.normalize(arg2.pathToRelative(arg2.base, path)), basename);
     };
 }
 function trimForExclusions(pattern, options) {
@@ -361,7 +362,7 @@ function parsedExpression(expression, options) {
     if (!n) {
         return NULL;
     }
-    if (!parsedPatterns.some(function (parsedPattern) { return !!parsedPattern.requiresSiblings; })) {
+    if (!parsedPatterns.some(function (parsedPattern) { return parsedPattern.requiresSiblings; })) {
         if (n === 1) {
             return parsedPatterns[0];
         }
@@ -386,7 +387,7 @@ function parsedExpression(expression, options) {
         return resultExpression_1;
     }
     var resultExpression = function (path, basename, hasSibling) {
-        var name = undefined;
+        var name;
         for (var i = 0, n_3 = parsedPatterns.length; i < n_3; i++) {
             // Pattern matches path
             var parsedPattern = parsedPatterns[i];
@@ -437,7 +438,7 @@ function parseExpressionPattern(pattern, value, options) {
                 }
                 var clausePattern = when_1.replace('$(basename)', name);
                 var matched = hasSibling(clausePattern);
-                return isThenable(matched) ?
+                return TPromise.is(matched) ?
                     matched.then(function (m) { return m ? pattern : null; }) :
                     matched ? pattern : null;
             };
@@ -453,10 +454,7 @@ function aggregateBasenameMatches(parsedPatterns, result) {
     if (basenamePatterns.length < 2) {
         return parsedPatterns;
     }
-    var basenames = basenamePatterns.reduce(function (all, current) {
-        var basenames = current.basenames;
-        return basenames ? all.concat(basenames) : all;
-    }, []);
+    var basenames = basenamePatterns.reduce(function (all, current) { return all.concat(current.basenames); }, []);
     var patterns;
     if (result) {
         patterns = [];
@@ -465,10 +463,7 @@ function aggregateBasenameMatches(parsedPatterns, result) {
         }
     }
     else {
-        patterns = basenamePatterns.reduce(function (all, current) {
-            var patterns = current.patterns;
-            return patterns ? all.concat(patterns) : all;
-        }, []);
+        patterns = basenamePatterns.reduce(function (all, current) { return all.concat(current.patterns); }, []);
     }
     var aggregate = function (path, basename) {
         if (!path) {

@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,12 +14,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as browser from '../../../../base/browser/browser.js';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 import * as platform from '../../../../base/common/platform.js';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { LineDecoration } from '../../../common/viewLayout/lineDecorations.js';
+import { renderViewLine, RenderLineInput, CharacterMapping } from '../../../common/viewLayout/viewLineRenderer.js';
 import { RangeUtil } from './rangeUtil.js';
 import { HorizontalRange } from '../../../common/view/renderingContext.js';
-import { LineDecoration } from '../../../common/viewLayout/lineDecorations.js';
-import { CharacterMapping, RenderLineInput, renderViewLine } from '../../../common/viewLayout/viewLineRenderer.js';
 import { HIGH_CONTRAST } from '../../../../platform/theme/common/themeService.js';
 var canUseFastRenderedViewLine = (function () {
     if (platform.isNative) {
@@ -74,7 +72,6 @@ var ViewLineOptions = /** @class */ (function () {
         this.spaceWidth = config.editor.fontInfo.spaceWidth;
         this.useMonospaceOptimizations = (config.editor.fontInfo.isMonospace
             && !config.editor.viewInfo.disableMonospaceOptimizations);
-        this.canUseHalfwidthRightwardsArrow = config.editor.fontInfo.canUseHalfwidthRightwardsArrow;
         this.lineHeight = config.editor.lineHeight;
         this.stopRenderingLineAfter = config.editor.viewInfo.stopRenderingLineAfter;
         this.fontLigatures = config.editor.viewInfo.fontLigatures;
@@ -85,7 +82,6 @@ var ViewLineOptions = /** @class */ (function () {
             && this.renderControlCharacters === other.renderControlCharacters
             && this.spaceWidth === other.spaceWidth
             && this.useMonospaceOptimizations === other.useMonospaceOptimizations
-            && this.canUseHalfwidthRightwardsArrow === other.canUseHalfwidthRightwardsArrow
             && this.lineHeight === other.lineHeight
             && this.stopRenderingLineAfter === other.stopRenderingLineAfter
             && this.fontLigatures === other.fontLigatures);
@@ -158,7 +154,7 @@ var ViewLine = /** @class */ (function () {
                 }
             }
         }
-        var renderLineInput = new RenderLineInput(options.useMonospaceOptimizations, options.canUseHalfwidthRightwardsArrow, lineData.content, lineData.continuesWithWrappedLine, lineData.isBasicASCII, lineData.containsRTL, lineData.minColumn - 1, lineData.tokens, actualInlineDecorations, lineData.tabSize, options.spaceWidth, options.stopRenderingLineAfter, options.renderWhitespace, options.renderControlCharacters, options.fontLigatures);
+        var renderLineInput = new RenderLineInput(options.useMonospaceOptimizations, lineData.content, lineData.continuesWithWrappedLine, lineData.isBasicASCII, lineData.containsRTL, lineData.minColumn - 1, lineData.tokens, actualInlineDecorations, lineData.tabSize, options.spaceWidth, options.stopRenderingLineAfter, options.renderWhitespace, options.renderControlCharacters, options.fontLigatures);
         if (this._renderedViewLine && this._renderedViewLine.input.equals(renderLineInput)) {
             // no need to do anything, we have the same render input
             return false;
@@ -212,9 +208,6 @@ var ViewLine = /** @class */ (function () {
         return this._renderedViewLine.getWidthIsFast();
     };
     ViewLine.prototype.getVisibleRangesForRange = function (startColumn, endColumn, context) {
-        if (!this._renderedViewLine) {
-            return null;
-        }
         startColumn = startColumn | 0; // @perf
         endColumn = endColumn | 0; // @perf
         startColumn = Math.min(this._renderedViewLine.input.lineContent.length + 1, Math.max(1, startColumn));
@@ -233,9 +226,6 @@ var ViewLine = /** @class */ (function () {
         return this._renderedViewLine.getVisibleRangesForRange(startColumn, endColumn, context);
     };
     ViewLine.prototype.getColumnOfNodeOffset = function (lineNumber, spanNode, offset) {
-        if (!this._renderedViewLine) {
-            return 1;
-        }
         return this._renderedViewLine.getColumnOfNodeOffset(lineNumber, spanNode, offset);
     };
     ViewLine.CLASS_NAME = 'view-line';
@@ -443,16 +433,17 @@ var WebKitRenderedViewLine = /** @class */ (function (_super) {
         }
         // WebKit is buggy and returns an expanded range (to contain words in some cases)
         // The last client rect is enlarged (I think)
-        if (!this.input.containsRTL) {
-            // This is an attempt to patch things up
-            // Find position of last column
-            var endPixelOffset = this._readPixelOffset(endColumn, context);
-            if (endPixelOffset !== -1) {
-                var lastRange = output[output.length - 1];
-                if (lastRange.left < endPixelOffset) {
-                    // Trim down the width of the last visible range to not go after the last column's position
-                    lastRange.width = endPixelOffset - lastRange.left;
-                }
+        // This is an attempt to patch things up
+        // Find position of previous column
+        var beforeEndPixelOffset = this._readPixelOffset(endColumn - 1, context);
+        // Find position of last column
+        var endPixelOffset = this._readPixelOffset(endColumn, context);
+        if (beforeEndPixelOffset !== -1 && endPixelOffset !== -1) {
+            var isLTR = (beforeEndPixelOffset <= endPixelOffset);
+            var lastRange = output[output.length - 1];
+            if (isLTR && lastRange.left < endPixelOffset) {
+                // Trim down the width of the last visible range to not go after the last column's position
+                lastRange.width = endPixelOffset - lastRange.left;
             }
         }
         return output;

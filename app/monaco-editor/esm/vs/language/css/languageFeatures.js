@@ -70,7 +70,7 @@ var DiagnosticsAdapter = /** @class */ (function () {
             if (model.getModeId() === languageId) {
                 monaco.editor.setModelMarkers(model, languageId, markers);
             }
-        }).then(undefined, function (err) {
+        }).done(undefined, function (err) {
             console.error(err);
         });
     };
@@ -163,10 +163,10 @@ var CompletionAdapter = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    CompletionAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
+    CompletionAdapter.prototype.provideCompletionItems = function (model, position, token) {
         var wordInfo = model.getWordUntilPosition(position);
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.doComplete(resource.toString(), fromPosition(position));
         }).then(function (info) {
             if (!info) {
@@ -175,7 +175,7 @@ var CompletionAdapter = /** @class */ (function () {
             var items = info.items.map(function (entry) {
                 var item = {
                     label: entry.label,
-                    insertText: entry.insertText || entry.label,
+                    insertText: entry.insertText,
                     sortText: entry.sortText,
                     filterText: entry.filterText,
                     documentation: entry.documentation,
@@ -190,15 +190,15 @@ var CompletionAdapter = /** @class */ (function () {
                     item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
                 }
                 if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
-                    item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                    item.insertText = { value: item.insertText };
                 }
                 return item;
             });
             return {
                 isIncomplete: info.isIncomplete,
-                suggestions: items
+                items: items
             };
-        });
+        }));
     };
     return CompletionAdapter;
 }());
@@ -240,7 +240,7 @@ var HoverAdapter = /** @class */ (function () {
     }
     HoverAdapter.prototype.provideHover = function (model, position, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.doHover(resource.toString(), fromPosition(position));
         }).then(function (info) {
             if (!info) {
@@ -250,7 +250,7 @@ var HoverAdapter = /** @class */ (function () {
                 range: toRange(info.range),
                 contents: toMarkedStringArray(info.contents)
             };
-        });
+        }));
     };
     return HoverAdapter;
 }());
@@ -270,7 +270,7 @@ var DocumentHighlightAdapter = /** @class */ (function () {
     }
     DocumentHighlightAdapter.prototype.provideDocumentHighlights = function (model, position, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.findDocumentHighlights(resource.toString(), fromPosition(position));
         }).then(function (entries) {
             if (!entries) {
@@ -282,7 +282,7 @@ var DocumentHighlightAdapter = /** @class */ (function () {
                     kind: toDocumentHighlightKind(entry.kind)
                 };
             });
-        });
+        }));
     };
     return DocumentHighlightAdapter;
 }());
@@ -300,14 +300,14 @@ var DefinitionAdapter = /** @class */ (function () {
     }
     DefinitionAdapter.prototype.provideDefinition = function (model, position, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.findDefinition(resource.toString(), fromPosition(position));
         }).then(function (definition) {
             if (!definition) {
                 return;
             }
             return [toLocation(definition)];
-        });
+        }));
     };
     return DefinitionAdapter;
 }());
@@ -319,14 +319,14 @@ var ReferenceAdapter = /** @class */ (function () {
     }
     ReferenceAdapter.prototype.provideReferences = function (model, position, context, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.findReferences(resource.toString(), fromPosition(position));
         }).then(function (entries) {
             if (!entries) {
                 return;
             }
             return entries.map(toLocation);
-        });
+        }));
     };
     return ReferenceAdapter;
 }());
@@ -358,11 +358,11 @@ var RenameAdapter = /** @class */ (function () {
     }
     RenameAdapter.prototype.provideRenameEdits = function (model, position, newName, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.doRename(resource.toString(), fromPosition(position), newName);
         }).then(function (edit) {
             return toWorkspaceEdit(edit);
-        });
+        }));
     };
     return RenameAdapter;
 }());
@@ -398,7 +398,7 @@ var DocumentSymbolAdapter = /** @class */ (function () {
     }
     DocumentSymbolAdapter.prototype.provideDocumentSymbols = function (model, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
             if (!items) {
                 return;
             }
@@ -410,7 +410,7 @@ var DocumentSymbolAdapter = /** @class */ (function () {
                 range: toRange(item.location.range),
                 selectionRange: toRange(item.location.range)
             }); });
-        });
+        }));
     };
     return DocumentSymbolAdapter;
 }());
@@ -421,7 +421,7 @@ var DocumentColorAdapter = /** @class */ (function () {
     }
     DocumentColorAdapter.prototype.provideDocumentColors = function (model, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
             if (!infos) {
                 return;
             }
@@ -429,11 +429,11 @@ var DocumentColorAdapter = /** @class */ (function () {
                 color: item.color,
                 range: toRange(item.range)
             }); });
-        });
+        }));
     };
     DocumentColorAdapter.prototype.provideColorPresentations = function (model, info, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
             if (!presentations) {
                 return;
             }
@@ -449,7 +449,7 @@ var DocumentColorAdapter = /** @class */ (function () {
                 }
                 return item;
             });
-        });
+        }));
     };
     return DocumentColorAdapter;
 }());
@@ -460,7 +460,7 @@ var FoldingRangeAdapter = /** @class */ (function () {
     }
     FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
             if (!ranges) {
                 return;
             }
@@ -474,7 +474,7 @@ var FoldingRangeAdapter = /** @class */ (function () {
                 }
                 return result;
             });
-        });
+        }));
     };
     return FoldingRangeAdapter;
 }());
@@ -486,4 +486,11 @@ function toFoldingRangeKind(kind) {
         case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
     }
     return void 0;
+}
+/**
+ * Hook a cancellation token to a WinJS Promise
+ */
+function wireCancellationToken(token, promise) {
+    token.onCancellationRequested(function () { return promise.cancel(); });
+    return promise;
 }

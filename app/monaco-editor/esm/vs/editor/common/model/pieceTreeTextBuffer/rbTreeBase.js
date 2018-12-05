@@ -2,15 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var TreeNode = /** @class */ (function () {
     function TreeNode(piece, color) {
         this.piece = piece;
         this.color = color;
         this.size_left = 0;
         this.lf_left = 0;
-        this.parent = this;
-        this.left = this;
-        this.right = this;
+        this.parent = null;
+        this.left = null;
+        this.right = null;
     }
     TreeNode.prototype.next = function () {
         if (this.right !== SENTINEL) {

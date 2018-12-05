@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -27,18 +25,19 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import './hover.css';
 import * as nls from '../../../nls.js';
 import { KeyChord } from '../../../base/common/keyCodes.js';
-import { dispose } from '../../../base/common/lifecycle.js';
 import * as platform from '../../../base/common/platform.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
-import { Range } from '../../common/core/range.js';
-import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { IOpenerService } from '../../../platform/opener/common/opener.js';
 import { IModeService } from '../../common/services/modeService.js';
+import { Range } from '../../common/core/range.js';
+import { registerEditorAction, registerEditorContribution, EditorAction } from '../../browser/editorExtensions.js';
+import { MouseTargetType } from '../../browser/editorBrowser.js';
 import { ModesContentHoverWidget } from './modesContentHover.js';
 import { ModesGlyphHoverWidget } from './modesGlyphHover.js';
+import { dispose } from '../../../base/common/lifecycle.js';
+import { registerThemingParticipant, IThemeService } from '../../../platform/theme/common/themeService.js';
+import { editorHoverHighlight, editorHoverBackground, editorHoverBorder, textLinkForeground, textCodeBlockBackground } from '../../../platform/theme/common/colorRegistry.js';
+import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { MarkdownRenderer } from '../markdown/markdownRenderer.js';
-import { IOpenerService } from '../../../platform/opener/common/opener.js';
-import { editorHoverBackground, editorHoverBorder, editorHoverHighlight, textCodeBlockBackground, textLinkForeground } from '../../../platform/theme/common/colorRegistry.js';
-import { IThemeService, registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
 var ModesHoverController = /** @class */ (function () {
     function ModesHoverController(_editor, _openerService, _modeService, _themeService) {
         var _this = this;
@@ -116,16 +115,16 @@ var ModesHoverController = /** @class */ (function () {
     ModesHoverController.prototype._onEditorMouseDown = function (mouseEvent) {
         this._isMouseDown = true;
         var targetType = mouseEvent.target.type;
-        if (targetType === 9 /* CONTENT_WIDGET */ && mouseEvent.target.detail === ModesContentHoverWidget.ID) {
+        if (targetType === MouseTargetType.CONTENT_WIDGET && mouseEvent.target.detail === ModesContentHoverWidget.ID) {
             this._hoverClicked = true;
             // mouse down on top of content hover widget
             return;
         }
-        if (targetType === 12 /* OVERLAY_WIDGET */ && mouseEvent.target.detail === ModesGlyphHoverWidget.ID) {
+        if (targetType === MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail === ModesGlyphHoverWidget.ID) {
             // mouse down on top of overlay hover widget
             return;
         }
-        if (targetType !== 12 /* OVERLAY_WIDGET */ && mouseEvent.target.detail !== ModesGlyphHoverWidget.ID) {
+        if (targetType !== MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail !== ModesGlyphHoverWidget.ID) {
             this._hoverClicked = false;
         }
         this._hideWidgets();
@@ -140,29 +139,29 @@ var ModesHoverController = /** @class */ (function () {
         if (this._isMouseDown && this._hoverClicked && this.contentWidget.isColorPickerVisible()) {
             return;
         }
-        if (this._isHoverSticky && targetType === 9 /* CONTENT_WIDGET */ && mouseEvent.target.detail === ModesContentHoverWidget.ID && !hasStopKey) {
+        if (this._isHoverSticky && targetType === MouseTargetType.CONTENT_WIDGET && mouseEvent.target.detail === ModesContentHoverWidget.ID && !hasStopKey) {
             // mouse moved on top of content hover widget
             return;
         }
-        if (this._isHoverSticky && targetType === 12 /* OVERLAY_WIDGET */ && mouseEvent.target.detail === ModesGlyphHoverWidget.ID && !hasStopKey) {
+        if (this._isHoverSticky && targetType === MouseTargetType.OVERLAY_WIDGET && mouseEvent.target.detail === ModesGlyphHoverWidget.ID && !hasStopKey) {
             // mouse moved on top of overlay hover widget
             return;
         }
-        if (targetType === 7 /* CONTENT_EMPTY */) {
+        if (targetType === MouseTargetType.CONTENT_EMPTY) {
             var epsilon = this._editor.getConfiguration().fontInfo.typicalHalfwidthCharacterWidth / 2;
             var data = mouseEvent.target.detail;
             if (data && !data.isAfterLines && typeof data.horizontalDistanceToText === 'number' && data.horizontalDistanceToText < epsilon) {
                 // Let hover kick in even when the mouse is technically in the empty area after a line, given the distance is small enough
-                targetType = 6 /* CONTENT_TEXT */;
+                targetType = MouseTargetType.CONTENT_TEXT;
             }
         }
-        if (targetType === 6 /* CONTENT_TEXT */) {
+        if (targetType === MouseTargetType.CONTENT_TEXT) {
             this.glyphWidget.hide();
             if (this._isHoverEnabled) {
                 this.contentWidget.startShowingAt(mouseEvent.target.range, 0 /* Delayed */, false);
             }
         }
-        else if (targetType === 2 /* GUTTER_GLYPH_MARGIN */) {
+        else if (targetType === MouseTargetType.GUTTER_GLYPH_MARGIN) {
             this.contentWidget.hide();
             if (this._isHoverEnabled) {
                 this.glyphWidget.startShowingAt(mouseEvent.target.position.lineNumber);
@@ -173,8 +172,8 @@ var ModesHoverController = /** @class */ (function () {
         }
     };
     ModesHoverController.prototype._onKeyDown = function (e) {
-        if (e.keyCode !== 5 /* Ctrl */ && e.keyCode !== 6 /* Alt */ && e.keyCode !== 57 /* Meta */ && e.keyCode !== 4 /* Shift */) {
-            // Do not hide hover when a modifier key is pressed
+        if (e.keyCode !== 5 /* Ctrl */ && e.keyCode !== 6 /* Alt */ && e.keyCode !== 57 /* Meta */) {
+            // Do not hide hover when Ctrl/Meta is pressed
             this._hideWidgets();
         }
     };

@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 import { TokenType, ScannerState } from '../htmlLanguageTypes.js';
 var localize = nls.loadMessageBundle();
 var MultiLineStream = /** @class */ (function () {

@@ -13,7 +13,7 @@ import { findDocumentHighlights } from './services/htmlHighlighting.js';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider.js';
 import { getFoldingRanges } from './services/htmlFolding.js';
 export * from './htmlLanguageTypes.js';
-export * from './../vscode-languageserver-types/main.js';
+export * from '../vscode-languageserver-types/main.js';
 export function getLanguageService() {
     var htmlCompletion = new HTMLCompletion();
     return {

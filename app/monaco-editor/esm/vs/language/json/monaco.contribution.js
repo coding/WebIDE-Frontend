@@ -3,6 +3,7 @@ import '../../editor/editor.api.js';
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var Emitter = monaco.Emitter;
 // --- JSON configuration and defaults ---------
 var LanguageServiceDefaultsImpl = /** @class */ (function () {
@@ -42,8 +43,7 @@ export { LanguageServiceDefaultsImpl };
 var diagnosticDefault = {
     validate: true,
     allowComments: true,
-    schemas: [],
-    enableSchemaRequest: false
+    schemas: []
 };
 var jsonDefaults = new LanguageServiceDefaultsImpl('json', diagnosticDefault);
 // Export API
@@ -55,9 +55,14 @@ function createAPI() {
 monaco.languages.json = createAPI();
 // --- Registration to monaco editor ---
 function getMode() {
-    return monaco.Promise.wrap(require('./jsonMode.js'));
+    return monaco.Promise.wrap(import('./jsonMode.js'));
 }
-
+monaco.languages.register({
+    id: 'json',
+    extensions: ['.json', '.bowerrc', '.jshintrc', '.jscsrc', '.eslintrc', '.babelrc'],
+    aliases: ['JSON', 'json'],
+    mimetypes: ['application/json'],
+});
 monaco.languages.onLanguage('json', function () {
     getMode().then(function (mode) { return mode.setupMode(jsonDefaults); });
 });

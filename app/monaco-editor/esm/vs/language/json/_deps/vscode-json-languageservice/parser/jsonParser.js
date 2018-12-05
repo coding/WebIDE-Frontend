@@ -4,24 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as Json from './../../jsonc-parser/main.js';
+import * as Json from '../../jsonc-parser/main.js';
 import * as objects from '../utils/objects.js';
 import { ErrorCode } from '../jsonLanguageTypes.js';
-import * as nls from './../../../fillers/vscode-nls.js';
-import Uri from './../../vscode-uri/index.js';
-import { Diagnostic, DiagnosticSeverity, Range } from './../../vscode-languageserver-types/main.js';
+import * as nls from '../../../fillers/vscode-nls.js';
+import Uri from '../../vscode-uri/index.js';
+import { Diagnostic, DiagnosticSeverity, Range } from '../../vscode-languageserver-types/main.js';
 var localize = nls.loadMessageBundle();
 var colorHexPattern = /^#([0-9A-Fa-f]{3,4}|([0-9A-Fa-f]{2}){3,4})$/;
 var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -442,33 +439,6 @@ function validate(node, schema, validationResult, matchingSchemas) {
         }
         if (Array.isArray(schema.oneOf)) {
             testAlternatives(schema.oneOf, true);
-        }
-        var testBranch = function (schema) {
-            var subSchema = asSchema(schema);
-            var subValidationResult = new ValidationResult();
-            var subMatchingSchemas = matchingSchemas.newSub();
-            validate(node, subSchema, subValidationResult, subMatchingSchemas);
-            validationResult.merge(subValidationResult);
-            validationResult.propertiesMatches += subValidationResult.propertiesMatches;
-            validationResult.propertiesValueMatches += subValidationResult.propertiesValueMatches;
-            matchingSchemas.merge(subMatchingSchemas);
-        };
-        var testCondition = function (ifSchema, thenSchema, elseSchema) {
-            var subSchema = asSchema(ifSchema);
-            var subValidationResult = new ValidationResult();
-            var subMatchingSchemas = matchingSchemas.newSub();
-            validate(node, subSchema, subValidationResult, subMatchingSchemas);
-            if (!subValidationResult.hasProblems()) {
-                if (thenSchema) {
-                    testBranch(thenSchema);
-                }
-            }
-            else if (elseSchema) {
-                testBranch(elseSchema);
-            }
-        };
-        if (schema.if) {
-            testCondition(schema.if, schema.then, schema.else);
         }
         if (Array.isArray(schema.enum)) {
             var val = getNodeValue(node);

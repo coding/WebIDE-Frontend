@@ -2,13 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { mergeSort } from '../../../base/common/arrays.js';
-import { CancellationToken } from '../../../base/common/cancellation.js';
+'use strict';
 import { illegalArgument, onUnexpectedExternalError } from '../../../base/common/errors.js';
-import { URI } from '../../../base/common/uri.js';
+import { mergeSort } from '../../../base/common/arrays.js';
+import URI from '../../../base/common/uri.js';
 import { registerLanguageCommand } from '../../browser/editorExtensions.js';
 import { CodeLensProviderRegistry } from '../../common/modes.js';
 import { IModelService } from '../../common/services/modelService.js';
+import { CancellationToken } from '../../../base/common/cancellation.js';
 export function getCodeLensData(model, token) {
     var symbols = [];
     var provider = CodeLensProviderRegistry.ordered(model);
@@ -59,17 +60,14 @@ registerLanguageCommand('_executeCodeLensProvider', function (accessor, args) {
     var result = [];
     return getCodeLensData(model, CancellationToken.None).then(function (value) {
         var resolve = [];
-        var _loop_1 = function (item) {
+        for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
+            var item = value_1[_i];
             if (typeof itemResolveCount === 'undefined' || Boolean(item.symbol.command)) {
                 result.push(item.symbol);
             }
-            else if (itemResolveCount-- > 0 && item.provider.resolveCodeLens) {
-                resolve.push(Promise.resolve(item.provider.resolveCodeLens(model, item.symbol, CancellationToken.None)).then(function (symbol) { return result.push(symbol || item.symbol); }));
+            else if (itemResolveCount-- > 0) {
+                resolve.push(Promise.resolve(item.provider.resolveCodeLens(model, item.symbol, CancellationToken.None)).then(function (symbol) { return result.push(symbol); }));
             }
-        };
-        for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
-            var item = value_1[_i];
-            _loop_1(item);
         }
         return Promise.all(resolve);
     }).then(function () {

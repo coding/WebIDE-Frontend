@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -69,3 +67,13 @@ var KeyboardContextMenuEvent = /** @class */ (function (_super) {
     return KeyboardContextMenuEvent;
 }(ContextMenuEvent));
 export { KeyboardContextMenuEvent };
+export var DragOverEffect;
+(function (DragOverEffect) {
+    DragOverEffect[DragOverEffect["COPY"] = 0] = "COPY";
+    DragOverEffect[DragOverEffect["MOVE"] = 1] = "MOVE";
+})(DragOverEffect || (DragOverEffect = {}));
+export var DragOverBubble;
+(function (DragOverBubble) {
+    DragOverBubble[DragOverBubble["BUBBLE_DOWN"] = 0] = "BUBBLE_DOWN";
+    DragOverBubble[DragOverBubble["BUBBLE_UP"] = 1] = "BUBBLE_UP";
+})(DragOverBubble || (DragOverBubble = {}));

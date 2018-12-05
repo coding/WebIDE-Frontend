@@ -3,12 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,13 +13,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import './colorPicker.css';
-import { onDidChangeZoomLevel } from '../../../base/browser/browser.js';
-import * as dom from '../../../base/browser/dom.js';
-import { GlobalMouseMoveMonitor, standardMouseMoveMerger } from '../../../base/browser/globalMouseMoveMonitor.js';
-import { Widget } from '../../../base/browser/ui/widget.js';
-import { Color, HSVA, RGBA } from '../../../base/common/color.js';
 import { Emitter } from '../../../base/common/event.js';
+import { Widget } from '../../../base/browser/ui/widget.js';
+import * as dom from '../../../base/browser/dom.js';
+import { onDidChangeZoomLevel } from '../../../base/browser/browser.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
+import { GlobalMouseMoveMonitor, standardMouseMoveMerger } from '../../../base/browser/globalMouseMoveMonitor.js';
+import { Color, RGBA, HSVA } from '../../../base/common/color.js';
 import { editorHoverBackground } from '../../../platform/theme/common/colorRegistry.js';
 import { registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
 var $ = dom.$;

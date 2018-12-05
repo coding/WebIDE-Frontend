@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
+var Promise = monaco.Promise;
 var STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 var WorkerManager = /** @class */ (function () {
     function WorkerManager(defaults) {
@@ -44,8 +45,7 @@ var WorkerManager = /** @class */ (function () {
                 // passed in to the create() method
                 createData: {
                     languageSettings: this._defaults.diagnosticsOptions,
-                    languageId: this._defaults.languageId,
-                    enableSchemaRequest: this._defaults.diagnosticsOptions.enableSchemaRequest
+                    languageId: this._defaults.languageId
                 }
             });
             this._client = this._worker.getProxy();
@@ -59,12 +59,22 @@ var WorkerManager = /** @class */ (function () {
             resources[_i] = arguments[_i];
         }
         var _client;
-        return this._getClient().then(function (client) {
+        return toShallowCancelPromise(this._getClient().then(function (client) {
             _client = client;
         }).then(function (_) {
             return _this._worker.withSyncedResources(resources);
-        }).then(function (_) { return _client; });
+        }).then(function (_) { return _client; }));
     };
     return WorkerManager;
 }());
 export { WorkerManager };
+function toShallowCancelPromise(p) {
+    var completeCallback;
+    var errorCallback;
+    var r = new Promise(function (c, e) {
+        completeCallback = c;
+        errorCallback = e;
+    }, function () { });
+    p.then(completeCallback, errorCallback);
+    return r;
+}

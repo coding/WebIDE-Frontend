@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { TokenMetadata } from '../modes.js';
 var LineTokens = /** @class */ (function () {
     function LineTokens(tokens, text) {

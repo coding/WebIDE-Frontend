@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { MinimapCharRenderer } from './minimapCharRenderer.js';
 function toUint8ClampedArrat(arr) {
     var r = new Uint8ClampedArray(arr.length);

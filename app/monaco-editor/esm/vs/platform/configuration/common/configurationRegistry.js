@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as nls from '../../../nls.js';
 import { Emitter } from '../../../base/common/event.js';
 import { Registry } from '../../registry/common/platform.js';
@@ -11,6 +12,12 @@ import { Extensions as JSONExtensions } from '../../jsonschemas/common/jsonContr
 export var Extensions = {
     Configuration: 'base.contributions.configuration'
 };
+export var ConfigurationScope;
+(function (ConfigurationScope) {
+    ConfigurationScope[ConfigurationScope["APPLICATION"] = 1] = "APPLICATION";
+    ConfigurationScope[ConfigurationScope["WINDOW"] = 2] = "WINDOW";
+    ConfigurationScope[ConfigurationScope["RESOURCE"] = 3] = "RESOURCE";
+})(ConfigurationScope || (ConfigurationScope = {}));
 export var allSettings = { properties: {}, patternProperties: {} };
 export var applicationSettings = { properties: {}, patternProperties: {} };
 export var windowSettings = { properties: {}, patternProperties: {} };
@@ -78,7 +85,7 @@ var ConfigurationRegistry = /** @class */ (function () {
     };
     ConfigurationRegistry.prototype.validateAndRegisterProperties = function (configuration, validate, scope, overridable) {
         if (validate === void 0) { validate = true; }
-        if (scope === void 0) { scope = 2 /* WINDOW */; }
+        if (scope === void 0) { scope = ConfigurationScope.WINDOW; }
         if (overridable === void 0) { overridable = false; }
         scope = types.isUndefinedOrNull(configuration.scope) ? scope : configuration.scope;
         overridable = configuration.overridable || overridable;
@@ -140,13 +147,13 @@ var ConfigurationRegistry = /** @class */ (function () {
                 for (var key in properties) {
                     allSettings.properties[key] = properties[key];
                     switch (properties[key].scope) {
-                        case 1 /* APPLICATION */:
+                        case ConfigurationScope.APPLICATION:
                             applicationSettings.properties[key] = properties[key];
                             break;
-                        case 2 /* WINDOW */:
+                        case ConfigurationScope.WINDOW:
                             windowSettings.properties[key] = properties[key];
                             break;
-                        case 3 /* RESOURCE */:
+                        case ConfigurationScope.RESOURCE:
                             resourceSettings.properties[key] = properties[key];
                             break;
                     }

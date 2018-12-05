@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,10 +14,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as strings from '../../../base/common/strings.js';
-import { CharacterClassifier } from '../core/characterClassifier.js';
-import { toUint32Array } from '../core/uint.js';
 import { PrefixSumComputer } from './prefixSumComputer.js';
 import { OutputPosition } from './splitLinesCollection.js';
+import { CharacterClassifier } from '../core/characterClassifier.js';
+import { toUint32Array } from '../core/uint.js';
+import { WrappingIndent } from '../config/editorOptions.js';
 var WrappingCharacterClassifier = /** @class */ (function (_super) {
     __extends(WrappingCharacterClassifier, _super);
     function WrappingCharacterClassifier(BREAK_BEFORE, BREAK_AFTER, BREAK_OBTRUSIVE) {
@@ -74,7 +73,7 @@ var CharacterHardWrappingLineMapperFactory = /** @class */ (function () {
         var wrappedTextIndentVisibleColumn = 0;
         var wrappedTextIndent = '';
         var firstNonWhitespaceIndex = -1;
-        if (hardWrappingIndent !== 0 /* None */) {
+        if (hardWrappingIndent !== WrappingIndent.None) {
             firstNonWhitespaceIndex = strings.firstNonWhitespaceIndex(lineText);
             if (firstNonWhitespaceIndex !== -1) {
                 // Track existing indent
@@ -84,10 +83,10 @@ var CharacterHardWrappingLineMapperFactory = /** @class */ (function () {
                 }
                 // Increase indent of continuation lines, if desired
                 var numberOfAdditionalTabs = 0;
-                if (hardWrappingIndent === 2 /* Indent */) {
+                if (hardWrappingIndent === WrappingIndent.Indent) {
                     numberOfAdditionalTabs = 1;
                 }
-                else if (hardWrappingIndent === 3 /* DeepIndent */) {
+                else if (hardWrappingIndent === WrappingIndent.DeepIndent) {
                     numberOfAdditionalTabs = 2;
                 }
                 for (var i = 0; i < numberOfAdditionalTabs; i++) {
@@ -181,7 +180,7 @@ var CharacterHardWrappingLineMapperFactory = /** @class */ (function () {
                 // Advance obtrusiveBreakVisibleColumn
                 obtrusiveBreakVisibleColumn = CharacterHardWrappingLineMapperFactory.nextVisibleColumn(obtrusiveBreakVisibleColumn, tabSize, charCodeIsTab, charColumnSize);
             }
-            if (charCodeClass === 2 /* BREAK_AFTER */ && (hardWrappingIndent === 0 /* None */ || i >= firstNonWhitespaceIndex)) {
+            if (charCodeClass === 2 /* BREAK_AFTER */ && (hardWrappingIndent === WrappingIndent.None || i >= firstNonWhitespaceIndex)) {
                 // This is a character that indicates that a break should happen after it
                 niceBreakOffset = i + 1;
                 niceBreakVisibleColumn = wrappedTextIndentVisibleColumn;

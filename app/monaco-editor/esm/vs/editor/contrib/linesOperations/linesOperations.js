@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,20 +15,20 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import * as nls from '../../../nls.js';
 import { KeyChord } from '../../../base/common/keyCodes.js';
-import { CoreEditingCommands } from '../../browser/controller/coreCommands.js';
-import { EditorAction, registerEditorAction } from '../../browser/editorExtensions.js';
-import { ReplaceCommand, ReplaceCommandThatPreservesSelection } from '../../common/commands/replaceCommand.js';
-import { TrimTrailingWhitespaceCommand } from '../../common/commands/trimTrailingWhitespaceCommand.js';
-import { TypeOperations } from '../../common/controller/cursorTypeOperations.js';
+import { SortLinesCommand } from './sortLinesCommand.js';
 import { EditOperation } from '../../common/core/editOperation.js';
-import { Position } from '../../common/core/position.js';
+import { TrimTrailingWhitespaceCommand } from '../../common/commands/trimTrailingWhitespaceCommand.js';
+import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { ReplaceCommand, ReplaceCommandThatPreservesSelection } from '../../common/commands/replaceCommand.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
-import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { Position } from '../../common/core/position.js';
+import { registerEditorAction, EditorAction } from '../../browser/editorExtensions.js';
 import { CopyLinesCommand } from './copyLinesCommand.js';
 import { DeleteLinesCommand } from './deleteLinesCommand.js';
 import { MoveLinesCommand } from './moveLinesCommand.js';
-import { SortLinesCommand } from './sortLinesCommand.js';
+import { TypeOperations } from '../../common/controller/cursorTypeOperations.js';
+import { CoreEditingCommands } from '../../browser/controller/coreCommands.js';
 import { MenuId } from '../../../platform/actions/common/actions.js';
 // copy lines
 var AbstractCopyLinesAction = /** @class */ (function (_super) {
@@ -42,7 +40,7 @@ var AbstractCopyLinesAction = /** @class */ (function (_super) {
     }
     AbstractCopyLinesAction.prototype.run = function (_accessor, editor) {
         var commands = [];
-        var selections = editor.getSelections() || [];
+        var selections = editor.getSelections();
         for (var i = 0; i < selections.length; i++) {
             commands.push(new CopyLinesCommand(selections[i], this.down));
         }
@@ -110,7 +108,7 @@ var AbstractMoveLinesAction = /** @class */ (function (_super) {
     }
     AbstractMoveLinesAction.prototype.run = function (_accessor, editor) {
         var commands = [];
-        var selections = editor.getSelections() || [];
+        var selections = editor.getSelections();
         var autoIndent = editor.getConfiguration().autoIndent;
         for (var i = 0; i < selections.length; i++) {
             commands.push(new MoveLinesCommand(selections[i], this.down, autoIndent));
@@ -177,7 +175,7 @@ var AbstractSortLinesAction = /** @class */ (function (_super) {
         return _this;
     }
     AbstractSortLinesAction.prototype.run = function (_accessor, editor) {
-        var selections = editor.getSelections() || [];
+        var selections = editor.getSelections();
         for (var i = 0, len = selections.length; i < len; i++) {
             var selection = selections[i];
             if (!SortLinesCommand.canRun(editor.getModel(), selection, this.descending)) {
@@ -242,7 +240,7 @@ var TrimTrailingWhitespaceAction = /** @class */ (function (_super) {
             // See https://github.com/editorconfig/editorconfig-vscode/issues/47
             // It is very convenient for the editor config extension to invoke this action.
             // So, if we get a reason:'auto-save' passed in, let's preserve cursor positions.
-            cursors = (editor.getSelections() || []).map(function (s) { return new Position(s.positionLineNumber, s.positionColumn); });
+            cursors = editor.getSelections().map(function (s) { return new Position(s.positionLineNumber, s.positionColumn); });
         }
         var command = new TrimTrailingWhitespaceCommand(editor.getSelection(), cursors);
         editor.pushUndoStop();
@@ -331,12 +329,8 @@ var IndentLinesAction = /** @class */ (function (_super) {
         }) || this;
     }
     IndentLinesAction.prototype.run = function (_accessor, editor) {
-        var cursors = editor._getCursors();
-        if (!cursors) {
-            return;
-        }
         editor.pushUndoStop();
-        editor.executeCommands(this.id, TypeOperations.indent(cursors.context.config, editor.getModel(), editor.getSelections()));
+        editor.executeCommands(this.id, TypeOperations.indent(editor._getCursorConfiguration(), editor.getModel(), editor.getSelections()));
         editor.pushUndoStop();
     };
     return IndentLinesAction;
@@ -378,12 +372,8 @@ var InsertLineBeforeAction = /** @class */ (function (_super) {
         }) || this;
     }
     InsertLineBeforeAction.prototype.run = function (_accessor, editor) {
-        var cursors = editor._getCursors();
-        if (!cursors) {
-            return;
-        }
         editor.pushUndoStop();
-        editor.executeCommands(this.id, TypeOperations.lineInsertBefore(cursors.context.config, editor.getModel(), editor.getSelections()));
+        editor.executeCommands(this.id, TypeOperations.lineInsertBefore(editor._getCursorConfiguration(), editor.getModel(), editor.getSelections()));
     };
     return InsertLineBeforeAction;
 }(EditorAction));
@@ -404,12 +394,8 @@ var InsertLineAfterAction = /** @class */ (function (_super) {
         }) || this;
     }
     InsertLineAfterAction.prototype.run = function (_accessor, editor) {
-        var cursors = editor._getCursors();
-        if (!cursors) {
-            return;
-        }
         editor.pushUndoStop();
-        editor.executeCommands(this.id, TypeOperations.lineInsertAfter(cursors.context.config, editor.getModel(), editor.getSelections()));
+        editor.executeCommands(this.id, TypeOperations.lineInsertAfter(editor._getCursorConfiguration(), editor.getModel(), editor.getSelections()));
     };
     return InsertLineAfterAction;
 }(EditorAction));
@@ -456,7 +442,7 @@ var DeleteAllLeftAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
-                primary: 0,
+                primary: null,
                 mac: { primary: 2048 /* CtrlCmd */ | 1 /* Backspace */ },
                 weight: 100 /* EditorContrib */
             }
@@ -522,7 +508,7 @@ var DeleteAllRightAction = /** @class */ (function (_super) {
             precondition: EditorContextKeys.writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.textInputFocus,
-                primary: 0,
+                primary: null,
                 mac: { primary: 256 /* WinCtrl */ | 41 /* KEY_K */, secondary: [2048 /* CtrlCmd */ | 20 /* Delete */] },
                 weight: 100 /* EditorContrib */
             }

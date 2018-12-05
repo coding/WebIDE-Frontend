@@ -2,29 +2,26 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
-import { Event } from '../../../base/common/event.js';
-export var IStorageService = createDecorator('storageService');
-export var NullStorageService = new /** @class */ (function () {
-    function class_1() {
-        this._serviceBrand = undefined;
-        this.onDidChangeStorage = Event.None;
-        this.onWillSaveState = Event.None;
-    }
-    class_1.prototype.get = function (key, scope, fallbackValue) {
-        return fallbackValue;
-    };
-    class_1.prototype.getBoolean = function (key, scope, fallbackValue) {
-        return fallbackValue;
-    };
-    class_1.prototype.getInteger = function (key, scope, fallbackValue) {
-        return fallbackValue;
-    };
-    class_1.prototype.store = function (key, value, scope) {
-        return Promise.resolve();
-    };
-    class_1.prototype.remove = function (key, scope) {
-        return Promise.resolve();
-    };
-    return class_1;
-}());
+export var ID = 'storageService';
+export var IStorageService = createDecorator(ID);
+export var StorageScope;
+(function (StorageScope) {
+    /**
+     * The stored data will be scoped to all workspaces of this domain.
+     */
+    StorageScope[StorageScope["GLOBAL"] = 0] = "GLOBAL";
+    /**
+     * The stored data will be scoped to the current workspace.
+     */
+    StorageScope[StorageScope["WORKSPACE"] = 1] = "WORKSPACE";
+})(StorageScope || (StorageScope = {}));
+export var NullStorageService = {
+    _serviceBrand: undefined,
+    store: function () { return undefined; },
+    remove: function () { return undefined; },
+    get: function (a, b, defaultValue) { return defaultValue; },
+    getInteger: function (a, b, defaultValue) { return defaultValue; },
+    getBoolean: function (a, b, defaultValue) { return defaultValue; }
+};

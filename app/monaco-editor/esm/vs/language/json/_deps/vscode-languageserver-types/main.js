@@ -919,9 +919,8 @@ export { DocumentSymbol };
     function is(value) {
         var candidate = value;
         return candidate &&
-            Is.string(candidate.name) && Is.number(candidate.kind) &&
+            Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
             Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
-            (candidate.detail === void 0 || Is.string(candidate.detail)) &&
             (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
             (candidate.children === void 0 || Array.isArray(candidate.children));
     }

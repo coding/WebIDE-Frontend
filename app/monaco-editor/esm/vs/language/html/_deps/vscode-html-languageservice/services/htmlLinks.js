@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { createScanner } from '../parser/htmlScanner.js';
-import { Range } from './../../vscode-languageserver-types/main.js';
+import { Range } from '../../vscode-languageserver-types/main.js';
 import * as strings from '../utils/strings.js';
-import Uri from './../../vscode-uri/index.js';
+import Uri from '../../vscode-uri/index.js';
 import { TokenType } from '../htmlLanguageTypes.js';
 function normalizeRef(url, languageId) {
     var first = url[0];

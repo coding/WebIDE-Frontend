@@ -2,8 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { FoldingRegions, MAX_LINE_NUMBER } from './foldingRanges.js';
 import { TextModel } from '../../common/model/textModel.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { LanguageConfigurationRegistry } from '../../common/modes/languageConfigurationRegistry.js';
 var MAX_FOLDING_REGIONS_FOR_INDENT_LIMIT = 5000;
 export var ID_INDENT_PROVIDER = 'indent';
@@ -16,9 +18,9 @@ var IndentRangeProvider = /** @class */ (function () {
     };
     IndentRangeProvider.prototype.compute = function (cancelationToken) {
         var foldingRules = LanguageConfigurationRegistry.getFoldingRules(this.editorModel.getLanguageIdentifier().id);
-        var offSide = foldingRules && !!foldingRules.offSide;
+        var offSide = foldingRules && foldingRules.offSide;
         var markers = foldingRules && foldingRules.markers;
-        return Promise.resolve(computeRanges(this.editorModel, offSide, markers));
+        return TPromise.as(computeRanges(this.editorModel, offSide, markers));
     };
     return IndentRangeProvider;
 }());

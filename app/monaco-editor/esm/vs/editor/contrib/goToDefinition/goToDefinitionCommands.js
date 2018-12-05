@@ -3,37 +3,32 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import * as nls from '../../../nls.js';
 import { alert } from '../../../base/browser/ui/aria/aria.js';
-import { createCancelablePromise } from '../../../base/common/async.js';
-import { CancellationToken } from '../../../base/common/cancellation.js';
 import { KeyChord } from '../../../base/common/keyCodes.js';
 import * as platform from '../../../base/common/platform.js';
-import { EditorAction, registerEditorAction } from '../../browser/editorExtensions.js';
 import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
 import { Range } from '../../common/core/range.js';
-import { EditorContextKeys } from '../../common/editorContextKeys.js';
-import { MessageController } from '../message/messageController.js';
-import { PeekContext } from '../referenceSearch/peekViewWidget.js';
+import { registerEditorAction, EditorAction } from '../../browser/editorExtensions.js';
+import { getDefinitionsAtPosition, getImplementationsAtPosition, getTypeDefinitionsAtPosition } from './goToDefinition.js';
 import { ReferencesController } from '../referenceSearch/referencesController.js';
 import { ReferencesModel } from '../referenceSearch/referencesModel.js';
-import * as nls from '../../../nls.js';
-import { MenuId, MenuRegistry } from '../../../platform/actions/common/actions.js';
+import { PeekContext } from '../referenceSearch/peekViewWidget.js';
 import { ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
-import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { MessageController } from '../message/messageController.js';
+import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { IProgressService } from '../../../platform/progress/common/progress.js';
-import { getDefinitionsAtPosition, getImplementationsAtPosition, getTypeDefinitionsAtPosition } from './goToDefinition.js';
+import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { createCancelablePromise } from '../../../base/common/async.js';
 var DefinitionActionConfig = /** @class */ (function () {
     function DefinitionActionConfig(openToSide, openInPeek, filterCurrent, showMessage) {
         if (openToSide === void 0) { openToSide = false; }
@@ -63,7 +58,7 @@ var DefinitionAction = /** @class */ (function (_super) {
         var progressService = accessor.get(IProgressService);
         var model = editor.getModel();
         var pos = editor.getPosition();
-        var definitionPromise = this._getDeclarationsAtPosition(model, pos, CancellationToken.None).then(function (references) {
+        var definitionPromise = this._getDeclarationsAtPosition(model, pos).then(function (references) {
             if (model.isDisposed() || editor.getModel() !== model) {
                 // new model, no more model
                 return;
@@ -112,8 +107,8 @@ var DefinitionAction = /** @class */ (function (_super) {
         progressService.showWhile(definitionPromise, 250);
         return definitionPromise;
     };
-    DefinitionAction.prototype._getDeclarationsAtPosition = function (model, position, token) {
-        return getDefinitionsAtPosition(model, position, token);
+    DefinitionAction.prototype._getDeclarationsAtPosition = function (model, position) {
+        return getDefinitionsAtPosition(model, position);
     };
     DefinitionAction.prototype._getNoResultFoundMessage = function (info) {
         return info && info.word
@@ -143,10 +138,11 @@ var DefinitionAction = /** @class */ (function (_super) {
         }
     };
     DefinitionAction.prototype._openReference = function (editor, editorService, reference, sideBySide) {
+        var uri = reference.uri, range = reference.range;
         return editorService.openCodeEditor({
-            resource: reference.uri,
+            resource: uri,
             options: {
-                selection: Range.collapseToStart(reference.range),
+                selection: Range.collapseToStart(range),
                 revealIfOpened: true,
                 revealInCenterIfOutsideViewport: true
             }
@@ -246,8 +242,8 @@ var ImplementationAction = /** @class */ (function (_super) {
     function ImplementationAction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ImplementationAction.prototype._getDeclarationsAtPosition = function (model, position, token) {
-        return getImplementationsAtPosition(model, position, token);
+    ImplementationAction.prototype._getDeclarationsAtPosition = function (model, position) {
+        return getImplementationsAtPosition(model, position);
     };
     ImplementationAction.prototype._getNoResultFoundMessage = function (info) {
         return info && info.word
@@ -303,8 +299,8 @@ var TypeDefinitionAction = /** @class */ (function (_super) {
     function TypeDefinitionAction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    TypeDefinitionAction.prototype._getDeclarationsAtPosition = function (model, position, token) {
-        return getTypeDefinitionsAtPosition(model, position, token);
+    TypeDefinitionAction.prototype._getDeclarationsAtPosition = function (model, position) {
+        return getTypeDefinitionsAtPosition(model, position);
     };
     TypeDefinitionAction.prototype._getNoResultFoundMessage = function (info) {
         return info && info.word
@@ -366,28 +362,3 @@ registerEditorAction(GoToImplementationAction);
 registerEditorAction(PeekImplementationAction);
 registerEditorAction(GoToTypeDefinitionAction);
 registerEditorAction(PeekTypeDefinitionAction);
-// Go to menu
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-    group: 'z_go_to',
-    command: {
-        id: 'editor.action.goToDeclaration',
-        title: nls.localize({ key: 'miGotoDefinition', comment: ['&& denotes a mnemonic'] }, "Go to &&Definition")
-    },
-    order: 4
-});
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-    group: 'z_go_to',
-    command: {
-        id: 'editor.action.goToTypeDefinition',
-        title: nls.localize({ key: 'miGotoTypeDefinition', comment: ['&& denotes a mnemonic'] }, "Go to &&Type Definition")
-    },
-    order: 5
-});
-MenuRegistry.appendMenuItem(MenuId.MenubarGoMenu, {
-    group: 'z_go_to',
-    command: {
-        id: 'editor.action.goToImplementation',
-        title: nls.localize({ key: 'miGotoImplementation', comment: ['&& denotes a mnemonic'] }, "Go to &&Implementation")
-    },
-    order: 6
-});

@@ -2,13 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../../base/browser/dom.js';
+'use strict';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import * as strings from '../../../../base/common/strings.js';
-import { Configuration } from '../../config/configuration.js';
-import { TextEditorCursorStyle } from '../../../common/config/editorOptions.js';
 import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
+import { TextEditorCursorStyle } from '../../../common/config/editorOptions.js';
+import { Configuration } from '../../config/configuration.js';
+import * as dom from '../../../../base/browser/dom.js';
+import * as strings from '../../../../base/common/strings.js';
 var ViewCursorRenderData = /** @class */ (function () {
     function ViewCursorRenderData(top, left, width, height, textContent, textContentClassName) {
         this.top = top;
@@ -96,13 +97,8 @@ var ViewCursor = /** @class */ (function () {
             else {
                 width_1 = dom.computeScreenAwareSize(1);
             }
-            var left = visibleRange.left;
-            if (width_1 >= 2 && left >= 1) {
-                // try to center cursor
-                left -= 1;
-            }
             var top_1 = ctx.getVerticalOffsetForLineNumber(this._position.lineNumber) - ctx.bigNumbersDelta;
-            return new ViewCursorRenderData(top_1, left, width_1, this._lineHeight, textContent, textContentClassName);
+            return new ViewCursorRenderData(top_1, visibleRange.left, width_1, this._lineHeight, textContent, textContentClassName);
         }
         var visibleRangeForCharacter = ctx.linesVisibleRangesForRange(new Range(this._position.lineNumber, this._position.column, this._position.lineNumber, this._position.column + 1), false);
         if (!visibleRangeForCharacter || visibleRangeForCharacter.length === 0 || visibleRangeForCharacter[0].ranges.length === 0) {

@@ -2,15 +2,19 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../../common/core/range.js';
-import { Token, TokenizationResult, TokenizationResult2 } from '../../common/core/token.js';
-import * as modes from '../../common/modes.js';
-import { LanguageConfigurationRegistry } from '../../common/modes/languageConfigurationRegistry.js';
+'use strict';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { ModesRegistry } from '../../common/modes/modesRegistry.js';
-import * as standaloneEnums from '../../common/standalone/standaloneEnums.js';
 import { StaticServices } from './standaloneServices.js';
+import * as modes from '../../common/modes.js';
+import { IndentAction } from '../../common/modes/languageConfiguration.js';
+import { Position } from '../../common/core/position.js';
+import { Range } from '../../common/core/range.js';
+import { toThenable } from '../../../base/common/async.js';
 import { compile } from '../common/monarch/monarchCompile.js';
 import { createTokenizationSupport } from '../common/monarch/monarchLexer.js';
+import { LanguageConfigurationRegistry } from '../../common/modes/languageConfigurationRegistry.js';
+import { Token, TokenizationResult, TokenizationResult2 } from '../../common/core/token.js';
 /**
  * Register information about a new language.
  */
@@ -27,7 +31,7 @@ export function getLanguages() {
 }
 export function getEncodedLanguageId(languageId) {
     var lid = StaticServices.modeService.get().getLanguageIdentifier(languageId);
-    return lid ? lid.id : 0;
+    return lid && lid.id;
 }
 /**
  * An event emitted when a language is first time needed (e.g. a model has it set).
@@ -208,7 +212,7 @@ export function registerRenameProvider(languageId, provider) {
     return modes.RenameProviderRegistry.register(languageId, provider);
 }
 /**
- * Register a signature help provider (used by e.g. parameter hints).
+ * Register a signature help provider (used by e.g. paremeter hints).
  */
 export function registerSignatureHelpProvider(languageId, provider) {
     return modes.SignatureHelpProviderRegistry.register(languageId, provider);
@@ -220,7 +224,7 @@ export function registerHoverProvider(languageId, provider) {
     return modes.HoverProviderRegistry.register(languageId, {
         provideHover: function (model, position, token) {
             var word = model.getWordAtPosition(position);
-            return Promise.resolve(provider.provideHover(model, position, token)).then(function (value) {
+            return toThenable(provider.provideHover(model, position, token)).then(function (value) {
                 if (!value) {
                     return undefined;
                 }
@@ -312,7 +316,16 @@ export function registerLinkProvider(languageId, provider) {
  * Register a completion item provider (use by e.g. suggestions).
  */
 export function registerCompletionItemProvider(languageId, provider) {
-    return modes.CompletionProviderRegistry.register(languageId, provider);
+    var adapter = new SuggestAdapter(provider);
+    return modes.SuggestRegistry.register(languageId, {
+        triggerCharacters: provider.triggerCharacters,
+        provideCompletionItems: function (model, position, context, token) {
+            return adapter.provideCompletionItems(model, position, context, token);
+        },
+        resolveCompletionItem: function (model, position, suggestion, token) {
+            return adapter.resolveCompletionItem(model, position, suggestion, token);
+        }
+    });
 }
 /**
  * Register a document color provider (used by Color Picker, Color Decorator).
@@ -326,6 +339,163 @@ export function registerColorProvider(languageId, provider) {
 export function registerFoldingRangeProvider(languageId, provider) {
     return modes.FoldingRangeProviderRegistry.register(languageId, provider);
 }
+/**
+ * Completion item kinds.
+ */
+export var CompletionItemKind;
+(function (CompletionItemKind) {
+    CompletionItemKind[CompletionItemKind["Text"] = 0] = "Text";
+    CompletionItemKind[CompletionItemKind["Method"] = 1] = "Method";
+    CompletionItemKind[CompletionItemKind["Function"] = 2] = "Function";
+    CompletionItemKind[CompletionItemKind["Constructor"] = 3] = "Constructor";
+    CompletionItemKind[CompletionItemKind["Field"] = 4] = "Field";
+    CompletionItemKind[CompletionItemKind["Variable"] = 5] = "Variable";
+    CompletionItemKind[CompletionItemKind["Class"] = 6] = "Class";
+    CompletionItemKind[CompletionItemKind["Interface"] = 7] = "Interface";
+    CompletionItemKind[CompletionItemKind["Module"] = 8] = "Module";
+    CompletionItemKind[CompletionItemKind["Property"] = 9] = "Property";
+    CompletionItemKind[CompletionItemKind["Unit"] = 10] = "Unit";
+    CompletionItemKind[CompletionItemKind["Value"] = 11] = "Value";
+    CompletionItemKind[CompletionItemKind["Enum"] = 12] = "Enum";
+    CompletionItemKind[CompletionItemKind["Keyword"] = 13] = "Keyword";
+    CompletionItemKind[CompletionItemKind["Snippet"] = 14] = "Snippet";
+    CompletionItemKind[CompletionItemKind["Color"] = 15] = "Color";
+    CompletionItemKind[CompletionItemKind["File"] = 16] = "File";
+    CompletionItemKind[CompletionItemKind["Reference"] = 17] = "Reference";
+    CompletionItemKind[CompletionItemKind["Folder"] = 18] = "Folder";
+})(CompletionItemKind || (CompletionItemKind = {}));
+function convertKind(kind) {
+    switch (kind) {
+        case CompletionItemKind.Method: return 'method';
+        case CompletionItemKind.Function: return 'function';
+        case CompletionItemKind.Constructor: return 'constructor';
+        case CompletionItemKind.Field: return 'field';
+        case CompletionItemKind.Variable: return 'variable';
+        case CompletionItemKind.Class: return 'class';
+        case CompletionItemKind.Interface: return 'interface';
+        case CompletionItemKind.Module: return 'module';
+        case CompletionItemKind.Property: return 'property';
+        case CompletionItemKind.Unit: return 'unit';
+        case CompletionItemKind.Value: return 'value';
+        case CompletionItemKind.Enum: return 'enum';
+        case CompletionItemKind.Keyword: return 'keyword';
+        case CompletionItemKind.Snippet: return 'snippet';
+        case CompletionItemKind.Text: return 'text';
+        case CompletionItemKind.Color: return 'color';
+        case CompletionItemKind.File: return 'file';
+        case CompletionItemKind.Reference: return 'reference';
+        case CompletionItemKind.Folder: return 'folder';
+    }
+    return 'property';
+}
+var SuggestAdapter = /** @class */ (function () {
+    function SuggestAdapter(provider) {
+        this._provider = provider;
+    }
+    SuggestAdapter.from = function (item, position, wordStartPos) {
+        var suggestion = {
+            _actual: item,
+            label: item.label,
+            insertText: item.label,
+            type: convertKind(item.kind),
+            detail: item.detail,
+            documentation: item.documentation,
+            command: item.command,
+            sortText: item.sortText,
+            filterText: item.filterText,
+            snippetType: 'internal',
+            additionalTextEdits: item.additionalTextEdits,
+            commitCharacters: item.commitCharacters
+        };
+        var editRange = item.textEdit ? item.textEdit.range : item.range;
+        if (editRange) {
+            var isSingleLine = (editRange.startLineNumber === editRange.endLineNumber);
+            // invalid text edit
+            if (!isSingleLine || editRange.startLineNumber !== position.lineNumber) {
+                console.warn('INVALID range, must be single line and on the same line');
+                return null;
+            }
+            // insert the text of the edit and create a dedicated
+            // suggestion-container with overwrite[Before|After]
+            suggestion.overwriteBefore = position.column - editRange.startColumn;
+            suggestion.overwriteAfter = editRange.endColumn - position.column;
+        }
+        else {
+            suggestion.overwriteBefore = position.column - wordStartPos.column;
+            suggestion.overwriteAfter = 0;
+        }
+        if (item.textEdit) {
+            suggestion.insertText = item.textEdit.text;
+        }
+        else if (typeof item.insertText === 'object' && typeof item.insertText.value === 'string') {
+            suggestion.insertText = item.insertText.value;
+            suggestion.snippetType = 'textmate';
+        }
+        else if (typeof item.insertText === 'string') {
+            suggestion.insertText = item.insertText;
+        }
+        return suggestion;
+    };
+    SuggestAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
+        var result = this._provider.provideCompletionItems(model, position, token, context);
+        return toThenable(result).then(function (value) {
+            var result = {
+                suggestions: []
+            };
+            // default text edit start
+            var wordStartPos = position;
+            var word = model.getWordUntilPosition(position);
+            if (word) {
+                wordStartPos = new Position(wordStartPos.lineNumber, word.startColumn);
+            }
+            var list;
+            if (Array.isArray(value)) {
+                list = {
+                    items: value,
+                    isIncomplete: false
+                };
+            }
+            else if (typeof value === 'object' && Array.isArray(value.items)) {
+                list = value;
+                result.incomplete = list.isIncomplete;
+            }
+            else if (!value) {
+                // undefined and null are valid results
+                return undefined;
+            }
+            else {
+                // warn about everything else
+                console.warn('INVALID result from completion provider. expected CompletionItem-array or CompletionList but got:', value);
+            }
+            for (var i = 0; i < list.items.length; i++) {
+                var item = list.items[i];
+                var suggestion = SuggestAdapter.from(item, position, wordStartPos);
+                if (suggestion) {
+                    result.suggestions.push(suggestion);
+                }
+            }
+            return result;
+        });
+    };
+    SuggestAdapter.prototype.resolveCompletionItem = function (model, position, suggestion, token) {
+        if (typeof this._provider.resolveCompletionItem !== 'function') {
+            return TPromise.as(suggestion);
+        }
+        var item = suggestion._actual;
+        if (!item) {
+            return TPromise.as(suggestion);
+        }
+        return toThenable(this._provider.resolveCompletionItem(item, token)).then(function (resolvedItem) {
+            var wordStartPos = position;
+            var word = model.getWordUntilPosition(position);
+            if (word) {
+                wordStartPos = new Position(wordStartPos.lineNumber, word.startColumn);
+            }
+            return SuggestAdapter.from(resolvedItem, position, wordStartPos);
+        });
+    };
+    return SuggestAdapter;
+}());
 /**
  * @internal
  */
@@ -358,14 +528,11 @@ export function createMonacoLanguagesAPI() {
         registerColorProvider: registerColorProvider,
         registerFoldingRangeProvider: registerFoldingRangeProvider,
         // enums
-        DocumentHighlightKind: standaloneEnums.DocumentHighlightKind,
-        CompletionItemKind: standaloneEnums.CompletionItemKind,
-        CompletionItemInsertTextRule: standaloneEnums.CompletionItemInsertTextRule,
-        SymbolKind: standaloneEnums.SymbolKind,
-        IndentAction: standaloneEnums.IndentAction,
-        CompletionTriggerKind: standaloneEnums.CompletionTriggerKind,
-        SignatureHelpTriggerReason: standaloneEnums.SignatureHelpTriggerReason,
-        // classes
-        FoldingRangeKind: modes.FoldingRangeKind,
+        DocumentHighlightKind: modes.DocumentHighlightKind,
+        CompletionItemKind: CompletionItemKind,
+        SymbolKind: modes.SymbolKind,
+        IndentAction: IndentAction,
+        SuggestTriggerKind: modes.SuggestTriggerKind,
+        FoldingRangeKind: modes.FoldingRangeKind
     };
 }

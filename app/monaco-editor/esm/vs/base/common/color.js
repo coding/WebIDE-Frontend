@@ -282,7 +282,7 @@ var Color = /** @class */ (function () {
         return new Color(new RGBA(255 - this.rgba.r, 255 - this.rgba.g, 255 - this.rgba.b, this.rgba.a));
     };
     Color.prototype.toString = function () {
-        return '' + Color.Format.CSS.format(this);
+        return Color.Format.CSS.format(this);
     };
     Color.getLighterColor = function (of, relative, factor) {
         if (of.isLighterThan(relative)) {

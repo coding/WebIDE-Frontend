@@ -35,7 +35,7 @@ BEGIN THIRD PARTY
  *--------------------------------------------------------------------------------------------*/
 import * as strings from '../utils/strings.js';
 import * as arrays from '../utils/arrays.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 export var EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 export function isEmptyElement(e) {

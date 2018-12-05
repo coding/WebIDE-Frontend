@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.15.5(3d42593a5844407ab71d47b348ea3a8de5fec848)
+ * Version: 0.14.6(6c8f02b41db9ae5c4d15df767d47755e5c73b9d5)
  * Released under the MIT license
  * https://github.com/Microsoft/vscode/blob/master/LICENSE.txt
  *-----------------------------------------------------------*/
@@ -110,7 +110,9 @@ define("vs/editor/editor.main.nls", {
 		"Render vertical rulers after a certain number of monospace characters. Use multiple values for multiple rulers. No rulers are drawn if array is empty.",
 		"Characters that will be used as word separators when doing word related navigations or operations.",
 		"The number of spaces a tab is equal to. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.",
+		"Expected 'number'. Note that the value \"auto\" has been replaced by the `editor.detectIndentation` setting.",
 		"Insert spaces when pressing `Tab`. This setting is overridden based on the file contents when `#editor.detectIndentation#` is on.",
+		"Expected 'boolean'. Note that the value \"auto\" has been replaced by the `editor.detectIndentation` setting.",
 		"Controls whether `#editor.tabSize#` and `#editor.insertSpaces#` will be automatically detected when a file is opened based on the file contents.",
 		"Controls whether selections should have rounded corners.",
 		"Controls whether the editor will scroll beyond the last line.",
@@ -122,10 +124,10 @@ define("vs/editor/editor.main.nls", {
 		"Render the actual characters on a line as opposed to color blocks.",
 		"Limit the width of the minimap to render at most a certain number of columns.",
 		"Controls whether the hover is shown.",
-		"Controls the delay in milliseconds after which the hover is shown.",
+		"Time delay in milliseconds after which to the hover is shown.",
 		"Controls whether the hover should remain visible when mouse is moved over it.",
 		"Controls whether the search string in the Find Widget is seeded from the editor selection.",
-		"Controls whether the find operation is carried out on selected text or the entire file in the editor.",
+		"Controls whether the find operation is carried on selected text or the entire file in the editor.",
 		"Controls whether the Find Widget should read or modify the shared find clipboard on macOS.",
 		"Lines will never wrap.",
 		"Lines will wrap at the viewport width.",
@@ -149,17 +151,7 @@ define("vs/editor/editor.main.nls", {
 		"Controls whether suggestions should automatically show up while typing.",
 		"Controls the delay in milliseconds after which quick suggestions will show up.",
 		"Enables a pop-up that shows parameter documentation and type information as you type.",
-		"Controls whether the parameter hints menu cycles or closes when reaching the end of the list.",
-		"Use language configurations to determine when to autoclose brackets.",
-		"Autoclose brackets only when the cursor is to the left of whitespace.",
 		"Controls whether the editor should automatically close brackets after the user adds an opening bracket.",
-		"Use language configurations to determine when to autoclose quotes.",
-		"Autoclose quotes only when the cursor is to the left of whitespace.",
-		"Controls whether the editor should automatically close quotes after the user adds an opening quote.",
-		"Use language configurations to determine when to automatically surround selections.",
-		"Surround with brackets but not quotes.",
-		"Surround with quotes but not brackets.",
-		"Controls whether the editor should automatically surround selections.",
 		"Controls whether the editor should automatically format the line after typing.",
 		"Controls whether the editor should automatically format the pasted content. A formatter must be available and the formatter should be able to format a range in a document.",
 		"Controls whether the editor should automatically adjust the indentation when users type, paste or move lines. Extensions with indentation rules of the language must be available.",
@@ -173,20 +165,14 @@ define("vs/editor/editor.main.nls", {
 		"Do not show snippet suggestions.",
 		"Controls whether snippets are shown with other suggestions and how they are sorted.",
 		"Controls whether copying without a selection copies the current line.",
-		"Controls whether syntax highlighting should be copied into the clipboard.",
 		"Controls whether completions should be computed based on words in the document.",
 		"Always select the first suggestion.",
 		"Select recent suggestions unless further typing selects one, e.g. `console.| -> console.log` because `log` has been completed recently.",
 		"Select suggestions based on previous prefixes that have completed those suggestions, e.g. `co -> console` and `con -> const`.",
 		"Controls how suggestions are pre-selected when showing the suggest list.",
-		"Font size for the suggest widget. When set to `0`, the value of `#editor.fontSize#` is used.",
-		"Line height for the suggest widget. When set to `0`, the value of `#editor.lineHeight#` is used.",
-		"Tab complete will insert the best matching suggestion when pressing tab.",
-		"Disable tab completions.",
-		"Tab complete snippets when their prefix match. Works best when 'quickSuggestions' aren't enabled.",
-		"Enables tab completions.",
+		"Font size for the suggest widget.",
+		"Line height for the suggest widget.",
 		"Controls whether filtering and sorting suggestions accounts for small typos.",
-		"Controls whether sorting favours words that appear close to the cursor.",
 		"Control whether an active snippet prevents quick suggestions.",
 		"Controls whether the editor should highlight matches similar to the selection",
 		"Controls whether the editor should highlight semantic symbol occurrences.",
@@ -243,9 +229,7 @@ define("vs/editor/editor.main.nls", {
 		"Plain Text"
 	],
 	"vs/editor/common/services/modelServiceImpl": [
-		"[{0}]\n{1} [{2}]",
 		"[{0}]\n{1}",
-		"[{0}] {1} [{2}]",
 		"[{0}] {1}"
 	],
 	"vs/editor/common/view/editorColorRegistry": [
@@ -401,10 +385,7 @@ define("vs/editor/editor.main.nls", {
 		"No type definition found",
 		" – {0} type definitions",
 		"Go to Type Definition",
-		"Peek Type Definition",
-		"Go to &&Definition",
-		"Go to &&Type Definition",
-		"Go to &&Implementation"
+		"Peek Type Definition"
 	],
 	"vs/editor/contrib/goToDefinition/goToDefinitionMouse": [
 		"Click to show {0} definitions."
@@ -539,7 +520,6 @@ define("vs/editor/editor.main.nls", {
 	],
 	"vs/editor/contrib/rename/rename": [
 		"No result.",
-		"An unknown error occurred while resolving rename location",
 		"Successfully renamed '{0}' to '{1}'. Summary: {2}",
 		"Rename failed to execute.",
 		"Rename Symbol"
@@ -604,21 +584,17 @@ define("vs/editor/editor.main.nls", {
 		"Background color of the selected entry in the suggest widget.",
 		"Color of the match highlights in the suggest widget.",
 		"Read More...{0}",
+		"{0}, suggestion, has details",
+		"{0}, suggestion",
 		"Read less...{0}",
 		"Loading...",
 		"No suggestions.",
 		"{0}, accepted",
-		"{0}, snippet suggestion",
-		"{0}, suggestion",
-		"{0}, snippet suggestion. Reading details. {1}",
-		"{0}, suggestion. Reading details. {1}",
-		"{0}, snippet suggestion, has details",
-		"{0}, suggestion, has details"
+		"{0}, suggestion, has details",
+		"{0}, suggestion"
 	],
 	"vs/editor/contrib/toggleTabFocusMode/toggleTabFocusMode": [
-		"Toggle Tab Key Moves Focus",
-		"Pressing Tab will now move focus to the next focusable element",
-		"Pressing Tab will now insert the tab character"
+		"Toggle Tab Key Moves Focus"
 	],
 	"vs/editor/contrib/wordHighlighter/wordHighlighter": [
 		"Background color of a symbol during read-access, like reading a variable. The color must not be opaque to not hide underlying decorations.",
@@ -628,8 +604,7 @@ define("vs/editor/editor.main.nls", {
 		"Overview ruler marker color for symbol highlights. The color must not be opaque to not hide underlying decorations.",
 		"Overview ruler marker color for write-access symbol highlights. The color must not be opaque to not hide underlying decorations.",
 		"Go to Next Symbol Highlight",
-		"Go to Previous Symbol Highlight",
-		"Trigger Symbol Highlight"
+		"Go to Previous Symbol Highlight"
 	],
 	"vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp": [
 		"No selection",
@@ -739,16 +714,11 @@ define("vs/editor/editor.main.nls", {
 		"Input box border.",
 		"Border color of activated options in input fields.",
 		"Input validation background color for information severity.",
-		"Input validation foreground color for information severity.",
 		"Input validation border color for information severity.",
 		"Input validation background color for warning severity.",
-		"Input validation foreground color for warning severity.",
 		"Input validation border color for warning severity.",
 		"Input validation background color for error severity.",
-		"Input validation foreground color for error severity.",
 		"Input validation border color for error severity.",
-		"Dropdown background.",
-		"Dropdown foreground.",
 		"List/Tree background color for the focused item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.",
 		"List/Tree foreground color for the focused item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.",
 		"List/Tree background color for the selected item when the list/tree is active. An active list/tree has keyboard focus, an inactive does not.",
@@ -769,13 +739,6 @@ define("vs/editor/editor.main.nls", {
 		"Scrollbar slider background color when hovering.",
 		"Scrollbar slider background color when clicked on.",
 		"Background color of the progress bar that can show for long running operations.",
-		"Border color of menus.",
-		"Foreground color of menu items.",
-		"Background color of menu items.",
-		"Foreground color of the selected menu item in menus.",
-		"Background color of the selected menu item in menus.",
-		"Border color of the selected menu item in menus.",
-		"Color of a separator menu item in menus.",
 		"Editor background color.",
 		"Editor default foreground color.",
 		"Background color of editor widgets, such as find/replace.",
@@ -801,10 +764,6 @@ define("vs/editor/editor.main.nls", {
 		"Outline color for the text that got inserted.",
 		"Outline color for text that got removed.",
 		"Border color between the two text editors.",
-		"Highlight background color of a snippet tabstop.",
-		"Highlight border color of a snippet tabstop.",
-		"Highlight background color of the final tabstop of a snippet.",
-		"Highlight border color of the final stabstop of a snippet.",
 		"Overview ruler marker color for find matches. The color must not be opaque to not hide underlying decorations.",
 		"Overview ruler marker color for selection highlights. The color must not be opaque to not hide underlying decorations."
 	]

@@ -142,7 +142,7 @@ var FoldingModel = /** @class */ (function () {
         if (collapsedRanges.length > 0) {
             return collapsedRanges;
         }
-        return void 0;
+        return null;
     };
     /**
      * Apply persisted state, for persistence only
@@ -191,13 +191,14 @@ var FoldingModel = /** @class */ (function () {
     };
     FoldingModel.prototype.getRegionsInside = function (region, filter) {
         var result = [];
+        var trackLevel = filter && filter.length === 2;
+        var levelStack = trackLevel ? [] : null;
         var index = region ? region.regionIndex + 1 : 0;
         var endLineNumber = region ? region.endLineNumber : Number.MAX_VALUE;
-        if (filter && filter.length === 2) {
-            var levelStack = [];
-            for (var i = index, len = this._regions.length; i < len; i++) {
-                var current = this._regions.toRegion(i);
-                if (this._regions.getStartLineNumber(i) < endLineNumber) {
+        for (var i = index, len = this._regions.length; i < len; i++) {
+            var current = this._regions.toRegion(i);
+            if (this._regions.getStartLineNumber(i) < endLineNumber) {
+                if (trackLevel) {
                     while (levelStack.length > 0 && !current.containedBy(levelStack[levelStack.length - 1])) {
                         levelStack.pop();
                     }
@@ -206,22 +207,12 @@ var FoldingModel = /** @class */ (function () {
                         result.push(current);
                     }
                 }
-                else {
-                    break;
+                else if (!filter || filter(current)) {
+                    result.push(current);
                 }
             }
-        }
-        else {
-            for (var i = index, len = this._regions.length; i < len; i++) {
-                var current = this._regions.toRegion(i);
-                if (this._regions.getStartLineNumber(i) < endLineNumber) {
-                    if (!filter || filter(current)) {
-                        result.push(current);
-                    }
-                }
-                else {
-                    break;
-                }
+            else {
+                break;
             }
         }
         return result;

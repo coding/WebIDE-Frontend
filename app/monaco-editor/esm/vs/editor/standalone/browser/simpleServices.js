@@ -2,55 +2,44 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-import { localize } from '../../../nls.js';
+import Severity from '../../../base/common/severity.js';
+import URI from '../../../base/common/uri.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
+import { CommandsRegistry } from '../../../platform/commands/common/commands.js';
+import { AbstractKeybindingService } from '../../../platform/keybinding/common/abstractKeybindingService.js';
+import { USLayoutResolvedKeybinding } from '../../../platform/keybinding/common/usLayoutResolvedKeybinding.js';
+import { KeybindingResolver } from '../../../platform/keybinding/common/keybindingResolver.js';
+import { KeybindingSource } from '../../../platform/keybinding/common/keybinding.js';
+import { WorkspaceFolder } from '../../../platform/workspace/common/workspace.js';
+import { isCodeEditor } from '../../browser/editorBrowser.js';
+import { Emitter } from '../../../base/common/event.js';
+import { Configuration, DefaultConfigurationModel, ConfigurationModel } from '../../../platform/configuration/common/configurationModels.js';
+import { ImmortalReference, combinedDisposable, toDisposable } from '../../../base/common/lifecycle.js';
 import * as dom from '../../../base/browser/dom.js';
 import { StandardKeyboardEvent } from '../../../base/browser/keyboardEvent.js';
-import { Emitter } from '../../../base/common/event.js';
-import { SimpleKeybinding, createKeybinding } from '../../../base/common/keyCodes.js';
-import { ImmortalReference, combinedDisposable, toDisposable } from '../../../base/common/lifecycle.js';
-import { OS, isLinux, isMacintosh } from '../../../base/common/platform.js';
-import Severity from '../../../base/common/severity.js';
-import { URI } from '../../../base/common/uri.js';
-import { TPromise } from '../../../base/common/winjs.base.js';
-import { isCodeEditor } from '../../browser/editorBrowser.js';
-import { isDiffEditorConfigurationKey, isEditorConfigurationKey } from '../../common/config/commonEditorConfig.js';
-import { EditOperation } from '../../common/core/editOperation.js';
-import { Position as Pos } from '../../common/core/position.js';
-import { Range } from '../../common/core/range.js';
-import { isResourceTextEdit } from '../../common/modes.js';
-import { Menu } from '../../../platform/actions/common/menu.js';
-import { CommandsRegistry } from '../../../platform/commands/common/commands.js';
-import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { Configuration, ConfigurationModel, DefaultConfigurationModel } from '../../../platform/configuration/common/configurationModels.js';
-import { AbstractKeybindingService } from '../../../platform/keybinding/common/abstractKeybindingService.js';
-import { KeybindingResolver } from '../../../platform/keybinding/common/keybindingResolver.js';
 import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
+import { Menu } from '../../../platform/actions/common/menu.js';
+import { createKeybinding, SimpleKeybinding } from '../../../base/common/keyCodes.js';
 import { ResolvedKeybindingItem } from '../../../platform/keybinding/common/resolvedKeybindingItem.js';
-import { USLayoutResolvedKeybinding } from '../../../platform/keybinding/common/usLayoutResolvedKeybinding.js';
+import { OS } from '../../../base/common/platform.js';
+import { Range } from '../../common/core/range.js';
 import { NoOpNotification } from '../../../platform/notification/common/notification.js';
-import { WorkspaceFolder } from '../../../platform/workspace/common/workspace.js';
+import { Position as Pos } from '../../common/core/position.js';
+import { isEditorConfigurationKey, isDiffEditorConfigurationKey } from '../../common/config/commonEditorConfig.js';
+import { isResourceTextEdit } from '../../common/modes.js';
+import { EditOperation } from '../../common/core/editOperation.js';
+import { localize } from '../../../nls.js';
 var SimpleModel = /** @class */ (function () {
     function SimpleModel(model) {
         this.model = model;
@@ -96,7 +85,7 @@ var SimpleEditorModelResolverService = /** @class */ (function () {
     };
     SimpleEditorModelResolverService.prototype.findModel = function (editor, resource) {
         var model = editor.getModel();
-        if (model && model.uri.toString() !== resource.toString()) {
+        if (model.uri.toString() !== resource.toString()) {
             return null;
         }
         return model;
@@ -170,15 +159,15 @@ var StandaloneCommandService = /** @class */ (function () {
         }
         var command = (CommandsRegistry.getCommand(id) || this._dynamicCommands[id]);
         if (!command) {
-            return Promise.reject(new Error("command '" + id + "' not found"));
+            return TPromise.wrapError(new Error("command '" + id + "' not found"));
         }
         try {
             this._onWillExecuteCommand.fire({ commandId: id });
             var result = this._instantiationService.invokeFunction.apply(this._instantiationService, [command.handler].concat(args));
-            return Promise.resolve(result);
+            return TPromise.as(result);
         }
         catch (err) {
-            return Promise.reject(err);
+            return TPromise.wrapError(err);
         }
     };
     return StandaloneCommandService;
@@ -214,7 +203,7 @@ var StandaloneKeybindingService = /** @class */ (function (_super) {
                 var kb = _this._dynamicKeybindings[i];
                 if (kb.command === commandId) {
                     _this._dynamicKeybindings.splice(i, 1);
-                    _this.updateResolver({ source: 1 /* Default */ });
+                    _this.updateResolver({ source: KeybindingSource.Default });
                     return;
                 }
             }
@@ -229,7 +218,7 @@ var StandaloneKeybindingService = /** @class */ (function (_super) {
         else {
             throw new Error('Unknown command service!');
         }
-        this.updateResolver({ source: 1 /* Default */ });
+        this.updateResolver({ source: KeybindingSource.Default });
         return combinedDisposable(toDispose);
     };
     StandaloneKeybindingService.prototype.updateResolver = function (event) {
@@ -298,7 +287,7 @@ var SimpleConfigurationService = /** @class */ (function () {
     };
     SimpleConfigurationService.prototype.updateValue = function (key, value, arg3, arg4) {
         this.configuration().updateValue(key, value);
-        return Promise.resolve();
+        return TPromise.as(null);
     };
     return SimpleConfigurationService;
 }());
@@ -320,25 +309,6 @@ var SimpleResourceConfigurationService = /** @class */ (function () {
     return SimpleResourceConfigurationService;
 }());
 export { SimpleResourceConfigurationService };
-var SimpleResourcePropertiesService = /** @class */ (function () {
-    function SimpleResourcePropertiesService(configurationService) {
-        this.configurationService = configurationService;
-    }
-    SimpleResourcePropertiesService.prototype.getEOL = function (resource) {
-        var filesConfiguration = this.configurationService.getValue('files');
-        if (filesConfiguration && filesConfiguration.eol) {
-            if (filesConfiguration.eol !== 'auto') {
-                return filesConfiguration.eol;
-            }
-        }
-        return (isLinux || isMacintosh) ? '\n' : '\r\n';
-    };
-    SimpleResourcePropertiesService = __decorate([
-        __param(0, IConfigurationService)
-    ], SimpleResourcePropertiesService);
-    return SimpleResourcePropertiesService;
-}());
-export { SimpleResourcePropertiesService };
 var SimpleMenuService = /** @class */ (function () {
     function SimpleMenuService(commandService) {
         this._commandService = commandService;
@@ -361,7 +331,7 @@ export { StandaloneTelemetryService };
 var SimpleWorkspaceContextService = /** @class */ (function () {
     function SimpleWorkspaceContextService() {
         var resource = URI.from({ scheme: SimpleWorkspaceContextService.SCHEME, authority: 'model', path: '/' });
-        this.workspace = { id: '4064f6ec-cb38-4ad0-af64-ee6467e63c82', folders: [new WorkspaceFolder({ uri: resource, name: '', index: 0 })] };
+        this.workspace = { id: '4064f6ec-cb38-4ad0-af64-ee6467e63c82', folders: [new WorkspaceFolder({ uri: resource, name: '', index: 0 })], name: resource.fsPath };
     }
     SimpleWorkspaceContextService.prototype.getWorkspace = function () {
         return this.workspace;
@@ -369,7 +339,6 @@ var SimpleWorkspaceContextService = /** @class */ (function () {
     SimpleWorkspaceContextService.prototype.getWorkspaceFolder = function (resource) {
         return resource && resource.scheme === SimpleWorkspaceContextService.SCHEME ? this.workspace.folders[0] : void 0;
     };
-    SimpleWorkspaceContextService.SCHEME = 'inmemory';
     return SimpleWorkspaceContextService;
 }());
 export { SimpleWorkspaceContextService };
@@ -399,11 +368,11 @@ var SimpleBulkEditService = /** @class */ (function () {
         for (var _i = 0, _a = workspaceEdit.edits; _i < _a.length; _i++) {
             var edit = _a[_i];
             if (!isResourceTextEdit(edit)) {
-                return Promise.reject(new Error('bad edit - only text edits are supported'));
+                return TPromise.wrapError(new Error('bad edit - only text edits are supported'));
             }
             var model = this._modelService.getModel(edit.resource);
             if (!model) {
-                return Promise.reject(new Error('bad edit - model not found'));
+                return TPromise.wrapError(new Error('bad edit - model not found'));
             }
             var array = edits.get(model);
             if (!array) {
@@ -418,7 +387,7 @@ var SimpleBulkEditService = /** @class */ (function () {
             totalFiles += 1;
             totalEdits += edits.length;
         });
-        return Promise.resolve({
+        return TPromise.as({
             selection: undefined,
             ariaSummary: localize('summary', 'Made {0} edits in {1} files', totalEdits, totalFiles)
         });
@@ -426,15 +395,15 @@ var SimpleBulkEditService = /** @class */ (function () {
     return SimpleBulkEditService;
 }());
 export { SimpleBulkEditService };
-var SimpleUriLabelService = /** @class */ (function () {
-    function SimpleUriLabelService() {
+var SimpleUriDisplayService = /** @class */ (function () {
+    function SimpleUriDisplayService() {
     }
-    SimpleUriLabelService.prototype.getUriLabel = function (resource, options) {
+    SimpleUriDisplayService.prototype.getLabel = function (resource, relative) {
         if (resource.scheme === 'file') {
             return resource.fsPath;
         }
         return resource.path;
     };
-    return SimpleUriLabelService;
+    return SimpleUriDisplayService;
 }());
-export { SimpleUriLabelService };
+export { SimpleUriDisplayService };

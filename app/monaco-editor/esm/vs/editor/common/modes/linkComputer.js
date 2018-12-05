@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { CharacterClassifier } from '../core/characterClassifier.js';
 import { Uint8Matrix } from '../core/uint.js';
 var StateMachine = /** @class */ (function () {

@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 /**
  * A very VM friendly rgba datastructure.
  * Please don't touch unless you take a look at the IR.
@@ -22,7 +23,6 @@ var RGBA8 = /** @class */ (function () {
         }
         return c | 0;
     };
-    RGBA8.Empty = new RGBA8(0, 0, 0, 0);
     return RGBA8;
 }());
 export { RGBA8 };

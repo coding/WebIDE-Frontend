@@ -15,13 +15,13 @@ import * as DOM from '../../dom.js';
 import { mapEvent, filterEvent } from '../../../common/event.js';
 import { domEvent } from '../../event.js';
 import { ScrollableElement } from '../scrollbar/scrollableElement.js';
-import { RangeMap, shift } from './rangeMap.js';
+import { ScrollbarVisibility } from '../../../common/scrollable.js';
+import { RangeMap, relativeComplement, intersect, shift } from './rangeMap.js';
 import { RowCache } from './rowCache.js';
 import { isWindows } from '../../../common/platform.js';
 import * as browser from '../../browser.js';
 import { memoize } from '../../../common/decorators.js';
 import { DragMouseEvent } from '../../mouseEvent.js';
-import { Range } from '../../../common/range.js';
 function canUseTranslate3d() {
     if (browser.isFirefox) {
         return false;
@@ -33,15 +33,13 @@ function canUseTranslate3d() {
 }
 var DefaultOptions = {
     useShadows: true,
-    verticalScrollMode: 1 /* Auto */,
-    setRowLineHeight: true
+    verticalScrollMode: ScrollbarVisibility.Auto
 };
 var ListView = /** @class */ (function () {
     function ListView(container, virtualDelegate, renderers, options) {
         if (options === void 0) { options = DefaultOptions; }
         this.virtualDelegate = virtualDelegate;
         this.renderers = new Map();
-        this.didRequestScrollableElementUpdate = false;
         this.splicing = false;
         this.items = [];
         this.itemId = 0;
@@ -60,7 +58,7 @@ var ListView = /** @class */ (function () {
         Gesture.addTarget(this.rowsContainer);
         this.scrollableElement = new ScrollableElement(this.rowsContainer, {
             alwaysConsumeMouseWheel: true,
-            horizontal: 2 /* Hidden */,
+            horizontal: ScrollbarVisibility.Hidden,
             vertical: getOrDefault(options, function (o) { return o.verticalScrollMode; }, DefaultOptions.verticalScrollMode),
             useShadows: getOrDefault(options, function (o) { return o.useShadows; }, DefaultOptions.useShadows)
         });
@@ -74,7 +72,6 @@ var ListView = /** @class */ (function () {
         domEvent(this.scrollableElement.getDomNode(), 'scroll')(function (e) { return e.target.scrollTop = 0; }, null, this.disposables);
         var onDragOver = mapEvent(domEvent(this.rowsContainer, 'dragover'), function (e) { return new DragMouseEvent(e); });
         onDragOver(this.onDragOver, this, this.disposables);
-        this.setRowLineHeight = getOrDefault(options, function (o) { return o.setRowLineHeight; }, DefaultOptions.setRowLineHeight);
         this.layout();
     }
     Object.defineProperty(ListView.prototype, "domNode", {
@@ -100,16 +97,16 @@ var ListView = /** @class */ (function () {
     ListView.prototype._splice = function (start, deleteCount, elements) {
         var _this = this;
         if (elements === void 0) { elements = []; }
-        var _a;
+        var _a, _b;
         var previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var deleteRange = { start: start, end: start + deleteCount };
-        var removeRange = Range.intersect(previousRenderRange, deleteRange);
+        var removeRange = intersect(previousRenderRange, deleteRange);
         for (var i = removeRange.start; i < removeRange.end; i++) {
             this.removeItemFromDOM(i);
         }
         var previousRestRange = { start: start + deleteCount, end: this.items.length };
-        var previousRenderedRestRange = Range.intersect(previousRestRange, previousRenderRange);
-        var previousUnrenderedRestRanges = Range.relativeComplement(previousRestRange, previousRenderRange);
+        var previousRenderedRestRange = intersect(previousRestRange, previousRenderRange);
+        var previousUnrenderedRestRanges = relativeComplement(previousRestRange, previousRenderRange);
         var inserted = elements.map(function (element) { return ({
             id: String(_this.itemId++),
             element: element,
@@ -117,26 +114,16 @@ var ListView = /** @class */ (function () {
             templateId: _this.virtualDelegate.getTemplateId(element),
             row: null
         }); });
-        var deleted;
-        // TODO@joao: improve this optimization to catch even more cases
-        if (start === 0 && deleteCount >= this.items.length) {
-            this.rangeMap = new RangeMap();
-            this.rangeMap.splice(0, 0, inserted);
-            this.items = inserted;
-            deleted = [];
-        }
-        else {
-            this.rangeMap.splice(start, deleteCount, inserted);
-            deleted = (_a = this.items).splice.apply(_a, [start, deleteCount].concat(inserted));
-        }
+        (_a = this.rangeMap).splice.apply(_a, [start, deleteCount].concat(inserted));
+        var deleted = (_b = this.items).splice.apply(_b, [start, deleteCount].concat(inserted));
         var delta = elements.length - deleteCount;
         var renderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var renderedRestRange = shift(previousRenderedRestRange, delta);
-        var updateRange = Range.intersect(renderRange, renderedRestRange);
+        var updateRange = intersect(renderRange, renderedRestRange);
         for (var i = updateRange.start; i < updateRange.end; i++) {
             this.updateItemInDOM(this.items[i], i);
         }
-        var removeRanges = Range.relativeComplement(renderedRestRange, renderRange);
+        var removeRanges = relativeComplement(renderedRestRange, renderRange);
         for (var r = 0; r < removeRanges.length; r++) {
             var removeRange_1 = removeRanges[r];
             for (var i = removeRange_1.start; i < removeRange_1.end; i++) {
@@ -145,7 +132,7 @@ var ListView = /** @class */ (function () {
         }
         var unrenderedRestRanges = previousUnrenderedRestRanges.map(function (r) { return shift(r, delta); });
         var elementsRange = { start: start, end: start + elements.length };
-        var insertRanges = [elementsRange].concat(unrenderedRestRanges).map(function (r) { return Range.intersect(renderRange, r); });
+        var insertRanges = [elementsRange].concat(unrenderedRestRanges).map(function (r) { return intersect(renderRange, r); });
         var beforeElement = this.getNextToLastElement(insertRanges);
         for (var r = 0; r < insertRanges.length; r++) {
             var insertRange = insertRanges[r];
@@ -153,15 +140,9 @@ var ListView = /** @class */ (function () {
                 this.insertItemInDOM(i, beforeElement);
             }
         }
-        this.scrollHeight = this.getContentHeight();
-        this.rowsContainer.style.height = this.scrollHeight + "px";
-        if (!this.didRequestScrollableElementUpdate) {
-            DOM.scheduleAtNextAnimationFrame(function () {
-                _this.scrollableElement.setScrollDimensions({ scrollHeight: _this.scrollHeight });
-                _this.didRequestScrollableElementUpdate = false;
-            });
-            this.didRequestScrollableElementUpdate = true;
-        }
+        var scrollHeight = this.getContentHeight();
+        this.rowsContainer.style.height = scrollHeight + "px";
+        this.scrollableElement.setScrollDimensions({ scrollHeight: scrollHeight });
         return deleted.map(function (i) { return i.element; });
     };
     Object.defineProperty(ListView.prototype, "length", {
@@ -207,8 +188,8 @@ var ListView = /** @class */ (function () {
     ListView.prototype.render = function (renderTop, renderHeight) {
         var previousRenderRange = this.getRenderRange(this.lastRenderTop, this.lastRenderHeight);
         var renderRange = this.getRenderRange(renderTop, renderHeight);
-        var rangesToInsert = Range.relativeComplement(renderRange, previousRenderRange);
-        var rangesToRemove = Range.relativeComplement(previousRenderRange, renderRange);
+        var rangesToInsert = relativeComplement(renderRange, previousRenderRange);
+        var rangesToRemove = relativeComplement(previousRenderRange, renderRange);
         var beforeElement = this.getNextToLastElement(rangesToInsert);
         for (var _i = 0, rangesToInsert_1 = rangesToInsert; _i < rangesToInsert_1.length; _i++) {
             var range = rangesToInsert_1[_i];
@@ -248,9 +229,6 @@ var ListView = /** @class */ (function () {
             }
         }
         item.row.domNode.style.height = item.size + "px";
-        if (this.setRowLineHeight) {
-            item.row.domNode.style.lineHeight = item.size + "px";
-        }
         this.updateItemInDOM(item, index);
         var renderer = this.renderers.get(item.templateId);
         renderer.renderElement(item.element, index, item.row.templateData);

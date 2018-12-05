@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { createKeybinding } from '../../../base/common/keyCodes.js';
 import { OS } from '../../../base/common/platform.js';
 import { CommandsRegistry } from '../../commands/common/commands.js';
@@ -36,18 +37,12 @@ var KeybindingsRegistryImpl = /** @class */ (function () {
         if (source === void 0) { source = 0 /* Core */; }
         var actualKb = KeybindingsRegistryImpl.bindToCurrentPlatform(rule);
         if (actualKb && actualKb.primary) {
-            var kk = createKeybinding(actualKb.primary, OS);
-            if (kk) {
-                this._registerDefaultKeybinding(kk, rule.id, rule.weight, 0, rule.when, source);
-            }
+            this._registerDefaultKeybinding(createKeybinding(actualKb.primary, OS), rule.id, rule.weight, 0, rule.when, source);
         }
         if (actualKb && Array.isArray(actualKb.secondary)) {
             for (var i = 0, len = actualKb.secondary.length; i < len; i++) {
                 var k = actualKb.secondary[i];
-                var kk = createKeybinding(k, OS);
-                if (kk) {
-                    this._registerDefaultKeybinding(kk, rule.id, rule.weight, -i - 1, rule.when, source);
-                }
+                this._registerDefaultKeybinding(createKeybinding(k, OS), rule.id, rule.weight, -i - 1, rule.when, source);
             }
         }
     };

@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -25,10 +23,8 @@ import { CaseSensitiveCheckbox, WholeWordsCheckbox, RegexCheckbox } from './find
 var NLS_DEFAULT_LABEL = nls.localize('defaultLabel', "input");
 var FindInput = /** @class */ (function (_super) {
     __extends(FindInput, _super);
-    function FindInput(parent, contextViewProvider, _showOptionButtons, options) {
+    function FindInput(parent, contextViewProvider, options) {
         var _this = _super.call(this) || this;
-        _this._showOptionButtons = _showOptionButtons;
-        _this.fixFocusOnOptionClickEnabled = true;
         _this._onDidOptionChange = _this._register(new Emitter());
         _this.onDidOptionChange = _this._onDidOptionChange.event;
         _this._onKeyDown = _this._register(new Emitter());
@@ -52,13 +48,10 @@ var FindInput = /** @class */ (function (_super) {
         _this.inputBorder = options.inputBorder;
         _this.inputValidationInfoBorder = options.inputValidationInfoBorder;
         _this.inputValidationInfoBackground = options.inputValidationInfoBackground;
-        _this.inputValidationInfoForeground = options.inputValidationInfoForeground;
         _this.inputValidationWarningBorder = options.inputValidationWarningBorder;
         _this.inputValidationWarningBackground = options.inputValidationWarningBackground;
-        _this.inputValidationWarningForeground = options.inputValidationWarningForeground;
         _this.inputValidationErrorBorder = options.inputValidationErrorBorder;
         _this.inputValidationErrorBackground = options.inputValidationErrorBackground;
-        _this.inputValidationErrorForeground = options.inputValidationErrorForeground;
         _this.regex = null;
         _this.wholeWords = null;
         _this.caseSensitive = null;
@@ -88,9 +81,6 @@ var FindInput = /** @class */ (function (_super) {
         this.wholeWords.disable();
         this.caseSensitive.disable();
     };
-    FindInput.prototype.setFocusInputOnOptionClick = function (value) {
-        this.fixFocusOnOptionClickEnabled = value;
-    };
     FindInput.prototype.setEnabled = function (enabled) {
         if (enabled) {
             this.enable();
@@ -113,13 +103,10 @@ var FindInput = /** @class */ (function (_super) {
         this.inputForeground = styles.inputForeground;
         this.inputBorder = styles.inputBorder;
         this.inputValidationInfoBackground = styles.inputValidationInfoBackground;
-        this.inputValidationInfoForeground = styles.inputValidationInfoForeground;
         this.inputValidationInfoBorder = styles.inputValidationInfoBorder;
         this.inputValidationWarningBackground = styles.inputValidationWarningBackground;
-        this.inputValidationWarningForeground = styles.inputValidationWarningForeground;
         this.inputValidationWarningBorder = styles.inputValidationWarningBorder;
         this.inputValidationErrorBackground = styles.inputValidationErrorBackground;
-        this.inputValidationErrorForeground = styles.inputValidationErrorForeground;
         this.inputValidationErrorBorder = styles.inputValidationErrorBorder;
         this.applyStyles();
     };
@@ -136,13 +123,10 @@ var FindInput = /** @class */ (function (_super) {
                 inputForeground: this.inputForeground,
                 inputBorder: this.inputBorder,
                 inputValidationInfoBackground: this.inputValidationInfoBackground,
-                inputValidationInfoForeground: this.inputValidationInfoForeground,
                 inputValidationInfoBorder: this.inputValidationInfoBorder,
                 inputValidationWarningBackground: this.inputValidationWarningBackground,
-                inputValidationWarningForeground: this.inputValidationWarningForeground,
                 inputValidationWarningBorder: this.inputValidationWarningBorder,
                 inputValidationErrorBackground: this.inputValidationErrorBackground,
-                inputValidationErrorForeground: this.inputValidationErrorForeground,
                 inputValidationErrorBorder: this.inputValidationErrorBorder
             };
             this.inputBox.style(inputBoxStyles);
@@ -203,13 +187,10 @@ var FindInput = /** @class */ (function (_super) {
             inputForeground: this.inputForeground,
             inputBorder: this.inputBorder,
             inputValidationInfoBackground: this.inputValidationInfoBackground,
-            inputValidationInfoForeground: this.inputValidationInfoForeground,
             inputValidationInfoBorder: this.inputValidationInfoBorder,
             inputValidationWarningBackground: this.inputValidationWarningBackground,
-            inputValidationWarningForeground: this.inputValidationWarningForeground,
             inputValidationWarningBorder: this.inputValidationWarningBorder,
             inputValidationErrorBackground: this.inputValidationErrorBackground,
-            inputValidationErrorForeground: this.inputValidationErrorForeground,
             inputValidationErrorBorder: this.inputValidationErrorBorder,
             history: history
         }));
@@ -220,7 +201,7 @@ var FindInput = /** @class */ (function (_super) {
         }));
         this._register(this.regex.onChange(function (viaKeyboard) {
             _this._onDidOptionChange.fire(viaKeyboard);
-            if (!viaKeyboard && _this.fixFocusOnOptionClickEnabled) {
+            if (!viaKeyboard) {
                 _this.inputBox.focus();
             }
             _this.setInputWidth();
@@ -236,7 +217,7 @@ var FindInput = /** @class */ (function (_super) {
         }));
         this._register(this.wholeWords.onChange(function (viaKeyboard) {
             _this._onDidOptionChange.fire(viaKeyboard);
-            if (!viaKeyboard && _this.fixFocusOnOptionClickEnabled) {
+            if (!viaKeyboard) {
                 _this.inputBox.focus();
             }
             _this.setInputWidth();
@@ -249,7 +230,7 @@ var FindInput = /** @class */ (function (_super) {
         }));
         this._register(this.caseSensitive.onChange(function (viaKeyboard) {
             _this._onDidOptionChange.fire(viaKeyboard);
-            if (!viaKeyboard && _this.fixFocusOnOptionClickEnabled) {
+            if (!viaKeyboard) {
                 _this.inputBox.focus();
             }
             _this.setInputWidth();
@@ -289,7 +270,6 @@ var FindInput = /** @class */ (function (_super) {
         this.setInputWidth();
         var controls = document.createElement('div');
         controls.className = 'controls';
-        controls.style.display = this._showOptionButtons ? 'block' : 'none';
         controls.appendChild(this.caseSensitive.domNode);
         controls.appendChild(this.wholeWords.domNode);
         controls.appendChild(this.regex.domNode);
@@ -297,9 +277,6 @@ var FindInput = /** @class */ (function (_super) {
     };
     FindInput.prototype.validate = function () {
         this.inputBox.validate();
-    };
-    FindInput.prototype.clearMessage = function () {
-        this.inputBox.hideMessage();
     };
     FindInput.prototype.dispose = function () {
         _super.prototype.dispose.call(this);

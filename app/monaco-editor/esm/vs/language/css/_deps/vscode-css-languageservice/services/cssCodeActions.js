@@ -7,8 +7,8 @@ import * as nodes from '../parser/cssNodes.js';
 import * as languageFacts from './languageFacts.js';
 import { difference } from '../utils/strings.js';
 import { Rules } from '../services/lintRules.js';
-import { Command, TextEdit } from './../../vscode-languageserver-types/main.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import { Command, TextEdit } from '../../vscode-languageserver-types/main.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var CSSCodeActions = /** @class */ (function () {
     function CSSCodeActions() {

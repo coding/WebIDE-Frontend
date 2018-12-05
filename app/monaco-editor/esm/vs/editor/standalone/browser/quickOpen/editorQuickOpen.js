@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,11 +22,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import './editorQuickOpen.css';
-import { EditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 import { QuickOpenEditorWidget } from './quickOpenEditorWidget.js';
+import { registerEditorContribution, EditorAction } from '../../../browser/editorExtensions.js';
 import { IThemeService } from '../../../../platform/theme/common/themeService.js';
+import { ModelDecorationOptions } from '../../../common/model/textModel.js';
 var QuickOpenController = /** @class */ (function () {
     function QuickOpenController(editor, themeService) {
         this.themeService = themeService;
@@ -63,12 +60,7 @@ var QuickOpenController = /** @class */ (function () {
                 _this.editor.revealRangeInCenterIfOutsideViewport(_this.lastKnownEditorSelection, 0 /* Smooth */);
             }
             _this.lastKnownEditorSelection = null;
-            // Return focus to the editor if
-            // - focus is back on the <body> element because no other focusable element was clicked
-            // - a command was picked from the picker which indicates the editor should get focused
-            if (document.activeElement === document.body || !canceled) {
-                _this.editor.focus();
-            }
+            _this.editor.focus();
         };
         this.widget = new QuickOpenEditorWidget(this.editor, function () { return onClose(false); }, function () { return onClose(true); }, function (value) {
             _this.widget.setInput(opts.getModel(value), opts.getAutoFocus(value));

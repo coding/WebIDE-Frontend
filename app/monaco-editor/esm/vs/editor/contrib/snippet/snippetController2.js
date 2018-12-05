@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -11,16 +12,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+import { RawContextKey, IContextKeyService, ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
+import { registerEditorContribution, EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
 import { dispose } from '../../../base/common/lifecycle.js';
-import { repeat } from '../../../base/common/strings.js';
-import { EditorCommand, registerEditorCommand, registerEditorContribution } from '../../browser/editorExtensions.js';
-import { Range } from '../../common/core/range.js';
-import { Selection } from '../../common/core/selection.js';
+import { SnippetSession } from './snippetSession.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { showSimpleSuggestions } from '../suggest/suggest.js';
-import { ContextKeyExpr, IContextKeyService, RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
+import { Selection } from '../../common/core/selection.js';
+import { repeat } from '../../../base/common/strings.js';
 import { ILogService } from '../../../platform/log/common/log.js';
-import { SnippetSession } from './snippetSession.js';
 var SnippetController2 = /** @class */ (function () {
     function SnippetController2(_editor, _logService, contextKeyService) {
         this._editor = _editor;
@@ -42,17 +42,16 @@ var SnippetController2 = /** @class */ (function () {
     SnippetController2.prototype.getId = function () {
         return 'snippetController2';
     };
-    SnippetController2.prototype.insert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace) {
+    SnippetController2.prototype.insert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter) {
         if (overwriteBefore === void 0) { overwriteBefore = 0; }
         if (overwriteAfter === void 0) { overwriteAfter = 0; }
         if (undoStopBefore === void 0) { undoStopBefore = true; }
         if (undoStopAfter === void 0) { undoStopAfter = true; }
-        if (adjustWhitespace === void 0) { adjustWhitespace = true; }
         // this is here to find out more about the yet-not-understood
         // error that sometimes happens when we fail to inserted a nested
         // snippet
         try {
-            this._doInsert(template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace);
+            this._doInsert(template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter);
         }
         catch (e) {
             this.cancel();
@@ -62,13 +61,12 @@ var SnippetController2 = /** @class */ (function () {
             this._logService.error('existing_template=', this._session ? this._session._logInfo() : '<no_session>');
         }
     };
-    SnippetController2.prototype._doInsert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter, adjustWhitespace) {
+    SnippetController2.prototype._doInsert = function (template, overwriteBefore, overwriteAfter, undoStopBefore, undoStopAfter) {
         var _this = this;
         if (overwriteBefore === void 0) { overwriteBefore = 0; }
         if (overwriteAfter === void 0) { overwriteAfter = 0; }
         if (undoStopBefore === void 0) { undoStopBefore = true; }
         if (undoStopAfter === void 0) { undoStopAfter = true; }
-        if (adjustWhitespace === void 0) { adjustWhitespace = true; }
         // don't listen while inserting the snippet
         // as that is the inflight state causing cancelation
         this._snippetListener = dispose(this._snippetListener);
@@ -77,11 +75,11 @@ var SnippetController2 = /** @class */ (function () {
         }
         if (!this._session) {
             this._modelVersionId = this._editor.getModel().getAlternativeVersionId();
-            this._session = new SnippetSession(this._editor, template, overwriteBefore, overwriteAfter, adjustWhitespace);
+            this._session = new SnippetSession(this._editor, template, overwriteBefore, overwriteAfter);
             this._session.insert();
         }
         else {
-            this._session.merge(template, overwriteBefore, overwriteAfter, adjustWhitespace);
+            this._session.merge(template, overwriteBefore, overwriteAfter);
         }
         if (undoStopAfter) {
             this._editor.getModel().pushStackElement();
@@ -117,7 +115,6 @@ var SnippetController2 = /** @class */ (function () {
         this._handleChoice();
     };
     SnippetController2.prototype._handleChoice = function () {
-        var _this = this;
         var choice = this._session.choice;
         if (!choice) {
             this._currentChoice = undefined;
@@ -132,13 +129,13 @@ var SnippetController2 = /** @class */ (function () {
                 // let before = choice.options.slice(0, i);
                 // let after = choice.options.slice(i);
                 return {
-                    kind: 13 /* Value */,
+                    type: 'value',
                     label: option.value,
                     insertText: option.value,
                     // insertText: `\${1|${after.concat(before).join(',')}|}$0`,
                     // snippetType: 'textmate',
                     sortText: repeat('a', i),
-                    range: Range.fromPositions(_this._editor.getPosition(), _this._editor.getPosition().delta(0, first_1.value.length))
+                    overwriteAfter: first_1.value.length
                 };
             }));
         }

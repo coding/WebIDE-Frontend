@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,12 +14,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as nls from '../../../nls.js';
-import { isHighSurrogate, isLowSurrogate } from '../../../base/common/strings.js';
-import { EditorAction, registerEditorAction } from '../../browser/editorExtensions.js';
-import { ReplaceCommand } from '../../common/commands/replaceCommand.js';
-import { Position } from '../../common/core/position.js';
+import { isLowSurrogate, isHighSurrogate } from '../../../base/common/strings.js';
 import { Range } from '../../common/core/range.js';
+import { Position } from '../../common/core/position.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { registerEditorAction, EditorAction } from '../../browser/editorExtensions.js';
+import { ReplaceCommand } from '../../common/commands/replaceCommand.js';
 var TransposeLettersAction = /** @class */ (function (_super) {
     __extends(TransposeLettersAction, _super);
     function TransposeLettersAction() {
@@ -77,9 +75,6 @@ var TransposeLettersAction = /** @class */ (function (_super) {
         return new Position(lineNumber, column);
     };
     TransposeLettersAction.prototype.run = function (accessor, editor) {
-        if (!editor.hasModel()) {
-            return;
-        }
         var model = editor.getModel();
         var commands = [];
         var selections = editor.getSelections();

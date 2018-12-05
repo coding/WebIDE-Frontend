@@ -14,8 +14,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { CSSCompletion } from './cssCompletion.js';
-import { CompletionItemKind, InsertTextFormat, TextEdit } from './../../vscode-languageserver-types/main.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import { CompletionItemKind, InsertTextFormat, TextEdit } from '../../vscode-languageserver-types/main.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var LESSCompletion = /** @class */ (function (_super) {
     __extends(LESSCompletion, _super);

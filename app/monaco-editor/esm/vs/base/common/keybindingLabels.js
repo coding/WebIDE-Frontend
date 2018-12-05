@@ -2,17 +2,18 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as nls from '../../nls.js';
 var ModifierLabelProvider = /** @class */ (function () {
     function ModifierLabelProvider(mac, windows, linux) {
         if (linux === void 0) { linux = windows; }
-        this.modifierLabels = [null]; // index 0 will never me accessed.
+        this.modifierLabels = [null];
         this.modifierLabels[2 /* Macintosh */] = mac;
         this.modifierLabels[1 /* Windows */] = windows;
         this.modifierLabels[3 /* Linux */] = linux;
     }
     ModifierLabelProvider.prototype.toLabel = function (firstPartMod, firstPartKey, chordPartMod, chordPartKey, OS) {
-        if (firstPartMod === null || firstPartKey === null) {
+        if (firstPartKey === null && chordPartKey === null) {
             return null;
         }
         return _asString(firstPartMod, firstPartKey, chordPartMod, chordPartKey, this.modifierLabels[OS]);
@@ -88,7 +89,7 @@ function _simpleAsString(modifiers, key, labels) {
 }
 function _asString(firstPartMod, firstPartKey, chordPartMod, chordPartKey, labels) {
     var result = _simpleAsString(firstPartMod, firstPartKey, labels);
-    if (chordPartMod !== null && chordPartKey !== null) {
+    if (chordPartKey !== null) {
         result += ' ';
         result += _simpleAsString(chordPartMod, chordPartKey, labels);
     }

@@ -2,9 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CursorState } from './cursorCommon.js';
+'use strict';
 import { OneCursor } from './oneCursor.js';
 import { Selection } from '../core/selection.js';
+import { CursorState } from './cursorCommon.js';
 var CursorCollection = /** @class */ (function () {
     function CursorCollection(context) {
         this.context = context;

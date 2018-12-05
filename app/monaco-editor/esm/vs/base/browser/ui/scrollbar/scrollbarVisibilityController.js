@@ -2,21 +2,20 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { TimeoutTimer } from '../../../common/async.js';
 import { Disposable } from '../../../common/lifecycle.js';
+import { TimeoutTimer } from '../../../common/async.js';
+import { ScrollbarVisibility } from '../../../common/scrollable.js';
 var ScrollbarVisibilityController = /** @class */ (function (_super) {
     __extends(ScrollbarVisibilityController, _super);
     function ScrollbarVisibilityController(visibility, visibleClassName, invisibleClassName) {
@@ -33,10 +32,10 @@ var ScrollbarVisibilityController = /** @class */ (function (_super) {
     }
     // ----------------- Hide / Reveal
     ScrollbarVisibilityController.prototype.applyVisibilitySetting = function (shouldBeVisible) {
-        if (this._visibility === 2 /* Hidden */) {
+        if (this._visibility === ScrollbarVisibility.Hidden) {
             return false;
         }
-        if (this._visibility === 3 /* Visible */) {
+        if (this._visibility === ScrollbarVisibility.Visible) {
             return true;
         }
         return shouldBeVisible;
@@ -81,9 +80,7 @@ var ScrollbarVisibilityController = /** @class */ (function (_super) {
         this._isVisible = true;
         // The CSS animation doesn't play otherwise
         this._revealTimer.setIfNotSet(function () {
-            if (_this._domNode) {
-                _this._domNode.setClassName(_this._visibleClassName);
-            }
+            _this._domNode.setClassName(_this._visibleClassName);
         }, 0);
     };
     ScrollbarVisibilityController.prototype._hide = function (withFadeAway) {
@@ -92,9 +89,7 @@ var ScrollbarVisibilityController = /** @class */ (function (_super) {
             return;
         }
         this._isVisible = false;
-        if (this._domNode) {
-            this._domNode.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
-        }
+        this._domNode.setClassName(this._invisibleClassName + (withFadeAway ? ' fade' : ''));
     };
     return ScrollbarVisibilityController;
 }(Disposable));

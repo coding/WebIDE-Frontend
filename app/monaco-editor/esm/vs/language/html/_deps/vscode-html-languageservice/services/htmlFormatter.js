@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Range, Position } from './../../vscode-languageserver-types/main.js';
+import { Range, Position } from '../../vscode-languageserver-types/main.js';
 import { html_beautify } from '../beautify/beautify-html.js';
 import { repeat } from '../utils/strings.js';
 export function format(document, range, options) {

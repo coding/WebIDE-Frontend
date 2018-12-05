@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -26,25 +24,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import './accessibilityHelp.css';
 import * as nls from '../../../../nls.js';
-import * as browser from '../../../../base/browser/browser.js';
-import * as dom from '../../../../base/browser/dom.js';
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { renderFormattedText } from '../../../../base/browser/htmlContentRenderer.js';
-import { alert } from '../../../../base/browser/ui/aria/aria.js';
-import { Widget } from '../../../../base/browser/ui/widget.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
-import * as platform from '../../../../base/common/platform.js';
 import * as strings from '../../../../base/common/strings.js';
-import { URI } from '../../../../base/common/uri.js';
-import { EditorAction, EditorCommand, registerEditorAction, registerEditorCommand, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { EditorContextKeys } from '../../../common/editorContextKeys.js';
-import { ToggleTabFocusModeAction } from '../../../contrib/toggleTabFocusMode/toggleTabFocusMode.js';
-import { IContextKeyService, RawContextKey } from '../../../../platform/contextkey/common/contextkey.js';
+import * as dom from '../../../../base/browser/dom.js';
+import { renderFormattedText } from '../../../../base/browser/htmlContentRenderer.js';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { Widget } from '../../../../base/browser/ui/widget.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
 import { IKeybindingService } from '../../../../platform/keybinding/common/keybinding.js';
-import { IOpenerService } from '../../../../platform/opener/common/opener.js';
-import { contrastBorder, editorWidgetBackground, widgetShadow } from '../../../../platform/theme/common/colorRegistry.js';
+import { RawContextKey, IContextKeyService } from '../../../../platform/contextkey/common/contextkey.js';
+import { EditorContextKeys } from '../../../common/editorContextKeys.js';
+import { registerEditorAction, registerEditorContribution, EditorAction, EditorCommand, registerEditorCommand } from '../../../browser/editorExtensions.js';
+import { ToggleTabFocusModeAction } from '../../../contrib/toggleTabFocusMode/toggleTabFocusMode.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
+import { editorWidgetBackground, widgetShadow, contrastBorder } from '../../../../platform/theme/common/colorRegistry.js';
+import * as platform from '../../../../base/common/platform.js';
+import { alert } from '../../../../base/browser/ui/aria/aria.js';
+import { IOpenerService } from '../../../../platform/opener/common/opener.js';
+import URI from '../../../../base/common/uri.js';
+import * as browser from '../../../../base/browser/browser.js';
 var CONTEXT_ACCESSIBILITY_WIDGET_VISIBLE = new RawContextKey('accessibilityHelpWidgetVisible', false);
 var AccessibilityHelpController = /** @class */ (function (_super) {
     __extends(AccessibilityHelpController, _super);
@@ -215,11 +213,11 @@ var AccessibilityHelpWidget = /** @class */ (function (_super) {
                 text += nls.localize("editableEditor", " in a code editor");
             }
         }
-        var turnOnMessage = (platform.isMacintosh
-            ? nls.localize("changeConfigToOnMac", "To configure the editor to be optimized for usage with a Screen Reader press Command+E now.")
-            : nls.localize("changeConfigToOnWinLinux", "To configure the editor to be optimized for usage with a Screen Reader press Control+E now."));
         switch (opts.accessibilitySupport) {
             case 0 /* Unknown */:
+                var turnOnMessage = (platform.isMacintosh
+                    ? nls.localize("changeConfigToOnMac", "To configure the editor to be optimized for usage with a Screen Reader press Command+E now.")
+                    : nls.localize("changeConfigToOnWinLinux", "To configure the editor to be optimized for usage with a Screen Reader press Control+E now."));
                 text += '\n\n - ' + turnOnMessage;
                 break;
             case 2 /* Enabled */:

@@ -187,6 +187,47 @@ function toTextEdit(textEdit) {
         text: textEdit.newText
     };
 }
+function toCompletionItem(entry) {
+    return {
+        label: entry.label,
+        insertText: entry.insertText,
+        sortText: entry.sortText,
+        filterText: entry.filterText,
+        documentation: entry.documentation,
+        detail: entry.detail,
+        kind: toCompletionItemKind(entry.kind),
+        textEdit: toTextEdit(entry.textEdit),
+        data: entry.data
+    };
+}
+function fromMarkdownString(entry) {
+    return {
+        kind: (typeof entry === 'string' ? ls.MarkupKind.PlainText : ls.MarkupKind.Markdown),
+        value: (typeof entry === 'string' ? entry : entry.value)
+    };
+}
+function fromCompletionItem(entry) {
+    var item = {
+        label: entry.label,
+        sortText: entry.sortText,
+        filterText: entry.filterText,
+        documentation: fromMarkdownString(entry.documentation),
+        detail: entry.detail,
+        kind: fromCompletionItemKind(entry.kind),
+        data: entry.data
+    };
+    if (typeof entry.insertText === 'object' && typeof entry.insertText.value === 'string') {
+        item.insertText = entry.insertText.value;
+        item.insertTextFormat = ls.InsertTextFormat.Snippet;
+    }
+    else {
+        item.insertText = entry.insertText;
+    }
+    if (entry.range) {
+        item.textEdit = ls.TextEdit.replace(fromRange(entry.range), item.insertText);
+    }
+    return item;
+}
 var CompletionAdapter = /** @class */ (function () {
     function CompletionAdapter(_worker) {
         this._worker = _worker;
@@ -198,10 +239,10 @@ var CompletionAdapter = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    CompletionAdapter.prototype.provideCompletionItems = function (model, position, context, token) {
+    CompletionAdapter.prototype.provideCompletionItems = function (model, position, token) {
         var wordInfo = model.getWordUntilPosition(position);
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.doComplete(resource.toString(), fromPosition(position));
         }).then(function (info) {
             if (!info) {
@@ -210,7 +251,7 @@ var CompletionAdapter = /** @class */ (function () {
             var items = info.items.map(function (entry) {
                 var item = {
                     label: entry.label,
-                    insertText: entry.insertText || entry.label,
+                    insertText: entry.insertText,
                     sortText: entry.sortText,
                     filterText: entry.filterText,
                     documentation: entry.documentation,
@@ -221,19 +262,16 @@ var CompletionAdapter = /** @class */ (function () {
                     item.range = toRange(entry.textEdit.range);
                     item.insertText = entry.textEdit.newText;
                 }
-                if (entry.additionalTextEdits) {
-                    item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
-                }
                 if (entry.insertTextFormat === ls.InsertTextFormat.Snippet) {
-                    item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                    item.insertText = { value: item.insertText };
                 }
                 return item;
             });
             return {
                 isIncomplete: info.isIncomplete,
-                suggestions: items
+                items: items
             };
-        });
+        }));
     };
     return CompletionAdapter;
 }());
@@ -275,7 +313,7 @@ var HoverAdapter = /** @class */ (function () {
     }
     HoverAdapter.prototype.provideHover = function (model, position, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.doHover(resource.toString(), fromPosition(position));
         }).then(function (info) {
             if (!info) {
@@ -285,7 +323,7 @@ var HoverAdapter = /** @class */ (function () {
                 range: toRange(info.range),
                 contents: toMarkedStringArray(info.contents)
             };
-        });
+        }));
     };
     return HoverAdapter;
 }());
@@ -328,7 +366,7 @@ var DocumentSymbolAdapter = /** @class */ (function () {
     }
     DocumentSymbolAdapter.prototype.provideDocumentSymbols = function (model, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentSymbols(resource.toString()); }).then(function (items) {
             if (!items) {
                 return;
             }
@@ -340,7 +378,7 @@ var DocumentSymbolAdapter = /** @class */ (function () {
                 range: toRange(item.location.range),
                 selectionRange: toRange(item.location.range)
             }); });
-        });
+        }));
     };
     return DocumentSymbolAdapter;
 }());
@@ -357,14 +395,14 @@ var DocumentFormattingEditProvider = /** @class */ (function () {
     }
     DocumentFormattingEditProvider.prototype.provideDocumentFormattingEdits = function (model, options, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.format(resource.toString(), null, fromFormattingOptions(options)).then(function (edits) {
                 if (!edits || edits.length === 0) {
                     return;
                 }
                 return edits.map(toTextEdit);
             });
-        });
+        }));
     };
     return DocumentFormattingEditProvider;
 }());
@@ -375,14 +413,14 @@ var DocumentRangeFormattingEditProvider = /** @class */ (function () {
     }
     DocumentRangeFormattingEditProvider.prototype.provideDocumentRangeFormattingEdits = function (model, range, options, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) {
             return worker.format(resource.toString(), fromRange(range), fromFormattingOptions(options)).then(function (edits) {
                 if (!edits || edits.length === 0) {
                     return;
                 }
                 return edits.map(toTextEdit);
             });
-        });
+        }));
     };
     return DocumentRangeFormattingEditProvider;
 }());
@@ -393,7 +431,7 @@ var DocumentColorAdapter = /** @class */ (function () {
     }
     DocumentColorAdapter.prototype.provideDocumentColors = function (model, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.findDocumentColors(resource.toString()); }).then(function (infos) {
             if (!infos) {
                 return;
             }
@@ -401,11 +439,11 @@ var DocumentColorAdapter = /** @class */ (function () {
                 color: item.color,
                 range: toRange(item.range)
             }); });
-        });
+        }));
     };
     DocumentColorAdapter.prototype.provideColorPresentations = function (model, info, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.getColorPresentations(resource.toString(), info.color, fromRange(info.range)); }).then(function (presentations) {
             if (!presentations) {
                 return;
             }
@@ -421,7 +459,7 @@ var DocumentColorAdapter = /** @class */ (function () {
                 }
                 return item;
             });
-        });
+        }));
     };
     return DocumentColorAdapter;
 }());
@@ -432,7 +470,7 @@ var FoldingRangeAdapter = /** @class */ (function () {
     }
     FoldingRangeAdapter.prototype.provideFoldingRanges = function (model, context, token) {
         var resource = model.uri;
-        return this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
+        return wireCancellationToken(token, this._worker(resource).then(function (worker) { return worker.provideFoldingRanges(resource.toString(), context); }).then(function (ranges) {
             if (!ranges) {
                 return;
             }
@@ -446,7 +484,7 @@ var FoldingRangeAdapter = /** @class */ (function () {
                 }
                 return result;
             });
-        });
+        }));
     };
     return FoldingRangeAdapter;
 }());
@@ -458,4 +496,13 @@ function toFoldingRangeKind(kind) {
         case ls.FoldingRangeKind.Region: return monaco.languages.FoldingRangeKind.Region;
     }
     return void 0;
+}
+/**
+ * Hook a cancellation token to a WinJS Promise
+ */
+function wireCancellationToken(token, promise) {
+    if (promise.cancel) {
+        token.onCancellationRequested(function () { return promise.cancel(); });
+    }
+    return promise;
 }

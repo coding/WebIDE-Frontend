@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,17 +15,17 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import './bracketMatching.css';
 import * as nls from '../../../nls.js';
-import { RunOnceScheduler } from '../../../base/common/async.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
 import { Position } from '../../common/core/position.js';
 import { Selection } from '../../common/core/selection.js';
+import { RunOnceScheduler } from '../../../base/common/async.js';
+import { EditorAction, registerEditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
-import { OverviewRulerLane } from '../../common/model.js';
-import { ModelDecorationOptions } from '../../common/model/textModel.js';
-import { editorBracketMatchBackground, editorBracketMatchBorder } from '../../common/view/editorColorRegistry.js';
-import { registerColor } from '../../../platform/theme/common/colorRegistry.js';
 import { registerThemingParticipant, themeColorFromId } from '../../../platform/theme/common/themeService.js';
+import { editorBracketMatchBackground, editorBracketMatchBorder } from '../../common/view/editorColorRegistry.js';
+import { ModelDecorationOptions } from '../../common/model/textModel.js';
+import { registerColor } from '../../../platform/theme/common/colorRegistry.js';
+import { TrackedRangeStickiness, OverviewRulerLane } from '../../common/model.js';
 var overviewRulerBracketMatchForeground = registerColor('editorOverviewRuler.bracketMatchForeground', { dark: '#A0A0A0', light: '#A0A0A0', hc: '#A0A0A0' }, nls.localize('overviewRulerBracketMatchForeground', 'Overview ruler marker color for matching brackets.'));
 var JumpToBracketAction = /** @class */ (function (_super) {
     __extends(JumpToBracketAction, _super);
@@ -102,7 +100,6 @@ var BracketMatchingController = /** @class */ (function (_super) {
             _this._updateBracketsSoon.schedule();
         }));
         _this._register(editor.onDidChangeModel(function (e) {
-            _this._lastBracketsData = [];
             _this._decorations = [];
             _this._updateBracketsSoon.schedule();
         }));
@@ -127,10 +124,10 @@ var BracketMatchingController = /** @class */ (function (_super) {
         return BracketMatchingController.ID;
     };
     BracketMatchingController.prototype.jumpToBracket = function () {
-        if (!this._editor.hasModel()) {
+        var model = this._editor.getModel();
+        if (!model) {
             return;
         }
-        var model = this._editor.getModel();
         var newSelections = this._editor.getSelections().map(function (selection) {
             var position = selection.getStartPosition();
             // find matching brackets if position is on a bracket
@@ -160,10 +157,10 @@ var BracketMatchingController = /** @class */ (function (_super) {
         this._editor.revealRange(newSelections[0]);
     };
     BracketMatchingController.prototype.selectToBracket = function () {
-        if (!this._editor.hasModel()) {
+        var model = this._editor.getModel();
+        if (!model) {
             return;
         }
-        var model = this._editor.getModel();
         var newSelections = [];
         this._editor.getSelections().forEach(function (selection) {
             var position = selection.getStartPosition();
@@ -215,13 +212,13 @@ var BracketMatchingController = /** @class */ (function (_super) {
         this._decorations = this._editor.deltaDecorations(this._decorations, newDecorations);
     };
     BracketMatchingController.prototype._recomputeBrackets = function () {
-        if (!this._editor.hasModel()) {
+        var model = this._editor.getModel();
+        if (!model) {
             // no model => no brackets!
             this._lastBracketsData = [];
             this._lastVersionId = 0;
             return;
         }
-        var model = this._editor.getModel();
         var versionId = model.getVersionId();
         var previousData = [];
         if (this._lastVersionId === versionId) {
@@ -261,10 +258,11 @@ var BracketMatchingController = /** @class */ (function (_super) {
     };
     BracketMatchingController.ID = 'editor.contrib.bracketMatchingController';
     BracketMatchingController._DECORATION_OPTIONS = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         className: 'bracket-match',
         overviewRuler: {
             color: themeColorFromId(overviewRulerBracketMatchForeground),
+            darkColor: themeColorFromId(overviewRulerBracketMatchForeground),
             position: OverviewRulerLane.Center
         }
     });

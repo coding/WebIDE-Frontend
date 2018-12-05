@@ -2,25 +2,23 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
-import { Color } from '../../../../base/common/color.js';
 import { ViewPart } from '../../view/viewPart.js';
 import { Position } from '../../../common/core/position.js';
 import { TokenizationRegistry } from '../../../common/modes.js';
-import { editorCursorForeground, editorOverviewRulerBorder } from '../../../common/view/editorColorRegistry.js';
+import { editorOverviewRulerBorder, editorCursorForeground } from '../../../common/view/editorColorRegistry.js';
+import { Color } from '../../../../base/common/color.js';
+import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
 var Settings = /** @class */ (function () {
     function Settings(config, theme) {
         this.lineHeight = config.editor.lineHeight;
@@ -165,6 +163,7 @@ var DecorationsOverviewRuler = /** @class */ (function (_super) {
         _this._domNode.setPosition('absolute');
         _this._domNode.setLayerHinting(true);
         _this._domNode.setAttribute('aria-hidden', 'true');
+        _this._settings = null;
         _this._updateSettings(false);
         _this._tokensColorTrackerListener = TokenizationRegistry.onDidChange(function (e) {
             if (e.changedColorMap) {
@@ -180,7 +179,7 @@ var DecorationsOverviewRuler = /** @class */ (function (_super) {
     };
     DecorationsOverviewRuler.prototype._updateSettings = function (renderNow) {
         var newSettings = new Settings(this._context.configuration, this._context.theme);
-        if (this._settings && this._settings.equals(newSettings)) {
+        if (this._settings !== null && this._settings.equals(newSettings)) {
             // nothing to do
             return false;
         }
@@ -303,7 +302,7 @@ var DecorationsOverviewRuler = /** @class */ (function (_super) {
             canvasCtx.fillRect(x[prevLane], prevY1, w[prevLane], prevY2 - prevY1);
         }
         // Draw cursors
-        if (!this._settings.hideCursor && this._settings.cursorColor) {
+        if (!this._settings.hideCursor) {
             var cursorHeight = (2 * this._settings.pixelRatio) | 0;
             var halfCursorHeight = (cursorHeight / 2) | 0;
             var cursorX = this._settings.x[7 /* Full */];

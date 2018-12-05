@@ -2,16 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { onUnexpectedError } from '../../../base/common/errors.js';
-import * as strings from '../../../base/common/strings.js';
+'use strict';
 import { Position } from '../core/position.js';
-import { Range } from '../core/range.js';
-import { Selection } from '../core/selection.js';
+import * as strings from '../../../base/common/strings.js';
 import { TextModel } from '../model/textModel.js';
+import { Selection } from '../core/selection.js';
+import { Range } from '../core/range.js';
 import { LanguageConfigurationRegistry } from '../modes/languageConfigurationRegistry.js';
-var autoCloseAlways = function (_) { return true; };
-var autoCloseNever = function (_) { return false; };
-var autoCloseBeforeWhitespace = function (chr) { return (chr === ' ' || chr === '\t'); };
+import { onUnexpectedError } from '../../../base/common/errors.js';
 var CursorConfiguration = /** @class */ (function () {
     function CursorConfiguration(languageIdentifier, oneIndent, modelOptions, configuration) {
         this._languageIdentifier = languageIdentifier;
@@ -25,20 +23,13 @@ var CursorConfiguration = /** @class */ (function () {
         this.useTabStops = c.useTabStops;
         this.wordSeparators = c.wordSeparators;
         this.emptySelectionClipboard = c.emptySelectionClipboard;
-        this.copyWithSyntaxHighlighting = c.copyWithSyntaxHighlighting;
         this.multiCursorMergeOverlapping = c.multiCursorMergeOverlapping;
         this.autoClosingBrackets = c.autoClosingBrackets;
-        this.autoClosingQuotes = c.autoClosingQuotes;
-        this.autoSurround = c.autoSurround;
         this.autoIndent = c.autoIndent;
         this.autoClosingPairsOpen = {};
         this.autoClosingPairsClose = {};
         this.surroundingPairs = {};
         this._electricChars = null;
-        this.shouldAutoCloseBefore = {
-            quote: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingQuotes),
-            bracket: CursorConfiguration._getShouldAutoClose(languageIdentifier, this.autoClosingBrackets)
-        };
         var autoClosingPairs = CursorConfiguration._getAutoClosingPairs(languageIdentifier);
         if (autoClosingPairs) {
             for (var i = 0; i < autoClosingPairs.length; i++) {
@@ -59,8 +50,6 @@ var CursorConfiguration = /** @class */ (function () {
             || e.emptySelectionClipboard
             || e.multiCursorMergeOverlapping
             || e.autoClosingBrackets
-            || e.autoClosingQuotes
-            || e.autoSurround
             || e.useTabStops
             || e.lineHeight
             || e.readOnly);
@@ -100,28 +89,6 @@ var CursorConfiguration = /** @class */ (function () {
         catch (e) {
             onUnexpectedError(e);
             return null;
-        }
-    };
-    CursorConfiguration._getShouldAutoClose = function (languageIdentifier, autoCloseConfig) {
-        switch (autoCloseConfig) {
-            case 'beforeWhitespace':
-                return autoCloseBeforeWhitespace;
-            case 'languageDefined':
-                return CursorConfiguration._getLanguageDefinedShouldAutoClose(languageIdentifier);
-            case 'always':
-                return autoCloseAlways;
-            case 'never':
-                return autoCloseNever;
-        }
-    };
-    CursorConfiguration._getLanguageDefinedShouldAutoClose = function (languageIdentifier) {
-        try {
-            var autoCloseBeforeSet_1 = LanguageConfigurationRegistry.getAutoCloseBeforeSet(languageIdentifier.id);
-            return function (c) { return autoCloseBeforeSet_1.indexOf(c) !== -1; };
-        }
-        catch (e) {
-            onUnexpectedError(e);
-            return autoCloseNever;
         }
     };
     CursorConfiguration._getSurroundingPairs = function (languageIdentifier) {
@@ -236,32 +203,16 @@ var CursorContext = /** @class */ (function () {
     return CursorContext;
 }());
 export { CursorContext };
-var PartialModelCursorState = /** @class */ (function () {
-    function PartialModelCursorState(modelState) {
-        this.modelState = modelState;
-        this.viewState = null;
-    }
-    return PartialModelCursorState;
-}());
-export { PartialModelCursorState };
-var PartialViewCursorState = /** @class */ (function () {
-    function PartialViewCursorState(viewState) {
-        this.modelState = null;
-        this.viewState = viewState;
-    }
-    return PartialViewCursorState;
-}());
-export { PartialViewCursorState };
 var CursorState = /** @class */ (function () {
     function CursorState(modelState, viewState) {
         this.modelState = modelState;
         this.viewState = viewState;
     }
     CursorState.fromModelState = function (modelState) {
-        return new PartialModelCursorState(modelState);
+        return new CursorState(modelState, null);
     };
     CursorState.fromViewState = function (viewState) {
-        return new PartialViewCursorState(viewState);
+        return new CursorState(null, viewState);
     };
     CursorState.fromModelSelection = function (modelSelection) {
         var selectionStartLineNumber = modelSelection.selectionStartLineNumber;
@@ -400,6 +351,3 @@ var CursorColumns = /** @class */ (function () {
     return CursorColumns;
 }());
 export { CursorColumns };
-export function isQuote(ch) {
-    return (ch === '\'' || ch === '"' || ch === '`');
-}

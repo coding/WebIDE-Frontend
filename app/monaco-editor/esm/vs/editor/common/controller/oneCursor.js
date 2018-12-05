@@ -2,12 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CursorState, SingleCursorState } from './cursorCommon.js';
+'use strict';
+import { SingleCursorState, CursorState } from './cursorCommon.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-import { Selection } from '../core/selection.js';
+import { Selection, SelectionDirection } from '../core/selection.js';
+import { TrackedRangeStickiness } from '../model.js';
 var OneCursor = /** @class */ (function () {
     function OneCursor(context) {
+        this.modelState = null;
+        this.viewState = null;
         this._selTrackedRange = null;
         this._trackSelection = true;
         this._setState(context, new SingleCursorState(new Range(1, 1, 1, 1), 0, new Position(1, 1), 0), new SingleCursorState(new Range(1, 1, 1, 1), 0, new Position(1, 1), 0));
@@ -28,17 +32,17 @@ var OneCursor = /** @class */ (function () {
             // don't track the selection
             return;
         }
-        this._selTrackedRange = context.model._setTrackedRange(this._selTrackedRange, this.modelState.selection, 0 /* AlwaysGrowsWhenTypingAtEdges */);
+        this._selTrackedRange = context.model._setTrackedRange(this._selTrackedRange, this.modelState.selection, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges);
     };
     OneCursor.prototype._removeTrackedRange = function (context) {
-        this._selTrackedRange = context.model._setTrackedRange(this._selTrackedRange, null, 0 /* AlwaysGrowsWhenTypingAtEdges */);
+        this._selTrackedRange = context.model._setTrackedRange(this._selTrackedRange, null, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges);
     };
     OneCursor.prototype.asCursorState = function () {
         return new CursorState(this.modelState, this.viewState);
     };
     OneCursor.prototype.readSelectionFromMarkers = function (context) {
         var range = context.model._getTrackedRange(this._selTrackedRange);
-        if (this.modelState.selection.getDirection() === 0 /* LTR */) {
+        if (this.modelState.selection.getDirection() === SelectionDirection.LTR) {
             return new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
         }
         return new Selection(range.endLineNumber, range.endColumn, range.startLineNumber, range.startColumn);
@@ -51,9 +55,6 @@ var OneCursor = /** @class */ (function () {
     };
     OneCursor.prototype._setState = function (context, modelState, viewState) {
         if (!modelState) {
-            if (!viewState) {
-                return;
-            }
             // We only have the view state => compute the model state
             var selectionStart = context.model.validateRange(context.convertViewRangeToModelRange(viewState.selectionStart));
             var position = context.model.validatePosition(context.convertViewPositionToModelPosition(viewState.position.lineNumber, viewState.position.column));

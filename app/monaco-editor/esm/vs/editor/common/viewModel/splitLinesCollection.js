@@ -2,12 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-import { ModelDecorationOptions } from '../model/textModel.js';
-import * as viewEvents from '../view/viewEvents.js';
 import { PrefixSumComputerWithCache } from './prefixSumComputer.js';
 import { ViewLineData } from './viewModel.js';
+import * as viewEvents from '../view/viewEvents.js';
+import { ModelDecorationOptions } from '../model/textModel.js';
+import { Color } from '../../../base/common/color.js';
 var OutputPosition = /** @class */ (function () {
     function OutputPosition(outputLineIndex, outputOffset) {
         this.outputLineIndex = outputLineIndex;
@@ -74,10 +76,6 @@ var SplitLinesCollection = /** @class */ (function () {
         if (modelVersion !== this._validModelVersionId) {
             // This is pretty bad, it means we lost track of the model...
             throw new Error("ViewModel is out of sync with Model!");
-        }
-        if (this.lines.length !== this.model.getLineCount()) {
-            // This is pretty bad, it means we lost track of the model...
-            this._constructLines(false);
         }
     };
     SplitLinesCollection.prototype._constructLines = function (resetHiddenAreas) {
@@ -204,7 +202,7 @@ var SplitLinesCollection = /** @class */ (function () {
         }
         return true;
     };
-    SplitLinesCollection.prototype.modelPositionIsVisible = function (modelLineNumber, _modelColumn) {
+    SplitLinesCollection.prototype.modelPositionIsVisible = function (modelLineNumber, modelColumn) {
         if (modelLineNumber < 1 || modelLineNumber > this.lines.length) {
             // invalid arguments
             return false;
@@ -244,7 +242,7 @@ var SplitLinesCollection = /** @class */ (function () {
         this.prefixSumComputer.removeValues(fromLineNumber - 1, toLineNumber - fromLineNumber + 1);
         return new viewEvents.ViewLinesDeletedEvent(outputFromLineNumber, outputToLineNumber);
     };
-    SplitLinesCollection.prototype.onModelLinesInserted = function (versionId, fromLineNumber, _toLineNumber, text) {
+    SplitLinesCollection.prototype.onModelLinesInserted = function (versionId, fromLineNumber, toLineNumber, text) {
         if (versionId <= this._validModelVersionId) {
             // Here we check for versionId in case the lines were reconstructed in the meantime.
             // We don't want to apply stale change events on top of a newer read model state.
@@ -355,7 +353,7 @@ var SplitLinesCollection = /** @class */ (function () {
         var modelMaxPosition = this.convertViewPositionToModelPosition(maxLineNumber, this.getViewLineMinColumn(maxLineNumber));
         var result = this.model.getActiveIndentGuide(modelPosition.lineNumber, modelMinPosition.lineNumber, modelMaxPosition.lineNumber);
         var viewStartPosition = this.convertModelPositionToViewPosition(result.startLineNumber, 1);
-        var viewEndPosition = this.convertModelPositionToViewPosition(result.endLineNumber, this.model.getLineMaxColumn(result.endLineNumber));
+        var viewEndPosition = this.convertModelPositionToViewPosition(result.endLineNumber, 1);
         return {
             startLineNumber: viewStartPosition.lineNumber,
             endLineNumber: viewEndPosition.lineNumber,
@@ -582,11 +580,11 @@ var SplitLinesCollection = /** @class */ (function () {
         for (var i = 0, len = decorations.length; i < len; i++) {
             var decoration = decorations[i];
             var opts = decoration.options.overviewRuler;
-            var lane = opts ? opts.position : 0;
+            var lane = opts.position;
             if (lane === 0) {
                 continue;
             }
-            var color = opts.getColor(theme);
+            var color = resolveColor(opts, theme);
             var viewStartLineNumber = this._getViewLineNumberForModelPosition(decoration.range.startLineNumber, decoration.range.startColumn);
             var viewEndLineNumber = this._getViewLineNumberForModelPosition(decoration.range.endLineNumber, decoration.range.endColumn);
             result.accept(color, viewStartLineNumber, viewEndLineNumber, lane);
@@ -598,8 +596,7 @@ var SplitLinesCollection = /** @class */ (function () {
         var modelEnd = this.convertViewPositionToModelPosition(range.endLineNumber, range.endColumn);
         if (modelEnd.lineNumber - modelStart.lineNumber <= range.endLineNumber - range.startLineNumber) {
             // most likely there are no hidden lines => fast path
-            // fetch decorations from column 1 to cover the case of wrapped lines that have whole line decorations at column 1
-            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, 1, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation);
+            return this.model.getDecorationsInRange(new Range(modelStart.lineNumber, modelStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation);
         }
         var result = [];
         var modelStartLineIndex = modelStart.lineNumber - 1;
@@ -626,33 +623,7 @@ var SplitLinesCollection = /** @class */ (function () {
             result = result.concat(this.model.getDecorationsInRange(new Range(reqStart.lineNumber, reqStart.column, modelEnd.lineNumber, modelEnd.column), ownerId, filterOutValidation));
             reqStart = null;
         }
-        result.sort(function (a, b) {
-            var res = Range.compareRangesUsingStarts(a.range, b.range);
-            if (res === 0) {
-                if (a.id < b.id) {
-                    return -1;
-                }
-                if (a.id > b.id) {
-                    return 1;
-                }
-                return 0;
-            }
-            return res;
-        });
-        // Eliminate duplicate decorations that might have intersected our visible ranges multiple times
-        var finalResult = [], finalResultLen = 0;
-        var prevDecId = null;
-        for (var i = 0, len = result.length; i < len; i++) {
-            var dec = result[i];
-            var decId = dec.id;
-            if (prevDecId === decId) {
-                // skip
-                continue;
-            }
-            prevDecId = decId;
-            finalResult[finalResultLen++] = dec;
-        }
-        return finalResult;
+        return result;
     };
     return SplitLinesCollection;
 }());
@@ -672,37 +643,37 @@ var VisibleIdentitySplitLine = /** @class */ (function () {
     VisibleIdentitySplitLine.prototype.getViewLineCount = function () {
         return 1;
     };
-    VisibleIdentitySplitLine.prototype.getViewLineContent = function (model, modelLineNumber, _outputLineIndex) {
+    VisibleIdentitySplitLine.prototype.getViewLineContent = function (model, modelLineNumber, outputLineIndex) {
         return model.getLineContent(modelLineNumber);
     };
-    VisibleIdentitySplitLine.prototype.getViewLineLength = function (model, modelLineNumber, _outputLineIndex) {
+    VisibleIdentitySplitLine.prototype.getViewLineLength = function (model, modelLineNumber, outputLineIndex) {
         return model.getLineLength(modelLineNumber);
     };
-    VisibleIdentitySplitLine.prototype.getViewLineMinColumn = function (model, modelLineNumber, _outputLineIndex) {
+    VisibleIdentitySplitLine.prototype.getViewLineMinColumn = function (model, modelLineNumber, outputLineIndex) {
         return model.getLineMinColumn(modelLineNumber);
     };
-    VisibleIdentitySplitLine.prototype.getViewLineMaxColumn = function (model, modelLineNumber, _outputLineIndex) {
+    VisibleIdentitySplitLine.prototype.getViewLineMaxColumn = function (model, modelLineNumber, outputLineIndex) {
         return model.getLineMaxColumn(modelLineNumber);
     };
-    VisibleIdentitySplitLine.prototype.getViewLineData = function (model, modelLineNumber, _outputLineIndex) {
+    VisibleIdentitySplitLine.prototype.getViewLineData = function (model, modelLineNumber, outputLineIndex) {
         var lineTokens = model.getLineTokens(modelLineNumber);
         var lineContent = lineTokens.getLineContent();
         return new ViewLineData(lineContent, false, 1, lineContent.length + 1, lineTokens.inflate());
     };
-    VisibleIdentitySplitLine.prototype.getViewLinesData = function (model, modelLineNumber, _fromOuputLineIndex, _toOutputLineIndex, globalStartIndex, needed, result) {
+    VisibleIdentitySplitLine.prototype.getViewLinesData = function (model, modelLineNumber, fromOuputLineIndex, toOutputLineIndex, globalStartIndex, needed, result) {
         if (!needed[globalStartIndex]) {
             result[globalStartIndex] = null;
             return;
         }
         result[globalStartIndex] = this.getViewLineData(model, modelLineNumber, 0);
     };
-    VisibleIdentitySplitLine.prototype.getModelColumnOfViewPosition = function (_outputLineIndex, outputColumn) {
+    VisibleIdentitySplitLine.prototype.getModelColumnOfViewPosition = function (outputLineIndex, outputColumn) {
         return outputColumn;
     };
     VisibleIdentitySplitLine.prototype.getViewPositionOfModelPosition = function (deltaLineNumber, inputColumn) {
         return new Position(deltaLineNumber, inputColumn);
     };
-    VisibleIdentitySplitLine.prototype.getViewLineNumberOfModelPosition = function (deltaLineNumber, _inputColumn) {
+    VisibleIdentitySplitLine.prototype.getViewLineNumberOfModelPosition = function (deltaLineNumber, inputColumn) {
         return deltaLineNumber;
     };
     VisibleIdentitySplitLine.INSTANCE = new VisibleIdentitySplitLine();
@@ -723,31 +694,31 @@ var InvisibleIdentitySplitLine = /** @class */ (function () {
     InvisibleIdentitySplitLine.prototype.getViewLineCount = function () {
         return 0;
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineContent = function (_model, _modelLineNumber, _outputLineIndex) {
+    InvisibleIdentitySplitLine.prototype.getViewLineContent = function (model, modelLineNumber, outputLineIndex) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineLength = function (_model, _modelLineNumber, _outputLineIndex) {
+    InvisibleIdentitySplitLine.prototype.getViewLineLength = function (model, modelLineNumber, outputLineIndex) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineMinColumn = function (_model, _modelLineNumber, _outputLineIndex) {
+    InvisibleIdentitySplitLine.prototype.getViewLineMinColumn = function (model, modelLineNumber, outputLineIndex) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineMaxColumn = function (_model, _modelLineNumber, _outputLineIndex) {
+    InvisibleIdentitySplitLine.prototype.getViewLineMaxColumn = function (model, modelLineNumber, outputLineIndex) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineData = function (_model, _modelLineNumber, _outputLineIndex) {
+    InvisibleIdentitySplitLine.prototype.getViewLineData = function (model, modelLineNumber, outputLineIndex) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLinesData = function (_model, _modelLineNumber, _fromOuputLineIndex, _toOutputLineIndex, _globalStartIndex, _needed, _result) {
+    InvisibleIdentitySplitLine.prototype.getViewLinesData = function (model, modelLineNumber, fromOuputLineIndex, toOutputLineIndex, globalStartIndex, needed, result) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getModelColumnOfViewPosition = function (_outputLineIndex, _outputColumn) {
+    InvisibleIdentitySplitLine.prototype.getModelColumnOfViewPosition = function (outputLineIndex, outputColumn) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewPositionOfModelPosition = function (_deltaLineNumber, _inputColumn) {
+    InvisibleIdentitySplitLine.prototype.getViewPositionOfModelPosition = function (deltaLineNumber, inputColumn) {
         throw new Error('Not supported');
     };
-    InvisibleIdentitySplitLine.prototype.getViewLineNumberOfModelPosition = function (_deltaLineNumber, _inputColumn) {
+    InvisibleIdentitySplitLine.prototype.getViewLineNumberOfModelPosition = function (deltaLineNumber, inputColumn) {
         throw new Error('Not supported');
     };
     InvisibleIdentitySplitLine.INSTANCE = new InvisibleIdentitySplitLine();
@@ -812,7 +783,7 @@ var SplitLine = /** @class */ (function () {
         }
         return r;
     };
-    SplitLine.prototype.getViewLineMinColumn = function (_model, _modelLineNumber, outputLineIndex) {
+    SplitLine.prototype.getViewLineMinColumn = function (model, modelLineNumber, outputLineIndex) {
         if (!this._isVisible) {
             throw new Error('Not supported');
         }
@@ -933,10 +904,10 @@ var IdentityCoordinatesConverter = /** @class */ (function () {
     IdentityCoordinatesConverter.prototype.convertViewRangeToModelRange = function (viewRange) {
         return this._validRange(viewRange);
     };
-    IdentityCoordinatesConverter.prototype.validateViewPosition = function (_viewPosition, expectedModelPosition) {
+    IdentityCoordinatesConverter.prototype.validateViewPosition = function (viewPosition, expectedModelPosition) {
         return this._validPosition(expectedModelPosition);
     };
-    IdentityCoordinatesConverter.prototype.validateViewRange = function (_viewRange, expectedModelRange) {
+    IdentityCoordinatesConverter.prototype.validateViewRange = function (viewRange, expectedModelRange) {
         return this._validRange(expectedModelRange);
     };
     // Model -> View conversion and related methods
@@ -972,31 +943,31 @@ var IdentityLinesCollection = /** @class */ (function () {
     IdentityLinesCollection.prototype.setHiddenAreas = function (_ranges) {
         return false;
     };
-    IdentityLinesCollection.prototype.setTabSize = function (_newTabSize) {
+    IdentityLinesCollection.prototype.setTabSize = function (newTabSize) {
         return false;
     };
-    IdentityLinesCollection.prototype.setWrappingSettings = function (_wrappingIndent, _wrappingColumn, _columnsForFullWidthChar) {
+    IdentityLinesCollection.prototype.setWrappingSettings = function (wrappingIndent, wrappingColumn, columnsForFullWidthChar) {
         return false;
     };
     IdentityLinesCollection.prototype.onModelFlushed = function () {
     };
-    IdentityLinesCollection.prototype.onModelLinesDeleted = function (_versionId, fromLineNumber, toLineNumber) {
+    IdentityLinesCollection.prototype.onModelLinesDeleted = function (versionId, fromLineNumber, toLineNumber) {
         return new viewEvents.ViewLinesDeletedEvent(fromLineNumber, toLineNumber);
     };
-    IdentityLinesCollection.prototype.onModelLinesInserted = function (_versionId, fromLineNumber, toLineNumber, _text) {
+    IdentityLinesCollection.prototype.onModelLinesInserted = function (versionId, fromLineNumber, toLineNumber, text) {
         return new viewEvents.ViewLinesInsertedEvent(fromLineNumber, toLineNumber);
     };
-    IdentityLinesCollection.prototype.onModelLineChanged = function (_versionId, lineNumber, _newText) {
+    IdentityLinesCollection.prototype.onModelLineChanged = function (versionId, lineNumber, newText) {
         return [false, new viewEvents.ViewLinesChangedEvent(lineNumber, lineNumber), null, null];
     };
-    IdentityLinesCollection.prototype.acceptVersionId = function (_versionId) {
+    IdentityLinesCollection.prototype.acceptVersionId = function (versionId) {
     };
     IdentityLinesCollection.prototype.getViewLineCount = function () {
         return this.model.getLineCount();
     };
-    IdentityLinesCollection.prototype.warmUpLookupCache = function (_viewStartLineNumber, _viewEndLineNumber) {
+    IdentityLinesCollection.prototype.warmUpLookupCache = function (viewStartLineNumber, viewEndLineNumber) {
     };
-    IdentityLinesCollection.prototype.getActiveIndentGuide = function (viewLineNumber, _minLineNumber, _maxLineNumber) {
+    IdentityLinesCollection.prototype.getActiveIndentGuide = function (viewLineNumber, minLineNumber, maxLineNumber) {
         return {
             startLineNumber: viewLineNumber,
             endLineNumber: viewLineNumber,
@@ -1048,11 +1019,11 @@ var IdentityLinesCollection = /** @class */ (function () {
         for (var i = 0, len = decorations.length; i < len; i++) {
             var decoration = decorations[i];
             var opts = decoration.options.overviewRuler;
-            var lane = opts ? opts.position : 0;
+            var lane = opts.position;
             if (lane === 0) {
                 continue;
             }
-            var color = opts.getColor(theme);
+            var color = resolveColor(opts, theme);
             var viewStartLineNumber = decoration.range.startLineNumber;
             var viewEndLineNumber = decoration.range.endLineNumber;
             result.accept(color, viewStartLineNumber, viewEndLineNumber, lane);
@@ -1090,3 +1061,21 @@ var OverviewRulerDecorations = /** @class */ (function () {
     };
     return OverviewRulerDecorations;
 }());
+function resolveColor(opts, theme) {
+    if (!opts._resolvedColor) {
+        var themeType = theme.type;
+        var color = (themeType === 'dark' ? opts.darkColor : themeType === 'light' ? opts.color : opts.hcColor);
+        opts._resolvedColor = resolveRulerColor(color, theme);
+    }
+    return opts._resolvedColor;
+}
+function resolveRulerColor(color, theme) {
+    if (typeof color === 'string') {
+        return color;
+    }
+    var c = color ? theme.getColor(color.id) : null;
+    if (!c) {
+        c = Color.transparent;
+    }
+    return c.toString();
+}

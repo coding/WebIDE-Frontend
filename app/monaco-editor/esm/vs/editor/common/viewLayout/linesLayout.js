@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { WhitespaceComputer } from './whitespaceComputer.js';
 /**
  * Layouting of objects that take vertical space (by having a height) and push down other objects.

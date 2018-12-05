@@ -2,9 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { isObject } from '../../base/common/types.js';
-import { LanguageFeatureRegistry } from './modes/languageFeatureRegistry.js';
+'use strict';
+import LanguageFeatureRegistry from './modes/languageFeatureRegistry.js';
 import { TokenizationRegistryImpl } from './modes/tokenizationRegistry.js';
+import { isObject } from '../../base/common/types.js';
 /**
  * @internal
  */
@@ -71,81 +72,22 @@ var TokenMetadata = /** @class */ (function () {
 }());
 export { TokenMetadata };
 /**
- * @internal
+ * How a suggest provider was triggered.
  */
-export var completionKindToCssClass = (function () {
-    var data = Object.create(null);
-    data[0 /* Method */] = 'method';
-    data[1 /* Function */] = 'function';
-    data[2 /* Constructor */] = 'constructor';
-    data[3 /* Field */] = 'field';
-    data[4 /* Variable */] = 'variable';
-    data[5 /* Class */] = 'class';
-    data[6 /* Struct */] = 'struct';
-    data[7 /* Interface */] = 'interface';
-    data[8 /* Module */] = 'module';
-    data[9 /* Property */] = 'property';
-    data[10 /* Event */] = 'event';
-    data[11 /* Operator */] = 'operator';
-    data[12 /* Unit */] = 'unit';
-    data[13 /* Value */] = 'value';
-    data[14 /* Constant */] = 'constant';
-    data[15 /* Enum */] = 'enum';
-    data[16 /* EnumMember */] = 'enum-member';
-    data[17 /* Keyword */] = 'keyword';
-    data[25 /* Snippet */] = 'snippet';
-    data[18 /* Text */] = 'text';
-    data[19 /* Color */] = 'color';
-    data[20 /* File */] = 'file';
-    data[21 /* Reference */] = 'reference';
-    data[22 /* Customcolor */] = 'customcolor';
-    data[23 /* Folder */] = 'folder';
-    data[24 /* TypeParameter */] = 'type-parameter';
-    return function (kind) {
-        return data[kind] || 'property';
-    };
-})();
+export var SuggestTriggerKind;
+(function (SuggestTriggerKind) {
+    SuggestTriggerKind[SuggestTriggerKind["Invoke"] = 0] = "Invoke";
+    SuggestTriggerKind[SuggestTriggerKind["TriggerCharacter"] = 1] = "TriggerCharacter";
+    SuggestTriggerKind[SuggestTriggerKind["TriggerForIncompleteCompletions"] = 2] = "TriggerForIncompleteCompletions";
+})(SuggestTriggerKind || (SuggestTriggerKind = {}));
 /**
  * @internal
  */
-export var completionKindFromLegacyString = (function () {
-    var data = Object.create(null);
-    data['method'] = 0 /* Method */;
-    data['function'] = 1 /* Function */;
-    data['constructor'] = 2 /* Constructor */;
-    data['field'] = 3 /* Field */;
-    data['variable'] = 4 /* Variable */;
-    data['class'] = 5 /* Class */;
-    data['struct'] = 6 /* Struct */;
-    data['interface'] = 7 /* Interface */;
-    data['module'] = 8 /* Module */;
-    data['property'] = 9 /* Property */;
-    data['event'] = 10 /* Event */;
-    data['operator'] = 11 /* Operator */;
-    data['unit'] = 12 /* Unit */;
-    data['value'] = 13 /* Value */;
-    data['constant'] = 14 /* Constant */;
-    data['enum'] = 15 /* Enum */;
-    data['enum-member'] = 16 /* EnumMember */;
-    data['keyword'] = 17 /* Keyword */;
-    data['snippet'] = 25 /* Snippet */;
-    data['text'] = 18 /* Text */;
-    data['color'] = 19 /* Color */;
-    data['file'] = 20 /* File */;
-    data['reference'] = 21 /* Reference */;
-    data['customcolor'] = 22 /* Customcolor */;
-    data['folder'] = 23 /* Folder */;
-    data['type-parameter'] = 24 /* TypeParameter */;
-    return function (value) {
-        return data[value] || 'property';
-    };
-})();
-export var SignatureHelpTriggerReason;
-(function (SignatureHelpTriggerReason) {
-    SignatureHelpTriggerReason[SignatureHelpTriggerReason["Invoke"] = 1] = "Invoke";
-    SignatureHelpTriggerReason[SignatureHelpTriggerReason["TriggerCharacter"] = 2] = "TriggerCharacter";
-    SignatureHelpTriggerReason[SignatureHelpTriggerReason["ContentChange"] = 3] = "ContentChange";
-})(SignatureHelpTriggerReason || (SignatureHelpTriggerReason = {}));
+export var CodeActionTrigger;
+(function (CodeActionTrigger) {
+    CodeActionTrigger[CodeActionTrigger["Automatic"] = 1] = "Automatic";
+    CodeActionTrigger[CodeActionTrigger["Manual"] = 2] = "Manual";
+})(CodeActionTrigger || (CodeActionTrigger = {}));
 /**
  * A document highlight kind.
  */
@@ -165,36 +107,68 @@ export var DocumentHighlightKind;
     DocumentHighlightKind[DocumentHighlightKind["Write"] = 2] = "Write";
 })(DocumentHighlightKind || (DocumentHighlightKind = {}));
 /**
+ * A symbol kind.
+ */
+export var SymbolKind;
+(function (SymbolKind) {
+    SymbolKind[SymbolKind["File"] = 0] = "File";
+    SymbolKind[SymbolKind["Module"] = 1] = "Module";
+    SymbolKind[SymbolKind["Namespace"] = 2] = "Namespace";
+    SymbolKind[SymbolKind["Package"] = 3] = "Package";
+    SymbolKind[SymbolKind["Class"] = 4] = "Class";
+    SymbolKind[SymbolKind["Method"] = 5] = "Method";
+    SymbolKind[SymbolKind["Property"] = 6] = "Property";
+    SymbolKind[SymbolKind["Field"] = 7] = "Field";
+    SymbolKind[SymbolKind["Constructor"] = 8] = "Constructor";
+    SymbolKind[SymbolKind["Enum"] = 9] = "Enum";
+    SymbolKind[SymbolKind["Interface"] = 10] = "Interface";
+    SymbolKind[SymbolKind["Function"] = 11] = "Function";
+    SymbolKind[SymbolKind["Variable"] = 12] = "Variable";
+    SymbolKind[SymbolKind["Constant"] = 13] = "Constant";
+    SymbolKind[SymbolKind["String"] = 14] = "String";
+    SymbolKind[SymbolKind["Number"] = 15] = "Number";
+    SymbolKind[SymbolKind["Boolean"] = 16] = "Boolean";
+    SymbolKind[SymbolKind["Array"] = 17] = "Array";
+    SymbolKind[SymbolKind["Object"] = 18] = "Object";
+    SymbolKind[SymbolKind["Key"] = 19] = "Key";
+    SymbolKind[SymbolKind["Null"] = 20] = "Null";
+    SymbolKind[SymbolKind["EnumMember"] = 21] = "EnumMember";
+    SymbolKind[SymbolKind["Struct"] = 22] = "Struct";
+    SymbolKind[SymbolKind["Event"] = 23] = "Event";
+    SymbolKind[SymbolKind["Operator"] = 24] = "Operator";
+    SymbolKind[SymbolKind["TypeParameter"] = 25] = "TypeParameter";
+})(SymbolKind || (SymbolKind = {}));
+/**
  * @internal
  */
 export var symbolKindToCssClass = (function () {
     var _fromMapping = Object.create(null);
-    _fromMapping[0 /* File */] = 'file';
-    _fromMapping[1 /* Module */] = 'module';
-    _fromMapping[2 /* Namespace */] = 'namespace';
-    _fromMapping[3 /* Package */] = 'package';
-    _fromMapping[4 /* Class */] = 'class';
-    _fromMapping[5 /* Method */] = 'method';
-    _fromMapping[6 /* Property */] = 'property';
-    _fromMapping[7 /* Field */] = 'field';
-    _fromMapping[8 /* Constructor */] = 'constructor';
-    _fromMapping[9 /* Enum */] = 'enum';
-    _fromMapping[10 /* Interface */] = 'interface';
-    _fromMapping[11 /* Function */] = 'function';
-    _fromMapping[12 /* Variable */] = 'variable';
-    _fromMapping[13 /* Constant */] = 'constant';
-    _fromMapping[14 /* String */] = 'string';
-    _fromMapping[15 /* Number */] = 'number';
-    _fromMapping[16 /* Boolean */] = 'boolean';
-    _fromMapping[17 /* Array */] = 'array';
-    _fromMapping[18 /* Object */] = 'object';
-    _fromMapping[19 /* Key */] = 'key';
-    _fromMapping[20 /* Null */] = 'null';
-    _fromMapping[21 /* EnumMember */] = 'enum-member';
-    _fromMapping[22 /* Struct */] = 'struct';
-    _fromMapping[23 /* Event */] = 'event';
-    _fromMapping[24 /* Operator */] = 'operator';
-    _fromMapping[25 /* TypeParameter */] = 'type-parameter';
+    _fromMapping[SymbolKind.File] = 'file';
+    _fromMapping[SymbolKind.Module] = 'module';
+    _fromMapping[SymbolKind.Namespace] = 'namespace';
+    _fromMapping[SymbolKind.Package] = 'package';
+    _fromMapping[SymbolKind.Class] = 'class';
+    _fromMapping[SymbolKind.Method] = 'method';
+    _fromMapping[SymbolKind.Property] = 'property';
+    _fromMapping[SymbolKind.Field] = 'field';
+    _fromMapping[SymbolKind.Constructor] = 'constructor';
+    _fromMapping[SymbolKind.Enum] = 'enum';
+    _fromMapping[SymbolKind.Interface] = 'interface';
+    _fromMapping[SymbolKind.Function] = 'function';
+    _fromMapping[SymbolKind.Variable] = 'variable';
+    _fromMapping[SymbolKind.Constant] = 'constant';
+    _fromMapping[SymbolKind.String] = 'string';
+    _fromMapping[SymbolKind.Number] = 'number';
+    _fromMapping[SymbolKind.Boolean] = 'boolean';
+    _fromMapping[SymbolKind.Array] = 'array';
+    _fromMapping[SymbolKind.Object] = 'object';
+    _fromMapping[SymbolKind.Key] = 'key';
+    _fromMapping[SymbolKind.Null] = 'null';
+    _fromMapping[SymbolKind.EnumMember] = 'enum-member';
+    _fromMapping[SymbolKind.Struct] = 'struct';
+    _fromMapping[SymbolKind.Event] = 'event';
+    _fromMapping[SymbolKind.Operator] = 'operator';
+    _fromMapping[SymbolKind.TypeParameter] = 'type-parameter';
     return function toCssClassName(kind) {
         return "symbol-icon " + (_fromMapping[kind] || 'property');
     };
@@ -242,7 +216,7 @@ export var RenameProviderRegistry = new LanguageFeatureRegistry();
 /**
  * @internal
  */
-export var CompletionProviderRegistry = new LanguageFeatureRegistry();
+export var SuggestRegistry = new LanguageFeatureRegistry();
 /**
  * @internal
  */

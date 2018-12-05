@@ -4,10 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import * as nodes from '../parser/cssNodes.js';
-import { Range, Location, DocumentHighlightKind, SymbolKind, TextEdit } from './../../vscode-languageserver-types/main.js';
+import { Range, Location, DocumentHighlightKind, SymbolKind, TextEdit } from '../../vscode-languageserver-types/main.js';
 import { Symbols } from '../parser/cssSymbolScope.js';
 import { getColorValue, hslFromColor } from '../services/languageFacts.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var CSSNavigation = /** @class */ (function () {
     function CSSNavigation() {

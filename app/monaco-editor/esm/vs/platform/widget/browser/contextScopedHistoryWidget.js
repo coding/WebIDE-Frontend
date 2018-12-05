@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -52,9 +50,8 @@ var ContextScopedHistoryInputBox = /** @class */ (function (_super) {
 export { ContextScopedHistoryInputBox };
 var ContextScopedFindInput = /** @class */ (function (_super) {
     __extends(ContextScopedFindInput, _super);
-    function ContextScopedFindInput(container, contextViewProvider, options, contextKeyService, showFindOptions) {
-        if (showFindOptions === void 0) { showFindOptions = false; }
-        var _this = _super.call(this, container, contextViewProvider, showFindOptions, options) || this;
+    function ContextScopedFindInput(container, contextViewProvider, options, contextKeyService) {
+        var _this = _super.call(this, container, contextViewProvider, options) || this;
         _this._register(createAndBindHistoryNavigationWidgetScopedContextKeyService(contextKeyService, { target: _this.inputBox.element, historyNavigator: _this.inputBox }).scopedContextKeyService);
         return _this;
     }

@@ -3,12 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -144,12 +141,12 @@ var Trait = /** @class */ (function () {
      * @param indexes Indexes which should have this trait.
      * @return The old indexes which had this trait.
      */
-    Trait.prototype.set = function (indexes, browserEvent) {
+    Trait.prototype.set = function (indexes) {
         var result = this.indexes;
         this.indexes = indexes;
         var toRender = disjunction(result, indexes);
         this.renderer.renderIndexes(toRender);
-        this._onChange.fire({ indexes: indexes, browserEvent: browserEvent });
+        this._onChange.fire({ indexes: indexes });
         return result;
     };
     Trait.prototype.get = function () {
@@ -178,12 +175,6 @@ var FocusTrait = /** @class */ (function (_super) {
         _super.prototype.renderIndex.call(this, index, container);
         container.setAttribute('role', 'treeitem');
         container.setAttribute('id', this.getDomId(index));
-        if (this.contains(index)) {
-            container.setAttribute('aria-selected', 'true');
-        }
-        else {
-            container.removeAttribute('aria-selected');
-        }
     };
     return FocusTrait;
 }(Trait));
@@ -235,7 +226,7 @@ var KeyboardController = /** @class */ (function () {
     KeyboardController.prototype.onEnter = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.setSelection(this.list.getFocus(), e.browserEvent);
+        this.list.setSelection(this.list.getFocus());
         if (this.openController.shouldOpen(e.browserEvent)) {
             this.list.open(this.list.getFocus(), e.browserEvent);
         }
@@ -243,41 +234,41 @@ var KeyboardController = /** @class */ (function () {
     KeyboardController.prototype.onUpArrow = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.focusPrevious(1, false, e.browserEvent);
+        this.list.focusPrevious();
         this.list.reveal(this.list.getFocus()[0]);
         this.view.domNode.focus();
     };
     KeyboardController.prototype.onDownArrow = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.focusNext(1, false, e.browserEvent);
+        this.list.focusNext();
         this.list.reveal(this.list.getFocus()[0]);
         this.view.domNode.focus();
     };
     KeyboardController.prototype.onPageUpArrow = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.focusPreviousPage(e.browserEvent);
+        this.list.focusPreviousPage();
         this.list.reveal(this.list.getFocus()[0]);
         this.view.domNode.focus();
     };
     KeyboardController.prototype.onPageDownArrow = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.focusNextPage(e.browserEvent);
+        this.list.focusNextPage();
         this.list.reveal(this.list.getFocus()[0]);
         this.view.domNode.focus();
     };
     KeyboardController.prototype.onCtrlA = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.setSelection(range(this.list.length), e.browserEvent);
+        this.list.setSelection(range(this.list.length));
         this.view.domNode.focus();
     };
     KeyboardController.prototype.onEscape = function (e) {
         e.preventDefault();
         e.stopPropagation();
-        this.list.setSelection([], e.browserEvent);
+        this.list.setSelection([]);
         this.view.domNode.focus();
     };
     KeyboardController.prototype.dispose = function () {
@@ -307,7 +298,7 @@ var DOMFocusController = /** @class */ (function () {
         }
         var focusedDomElement = this.view.domElement(focus[0]);
         var tabIndexElement = focusedDomElement.querySelector('[tabIndex]');
-        if (!tabIndexElement || !(tabIndexElement instanceof HTMLElement) || tabIndexElement.tabIndex === -1) {
+        if (!tabIndexElement || !(tabIndexElement instanceof HTMLElement)) {
             return;
         }
         var style = window.getComputedStyle(tabIndexElement);
@@ -371,12 +362,6 @@ var MouseController = /** @class */ (function () {
                 .map(function (e) { return new StandardKeyboardEvent(e); })
                 .filter(function (e) { return _this.didJustPressContextMenuKey = e.keyCode === 58 /* ContextMenu */ || (e.shiftKey && e.keyCode === 68 /* F10 */); })
                 .filter(function (e) { e.preventDefault(); e.stopPropagation(); return false; })
-                .map(function (event) {
-                var index = _this.list.getFocus()[0];
-                var element = _this.view.element(index);
-                var anchor = _this.view.domElement(index);
-                return { index: index, element: element, anchor: anchor, browserEvent: event.browserEvent };
-            })
                 .event;
             var fromKeyup = chain(domEvent(this.view.domNode, 'keyup'))
                 .filter(function () {
@@ -385,11 +370,11 @@ var MouseController = /** @class */ (function () {
                 return didJustPressContextMenuKey;
             })
                 .filter(function () { return _this.list.getFocus().length > 0; })
-                .map(function (browserEvent) {
+                .map(function () {
                 var index = _this.list.getFocus()[0];
                 var element = _this.view.element(index);
                 var anchor = _this.view.domElement(index);
-                return { index: index, element: element, anchor: anchor, browserEvent: browserEvent };
+                return { index: index, element: element, anchor: anchor };
             })
                 .filter(function (_a) {
                 var anchor = _a.anchor;
@@ -400,7 +385,7 @@ var MouseController = /** @class */ (function () {
                 .filter(function () { return !_this.didJustPressContextMenuKey; })
                 .map(function (_a) {
                 var element = _a.element, index = _a.index, browserEvent = _a.browserEvent;
-                return ({ element: element, index: index, anchor: { x: browserEvent.clientX + 1, y: browserEvent.clientY }, browserEvent: browserEvent });
+                return ({ element: element, index: index, anchor: { x: browserEvent.clientX + 1, y: browserEvent.clientY } });
             })
                 .event;
             return anyEvent(fromKeydown, fromKeyup, fromMouse);
@@ -439,13 +424,13 @@ var MouseController = /** @class */ (function () {
         }
         var focus = e.index;
         if (selection.every(function (s) { return s !== focus; })) {
-            this.list.setFocus([focus], e.browserEvent);
+            this.list.setFocus([focus]);
         }
         if (this.multipleSelectionSupport && this.isSelectionChangeEvent(e)) {
             return this.changeSelection(e, reference);
         }
         if (this.options.selectOnMouseDown && !isMouseRightClick(e.browserEvent)) {
-            this.list.setSelection([focus], e.browserEvent);
+            this.list.setSelection([focus]);
             if (this.openController.shouldOpen(e.browserEvent)) {
                 this.list.open([focus], e.browserEvent);
             }
@@ -457,7 +442,7 @@ var MouseController = /** @class */ (function () {
         }
         if (!this.options.selectOnMouseDown) {
             var focus_1 = this.list.getFocus();
-            this.list.setSelection(focus_1, e.browserEvent);
+            this.list.setSelection(focus_1);
             if (this.openController.shouldOpen(e.browserEvent)) {
                 this.list.open(focus_1, e.browserEvent);
             }
@@ -468,7 +453,7 @@ var MouseController = /** @class */ (function () {
             return;
         }
         var focus = this.list.getFocus();
-        this.list.setSelection(focus, e.browserEvent);
+        this.list.setSelection(focus);
         this.list.pin(focus);
     };
     MouseController.prototype.changeSelection = function (e, reference) {
@@ -483,16 +468,16 @@ var MouseController = /** @class */ (function () {
                 return;
             }
             var newSelection = disjunction(rangeSelection, relativeComplement(selection, contiguousRange));
-            this.list.setSelection(newSelection, e.browserEvent);
+            this.list.setSelection(newSelection);
         }
         else if (this.isSelectionSingleChangeEvent(e)) {
             var selection = this.list.getSelection();
             var newSelection = selection.filter(function (i) { return i !== focus; });
             if (selection.length === newSelection.length) {
-                this.list.setSelection(newSelection.concat([focus]), e.browserEvent);
+                this.list.setSelection(newSelection.concat([focus]));
             }
             else {
-                this.list.setSelection(newSelection, e.browserEvent);
+                this.list.setSelection(newSelection);
             }
         }
     };
@@ -698,31 +683,6 @@ var PipelineRenderer = /** @class */ (function () {
     };
     return PipelineRenderer;
 }());
-var AccessibiltyRenderer = /** @class */ (function () {
-    function AccessibiltyRenderer(accessibilityProvider) {
-        this.accessibilityProvider = accessibilityProvider;
-        this.templateId = 'a18n';
-    }
-    AccessibiltyRenderer.prototype.renderTemplate = function (container) {
-        return container;
-    };
-    AccessibiltyRenderer.prototype.renderElement = function (element, index, container) {
-        var ariaLabel = this.accessibilityProvider.getAriaLabel(element);
-        if (ariaLabel) {
-            container.setAttribute('aria-label', ariaLabel);
-        }
-        else {
-            container.removeAttribute('aria-label');
-        }
-    };
-    AccessibiltyRenderer.prototype.disposeElement = function (element, index, container) {
-        // noop
-    };
-    AccessibiltyRenderer.prototype.disposeTemplate = function (templateData) {
-        // noop
-    };
-    return AccessibiltyRenderer;
-}());
 var List = /** @class */ (function () {
     function List(container, virtualDelegate, renderers, options) {
         if (options === void 0) { options = DefaultOptions; }
@@ -736,11 +696,7 @@ var List = /** @class */ (function () {
         this.focus = new FocusTrait(function (i) { return _this.getElementDomId(i); });
         this.selection = new Trait('selected');
         mixin(options, defaultStyles, false);
-        var baseRenderers = [this.focus.renderer, this.selection.renderer];
-        if (options.accessibilityProvider) {
-            baseRenderers.push(new AccessibiltyRenderer(options.accessibilityProvider));
-        }
-        renderers = renderers.map(function (r) { return new PipelineRenderer(r.templateId, baseRenderers.concat([r])); });
+        renderers = renderers.map(function (r) { return new PipelineRenderer(r.templateId, [_this.focus.renderer, _this.selection.renderer, r]); });
         this.view = new ListView(container, virtualDelegate, renderers, options);
         this.view.domNode.setAttribute('role', 'tree');
         DOM.addClass(this.view.domNode, this.idPrefix);
@@ -791,16 +747,6 @@ var List = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(List.prototype, "onMouseClick", {
-        get: function () { return this.view.onMouseClick; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(List.prototype, "onKeyDown", {
-        get: function () { return domEvent(this.view.domNode, 'keydown'); },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(List.prototype, "onDidDispose", {
         get: function () { return this._onDidDispose.event; },
         enumerable: true,
@@ -837,7 +783,7 @@ var List = /** @class */ (function () {
     List.prototype.layout = function (height) {
         this.view.layout(height);
     };
-    List.prototype.setSelection = function (indexes, browserEvent) {
+    List.prototype.setSelection = function (indexes) {
         for (var _i = 0, indexes_1 = indexes; _i < indexes_1.length; _i++) {
             var index = indexes_1[_i];
             if (index < 0 || index >= this.length) {
@@ -845,12 +791,12 @@ var List = /** @class */ (function () {
             }
         }
         indexes = indexes.sort(numericSort);
-        this.selection.set(indexes, browserEvent);
+        this.selection.set(indexes);
     };
     List.prototype.getSelection = function () {
         return this.selection.get();
     };
-    List.prototype.setFocus = function (indexes, browserEvent) {
+    List.prototype.setFocus = function (indexes) {
         for (var _i = 0, indexes_2 = indexes; _i < indexes_2.length; _i++) {
             var index = indexes_2[_i];
             if (index < 0 || index >= this.length) {
@@ -858,9 +804,9 @@ var List = /** @class */ (function () {
             }
         }
         indexes = indexes.sort(numericSort);
-        this.focus.set(indexes, browserEvent);
+        this.focus.set(indexes);
     };
-    List.prototype.focusNext = function (n, loop, browserEvent) {
+    List.prototype.focusNext = function (n, loop) {
         if (n === void 0) { n = 1; }
         if (loop === void 0) { loop = false; }
         if (this.length === 0) {
@@ -868,9 +814,9 @@ var List = /** @class */ (function () {
         }
         var focus = this.focus.get();
         var index = focus.length > 0 ? focus[0] + n : 0;
-        this.setFocus(loop ? [index % this.length] : [Math.min(index, this.length - 1)], browserEvent);
+        this.setFocus(loop ? [index % this.length] : [Math.min(index, this.length - 1)]);
     };
-    List.prototype.focusPrevious = function (n, loop, browserEvent) {
+    List.prototype.focusPrevious = function (n, loop) {
         if (n === void 0) { n = 1; }
         if (loop === void 0) { loop = false; }
         if (this.length === 0) {
@@ -881,27 +827,27 @@ var List = /** @class */ (function () {
         if (loop && index < 0) {
             index = (this.length + (index % this.length)) % this.length;
         }
-        this.setFocus([Math.max(index, 0)], browserEvent);
+        this.setFocus([Math.max(index, 0)]);
     };
-    List.prototype.focusNextPage = function (browserEvent) {
+    List.prototype.focusNextPage = function () {
         var _this = this;
         var lastPageIndex = this.view.indexAt(this.view.getScrollTop() + this.view.renderHeight);
         lastPageIndex = lastPageIndex === 0 ? 0 : lastPageIndex - 1;
         var lastPageElement = this.view.element(lastPageIndex);
         var currentlyFocusedElement = this.getFocusedElements()[0];
         if (currentlyFocusedElement !== lastPageElement) {
-            this.setFocus([lastPageIndex], browserEvent);
+            this.setFocus([lastPageIndex]);
         }
         else {
             var previousScrollTop = this.view.getScrollTop();
             this.view.setScrollTop(previousScrollTop + this.view.renderHeight - this.view.elementHeight(lastPageIndex));
             if (this.view.getScrollTop() !== previousScrollTop) {
                 // Let the scroll event listener run
-                setTimeout(function () { return _this.focusNextPage(browserEvent); }, 0);
+                setTimeout(function () { return _this.focusNextPage(); }, 0);
             }
         }
     };
-    List.prototype.focusPreviousPage = function (browserEvent) {
+    List.prototype.focusPreviousPage = function () {
         var _this = this;
         var firstPageIndex;
         var scrollTop = this.view.getScrollTop();
@@ -914,28 +860,28 @@ var List = /** @class */ (function () {
         var firstPageElement = this.view.element(firstPageIndex);
         var currentlyFocusedElement = this.getFocusedElements()[0];
         if (currentlyFocusedElement !== firstPageElement) {
-            this.setFocus([firstPageIndex], browserEvent);
+            this.setFocus([firstPageIndex]);
         }
         else {
             var previousScrollTop = scrollTop;
             this.view.setScrollTop(scrollTop - this.view.renderHeight);
             if (this.view.getScrollTop() !== previousScrollTop) {
                 // Let the scroll event listener run
-                setTimeout(function () { return _this.focusPreviousPage(browserEvent); }, 0);
+                setTimeout(function () { return _this.focusPreviousPage(); }, 0);
             }
         }
     };
-    List.prototype.focusLast = function (browserEvent) {
+    List.prototype.focusLast = function () {
         if (this.length === 0) {
             return;
         }
-        this.setFocus([this.length - 1], browserEvent);
+        this.setFocus([this.length - 1]);
     };
-    List.prototype.focusFirst = function (browserEvent) {
+    List.prototype.focusFirst = function () {
         if (this.length === 0) {
             return;
         }
-        this.setFocus([0], browserEvent);
+        this.setFocus([0]);
     };
     List.prototype.getFocus = function () {
         return this.focus.get();
@@ -970,6 +916,9 @@ var List = /** @class */ (function () {
     List.prototype.getElementDomId = function (index) {
         return this.idPrefix + "_" + index;
     };
+    List.prototype.isDOMFocused = function () {
+        return this.view.domNode === document.activeElement;
+    };
     List.prototype.getHTMLElement = function () {
         return this.view.domNode;
     };
@@ -997,8 +946,8 @@ var List = /** @class */ (function () {
     };
     List.prototype.toListEvent = function (_a) {
         var _this = this;
-        var indexes = _a.indexes, browserEvent = _a.browserEvent;
-        return { indexes: indexes, elements: indexes.map(function (i) { return _this.view.element(i); }), browserEvent: browserEvent };
+        var indexes = _a.indexes;
+        return { indexes: indexes, elements: indexes.map(function (i) { return _this.view.element(i); }) };
     };
     List.prototype._onFocusChange = function () {
         var focus = this.focus.get();
@@ -1020,9 +969,6 @@ var List = /** @class */ (function () {
     List.prototype.dispose = function () {
         this._onDidDispose.fire();
         this.disposables = dispose(this.disposables);
-        this._onOpen.dispose();
-        this._onPin.dispose();
-        this._onDidDispose.dispose();
     };
     List.InstanceCount = 0;
     __decorate([

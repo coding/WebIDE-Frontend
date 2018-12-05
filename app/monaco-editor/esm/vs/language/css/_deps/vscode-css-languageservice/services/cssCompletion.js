@@ -7,8 +7,8 @@ import * as nodes from '../parser/cssNodes.js';
 import { Symbols } from '../parser/cssSymbolScope.js';
 import * as languageFacts from './languageFacts.js';
 import * as strings from '../utils/strings.js';
-import { Position, CompletionItemKind, Range, TextEdit, InsertTextFormat } from './../../vscode-languageserver-types/main.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import { Position, CompletionItemKind, Range, TextEdit, InsertTextFormat } from '../../vscode-languageserver-types/main.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var SnippetFormat = InsertTextFormat.Snippet;
 var CSSCompletion = /** @class */ (function () {

@@ -2,6 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
+import { TPromise } from '../../base/common/winjs.base.js';
 var InternalEditorAction = /** @class */ (function () {
     function InternalEditorAction(id, label, alias, precondition, run, contextKeyService) {
         this.id = id;
@@ -16,10 +18,10 @@ var InternalEditorAction = /** @class */ (function () {
     };
     InternalEditorAction.prototype.run = function () {
         if (!this.isSupported()) {
-            return Promise.resolve(void 0);
+            return TPromise.as(void 0);
         }
         var r = this._run();
-        return r ? r : Promise.resolve(void 0);
+        return r ? r : TPromise.as(void 0);
     };
     return InternalEditorAction;
 }());

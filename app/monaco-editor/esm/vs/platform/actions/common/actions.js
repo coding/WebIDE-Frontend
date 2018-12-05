@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -40,7 +38,6 @@ var MenuId = /** @class */ (function () {
     MenuId.CommandPalette = new MenuId();
     MenuId.MenubarEditMenu = new MenuId();
     MenuId.MenubarSelectionMenu = new MenuId();
-    MenuId.MenubarGoMenu = new MenuId();
     return MenuId;
 }());
 export { MenuId };
@@ -57,13 +54,6 @@ export var MenuRegistry = new /** @class */ (function () {
     };
     class_1.prototype.getCommand = function (id) {
         return this._commands[id];
-    };
-    class_1.prototype.getCommands = function () {
-        var result = Object.create(null);
-        for (var key in this._commands) {
-            result[key] = this.getCommand(key);
-        }
-        return result;
     };
     class_1.prototype.appendMenuItem = function (_a, item) {
         var id = _a.id;
@@ -150,7 +140,6 @@ var MenuItemAction = /** @class */ (function (_super) {
         typeof item.title === 'string' ? _this = _super.call(this, item.id, item.title, commandService) || this : _this = _super.call(this, item.id, item.title.value, commandService) || this;
         _this._cssClass = undefined;
         _this._enabled = !item.precondition || contextKeyService.contextMatchesRules(item.precondition);
-        _this._checked = Boolean(item.toggled && contextKeyService.contextMatchesRules(item.toggled));
         _this._options = options || {};
         _this.item = item;
         _this.alt = alt ? new MenuItemAction(alt, undefined, _this._options, contextKeyService, commandService) : undefined;

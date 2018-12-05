@@ -2,6 +2,14 @@ import { Registry } from '../../registry/common/platform.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import { Extensions } from './configurationRegistry.js';
 export var IConfigurationService = createDecorator('configurationService');
+export var ConfigurationTarget;
+(function (ConfigurationTarget) {
+    ConfigurationTarget[ConfigurationTarget["USER"] = 1] = "USER";
+    ConfigurationTarget[ConfigurationTarget["WORKSPACE"] = 2] = "WORKSPACE";
+    ConfigurationTarget[ConfigurationTarget["WORKSPACE_FOLDER"] = 3] = "WORKSPACE_FOLDER";
+    ConfigurationTarget[ConfigurationTarget["DEFAULT"] = 4] = "DEFAULT";
+    ConfigurationTarget[ConfigurationTarget["MEMORY"] = 5] = "MEMORY";
+})(ConfigurationTarget || (ConfigurationTarget = {}));
 export function toValuesTree(properties, conflictReporter) {
     var root = Object.create(null);
     for (var key in properties) {

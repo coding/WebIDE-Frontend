@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -32,6 +30,7 @@ var DecorationsOverlay = /** @class */ (function (_super) {
     }
     DecorationsOverlay.prototype.dispose = function () {
         this._context.removeEventHandler(this);
+        this._context = null;
         this._renderResult = null;
         _super.prototype.dispose.call(this);
     };
@@ -141,7 +140,7 @@ var DecorationsOverlay = /** @class */ (function (_super) {
                 continue;
             }
             var className = d.options.className;
-            var showIfCollapsed = Boolean(d.options.showIfCollapsed);
+            var showIfCollapsed = d.options.showIfCollapsed;
             var range = d.range;
             if (showIfCollapsed && range.endColumn === 1 && range.endLineNumber !== range.startLineNumber) {
                 range = new Range(range.startLineNumber, range.startColumn, range.endLineNumber - 1, this._context.model.getLineMaxColumn(range.endLineNumber - 1));

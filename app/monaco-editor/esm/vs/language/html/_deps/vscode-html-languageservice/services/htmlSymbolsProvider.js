@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Location, Range, SymbolKind } from './../../vscode-languageserver-types/main.js';
+import { Location, Range, SymbolKind } from '../../vscode-languageserver-types/main.js';
 export function findDocumentSymbols(document, htmlDocument) {
     var symbols = [];
     htmlDocument.roots.forEach(function (node) {

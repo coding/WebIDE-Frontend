@@ -2,8 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { URI } from '../../../base/common/uri.js';
-import * as resources from '../../../base/common/resources.js';
+'use strict';
+import URI from '../../../base/common/uri.js';
+import * as paths from '../../../base/common/paths.js';
 import { createDecorator } from '../../instantiation/common/instantiation.js';
 import { TernarySearchTree } from '../../../base/common/map.js';
 export var IWorkspaceContextService = createDecorator('contextService');
@@ -12,6 +13,7 @@ export var IWorkspace;
     function isIWorkspace(thing) {
         return thing && typeof thing === 'object'
             && typeof thing.id === 'string'
+            && typeof thing.name === 'string'
             && Array.isArray(thing.folders);
     }
     IWorkspace.isIWorkspace = isIWorkspace;
@@ -27,11 +29,14 @@ export var IWorkspaceFolder;
     IWorkspaceFolder.isIWorkspaceFolder = isIWorkspaceFolder;
 })(IWorkspaceFolder || (IWorkspaceFolder = {}));
 var Workspace = /** @class */ (function () {
-    function Workspace(_id, folders, _configuration) {
+    function Workspace(_id, _name, folders, _configuration, _ctime) {
+        if (_name === void 0) { _name = ''; }
         if (folders === void 0) { folders = []; }
         if (_configuration === void 0) { _configuration = null; }
         this._id = _id;
+        this._name = _name;
         this._configuration = _configuration;
+        this._ctime = _ctime;
         this._foldersMap = TernarySearchTree.forPaths();
         this.folders = folders;
     }
@@ -49,6 +54,16 @@ var Workspace = /** @class */ (function () {
     Object.defineProperty(Workspace.prototype, "id", {
         get: function () {
             return this._id;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Workspace.prototype, "name", {
+        get: function () {
+            return this._name;
+        },
+        set: function (name) {
+            this._name = name;
         },
         enumerable: true,
         configurable: true
@@ -77,7 +92,7 @@ var Workspace = /** @class */ (function () {
         }
     };
     Workspace.prototype.toJSON = function () {
-        return { id: this.id, folders: this.folders, configuration: this.configuration };
+        return { id: this.id, folders: this.folders, name: this.name, configuration: this.configuration };
     };
     return Workspace;
 }());
@@ -90,7 +105,7 @@ var WorkspaceFolder = /** @class */ (function () {
         this.name = data.name;
     }
     WorkspaceFolder.prototype.toResource = function (relativePath) {
-        return resources.joinPath(this.uri, relativePath);
+        return this.uri.with({ path: paths.join(this.uri.path, relativePath) });
     };
     WorkspaceFolder.prototype.toJSON = function () {
         return { uri: this.uri, name: this.name, index: this.index };

@@ -2,27 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Emitter, Event } from './event.js';
+'use strict';
+import { Event, Emitter } from './event.js';
 var shortcutEvent = Object.freeze(function (callback, context) {
     var handle = setTimeout(callback.bind(context), 0);
     return { dispose: function () { clearTimeout(handle); } };
 });
 export var CancellationToken;
 (function (CancellationToken) {
-    function isCancellationToken(thing) {
-        if (thing === CancellationToken.None || thing === CancellationToken.Cancelled) {
-            return true;
-        }
-        if (thing instanceof MutableToken) {
-            return true;
-        }
-        if (!thing || typeof thing !== 'object') {
-            return false;
-        }
-        return typeof thing.isCancellationRequested === 'boolean'
-            && typeof thing.onCancellationRequested === 'function';
-    }
-    CancellationToken.isCancellationToken = isCancellationToken;
     CancellationToken.None = Object.freeze({
         isCancellationRequested: false,
         onCancellationRequested: Event.None
@@ -35,7 +22,6 @@ export var CancellationToken;
 var MutableToken = /** @class */ (function () {
     function MutableToken() {
         this._isCancelled = false;
-        this._emitter = null;
     }
     MutableToken.prototype.cancel = function () {
         if (!this._isCancelled) {
@@ -69,7 +55,7 @@ var MutableToken = /** @class */ (function () {
     MutableToken.prototype.dispose = function () {
         if (this._emitter) {
             this._emitter.dispose();
-            this._emitter = null;
+            this._emitter = undefined;
         }
     };
     return MutableToken;

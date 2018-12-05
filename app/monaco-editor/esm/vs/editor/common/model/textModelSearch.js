@@ -2,11 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as strings from '../../../base/common/strings.js';
-import { getMapForWordSeparators } from '../controller/wordCharacterClassifier.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
-import { FindMatch } from '../model.js';
+import { FindMatch, EndOfLinePreference } from '../model.js';
+import { getMapForWordSeparators } from '../controller/wordCharacterClassifier.js';
 var LIMIT_FIND_COUNT = 999;
 var SearchParams = /** @class */ (function () {
     function SearchParams(searchString, isRegex, matchCase, wordSeparators) {
@@ -15,6 +16,27 @@ var SearchParams = /** @class */ (function () {
         this.matchCase = matchCase;
         this.wordSeparators = wordSeparators;
     }
+    SearchParams._isMultilineRegexSource = function (searchString) {
+        if (!searchString || searchString.length === 0) {
+            return false;
+        }
+        for (var i = 0, len = searchString.length; i < len; i++) {
+            var chCode = searchString.charCodeAt(i);
+            if (chCode === 92 /* Backslash */) {
+                // move to next char
+                i++;
+                if (i >= len) {
+                    // string ends with a \
+                    break;
+                }
+                var nextChCode = searchString.charCodeAt(i);
+                if (nextChCode === 110 /* n */ || nextChCode === 114 /* r */) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
     SearchParams.prototype.parseSearchRequest = function () {
         if (this.searchString === '') {
             return null;
@@ -22,7 +44,7 @@ var SearchParams = /** @class */ (function () {
         // Try to create a RegExp out of the params
         var multiline;
         if (this.isRegex) {
-            multiline = isMultilineRegexSource(this.searchString);
+            multiline = SearchParams._isMultilineRegexSource(this.searchString);
         }
         else {
             multiline = (this.searchString.indexOf('\n') >= 0);
@@ -52,27 +74,6 @@ var SearchParams = /** @class */ (function () {
     return SearchParams;
 }());
 export { SearchParams };
-export function isMultilineRegexSource(searchString) {
-    if (!searchString || searchString.length === 0) {
-        return false;
-    }
-    for (var i = 0, len = searchString.length; i < len; i++) {
-        var chCode = searchString.charCodeAt(i);
-        if (chCode === 92 /* Backslash */) {
-            // move to next char
-            i++;
-            if (i >= len) {
-                // string ends with a \
-                break;
-            }
-            var nextChCode = searchString.charCodeAt(i);
-            if (nextChCode === 110 /* n */ || nextChCode === 114 /* r */ || nextChCode === 87 /* W */) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 var SearchData = /** @class */ (function () {
     function SearchData(regex, wordSeparators, simpleSearch) {
         this.regex = regex;
@@ -155,7 +156,7 @@ var TextModelSearch = /** @class */ (function () {
     TextModelSearch._getMultilineMatchRange = function (model, deltaOffset, text, lfCounter, matchIndex, match0) {
         var startOffset;
         var lineFeedCountBeforeMatch = 0;
-        if (lfCounter) {
+        if (model.getEOL() === '\r\n') {
             lineFeedCountBeforeMatch = lfCounter.findLineFeedCountBeforeOffset(matchIndex);
             startOffset = deltaOffset + matchIndex + lineFeedCountBeforeMatch /* add as many \r as there were \n */;
         }
@@ -163,7 +164,7 @@ var TextModelSearch = /** @class */ (function () {
             startOffset = deltaOffset + matchIndex;
         }
         var endOffset;
-        if (lfCounter) {
+        if (model.getEOL() === '\r\n') {
             var lineFeedCountBeforeEndOfMatch = lfCounter.findLineFeedCountBeforeOffset(matchIndex + match0.length);
             var lineFeedCountInMatch = lineFeedCountBeforeEndOfMatch - lineFeedCountBeforeMatch;
             endOffset = startOffset + match0.length + lineFeedCountInMatch /* add as many \r as there were \n */;
@@ -180,7 +181,7 @@ var TextModelSearch = /** @class */ (function () {
         // We always execute multiline search over the lines joined with \n
         // This makes it that \n will match the EOL for both CRLF and LF models
         // We compensate for offset errors in `_getMultilineMatchRange`
-        var text = model.getValueInRange(searchRange, 1 /* LF */);
+        var text = model.getValueInRange(searchRange, EndOfLinePreference.LF);
         var lfCounter = (model.getEOL() === '\r\n' ? new LineFeedCounter(text) : null);
         var result = [];
         var counter = 0;
@@ -267,7 +268,7 @@ var TextModelSearch = /** @class */ (function () {
         // We always execute multiline search over the lines joined with \n
         // This makes it that \n will match the EOL for both CRLF and LF models
         // We compensate for offset errors in `_getMultilineMatchRange`
-        var text = model.getValueInRange(new Range(searchTextStart.lineNumber, searchTextStart.column, lineCount, model.getLineMaxColumn(lineCount)), 1 /* LF */);
+        var text = model.getValueInRange(new Range(searchTextStart.lineNumber, searchTextStart.column, lineCount, model.getLineMaxColumn(lineCount)), EndOfLinePreference.LF);
         var lfCounter = (model.getEOL() === '\r\n' ? new LineFeedCounter(text) : null);
         searcher.reset(searchStart.column - 1);
         var m = searcher.next(text);

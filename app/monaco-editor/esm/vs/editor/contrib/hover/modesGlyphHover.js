@@ -2,24 +2,22 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { HoverOperation } from './hoverOperation.js';
+import { GlyphHoverWidget } from './hoverWidgets.js';
 import { $ } from '../../../base/browser/dom.js';
 import { isEmptyMarkdownString } from '../../../base/common/htmlContent.js';
 import { dispose } from '../../../base/common/lifecycle.js';
-import { HoverOperation } from './hoverOperation.js';
-import { GlyphHoverWidget } from './hoverWidgets.js';
 var MarginComputer = /** @class */ (function () {
     function MarginComputer(editor) {
         this._editor = editor;
@@ -40,16 +38,13 @@ var MarginComputer = /** @class */ (function () {
         };
         var lineDecorations = this._editor.getLineDecorations(this._lineNumber);
         var result = [];
-        if (!lineDecorations) {
-            return result;
-        }
         for (var i = 0, len = lineDecorations.length; i < len; i++) {
             var d = lineDecorations[i];
             if (!d.options.glyphMarginClassName) {
                 continue;
             }
             var hoverMessage = d.options.glyphMarginHoverMessage;
-            if (!hoverMessage || isEmptyMarkdownString(hoverMessage)) {
+            if (isEmptyMarkdownString(hoverMessage)) {
                 continue;
             }
             if (Array.isArray(hoverMessage)) {
@@ -79,7 +74,7 @@ var ModesGlyphHoverWidget = /** @class */ (function (_super) {
         _this._lastLineNumber = -1;
         _this._markdownRenderer = markdownRenderer;
         _this._computer = new MarginComputer(_this._editor);
-        _this._hoverOperation = new HoverOperation(_this._computer, function (result) { return _this._withResult(result); }, undefined, function (result) { return _this._withResult(result); });
+        _this._hoverOperation = new HoverOperation(_this._computer, function (result) { return _this._withResult(result); }, null, function (result) { return _this._withResult(result); });
         return _this;
     }
     ModesGlyphHoverWidget.prototype.dispose = function () {
@@ -129,7 +124,7 @@ var ModesGlyphHoverWidget = /** @class */ (function (_super) {
         messages.forEach(function (msg) {
             var renderedContents = _this._markdownRenderer.render(msg.value);
             _this._renderDisposeables.push(renderedContents);
-            fragment.appendChild($('div.hover-row', undefined, renderedContents.element));
+            fragment.appendChild($('div.hover-row', null, renderedContents.element));
         });
         this.updateContents(fragment);
         this.showAt(lineNumber);

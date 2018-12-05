@@ -2,28 +2,27 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { EditorCommand, registerEditorCommand } from '../../browser/editorExtensions.js';
-import { ReplaceCommand } from '../../common/commands/replaceCommand.js';
-import { CursorState } from '../../common/controller/cursorCommon.js';
-import { WordOperations } from '../../common/controller/cursorWordOperations.js';
-import { getMapForWordSeparators } from '../../common/controller/wordCharacterClassifier.js';
+import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { Selection } from '../../common/core/selection.js';
+import { registerEditorCommand, EditorCommand } from '../../browser/editorExtensions.js';
 import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
-import { Selection } from '../../common/core/selection.js';
-import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { WordOperations } from '../../common/controller/cursorWordOperations.js';
+import { ReplaceCommand } from '../../common/commands/replaceCommand.js';
+import { getMapForWordSeparators } from '../../common/controller/wordCharacterClassifier.js';
+import { CursorState } from '../../common/controller/cursorCommon.js';
+import { CursorChangeReason } from '../../common/controller/cursorEvents.js';
 var MoveWordCommand = /** @class */ (function (_super) {
     __extends(MoveWordCommand, _super);
     function MoveWordCommand(opts) {
@@ -34,9 +33,6 @@ var MoveWordCommand = /** @class */ (function (_super) {
     }
     MoveWordCommand.prototype.runEditorCommand = function (accessor, editor, args) {
         var _this = this;
-        if (!editor.hasModel()) {
-            return;
-        }
         var config = editor.getConfiguration();
         var wordSeparators = getMapForWordSeparators(config.wordSeparators);
         var model = editor.getModel();
@@ -46,7 +42,7 @@ var MoveWordCommand = /** @class */ (function (_super) {
             var outPosition = _this._move(wordSeparators, model, inPosition, _this._wordNavigationType);
             return _this._moveTo(sel, outPosition, _this._inSelectionMode);
         });
-        editor._getCursors().setStates('moveWordCommand', 0 /* NotSet */, result.map(function (r) { return CursorState.fromModelSelection(r); }));
+        editor._getCursors().setStates('moveWordCommand', CursorChangeReason.NotSet, result.map(function (r) { return CursorState.fromModelSelection(r); }));
         if (result.length === 1) {
             var pos = new Position(result[0].positionLineNumber, result[0].positionColumn);
             editor.revealPosition(pos, 0 /* Smooth */);
@@ -111,7 +107,7 @@ var CursorWordEndLeft = /** @class */ (function (_super) {
     function CursorWordEndLeft() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordEndLeft',
             precondition: null
         }) || this;
@@ -124,7 +120,7 @@ var CursorWordLeft = /** @class */ (function (_super) {
     function CursorWordLeft() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 1 /* WordStartFast */,
+            wordNavigationType: 0 /* WordStart */,
             id: 'cursorWordLeft',
             precondition: null
         }) || this;
@@ -156,7 +152,7 @@ var CursorWordEndLeftSelect = /** @class */ (function (_super) {
     function CursorWordEndLeftSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordEndLeftSelect',
             precondition: null
         }) || this;
@@ -195,7 +191,7 @@ var CursorWordEndRight = /** @class */ (function (_super) {
     function CursorWordEndRight() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordEndRight',
             precondition: null,
             kbOpts: {
@@ -214,7 +210,7 @@ var CursorWordRight = /** @class */ (function (_super) {
     function CursorWordRight() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordRight',
             precondition: null
         }) || this;
@@ -240,7 +236,7 @@ var CursorWordEndRightSelect = /** @class */ (function (_super) {
     function CursorWordEndRightSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordEndRightSelect',
             precondition: null,
             kbOpts: {
@@ -259,7 +255,7 @@ var CursorWordRightSelect = /** @class */ (function (_super) {
     function CursorWordRightSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordRightSelect',
             precondition: null
         }) || this;
@@ -277,9 +273,6 @@ var DeleteWordCommand = /** @class */ (function (_super) {
     }
     DeleteWordCommand.prototype.runEditorCommand = function (accessor, editor, args) {
         var _this = this;
-        if (!editor.hasModel()) {
-            return;
-        }
         var config = editor.getConfiguration();
         var wordSeparators = getMapForWordSeparators(config.wordSeparators);
         var model = editor.getModel();
@@ -345,7 +338,7 @@ var DeleteWordEndLeft = /** @class */ (function (_super) {
     function DeleteWordEndLeft() {
         return _super.call(this, {
             whitespaceHeuristics: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'deleteWordEndLeft',
             precondition: EditorContextKeys.writable
         }) || this;
@@ -390,7 +383,7 @@ var DeleteWordEndRight = /** @class */ (function (_super) {
     function DeleteWordEndRight() {
         return _super.call(this, {
             whitespaceHeuristics: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'deleteWordEndRight',
             precondition: EditorContextKeys.writable
         }) || this;
@@ -403,7 +396,7 @@ var DeleteWordRight = /** @class */ (function (_super) {
     function DeleteWordRight() {
         return _super.call(this, {
             whitespaceHeuristics: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'deleteWordRight',
             precondition: EditorContextKeys.writable,
             kbOpts: {

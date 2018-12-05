@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,13 +15,13 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import './viewLines.css';
 import { RunOnceScheduler } from '../../../../base/common/async.js';
-import { Configuration } from '../../config/configuration.js';
-import { VisibleLinesCollection } from '../../view/viewLayer.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
-import { DomReadingContext, ViewLine, ViewLineOptions } from './viewLine.js';
-import { Position } from '../../../common/core/position.js';
 import { Range } from '../../../common/core/range.js';
+import { Position } from '../../../common/core/position.js';
+import { VisibleLinesCollection } from '../../view/viewLayer.js';
+import { ViewLineOptions, DomReadingContext, ViewLine } from './viewLine.js';
+import { Configuration } from '../../config/configuration.js';
 import { LineVisibleRanges } from '../../../common/view/renderingContext.js';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
 var LastRenderedData = /** @class */ (function () {
     function LastRenderedData() {
         this._currentVisibleRange = new Range(1, 1, 1, 1);
@@ -288,20 +286,20 @@ var ViewLines = /** @class */ (function (_super) {
         }
         return this._visibleLines.getVisibleLine(lineNumber).getWidth();
     };
-    ViewLines.prototype.linesVisibleRangesForRange = function (_range, includeNewLines) {
+    ViewLines.prototype.linesVisibleRangesForRange = function (range, includeNewLines) {
         if (this.shouldRender()) {
             // Cannot read from the DOM because it is dirty
             // i.e. the model & the dom are out of sync, so I'd be reading something stale
             return null;
         }
-        var originalEndLineNumber = _range.endLineNumber;
-        var range = Range.intersectRanges(_range, this._lastRenderedData.getCurrentVisibleRange());
+        var originalEndLineNumber = range.endLineNumber;
+        range = Range.intersectRanges(range, this._lastRenderedData.getCurrentVisibleRange());
         if (!range) {
             return null;
         }
         var visibleRanges = [], visibleRangesLen = 0;
         var domReadingContext = new DomReadingContext(this.domNode.domNode, this._textRangeRestingSpot);
-        var nextLineModelLineNumber = 0;
+        var nextLineModelLineNumber;
         if (includeNewLines) {
             nextLineModelLineNumber = this._context.model.coordinatesConverter.convertViewPositionToModelPosition(new Position(range.startLineNumber, 1)).lineNumber;
         }
@@ -331,13 +329,13 @@ var ViewLines = /** @class */ (function (_super) {
         }
         return visibleRanges;
     };
-    ViewLines.prototype.visibleRangesForRange2 = function (_range) {
+    ViewLines.prototype.visibleRangesForRange2 = function (range) {
         if (this.shouldRender()) {
             // Cannot read from the DOM because it is dirty
             // i.e. the model & the dom are out of sync, so I'd be reading something stale
             return null;
         }
-        var range = Range.intersectRanges(_range, this._lastRenderedData.getCurrentVisibleRange());
+        range = Range.intersectRanges(range, this._lastRenderedData.getCurrentVisibleRange());
         if (!range) {
             return null;
         }
@@ -361,13 +359,6 @@ var ViewLines = /** @class */ (function (_super) {
             return null;
         }
         return result;
-    };
-    ViewLines.prototype.visibleRangeForPosition = function (position) {
-        var visibleRanges = this.visibleRangesForRange2(new Range(position.lineNumber, position.column, position.lineNumber, position.column));
-        if (!visibleRanges) {
-            return null;
-        }
-        return visibleRanges[0];
     };
     // --- implementation
     ViewLines.prototype.updateLineWidths = function () {
@@ -566,7 +557,7 @@ var ViewLines = /** @class */ (function (_super) {
         return viewportStart;
     };
     /**
-     * Adds this amount of pixels to the right of lines (no-one wants to type near the edge of the viewport)
+     * Adds this ammount of pixels to the right of lines (no-one wants to type near the edge of the viewport)
      */
     ViewLines.HORIZONTAL_EXTRA_PX = 30;
     return ViewLines;

@@ -2,13 +2,14 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as strings from '../../../base/common/strings.js';
-import { ShiftCommand } from '../../common/commands/shiftCommand.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
-import { IndentAction } from '../../common/modes/languageConfiguration.js';
 import { LanguageConfigurationRegistry } from '../../common/modes/languageConfigurationRegistry.js';
-import * as indentUtils from '../indentation/indentUtils.js';
+import { ShiftCommand } from '../../common/commands/shiftCommand.js';
+import * as IndentUtil from '../indentation/indentUtils.js';
+import { IndentAction } from '../../common/modes/languageConfiguration.js';
 var MoveLinesCommand = /** @class */ (function () {
     function MoveLinesCommand(selection, isMovingDown, autoIndent) {
         this._selection = selection;
@@ -77,8 +78,8 @@ var MoveLinesCommand = /** @class */ (function () {
                     // if s.startLineNumber - 1 matches onEnter rule, we still honor that.
                     if (movingLineMatchResult !== null) {
                         var oldIndentation = strings.getLeadingWhitespace(model.getLineContent(movingLineNumber_1));
-                        var newSpaceCnt = movingLineMatchResult + indentUtils.getSpaceCnt(oldIndentation, tabSize);
-                        var newIndentation = indentUtils.generateIndent(newSpaceCnt, tabSize, insertSpaces);
+                        var newSpaceCnt = movingLineMatchResult + IndentUtil.getSpaceCnt(oldIndentation, tabSize);
+                        var newIndentation = IndentUtil.generateIndent(newSpaceCnt, tabSize, insertSpaces);
                         insertingText_1 = newIndentation + this.trimLeft(movingLineText);
                     }
                     else {
@@ -94,10 +95,10 @@ var MoveLinesCommand = /** @class */ (function () {
                         var indentOfMovingLine = LanguageConfigurationRegistry.getGoodIndentForLine(virtualModel, model.getLanguageIdAtPosition(movingLineNumber_1, 1), s.startLineNumber, indentConverter);
                         if (indentOfMovingLine !== null) {
                             var oldIndentation = strings.getLeadingWhitespace(model.getLineContent(movingLineNumber_1));
-                            var newSpaceCnt = indentUtils.getSpaceCnt(indentOfMovingLine, tabSize);
-                            var oldSpaceCnt = indentUtils.getSpaceCnt(oldIndentation, tabSize);
+                            var newSpaceCnt = IndentUtil.getSpaceCnt(indentOfMovingLine, tabSize);
+                            var oldSpaceCnt = IndentUtil.getSpaceCnt(oldIndentation, tabSize);
                             if (newSpaceCnt !== oldSpaceCnt) {
-                                var newIndentation = indentUtils.generateIndent(newSpaceCnt, tabSize, insertSpaces);
+                                var newIndentation = IndentUtil.generateIndent(newSpaceCnt, tabSize, insertSpaces);
                                 insertingText_1 = newIndentation + this.trimLeft(movingLineText);
                             }
                         }
@@ -128,8 +129,8 @@ var MoveLinesCommand = /** @class */ (function () {
                         var newIndentatOfMovingBlock = LanguageConfigurationRegistry.getGoodIndentForLine(virtualModel, model.getLanguageIdAtPosition(movingLineNumber_1, 1), s.startLineNumber + 1, indentConverter);
                         if (newIndentatOfMovingBlock !== null) {
                             var oldIndentation = strings.getLeadingWhitespace(model.getLineContent(s.startLineNumber));
-                            var newSpaceCnt = indentUtils.getSpaceCnt(newIndentatOfMovingBlock, tabSize);
-                            var oldSpaceCnt = indentUtils.getSpaceCnt(oldIndentation, tabSize);
+                            var newSpaceCnt = IndentUtil.getSpaceCnt(newIndentatOfMovingBlock, tabSize);
+                            var oldSpaceCnt = IndentUtil.getSpaceCnt(oldIndentation, tabSize);
                             if (newSpaceCnt !== oldSpaceCnt) {
                                 var spaceCntOffset = newSpaceCnt - oldSpaceCnt;
                                 this.getIndentEditsOfMovingBlock(model, builder, s, tabSize, insertSpaces, spaceCntOffset);
@@ -171,8 +172,8 @@ var MoveLinesCommand = /** @class */ (function () {
                         if (indentOfFirstLine !== null) {
                             // adjust the indentation of the moving block
                             var oldIndent = strings.getLeadingWhitespace(model.getLineContent(s.startLineNumber));
-                            var newSpaceCnt = indentUtils.getSpaceCnt(indentOfFirstLine, tabSize);
-                            var oldSpaceCnt = indentUtils.getSpaceCnt(oldIndent, tabSize);
+                            var newSpaceCnt = IndentUtil.getSpaceCnt(indentOfFirstLine, tabSize);
+                            var oldSpaceCnt = IndentUtil.getSpaceCnt(oldIndent, tabSize);
                             if (newSpaceCnt !== oldSpaceCnt) {
                                 var spaceCntOffset = newSpaceCnt - oldSpaceCnt;
                                 this.getIndentEditsOfMovingBlock(model, builder, s, tabSize, insertSpaces, spaceCntOffset);
@@ -246,11 +247,11 @@ var MoveLinesCommand = /** @class */ (function () {
                 var oldIndentation = strings.getLeadingWhitespace(model.getLineContent(line));
                 var newIndentation = strings.getLeadingWhitespace(enterPrefix);
                 var indentMetadataOfMovelingLine = LanguageConfigurationRegistry.getIndentMetadata(model, line);
-                if (indentMetadataOfMovelingLine !== null && indentMetadataOfMovelingLine & 2 /* DECREASE_MASK */) {
+                if (indentMetadataOfMovelingLine & 2 /* DECREASE_MASK */) {
                     newIndentation = indentConverter.unshiftIndent(newIndentation);
                 }
-                var newSpaceCnt = indentUtils.getSpaceCnt(newIndentation, tabSize);
-                var oldSpaceCnt = indentUtils.getSpaceCnt(oldIndentation, tabSize);
+                var newSpaceCnt = IndentUtil.getSpaceCnt(newIndentation, tabSize);
+                var oldSpaceCnt = IndentUtil.getSpaceCnt(oldIndentation, tabSize);
                 return newSpaceCnt - oldSpaceCnt;
             }
         }
@@ -281,9 +282,9 @@ var MoveLinesCommand = /** @class */ (function () {
         for (var i = s.startLineNumber; i <= s.endLineNumber; i++) {
             var lineContent = model.getLineContent(i);
             var originalIndent = strings.getLeadingWhitespace(lineContent);
-            var originalSpacesCnt = indentUtils.getSpaceCnt(originalIndent, tabSize);
+            var originalSpacesCnt = IndentUtil.getSpaceCnt(originalIndent, tabSize);
             var newSpacesCnt = originalSpacesCnt + offset;
-            var newIndent = indentUtils.generateIndent(newSpacesCnt, tabSize, insertSpaces);
+            var newIndent = IndentUtil.generateIndent(newSpacesCnt, tabSize, insertSpaces);
             if (newIndent !== originalIndent) {
                 builder.addEditOperation(new Range(i, 1, i, originalIndent.length + 1), newIndent);
                 if (i === s.endLineNumber && s.endColumn <= originalIndent.length + 1 && newIndent === '') {

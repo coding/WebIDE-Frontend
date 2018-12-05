@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -34,20 +35,12 @@ var Menu = /** @class */ (function () {
                 // group by groupId
                 var groupName = item.group;
                 if (!group || group[0] !== groupName) {
-                    group = [groupName || '', []];
+                    group = [groupName, []];
                     _this._menuGroups.push(group);
                 }
                 group[1].push(item);
                 // keep keys for eventing
                 Menu._fillInKbExprKeys(item.when, keysFilter);
-                // keep precondition keys for event if applicable
-                if (isIMenuItem(item) && item.command.precondition) {
-                    Menu._fillInKbExprKeys(item.command.precondition, keysFilter);
-                }
-                // keep toggled keys for event if applicable
-                if (isIMenuItem(item) && item.command.toggled) {
-                    Menu._fillInKbExprKeys(item.command.toggled, keysFilter);
-                }
             }
             // subscribe to context changes
             _this._disposables.push(_this._contextKeyService.onDidChangeContext(function (event) {
@@ -70,8 +63,9 @@ var Menu = /** @class */ (function () {
             var activeActions = [];
             for (var _b = 0, items_1 = items; _b < items_1.length; _b++) {
                 var item = items_1[_b];
-                if (this._contextKeyService.contextMatchesRules(item.when || null)) {
+                if (this._contextKeyService.contextMatchesRules(item.when)) {
                     var action = isIMenuItem(item) ? new MenuItemAction(item.command, item.alt, options, this._contextKeyService, this._commandService) : new SubmenuItemAction(item);
+                    action.order = item.order; //TODO@Ben order is menu item property, not an action property
                     activeActions.push(action);
                 }
             }

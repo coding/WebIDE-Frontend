@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -108,13 +109,13 @@ var ReferencesController = /** @class */ (function () {
             }
         }));
         var storageKey = 'peekViewLayout';
-        var data = JSON.parse(this._storageService.get(storageKey, 0 /* GLOBAL */, '{}'));
+        var data = JSON.parse(this._storageService.get(storageKey, undefined, '{}'));
         this._widget = this._instantiationService.createInstance(ReferenceWidget, this._editor, this._defaultTreeKeyboardSupport, data);
         this._widget.setTitle(nls.localize('labelLoading', "Loading..."));
         this._widget.show(range);
         this._disposables.push(this._widget.onDidClose(function () {
             modelPromise.cancel();
-            _this._storageService.store(storageKey, JSON.stringify(_this._widget.layoutData), 0 /* GLOBAL */);
+            _this._storageService.store(storageKey, JSON.stringify(_this._widget.layoutData));
             _this._widget = null;
             _this.closeWidget();
         }));
@@ -234,15 +235,15 @@ var ReferencesController = /** @class */ (function () {
         });
     };
     ReferencesController.prototype.openReference = function (ref, sideBySide) {
-        // clear stage
-        if (!sideBySide) {
-            this.closeWidget();
-        }
         var uri = ref.uri, range = ref.range;
         this._editorService.openCodeEditor({
             resource: uri,
             options: { selection: range }
         }, this._editor, sideBySide);
+        // clear stage
+        if (!sideBySide) {
+            this.closeWidget();
+        }
     };
     ReferencesController.ID = 'editor.contrib.referencesController';
     ReferencesController = __decorate([

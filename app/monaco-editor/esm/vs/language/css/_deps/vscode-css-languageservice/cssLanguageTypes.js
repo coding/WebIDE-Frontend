@@ -3,6 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Range, TextEdit, Position } from "./../vscode-languageserver-types/main.js";
+import { Range, TextEdit, Position } from "../vscode-languageserver-types/main.js";
 export { Range, TextEdit, Position };
 //# sourceMappingURL=cssLanguageTypes.js.map

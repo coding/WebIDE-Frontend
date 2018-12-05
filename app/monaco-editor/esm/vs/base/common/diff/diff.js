@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { DiffChange } from './diffChange.js';
 function createStringSequence(a) {
     return {
@@ -188,7 +189,7 @@ var LcsDiff = /** @class */ (function () {
             // We have to clean up the computed diff to be more intuitive
             // but it turns out this cannot be done correctly until the entire set
             // of diffs have been computed
-            return this.PrettifyChanges(changes);
+            return this.ShiftChanges(changes);
         }
         return changes;
     };
@@ -392,7 +393,7 @@ var LcsDiff = /** @class */ (function () {
      * @returns The diff changes, if available, otherwise null
      */
     LcsDiff.prototype.ComputeRecursionPoint = function (originalStart, originalEnd, modifiedStart, modifiedEnd, midOriginalArr, midModifiedArr, quitEarlyArr) {
-        var originalIndex = 0, modifiedIndex = 0;
+        var originalIndex, modifiedIndex;
         var diagonalForwardStart = 0, diagonalForwardEnd = 0;
         var diagonalReverseStart = 0, diagonalReverseEnd = 0;
         var numDifferences;
@@ -585,29 +586,41 @@ var LcsDiff = /** @class */ (function () {
      * @param changes The list of changes to shift
      * @returns The shifted changes
      */
-    LcsDiff.prototype.PrettifyChanges = function (changes) {
-        // Shift all the changes down first
-        for (var i = 0; i < changes.length; i++) {
-            var change = changes[i];
-            var originalStop = (i < changes.length - 1) ? changes[i + 1].originalStart : this.OriginalSequence.getLength();
-            var modifiedStop = (i < changes.length - 1) ? changes[i + 1].modifiedStart : this.ModifiedSequence.getLength();
-            var checkOriginal = change.originalLength > 0;
-            var checkModified = change.modifiedLength > 0;
-            while (change.originalStart + change.originalLength < originalStop &&
-                change.modifiedStart + change.modifiedLength < modifiedStop &&
-                (!checkOriginal || this.OriginalElementsAreEqual(change.originalStart, change.originalStart + change.originalLength)) &&
-                (!checkModified || this.ModifiedElementsAreEqual(change.modifiedStart, change.modifiedStart + change.modifiedLength))) {
-                change.originalStart++;
-                change.modifiedStart++;
+    LcsDiff.prototype.ShiftChanges = function (changes) {
+        var mergedDiffs;
+        do {
+            mergedDiffs = false;
+            // Shift all the changes down first
+            for (var i = 0; i < changes.length; i++) {
+                var change = changes[i];
+                var originalStop = (i < changes.length - 1) ? changes[i + 1].originalStart : this.OriginalSequence.getLength();
+                var modifiedStop = (i < changes.length - 1) ? changes[i + 1].modifiedStart : this.ModifiedSequence.getLength();
+                var checkOriginal = change.originalLength > 0;
+                var checkModified = change.modifiedLength > 0;
+                while (change.originalStart + change.originalLength < originalStop &&
+                    change.modifiedStart + change.modifiedLength < modifiedStop &&
+                    (!checkOriginal || this.OriginalElementsAreEqual(change.originalStart, change.originalStart + change.originalLength)) &&
+                    (!checkModified || this.ModifiedElementsAreEqual(change.modifiedStart, change.modifiedStart + change.modifiedLength))) {
+                    change.originalStart++;
+                    change.modifiedStart++;
+                }
             }
+            // Build up the new list (we have to build a new list because we
+            // might have changes we can merge together now)
+            var result = new Array();
             var mergedChangeArr = [null];
-            if (i < changes.length - 1 && this.ChangesOverlap(changes[i], changes[i + 1], mergedChangeArr)) {
-                changes[i] = mergedChangeArr[0];
-                changes.splice(i + 1, 1);
-                i--;
-                continue;
+            for (var i = 0; i < changes.length; i++) {
+                if (i < changes.length - 1 && this.ChangesOverlap(changes[i], changes[i + 1], mergedChangeArr)) {
+                    mergedDiffs = true;
+                    result.push(mergedChangeArr[0]);
+                    i++;
+                }
+                else {
+                    result.push(changes[i]);
+                }
             }
-        }
+            changes = result;
+        } while (mergedDiffs);
         // Shift changes back up until we hit empty or whitespace-only lines
         for (var i = changes.length - 1; i >= 0; i--) {
             var change = changes[i];
@@ -701,6 +714,7 @@ var LcsDiff = /** @class */ (function () {
      */
     LcsDiff.prototype.ConcatenateChanges = function (left, right) {
         var mergedChangeArr = [];
+        var result = null;
         if (left.length === 0 || right.length === 0) {
             return (right.length > 0) ? right : left;
         }
@@ -709,14 +723,14 @@ var LcsDiff = /** @class */ (function () {
             // might recurse in the middle of a change thereby splitting it into
             // two changes. Here in the combining stage, we detect and fuse those
             // changes back together
-            var result = new Array(left.length + right.length - 1);
+            result = new Array(left.length + right.length - 1);
             MyArray.Copy(left, 0, result, 0, left.length - 1);
             result[left.length - 1] = mergedChangeArr[0];
             MyArray.Copy(right, 1, result, left.length, right.length - 1);
             return result;
         }
         else {
-            var result = new Array(left.length + right.length);
+            result = new Array(left.length + right.length);
             MyArray.Copy(left, 0, result, 0, left.length);
             MyArray.Copy(right, 0, result, left.length, right.length);
             return result;

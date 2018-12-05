@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -31,51 +29,32 @@ import * as dom from '../../../base/browser/dom.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable, dispose } from '../../../base/common/lifecycle.js';
-import { Schemas } from '../../../base/common/network.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
+import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
+import { ServiceCollection } from '../../../platform/instantiation/common/serviceCollection.js';
+import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
 import { Configuration } from '../config/configuration.js';
-import { EditorExtensionsRegistry } from '../editorExtensions.js';
-import { ICodeEditorService } from '../services/codeEditorService.js';
-import { View } from '../view/viewImpl.js';
-import { ViewOutgoingEvents } from '../view/viewOutgoingEvents.js';
 import { Cursor } from '../../common/controller/cursor.js';
 import { CursorColumns } from '../../common/controller/cursorCommon.js';
 import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
-import { InternalEditorAction } from '../../common/editorAction.js';
 import * as editorCommon from '../../common/editorCommon.js';
+import { ViewModel } from '../../common/viewModel/viewModelImpl.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import * as modes from '../../common/modes.js';
-import { editorErrorBorder, editorErrorForeground, editorHintBorder, editorHintForeground, editorInfoBorder, editorInfoForeground, editorUnnecessaryCodeBorder, editorUnnecessaryCodeOpacity, editorWarningBorder, editorWarningForeground } from '../../common/view/editorColorRegistry.js';
-import { ViewModel } from '../../common/viewModel/viewModelImpl.js';
-import { ICommandService } from '../../../platform/commands/common/commands.js';
-import { IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
-import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
-import { ServiceCollection } from '../../../platform/instantiation/common/serviceCollection.js';
+import { Schemas } from '../../../base/common/network.js';
+import { EndOfLinePreference } from '../../common/model.js';
 import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { ICodeEditorService } from '../services/codeEditorService.js';
+import { ICommandService } from '../../../platform/commands/common/commands.js';
 import { IThemeService, registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
+import { View } from '../view/viewImpl.js';
+import { EditorExtensionsRegistry } from '../editorExtensions.js';
+import { InternalEditorAction } from '../../common/editorAction.js';
+import { editorErrorForeground, editorErrorBorder, editorWarningForeground, editorWarningBorder, editorInfoBorder, editorInfoForeground, editorHintForeground, editorHintBorder, editorUnnecessaryCodeOpacity, editorUnnecessaryCodeBorder } from '../../common/view/editorColorRegistry.js';
 var EDITOR_ID = 0;
 var SHOW_UNUSED_ENABLED_CLASS = 'showUnused';
-var ModelData = /** @class */ (function () {
-    function ModelData(model, viewModel, cursor, view, hasRealView, listenersToRemove) {
-        this.model = model;
-        this.viewModel = viewModel;
-        this.cursor = cursor;
-        this.view = view;
-        this.hasRealView = hasRealView;
-        this.listenersToRemove = listenersToRemove;
-    }
-    ModelData.prototype.dispose = function () {
-        dispose(this.listenersToRemove);
-        this.model.onBeforeDetached();
-        if (this.hasRealView) {
-            this.view.dispose();
-        }
-        this.cursor.dispose();
-        this.viewModel.dispose();
-    };
-    return ModelData;
-}());
 var CodeEditorWidget = /** @class */ (function (_super) {
     __extends(CodeEditorWidget, _super);
     function CodeEditorWidget(domElement, options, codeEditorWidgetOptions, instantiationService, codeEditorService, commandService, contextKeyService, themeService, notificationService) {
@@ -115,10 +94,6 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         _this.onWillType = _this._onWillType.event;
         _this._onDidType = _this._register(new Emitter());
         _this.onDidType = _this._onDidType.event;
-        _this._onCompositionStart = _this._register(new Emitter());
-        _this.onCompositionStart = _this._onCompositionStart.event;
-        _this._onCompositionEnd = _this._register(new Emitter());
-        _this.onCompositionEnd = _this._onCompositionEnd.event;
         _this._onDidPaste = _this._register(new Emitter());
         _this.onDidPaste = _this._onDidPaste.event;
         _this._onMouseUp = _this._register(new Emitter());
@@ -143,8 +118,8 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         _this.onDidScrollChange = _this._onDidScrollChange.event;
         _this._onDidChangeViewZones = _this._register(new Emitter());
         _this.onDidChangeViewZones = _this._onDidChangeViewZones.event;
-        _this._domElement = domElement;
-        _this._id = (++EDITOR_ID);
+        _this.domElement = domElement;
+        _this.id = (++EDITOR_ID);
         _this._decorationTypeKeysToIds = {};
         _this._decorationTypeSubtypes = {};
         _this.isSimpleWidget = codeEditorWidgetOptions.isSimpleWidget || false;
@@ -157,13 +132,13 @@ var CodeEditorWidget = /** @class */ (function (_super) {
                 _this._onDidLayoutChange.fire(_this._configuration.editor.layoutInfo);
             }
             if (_this._configuration.editor.showUnused) {
-                _this._domElement.classList.add(SHOW_UNUSED_ENABLED_CLASS);
+                _this.domElement.classList.add(SHOW_UNUSED_ENABLED_CLASS);
             }
             else {
-                _this._domElement.classList.remove(SHOW_UNUSED_ENABLED_CLASS);
+                _this.domElement.classList.remove(SHOW_UNUSED_ENABLED_CLASS);
             }
         }));
-        _this._contextKeyService = _this._register(contextKeyService.createScoped(_this._domElement));
+        _this._contextKeyService = _this._register(contextKeyService.createScoped(_this.domElement));
         _this._notificationService = notificationService;
         _this._codeEditorService = codeEditorService;
         _this._commandService = commandService;
@@ -178,13 +153,10 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         _this._focusTracker.onChange(function () {
             _this._editorWidgetFocus.setValue(_this._focusTracker.hasFocus());
         });
-        _this._contentWidgets = {};
-        _this._overlayWidgets = {};
-        var contributions;
-        if (Array.isArray(codeEditorWidgetOptions.contributions)) {
-            contributions = codeEditorWidgetOptions.contributions;
-        }
-        else {
+        _this.contentWidgets = {};
+        _this.overlayWidgets = {};
+        var contributions = codeEditorWidgetOptions.contributions;
+        if (!Array.isArray(contributions)) {
             contributions = EditorExtensionsRegistry.getEditorContributions();
         }
         for (var i = 0, len = contributions.length; i < len; i++) {
@@ -200,7 +172,7 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         EditorExtensionsRegistry.getEditorActions().forEach(function (action) {
             var internalAction = new InternalEditorAction(action.id, action.label, action.alias, action.precondition, function () {
                 return _this._instantiationService.invokeFunction(function (accessor) {
-                    return Promise.resolve(action.runEditorCommand(accessor, _this, null));
+                    return action.runEditorCommand(accessor, _this, null);
                 });
             }, _this._contextKeyService);
             _this._actions[internalAction.id] = internalAction;
@@ -209,22 +181,27 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         return _this;
     }
     CodeEditorWidget.prototype._createConfiguration = function (options) {
-        return new Configuration(options, this._domElement);
+        return new Configuration(options, this.domElement);
     };
     CodeEditorWidget.prototype.getId = function () {
-        return this.getEditorType() + ':' + this._id;
+        return this.getEditorType() + ':' + this.id;
     };
     CodeEditorWidget.prototype.getEditorType = function () {
         return editorCommon.EditorType.ICodeEditor;
     };
     CodeEditorWidget.prototype.dispose = function () {
         this._codeEditorService.removeCodeEditor(this);
+        this.contentWidgets = {};
+        this.overlayWidgets = {};
         this._focusTracker.dispose();
         var keys = Object.keys(this._contributions);
         for (var i = 0, len = keys.length; i < len; i++) {
             var contributionId = keys[i];
             this._contributions[contributionId].dispose();
         }
+        this._contributions = {};
+        // editor actions don't need to be disposed
+        this._actions = {};
         this._removeDecorationTypes();
         this._postDetachModelCleanup(this._detachModel());
         this._onDidDispose.fire();
@@ -244,38 +221,30 @@ var CodeEditorWidget = /** @class */ (function (_super) {
     };
     CodeEditorWidget.prototype.getValue = function (options) {
         if (options === void 0) { options = null; }
-        if (!this._modelData) {
-            return '';
+        if (this.model) {
+            var preserveBOM = (options && options.preserveBOM) ? true : false;
+            var eolPreference = EndOfLinePreference.TextDefined;
+            if (options && options.lineEnding && options.lineEnding === '\n') {
+                eolPreference = EndOfLinePreference.LF;
+            }
+            else if (options && options.lineEnding && options.lineEnding === '\r\n') {
+                eolPreference = EndOfLinePreference.CRLF;
+            }
+            return this.model.getValue(eolPreference, preserveBOM);
         }
-        var preserveBOM = (options && options.preserveBOM) ? true : false;
-        var eolPreference = 0 /* TextDefined */;
-        if (options && options.lineEnding && options.lineEnding === '\n') {
-            eolPreference = 1 /* LF */;
-        }
-        else if (options && options.lineEnding && options.lineEnding === '\r\n') {
-            eolPreference = 2 /* CRLF */;
-        }
-        return this._modelData.model.getValue(eolPreference, preserveBOM);
+        return '';
     };
     CodeEditorWidget.prototype.setValue = function (newValue) {
-        if (!this._modelData) {
-            return;
+        if (this.model) {
+            this.model.setValue(newValue);
         }
-        this._modelData.model.setValue(newValue);
     };
     CodeEditorWidget.prototype.getModel = function () {
-        if (!this._modelData) {
-            return null;
-        }
-        return this._modelData.model;
+        return this.model;
     };
     CodeEditorWidget.prototype.setModel = function (model) {
         if (model === void 0) { model = null; }
-        if (this._modelData === null && model === null) {
-            // Current model is the new model
-            return;
-        }
-        if (this._modelData && this._modelData.model === model) {
+        if (this.model === model) {
             // Current model is the new model
             return;
         }
@@ -302,64 +271,64 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         }
     };
     CodeEditorWidget.prototype.getVisibleRanges = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return [];
         }
-        return this._modelData.viewModel.getVisibleRanges();
+        return this.viewModel.getVisibleRanges();
     };
     CodeEditorWidget.prototype.getWhitespaces = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return [];
         }
-        return this._modelData.viewModel.viewLayout.getWhitespaces();
+        return this.viewModel.viewLayout.getWhitespaces();
     };
-    CodeEditorWidget._getVerticalOffsetForPosition = function (modelData, modelLineNumber, modelColumn) {
-        var modelPosition = modelData.model.validatePosition({
+    CodeEditorWidget.prototype._getVerticalOffsetForPosition = function (modelLineNumber, modelColumn) {
+        var modelPosition = this.model.validatePosition({
             lineNumber: modelLineNumber,
             column: modelColumn
         });
-        var viewPosition = modelData.viewModel.coordinatesConverter.convertModelPositionToViewPosition(modelPosition);
-        return modelData.viewModel.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
+        var viewPosition = this.viewModel.coordinatesConverter.convertModelPositionToViewPosition(modelPosition);
+        return this.viewModel.viewLayout.getVerticalOffsetForLineNumber(viewPosition.lineNumber);
     };
     CodeEditorWidget.prototype.getTopForLineNumber = function (lineNumber) {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return CodeEditorWidget._getVerticalOffsetForPosition(this._modelData, lineNumber, 1);
+        return this._getVerticalOffsetForPosition(lineNumber, 1);
     };
     CodeEditorWidget.prototype.getTopForPosition = function (lineNumber, column) {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return CodeEditorWidget._getVerticalOffsetForPosition(this._modelData, lineNumber, column);
+        return this._getVerticalOffsetForPosition(lineNumber, column);
     };
     CodeEditorWidget.prototype.setHiddenAreas = function (ranges) {
-        if (this._modelData) {
-            this._modelData.viewModel.setHiddenAreas(ranges.map(function (r) { return Range.lift(r); }));
+        if (this.viewModel) {
+            this.viewModel.setHiddenAreas(ranges.map(function (r) { return Range.lift(r); }));
         }
     };
     CodeEditorWidget.prototype.getVisibleColumnFromPosition = function (rawPosition) {
-        if (!this._modelData) {
+        if (!this.model) {
             return rawPosition.column;
         }
-        var position = this._modelData.model.validatePosition(rawPosition);
-        var tabSize = this._modelData.model.getOptions().tabSize;
-        return CursorColumns.visibleColumnFromColumn(this._modelData.model.getLineContent(position.lineNumber), position.column, tabSize) + 1;
+        var position = this.model.validatePosition(rawPosition);
+        var tabSize = this.model.getOptions().tabSize;
+        return CursorColumns.visibleColumnFromColumn(this.model.getLineContent(position.lineNumber), position.column, tabSize) + 1;
     };
     CodeEditorWidget.prototype.getPosition = function () {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return null;
         }
-        return this._modelData.cursor.getPosition();
+        return this.cursor.getPosition().clone();
     };
     CodeEditorWidget.prototype.setPosition = function (position) {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return;
         }
         if (!Position.isIPosition(position)) {
             throw new Error('Invalid arguments');
         }
-        this._modelData.cursor.setSelections('api', [{
+        this.cursor.setSelections('api', [{
                 selectionStartLineNumber: position.lineNumber,
                 selectionStartColumn: position.column,
                 positionLineNumber: position.lineNumber,
@@ -367,15 +336,15 @@ var CodeEditorWidget = /** @class */ (function (_super) {
             }]);
     };
     CodeEditorWidget.prototype._sendRevealRange = function (modelRange, verticalType, revealHorizontal, scrollType) {
-        if (!this._modelData) {
+        if (!this.model || !this.cursor) {
             return;
         }
         if (!Range.isIRange(modelRange)) {
             throw new Error('Invalid arguments');
         }
-        var validatedModelRange = this._modelData.model.validateRange(modelRange);
-        var viewRange = this._modelData.viewModel.coordinatesConverter.convertModelRangeToViewRange(validatedModelRange);
-        this._modelData.cursor.emitCursorRevealRange(viewRange, verticalType, revealHorizontal, scrollType);
+        var validatedModelRange = this.model.validateRange(modelRange);
+        var viewRange = this.viewModel.coordinatesConverter.convertModelRangeToViewRange(validatedModelRange);
+        this.cursor.emitCursorRevealRange(viewRange, verticalType, revealHorizontal, scrollType);
     };
     CodeEditorWidget.prototype.revealLine = function (lineNumber, scrollType) {
         if (scrollType === void 0) { scrollType = 0 /* Smooth */; }
@@ -414,16 +383,21 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         this._sendRevealRange(new Range(position.lineNumber, position.column, position.lineNumber, position.column), verticalType, revealHorizontal, scrollType);
     };
     CodeEditorWidget.prototype.getSelection = function () {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return null;
         }
-        return this._modelData.cursor.getSelection();
+        return this.cursor.getSelection().clone();
     };
     CodeEditorWidget.prototype.getSelections = function () {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return null;
         }
-        return this._modelData.cursor.getSelections();
+        var selections = this.cursor.getSelections();
+        var result = [];
+        for (var i = 0, len = selections.length; i < len; i++) {
+            result[i] = selections[i].clone();
+        }
+        return result;
     };
     CodeEditorWidget.prototype.setSelection = function (something) {
         var isSelection = Selection.isISelection(something);
@@ -446,11 +420,11 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         }
     };
     CodeEditorWidget.prototype._setSelectionImpl = function (sel) {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return;
         }
         var selection = new Selection(sel.selectionStartLineNumber, sel.selectionStartColumn, sel.positionLineNumber, sel.positionColumn);
-        this._modelData.cursor.setSelections('api', [selection]);
+        this.cursor.setSelections('api', [selection]);
     };
     CodeEditorWidget.prototype.revealLines = function (startLineNumber, endLineNumber, scrollType) {
         if (scrollType === void 0) { scrollType = 0 /* Smooth */; }
@@ -494,9 +468,8 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         }
         this._sendRevealRange(Range.lift(range), verticalType, revealHorizontal, scrollType);
     };
-    CodeEditorWidget.prototype.setSelections = function (ranges, source) {
-        if (source === void 0) { source = 'api'; }
-        if (!this._modelData) {
+    CodeEditorWidget.prototype.setSelections = function (ranges) {
+        if (!this.cursor) {
             return;
         }
         if (!ranges || ranges.length === 0) {
@@ -507,62 +480,62 @@ var CodeEditorWidget = /** @class */ (function (_super) {
                 throw new Error('Invalid arguments');
             }
         }
-        this._modelData.cursor.setSelections(source, ranges);
+        this.cursor.setSelections('api', ranges);
     };
     CodeEditorWidget.prototype.getScrollWidth = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return this._modelData.viewModel.viewLayout.getScrollWidth();
+        return this.viewModel.viewLayout.getScrollWidth();
     };
     CodeEditorWidget.prototype.getScrollLeft = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return this._modelData.viewModel.viewLayout.getCurrentScrollLeft();
+        return this.viewModel.viewLayout.getCurrentScrollLeft();
     };
     CodeEditorWidget.prototype.getScrollHeight = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return this._modelData.viewModel.viewLayout.getScrollHeight();
+        return this.viewModel.viewLayout.getScrollHeight();
     };
     CodeEditorWidget.prototype.getScrollTop = function () {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return -1;
         }
-        return this._modelData.viewModel.viewLayout.getCurrentScrollTop();
+        return this.viewModel.viewLayout.getCurrentScrollTop();
     };
     CodeEditorWidget.prototype.setScrollLeft = function (newScrollLeft) {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return;
         }
         if (typeof newScrollLeft !== 'number') {
             throw new Error('Invalid arguments');
         }
-        this._modelData.viewModel.viewLayout.setScrollPositionNow({
+        this.viewModel.viewLayout.setScrollPositionNow({
             scrollLeft: newScrollLeft
         });
     };
     CodeEditorWidget.prototype.setScrollTop = function (newScrollTop) {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return;
         }
         if (typeof newScrollTop !== 'number') {
             throw new Error('Invalid arguments');
         }
-        this._modelData.viewModel.viewLayout.setScrollPositionNow({
+        this.viewModel.viewLayout.setScrollPositionNow({
             scrollTop: newScrollTop
         });
     };
     CodeEditorWidget.prototype.setScrollPosition = function (position) {
-        if (!this._modelData) {
+        if (!this.hasView) {
             return;
         }
-        this._modelData.viewModel.viewLayout.setScrollPositionNow(position);
+        this.viewModel.viewLayout.setScrollPositionNow(position);
     };
     CodeEditorWidget.prototype.saveViewState = function () {
-        if (!this._modelData) {
+        if (!this.cursor || !this.hasView) {
             return null;
         }
         var contributionsState = {};
@@ -574,8 +547,8 @@ var CodeEditorWidget = /** @class */ (function (_super) {
                 contributionsState[id] = contribution.saveViewState();
             }
         }
-        var cursorState = this._modelData.cursor.saveState();
-        var viewState = this._modelData.viewModel.saveState();
+        var cursorState = this.cursor.saveState();
+        var viewState = this.viewModel.saveState();
         return {
             cursorState: cursorState,
             viewState: viewState,
@@ -583,18 +556,18 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         };
     };
     CodeEditorWidget.prototype.restoreViewState = function (s) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.cursor || !this.hasView) {
             return;
         }
         if (s && s.cursorState && s.viewState) {
             var codeEditorState = s;
             var cursorState = codeEditorState.cursorState;
             if (Array.isArray(cursorState)) {
-                this._modelData.cursor.restoreState(cursorState);
+                this.cursor.restoreState(cursorState);
             }
             else {
                 // Backwards compatibility
-                this._modelData.cursor.restoreState([cursorState]);
+                this.cursor.restoreState([cursorState]);
             }
             var contributionsState = s.contributionsState || {};
             var keys = Object.keys(this._contributions);
@@ -605,12 +578,12 @@ var CodeEditorWidget = /** @class */ (function (_super) {
                     contribution.restoreViewState(contributionsState[id]);
                 }
             }
-            var reducedState = this._modelData.viewModel.reduceRestoreState(s.viewState);
-            var linesViewportData = this._modelData.viewModel.viewLayout.getLinesViewportDataAtScrollTop(reducedState.scrollTop);
-            var startPosition = this._modelData.viewModel.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.startLineNumber, 1));
-            var endPosition = this._modelData.viewModel.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.endLineNumber, 1));
-            this._modelData.model.tokenizeViewport(startPosition.lineNumber, endPosition.lineNumber);
-            this._modelData.view.restoreState(reducedState);
+            var reducedState = this.viewModel.reduceRestoreState(s.viewState);
+            var linesViewportData = this.viewModel.viewLayout.getLinesViewportDataAtScrollTop(reducedState.scrollTop);
+            var startPosition = this.viewModel.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.startLineNumber, 1));
+            var endPosition = this.viewModel.coordinatesConverter.convertViewPositionToModelPosition(new Position(linesViewportData.endLineNumber, 1));
+            this.model.tokenizeViewport(startPosition.lineNumber, endPosition.lineNumber);
+            this._view.restoreState(reducedState);
         }
     };
     CodeEditorWidget.prototype.getContribution = function (id) {
@@ -637,14 +610,14 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         payload = payload || {};
         // Special case for typing
         if (handlerId === editorCommon.Handler.Type) {
-            if (!this._modelData || typeof payload.text !== 'string' || payload.text.length === 0) {
+            if (!this.cursor || typeof payload.text !== 'string' || payload.text.length === 0) {
                 // nothing to do
                 return;
             }
             if (source === 'keyboard') {
                 this._onWillType.fire(payload.text);
             }
-            this._modelData.cursor.trigger(source, handlerId, payload);
+            this.cursor.trigger(source, handlerId, payload);
             if (source === 'keyboard') {
                 this._onDidType.fire(payload.text);
             }
@@ -652,116 +625,109 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         }
         // Special case for pasting
         if (handlerId === editorCommon.Handler.Paste) {
-            if (!this._modelData || typeof payload.text !== 'string' || payload.text.length === 0) {
+            if (!this.cursor || typeof payload.text !== 'string' || payload.text.length === 0) {
                 // nothing to do
                 return;
             }
-            var startPosition = this._modelData.cursor.getSelection().getStartPosition();
-            this._modelData.cursor.trigger(source, handlerId, payload);
-            var endPosition = this._modelData.cursor.getSelection().getStartPosition();
+            var startPosition = this.cursor.getSelection().getStartPosition();
+            this.cursor.trigger(source, handlerId, payload);
+            var endPosition = this.cursor.getSelection().getStartPosition();
             if (source === 'keyboard') {
                 this._onDidPaste.fire(new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column));
             }
             return;
         }
-        if (handlerId === editorCommon.Handler.CompositionStart) {
-            this._onCompositionStart.fire();
-        }
-        if (handlerId === editorCommon.Handler.CompositionEnd) {
-            this._onCompositionEnd.fire();
-        }
         var action = this.getAction(handlerId);
         if (action) {
-            Promise.resolve(action.run()).then(null, onUnexpectedError);
+            TPromise.as(action.run()).then(null, onUnexpectedError);
             return;
         }
-        if (!this._modelData) {
+        if (!this.cursor) {
             return;
         }
         if (this._triggerEditorCommand(source, handlerId, payload)) {
             return;
         }
-        this._modelData.cursor.trigger(source, handlerId, payload);
+        this.cursor.trigger(source, handlerId, payload);
     };
     CodeEditorWidget.prototype._triggerEditorCommand = function (source, handlerId, payload) {
-        var _this = this;
         var command = EditorExtensionsRegistry.getEditorCommand(handlerId);
         if (command) {
             payload = payload || {};
             payload.source = source;
-            this._instantiationService.invokeFunction(function (accessor) {
-                Promise.resolve(command.runEditorCommand(accessor, _this, payload)).then(null, onUnexpectedError);
-            });
+            TPromise.as(command.runEditorCommand(null, this, payload)).done(null, onUnexpectedError);
             return true;
         }
         return false;
     };
     CodeEditorWidget.prototype._getCursors = function () {
-        if (!this._modelData) {
-            return null;
-        }
-        return this._modelData.cursor;
+        return this.cursor;
+    };
+    CodeEditorWidget.prototype._getCursorConfiguration = function () {
+        return this.cursor.context.config;
     };
     CodeEditorWidget.prototype.pushUndoStop = function () {
-        if (!this._modelData) {
+        if (!this.model) {
             return false;
         }
         if (this._configuration.editor.readOnly) {
             // read only editor => sorry!
             return false;
         }
-        this._modelData.model.pushStackElement();
+        this.model.pushStackElement();
         return true;
     };
     CodeEditorWidget.prototype.executeEdits = function (source, edits, endCursorState) {
-        if (!this._modelData) {
+        if (!this.cursor) {
+            // no view, no cursor
             return false;
         }
         if (this._configuration.editor.readOnly) {
             // read only editor => sorry!
             return false;
         }
-        this._modelData.model.pushEditOperations(this._modelData.cursor.getSelections(), edits, function () {
+        this.model.pushEditOperations(this.cursor.getSelections(), edits, function () {
             return endCursorState ? endCursorState : null;
         });
         if (endCursorState) {
-            this._modelData.cursor.setSelections(source, endCursorState);
+            this.cursor.setSelections(source, endCursorState);
         }
         return true;
     };
     CodeEditorWidget.prototype.executeCommand = function (source, command) {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return;
         }
-        this._modelData.cursor.trigger(source, editorCommon.Handler.ExecuteCommand, command);
+        this.cursor.trigger(source, editorCommon.Handler.ExecuteCommand, command);
     };
     CodeEditorWidget.prototype.executeCommands = function (source, commands) {
-        if (!this._modelData) {
+        if (!this.cursor) {
             return;
         }
-        this._modelData.cursor.trigger(source, editorCommon.Handler.ExecuteCommands, commands);
+        this.cursor.trigger(source, editorCommon.Handler.ExecuteCommands, commands);
     };
     CodeEditorWidget.prototype.changeDecorations = function (callback) {
-        if (!this._modelData) {
+        if (!this.model) {
+            //			console.warn('Cannot change decorations on editor that is not attached to a model');
             // callback will not be called
             return null;
         }
-        return this._modelData.model.changeDecorations(callback, this._id);
+        return this.model.changeDecorations(callback, this.id);
     };
     CodeEditorWidget.prototype.getLineDecorations = function (lineNumber) {
-        if (!this._modelData) {
+        if (!this.model) {
             return null;
         }
-        return this._modelData.model.getLineDecorations(lineNumber, this._id, this._configuration.editor.readOnly);
+        return this.model.getLineDecorations(lineNumber, this.id, this._configuration.editor.readOnly);
     };
     CodeEditorWidget.prototype.deltaDecorations = function (oldDecorations, newDecorations) {
-        if (!this._modelData) {
+        if (!this.model) {
             return [];
         }
         if (oldDecorations.length === 0 && newDecorations.length === 0) {
             return oldDecorations;
         }
-        return this._modelData.model.deltaDecorations(oldDecorations, newDecorations, this._id);
+        return this.model.deltaDecorations(oldDecorations, newDecorations, this.id);
     };
     CodeEditorWidget.prototype.removeDecorations = function (decorationTypeKey) {
         // remove decorations for type and sub type
@@ -780,38 +746,32 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         return this._configuration.editor.layoutInfo;
     };
     CodeEditorWidget.prototype.createOverviewRuler = function (cssClassName) {
-        if (!this._modelData || !this._modelData.hasRealView) {
-            return null;
-        }
-        return this._modelData.view.createOverviewRuler(cssClassName);
+        return this._view.createOverviewRuler(cssClassName);
     };
     CodeEditorWidget.prototype.getDomNode = function () {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return null;
         }
-        return this._modelData.view.domNode.domNode;
+        return this._view.domNode.domNode;
     };
     CodeEditorWidget.prototype.delegateVerticalScrollbarMouseDown = function (browserEvent) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return;
         }
-        this._modelData.view.delegateVerticalScrollbarMouseDown(browserEvent);
+        this._view.delegateVerticalScrollbarMouseDown(browserEvent);
     };
     CodeEditorWidget.prototype.layout = function (dimension) {
         this._configuration.observeReferenceElement(dimension);
         this.render();
     };
     CodeEditorWidget.prototype.focus = function () {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return;
         }
-        this._modelData.view.focus();
+        this._view.focus();
     };
     CodeEditorWidget.prototype.hasTextFocus = function () {
-        if (!this._modelData || !this._modelData.hasRealView) {
-            return false;
-        }
-        return this._modelData.view.isFocused();
+        return this.hasView && this._view.isFocused();
     };
     CodeEditorWidget.prototype.hasWidgetFocus = function () {
         return this._focusTracker && this._focusTracker.hasFocus();
@@ -821,31 +781,31 @@ var CodeEditorWidget = /** @class */ (function (_super) {
             widget: widget,
             position: widget.getPosition()
         };
-        if (this._contentWidgets.hasOwnProperty(widget.getId())) {
+        if (this.contentWidgets.hasOwnProperty(widget.getId())) {
             console.warn('Overwriting a content widget with the same id.');
         }
-        this._contentWidgets[widget.getId()] = widgetData;
-        if (this._modelData && this._modelData.hasRealView) {
-            this._modelData.view.addContentWidget(widgetData);
+        this.contentWidgets[widget.getId()] = widgetData;
+        if (this.hasView) {
+            this._view.addContentWidget(widgetData);
         }
     };
     CodeEditorWidget.prototype.layoutContentWidget = function (widget) {
         var widgetId = widget.getId();
-        if (this._contentWidgets.hasOwnProperty(widgetId)) {
-            var widgetData = this._contentWidgets[widgetId];
+        if (this.contentWidgets.hasOwnProperty(widgetId)) {
+            var widgetData = this.contentWidgets[widgetId];
             widgetData.position = widget.getPosition();
-            if (this._modelData && this._modelData.hasRealView) {
-                this._modelData.view.layoutContentWidget(widgetData);
+            if (this.hasView) {
+                this._view.layoutContentWidget(widgetData);
             }
         }
     };
     CodeEditorWidget.prototype.removeContentWidget = function (widget) {
         var widgetId = widget.getId();
-        if (this._contentWidgets.hasOwnProperty(widgetId)) {
-            var widgetData = this._contentWidgets[widgetId];
-            delete this._contentWidgets[widgetId];
-            if (this._modelData && this._modelData.hasRealView) {
-                this._modelData.view.removeContentWidget(widgetData);
+        if (this.contentWidgets.hasOwnProperty(widgetId)) {
+            var widgetData = this.contentWidgets[widgetId];
+            delete this.contentWidgets[widgetId];
+            if (this.hasView) {
+                this._view.removeContentWidget(widgetData);
             }
         }
     };
@@ -854,57 +814,57 @@ var CodeEditorWidget = /** @class */ (function (_super) {
             widget: widget,
             position: widget.getPosition()
         };
-        if (this._overlayWidgets.hasOwnProperty(widget.getId())) {
+        if (this.overlayWidgets.hasOwnProperty(widget.getId())) {
             console.warn('Overwriting an overlay widget with the same id.');
         }
-        this._overlayWidgets[widget.getId()] = widgetData;
-        if (this._modelData && this._modelData.hasRealView) {
-            this._modelData.view.addOverlayWidget(widgetData);
+        this.overlayWidgets[widget.getId()] = widgetData;
+        if (this.hasView) {
+            this._view.addOverlayWidget(widgetData);
         }
     };
     CodeEditorWidget.prototype.layoutOverlayWidget = function (widget) {
         var widgetId = widget.getId();
-        if (this._overlayWidgets.hasOwnProperty(widgetId)) {
-            var widgetData = this._overlayWidgets[widgetId];
+        if (this.overlayWidgets.hasOwnProperty(widgetId)) {
+            var widgetData = this.overlayWidgets[widgetId];
             widgetData.position = widget.getPosition();
-            if (this._modelData && this._modelData.hasRealView) {
-                this._modelData.view.layoutOverlayWidget(widgetData);
+            if (this.hasView) {
+                this._view.layoutOverlayWidget(widgetData);
             }
         }
     };
     CodeEditorWidget.prototype.removeOverlayWidget = function (widget) {
         var widgetId = widget.getId();
-        if (this._overlayWidgets.hasOwnProperty(widgetId)) {
-            var widgetData = this._overlayWidgets[widgetId];
-            delete this._overlayWidgets[widgetId];
-            if (this._modelData && this._modelData.hasRealView) {
-                this._modelData.view.removeOverlayWidget(widgetData);
+        if (this.overlayWidgets.hasOwnProperty(widgetId)) {
+            var widgetData = this.overlayWidgets[widgetId];
+            delete this.overlayWidgets[widgetId];
+            if (this.hasView) {
+                this._view.removeOverlayWidget(widgetData);
             }
         }
     };
     CodeEditorWidget.prototype.changeViewZones = function (callback) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return;
         }
-        var hasChanges = this._modelData.view.change(callback);
+        var hasChanges = this._view.change(callback);
         if (hasChanges) {
             this._onDidChangeViewZones.fire();
         }
     };
     CodeEditorWidget.prototype.getTargetAtClientPoint = function (clientX, clientY) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return null;
         }
-        return this._modelData.view.getTargetAtClientPoint(clientX, clientY);
+        return this._view.getTargetAtClientPoint(clientX, clientY);
     };
     CodeEditorWidget.prototype.getScrolledVisiblePosition = function (rawPosition) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return null;
         }
-        var position = this._modelData.model.validatePosition(rawPosition);
+        var position = this.model.validatePosition(rawPosition);
         var layoutInfo = this._configuration.editor.layoutInfo;
-        var top = CodeEditorWidget._getVerticalOffsetForPosition(this._modelData, position.lineNumber, position.column) - this.getScrollTop();
-        var left = this._modelData.view.getOffsetForColumn(position.lineNumber, position.column) + layoutInfo.glyphMarginWidth + layoutInfo.lineNumbersWidth + layoutInfo.decorationsWidth - this.getScrollLeft();
+        var top = this._getVerticalOffsetForPosition(position.lineNumber, position.column) - this.getScrollTop();
+        var left = this._view.getOffsetForColumn(position.lineNumber, position.column) + layoutInfo.glyphMarginWidth + layoutInfo.lineNumbersWidth + layoutInfo.decorationsWidth - this.getScrollLeft();
         return {
             top: top,
             left: left,
@@ -912,95 +872,100 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         };
     };
     CodeEditorWidget.prototype.getOffsetForColumn = function (lineNumber, column) {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return -1;
         }
-        return this._modelData.view.getOffsetForColumn(lineNumber, column);
+        return this._view.getOffsetForColumn(lineNumber, column);
     };
     CodeEditorWidget.prototype.render = function () {
-        if (!this._modelData || !this._modelData.hasRealView) {
+        if (!this.hasView) {
             return;
         }
-        this._modelData.view.render(true, false);
+        this._view.render(true, false);
     };
     CodeEditorWidget.prototype.applyFontInfo = function (target) {
         Configuration.applyFontInfoSlow(target, this._configuration.editor.fontInfo);
     };
     CodeEditorWidget.prototype._attachModel = function (model) {
         var _this = this;
-        if (!model) {
-            this._modelData = null;
-            return;
+        this._view = null;
+        this.model = model ? model : null;
+        this.listenersToRemove = [];
+        this.viewModel = null;
+        this.cursor = null;
+        if (this.model) {
+            this.domElement.setAttribute('data-mode-id', this.model.getLanguageIdentifier().language);
+            this._configuration.setIsDominatedByLongLines(this.model.isDominatedByLongLines());
+            this._configuration.setMaxLineNumber(this.model.getLineCount());
+            this.model.onBeforeAttached();
+            this.viewModel = new ViewModel(this.id, this._configuration, this.model, function (callback) { return dom.scheduleAtNextAnimationFrame(callback); });
+            this.listenersToRemove.push(this.model.onDidChangeDecorations(function (e) { return _this._onDidChangeModelDecorations.fire(e); }));
+            this.listenersToRemove.push(this.model.onDidChangeLanguage(function (e) {
+                if (!_this.model) {
+                    return;
+                }
+                _this.domElement.setAttribute('data-mode-id', _this.model.getLanguageIdentifier().language);
+                _this._onDidChangeModelLanguage.fire(e);
+            }));
+            this.listenersToRemove.push(this.model.onDidChangeLanguageConfiguration(function (e) { return _this._onDidChangeModelLanguageConfiguration.fire(e); }));
+            this.listenersToRemove.push(this.model.onDidChangeContent(function (e) { return _this._onDidChangeModelContent.fire(e); }));
+            this.listenersToRemove.push(this.model.onDidChangeOptions(function (e) { return _this._onDidChangeModelOptions.fire(e); }));
+            // Someone might destroy the model from under the editor, so prevent any exceptions by setting a null model
+            this.listenersToRemove.push(this.model.onWillDispose(function () { return _this.setModel(null); }));
+            this.cursor = new Cursor(this._configuration, this.model, this.viewModel);
+            this._createView();
+            this.listenersToRemove.push(this.cursor.onDidReachMaxCursorCount(function () {
+                _this._notificationService.warn(nls.localize('cursors.maximum', "The number of cursors has been limited to {0}.", Cursor.MAX_CURSOR_COUNT));
+            }));
+            this.listenersToRemove.push(this.cursor.onDidAttemptReadOnlyEdit(function () {
+                _this._onDidAttemptReadOnlyEdit.fire(void 0);
+            }));
+            this.listenersToRemove.push(this.cursor.onDidChange(function (e) {
+                var positions = [];
+                for (var i = 0, len = e.selections.length; i < len; i++) {
+                    positions[i] = e.selections[i].getPosition();
+                }
+                var e1 = {
+                    position: positions[0],
+                    secondaryPositions: positions.slice(1),
+                    reason: e.reason,
+                    source: e.source
+                };
+                _this._onDidChangeCursorPosition.fire(e1);
+                var e2 = {
+                    selection: e.selections[0],
+                    secondarySelections: e.selections.slice(1),
+                    source: e.source,
+                    reason: e.reason
+                };
+                _this._onDidChangeCursorSelection.fire(e2);
+            }));
         }
-        var listenersToRemove = [];
-        this._domElement.setAttribute('data-mode-id', model.getLanguageIdentifier().language);
-        this._configuration.setIsDominatedByLongLines(model.isDominatedByLongLines());
-        this._configuration.setMaxLineNumber(model.getLineCount());
-        model.onBeforeAttached();
-        var viewModel = new ViewModel(this._id, this._configuration, model, function (callback) { return dom.scheduleAtNextAnimationFrame(callback); });
-        listenersToRemove.push(model.onDidChangeDecorations(function (e) { return _this._onDidChangeModelDecorations.fire(e); }));
-        listenersToRemove.push(model.onDidChangeLanguage(function (e) {
-            _this._domElement.setAttribute('data-mode-id', model.getLanguageIdentifier().language);
-            _this._onDidChangeModelLanguage.fire(e);
-        }));
-        listenersToRemove.push(model.onDidChangeLanguageConfiguration(function (e) { return _this._onDidChangeModelLanguageConfiguration.fire(e); }));
-        listenersToRemove.push(model.onDidChangeContent(function (e) { return _this._onDidChangeModelContent.fire(e); }));
-        listenersToRemove.push(model.onDidChangeOptions(function (e) { return _this._onDidChangeModelOptions.fire(e); }));
-        // Someone might destroy the model from under the editor, so prevent any exceptions by setting a null model
-        listenersToRemove.push(model.onWillDispose(function () { return _this.setModel(null); }));
-        var cursor = new Cursor(this._configuration, model, viewModel);
-        listenersToRemove.push(cursor.onDidReachMaxCursorCount(function () {
-            _this._notificationService.warn(nls.localize('cursors.maximum', "The number of cursors has been limited to {0}.", Cursor.MAX_CURSOR_COUNT));
-        }));
-        listenersToRemove.push(cursor.onDidAttemptReadOnlyEdit(function () {
-            _this._onDidAttemptReadOnlyEdit.fire(void 0);
-        }));
-        listenersToRemove.push(cursor.onDidChange(function (e) {
-            var positions = [];
-            for (var i = 0, len = e.selections.length; i < len; i++) {
-                positions[i] = e.selections[i].getPosition();
-            }
-            var e1 = {
-                position: positions[0],
-                secondaryPositions: positions.slice(1),
-                reason: e.reason,
-                source: e.source
-            };
-            _this._onDidChangeCursorPosition.fire(e1);
-            var e2 = {
-                selection: e.selections[0],
-                secondarySelections: e.selections.slice(1),
-                source: e.source,
-                reason: e.reason
-            };
-            _this._onDidChangeCursorSelection.fire(e2);
-        }));
-        var _a = this._createView(viewModel, cursor), view = _a[0], hasRealView = _a[1];
-        if (hasRealView) {
-            this._domElement.appendChild(view.domNode.domNode);
-            var keys = Object.keys(this._contentWidgets);
+        else {
+            this.hasView = false;
+        }
+        if (this._view) {
+            this.domElement.appendChild(this._view.domNode.domNode);
+            var keys = Object.keys(this.contentWidgets);
             for (var i = 0, len = keys.length; i < len; i++) {
                 var widgetId = keys[i];
-                view.addContentWidget(this._contentWidgets[widgetId]);
+                this._view.addContentWidget(this.contentWidgets[widgetId]);
             }
-            keys = Object.keys(this._overlayWidgets);
+            keys = Object.keys(this.overlayWidgets);
             for (var i = 0, len = keys.length; i < len; i++) {
                 var widgetId = keys[i];
-                view.addOverlayWidget(this._overlayWidgets[widgetId]);
+                this._view.addOverlayWidget(this.overlayWidgets[widgetId]);
             }
-            view.render(false, true);
-            view.domNode.domNode.setAttribute('data-uri', model.uri.toString());
+            this._view.render(false, true);
+            this.hasView = true;
+            this._view.domNode.domNode.setAttribute('data-uri', model.uri.toString());
         }
-        this._modelData = new ModelData(model, viewModel, cursor, view, hasRealView, listenersToRemove);
     };
-    CodeEditorWidget.prototype._createView = function (viewModel, cursor) {
+    CodeEditorWidget.prototype._createView = function () {
         var _this = this;
         var commandDelegate;
         if (this.isSimpleWidget) {
             commandDelegate = {
-                executeEditorCommand: function (editorCommand, args) {
-                    editorCommand.runCoreEditorCommand(cursor, args);
-                },
                 paste: function (source, text, pasteOnNewLine, multicursorText) {
                     _this.trigger(source, editorCommon.Handler.Paste, { text: text, pasteOnNewLine: pasteOnNewLine, multicursorText: multicursorText });
                 },
@@ -1023,9 +988,6 @@ var CodeEditorWidget = /** @class */ (function (_super) {
         }
         else {
             commandDelegate = {
-                executeEditorCommand: function (editorCommand, args) {
-                    editorCommand.runCoreEditorCommand(cursor, args);
-                },
                 paste: function (source, text, pasteOnNewLine, multicursorText) {
                     _this._commandService.executeCommand(editorCommon.Handler.Paste, {
                         text: text,
@@ -1055,44 +1017,62 @@ var CodeEditorWidget = /** @class */ (function (_super) {
                 }
             };
         }
-        var viewOutgoingEvents = new ViewOutgoingEvents(viewModel);
-        viewOutgoingEvents.onDidGainFocus = function () {
+        this._view = new View(commandDelegate, this._configuration, this._themeService, this.viewModel, this.cursor, function (editorCommand, args) {
+            if (!_this.cursor) {
+                return;
+            }
+            editorCommand.runCoreEditorCommand(_this.cursor, args);
+        });
+        var viewEventBus = this._view.getInternalEventBus();
+        viewEventBus.onDidGainFocus = function () {
             _this._editorTextFocus.setValue(true);
             // In IE, the focus is not synchronous, so we give it a little help
             _this._editorWidgetFocus.setValue(true);
         };
-        viewOutgoingEvents.onDidScroll = function (e) { return _this._onDidScrollChange.fire(e); };
-        viewOutgoingEvents.onDidLoseFocus = function () { return _this._editorTextFocus.setValue(false); };
-        viewOutgoingEvents.onContextMenu = function (e) { return _this._onContextMenu.fire(e); };
-        viewOutgoingEvents.onMouseDown = function (e) { return _this._onMouseDown.fire(e); };
-        viewOutgoingEvents.onMouseUp = function (e) { return _this._onMouseUp.fire(e); };
-        viewOutgoingEvents.onMouseDrag = function (e) { return _this._onMouseDrag.fire(e); };
-        viewOutgoingEvents.onMouseDrop = function (e) { return _this._onMouseDrop.fire(e); };
-        viewOutgoingEvents.onKeyUp = function (e) { return _this._onKeyUp.fire(e); };
-        viewOutgoingEvents.onMouseMove = function (e) { return _this._onMouseMove.fire(e); };
-        viewOutgoingEvents.onMouseLeave = function (e) { return _this._onMouseLeave.fire(e); };
-        viewOutgoingEvents.onKeyDown = function (e) { return _this._onKeyDown.fire(e); };
-        var view = new View(commandDelegate, this._configuration, this._themeService, viewModel, cursor, viewOutgoingEvents);
-        return [view, true];
+        viewEventBus.onDidScroll = function (e) { return _this._onDidScrollChange.fire(e); };
+        viewEventBus.onDidLoseFocus = function () { return _this._editorTextFocus.setValue(false); };
+        viewEventBus.onContextMenu = function (e) { return _this._onContextMenu.fire(e); };
+        viewEventBus.onMouseDown = function (e) { return _this._onMouseDown.fire(e); };
+        viewEventBus.onMouseUp = function (e) { return _this._onMouseUp.fire(e); };
+        viewEventBus.onMouseDrag = function (e) { return _this._onMouseDrag.fire(e); };
+        viewEventBus.onMouseDrop = function (e) { return _this._onMouseDrop.fire(e); };
+        viewEventBus.onKeyUp = function (e) { return _this._onKeyUp.fire(e); };
+        viewEventBus.onMouseMove = function (e) { return _this._onMouseMove.fire(e); };
+        viewEventBus.onMouseLeave = function (e) { return _this._onMouseLeave.fire(e); };
+        viewEventBus.onKeyDown = function (e) { return _this._onKeyDown.fire(e); };
     };
     CodeEditorWidget.prototype._postDetachModelCleanup = function (detachedModel) {
         if (detachedModel) {
-            detachedModel.removeAllDecorationsWithOwnerId(this._id);
+            detachedModel.removeAllDecorationsWithOwnerId(this.id);
         }
     };
     CodeEditorWidget.prototype._detachModel = function () {
-        if (!this._modelData) {
-            return null;
+        var removeDomNode = null;
+        if (this._view) {
+            this._view.dispose();
+            removeDomNode = this._view.domNode.domNode;
+            this._view = null;
         }
-        var model = this._modelData.model;
-        var removeDomNode = this._modelData.hasRealView ? this._modelData.view.domNode.domNode : null;
-        this._modelData.dispose();
-        this._modelData = null;
-        this._domElement.removeAttribute('data-mode-id');
+        if (this.model) {
+            this.model.onBeforeDetached();
+        }
+        this.hasView = false;
+        this.listenersToRemove = dispose(this.listenersToRemove);
+        if (this.cursor) {
+            this.cursor.dispose();
+            this.cursor = null;
+        }
+        if (this.viewModel) {
+            this.viewModel.dispose();
+            this.viewModel = null;
+        }
+        var result = this.model;
+        this.model = null;
+        this.domElement.removeAttribute('data-mode-id');
         if (removeDomNode) {
-            this._domElement.removeChild(removeDomNode);
+            this.domElement.removeChild(removeDomNode);
         }
-        return model;
+        return result;
     };
     CodeEditorWidget.prototype._removeDecorationType = function (key) {
         this._codeEditorService.removeDecorationType(key);
@@ -1102,9 +1082,6 @@ var CodeEditorWidget = /** @class */ (function (_super) {
     */
     CodeEditorWidget.prototype.getTelemetryData = function () {
         return this._telemetryData;
-    };
-    CodeEditorWidget.prototype.hasModel = function () {
-        return (this._modelData !== null);
     };
     CodeEditorWidget = __decorate([
         __param(3, IInstantiationService),
@@ -1196,8 +1173,8 @@ var EditorContextKeysManager = /** @class */ (function (_super) {
     };
     EditorContextKeysManager.prototype._updateFromModel = function () {
         var model = this._editor.getModel();
-        this._canUndo.set(Boolean(model && model.canUndo()));
-        this._canRedo.set(Boolean(model && model.canRedo()));
+        this._canUndo.set(model && model.canUndo());
+        this._canRedo.set(model && model.canRedo());
     };
     return EditorContextKeysManager;
 }(Disposable));
@@ -1227,7 +1204,7 @@ var EditorModeContext = /** @class */ (function (_super) {
         _this._register(editor.onDidChangeModel(update));
         _this._register(editor.onDidChangeModelLanguage(update));
         // update when registries change
-        _this._register(modes.CompletionProviderRegistry.onDidChange(update));
+        _this._register(modes.SuggestRegistry.onDidChange(update));
         _this._register(modes.CodeActionProviderRegistry.onDidChange(update));
         _this._register(modes.CodeLensProviderRegistry.onDidChange(update));
         _this._register(modes.DefinitionProviderRegistry.onDidChange(update));
@@ -1272,7 +1249,7 @@ var EditorModeContext = /** @class */ (function (_super) {
             return;
         }
         this._langId.set(model.getLanguageIdentifier().language);
-        this._hasCompletionItemProvider.set(modes.CompletionProviderRegistry.has(model));
+        this._hasCompletionItemProvider.set(modes.SuggestRegistry.has(model));
         this._hasCodeActionsProvider.set(modes.CodeActionProviderRegistry.has(model));
         this._hasCodeLensProvider.set(modes.CodeLensProviderRegistry.has(model));
         this._hasDefinitionProvider.set(modes.DefinitionProviderRegistry.has(model));

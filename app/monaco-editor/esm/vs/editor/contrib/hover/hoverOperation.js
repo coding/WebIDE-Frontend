@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { RunOnceScheduler, createCancelablePromise } from '../../../base/common/async.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 var HoverOperation = /** @class */ (function () {

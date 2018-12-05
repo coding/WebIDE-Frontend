@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var _isWindows = false;
 var _isMacintosh = false;
 var _isLinux = false;
@@ -11,18 +12,8 @@ var _locale = undefined;
 var _language = undefined;
 var _translationsConfigFile = undefined;
 export var LANGUAGE_DEFAULT = 'en';
-var isElectronRenderer = (typeof process !== 'undefined' && typeof process.versions !== 'undefined' && typeof process.versions.electron !== 'undefined' && process.type === 'renderer');
 // OS detection
-if (typeof navigator === 'object' && !isElectronRenderer) {
-    var userAgent = navigator.userAgent;
-    _isWindows = userAgent.indexOf('Windows') >= 0;
-    _isMacintosh = userAgent.indexOf('Macintosh') >= 0;
-    _isLinux = userAgent.indexOf('Linux') >= 0;
-    _isWeb = true;
-    _locale = navigator.language;
-    _language = _locale;
-}
-else if (typeof process === 'object') {
+if (typeof process === 'object' && typeof process.nextTick === 'function' && typeof process.platform === 'string') {
     _isWindows = (process.platform === 'win32');
     _isMacintosh = (process.platform === 'darwin');
     _isLinux = (process.platform === 'linux');
@@ -43,16 +34,32 @@ else if (typeof process === 'object') {
     }
     _isNative = true;
 }
-var _platform = 0 /* Web */;
+else if (typeof navigator === 'object') {
+    var userAgent = navigator.userAgent;
+    _isWindows = userAgent.indexOf('Windows') >= 0;
+    _isMacintosh = userAgent.indexOf('Macintosh') >= 0;
+    _isLinux = userAgent.indexOf('Linux') >= 0;
+    _isWeb = true;
+    _locale = navigator.language;
+    _language = _locale;
+}
+export var Platform;
+(function (Platform) {
+    Platform[Platform["Web"] = 0] = "Web";
+    Platform[Platform["Mac"] = 1] = "Mac";
+    Platform[Platform["Linux"] = 2] = "Linux";
+    Platform[Platform["Windows"] = 3] = "Windows";
+})(Platform || (Platform = {}));
+var _platform = Platform.Web;
 if (_isNative) {
     if (_isMacintosh) {
-        _platform = 1 /* Mac */;
+        _platform = Platform.Mac;
     }
     else if (_isWindows) {
-        _platform = 3 /* Windows */;
+        _platform = Platform.Windows;
     }
     else if (_isLinux) {
-        _platform = 2 /* Linux */;
+        _platform = Platform.Linux;
     }
 }
 export var isWindows = _isWindows;

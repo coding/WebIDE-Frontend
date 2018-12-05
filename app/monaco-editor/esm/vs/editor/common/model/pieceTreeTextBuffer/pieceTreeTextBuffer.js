@@ -2,10 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../../base/common/strings.js';
+'use strict';
 import { Range } from '../../core/range.js';
-import { ApplyEditsResult } from '../../model.js';
+import * as strings from '../../../../base/common/strings.js';
 import { PieceTreeBase } from './pieceTreeBase.js';
+import { EndOfLinePreference, ApplyEditsResult } from '../../model.js';
 var PieceTreeTextBuffer = /** @class */ (function () {
     function PieceTreeTextBuffer(chunks, BOM, eol, containsRTL, isBasicASCII, eolNormalized) {
         this._BOM = BOM;
@@ -38,7 +39,7 @@ var PieceTreeTextBuffer = /** @class */ (function () {
         return new Range(startPosition.lineNumber, startPosition.column, endPosition.lineNumber, endPosition.column);
     };
     PieceTreeTextBuffer.prototype.getValueInRange = function (range, eol) {
-        if (eol === void 0) { eol = 0 /* TextDefined */; }
+        if (eol === void 0) { eol = EndOfLinePreference.TextDefined; }
         if (range.isEmpty()) {
             return '';
         }
@@ -46,7 +47,7 @@ var PieceTreeTextBuffer = /** @class */ (function () {
         return this._pieceTree.getValueInRange(range, lineEnding);
     };
     PieceTreeTextBuffer.prototype.getValueLengthInRange = function (range, eol) {
-        if (eol === void 0) { eol = 0 /* TextDefined */; }
+        if (eol === void 0) { eol = EndOfLinePreference.TextDefined; }
         if (range.isEmpty()) {
             return 0;
         }
@@ -91,11 +92,11 @@ var PieceTreeTextBuffer = /** @class */ (function () {
     };
     PieceTreeTextBuffer.prototype._getEndOfLine = function (eol) {
         switch (eol) {
-            case 1 /* LF */:
+            case EndOfLinePreference.LF:
                 return '\n';
-            case 2 /* CRLF */:
+            case EndOfLinePreference.CRLF:
                 return '\r\n';
-            case 0 /* TextDefined */:
+            case EndOfLinePreference.TextDefined:
                 return this.getEOL();
         }
         throw new Error('Unknown EOL preference');
@@ -123,12 +124,12 @@ var PieceTreeTextBuffer = /** @class */ (function () {
             }
             operations[i] = {
                 sortIndex: i,
-                identifier: op.identifier || null,
+                identifier: op.identifier,
                 range: validatedRange,
                 rangeOffset: this.getOffsetAt(validatedRange.startLineNumber, validatedRange.startColumn),
                 rangeLength: this.getValueLengthInRange(validatedRange),
                 lines: op.text ? op.text.split(/\r\n|\r|\n/) : null,
-                forceMoveMarkers: Boolean(op.forceMoveMarkers),
+                forceMoveMarkers: op.forceMoveMarkers,
                 isAutoWhitespaceEdit: op.isAutoWhitespaceEdit || false
             };
         }
@@ -219,7 +220,7 @@ var PieceTreeTextBuffer = /** @class */ (function () {
             return operations;
         }
         // At one point, due to how events are emitted and how each operation is handled,
-        // some operations can trigger a high amount of temporary string allocations,
+        // some operations can trigger a high ammount of temporary string allocations,
         // that will immediately get edited again.
         // e.g. a formatter inserting ridiculous ammounts of \n on a model with a single line
         // Therefore, the strategy is to collapse all the operations into a huge single edit operation
@@ -264,7 +265,7 @@ var PieceTreeTextBuffer = /** @class */ (function () {
             identifier: operations[0].identifier,
             range: entireEditRange,
             rangeOffset: this.getOffsetAt(entireEditRange.startLineNumber, entireEditRange.startColumn),
-            rangeLength: this.getValueLengthInRange(entireEditRange, 0 /* TextDefined */),
+            rangeLength: this.getValueLengthInRange(entireEditRange, EndOfLinePreference.TextDefined),
             lines: result.join('').split('\n'),
             forceMoveMarkers: forceMoveMarkers,
             isAutoWhitespaceEdit: false
@@ -323,8 +324,8 @@ var PieceTreeTextBuffer = /** @class */ (function () {
      */
     PieceTreeTextBuffer._getInverseEditRanges = function (operations) {
         var result = [];
-        var prevOpEndLineNumber = 0;
-        var prevOpEndColumn = 0;
+        var prevOpEndLineNumber;
+        var prevOpEndColumn;
         var prevOp = null;
         for (var i = 0, len = operations.length; i < len; i++) {
             var op = operations[i];

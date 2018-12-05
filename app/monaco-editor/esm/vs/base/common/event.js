@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { onUnexpectedError } from './errors.js';
 import { once as onceFn } from './functional.js';
 import { combinedDisposable, Disposable, toDisposable } from './lifecycle.js';
@@ -34,12 +35,7 @@ export var Event;
  */
 var Emitter = /** @class */ (function () {
     function Emitter(_options) {
-        if (_options === void 0) { _options = null; }
         this._options = _options;
-        this._event = null;
-        this._disposed = false;
-        this._deliveryQueue = null;
-        this._listeners = null;
     }
     Object.defineProperty(Emitter.prototype, "event", {
         /**
@@ -70,11 +66,8 @@ var Emitter = /** @class */ (function () {
                             result.dispose = Emitter._noop;
                             if (!_this._disposed) {
                                 remove();
-                                if (_this._options && _this._options.onLastListenerRemove) {
-                                    var hasListeners = (_this._listeners && !_this._listeners.isEmpty());
-                                    if (!hasListeners) {
-                                        _this._options.onLastListenerRemove(_this);
-                                    }
+                                if (_this._options && _this._options.onLastListenerRemove && _this._listeners.isEmpty()) {
+                                    _this._options.onLastListenerRemove(_this);
                                 }
                             }
                         }
@@ -123,7 +116,7 @@ var Emitter = /** @class */ (function () {
     };
     Emitter.prototype.dispose = function () {
         if (this._listeners) {
-            this._listeners = null;
+            this._listeners = undefined;
         }
         if (this._deliveryQueue) {
             this._deliveryQueue.length = 0;
@@ -182,9 +175,7 @@ var EventMultiplexer = /** @class */ (function () {
         e.listener = e.event(function (r) { return _this.emitter.fire(r); });
     };
     EventMultiplexer.prototype.unhook = function (e) {
-        if (e.listener) {
-            e.listener.dispose();
-        }
+        e.listener.dispose();
         e.listener = null;
     };
     EventMultiplexer.prototype.dispose = function () {
@@ -196,23 +187,10 @@ export { EventMultiplexer };
 export function once(event) {
     return function (listener, thisArgs, disposables) {
         if (thisArgs === void 0) { thisArgs = null; }
-        // we need this, in case the event fires during the listener call
-        var didFire = false;
         var result = event(function (e) {
-            if (didFire) {
-                return;
-            }
-            else if (result) {
-                result.dispose();
-            }
-            else {
-                didFire = true;
-            }
+            result.dispose();
             return listener.call(thisArgs, e);
         }, null, disposables);
-        if (didFire) {
-            result.dispose();
-        }
         return result;
     };
 }
@@ -300,10 +278,9 @@ var EventBufferer = /** @class */ (function () {
     EventBufferer.prototype.bufferEvents = function (fn) {
         var buffer = [];
         this.buffers.push(buffer);
-        var r = fn();
+        fn();
         this.buffers.pop();
         buffer.forEach(function (flush) { return flush(); });
-        return r;
     };
     return EventBufferer;
 }());
@@ -345,35 +322,20 @@ export function chain(event) {
 }
 var Relay = /** @class */ (function () {
     function Relay() {
-        var _this = this;
-        this.listening = false;
-        this.inputEvent = Event.None;
-        this.inputEventListener = Disposable.None;
-        this.emitter = new Emitter({
-            onFirstListenerDidAdd: function () {
-                _this.listening = true;
-                _this.inputEventListener = _this.inputEvent(_this.emitter.fire, _this.emitter);
-            },
-            onLastListenerRemove: function () {
-                _this.listening = false;
-                _this.inputEventListener.dispose();
-            }
-        });
+        this.emitter = new Emitter();
         this.event = this.emitter.event;
+        this.disposable = Disposable.None;
     }
     Object.defineProperty(Relay.prototype, "input", {
         set: function (event) {
-            this.inputEvent = event;
-            if (this.listening) {
-                this.inputEventListener.dispose();
-                this.inputEventListener = event(this.emitter.fire, this.emitter);
-            }
+            this.disposable.dispose();
+            this.disposable = event(this.emitter.fire, this.emitter);
         },
         enumerable: true,
         configurable: true
     });
     Relay.prototype.dispose = function () {
-        this.inputEventListener.dispose();
+        this.disposable.dispose();
         this.emitter.dispose();
     };
     return Relay;

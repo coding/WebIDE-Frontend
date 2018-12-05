@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import * as Parser from '../parser/jsonParser.js';
-import { Range } from './../../vscode-languageserver-types/main.js';
+import { Range } from '../../vscode-languageserver-types/main.js';
 var JSONHover = /** @class */ (function () {
     function JSONHover(schemaService, contributions, promiseConstructor) {
         if (contributions === void 0) { contributions = []; }

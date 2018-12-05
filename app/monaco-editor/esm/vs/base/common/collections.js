@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 /**
  * Iterates over each entry in the provided set. The iterator allows

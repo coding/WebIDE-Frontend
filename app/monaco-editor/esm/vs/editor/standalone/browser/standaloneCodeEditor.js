@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -24,26 +22,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import * as nls from '../../../nls.js';
-import * as browser from '../../../base/browser/browser.js';
-import * as aria from '../../../base/browser/ui/aria/aria.js';
 import { Disposable, combinedDisposable, toDisposable } from '../../../base/common/lifecycle.js';
-import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
-import { CodeEditorWidget } from '../../browser/widget/codeEditorWidget.js';
-import { DiffEditorWidget } from '../../browser/widget/diffEditorWidget.js';
-import { InternalEditorAction } from '../../common/editorAction.js';
-import { IEditorWorkerService } from '../../common/services/editorWorkerService.js';
-import { StandaloneKeybindingService, applyConfigurationValues } from './simpleServices.js';
-import { IStandaloneThemeService } from '../common/standaloneThemeService.js';
-import { MenuId, MenuRegistry } from '../../../platform/actions/common/actions.js';
-import { CommandsRegistry, ICommandService } from '../../../platform/commands/common/commands.js';
-import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { ContextKeyExpr, IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { IContextViewService } from '../../../platform/contextview/browser/contextView.js';
 import { IInstantiationService } from '../../../platform/instantiation/common/instantiation.js';
+import { CommandsRegistry, ICommandService } from '../../../platform/commands/common/commands.js';
 import { IKeybindingService } from '../../../platform/keybinding/common/keybinding.js';
-import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { ContextKeyExpr, IContextKeyService } from '../../../platform/contextkey/common/contextkey.js';
+import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
+import { IEditorWorkerService } from '../../common/services/editorWorkerService.js';
+import { StandaloneKeybindingService, applyConfigurationValues } from './simpleServices.js';
+import { CodeEditorWidget } from '../../browser/widget/codeEditorWidget.js';
+import { DiffEditorWidget } from '../../browser/widget/diffEditorWidget.js';
+import { IStandaloneThemeService } from '../common/standaloneThemeService.js';
+import { InternalEditorAction } from '../../common/editorAction.js';
+import { MenuId, MenuRegistry } from '../../../platform/actions/common/actions.js';
 import { IThemeService } from '../../../platform/theme/common/themeService.js';
+import * as aria from '../../../base/browser/ui/aria/aria.js';
+import * as nls from '../../../nls.js';
+import * as browser from '../../../base/browser/browser.js';
+import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
 var LAST_GENERATED_COMMAND_ID = 0;
 var ariaDomNodeCreated = false;
 function createAriaDomNode() {
@@ -104,7 +103,8 @@ var StandaloneCodeEditor = /** @class */ (function (_super) {
         var contextMenuGroupId = _descriptor.contextMenuGroupId || null;
         var contextMenuOrder = _descriptor.contextMenuOrder || 0;
         var run = function () {
-            return Promise.resolve(_descriptor.run(_this));
+            var r = _descriptor.run(_this);
+            return r ? r : TPromise.as(void 0);
         };
         var toDispose = [];
         // Generate a unique id to allow the same descriptor.id across multiple editor instances
@@ -160,19 +160,17 @@ var StandaloneEditor = /** @class */ (function (_super) {
         if (typeof options.theme === 'string') {
             themeService.setTheme(options.theme);
         }
-        var _model = options.model;
+        var model = options.model;
         delete options.model;
         _this = _super.call(this, domElement, options, instantiationService, codeEditorService, commandService, contextKeyService, keybindingService, themeService, notificationService) || this;
         _this._contextViewService = contextViewService;
         _this._configurationService = configurationService;
         _this._register(toDispose);
-        var model;
-        if (typeof _model === 'undefined') {
+        if (typeof model === 'undefined') {
             model = self.monaco.editor.createModel(options.value || '', options.language || 'text/plain');
             _this._ownsModel = true;
         }
         else {
-            model = _model;
             _this._ownsModel = false;
         }
         _this._attachModel(model);
@@ -194,8 +192,8 @@ var StandaloneEditor = /** @class */ (function (_super) {
     };
     StandaloneEditor.prototype._attachModel = function (model) {
         _super.prototype._attachModel.call(this, model);
-        if (this._modelData) {
-            this._contextViewService.setContainer(this._modelData.view.domNode.domNode);
+        if (this._view) {
+            this._contextViewService.setContainer(this._view.domNode.domNode);
         }
     };
     StandaloneEditor.prototype._postDetachModelCleanup = function (detachedModel) {

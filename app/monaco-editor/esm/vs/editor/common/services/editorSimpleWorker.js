@@ -2,32 +2,29 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { mergeSort } from '../../../base/common/arrays.js';
-import { stringDiff } from '../../../base/common/diff/diff.js';
-import { FIN } from '../../../base/common/iterator.js';
-import { globals } from '../../../base/common/platform.js';
-import { URI } from '../../../base/common/uri.js';
-import { Position } from '../core/position.js';
+import URI from '../../../base/common/uri.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { Range } from '../core/range.js';
 import { DiffComputer } from '../diff/diffComputer.js';
+import { stringDiff } from '../../../base/common/diff/diff.js';
+import { Position } from '../core/position.js';
 import { MirrorTextModel as BaseMirrorModel } from '../model/mirrorTextModel.js';
-import { ensureValidWordDefinition, getWordAtText } from '../model/wordHelper.js';
 import { computeLinks } from '../modes/linkComputer.js';
 import { BasicInplaceReplace } from '../modes/supports/inplaceReplaceSupport.js';
+import { getWordAtText, ensureValidWordDefinition } from '../model/wordHelper.js';
 import { createMonacoBaseAPI } from '../standalone/standaloneBase.js';
+import { globals } from '../../../base/common/platform.js';
 /**
  * @internal
  */
@@ -93,25 +90,23 @@ var MirrorModel = /** @class */ (function (_super) {
     };
     MirrorModel.prototype.createWordIterator = function (wordDefinition) {
         var _this = this;
-        var obj;
+        var obj = {
+            done: false,
+            value: ''
+        };
         var lineNumber = 0;
         var lineText;
         var wordRangesIdx = 0;
         var wordRanges = [];
         var next = function () {
             if (wordRangesIdx < wordRanges.length) {
-                var value = lineText.substring(wordRanges[wordRangesIdx].start, wordRanges[wordRangesIdx].end);
+                obj.done = false;
+                obj.value = lineText.substring(wordRanges[wordRangesIdx].start, wordRanges[wordRangesIdx].end);
                 wordRangesIdx += 1;
-                if (!obj) {
-                    obj = { done: false, value: value };
-                }
-                else {
-                    obj.value = value;
-                }
-                return obj;
             }
             else if (lineNumber >= _this._lines.length) {
-                return FIN;
+                obj.done = true;
+                obj.value = undefined;
             }
             else {
                 lineText = _this._lines[lineNumber];
@@ -120,22 +115,9 @@ var MirrorModel = /** @class */ (function (_super) {
                 lineNumber += 1;
                 return next();
             }
+            return obj;
         };
         return { next: next };
-    };
-    MirrorModel.prototype.getLineWords = function (lineNumber, wordDefinition) {
-        var content = this._lines[lineNumber - 1];
-        var ranges = this._wordenize(content, wordDefinition);
-        var words = [];
-        for (var _i = 0, ranges_1 = ranges; _i < ranges_1.length; _i++) {
-            var range = ranges_1[_i];
-            words.push({
-                word: content.substring(range.start, range.end),
-                startColumn: range.start + 1,
-                endColumn: range.end + 1
-            });
-        }
-        return words;
     };
     MirrorModel.prototype._wordenize = function (content, wordDefinition) {
         var result = [];
@@ -248,7 +230,7 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
         var original = this._getModel(originalUrl);
         var modified = this._getModel(modifiedUrl);
         if (!original || !modified) {
-            return Promise.resolve(null);
+            return null;
         }
         var originalLines = original.getLinesContent();
         var modifiedLines = modified.getLinesContent();
@@ -258,44 +240,15 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
             shouldIgnoreTrimWhitespace: ignoreTrimWhitespace,
             shouldMakePrettyDiff: true
         });
-        var changes = diffComputer.computeDiff();
-        var identical = (changes.length > 0 ? false : this._modelsAreIdentical(original, modified));
-        return Promise.resolve({
-            identical: identical,
-            changes: changes
-        });
-    };
-    BaseEditorSimpleWorker.prototype._modelsAreIdentical = function (original, modified) {
-        var originalLineCount = original.getLineCount();
-        var modifiedLineCount = modified.getLineCount();
-        if (originalLineCount !== modifiedLineCount) {
-            return false;
-        }
-        for (var line = 1; line <= originalLineCount; line++) {
-            var originalLine = original.getLineContent(line);
-            var modifiedLine = modified.getLineContent(line);
-            if (originalLine !== modifiedLine) {
-                return false;
-            }
-        }
-        return true;
+        return TPromise.as(diffComputer.computeDiff());
     };
     BaseEditorSimpleWorker.prototype.computeMoreMinimalEdits = function (modelUrl, edits) {
         var model = this._getModel(modelUrl);
         if (!model) {
-            return Promise.resolve(edits);
+            return TPromise.as(edits);
         }
         var result = [];
-        var lastEol = undefined;
-        edits = mergeSort(edits, function (a, b) {
-            if (a.range && b.range) {
-                return Range.compareRangesUsingStarts(a.range, b.range);
-            }
-            // eol only changes should go to the end
-            var aRng = a.range ? 0 : 1;
-            var bRng = b.range ? 0 : 1;
-            return aRng - bRng;
-        });
+        var lastEol;
         for (var _i = 0, edits_1 = edits; _i < edits_1.length; _i++) {
             var _a = edits_1[_i], range = _a.range, text = _a.text, eol = _a.eol;
             if (typeof eol === 'number') {
@@ -335,80 +288,50 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
         if (typeof lastEol === 'number') {
             result.push({ eol: lastEol, text: undefined, range: undefined });
         }
-        return Promise.resolve(result);
+        return TPromise.as(result);
     };
     // ---- END minimal edits ---------------------------------------------------------------
     BaseEditorSimpleWorker.prototype.computeLinks = function (modelUrl) {
         var model = this._getModel(modelUrl);
         if (!model) {
-            return Promise.resolve(null);
+            return null;
         }
-        return Promise.resolve(computeLinks(model));
+        return TPromise.as(computeLinks(model));
     };
     BaseEditorSimpleWorker.prototype.textualSuggest = function (modelUrl, position, wordDef, wordDefFlags) {
         var model = this._getModel(modelUrl);
-        if (!model) {
-            return Promise.resolve(null);
-        }
-        var suggestions = [];
-        var wordDefRegExp = new RegExp(wordDef, wordDefFlags);
-        var currentWord = model.getWordUntilPosition(position, wordDefRegExp);
-        var seen = Object.create(null);
-        seen[currentWord.word] = true;
-        for (var iter = model.createWordIterator(wordDefRegExp), e = iter.next(); !e.done && suggestions.length <= BaseEditorSimpleWorker._suggestionsLimit; e = iter.next()) {
-            var word = e.value;
-            if (seen[word]) {
-                continue;
-            }
-            seen[word] = true;
-            if (!isNaN(Number(word))) {
-                continue;
-            }
-            suggestions.push({
-                kind: 18 /* Text */,
-                label: word,
-                insertText: word,
-                range: { startLineNumber: position.lineNumber, startColumn: currentWord.startColumn, endLineNumber: position.lineNumber, endColumn: currentWord.endColumn }
-            });
-        }
-        return Promise.resolve({ suggestions: suggestions });
-    };
-    // ---- END suggest --------------------------------------------------------------------------
-    //#region -- word ranges --
-    BaseEditorSimpleWorker.prototype.computeWordRanges = function (modelUrl, range, wordDef, wordDefFlags) {
-        var model = this._getModel(modelUrl);
-        if (!model) {
-            return Promise.resolve(Object.create(null));
-        }
-        var wordDefRegExp = new RegExp(wordDef, wordDefFlags);
-        var result = Object.create(null);
-        for (var line = range.startLineNumber; line < range.endLineNumber; line++) {
-            var words = model.getLineWords(line, wordDefRegExp);
-            for (var _i = 0, words_1 = words; _i < words_1.length; _i++) {
-                var word = words_1[_i];
-                if (!isNaN(Number(word.word))) {
+        if (model) {
+            var suggestions = [];
+            var wordDefRegExp = new RegExp(wordDef, wordDefFlags);
+            var currentWord = model.getWordUntilPosition(position, wordDefRegExp).word;
+            var seen = Object.create(null);
+            seen[currentWord] = true;
+            for (var iter = model.createWordIterator(wordDefRegExp), e = iter.next(); !e.done && suggestions.length <= BaseEditorSimpleWorker._suggestionsLimit; e = iter.next()) {
+                var word = e.value;
+                if (seen[word]) {
                     continue;
                 }
-                var array = result[word.word];
-                if (!array) {
-                    array = [];
-                    result[word.word] = array;
+                seen[word] = true;
+                if (!isNaN(Number(word))) {
+                    continue;
                 }
-                array.push({
-                    startLineNumber: line,
-                    startColumn: word.startColumn,
-                    endLineNumber: line,
-                    endColumn: word.endColumn
+                suggestions.push({
+                    type: 'text',
+                    label: word,
+                    insertText: word,
+                    noAutoAccept: true,
+                    overwriteBefore: currentWord.length
                 });
             }
+            return TPromise.as({ suggestions: suggestions });
         }
-        return Promise.resolve(result);
+        return undefined;
     };
-    //#endregion
+    // ---- END suggest --------------------------------------------------------------------------
     BaseEditorSimpleWorker.prototype.navigateValueSet = function (modelUrl, range, up, wordDef, wordDefFlags) {
         var model = this._getModel(modelUrl);
         if (!model) {
-            return Promise.resolve(null);
+            return null;
         }
         var wordDefRegExp = new RegExp(wordDef, wordDefFlags);
         if (range.startColumn === range.endColumn) {
@@ -421,12 +344,12 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
         }
         var selectionText = model.getValueInRange(range);
         var wordRange = model.getWordAtPosition({ lineNumber: range.startLineNumber, column: range.startColumn }, wordDefRegExp);
-        if (!wordRange) {
-            return Promise.resolve(null);
+        var word = null;
+        if (wordRange !== null) {
+            word = model.getValueInRange(wordRange);
         }
-        var word = model.getValueInRange(wordRange);
         var result = BasicInplaceReplace.INSTANCE.navigateValueSet(range, selectionText, wordRange, word, up);
-        return Promise.resolve(result);
+        return TPromise.as(result);
     };
     // ---- BEGIN foreign module support --------------------------------------------------------------------------
     BaseEditorSimpleWorker.prototype.loadForeignModule = function (moduleId, createData) {
@@ -445,10 +368,10 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
                     methods.push(prop);
                 }
             }
-            return Promise.resolve(methods);
+            return TPromise.as(methods);
         }
         // ESM-comment-begin
-        // 		return new Promise<any>((resolve, reject) => {
+        // 		return new TPromise<any>((c, e) => {
         // 			require([moduleId], (foreignModule: { create: IForeignModuleFactory }) => {
         // 				this._foreignModule = foreignModule.create(ctx, createData);
         // 
@@ -459,25 +382,25 @@ var BaseEditorSimpleWorker = /** @class */ (function () {
         // 					}
         // 				}
         // 
-        // 				resolve(methods);
+        // 				c(methods);
         // 
-        // 			}, reject);
+        // 			}, e);
         // 		});
         // ESM-comment-end
         // ESM-uncomment-begin
-        return Promise.reject(new Error("Unexpected usage"));
+        return TPromise.wrapError(new Error("Unexpected usage"));
         // ESM-uncomment-end
     };
     // foreign method request
     BaseEditorSimpleWorker.prototype.fmr = function (method, args) {
         if (!this._foreignModule || typeof this._foreignModule[method] !== 'function') {
-            return Promise.reject(new Error('Missing requestHandler or method: ' + method));
+            return TPromise.wrapError(new Error('Missing requestHandler or method: ' + method));
         }
         try {
-            return Promise.resolve(this._foreignModule[method].apply(this._foreignModule, args));
+            return TPromise.as(this._foreignModule[method].apply(this._foreignModule, args));
         }
         catch (e) {
-            return Promise.reject(e);
+            return TPromise.wrapError(e);
         }
     };
     // ---- END diff --------------------------------------------------------------------------

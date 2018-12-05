@@ -2,11 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { PolyfillPromise } from '../base/common/winjs.polyfill.promise.js';
-import { EDITOR_DEFAULTS } from './common/config/editorOptions.js';
+'use strict';
 import { createMonacoBaseAPI } from './common/standalone/standaloneBase.js';
 import { createMonacoEditorAPI } from './standalone/browser/standaloneEditor.js';
 import { createMonacoLanguagesAPI } from './standalone/browser/standaloneLanguages.js';
+import { EDITOR_DEFAULTS, WrappingIndent } from './common/config/editorOptions.js';
+import { PolyfillPromise } from '../base/common/winjs.polyfill.promise.js';
 var global = self;
 // When missing, polyfill the native promise
 // with our winjs-based polyfill
@@ -14,7 +15,7 @@ if (typeof global.Promise === 'undefined') {
     global.Promise = PolyfillPromise;
 }
 // Set defaults for standalone editor
-EDITOR_DEFAULTS.wrappingIndent = 0 /* None */;
+EDITOR_DEFAULTS.wrappingIndent = WrappingIndent.None;
 EDITOR_DEFAULTS.viewInfo.glyphMargin = false;
 EDITOR_DEFAULTS.autoIndent = false;
 var api = createMonacoBaseAPI();
@@ -46,8 +47,7 @@ if (typeof global.require !== 'undefined' && typeof global.require.config === 'f
             'jsonc-parser',
             'jsonc-parser/main',
             'vscode-uri',
-            'vscode-uri/index',
-            'vs/basic-languages/typescript/typescript'
+            'vscode-uri/index'
         ]
     });
 }

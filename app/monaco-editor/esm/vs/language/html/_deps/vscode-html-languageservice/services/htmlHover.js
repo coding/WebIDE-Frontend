@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 import { createScanner } from '../parser/htmlScanner.js';
-import { MarkedString } from './../../vscode-languageserver-types/main.js';
+import { MarkedString } from '../../vscode-languageserver-types/main.js';
 import { allTagProviders } from './tagProviders.js';
 import { TokenType } from '../htmlLanguageTypes.js';
 export function doHover(document, position, htmlDocument) {

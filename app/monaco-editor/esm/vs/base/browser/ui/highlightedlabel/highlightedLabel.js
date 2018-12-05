@@ -2,12 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as dom from '../../dom.js';
 import * as objects from '../../../common/objects.js';
 import { renderOcticons } from '../octiconLabel/octiconLabel.js';
 var HighlightedLabel = /** @class */ (function () {
-    function HighlightedLabel(container, supportOcticons) {
-        this.supportOcticons = supportOcticons;
+    function HighlightedLabel(container) {
         this.domNode = document.createElement('span');
         this.domNode.className = 'monaco-highlighted-label';
         this.didEverRender = false;
@@ -51,21 +51,18 @@ var HighlightedLabel = /** @class */ (function () {
             }
             if (pos < highlight.start) {
                 htmlContent.push('<span>');
-                var substring_1 = this.text.substring(pos, highlight.start);
-                htmlContent.push(this.supportOcticons ? renderOcticons(substring_1) : substring_1);
+                htmlContent.push(renderOcticons(this.text.substring(pos, highlight.start)));
                 htmlContent.push('</span>');
                 pos = highlight.end;
             }
             htmlContent.push('<span class="highlight">');
-            var substring = this.text.substring(highlight.start, highlight.end);
-            htmlContent.push(this.supportOcticons ? renderOcticons(substring) : substring);
+            htmlContent.push(renderOcticons(this.text.substring(highlight.start, highlight.end)));
             htmlContent.push('</span>');
             pos = highlight.end;
         }
         if (pos < this.text.length) {
             htmlContent.push('<span>');
-            var substring = this.text.substring(pos);
-            htmlContent.push(this.supportOcticons ? renderOcticons(substring) : substring);
+            htmlContent.push(renderOcticons(this.text.substring(pos)));
             htmlContent.push('</span>');
         }
         this.domNode.innerHTML = htmlContent.join('');
@@ -73,8 +70,8 @@ var HighlightedLabel = /** @class */ (function () {
         this.didEverRender = true;
     };
     HighlightedLabel.prototype.dispose = function () {
-        this.text = null; // StrictNullOverride: nulling out ok in dispose
-        this.highlights = null; // StrictNullOverride: nulling out ok in dispose
+        this.text = null;
+        this.highlights = null;
     };
     HighlightedLabel.escapeNewLines = function (text, highlights) {
         var total = 0;

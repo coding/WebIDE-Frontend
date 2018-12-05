@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,8 +14,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as platform from '../../../base/common/platform.js';
-import { EDITOR_FONT_DEFAULTS } from './editorOptions.js';
 import { EditorZoom } from './editorZoom.js';
+import { EDITOR_FONT_DEFAULTS } from './editorOptions.js';
 /**
  * Determined from empirical observations.
  * @internal
@@ -36,9 +34,6 @@ function safeParseFloat(n, defaultValue) {
     if (typeof n === 'number') {
         return n;
     }
-    if (typeof n === 'undefined') {
-        return defaultValue;
-    }
     var r = parseFloat(n);
     if (isNaN(r)) {
         return defaultValue;
@@ -48,9 +43,6 @@ function safeParseFloat(n, defaultValue) {
 function safeParseInt(n, defaultValue) {
     if (typeof n === 'number') {
         return Math.round(n);
-    }
-    if (typeof n === 'undefined') {
-        return defaultValue;
     }
     var r = parseInt(n);
     if (isNaN(r)) {
@@ -127,20 +119,6 @@ var BareFontInfo = /** @class */ (function () {
     BareFontInfo.prototype.getId = function () {
         return this.zoomLevel + '-' + this.fontFamily + '-' + this.fontWeight + '-' + this.fontSize + '-' + this.lineHeight + '-' + this.letterSpacing;
     };
-    /**
-     * @internal
-     */
-    BareFontInfo.prototype.getMassagedFontFamily = function () {
-        if (/[,"']/.test(this.fontFamily)) {
-            // Looks like the font family might be already escaped
-            return this.fontFamily;
-        }
-        if (/[+ ]/.test(this.fontFamily)) {
-            // Wrap a font family using + or <space> with quotes
-            return "\"" + this.fontFamily + "\"";
-        }
-        return this.fontFamily;
-    };
     return BareFontInfo;
 }());
 export { BareFontInfo };
@@ -155,7 +133,6 @@ var FontInfo = /** @class */ (function (_super) {
         _this.isMonospace = opts.isMonospace;
         _this.typicalHalfwidthCharacterWidth = opts.typicalHalfwidthCharacterWidth;
         _this.typicalFullwidthCharacterWidth = opts.typicalFullwidthCharacterWidth;
-        _this.canUseHalfwidthRightwardsArrow = opts.canUseHalfwidthRightwardsArrow;
         _this.spaceWidth = opts.spaceWidth;
         _this.maxDigitWidth = opts.maxDigitWidth;
         return _this;
@@ -171,7 +148,6 @@ var FontInfo = /** @class */ (function (_super) {
             && this.letterSpacing === other.letterSpacing
             && this.typicalHalfwidthCharacterWidth === other.typicalHalfwidthCharacterWidth
             && this.typicalFullwidthCharacterWidth === other.typicalFullwidthCharacterWidth
-            && this.canUseHalfwidthRightwardsArrow === other.canUseHalfwidthRightwardsArrow
             && this.spaceWidth === other.spaceWidth
             && this.maxDigitWidth === other.maxDigitWidth);
     };

@@ -2,7 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { FIN } from './iterator.js';
+'use strict';
 var Node = /** @class */ (function () {
     function Node(element) {
         this.element = element;
@@ -43,10 +43,8 @@ var LinkedList = /** @class */ (function () {
             oldFirst.prev = newNode;
         }
         return function () {
-            var candidate = _this._first;
-            while (candidate instanceof Node) {
+            for (var candidate = _this._first; candidate instanceof Node; candidate = candidate.next) {
                 if (candidate !== newNode) {
-                    candidate = candidate.next;
                     continue;
                 }
                 if (candidate.prev && candidate.next) {
@@ -76,20 +74,22 @@ var LinkedList = /** @class */ (function () {
         };
     };
     LinkedList.prototype.iterator = function () {
-        var element;
+        var element = {
+            done: undefined,
+            value: undefined,
+        };
         var node = this._first;
         return {
             next: function () {
                 if (!node) {
-                    return FIN;
-                }
-                if (!element) {
-                    element = { done: false, value: node.element };
+                    element.done = true;
+                    element.value = undefined;
                 }
                 else {
+                    element.done = false;
                     element.value = node.element;
+                    node = node.next;
                 }
-                node = node.next;
                 return element;
             }
         };

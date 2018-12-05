@@ -2,37 +2,39 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { URI } from './uri.js';
+'use strict';
+import URI from './uri.js';
 import { normalize, basename as pathsBasename, sep } from './paths.js';
 import { ltrim, startsWithIgnoreCase, rtrim, startsWith } from './strings.js';
 import { Schemas } from './network.js';
 import { isLinux, isWindows } from './platform.js';
 import { isEqual } from './resources.js';
 /**
- * @deprecated use LabelService instead
+ * @deprecated use UriLabelService instead
  */
 export function getPathLabel(resource, userHomeProvider, rootProvider) {
+    if (!resource) {
+        return null;
+    }
     if (typeof resource === 'string') {
         resource = URI.file(resource);
     }
     // return early if we can resolve a relative path label from the root
-    if (rootProvider) {
-        var baseResource = rootProvider.getWorkspaceFolder(resource);
-        if (baseResource) {
-            var hasMultipleRoots = rootProvider.getWorkspace().folders.length > 1;
-            var pathLabel = void 0;
-            if (isEqual(baseResource.uri, resource, !isLinux)) {
-                pathLabel = ''; // no label if paths are identical
-            }
-            else {
-                pathLabel = normalize(ltrim(resource.path.substr(baseResource.uri.path.length), sep), true);
-            }
-            if (hasMultipleRoots) {
-                var rootName = (baseResource && baseResource.name) ? baseResource.name : pathsBasename(baseResource.uri.fsPath);
-                pathLabel = pathLabel ? (rootName + ' • ' + pathLabel) : rootName; // always show root basename if there are multiple
-            }
-            return pathLabel;
+    var baseResource = rootProvider ? rootProvider.getWorkspaceFolder(resource) : null;
+    if (baseResource) {
+        var hasMultipleRoots = rootProvider.getWorkspace().folders.length > 1;
+        var pathLabel = void 0;
+        if (isEqual(baseResource.uri, resource, !isLinux)) {
+            pathLabel = ''; // no label if paths are identical
         }
+        else {
+            pathLabel = normalize(ltrim(resource.path.substr(baseResource.uri.path.length), sep), true);
+        }
+        if (hasMultipleRoots) {
+            var rootName = (baseResource && baseResource.name) ? baseResource.name : pathsBasename(baseResource.uri.fsPath);
+            pathLabel = pathLabel ? (rootName + ' • ' + pathLabel) : rootName; // always show root basename if there are multiple
+        }
+        return pathLabel;
     }
     // return if the resource is neither file:// nor untitled:// and no baseResource was provided
     if (resource.scheme !== Schemas.file && resource.scheme !== Schemas.untitled) {
@@ -51,7 +53,7 @@ export function getPathLabel(resource, userHomeProvider, rootProvider) {
 }
 export function getBaseLabel(resource) {
     if (!resource) {
-        return undefined;
+        return null;
     }
     if (typeof resource === 'string') {
         resource = URI.file(resource);
@@ -64,7 +66,7 @@ export function getBaseLabel(resource) {
     return base;
 }
 function hasDriveLetter(path) {
-    return !!(isWindows && path && path[1] === ':');
+    return isWindows && path && path[1] === ':';
 }
 export function normalizeDriveLetter(path) {
     if (hasDriveLetter(path)) {

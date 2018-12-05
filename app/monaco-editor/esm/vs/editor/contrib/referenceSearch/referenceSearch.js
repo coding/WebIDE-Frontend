@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -25,6 +23,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as nls from '../../../nls.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { IContextKeyService, ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
 import { KeybindingsRegistry } from '../../../platform/keybinding/common/keybindingsRegistry.js';
 import { Position } from '../../common/core/position.js';
@@ -34,7 +33,7 @@ import { Range } from '../../common/core/range.js';
 import { PeekContext, getOuterEditor } from './peekViewWidget.js';
 import { ReferencesController, ctxReferenceSearchVisible } from './referencesController.js';
 import { ReferencesModel, OneReference } from './referencesModel.js';
-import { createCancelablePromise } from '../../../base/common/async.js';
+import { asWinJsPromise, createCancelablePromise } from '../../../base/common/async.js';
 import { onUnexpectedExternalError } from '../../../base/common/errors.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { EmbeddedCodeEditorWidget } from '../../browser/widget/embeddedCodeEditorWidget.js';
@@ -42,7 +41,7 @@ import { isCodeEditor } from '../../browser/editorBrowser.js';
 import { IListService } from '../../../platform/list/browser/listService.js';
 import { ctxReferenceWidgetSearchTreeFocused } from './referencesWidget.js';
 import { CommandsRegistry } from '../../../platform/commands/common/commands.js';
-import { URI } from '../../../base/common/uri.js';
+import URI from '../../../base/common/uri.js';
 import { ICodeEditorService } from '../../browser/services/codeEditorService.js';
 import { CancellationToken } from '../../../base/common/cancellation.js';
 export var defaultReferenceSearchOptions = {
@@ -120,15 +119,12 @@ var findReferencesCommand = function (accessor, resource, position) {
         }
         var references = createCancelablePromise(function (token) { return provideReferences(control.getModel(), Position.lift(position), token).then(function (references) { return new ReferencesModel(references); }); });
         var range = new Range(position.lineNumber, position.column, position.lineNumber, position.column);
-        return Promise.resolve(controller.toggleWidget(range, references, defaultReferenceSearchOptions));
+        return TPromise.as(controller.toggleWidget(range, references, defaultReferenceSearchOptions));
     });
 };
 var showReferencesCommand = function (accessor, resource, position, references) {
     if (!(resource instanceof URI)) {
         throw new Error('illegal argument, uri expected');
-    }
-    if (!references) {
-        throw new Error('missing references');
     }
     var codeEditorService = accessor.get(ICodeEditorService);
     return codeEditorService.openCodeEditor({ resource: resource }, codeEditorService.getFocusedCodeEditor()).then(function (control) {
@@ -139,7 +135,7 @@ var showReferencesCommand = function (accessor, resource, position, references) 
         if (!controller) {
             return undefined;
         }
-        return Promise.resolve(controller.toggleWidget(new Range(position.lineNumber, position.column, position.lineNumber, position.column), createCancelablePromise(function (_) { return Promise.resolve(new ReferencesModel(references)); }), defaultReferenceSearchOptions)).then(function () { return true; });
+        return TPromise.as(controller.toggleWidget(new Range(position.lineNumber, position.column, position.lineNumber, position.column), createCancelablePromise(function (_) { return Promise.resolve(new ReferencesModel(references)); }), defaultReferenceSearchOptions)).then(function () { return true; });
     });
 };
 // register commands
@@ -253,7 +249,9 @@ KeybindingsRegistry.registerCommandAndKeybindingRule({
 export function provideReferences(model, position, token) {
     // collect references from all providers
     var promises = ReferenceProviderRegistry.ordered(model).map(function (provider) {
-        return Promise.resolve(provider.provideReferences(model, position, { includeDeclaration: true }, token)).then(function (result) {
+        return asWinJsPromise(function (token) {
+            return provider.provideReferences(model, position, { includeDeclaration: true }, token);
+        }).then(function (result) {
             if (Array.isArray(result)) {
                 return result;
             }

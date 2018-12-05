@@ -6,7 +6,7 @@
 import * as languageFacts from './languageFacts.js';
 import { Rules } from './lintRules.js';
 import * as nodes from '../parser/cssNodes.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var Element = /** @class */ (function () {
     function Element(text, data) {

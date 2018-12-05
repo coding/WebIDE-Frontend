@@ -6,10 +6,6 @@
 var Promise = monaco.Promise;
 import * as jsonService from './_deps/vscode-json-languageservice/jsonLanguageService.js';
 import * as ls from './_deps/vscode-languageserver-types/main.js';
-var defaultSchemaRequestService;
-if (typeof fetch !== 'undefined') {
-    defaultSchemaRequestService = function (url) { return fetch(url).then(function (response) { return response.text(); }); };
-}
 var PromiseAdapter = /** @class */ (function () {
     function PromiseAdapter(executor) {
         this.wrapped = new monaco.Promise(executor);
@@ -20,6 +16,9 @@ var PromiseAdapter = /** @class */ (function () {
     };
     PromiseAdapter.prototype.getWrapped = function () {
         return this.wrapped;
+    };
+    PromiseAdapter.prototype.cancel = function () {
+        this.wrapped.cancel();
     };
     PromiseAdapter.resolve = function (v) {
         return monaco.Promise.as(v);
@@ -37,10 +36,7 @@ var JSONWorker = /** @class */ (function () {
         this._ctx = ctx;
         this._languageSettings = createData.languageSettings;
         this._languageId = createData.languageId;
-        this._languageService = jsonService.getLanguageService({
-            schemaRequestService: createData.enableSchemaRequest && defaultSchemaRequestService,
-            promiseConstructor: PromiseAdapter
-        });
+        this._languageService = jsonService.getLanguageService({ promiseConstructor: PromiseAdapter });
         this._languageService.configure(this._languageSettings);
     }
     JSONWorker.prototype.doValidation = function (uri) {

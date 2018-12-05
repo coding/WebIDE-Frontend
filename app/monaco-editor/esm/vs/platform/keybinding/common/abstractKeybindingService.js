@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as nls from '../../../nls.js';
-import { IntervalTimer } from '../../../base/common/async.js';
-import { Emitter, Event } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
+import { Event, Emitter } from '../../../base/common/event.js';
+import { IntervalTimer } from '../../../base/common/async.js';
 var AbstractKeybindingService = /** @class */ (function (_super) {
     __extends(AbstractKeybindingService, _super);
     function AbstractKeybindingService(contextKeyService, commandService, telemetryService, notificationService, statusService) {
@@ -87,7 +85,7 @@ var AbstractKeybindingService = /** @class */ (function (_super) {
         var keybinding = this.resolveKeyboardEvent(e);
         if (keybinding.isChord()) {
             console.warn('Unexpected keyboard event mapped to a chord');
-            return false;
+            return null;
         }
         var firstPart = keybinding.getDispatchParts()[0];
         if (firstPart === null) {
@@ -115,10 +113,10 @@ var AbstractKeybindingService = /** @class */ (function (_super) {
                 shouldPreventDefault = true;
             }
             if (typeof resolveResult.commandArgs === 'undefined') {
-                this._commandService.executeCommand(resolveResult.commandId).then(undefined, function (err) { return _this._notificationService.warn(err); });
+                this._commandService.executeCommand(resolveResult.commandId).done(undefined, function (err) { return _this._notificationService.warn(err); });
             }
             else {
-                this._commandService.executeCommand(resolveResult.commandId, resolveResult.commandArgs).then(undefined, function (err) { return _this._notificationService.warn(err); });
+                this._commandService.executeCommand(resolveResult.commandId, resolveResult.commandArgs).done(undefined, function (err) { return _this._notificationService.warn(err); });
             }
             /* __GDPR__
                 "workbenchActionExecuted" : {

@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var Uint8Matrix = /** @class */ (function () {
     function Uint8Matrix(rows, cols, defaultValue) {
         var data = new Uint8Array(rows * cols);

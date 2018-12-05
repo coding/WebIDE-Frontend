@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { FoldingRangeKind } from './../../vscode-languageserver-types/main.js';
+import { FoldingRangeKind } from '../../vscode-languageserver-types/main.js';
 import { TokenType } from '../htmlLanguageTypes.js';
 import { createScanner } from '../parser/htmlScanner.js';
 import { isEmptyElement } from '../parser/htmlTags.js';

@@ -2,6 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
+import { TrackedRangeStickiness } from '../../common/model.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { sanitizeRanges } from './syntaxRangeProvider.js';
 export var ID_INIT_PROVIDER = 'init';
 var InitializingRangeProvider = /** @class */ (function () {
@@ -18,7 +21,7 @@ var InitializingRangeProvider = /** @class */ (function () {
                         endColumn: editorModel.getLineLength(range.endLineNumber)
                     },
                     options: {
-                        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */
+                        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges
                     }
                 };
             };
@@ -47,7 +50,7 @@ var InitializingRangeProvider = /** @class */ (function () {
                 }
             }
         }
-        return Promise.resolve(sanitizeRanges(foldingRangeData, Number.MAX_VALUE));
+        return TPromise.as(sanitizeRanges(foldingRangeData, Number.MAX_VALUE));
     };
     return InitializingRangeProvider;
 }());

@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -26,6 +24,7 @@ import { registerColor, oneOf } from '../../../platform/theme/common/colorRegist
 import { Color } from '../../../base/common/color.js';
 import { editorErrorForeground, editorErrorBorder, editorWarningForeground, editorWarningBorder, editorInfoForeground, editorInfoBorder } from '../../common/view/editorColorRegistry.js';
 import { ScrollableElement } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
+import { ScrollbarVisibility } from '../../../base/common/scrollable.js';
 import { getBaseLabel, getPathLabel } from '../../../base/common/labels.js';
 import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { Emitter } from '../../../base/common/event.js';
@@ -53,8 +52,8 @@ var MessageWidget = /** @class */ (function () {
             }
         }));
         this._scrollable = new ScrollableElement(domNode, {
-            horizontal: 1 /* Auto */,
-            vertical: 1 /* Auto */,
+            horizontal: ScrollbarVisibility.Auto,
+            vertical: ScrollbarVisibility.Auto,
             useShadows: false,
             horizontalScrollbarSize: 3,
             verticalScrollbarSize: 3
@@ -71,7 +70,7 @@ var MessageWidget = /** @class */ (function () {
         dispose(this._disposables);
     };
     MessageWidget.prototype.update = function (_a) {
-        var source = _a.source, message = _a.message, relatedInformation = _a.relatedInformation, code = _a.code;
+        var source = _a.source, message = _a.message, relatedInformation = _a.relatedInformation;
         if (source) {
             this._lines = 0;
             this._longestLineLength = 0;
@@ -80,9 +79,6 @@ var MessageWidget = /** @class */ (function () {
             for (var i = 0; i < lines.length; i++) {
                 var line = lines[i];
                 this._lines += 1;
-                if (code && i === lines.length - 1) {
-                    line += " [" + code + "]";
-                }
                 this._longestLineLength = Math.max(line.length, this._longestLineLength);
                 if (i === 0) {
                     message = "[" + source + "] " + line;
@@ -94,17 +90,14 @@ var MessageWidget = /** @class */ (function () {
         }
         else {
             this._lines = 1;
-            if (code) {
-                message += " [" + code + "]";
-            }
             this._longestLineLength = message.length;
         }
         dom.clearNode(this._relatedBlock);
         if (!isFalsyOrEmpty(relatedInformation)) {
             this._relatedBlock.style.paddingTop = Math.floor(this._editor.getConfiguration().lineHeight * .66) + "px";
             this._lines += 1;
-            for (var _i = 0, _b = relatedInformation || []; _i < _b.length; _i++) {
-                var related = _b[_i];
+            for (var _i = 0, relatedInformation_1 = relatedInformation; _i < relatedInformation_1.length; _i++) {
+                var related = relatedInformation_1[_i];
                 var container = document.createElement('div');
                 var relatedResource = document.createElement('span');
                 dom.addClass(relatedResource, 'filename');
@@ -168,7 +161,7 @@ var MarkerNavigationWidget = /** @class */ (function (_super) {
     };
     MarkerNavigationWidget.prototype._applyStyles = function () {
         if (this._parentContainer) {
-            this._parentContainer.style.backgroundColor = this._backgroundColor ? this._backgroundColor.toString() : '';
+            this._parentContainer.style.backgroundColor = this._backgroundColor.toString();
         }
         _super.prototype._applyStyles.call(this);
     };
@@ -208,8 +201,7 @@ var MarkerNavigationWidget = /** @class */ (function (_super) {
         this._applyTheme(this._themeService.getTheme());
         // show
         var range = Range.lift(marker);
-        var editorPosition = this.editor.getPosition();
-        var position = editorPosition && range.containsPosition(editorPosition) ? editorPosition : range.getStartPosition();
+        var position = range.containsPosition(this.editor.getPosition()) ? this.editor.getPosition() : range.getStartPosition();
         _super.prototype.show.call(this, position, this.computeRequiredHeight());
         this.editor.revealPositionInCenter(position, 0 /* Smooth */);
         if (this.editor.getConfiguration().accessibilitySupport !== 1 /* Disabled */) {

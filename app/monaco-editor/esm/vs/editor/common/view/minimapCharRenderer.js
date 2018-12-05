@@ -2,9 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
+import { TokenizationRegistry } from '../modes.js';
 import { Emitter } from '../../../base/common/event.js';
 import { RGBA8 } from '../core/rgba.js';
-import { TokenizationRegistry } from '../modes.js';
 var MinimapTokensColorTracker = /** @class */ (function () {
     function MinimapTokensColorTracker() {
         var _this = this;
@@ -26,11 +27,11 @@ var MinimapTokensColorTracker = /** @class */ (function () {
     MinimapTokensColorTracker.prototype._updateColorMap = function () {
         var colorMap = TokenizationRegistry.getColorMap();
         if (!colorMap) {
-            this._colors = [RGBA8.Empty];
+            this._colors = [null];
             this._backgroundIsLight = true;
             return;
         }
-        this._colors = [RGBA8.Empty];
+        this._colors = [null];
         for (var colorId = 1; colorId < colorMap.length; colorId++) {
             var source = colorMap[colorId].rgba;
             // Use a VM friendly data-type

@@ -2,58 +2,48 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { createCancelablePromise, TimeoutTimer } from '../../../base/common/async.js';
-import { Emitter } from '../../../base/common/event.js';
+import { createCancelablePromise } from '../../../base/common/async.js';
+import { debounceEvent, Emitter } from '../../../base/common/event.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { Range } from '../../common/core/range.js';
 import { CodeActionProviderRegistry } from '../../common/modes.js';
 import { RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
 import { getCodeActions } from './codeAction.js';
 export var SUPPORTED_CODE_ACTIONS = new RawContextKey('supportedCodeAction', '');
 var CodeActionOracle = /** @class */ (function () {
-    function CodeActionOracle(_editor, _markerService, _signalChange, _delay, _progressService) {
-        if (_delay === void 0) { _delay = 250; }
+    function CodeActionOracle(_editor, _markerService, _signalChange, delay, _progressService) {
+        if (delay === void 0) { delay = 250; }
         var _this = this;
         this._editor = _editor;
         this._markerService = _markerService;
         this._signalChange = _signalChange;
-        this._delay = _delay;
         this._progressService = _progressService;
         this._disposables = [];
-        this._autoTriggerTimer = new TimeoutTimer();
-        this._disposables.push(this._markerService.onMarkerChanged(function (e) { return _this._onMarkerChanges(e); }), this._editor.onDidChangeCursorPosition(function () { return _this._onCursorChange(); }));
+        this._disposables.push(debounceEvent(this._markerService.onMarkerChanged, function (last, cur) { return last ? last.concat(cur) : cur; }, delay / 2)(function (e) { return _this._onMarkerChanges(e); }), debounceEvent(this._editor.onDidChangeCursorPosition, function (last, cur) { return cur; }, delay)(function (e) { return _this._onCursorChange(); }));
     }
     CodeActionOracle.prototype.dispose = function () {
         this._disposables = dispose(this._disposables);
-        this._autoTriggerTimer.cancel();
     };
     CodeActionOracle.prototype.trigger = function (trigger) {
         var selection = this._getRangeOfSelectionUnlessWhitespaceEnclosed(trigger);
         return this._createEventAndSignalChange(trigger, selection);
     };
     CodeActionOracle.prototype._onMarkerChanges = function (resources) {
-        var _this = this;
-        var model = this._editor.getModel();
-        if (!model) {
-            return;
-        }
-        if (resources.some(function (resource) { return resource.toString() === model.uri.toString(); })) {
-            this._autoTriggerTimer.cancelAndSet(function () {
-                _this.trigger({ type: 'auto' });
-            }, this._delay);
+        var uri = this._editor.getModel().uri;
+        for (var _i = 0, resources_1 = resources; _i < resources_1.length; _i++) {
+            var resource = resources_1[_i];
+            if (resource.toString() === uri.toString()) {
+                this.trigger({ type: 'auto' });
+                return;
+            }
         }
     };
     CodeActionOracle.prototype._onCursorChange = function () {
-        var _this = this;
-        this._autoTriggerTimer.cancelAndSet(function () {
-            _this.trigger({ type: 'auto' });
-        }, this._delay);
+        this.trigger({ type: 'auto' });
     };
     CodeActionOracle.prototype._getRangeOfMarker = function (selection) {
         var model = this._editor.getModel();
-        if (!model) {
-            return undefined;
-        }
         for (var _i = 0, _a = this._markerService.read({ resource: model.uri }); _i < _a.length; _i++) {
             var marker = _a[_i];
             if (Range.intersectRanges(marker, selection)) {
@@ -65,7 +55,7 @@ var CodeActionOracle = /** @class */ (function () {
     CodeActionOracle.prototype._getRangeOfSelectionUnlessWhitespaceEnclosed = function (trigger) {
         var model = this._editor.getModel();
         var selection = this._editor.getSelection();
-        if (model && selection && selection.isEmpty() && !(trigger.filter && trigger.filter.includeSourceActions)) {
+        if (selection.isEmpty() && !(trigger.filter && trigger.filter.includeSourceActions)) {
             var _a = selection.getPosition(), lineNumber = _a.lineNumber, column = _a.column;
             var line = model.getLineContent(lineNumber);
             if (line.length === 0) {
@@ -91,7 +81,7 @@ var CodeActionOracle = /** @class */ (function () {
                 }
             }
         }
-        return selection ? selection : undefined;
+        return selection;
     };
     CodeActionOracle.prototype._createEventAndSignalChange = function (trigger, selection) {
         if (!selection) {
@@ -102,25 +92,15 @@ var CodeActionOracle = /** @class */ (function () {
                 position: undefined,
                 actions: undefined,
             });
-            return Promise.resolve(undefined);
+            return TPromise.as(undefined);
         }
         else {
             var model_1 = this._editor.getModel();
-            if (!model_1) {
-                // cancel
-                this._signalChange({
-                    trigger: trigger,
-                    rangeOrSelection: undefined,
-                    position: undefined,
-                    actions: undefined,
-                });
-                return Promise.resolve(undefined);
-            }
             var markerRange = this._getRangeOfMarker(selection);
             var position = markerRange ? markerRange.getStartPosition() : selection.getStartPosition();
             var actions = createCancelablePromise(function (token) { return getCodeActions(model_1, selection, trigger, token); });
             if (this._progressService && trigger.type === 'manual') {
-                this._progressService.showWhile(actions, 250);
+                this._progressService.showWhile(TPromise.wrap(actions), 250);
             }
             this._signalChange({
                 trigger: trigger,
@@ -166,12 +146,11 @@ var CodeActionModel = /** @class */ (function () {
             this._codeActionOracle = undefined;
             this._onDidChangeFixes.fire(undefined);
         }
-        var model = this._editor.getModel();
-        if (model
-            && CodeActionProviderRegistry.has(model)
+        if (this._editor.getModel()
+            && CodeActionProviderRegistry.has(this._editor.getModel())
             && !this._editor.getConfiguration().readOnly) {
             var supportedActions = [];
-            for (var _i = 0, _a = CodeActionProviderRegistry.all(model); _i < _a.length; _i++) {
+            for (var _i = 0, _a = CodeActionProviderRegistry.all(this._editor.getModel()); _i < _a.length; _i++) {
                 var provider = _a[_i];
                 if (Array.isArray(provider.providedCodeActionKinds)) {
                     supportedActions.push.apply(supportedActions, provider.providedCodeActionKinds);
@@ -189,7 +168,7 @@ var CodeActionModel = /** @class */ (function () {
         if (this._codeActionOracle) {
             return this._codeActionOracle.trigger(trigger);
         }
-        return Promise.resolve(undefined);
+        return TPromise.as(undefined);
     };
     return CodeActionModel;
 }());

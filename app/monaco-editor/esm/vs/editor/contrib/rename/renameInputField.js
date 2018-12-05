@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -14,7 +15,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import './renameInputField.css';
 import { localize } from '../../../nls.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { Range } from '../../common/core/range.js';
+import { ContentWidgetPositionPreference } from '../../browser/editorBrowser.js';
 import { IThemeService } from '../../../platform/theme/common/themeService.js';
 import { inputBackground, inputBorder, inputForeground, widgetShadow } from '../../../platform/theme/common/colorRegistry.js';
 import { Position } from '../../common/core/position.js';
@@ -87,7 +90,7 @@ var RenameInputField = /** @class */ (function () {
     };
     RenameInputField.prototype.getPosition = function () {
         return this._visible
-            ? { position: this._position, preference: [2 /* BELOW */, 1 /* ABOVE */] }
+            ? { position: this._position, preference: [ContentWidgetPositionPreference.BELOW, ContentWidgetPositionPreference.ABOVE] }
             : null;
     };
     RenameInputField.prototype.acceptInput = function () {
@@ -112,7 +115,7 @@ var RenameInputField = /** @class */ (function () {
             dispose(disposeOnDone);
             _this._hide();
         };
-        return new Promise(function (resolve) {
+        return new TPromise(function (resolve) {
             _this._currentCancelInput = function (focusEditor) {
                 _this._currentAcceptInput = null;
                 _this._currentCancelInput = null;
@@ -130,20 +133,21 @@ var RenameInputField = /** @class */ (function () {
                 resolve(_this._inputField.value);
             };
             var onCursorChanged = function () {
-                var editorPosition = _this._editor.getPosition();
-                if (!editorPosition || !Range.containsPosition(where, editorPosition)) {
+                if (!Range.containsPosition(where, _this._editor.getPosition())) {
                     _this.cancelInput(true);
                 }
             };
             disposeOnDone.push(_this._editor.onDidChangeCursorSelection(onCursorChanged));
             disposeOnDone.push(_this._editor.onDidBlurEditorWidget(function () { return _this.cancelInput(false); }));
             _this._show();
+        }, function () {
+            _this._currentCancelInput(true);
         }).then(function (newValue) {
             always();
             return newValue;
         }, function (err) {
             always();
-            return Promise.reject(err);
+            return TPromise.wrapError(err);
         });
     };
     RenameInputField.prototype._show = function () {

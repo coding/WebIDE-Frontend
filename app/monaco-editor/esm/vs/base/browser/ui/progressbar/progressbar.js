@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,11 +14,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import './progressbar.css';
+import { TPromise } from '../../../common/winjs.base.js';
+import { $ } from '../../builder.js';
+import * as DOM from '../../dom.js';
 import { Disposable } from '../../../common/lifecycle.js';
 import { Color } from '../../../common/color.js';
 import { mixin } from '../../../common/objects.js';
-import { removeClasses, addClass, hasClass, hide, show } from '../../dom.js';
-import { RunOnceScheduler } from '../../../common/async.js';
 var css_done = 'done';
 var css_active = 'active';
 var css_infinite = 'infinite';
@@ -41,23 +40,32 @@ var ProgressBar = /** @class */ (function (_super) {
         mixin(_this.options, defaultOpts, false);
         _this.workedVal = 0;
         _this.progressBarBackground = _this.options.progressBarBackground;
-        _this._register(_this.showDelayedScheduler = new RunOnceScheduler(function () { return show(_this.element); }, 0));
         _this.create(container);
         return _this;
     }
     ProgressBar.prototype.create = function (container) {
-        this.element = document.createElement('div');
-        addClass(this.element, css_progress_container);
-        container.appendChild(this.element);
-        this.bit = document.createElement('div');
-        addClass(this.bit, css_progress_bit);
-        this.element.appendChild(this.bit);
+        var _this = this;
+        $(container).div({ 'class': css_progress_container }, function (builder) {
+            _this.element = builder.clone();
+            builder.div({ 'class': css_progress_bit }).on([DOM.EventType.ANIMATION_START, DOM.EventType.ANIMATION_END, DOM.EventType.ANIMATION_ITERATION], function (e) {
+                switch (e.type) {
+                    case DOM.EventType.ANIMATION_ITERATION:
+                        if (_this.animationStopToken) {
+                            _this.animationStopToken(null);
+                        }
+                        break;
+                }
+            }, _this.toDispose);
+            _this.bit = builder.getHTMLElement();
+        });
         this.applyStyles();
     };
     ProgressBar.prototype.off = function () {
         this.bit.style.width = 'inherit';
         this.bit.style.opacity = '1';
-        removeClasses(this.element, css_active, css_infinite, css_discrete);
+        this.element.removeClass(css_active);
+        this.element.removeClass(css_infinite);
+        this.element.removeClass(css_discrete);
         this.workedVal = 0;
         this.totalWork = undefined;
     };
@@ -69,12 +77,12 @@ var ProgressBar = /** @class */ (function (_super) {
     };
     ProgressBar.prototype.doDone = function (delayed) {
         var _this = this;
-        addClass(this.element, css_done);
+        this.element.addClass(css_done);
         // let it grow to 100% width and hide afterwards
-        if (!hasClass(this.element, css_infinite)) {
+        if (!this.element.hasClass(css_infinite)) {
             this.bit.style.width = 'inherit';
             if (delayed) {
-                setTimeout(function () { return _this.off(); }, 200);
+                TPromise.timeout(200).then(function () { return _this.off(); });
             }
             else {
                 this.off();
@@ -84,7 +92,7 @@ var ProgressBar = /** @class */ (function (_super) {
         else {
             this.bit.style.opacity = '0';
             if (delayed) {
-                setTimeout(function () { return _this.off(); }, 200);
+                TPromise.timeout(200).then(function () { return _this.off(); });
             }
             else {
                 this.off();
@@ -93,8 +101,7 @@ var ProgressBar = /** @class */ (function (_super) {
         return this;
     };
     ProgressBar.prototype.hide = function () {
-        hide(this.element);
-        this.showDelayedScheduler.cancel();
+        this.element.hide();
     };
     ProgressBar.prototype.style = function (styles) {
         this.progressBarBackground = styles.progressBarBackground;

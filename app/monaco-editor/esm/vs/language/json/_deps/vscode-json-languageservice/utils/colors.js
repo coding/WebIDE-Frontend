@@ -6,6 +6,7 @@
 var Digit0 = 48;
 var Digit9 = 57;
 var A = 65;
+var F = 70;
 var a = 97;
 var f = 102;
 export function hexDigit(charCode) {

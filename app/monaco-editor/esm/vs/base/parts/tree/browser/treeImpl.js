@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import './tree.css';
 import * as TreeDefaults from './treeDefaults.js';
 import * as Model from './treeModel.js';
@@ -20,7 +21,7 @@ var TreeContext = /** @class */ (function () {
         }
         this.dataSource = configuration.dataSource;
         this.renderer = configuration.renderer;
-        this.controller = configuration.controller || new TreeDefaults.DefaultController({ clickBehavior: 1 /* ON_MOUSE_UP */, keyboardSupport: typeof options.keyboardSupport !== 'boolean' || options.keyboardSupport });
+        this.controller = configuration.controller || new TreeDefaults.DefaultController({ clickBehavior: TreeDefaults.ClickBehavior.ON_MOUSE_UP, keyboardSupport: typeof options.keyboardSupport !== 'boolean' || options.keyboardSupport });
         this.dnd = configuration.dnd || new TreeDefaults.DefaultDragAndDrop();
         this.filter = configuration.filter || new TreeDefaults.DefaultFilter();
         this.sorter = configuration.sorter || null;

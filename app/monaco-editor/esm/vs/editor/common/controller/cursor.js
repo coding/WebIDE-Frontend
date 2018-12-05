@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,17 +14,19 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as nls from '../../../nls.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
-import { Emitter } from '../../../base/common/event.js';
 import * as strings from '../../../base/common/strings.js';
+import { onUnexpectedError } from '../../../base/common/errors.js';
 import { CursorCollection } from './cursorCollection.js';
-import { CursorColumns, CursorConfiguration, CursorContext, CursorState, EditOperationResult } from './cursorCommon.js';
+import { Range } from '../core/range.js';
+import { Selection, SelectionDirection } from '../core/selection.js';
+import * as editorCommon from '../editorCommon.js';
+import { CursorColumns, CursorConfiguration, EditOperationResult, CursorContext, CursorState } from './cursorCommon.js';
 import { DeleteOperations } from './cursorDeleteOperations.js';
 import { TypeOperations } from './cursorTypeOperations.js';
-import { Range } from '../core/range.js';
-import { Selection } from '../core/selection.js';
-import * as editorCommon from '../editorCommon.js';
+import { CursorChangeReason } from './cursorEvents.js';
 import * as viewEvents from '../view/viewEvents.js';
+import { Emitter } from '../../../base/common/event.js';
+import { TrackedRangeStickiness } from '../model.js';
 function containsLineMappingChanged(events) {
     for (var i = 0, len = events.length; i < len; i++) {
         if (events[i].type === 6 /* ViewLineMappingChanged */) {
@@ -115,7 +115,7 @@ var Cursor = /** @class */ (function (_super) {
                 return;
             }
             // Ensure valid state
-            _this.setStates('viewModel', 0 /* NotSet */, _this.getAll());
+            _this.setStates('viewModel', CursorChangeReason.NotSet, _this.getAll());
         }));
         var updateCursorContext = function () {
             _this.context = new CursorContext(_this._configuration, _this._model, _this._viewModel);
@@ -152,7 +152,7 @@ var Cursor = /** @class */ (function (_super) {
         return this._cursors.getAll();
     };
     Cursor.prototype.setStates = function (source, reason, states) {
-        if (states !== null && states.length > Cursor.MAX_CURSOR_COUNT) {
+        if (states.length > Cursor.MAX_CURSOR_COUNT) {
             states = states.slice(0, Cursor.MAX_CURSOR_COUNT);
             this._onDidReachMaxCursorCount.fire(void 0);
         }
@@ -224,7 +224,7 @@ var Cursor = /** @class */ (function (_super) {
                 positionColumn: positionColumn
             });
         }
-        this.setStates('restoreState', 0 /* NotSet */, CursorState.fromModelSelections(desiredSelections));
+        this.setStates('restoreState', CursorChangeReason.NotSet, CursorState.fromModelSelections(desiredSelections));
         this.reveal(true, 0 /* Primary */, 1 /* Immediate */);
     };
     Cursor.prototype._onModelContentChanged = function (hadFlushEvent) {
@@ -233,11 +233,11 @@ var Cursor = /** @class */ (function (_super) {
             // a model.setValue() was called
             this._cursors.dispose();
             this._cursors = new CursorCollection(this.context);
-            this._emitStateChangedIfNecessary('model', 1 /* ContentFlush */, null);
+            this._emitStateChangedIfNecessary('model', CursorChangeReason.ContentFlush, null);
         }
         else {
             var selectionsFromMarkers = this._cursors.readSelectionFromMarkers();
-            this.setStates('modelChange', 2 /* RecoverFromMarkers */, CursorState.fromModelSelections(selectionsFromMarkers));
+            this.setStates('modelChange', CursorChangeReason.RecoverFromMarkers, CursorState.fromModelSelections(selectionsFromMarkers));
         }
     };
     Cursor.prototype.getSelection = function () {
@@ -264,7 +264,7 @@ var Cursor = /** @class */ (function (_super) {
         return this._cursors.getPrimaryCursor().modelState.position;
     };
     Cursor.prototype.setSelections = function (source, selections) {
-        this.setStates(source, 0 /* NotSet */, CursorState.fromModelSelections(selections));
+        this.setStates(source, CursorChangeReason.NotSet, CursorState.fromModelSelections(selections));
     };
     Cursor.prototype.getPrevEditOperationType = function () {
         return this._prevEditOperationType;
@@ -377,7 +377,7 @@ var Cursor = /** @class */ (function (_super) {
             return;
         }
         var oldState = new CursorModelState(this._model, this);
-        var cursorChangeReason = 0 /* NotSet */;
+        var cursorChangeReason = CursorChangeReason.NotSet;
         if (handlerId !== H.Undo && handlerId !== H.Redo) {
             // TODO@Alex: if the undo/redo stack contains non-null selections
             // it would also be OK to stop tracking selections here
@@ -395,18 +395,18 @@ var Cursor = /** @class */ (function (_super) {
                     this._replacePreviousChar(payload.text, payload.replaceCharCnt);
                     break;
                 case H.Paste:
-                    cursorChangeReason = 4 /* Paste */;
+                    cursorChangeReason = CursorChangeReason.Paste;
                     this._paste(payload.text, payload.pasteOnNewLine, payload.multicursorText);
                     break;
                 case H.Cut:
                     this._cut();
                     break;
                 case H.Undo:
-                    cursorChangeReason = 5 /* Undo */;
+                    cursorChangeReason = CursorChangeReason.Undo;
                     this._interpretCommandResult(this._model.undo());
                     break;
                 case H.Redo:
-                    cursorChangeReason = 6 /* Redo */;
+                    cursorChangeReason = CursorChangeReason.Redo;
                     this._interpretCommandResult(this._model.redo());
                     break;
                 case H.ExecuteCommand:
@@ -496,7 +496,7 @@ var CommandExecutor = /** @class */ (function () {
         };
         var result = this._innerExecuteCommands(ctx, commands);
         for (var i = 0, len = ctx.trackedRanges.length; i < len; i++) {
-            ctx.model._setTrackedRange(ctx.trackedRanges[i], null, 0 /* AlwaysGrowsWhenTypingAtEdges */);
+            ctx.model._setTrackedRange(ctx.trackedRanges[i], null, TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges);
         }
         return result;
     };
@@ -554,7 +554,7 @@ var CommandExecutor = /** @class */ (function () {
                         getTrackedSelection: function (id) {
                             var idx = parseInt(id, 10);
                             var range = ctx.model._getTrackedRange(ctx.trackedRanges[idx]);
-                            if (ctx.trackedRangesDirection[idx] === 0 /* LTR */) {
+                            if (ctx.trackedRangesDirection[idx] === SelectionDirection.LTR) {
                                 return new Selection(range.startLineNumber, range.startColumn, range.endLineNumber, range.endColumn);
                             }
                             return new Selection(range.endLineNumber, range.endColumn, range.startLineNumber, range.startColumn);
@@ -570,9 +570,6 @@ var CommandExecutor = /** @class */ (function () {
             }
             return cursorSelections;
         });
-        if (!selectionsAfter) {
-            selectionsAfter = ctx.selectionsBefore;
-        }
         // Extract losing cursors
         var losingCursors = [];
         for (var losingCursorIndex in loserCursorsMap) {
@@ -602,9 +599,8 @@ var CommandExecutor = /** @class */ (function () {
         var operations = [];
         var hadTrackedEditOperation = false;
         for (var i = 0, len = commands.length; i < len; i++) {
-            var command = commands[i];
-            if (command) {
-                var r = this._getEditOperationsFromCommand(ctx, i, command);
+            if (commands[i]) {
+                var r = this._getEditOperationsFromCommand(ctx, i, commands[i]);
                 operations = operations.concat(r.operations);
                 hadTrackedEditOperation = hadTrackedEditOperation || r.hadTrackedEditOperation;
             }
@@ -645,25 +641,25 @@ var CommandExecutor = /** @class */ (function () {
             if (selection.isEmpty()) {
                 if (typeof trackPreviousOnEmpty === 'boolean') {
                     if (trackPreviousOnEmpty) {
-                        stickiness = 2 /* GrowsOnlyWhenTypingBefore */;
+                        stickiness = TrackedRangeStickiness.GrowsOnlyWhenTypingBefore;
                     }
                     else {
-                        stickiness = 3 /* GrowsOnlyWhenTypingAfter */;
+                        stickiness = TrackedRangeStickiness.GrowsOnlyWhenTypingAfter;
                     }
                 }
                 else {
                     // Try to lock it with surrounding text
                     var maxLineColumn = ctx.model.getLineMaxColumn(selection.startLineNumber);
                     if (selection.startColumn === maxLineColumn) {
-                        stickiness = 2 /* GrowsOnlyWhenTypingBefore */;
+                        stickiness = TrackedRangeStickiness.GrowsOnlyWhenTypingBefore;
                     }
                     else {
-                        stickiness = 3 /* GrowsOnlyWhenTypingAfter */;
+                        stickiness = TrackedRangeStickiness.GrowsOnlyWhenTypingAfter;
                     }
                 }
             }
             else {
-                stickiness = 1 /* NeverGrowsWhenTypingAtEdges */;
+                stickiness = TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges;
             }
             var l = ctx.trackedRanges.length;
             var id = ctx.model._setTrackedRange(null, selection, stickiness);

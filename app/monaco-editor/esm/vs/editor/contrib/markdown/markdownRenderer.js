@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -14,13 +15,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { renderMarkdown } from '../../../base/browser/htmlContentRenderer.js';
 import { IOpenerService, NullOpenerService } from '../../../platform/opener/common/opener.js';
 import { IModeService } from '../../common/services/modeService.js';
-import { URI } from '../../../base/common/uri.js';
+import URI from '../../../base/common/uri.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { tokenizeToString } from '../../common/modes/textToHtmlTokenizer.js';
 import { optional } from '../../../platform/instantiation/common/instantiation.js';
 import { Emitter } from '../../../base/common/event.js';
 import { dispose } from '../../../base/common/lifecycle.js';
-import { TokenizationRegistry } from '../../common/modes.js';
 var MarkdownRenderer = /** @class */ (function () {
     function MarkdownRenderer(_editor, _modeService, _openerService) {
         if (_openerService === void 0) { _openerService = NullOpenerService; }
@@ -37,23 +37,11 @@ var MarkdownRenderer = /** @class */ (function () {
                 // In markdown,
                 // it is possible that we stumble upon language aliases (e.g.js instead of javascript)
                 // it is possible no alias is given in which case we fall back to the current editor lang
-                var modeId = null;
-                if (languageAlias) {
-                    modeId = _this._modeService.getModeIdForLanguageName(languageAlias);
-                }
-                else {
-                    var model = _this._editor.getModel();
-                    if (model) {
-                        modeId = model.getLanguageIdentifier().language;
-                    }
-                }
-                _this._modeService.triggerMode(modeId || '');
-                return Promise.resolve(true).then(function (_) {
-                    var promise = TokenizationRegistry.getPromise(modeId || '');
-                    if (promise) {
-                        return promise.then(function (support) { return tokenizeToString(value, support); });
-                    }
-                    return tokenizeToString(value, undefined);
+                var modeId = languageAlias
+                    ? _this._modeService.getModeIdForLanguageName(languageAlias)
+                    : _this._editor.getModel().getLanguageIdentifier().language;
+                return _this._modeService.getOrCreateMode(modeId).then(function (_) {
+                    return tokenizeToString(value, modeId);
                 }).then(function (code) {
                     return "<span style=\"font-family: " + _this._editor.getConfiguration().fontInfo.fontFamily + "\">" + code + "</span>";
                 });
@@ -61,16 +49,7 @@ var MarkdownRenderer = /** @class */ (function () {
             codeBlockRenderCallback: function () { return _this._onDidRenderCodeBlock.fire(); },
             actionHandler: {
                 callback: function (content) {
-                    var uri;
-                    try {
-                        uri = URI.parse(content);
-                    }
-                    catch (_a) {
-                        // ignore
-                    }
-                    if (uri && _this._openerService) {
-                        _this._openerService.open(uri).catch(onUnexpectedError);
-                    }
+                    _this._openerService.open(URI.parse(content)).then(void 0, onUnexpectedError);
                 },
                 disposeables: disposeables
             }

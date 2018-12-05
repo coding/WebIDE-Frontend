@@ -929,9 +929,8 @@
         function is(value) {
             var candidate = value;
             return candidate &&
-                Is.string(candidate.name) && Is.number(candidate.kind) &&
+                Is.string(candidate.name) && Is.string(candidate.detail) && Is.number(candidate.kind) &&
                 Range.is(candidate.range) && Range.is(candidate.selectionRange) &&
-                (candidate.detail === void 0 || Is.string(candidate.detail)) &&
                 (candidate.deprecated === void 0 || Is.boolean(candidate.deprecated)) &&
                 (candidate.children === void 0 || Array.isArray(candidate.children));
         }
@@ -2594,8 +2593,7 @@ define('vscode-languageserver-types', ['vscode-languageserver-types/main'], func
         return setProperty(text, path, void 0, formattingOptions);
     }
     exports.removeProperty = removeProperty;
-    function setProperty(text, originalPath, value, formattingOptions, getInsertionIndex) {
-        var path = originalPath.slice();
+    function setProperty(text, path, value, formattingOptions, getInsertionIndex) {
         var errors = [];
         var root = parser_1.parseTree(text, errors);
         var parent = void 0;
@@ -2879,9 +2877,9 @@ define('jsonc-parser', ['jsonc-parser/main'], function (main) { return main; });
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
-    *  Copyright (c) Microsoft Corporation. All rights reserved.
-    *  Licensed under the MIT License. See License.txt in the project root for license information.
-    *--------------------------------------------------------------------------------------------*/
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function equals(one, other) {
@@ -3541,12 +3539,9 @@ var __extends = (this && this.__extends) || (function () {
 define('vscode-uri', ['vscode-uri/index'], function (main) { return main; });
 
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -3999,33 +3994,6 @@ var __extends = (this && this.__extends) || (function () {
             }
             if (Array.isArray(schema.oneOf)) {
                 testAlternatives(schema.oneOf, true);
-            }
-            var testBranch = function (schema) {
-                var subSchema = asSchema(schema);
-                var subValidationResult = new ValidationResult();
-                var subMatchingSchemas = matchingSchemas.newSub();
-                validate(node, subSchema, subValidationResult, subMatchingSchemas);
-                validationResult.merge(subValidationResult);
-                validationResult.propertiesMatches += subValidationResult.propertiesMatches;
-                validationResult.propertiesValueMatches += subValidationResult.propertiesValueMatches;
-                matchingSchemas.merge(subMatchingSchemas);
-            };
-            var testCondition = function (ifSchema, thenSchema, elseSchema) {
-                var subSchema = asSchema(ifSchema);
-                var subValidationResult = new ValidationResult();
-                var subMatchingSchemas = matchingSchemas.newSub();
-                validate(node, subSchema, subValidationResult, subMatchingSchemas);
-                if (!subValidationResult.hasProblems()) {
-                    if (thenSchema) {
-                        testBranch(thenSchema);
-                    }
-                }
-                else if (elseSchema) {
-                    testBranch(elseSchema);
-                }
-            };
-            if (schema.if) {
-                testCondition(schema.if, schema.then, schema.else);
             }
             if (Array.isArray(schema.enum)) {
                 var val = getNodeValue(node);
@@ -4767,9 +4735,9 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
-    *  Copyright (c) Microsoft Corporation. All rights reserved.
-    *  Licensed under the MIT License. See License.txt in the project root for license information.
-    *--------------------------------------------------------------------------------------------*/
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function stringifyObject(obj, indent, stringifyLiteral) {
@@ -4823,9 +4791,9 @@ var __extends = (this && this.__extends) || (function () {
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
-    *  Copyright (c) Microsoft Corporation. All rights reserved.
-    *  Licensed under the MIT License. See License.txt in the project root for license information.
-    *--------------------------------------------------------------------------------------------*/
+     *  Copyright (c) Microsoft Corporation. All rights reserved.
+     *  Licensed under the MIT License. See License.txt in the project root for license information.
+     *--------------------------------------------------------------------------------------------*/
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     function startsWith(haystack, needle) {
@@ -5943,6 +5911,7 @@ var __extends = (this && this.__extends) || (function () {
     var Digit0 = 48;
     var Digit9 = 57;
     var A = 65;
+    var F = 70;
     var a = 97;
     var f = 102;
     function hexDigit(charCode) {
@@ -6016,7 +5985,7 @@ var __extends = (this && this.__extends) || (function () {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define('vscode-json-languageservice/services/jsonDocumentSymbols',["require", "exports", "../parser/jsonParser", "../utils/strings", "../utils/colors", "vscode-nls", "vscode-languageserver-types"], factory);
+        define('vscode-json-languageservice/services/jsonDocumentSymbols',["require", "exports", "../parser/jsonParser", "../utils/strings", "../utils/colors", "vscode-languageserver-types"], factory);
     }
 })(function (require, exports) {
     /*---------------------------------------------------------------------------------------------
@@ -6028,9 +5997,7 @@ var __extends = (this && this.__extends) || (function () {
     var Parser = require("../parser/jsonParser");
     var Strings = require("../utils/strings");
     var colors_1 = require("../utils/colors");
-    var nls = require("vscode-nls");
     var vscode_languageserver_types_1 = require("vscode-languageserver-types");
-    var localize = nls.loadMessageBundle();
     var JSONDocumentSymbols = /** @class */ (function () {
         function JSONDocumentSymbols(schemaService) {
             this.schemaService = schemaService;
@@ -6052,12 +6019,10 @@ var __extends = (this && this.__extends) || (function () {
                                 var property = _a[_i];
                                 if (property.keyNode.value === 'key') {
                                     if (property.valueNode) {
-                                        if (property.valueNode) {
-                                            var location = vscode_languageserver_types_1.Location.create(document.uri, getRange(document, item));
-                                            result_1.push({ name: Parser.getNodeValue(property.valueNode), kind: vscode_languageserver_types_1.SymbolKind.Function, location: location });
-                                        }
-                                        return;
+                                        var location = vscode_languageserver_types_1.Location.create(document.uri, vscode_languageserver_types_1.Range.create(document.positionAt(item.offset), document.positionAt(item.offset + item.length)));
+                                        result_1.push({ name: Parser.getNodeValue(property.valueNode), kind: vscode_languageserver_types_1.SymbolKind.Function, location: location });
                                     }
+                                    return;
                                 }
                             }
                         }
@@ -6071,7 +6036,7 @@ var __extends = (this && this.__extends) || (function () {
                 }
                 else if (node.type === 'object') {
                     node.properties.forEach(function (property) {
-                        var location = vscode_languageserver_types_1.Location.create(document.uri, getRange(document, property));
+                        var location = vscode_languageserver_types_1.Location.create(document.uri, vscode_languageserver_types_1.Range.create(document.positionAt(property.offset), document.positionAt(property.offset + property.length)));
                         var valueNode = property.valueNode;
                         if (valueNode) {
                             var childContainerName = containerName ? containerName + '.' + property.keyNode.value : property.keyNode.value;
@@ -6083,64 +6048,6 @@ var __extends = (this && this.__extends) || (function () {
                 return result;
             };
             var result = collectOutlineEntries([], root, void 0);
-            return result;
-        };
-        JSONDocumentSymbols.prototype.findDocumentSymbols2 = function (document, doc) {
-            var _this = this;
-            var root = doc.root;
-            if (!root) {
-                return null;
-            }
-            // special handling for key bindings
-            var resourceString = document.uri;
-            if ((resourceString === 'vscode://defaultsettings/keybindings.json') || Strings.endsWith(resourceString.toLowerCase(), '/user/keybindings.json')) {
-                if (root.type === 'array') {
-                    var result_2 = [];
-                    root.items.forEach(function (item) {
-                        if (item.type === 'object') {
-                            for (var _i = 0, _a = item.properties; _i < _a.length; _i++) {
-                                var property = _a[_i];
-                                if (property.keyNode.value === 'key') {
-                                    if (property.valueNode) {
-                                        var range = getRange(document, item);
-                                        var selectionRange = getRange(document, property.keyNode);
-                                        result_2.push({ name: Parser.getNodeValue(property.valueNode), kind: vscode_languageserver_types_1.SymbolKind.Function, range: range, selectionRange: selectionRange });
-                                    }
-                                    return;
-                                }
-                            }
-                        }
-                    });
-                    return result_2;
-                }
-            }
-            var collectOutlineEntries = function (result, node) {
-                if (node.type === 'array') {
-                    node.items.forEach(function (node, index) {
-                        if (node) {
-                            var range = getRange(document, node);
-                            var selectionRange = range;
-                            var name = String(index);
-                            var children = collectOutlineEntries([], node);
-                            result.push({ name: name, kind: _this.getSymbolKind(node.type), range: range, selectionRange: selectionRange, children: children });
-                        }
-                    });
-                }
-                else if (node.type === 'object') {
-                    node.properties.forEach(function (property) {
-                        var valueNode = property.valueNode;
-                        if (valueNode) {
-                            var range = getRange(document, property);
-                            var selectionRange = getRange(document, property.keyNode);
-                            var name = property.keyNode.value;
-                            var children = collectOutlineEntries([], valueNode);
-                            result.push({ name: name, kind: _this.getSymbolKind(valueNode.type), range: range, selectionRange: selectionRange, children: children });
-                        }
-                    });
-                }
-                return result;
-            };
-            var result = collectOutlineEntries([], root);
             return result;
         };
         JSONDocumentSymbols.prototype.getSymbolKind = function (nodeType) {
@@ -6159,22 +6066,6 @@ var __extends = (this && this.__extends) || (function () {
                     return vscode_languageserver_types_1.SymbolKind.Variable;
             }
         };
-        JSONDocumentSymbols.prototype.getSymbolDetail = function (nodeType) {
-            switch (nodeType) {
-                case 'object':
-                    return localize('kind.object', 'object');
-                case 'string':
-                    return localize('kind.string', 'string');
-                case 'number':
-                    return localize('kind.number', 'number');
-                case 'array':
-                    return localize('kind.array', 'array');
-                case 'boolean':
-                    return localize('kind.boolean', 'boolean');
-                default: // 'null'
-                    return localize('kind.null', 'null');
-            }
-        };
         JSONDocumentSymbols.prototype.findDocumentColors = function (document, doc) {
             return this.schemaService.getSchemaForResource(document.uri, doc).then(function (schema) {
                 var result = [];
@@ -6188,7 +6079,7 @@ var __extends = (this && this.__extends) || (function () {
                             if (!visitedNode[nodeId]) {
                                 var color = colors_1.colorFromHex(Parser.getNodeValue(s.node));
                                 if (color) {
-                                    var range = getRange(document, s.node);
+                                    var range = vscode_languageserver_types_1.Range.create(document.positionAt(s.node.offset), document.positionAt(s.node.offset + s.node.length));
                                     result.push({ color: color, range: range });
                                 }
                                 visitedNode[nodeId] = true;
@@ -6219,9 +6110,6 @@ var __extends = (this && this.__extends) || (function () {
         return JSONDocumentSymbols;
     }());
     exports.JSONDocumentSymbols = JSONDocumentSymbols;
-    function getRange(document, node) {
-        return vscode_languageserver_types_1.Range.create(document.positionAt(node.offset), document.positionAt(node.offset + node.length));
-    }
 });
 //# sourceMappingURL=jsonDocumentSymbols.js.map;
 (function (factory) {
@@ -6865,7 +6753,7 @@ var __extends = (this && this.__extends) || (function () {
                             merge(next, parentSchema, parentSchemaURL, segments[1]); // can set next.$ref again
                         }
                     }
-                    collectEntries(next.items, next.additionalProperties, next.not, next.contains, next.propertyNames, next.if, next.then, next.else);
+                    collectEntries(next.items, next.additionalProperties, next.not, next.contains, next.propertyNames);
                     collectMapEntries(next.definitions, next.properties, next.patternProperties, next.dependencies);
                     collectArrayEntries(next.anyOf, next.allOf, next.oneOf, next.items);
                 };
@@ -7142,7 +7030,6 @@ var __extends = (this && this.__extends) || (function () {
             doResolve: jsonCompletion.doResolve.bind(jsonCompletion),
             doComplete: jsonCompletion.doComplete.bind(jsonCompletion),
             findDocumentSymbols: jsonDocumentSymbols.findDocumentSymbols.bind(jsonDocumentSymbols),
-            findDocumentSymbols2: jsonDocumentSymbols.findDocumentSymbols2.bind(jsonDocumentSymbols),
             findColorSymbols: function (d, s) { return jsonDocumentSymbols.findDocumentColors(d, s).then(function (s) { return s.map(function (s) { return s.range; }); }); },
             findDocumentColors: jsonDocumentSymbols.findDocumentColors.bind(jsonDocumentSymbols),
             getColorPresentations: jsonDocumentSymbols.getColorPresentations.bind(jsonDocumentSymbols),
@@ -7175,10 +7062,6 @@ define('vs/language/json/jsonWorker',["require", "exports", "vscode-json-languag
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
     var Promise = monaco.Promise;
-    var defaultSchemaRequestService;
-    if (typeof fetch !== 'undefined') {
-        defaultSchemaRequestService = function (url) { return fetch(url).then(function (response) { return response.text(); }); };
-    }
     var PromiseAdapter = /** @class */ (function () {
         function PromiseAdapter(executor) {
             this.wrapped = new monaco.Promise(executor);
@@ -7189,6 +7072,9 @@ define('vs/language/json/jsonWorker',["require", "exports", "vscode-json-languag
         };
         PromiseAdapter.prototype.getWrapped = function () {
             return this.wrapped;
+        };
+        PromiseAdapter.prototype.cancel = function () {
+            this.wrapped.cancel();
         };
         PromiseAdapter.resolve = function (v) {
             return monaco.Promise.as(v);
@@ -7206,10 +7092,7 @@ define('vs/language/json/jsonWorker',["require", "exports", "vscode-json-languag
             this._ctx = ctx;
             this._languageSettings = createData.languageSettings;
             this._languageId = createData.languageId;
-            this._languageService = jsonService.getLanguageService({
-                schemaRequestService: createData.enableSchemaRequest && defaultSchemaRequestService,
-                promiseConstructor: PromiseAdapter
-            });
+            this._languageService = jsonService.getLanguageService({ promiseConstructor: PromiseAdapter });
             this._languageService.configure(this._languageSettings);
         }
         JSONWorker.prototype.doValidation = function (uri) {

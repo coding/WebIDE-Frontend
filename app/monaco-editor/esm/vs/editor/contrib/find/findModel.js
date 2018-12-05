@@ -2,17 +2,20 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { RunOnceScheduler, TimeoutTimer } from '../../../base/common/async.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { ReplacePattern, parseReplaceString } from './replacePattern.js';
 import { ReplaceCommand, ReplaceCommandThatPreservesSelection } from '../../common/commands/replaceCommand.js';
 import { Position } from '../../common/core/position.js';
 import { Range } from '../../common/core/range.js';
-import { Selection } from '../../common/core/selection.js';
-import { SearchParams } from '../../common/model/textModelSearch.js';
 import { FindDecorations } from './findDecorations.js';
 import { ReplaceAllCommand } from './replaceAllCommand.js';
-import { ReplacePattern, parseReplaceString } from './replacePattern.js';
+import { Selection } from '../../common/core/selection.js';
+import { SearchParams } from '../../common/model/textModelSearch.js';
+import { CursorChangeReason } from '../../common/controller/cursorEvents.js';
 import { RawContextKey } from '../../../platform/contextkey/common/contextkey.js';
+import { EndOfLinePreference } from '../../common/model.js';
 export var CONTEXT_FIND_WIDGET_VISIBLE = new RawContextKey('findWidgetVisible', false);
 // Keep ContextKey use of 'Focussed' to not break when clauses
 export var CONTEXT_FIND_INPUT_FOCUSED = new RawContextKey('findInputFocussed', false);
@@ -65,9 +68,9 @@ var FindModelBoundToEditorModel = /** @class */ (function () {
         this._updateDecorationsScheduler = new RunOnceScheduler(function () { return _this.research(false); }, 100);
         this._toDispose.push(this._updateDecorationsScheduler);
         this._toDispose.push(this._editor.onDidChangeCursorPosition(function (e) {
-            if (e.reason === 3 /* Explicit */
-                || e.reason === 5 /* Undo */
-                || e.reason === 6 /* Redo */) {
+            if (e.reason === CursorChangeReason.Explicit
+                || e.reason === CursorChangeReason.Undo
+                || e.reason === CursorChangeReason.Redo) {
                 _this._decorations.setStartPosition(_this._editor.getPosition());
             }
         }));
@@ -125,11 +128,12 @@ var FindModelBoundToEditorModel = /** @class */ (function () {
         }
     };
     FindModelBoundToEditorModel._getSearchRange = function (model, findScope) {
+        var searchRange = model.getFullModelRange();
         // If we have set now or before a find scope, use it for computing the search range
         if (findScope) {
-            return findScope;
+            searchRange = searchRange.intersectRanges(findScope);
         }
-        return model.getFullModelRange();
+        return searchRange;
     };
     FindModelBoundToEditorModel.prototype.research = function (moveCursor, newFindScope) {
         var findScope = null;
@@ -141,13 +145,8 @@ var FindModelBoundToEditorModel = /** @class */ (function () {
         }
         if (findScope !== null) {
             if (findScope.startLineNumber !== findScope.endLineNumber) {
-                if (findScope.endColumn === 1) {
-                    findScope = new Range(findScope.startLineNumber, 1, findScope.endLineNumber - 1, this._editor.getModel().getLineMaxColumn(findScope.endLineNumber - 1));
-                }
-                else {
-                    // multiline find scope => expand to line starts / ends
-                    findScope = new Range(findScope.startLineNumber, 1, findScope.endLineNumber, this._editor.getModel().getLineMaxColumn(findScope.endLineNumber));
-                }
+                // multiline find scope => expand to line starts / ends
+                findScope = new Range(findScope.startLineNumber, 1, findScope.endLineNumber, this._editor.getModel().getLineMaxColumn(findScope.endLineNumber));
             }
         }
         var findMatches = this._findMatches(findScope, false, MATCHES_LIMIT);
@@ -233,7 +232,7 @@ var FindModelBoundToEditorModel = /** @class */ (function () {
         }
         if (!prevMatch) {
             // there is precisely one match and selection is on top of it
-            return;
+            return null;
         }
         if (!isRecursed && !searchRange.containsRange(prevMatch.range)) {
             return this._moveToPrevMatch(prevMatch.range.getStartPosition(), true);
@@ -380,7 +379,7 @@ var FindModelBoundToEditorModel = /** @class */ (function () {
             searchRegex = new RegExp(searchRegex.source, mod);
         }
         var model = this._editor.getModel();
-        var modelText = model.getValue(1 /* LF */);
+        var modelText = model.getValue(EndOfLinePreference.LF);
         var fullModelRange = model.getFullModelRange();
         var replacePattern = this._getReplacePattern();
         var resultText;

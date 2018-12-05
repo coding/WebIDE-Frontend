@@ -2,21 +2,25 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { Emitter } from './event.js';
 import { Disposable } from './lifecycle.js';
+import { Emitter } from './event.js';
+export var ScrollbarVisibility;
+(function (ScrollbarVisibility) {
+    ScrollbarVisibility[ScrollbarVisibility["Auto"] = 1] = "Auto";
+    ScrollbarVisibility[ScrollbarVisibility["Hidden"] = 2] = "Hidden";
+    ScrollbarVisibility[ScrollbarVisibility["Visible"] = 3] = "Visible";
+})(ScrollbarVisibility || (ScrollbarVisibility = {}));
 var ScrollState = /** @class */ (function () {
     function ScrollState(width, scrollWidth, scrollLeft, height, scrollHeight, scrollTop) {
         width = width | 0;
@@ -190,9 +194,6 @@ var Scrollable = /** @class */ (function (_super) {
     };
     Scrollable.prototype._performSmoothScrolling = function () {
         var _this = this;
-        if (!this._smoothScrolling) {
-            return;
-        }
         var update = this._smoothScrolling.tick();
         var newState = this._state.withScrollPosition(update);
         this._setState(newState);

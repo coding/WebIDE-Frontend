@@ -2,9 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as strings from '../../../base/common/strings.js';
-import { Position } from '../../common/core/position.js';
+'use strict';
 import { Range } from '../../common/core/range.js';
+import { Position } from '../../common/core/position.js';
+import { EndOfLinePreference } from '../../common/model.js';
+import * as strings from '../../../base/common/strings.js';
 var TextAreaState = /** @class */ (function () {
     function TextAreaState(value, selectionStart, selectionEnd, selectionStartPosition, selectionEndPosition) {
         this.value = value;
@@ -189,22 +191,22 @@ var PagedScreenReaderStrategy = /** @class */ (function () {
         var selectionEndPage = PagedScreenReaderStrategy._getPageOfLine(selection.endLineNumber);
         var selectionEndPageRange = PagedScreenReaderStrategy._getRangeForPage(selectionEndPage);
         var pretextRange = selectionStartPageRange.intersectRanges(new Range(1, 1, selection.startLineNumber, selection.startColumn));
-        var pretext = model.getValueInRange(pretextRange, 1 /* LF */);
+        var pretext = model.getValueInRange(pretextRange, EndOfLinePreference.LF);
         var lastLine = model.getLineCount();
         var lastLineMaxColumn = model.getLineMaxColumn(lastLine);
         var posttextRange = selectionEndPageRange.intersectRanges(new Range(selection.endLineNumber, selection.endColumn, lastLine, lastLineMaxColumn));
-        var posttext = model.getValueInRange(posttextRange, 1 /* LF */);
-        var text;
+        var posttext = model.getValueInRange(posttextRange, EndOfLinePreference.LF);
+        var text = null;
         if (selectionStartPage === selectionEndPage || selectionStartPage + 1 === selectionEndPage) {
             // take full selection
-            text = model.getValueInRange(selection, 1 /* LF */);
+            text = model.getValueInRange(selection, EndOfLinePreference.LF);
         }
         else {
             var selectionRange1 = selectionStartPageRange.intersectRanges(selection);
             var selectionRange2 = selectionEndPageRange.intersectRanges(selection);
-            text = (model.getValueInRange(selectionRange1, 1 /* LF */)
+            text = (model.getValueInRange(selectionRange1, EndOfLinePreference.LF)
                 + String.fromCharCode(8230)
-                + model.getValueInRange(selectionRange2, 1 /* LF */));
+                + model.getValueInRange(selectionRange2, EndOfLinePreference.LF));
         }
         // Chromium handles very poorly text even of a few thousand chars
         // Cut text to avoid stalling the entire UI

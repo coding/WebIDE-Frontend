@@ -2,23 +2,21 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { registerEditorCommand } from '../../browser/editorExtensions.js';
-import { WordPartOperations } from '../../common/controller/cursorWordOperations.js';
-import { Range } from '../../common/core/range.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { registerEditorCommand } from '../../browser/editorExtensions.js';
+import { Range } from '../../common/core/range.js';
+import { WordPartOperations } from '../../common/controller/cursorWordOperations.js';
 import { DeleteWordCommand, MoveWordCommand } from '../wordOperations/wordOperations.js';
 import { CommandsRegistry } from '../../../platform/commands/common/commands.js';
 var DeleteWordPartLeft = /** @class */ (function (_super) {
@@ -38,7 +36,7 @@ var DeleteWordPartLeft = /** @class */ (function (_super) {
         }) || this;
     }
     DeleteWordPartLeft.prototype._delete = function (wordSeparators, model, selection, whitespaceHeuristics, wordNavigationType) {
-        var r = WordPartOperations.deleteWordPartLeft(wordSeparators, model, selection, whitespaceHeuristics);
+        var r = WordPartOperations.deleteWordPartLeft(wordSeparators, model, selection, whitespaceHeuristics, wordNavigationType);
         if (r) {
             return r;
         }
@@ -52,7 +50,7 @@ var DeleteWordPartRight = /** @class */ (function (_super) {
     function DeleteWordPartRight() {
         return _super.call(this, {
             whitespaceHeuristics: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'deleteWordPartRight',
             precondition: EditorContextKeys.writable,
             kbOpts: {
@@ -64,7 +62,7 @@ var DeleteWordPartRight = /** @class */ (function (_super) {
         }) || this;
     }
     DeleteWordPartRight.prototype._delete = function (wordSeparators, model, selection, whitespaceHeuristics, wordNavigationType) {
-        var r = WordPartOperations.deleteWordPartRight(wordSeparators, model, selection, whitespaceHeuristics);
+        var r = WordPartOperations.deleteWordPartRight(wordSeparators, model, selection, whitespaceHeuristics, wordNavigationType);
         if (r) {
             return r;
         }
@@ -81,7 +79,7 @@ var WordPartLeftCommand = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     WordPartLeftCommand.prototype._move = function (wordSeparators, model, position, wordNavigationType) {
-        return WordPartOperations.moveWordPartLeft(wordSeparators, model, position);
+        return WordPartOperations.moveWordPartLeft(wordSeparators, model, position, wordNavigationType);
     };
     return WordPartLeftCommand;
 }(MoveWordCommand));
@@ -134,7 +132,7 @@ var WordPartRightCommand = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     WordPartRightCommand.prototype._move = function (wordSeparators, model, position, wordNavigationType) {
-        return WordPartOperations.moveWordPartRight(wordSeparators, model, position);
+        return WordPartOperations.moveWordPartRight(wordSeparators, model, position, wordNavigationType);
     };
     return WordPartRightCommand;
 }(MoveWordCommand));
@@ -144,7 +142,7 @@ var CursorWordPartRight = /** @class */ (function (_super) {
     function CursorWordPartRight() {
         return _super.call(this, {
             inSelectionMode: false,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordPartRight',
             precondition: null,
             kbOpts: {
@@ -163,7 +161,7 @@ var CursorWordPartRightSelect = /** @class */ (function (_super) {
     function CursorWordPartRightSelect() {
         return _super.call(this, {
             inSelectionMode: true,
-            wordNavigationType: 2 /* WordEnd */,
+            wordNavigationType: 1 /* WordEnd */,
             id: 'cursorWordPartRightSelect',
             precondition: null,
             kbOpts: {

@@ -2,50 +2,32 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+'use strict';
 import { onUnexpectedError } from '../../../base/common/errors.js';
-import { Emitter } from '../../../base/common/event.js';
-import { Disposable } from '../../../base/common/lifecycle.js';
 import * as mime from '../../../base/common/mime.js';
 import * as strings from '../../../base/common/strings.js';
-import { LanguageIdentifier } from '../modes.js';
-import { ModesRegistry } from '../modes/modesRegistry.js';
-import { NULL_LANGUAGE_IDENTIFIER, NULL_MODE_ID } from '../modes/nullMode.js';
-import { Extensions } from '../../../platform/configuration/common/configurationRegistry.js';
 import { Registry } from '../../../platform/registry/common/platform.js';
+import { ModesRegistry } from '../modes/modesRegistry.js';
+import { LanguageIdentifier } from '../modes.js';
+import { NULL_MODE_ID, NULL_LANGUAGE_IDENTIFIER } from '../modes/nullMode.js';
+import { Extensions } from '../../../platform/configuration/common/configurationRegistry.js';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
-var LanguagesRegistry = /** @class */ (function (_super) {
-    __extends(LanguagesRegistry, _super);
+var LanguagesRegistry = /** @class */ (function () {
     function LanguagesRegistry(useModesRegistry, warnOnOverwrite) {
         if (useModesRegistry === void 0) { useModesRegistry = true; }
         if (warnOnOverwrite === void 0) { warnOnOverwrite = false; }
-        var _this = _super.call(this) || this;
-        _this._onDidChange = _this._register(new Emitter());
-        _this.onDidChange = _this._onDidChange.event;
-        _this._nextLanguageId = 1;
-        _this._languages = {};
-        _this._mimeTypesMap = {};
-        _this._nameMap = {};
-        _this._lowercaseNameMap = {};
-        _this._languageIds = [];
-        _this._warnOnOverwrite = warnOnOverwrite;
+        var _this = this;
+        this._nextLanguageId = 1;
+        this._languages = {};
+        this._mimeTypesMap = {};
+        this._nameMap = {};
+        this._lowercaseNameMap = {};
+        this._languageIds = [];
+        this._warnOnOverwrite = warnOnOverwrite;
         if (useModesRegistry) {
-            _this._registerLanguages(ModesRegistry.getLanguages());
-            _this._register(ModesRegistry.onDidAddLanguages(function (m) { return _this._registerLanguages(m); }));
+            this._registerLanguages(ModesRegistry.getLanguages());
+            ModesRegistry.onDidAddLanguages(function (m) { return _this._registerLanguages(m); });
         }
-        return _this;
     }
     LanguagesRegistry.prototype._registerLanguages = function (desc) {
         var _this = this;
@@ -72,11 +54,10 @@ var LanguagesRegistry = /** @class */ (function (_super) {
             });
         });
         Registry.as(Extensions.Configuration).registerOverrideIdentifiers(ModesRegistry.getLanguages().map(function (language) { return language.id; }));
-        this._onDidChange.fire();
     };
     LanguagesRegistry.prototype._registerLanguage = function (lang) {
         var langId = lang.id;
-        var resolvedLanguage;
+        var resolvedLanguage = null;
         if (hasOwnProperty.call(this._languages, langId)) {
             resolvedLanguage = this._languages[langId];
         }
@@ -157,11 +138,10 @@ var LanguagesRegistry = /** @class */ (function (_super) {
         }
         if (langAliases !== null) {
             for (var i = 0; i < langAliases.length; i++) {
-                var langAlias = langAliases[i];
-                if (!langAlias || langAlias.length === 0) {
+                if (!langAliases[i] || langAliases[i].length === 0) {
                     continue;
                 }
-                resolvedLanguage.aliases.push(langAlias);
+                resolvedLanguage.aliases.push(langAliases[i]);
             }
         }
         var containsAliases = (langAliases !== null && langAliases.length > 0);
@@ -229,13 +209,13 @@ var LanguagesRegistry = /** @class */ (function (_super) {
         }
         return this._languages[modeId].identifier;
     };
-    LanguagesRegistry.prototype.getModeIdsFromFilepathOrFirstLine = function (filepath, firstLine) {
-        if (!filepath && !firstLine) {
+    LanguagesRegistry.prototype.getModeIdsFromFilenameOrFirstLine = function (filename, firstLine) {
+        if (!filename && !firstLine) {
             return [];
         }
-        var mimeTypes = mime.guessMimeTypes(filepath, firstLine);
+        var mimeTypes = mime.guessMimeTypes(filename, firstLine);
         return this.extractModeIds(mimeTypes.join(','));
     };
     return LanguagesRegistry;
-}(Disposable));
+}());
 export { LanguagesRegistry };

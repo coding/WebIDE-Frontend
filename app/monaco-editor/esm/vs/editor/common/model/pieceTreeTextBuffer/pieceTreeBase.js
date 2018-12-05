@@ -2,11 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { Position } from '../../core/position.js';
 import { Range } from '../../core/range.js';
+import { leftest, righttest, updateTreeMetadata, rbDelete, fixInsert, SENTINEL, TreeNode } from './rbTreeBase.js';
+import { isValidMatch, Searcher, createFindMatch } from '../textModelSearch.js';
 import { FindMatch } from '../../model.js';
-import { SENTINEL, TreeNode, fixInsert, leftest, rbDelete, righttest, updateTreeMetadata } from './rbTreeBase.js';
-import { Searcher, createFindMatch, isValidMatch } from '../textModelSearch.js';
 // const lfRegex = new RegExp(/\r\n|\r|\n/g);
 export var AverageBufferSize = 65535;
 export function createUintArray(arr) {
@@ -145,21 +146,19 @@ var PieceTreeSearchCache = /** @class */ (function () {
     };
     PieceTreeSearchCache.prototype.valdiate = function (offset) {
         var hasInvalidVal = false;
-        var tmp = this._cache;
-        for (var i = 0; i < tmp.length; i++) {
-            var nodePos = tmp[i];
+        for (var i = 0; i < this._cache.length; i++) {
+            var nodePos = this._cache[i];
             if (nodePos.node.parent === null || nodePos.nodeStartOffset >= offset) {
-                tmp[i] = null;
+                this._cache[i] = null;
                 hasInvalidVal = true;
                 continue;
             }
         }
         if (hasInvalidVal) {
             var newArr = [];
-            for (var i = 0; i < tmp.length; i++) {
-                var entry = tmp[i];
-                if (entry !== null) {
-                    newArr.push(entry);
+            for (var i = 0; i < this._cache.length; i++) {
+                if (this._cache[i] !== null) {
+                    newArr.push(this._cache[i]);
                 }
             }
             this._cache = newArr;
@@ -194,7 +193,7 @@ var PieceTreeBase = /** @class */ (function () {
             }
         }
         this._searchCache = new PieceTreeSearchCache(1);
-        this._lastVisitedLine = { lineNumber: 0, value: '' };
+        this._lastVisitedLine = { lineNumber: 0, value: null };
         this.computeBufferMetadata();
     };
     PieceTreeBase.prototype.normalizeEOL = function (eol) {
@@ -516,7 +515,7 @@ var PieceTreeBase = /** @class */ (function () {
         if (eolNormalized === void 0) { eolNormalized = false; }
         this._EOLNormalized = this._EOLNormalized && eolNormalized;
         this._lastVisitedLine.lineNumber = 0;
-        this._lastVisitedLine.value = '';
+        this._lastVisitedLine.value = null;
         if (this.root !== SENTINEL) {
             var _a = this.nodeAt(offset), node = _a.node, remainder = _a.remainder, nodeStartOffset = _a.nodeStartOffset;
             var piece = node.piece;
@@ -593,7 +592,7 @@ var PieceTreeBase = /** @class */ (function () {
     };
     PieceTreeBase.prototype.delete = function (offset, cnt) {
         this._lastVisitedLine.lineNumber = 0;
-        this._lastVisitedLine.value = '';
+        this._lastVisitedLine.value = null;
         if (cnt <= 0 || this.root === SENTINEL) {
             return;
         }
@@ -698,9 +697,9 @@ var PieceTreeBase = /** @class */ (function () {
         // binary search offset between startOffset and endOffset
         var low = piece.start.line;
         var high = piece.end.line;
-        var mid = 0;
-        var midStop = 0;
-        var midStart = 0;
+        var mid;
+        var midStop;
+        var midStart;
         while (low <= high) {
             mid = low + ((high - low) / 2) | 0;
             midStart = lineStarts[mid];
@@ -820,7 +819,7 @@ var PieceTreeBase = /** @class */ (function () {
         var endIndex = this._buffers[0].lineStarts.length - 1;
         var endColumn = endOffset - this._buffers[0].lineStarts[endIndex];
         var endPos = { line: endIndex, column: endColumn };
-        var newPiece = new Piece(0, /** todo@peng */ start, endPos, this.getLineFeedCnt(0, start, endPos), endOffset - startOffset);
+        var newPiece = new Piece(0, /** todo */ start, endPos, this.getLineFeedCnt(0, start, endPos), endOffset - startOffset);
         this._lastChangeBufferPos = endPos;
         return [newPiece];
     };
@@ -1308,7 +1307,8 @@ var PieceTreeBase = /** @class */ (function () {
         z.parent = SENTINEL;
         z.size_left = 0;
         z.lf_left = 0;
-        if (this.root === SENTINEL) {
+        var x = this.root;
+        if (x === SENTINEL) {
             this.root = z;
             z.color = 0 /* Black */;
         }

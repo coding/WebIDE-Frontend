@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,21 +14,22 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import * as nls from '../../../nls.js';
-import { RunOnceScheduler } from '../../../base/common/async.js';
-import { KeyChord } from '../../../base/common/keyCodes.js';
 import { Disposable, dispose } from '../../../base/common/lifecycle.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
-import { CursorMoveCommands } from '../../common/controller/cursorMoveCommands.js';
+import { KeyChord } from '../../../base/common/keyCodes.js';
+import { RunOnceScheduler } from '../../../base/common/async.js';
+import { TrackedRangeStickiness, OverviewRulerLane } from '../../common/model.js';
+import { EditorContextKeys } from '../../common/editorContextKeys.js';
+import { registerEditorAction, registerEditorContribution, EditorAction } from '../../browser/editorExtensions.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
-import { EditorContextKeys } from '../../common/editorContextKeys.js';
-import { OverviewRulerLane } from '../../common/model.js';
-import { ModelDecorationOptions } from '../../common/model/textModel.js';
+import { CursorChangeReason } from '../../common/controller/cursorEvents.js';
+import { CursorMoveCommands } from '../../common/controller/cursorMoveCommands.js';
 import { DocumentHighlightProviderRegistry } from '../../common/modes.js';
 import { CommonFindController } from '../find/findController.js';
-import { MenuId } from '../../../platform/actions/common/actions.js';
+import { ModelDecorationOptions } from '../../common/model/textModel.js';
 import { overviewRulerSelectionHighlightForeground } from '../../../platform/theme/common/colorRegistry.js';
 import { themeColorFromId } from '../../../platform/theme/common/themeService.js';
+import { MenuId } from '../../../platform/actions/common/actions.js';
 var InsertCursorAbove = /** @class */ (function (_super) {
     __extends(InsertCursorAbove, _super);
     function InsertCursorAbove() {
@@ -64,7 +63,7 @@ var InsertCursorAbove = /** @class */ (function (_super) {
             return;
         }
         context.model.pushStackElement();
-        cursors.setStates(args.source, 3 /* Explicit */, CursorMoveCommands.addCursorUp(context, cursors.getAll(), useLogicalLine));
+        cursors.setStates(args.source, CursorChangeReason.Explicit, CursorMoveCommands.addCursorUp(context, cursors.getAll(), useLogicalLine));
         cursors.reveal(true, 1 /* TopMost */, 0 /* Smooth */);
     };
     return InsertCursorAbove;
@@ -103,7 +102,7 @@ var InsertCursorBelow = /** @class */ (function (_super) {
             return;
         }
         context.model.pushStackElement();
-        cursors.setStates(args.source, 3 /* Explicit */, CursorMoveCommands.addCursorDown(context, cursors.getAll(), useLogicalLine));
+        cursors.setStates(args.source, CursorChangeReason.Explicit, CursorMoveCommands.addCursorDown(context, cursors.getAll(), useLogicalLine));
         cursors.reveal(true, 2 /* BottomMost */, 0 /* Smooth */);
     };
     return InsertCursorBelow;
@@ -616,7 +615,8 @@ var CompatChangeAll = /** @class */ (function (_super) {
 }(MultiCursorSelectionControllerAction));
 export { CompatChangeAll };
 var SelectionHighlighterState = /** @class */ (function () {
-    function SelectionHighlighterState(searchText, matchCase, wordSeparators) {
+    function SelectionHighlighterState(lastWordUnderCursor, searchText, matchCase, wordSeparators) {
+        this.lastWordUnderCursor = lastWordUnderCursor;
         this.searchText = searchText;
         this.matchCase = matchCase;
         this.wordSeparators = wordSeparators;
@@ -656,8 +656,8 @@ var SelectionHighlighter = /** @class */ (function (_super) {
                 return;
             }
             if (e.selection.isEmpty()) {
-                if (e.reason === 3 /* Explicit */) {
-                    if (_this.state) {
+                if (e.reason === CursorChangeReason.Explicit) {
+                    if (_this.state && (!_this.state.lastWordUnderCursor || !_this.state.lastWordUnderCursor.containsPosition(e.selection.getStartPosition()))) {
                         // no longer valid
                         _this._setState(null);
                     }
@@ -722,10 +722,19 @@ var SelectionHighlighter = /** @class */ (function (_super) {
         if (!r) {
             return null;
         }
+        var lastWordUnderCursor = null;
+        var hasFindOccurrences = DocumentHighlightProviderRegistry.has(model);
         if (r.currentMatch) {
             // This is an empty selection
-            // Do not interfere with semantic word highlighting in the no selection case
-            return null;
+            if (hasFindOccurrences) {
+                // Do not interfere with semantic word highlighting in the no selection case
+                return null;
+            }
+            var config = editor.getConfiguration();
+            if (!config.contribInfo.occurrencesHighlight) {
+                return null;
+            }
+            lastWordUnderCursor = r.currentMatch;
         }
         if (/^[ \t]+$/.test(r.searchText)) {
             // whitespace only selection
@@ -752,7 +761,7 @@ var SelectionHighlighter = /** @class */ (function (_super) {
                 return null;
             }
         }
-        return new SelectionHighlighterState(r.searchText, r.matchCase, r.wholeWord ? editor.getConfiguration().wordSeparators : null);
+        return new SelectionHighlighterState(lastWordUnderCursor, r.searchText, r.matchCase, r.wholeWord ? editor.getConfiguration().wordSeparators : null);
     };
     SelectionHighlighter.prototype._setState = function (state) {
         if (SelectionHighlighterState.softEquals(this.state, state)) {
@@ -818,15 +827,16 @@ var SelectionHighlighter = /** @class */ (function (_super) {
     };
     SelectionHighlighter.ID = 'editor.contrib.selectionHighlighter';
     SelectionHighlighter._SELECTION_HIGHLIGHT_OVERVIEW = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         className: 'selectionHighlight',
         overviewRuler: {
             color: themeColorFromId(overviewRulerSelectionHighlightForeground),
+            darkColor: themeColorFromId(overviewRulerSelectionHighlightForeground),
             position: OverviewRulerLane.Center
         }
     });
     SelectionHighlighter._SELECTION_HIGHLIGHT = ModelDecorationOptions.register({
-        stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+        stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
         className: 'selectionHighlight',
     });
     return SelectionHighlighter;

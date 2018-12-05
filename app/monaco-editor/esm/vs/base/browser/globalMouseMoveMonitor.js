@@ -2,23 +2,21 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { Disposable, dispose } from '../common/lifecycle.js';
 import * as dom from './dom.js';
 import { IframeUtils } from './iframe.js';
 import { StandardMouseEvent } from './mouseEvent.js';
-import { Disposable, dispose } from '../common/lifecycle.js';
 export function standardMouseMoveMerger(lastEvent, currentEvent) {
     var ev = new StandardMouseEvent(currentEvent);
     ev.preventDefault();
@@ -53,7 +51,7 @@ var GlobalMouseMoveMonitor = /** @class */ (function (_super) {
         this.mouseMoveCallback = null;
         var onStopCallback = this.onStopCallback;
         this.onStopCallback = null;
-        if (invokeStopCallback && onStopCallback) {
+        if (invokeStopCallback) {
             onStopCallback();
         }
     };

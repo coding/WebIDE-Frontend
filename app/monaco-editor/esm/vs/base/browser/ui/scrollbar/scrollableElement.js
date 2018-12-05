@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,17 +14,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import './media/scrollbars.css';
-import * as dom from '../../dom.js';
-import { createFastDomNode } from '../../fastDomNode.js';
+import * as DomUtils from '../../dom.js';
+import * as Platform from '../../../common/platform.js';
 import { StandardMouseWheelEvent } from '../../mouseEvent.js';
 import { HorizontalScrollbar } from './horizontalScrollbar.js';
 import { VerticalScrollbar } from './verticalScrollbar.js';
+import { dispose } from '../../../common/lifecycle.js';
+import { Scrollable, ScrollbarVisibility } from '../../../common/scrollable.js';
 import { Widget } from '../widget.js';
 import { TimeoutTimer } from '../../../common/async.js';
+import { createFastDomNode } from '../../fastDomNode.js';
 import { Emitter } from '../../../common/event.js';
-import { dispose } from '../../../common/lifecycle.js';
-import * as platform from '../../../common/platform.js';
-import { Scrollable } from '../../../common/scrollable.js';
 var HIDE_TIMEOUT = 500;
 var SCROLL_WHEEL_SENSITIVITY = 50;
 var SCROLL_WHEEL_SMOOTH_SCROLL_ENABLED = true;
@@ -204,7 +202,7 @@ var AbstractScrollableElement = /** @class */ (function (_super) {
     AbstractScrollableElement.prototype.updateClassName = function (newClassName) {
         this._options.className = newClassName;
         // Defaults are different on Macs
-        if (platform.isMacintosh) {
+        if (Platform.isMacintosh) {
             this._options.className += ' mac';
         }
         this._domNode.className = 'monaco-scrollable-element ' + this._options.className;
@@ -239,8 +237,8 @@ var AbstractScrollableElement = /** @class */ (function (_super) {
                 var e = new StandardMouseWheelEvent(browserEvent);
                 _this._onMouseWheel(e);
             };
-            this._mouseWheelToDispose.push(dom.addDisposableListener(this._listenOnDomNode, 'mousewheel', onMouseWheel));
-            this._mouseWheelToDispose.push(dom.addDisposableListener(this._listenOnDomNode, 'DOMMouseScroll', onMouseWheel));
+            this._mouseWheelToDispose.push(DomUtils.addDisposableListener(this._listenOnDomNode, 'mousewheel', onMouseWheel));
+            this._mouseWheelToDispose.push(DomUtils.addDisposableListener(this._listenOnDomNode, 'DOMMouseScroll', onMouseWheel));
         }
     };
     AbstractScrollableElement.prototype._onMouseWheel = function (e) {
@@ -258,7 +256,7 @@ var AbstractScrollableElement = /** @class */ (function (_super) {
             }
             // Convert vertical scrolling to horizontal if shift is held, this
             // is handled at a higher level on Mac
-            var shiftConvert = !platform.isMacintosh && e.browserEvent && e.browserEvent.shiftKey;
+            var shiftConvert = !Platform.isMacintosh && e.browserEvent && e.browserEvent.shiftKey;
             if ((this._options.scrollYToX || shiftConvert) && !deltaX) {
                 deltaX = deltaY;
                 deltaY = 0;
@@ -375,7 +373,7 @@ var ScrollableElement = /** @class */ (function (_super) {
         var _this = this;
         options = options || {};
         options.mouseWheelSmoothScroll = false;
-        var scrollable = new Scrollable(0, function (callback) { return dom.scheduleAtNextAnimationFrame(callback); });
+        var scrollable = new Scrollable(0, function (callback) { return DomUtils.scheduleAtNextAnimationFrame(callback); });
         _this = _super.call(this, element, options, scrollable) || this;
         _this._register(scrollable);
         return _this;
@@ -442,11 +440,11 @@ function resolveOptions(opts) {
         mouseWheelSmoothScroll: (typeof opts.mouseWheelSmoothScroll !== 'undefined' ? opts.mouseWheelSmoothScroll : true),
         arrowSize: (typeof opts.arrowSize !== 'undefined' ? opts.arrowSize : 11),
         listenOnDomNode: (typeof opts.listenOnDomNode !== 'undefined' ? opts.listenOnDomNode : null),
-        horizontal: (typeof opts.horizontal !== 'undefined' ? opts.horizontal : 1 /* Auto */),
+        horizontal: (typeof opts.horizontal !== 'undefined' ? opts.horizontal : ScrollbarVisibility.Auto),
         horizontalScrollbarSize: (typeof opts.horizontalScrollbarSize !== 'undefined' ? opts.horizontalScrollbarSize : 10),
         horizontalSliderSize: (typeof opts.horizontalSliderSize !== 'undefined' ? opts.horizontalSliderSize : 0),
         horizontalHasArrows: (typeof opts.horizontalHasArrows !== 'undefined' ? opts.horizontalHasArrows : false),
-        vertical: (typeof opts.vertical !== 'undefined' ? opts.vertical : 1 /* Auto */),
+        vertical: (typeof opts.vertical !== 'undefined' ? opts.vertical : ScrollbarVisibility.Auto),
         verticalScrollbarSize: (typeof opts.verticalScrollbarSize !== 'undefined' ? opts.verticalScrollbarSize : 10),
         verticalHasArrows: (typeof opts.verticalHasArrows !== 'undefined' ? opts.verticalHasArrows : false),
         verticalSliderSize: (typeof opts.verticalSliderSize !== 'undefined' ? opts.verticalSliderSize : 0)
@@ -454,7 +452,7 @@ function resolveOptions(opts) {
     result.horizontalSliderSize = (typeof opts.horizontalSliderSize !== 'undefined' ? opts.horizontalSliderSize : result.horizontalScrollbarSize);
     result.verticalSliderSize = (typeof opts.verticalSliderSize !== 'undefined' ? opts.verticalSliderSize : result.verticalScrollbarSize);
     // Defaults are different on Macs
-    if (platform.isMacintosh) {
+    if (Platform.isMacintosh) {
         result.className += ' mac';
     }
     return result;

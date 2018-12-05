@@ -2,30 +2,29 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { StandardMouseWheelEvent } from '../../mouseEvent.js';
 import { AbstractScrollbar } from './abstractScrollbar.js';
-import { ARROW_IMG_SIZE } from './scrollbarArrow.js';
+import { StandardMouseWheelEvent } from '../../mouseEvent.js';
+import { ScrollbarVisibility } from '../../../common/scrollable.js';
 import { ScrollbarState } from './scrollbarState.js';
+import { ARROW_IMG_SIZE } from './scrollbarArrow.js';
 var HorizontalScrollbar = /** @class */ (function (_super) {
     __extends(HorizontalScrollbar, _super);
     function HorizontalScrollbar(scrollable, options, host) {
         var _this = _super.call(this, {
             lazyRender: options.lazyRender,
             host: host,
-            scrollbarState: new ScrollbarState((options.horizontalHasArrows ? options.arrowSize : 0), (options.horizontal === 2 /* Hidden */ ? 0 : options.horizontalScrollbarSize), (options.vertical === 2 /* Hidden */ ? 0 : options.verticalScrollbarSize)),
+            scrollbarState: new ScrollbarState((options.horizontalHasArrows ? options.arrowSize : 0), (options.horizontal === ScrollbarVisibility.Hidden ? 0 : options.horizontalScrollbarSize), (options.vertical === ScrollbarVisibility.Hidden ? 0 : options.verticalScrollbarSize)),
             visibility: options.horizontal,
             extraScrollbarClassName: 'horizontal',
             scrollable: scrollable
@@ -54,7 +53,7 @@ var HorizontalScrollbar = /** @class */ (function (_super) {
                 onActivate: function () { return _this._host.onMouseWheel(new StandardMouseWheelEvent(null, -1, 0)); },
             });
         }
-        _this._createSlider(Math.floor((options.horizontalScrollbarSize - options.horizontalSliderSize) / 2), 0, undefined, options.horizontalSliderSize);
+        _this._createSlider(Math.floor((options.horizontalScrollbarSize - options.horizontalSliderSize) / 2), 0, null, options.horizontalSliderSize);
         return _this;
     }
     HorizontalScrollbar.prototype._updateSlider = function (sliderSize, sliderPosition) {

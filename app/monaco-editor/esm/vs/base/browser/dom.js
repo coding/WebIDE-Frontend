@@ -2,36 +2,29 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as browser from './browser.js';
-import { domEvent } from './event.js';
-import { StandardKeyboardEvent } from './keyboardEvent.js';
-import { StandardMouseEvent } from './mouseEvent.js';
+import * as platform from '../common/platform.js';
 import { TimeoutTimer } from '../common/async.js';
 import { onUnexpectedError } from '../common/errors.js';
-import { Emitter } from '../common/event.js';
 import { Disposable, dispose } from '../common/lifecycle.js';
-import * as platform from '../common/platform.js';
+import * as browser from './browser.js';
+import { StandardKeyboardEvent } from './keyboardEvent.js';
+import { StandardMouseEvent } from './mouseEvent.js';
+import { Emitter } from '../common/event.js';
+import { domEvent } from './event.js';
 export function clearNode(node) {
     while (node.firstChild) {
         node.removeChild(node.firstChild);
-    }
-}
-export function removeNode(node) {
-    if (node.parentNode) {
-        node.parentNode.removeChild(node);
     }
 }
 export function isInDOM(node) {
@@ -146,7 +139,7 @@ var _nativeClassList = new /** @class */ (function () {
     function class_2() {
     }
     class_2.prototype.hasClass = function (node, className) {
-        return Boolean(className) && node.classList && node.classList.contains(className);
+        return className && node.classList && node.classList.contains(className);
     };
     class_2.prototype.addClasses = function (node) {
         var _this = this;
@@ -186,9 +179,7 @@ var _nativeClassList = new /** @class */ (function () {
 var _classList = browser.isIE ? _manualClassList : _nativeClassList;
 export var hasClass = _classList.hasClass.bind(_classList);
 export var addClass = _classList.addClass.bind(_classList);
-export var addClasses = _classList.addClasses.bind(_classList);
 export var removeClass = _classList.removeClass.bind(_classList);
-export var removeClasses = _classList.removeClasses.bind(_classList);
 export var toggleClass = _classList.toggleClass.bind(_classList);
 var DomListener = /** @class */ (function () {
     function DomListener(node, type, handler, useCapture) {
@@ -277,7 +268,6 @@ export var runAtThisOrScheduleAtNextAnimationFrame;
 export var scheduleAtNextAnimationFrame;
 var AnimationFrameQueueItem = /** @class */ (function () {
     function AnimationFrameQueueItem(runner, priority) {
-        if (priority === void 0) { priority = 0; }
         this._runner = runner;
         this.priority = priority;
         this._canceled = false;
@@ -421,8 +411,8 @@ export function getClientArea(element) {
     if (window.innerWidth && window.innerHeight) {
         return new Dimension(window.innerWidth, window.innerHeight);
     }
-    // Try with document.body.clientWidth / document.body.clientHeight
-    if (document.body && document.body.clientWidth && document.body.clientHeight) {
+    // Try with document.body.clientWidth / document.body.clientHeigh
+    if (document.body && document.body.clientWidth && document.body.clientWidth) {
         return new Dimension(document.body.clientWidth, document.body.clientHeight);
     }
     // Try with document.documentElement.clientWidth / document.documentElement.clientHeight
@@ -660,6 +650,7 @@ export function isHTMLElement(o) {
 export var EventType = {
     // Mouse
     CLICK: 'click',
+    AUXCLICK: 'auxclick',
     DBLCLICK: 'dblclick',
     MOUSE_UP: 'mouseup',
     MOUSE_DOWN: 'mousedown',
@@ -750,7 +741,7 @@ var FocusTracker = /** @class */ (function () {
         this._onDidBlur = new Emitter();
         this.onDidBlur = this._onDidBlur.event;
         this.disposables = [];
-        var hasFocus = isAncestor(document.activeElement, element);
+        var hasFocus = false;
         var loosingFocus = false;
         var onFocus = function () {
             loosingFocus = false;
@@ -792,7 +783,12 @@ export function append(parent) {
     children.forEach(function (child) { return parent.appendChild(child); });
     return children[children.length - 1];
 }
+export function prepend(parent, child) {
+    parent.insertBefore(child, parent.firstChild);
+    return child;
+}
 var SELECTOR_REGEX = /([\w\-]+)?(#([\w\-]+))?((.([\w\-]+))*)/;
+// Similar to builder, but much more lightweight
 export function $(description, attrs) {
     var children = [];
     for (var _i = 2; _i < arguments.length; _i++) {
@@ -809,19 +805,18 @@ export function $(description, attrs) {
     if (match[4]) {
         result.className = match[4].replace(/\./g, ' ').trim();
     }
-    attrs = attrs || {};
-    Object.keys(attrs).forEach(function (name) {
-        var value = attrs[name];
+    Object.keys(attrs || {}).forEach(function (name) {
         if (/^on\w+$/.test(name)) {
-            result[name] = value;
+            result[name] = attrs[name];
         }
         else if (name === 'selected') {
+            var value = attrs[name];
             if (value) {
                 result.setAttribute(name, 'true');
             }
         }
         else {
-            result.setAttribute(name, value);
+            result.setAttribute(name, attrs[name]);
         }
     });
     children

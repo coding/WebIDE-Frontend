@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { RawContextKey } from '../../platform/contextkey/common/contextkey.js';
 export var EditorContextKeys;
 (function (EditorContextKeys) {
@@ -25,23 +26,23 @@ export var EditorContextKeys;
     EditorContextKeys.hasSingleSelection = EditorContextKeys.hasMultipleSelections.toNegated();
     EditorContextKeys.tabMovesFocus = new RawContextKey('editorTabMovesFocus', false);
     EditorContextKeys.tabDoesNotMoveFocus = EditorContextKeys.tabMovesFocus.toNegated();
-    EditorContextKeys.isInEmbeddedEditor = new RawContextKey('isInEmbeddedEditor', false);
+    EditorContextKeys.isInEmbeddedEditor = new RawContextKey('isInEmbeddedEditor', undefined);
     EditorContextKeys.canUndo = new RawContextKey('canUndo', false);
     EditorContextKeys.canRedo = new RawContextKey('canRedo', false);
     // -- mode context keys
-    EditorContextKeys.languageId = new RawContextKey('editorLangId', '');
-    EditorContextKeys.hasCompletionItemProvider = new RawContextKey('editorHasCompletionItemProvider', false);
-    EditorContextKeys.hasCodeActionsProvider = new RawContextKey('editorHasCodeActionsProvider', false);
-    EditorContextKeys.hasCodeLensProvider = new RawContextKey('editorHasCodeLensProvider', false);
-    EditorContextKeys.hasDefinitionProvider = new RawContextKey('editorHasDefinitionProvider', false);
-    EditorContextKeys.hasImplementationProvider = new RawContextKey('editorHasImplementationProvider', false);
-    EditorContextKeys.hasTypeDefinitionProvider = new RawContextKey('editorHasTypeDefinitionProvider', false);
-    EditorContextKeys.hasHoverProvider = new RawContextKey('editorHasHoverProvider', false);
-    EditorContextKeys.hasDocumentHighlightProvider = new RawContextKey('editorHasDocumentHighlightProvider', false);
-    EditorContextKeys.hasDocumentSymbolProvider = new RawContextKey('editorHasDocumentSymbolProvider', false);
-    EditorContextKeys.hasReferenceProvider = new RawContextKey('editorHasReferenceProvider', false);
-    EditorContextKeys.hasRenameProvider = new RawContextKey('editorHasRenameProvider', false);
-    EditorContextKeys.hasDocumentFormattingProvider = new RawContextKey('editorHasDocumentFormattingProvider', false);
-    EditorContextKeys.hasDocumentSelectionFormattingProvider = new RawContextKey('editorHasDocumentSelectionFormattingProvider', false);
-    EditorContextKeys.hasSignatureHelpProvider = new RawContextKey('editorHasSignatureHelpProvider', false);
+    EditorContextKeys.languageId = new RawContextKey('editorLangId', undefined);
+    EditorContextKeys.hasCompletionItemProvider = new RawContextKey('editorHasCompletionItemProvider', undefined);
+    EditorContextKeys.hasCodeActionsProvider = new RawContextKey('editorHasCodeActionsProvider', undefined);
+    EditorContextKeys.hasCodeLensProvider = new RawContextKey('editorHasCodeLensProvider', undefined);
+    EditorContextKeys.hasDefinitionProvider = new RawContextKey('editorHasDefinitionProvider', undefined);
+    EditorContextKeys.hasImplementationProvider = new RawContextKey('editorHasImplementationProvider', undefined);
+    EditorContextKeys.hasTypeDefinitionProvider = new RawContextKey('editorHasTypeDefinitionProvider', undefined);
+    EditorContextKeys.hasHoverProvider = new RawContextKey('editorHasHoverProvider', undefined);
+    EditorContextKeys.hasDocumentHighlightProvider = new RawContextKey('editorHasDocumentHighlightProvider', undefined);
+    EditorContextKeys.hasDocumentSymbolProvider = new RawContextKey('editorHasDocumentSymbolProvider', undefined);
+    EditorContextKeys.hasReferenceProvider = new RawContextKey('editorHasReferenceProvider', undefined);
+    EditorContextKeys.hasRenameProvider = new RawContextKey('editorHasRenameProvider', undefined);
+    EditorContextKeys.hasDocumentFormattingProvider = new RawContextKey('editorHasDocumentFormattingProvider', undefined);
+    EditorContextKeys.hasDocumentSelectionFormattingProvider = new RawContextKey('editorHasDocumentSelectionFormattingProvider', undefined);
+    EditorContextKeys.hasSignatureHelpProvider = new RawContextKey('editorHasSignatureHelpProvider', undefined);
 })(EditorContextKeys || (EditorContextKeys = {}));

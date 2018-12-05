@@ -2,16 +2,17 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import './codelensWidget.css';
-import * as dom from '../../../base/browser/dom.js';
-import { coalesce, isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { dispose } from '../../../base/common/lifecycle.js';
-import { escape, format } from '../../../base/common/strings.js';
+import { format, escape } from '../../../base/common/strings.js';
+import * as dom from '../../../base/browser/dom.js';
 import { Range } from '../../common/core/range.js';
+import * as editorBrowser from '../../browser/editorBrowser.js';
 import { ModelDecorationOptions } from '../../common/model/textModel.js';
 import { editorCodeLensForeground } from '../../common/view/editorColorRegistry.js';
-import { editorActiveLinkForeground } from '../../../platform/theme/common/colorRegistry.js';
 import { registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
+import { editorActiveLinkForeground } from '../../../platform/theme/common/colorRegistry.js';
 var CodeLensViewZone = /** @class */ (function () {
     function CodeLensViewZone(afterLineNumber, onHeight) {
         this.afterLineNumber = afterLineNumber;
@@ -54,7 +55,7 @@ var CodeLensContentWidget = /** @class */ (function () {
                 var command = _this._commands[element.id];
                 if (command) {
                     editor.focus();
-                    commandService.executeCommand.apply(commandService, [command.id].concat(command.arguments)).then(undefined, function (err) {
+                    commandService.executeCommand.apply(commandService, [command.id].concat(command.arguments)).done(undefined, function (err) {
                         notificationService.error(err);
                     });
                 }
@@ -80,8 +81,7 @@ var CodeLensContentWidget = /** @class */ (function () {
     };
     CodeLensContentWidget.prototype.withCommands = function (symbols) {
         this._commands = Object.create(null);
-        symbols = coalesce(symbols);
-        if (isFalsyOrEmpty(symbols)) {
+        if (!symbols || !symbols.length) {
             this._domNode.innerHTML = 'no commands';
             return;
         }
@@ -113,7 +113,7 @@ var CodeLensContentWidget = /** @class */ (function () {
         var column = this._editor.getModel().getLineFirstNonWhitespaceColumn(lineNumber);
         this._widgetPosition = {
             position: { lineNumber: lineNumber, column: column },
-            preference: [1 /* ABOVE */]
+            preference: [editorBrowser.ContentWidgetPositionPreference.ABOVE]
         };
     };
     CodeLensContentWidget.prototype.getPosition = function () {

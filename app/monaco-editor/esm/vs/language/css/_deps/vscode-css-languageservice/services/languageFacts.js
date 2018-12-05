@@ -5,7 +5,7 @@
 'use strict';
 import * as nodes from '../parser/cssNodes.js';
 import * as browsers from '../data/browsers.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 export var colors = {
     aliceblue: '#f0f8ff',

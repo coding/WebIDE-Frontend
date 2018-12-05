@@ -2,40 +2,38 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+import { onUnexpectedError } from '../../../base/common/errors.js';
 import * as dom from '../../../base/browser/dom.js';
 import { createFastDomNode } from '../../../base/browser/fastDomNode.js';
-import { onUnexpectedError } from '../../../base/common/errors.js';
-import { PointerHandler } from '../controller/pointerHandler.js';
+import { Range } from '../../common/core/range.js';
+import { ViewEventHandler } from '../../common/viewModel/viewEventHandler.js';
 import { TextAreaHandler } from '../controller/textAreaHandler.js';
+import { PointerHandler } from '../controller/pointerHandler.js';
 import { ViewController } from './viewController.js';
+import { ViewEventDispatcher } from '../../common/view/viewEventDispatcher.js';
 import { ContentViewOverlays, MarginViewOverlays } from './viewOverlays.js';
-import { PartFingerprints } from './viewPart.js';
 import { ViewContentWidgets } from '../viewParts/contentWidgets/contentWidgets.js';
 import { CurrentLineHighlightOverlay } from '../viewParts/currentLineHighlight/currentLineHighlight.js';
 import { CurrentLineMarginHighlightOverlay } from '../viewParts/currentLineMarginHighlight/currentLineMarginHighlight.js';
 import { DecorationsOverlay } from '../viewParts/decorations/decorations.js';
-import { EditorScrollbar } from '../viewParts/editorScrollbar/editorScrollbar.js';
 import { GlyphMarginOverlay } from '../viewParts/glyphMargin/glyphMargin.js';
-import { IndentGuidesOverlay } from '../viewParts/indentGuides/indentGuides.js';
 import { LineNumbersOverlay } from '../viewParts/lineNumbers/lineNumbers.js';
+import { IndentGuidesOverlay } from '../viewParts/indentGuides/indentGuides.js';
 import { ViewLines } from '../viewParts/lines/viewLines.js';
-import { LinesDecorationsOverlay } from '../viewParts/linesDecorations/linesDecorations.js';
 import { Margin } from '../viewParts/margin/margin.js';
+import { LinesDecorationsOverlay } from '../viewParts/linesDecorations/linesDecorations.js';
 import { MarginViewLineDecorationsOverlay } from '../viewParts/marginDecorations/marginDecorations.js';
-import { Minimap } from '../viewParts/minimap/minimap.js';
 import { ViewOverlayWidgets } from '../viewParts/overlayWidgets/overlayWidgets.js';
 import { DecorationsOverviewRuler } from '../viewParts/overviewRuler/decorationsOverviewRuler.js';
 import { OverviewRuler } from '../viewParts/overviewRuler/overviewRuler.js';
@@ -44,23 +42,23 @@ import { ScrollDecorationViewPart } from '../viewParts/scrollDecoration/scrollDe
 import { SelectionsOverlay } from '../viewParts/selections/selections.js';
 import { ViewCursors } from '../viewParts/viewCursors/viewCursors.js';
 import { ViewZones } from '../viewParts/viewZones/viewZones.js';
-import { Position } from '../../common/core/position.js';
-import { RenderingContext } from '../../common/view/renderingContext.js';
+import { PartFingerprints } from './viewPart.js';
 import { ViewContext } from '../../common/view/viewContext.js';
-import { ViewEventDispatcher } from '../../common/view/viewEventDispatcher.js';
-import * as viewEvents from '../../common/view/viewEvents.js';
+import { RenderingContext } from '../../common/view/renderingContext.js';
+import { ViewOutgoingEvents } from './viewOutgoingEvents.js';
 import { ViewportData } from '../../common/viewLayout/viewLinesViewportData.js';
-import { ViewEventHandler } from '../../common/viewModel/viewEventHandler.js';
+import { EditorScrollbar } from '../viewParts/editorScrollbar/editorScrollbar.js';
+import { Minimap } from '../viewParts/minimap/minimap.js';
+import * as viewEvents from '../../common/view/viewEvents.js';
 import { getThemeTypeSelector } from '../../../platform/theme/common/themeService.js';
-var invalidFunc = function () { throw new Error("Invalid change accessor"); };
 var View = /** @class */ (function (_super) {
     __extends(View, _super);
-    function View(commandDelegate, configuration, themeService, model, cursor, outgoingEvents) {
+    function View(commandDelegate, configuration, themeService, model, cursor, execCoreEditorCommandFunc) {
         var _this = _super.call(this) || this;
         _this._cursor = cursor;
         _this._renderAnimationFrame = null;
-        _this.outgoingEvents = outgoingEvents;
-        var viewController = new ViewController(configuration, model, _this.outgoingEvents, commandDelegate);
+        _this.outgoingEvents = new ViewOutgoingEvents(model);
+        var viewController = new ViewController(configuration, model, execCoreEditorCommandFunc, _this.outgoingEvents, commandDelegate);
         // The event dispatcher will always go through _renderOnce before dispatching any events
         _this.eventDispatcher = new ViewEventDispatcher(function (callback) { return _this._renderOnce(callback); });
         // Ensure the view is the first event handler in order to update the layout
@@ -186,7 +184,11 @@ var View = /** @class */ (function (_super) {
             },
             visibleRangeForPosition2: function (lineNumber, column) {
                 _this._flushAccumulatedAndRenderNow();
-                return _this.viewLines.visibleRangeForPosition(new Position(lineNumber, column));
+                var visibleRanges = _this.viewLines.visibleRangesForRange2(new Range(lineNumber, column, lineNumber, column));
+                if (!visibleRanges) {
+                    return null;
+                }
+                return visibleRanges[0];
             },
             getLineWidth: function (lineNumber) {
                 _this._flushAccumulatedAndRenderNow();
@@ -199,7 +201,11 @@ var View = /** @class */ (function (_super) {
         return {
             visibleRangeForPositionRelativeToEditor: function (lineNumber, column) {
                 _this._flushAccumulatedAndRenderNow();
-                return _this.viewLines.visibleRangeForPosition(new Position(lineNumber, column));
+                var visibleRanges = _this.viewLines.visibleRangesForRange2(new Range(lineNumber, column, lineNumber, column));
+                if (!visibleRanges) {
+                    return null;
+                }
+                return visibleRanges[0];
             }
         };
     };
@@ -341,14 +347,17 @@ var View = /** @class */ (function (_super) {
         });
         var viewPosition = this._context.model.coordinatesConverter.convertModelPositionToViewPosition(modelPosition);
         this._flushAccumulatedAndRenderNow();
-        var visibleRange = this.viewLines.visibleRangeForPosition(new Position(viewPosition.lineNumber, viewPosition.column));
-        if (!visibleRange) {
+        var visibleRanges = this.viewLines.visibleRangesForRange2(new Range(viewPosition.lineNumber, viewPosition.column, viewPosition.lineNumber, viewPosition.column));
+        if (!visibleRanges) {
             return -1;
         }
-        return visibleRange.left;
+        return visibleRanges[0].left;
     };
     View.prototype.getTargetAtClientPoint = function (clientX, clientY) {
         return this.pointerHandler.getTargetAtClientPoint(clientX, clientY);
+    };
+    View.prototype.getInternalEventBus = function () {
+        return this.outgoingEvents;
     };
     View.prototype.createOverviewRuler = function (cssClassName) {
         return new OverviewRuler(this._context, cssClassName);
@@ -377,9 +386,8 @@ var View = /** @class */ (function (_super) {
             };
             safeInvoke1Arg(callback, changeAccessor);
             // Invalidate changeAccessor
-            changeAccessor.addZone = invalidFunc;
-            changeAccessor.removeZone = invalidFunc;
-            changeAccessor.layoutZone = invalidFunc;
+            changeAccessor.addZone = null;
+            changeAccessor.removeZone = null;
             if (zonesHaveChanged) {
                 _this._context.viewLayout.onHeightMaybeChanged();
                 _this._context.privateViewEventBus.emit(new viewEvents.ViewZonesChangedEvent());
@@ -416,9 +424,8 @@ var View = /** @class */ (function (_super) {
     };
     View.prototype.layoutContentWidget = function (widgetData) {
         var newPosition = widgetData.position ? widgetData.position.position : null;
-        var newRange = widgetData.position ? widgetData.position.range : null;
         var newPreference = widgetData.position ? widgetData.position.preference : null;
-        this.contentWidgets.setWidgetPosition(widgetData.widget, newPosition, newRange, newPreference);
+        this.contentWidgets.setWidgetPosition(widgetData.widget, newPosition, newPreference);
         this._scheduleRender();
     };
     View.prototype.removeContentWidget = function (widgetData) {

@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,8 +14,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { toggleClass } from '../../../base/browser/dom.js';
-import { DomScrollableElement } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
+import { Position } from '../../common/core/position.js';
+import * as editorBrowser from '../../browser/editorBrowser.js';
 import { Widget } from '../../../base/browser/ui/widget.js';
+import { DomScrollableElement } from '../../../base/browser/ui/scrollbar/scrollableElement.js';
 import { dispose } from '../../../base/common/lifecycle.js';
 var ContentHoverWidget = /** @class */ (function (_super) {
     __extends(ContentHoverWidget, _super);
@@ -51,7 +51,6 @@ var ContentHoverWidget = /** @class */ (function (_super) {
         _this.updateMaxHeight();
         _this._editor.addContentWidget(_this);
         _this._showAtPosition = null;
-        _this._showAtRange = null;
         return _this;
     }
     Object.defineProperty(ContentHoverWidget.prototype, "isVisible", {
@@ -71,10 +70,9 @@ var ContentHoverWidget = /** @class */ (function (_super) {
     ContentHoverWidget.prototype.getDomNode = function () {
         return this._containerDomNode;
     };
-    ContentHoverWidget.prototype.showAt = function (position, range, focus) {
+    ContentHoverWidget.prototype.showAt = function (position, focus) {
         // Position has changed
-        this._showAtPosition = position;
-        this._showAtRange = range;
+        this._showAtPosition = new Position(position.lineNumber, position.column);
         this.isVisible = true;
         this._editor.layoutContentWidget(this);
         // Simply force a synchronous render on the editor
@@ -99,10 +97,9 @@ var ContentHoverWidget = /** @class */ (function (_super) {
         if (this.isVisible) {
             return {
                 position: this._showAtPosition,
-                range: this._showAtRange,
                 preference: [
-                    1 /* ABOVE */,
-                    2 /* BELOW */
+                    editorBrowser.ContentWidgetPositionPreference.ABOVE,
+                    editorBrowser.ContentWidgetPositionPreference.BELOW
                 ]
             };
         }

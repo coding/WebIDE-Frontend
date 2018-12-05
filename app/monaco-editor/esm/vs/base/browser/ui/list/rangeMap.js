@@ -2,7 +2,36 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { Range } from '../../../common/range.js';
+/**
+ * Returns the intersection between two ranges as a range itself.
+ * Returns `{ start: 0, end: 0 }` if the intersection is empty.
+ */
+export function intersect(one, other) {
+    if (one.start >= other.end || other.start >= one.end) {
+        return { start: 0, end: 0 };
+    }
+    var start = Math.max(one.start, other.start);
+    var end = Math.min(one.end, other.end);
+    if (end - start <= 0) {
+        return { start: 0, end: 0 };
+    }
+    return { start: start, end: end };
+}
+export function isEmpty(range) {
+    return range.end - range.start <= 0;
+}
+export function relativeComplement(one, other) {
+    var result = [];
+    var first = { start: one.start, end: Math.min(other.start, one.end) };
+    var second = { start: Math.max(other.end, one.start), end: one.end };
+    if (!isEmpty(first)) {
+        result.push(first);
+    }
+    if (!isEmpty(second)) {
+        result.push(second);
+    }
+    return result;
+}
 /**
  * Returns the intersection between a ranged group and a range.
  * Returns `[]` if the intersection is empty.
@@ -17,8 +46,8 @@ export function groupIntersect(range, groups) {
         if (range.end < r.range.start) {
             break;
         }
-        var intersection = Range.intersect(range, r.range);
-        if (Range.isEmpty(intersection)) {
+        var intersection = intersect(range, r.range);
+        if (isEmpty(intersection)) {
             continue;
         }
         result.push({
@@ -74,8 +103,11 @@ var RangeMap = /** @class */ (function () {
         this.groups = [];
         this._size = 0;
     }
-    RangeMap.prototype.splice = function (index, deleteCount, items) {
-        if (items === void 0) { items = []; }
+    RangeMap.prototype.splice = function (index, deleteCount) {
+        var items = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            items[_i - 2] = arguments[_i];
+        }
         var diff = items.length - deleteCount;
         var before = groupIntersect({ start: 0, end: index }, this.groups);
         var after = groupIntersect({ start: index + deleteCount, end: Number.POSITIVE_INFINITY }, this.groups)
@@ -161,7 +193,7 @@ var RangeMap = /** @class */ (function () {
         return -1;
     };
     RangeMap.prototype.dispose = function () {
-        this.groups = null; // StrictNullOverride: nulling out ok in dispose
+        this.groups = null;
     };
     return RangeMap;
 }());

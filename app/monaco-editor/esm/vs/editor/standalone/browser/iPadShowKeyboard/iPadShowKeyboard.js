@@ -2,10 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import './iPadShowKeyboard.css';
+import { dispose } from '../../../../base/common/lifecycle.js';
 import * as browser from '../../../../base/browser/browser.js';
 import * as dom from '../../../../base/browser/dom.js';
-import { dispose } from '../../../../base/common/lifecycle.js';
+import { OverlayWidgetPositionPreference } from '../../../browser/editorBrowser.js';
 import { registerEditorContribution } from '../../../browser/editorExtensions.js';
 var IPadShowKeyboard = /** @class */ (function () {
     function IPadShowKeyboard(editor) {
@@ -18,11 +20,12 @@ var IPadShowKeyboard = /** @class */ (function () {
         }
     }
     IPadShowKeyboard.prototype.update = function () {
+        var hasWidget = (!!this.widget);
         var shouldHaveWidget = (!this.editor.getConfiguration().readOnly);
-        if (!this.widget && shouldHaveWidget) {
+        if (!hasWidget && shouldHaveWidget) {
             this.widget = new ShowKeyboardWidget(this.editor);
         }
-        else if (this.widget && !shouldHaveWidget) {
+        else if (hasWidget && !shouldHaveWidget) {
             this.widget.dispose();
             this.widget = null;
         }
@@ -69,7 +72,7 @@ var ShowKeyboardWidget = /** @class */ (function () {
     };
     ShowKeyboardWidget.prototype.getPosition = function () {
         return {
-            preference: 1 /* BOTTOM_RIGHT_CORNER */
+            preference: OverlayWidgetPositionPreference.BOTTOM_RIGHT_CORNER
         };
     };
     ShowKeyboardWidget.ID = 'editor.contrib.ShowKeyboardWidget';

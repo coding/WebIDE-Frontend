@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as nls from '../../../nls.js';
-import { Color, RGBA } from '../../../base/common/color.js';
-import { activeContrastBorder, editorBackground, editorForeground, registerColor } from '../../../platform/theme/common/colorRegistry.js';
+import { registerColor, editorBackground, activeContrastBorder, editorForeground } from '../../../platform/theme/common/colorRegistry.js';
 import { registerThemingParticipant } from '../../../platform/theme/common/themeService.js';
+import { Color, RGBA } from '../../../base/common/color.js';
 /**
  * Definition of the editor colors
  */

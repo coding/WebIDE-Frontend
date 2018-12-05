@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -18,6 +16,8 @@ var __extends = (this && this.__extends) || (function () {
 import './iconlabel.css';
 import * as dom from '../../dom.js';
 import { HighlightedLabel } from '../highlightedlabel/highlightedLabel.js';
+import * as paths from '../../../common/paths.js';
+import { getPathLabel, getBaseLabel } from '../../../common/labels.js';
 import { Disposable } from '../../../common/lifecycle.js';
 var FastLabelNode = /** @class */ (function () {
     function FastLabelNode(_element) {
@@ -91,13 +91,13 @@ var IconLabel = /** @class */ (function (_super) {
         _this.domNode = _this._register(new FastLabelNode(dom.append(container, dom.$('.monaco-icon-label'))));
         _this.labelDescriptionContainer = _this._register(new FastLabelNode(dom.append(_this.domNode.element, dom.$('.monaco-icon-label-description-container'))));
         if (options && options.supportHighlights) {
-            _this.labelNode = _this._register(new HighlightedLabel(dom.append(_this.labelDescriptionContainer.element, dom.$('a.label-name')), !options.donotSupportOcticons));
+            _this.labelNode = _this._register(new HighlightedLabel(dom.append(_this.labelDescriptionContainer.element, dom.$('a.label-name'))));
         }
         else {
             _this.labelNode = _this._register(new FastLabelNode(dom.append(_this.labelDescriptionContainer.element, dom.$('a.label-name'))));
         }
         if (options && options.supportDescriptionHighlights) {
-            _this.descriptionNodeFactory = function () { return _this._register(new HighlightedLabel(dom.append(_this.labelDescriptionContainer.element, dom.$('span.label-description')), !options.donotSupportOcticons)); };
+            _this.descriptionNodeFactory = function () { return _this._register(new HighlightedLabel(dom.append(_this.labelDescriptionContainer.element, dom.$('span.label-description')))); };
         }
         else {
             _this.descriptionNodeFactory = function () { return _this._register(new FastLabelNode(dom.append(_this.labelDescriptionContainer.element, dom.$('span.label-description')))); };
@@ -117,7 +117,7 @@ var IconLabel = /** @class */ (function (_super) {
         this.domNode.className = classes.join(' ');
         this.domNode.title = options && options.title ? options.title : '';
         if (this.labelNode instanceof HighlightedLabel) {
-            this.labelNode.set(label || '', options ? options.matches : void 0, options && options.title ? options.title : void 0, options && options.labelEscapeNewLines);
+            this.labelNode.set(label || '', options ? options.matches : void 0);
         }
         else {
             this.labelNode.textContent = label || '';
@@ -145,3 +145,17 @@ var IconLabel = /** @class */ (function (_super) {
     return IconLabel;
 }(Disposable));
 export { IconLabel };
+var FileLabel = /** @class */ (function (_super) {
+    __extends(FileLabel, _super);
+    function FileLabel(container, file, provider, userHome) {
+        var _this = _super.call(this, container) || this;
+        _this.setFile(file, provider, userHome);
+        return _this;
+    }
+    FileLabel.prototype.setFile = function (file, provider, userHome) {
+        var parent = paths.dirname(file.fsPath);
+        this.setValue(getBaseLabel(file), parent && parent !== '.' ? getPathLabel(parent, userHome, provider) : '', { title: file.fsPath });
+    };
+    return FileLabel;
+}(IconLabel));
+export { FileLabel };

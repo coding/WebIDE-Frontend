@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import * as paths from './paths.js';
 import * as strings from './strings.js';
 import { match } from './glob.js';
@@ -89,9 +90,9 @@ export function guessMimeTypes(path, firstLine) {
     return [MIME_UNKNOWN];
 }
 function guessMimeTypeByPath(path, filename, associations) {
-    var filenameMatch = null;
-    var patternMatch = null;
-    var extensionMatch = null;
+    var filenameMatch;
+    var patternMatch;
+    var extensionMatch;
     // We want to prioritize associations based on the order they are registered so that the last registered
     // association wins over all other. This is for https://github.com/Microsoft/vscode/issues/20074
     for (var i = associations.length - 1; i >= 0; i--) {

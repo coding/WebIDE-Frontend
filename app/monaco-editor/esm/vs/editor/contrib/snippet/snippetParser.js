@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -119,13 +117,7 @@ var Marker = /** @class */ (function () {
         var newChildren = parent.children.slice(0);
         newChildren.splice.apply(newChildren, [idx, 1].concat(others));
         parent._children = newChildren;
-        (function _fixParent(children, parent) {
-            for (var _i = 0, children_1 = children; _i < children_1.length; _i++) {
-                var child_1 = children_1[_i];
-                child_1.parent = parent;
-                _fixParent(child_1.children, child_1);
-            }
-        })(others, parent);
+        others.forEach(function (node) { return node.parent = parent; });
     };
     Object.defineProperty(Marker.prototype, "children", {
         get: function () {
@@ -275,32 +267,21 @@ var Transform = /** @class */ (function (_super) {
     }
     Transform.prototype.resolve = function (value) {
         var _this = this;
-        var didMatch = false;
-        var ret = value.replace(this.regexp, function () {
-            didMatch = true;
-            return _this._replace(Array.prototype.slice.call(arguments, 0, -2));
+        return value.replace(this.regexp, function () {
+            var ret = '';
+            for (var _i = 0, _a = _this._children; _i < _a.length; _i++) {
+                var marker = _a[_i];
+                if (marker instanceof FormatString) {
+                    var value_1 = arguments.length - 2 > marker.index ? arguments[marker.index] : '';
+                    value_1 = marker.resolve(value_1);
+                    ret += value_1;
+                }
+                else {
+                    ret += marker.toString();
+                }
+            }
+            return ret;
         });
-        // when the regex didn't match and when the transform has
-        // else branches, then run those
-        if (!didMatch && this._children.some(function (child) { return child instanceof FormatString && Boolean(child.elseValue); })) {
-            ret = this._replace([]);
-        }
-        return ret;
-    };
-    Transform.prototype._replace = function (groups) {
-        var ret = '';
-        for (var _i = 0, _a = this._children; _i < _a.length; _i++) {
-            var marker = _a[_i];
-            if (marker instanceof FormatString) {
-                var value = groups[marker.index] || '';
-                value = marker.resolve(value);
-                ret += value;
-            }
-            else {
-                ret += marker.toString();
-            }
-        }
-        return ret;
     };
     Transform.prototype.toString = function () {
         return '';
@@ -334,9 +315,6 @@ var FormatString = /** @class */ (function (_super) {
         else if (this.shorthandName === 'capitalize') {
             return !value ? '' : (value[0].toLocaleUpperCase() + value.substr(1));
         }
-        else if (this.shorthandName === 'pascalcase') {
-            return !value ? '' : this._toPascalCase(value);
-        }
         else if (Boolean(value) && typeof this.ifValue === 'string') {
             return this.ifValue;
         }
@@ -346,17 +324,6 @@ var FormatString = /** @class */ (function (_super) {
         else {
             return value || '';
         }
-    };
-    FormatString.prototype._toPascalCase = function (value) {
-        var match = value.match(/[a-z]+/gi);
-        if (!match) {
-            return value;
-        }
-        return match.map(function (word) {
-            return word.charAt(0).toUpperCase()
-                + word.substr(1).toLowerCase();
-        })
-            .join('');
     };
     FormatString.prototype.clone = function () {
         var ret = new FormatString(this.index, this.shorthandName, this.ifValue, this.elseValue);
@@ -701,10 +668,9 @@ var SnippetParser = /** @class */ (function () {
             }
             var value = void 0;
             if (value = this._accept(5 /* Backslash */, true)) {
-                // \, \|, or \\
+                // \, or \|
                 value = this._accept(2 /* Comma */, true)
                     || this._accept(7 /* Pipe */, true)
-                    || this._accept(5 /* Backslash */, true)
                     || value;
             }
             else {

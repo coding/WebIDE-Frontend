@@ -3,11 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import * as Json from './../../jsonc-parser/main.js';
-import URI from './../../vscode-uri/index.js';
+import * as Json from '../../jsonc-parser/main.js';
+import URI from '../../vscode-uri/index.js';
 import * as Strings from '../utils/strings.js';
 import * as Parser from '../parser/jsonParser.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var FilePatternAssociation = /** @class */ (function () {
     function FilePatternAssociation(pattern) {
@@ -366,7 +366,7 @@ var JSONSchemaService = /** @class */ (function () {
                         merge(next, parentSchema, parentSchemaURL, segments[1]); // can set next.$ref again
                     }
                 }
-                collectEntries(next.items, next.additionalProperties, next.not, next.contains, next.propertyNames, next.if, next.then, next.else);
+                collectEntries(next.items, next.additionalProperties, next.not, next.contains, next.propertyNames);
                 collectMapEntries(next.definitions, next.properties, next.patternProperties, next.dependencies);
                 collectArrayEntries(next.anyOf, next.allOf, next.oneOf, next.items);
             };

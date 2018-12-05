@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -11,16 +12,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { RunOnceScheduler, createCancelablePromise } from '../../../base/common/async.js';
+import { createCancelablePromise, RunOnceScheduler } from '../../../base/common/async.js';
 import { onUnexpectedError } from '../../../base/common/errors.js';
 import { dispose, toDisposable } from '../../../base/common/lifecycle.js';
 import { StableEditorScrollState } from '../../browser/core/editorState.js';
 import { registerEditorContribution } from '../../browser/editorExtensions.js';
 import { CodeLensProviderRegistry } from '../../common/modes.js';
-import { getCodeLensData } from './codelens.js';
 import { CodeLens, CodeLensHelper } from './codelensWidget.js';
 import { ICommandService } from '../../../platform/commands/common/commands.js';
 import { INotificationService } from '../../../platform/notification/common/notification.js';
+import { getCodeLensData } from './codelens.js';
 var CodeLensContribution = /** @class */ (function () {
     function CodeLensContribution(_editor, _commandService, _notificationService) {
         var _this = this;

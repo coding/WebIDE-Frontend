@@ -2,19 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+'use strict';
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -25,60 +13,41 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as nls from '../../../nls.js';
-import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
+import * as network from '../../../base/common/network.js';
 import { Emitter } from '../../../base/common/event.js';
 import { MarkdownString } from '../../../base/common/htmlContent.js';
-import { Disposable, dispose } from '../../../base/common/lifecycle.js';
-import * as network from '../../../base/common/network.js';
-import { basename } from '../../../base/common/paths.js';
-import * as platform from '../../../base/common/platform.js';
-import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
+import { dispose } from '../../../base/common/lifecycle.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
+import { IMarkerService, MarkerSeverity, MarkerTag } from '../../../platform/markers/common/markers.js';
 import { Range } from '../core/range.js';
-import { OverviewRulerLane } from '../model.js';
 import { TextModel } from '../model/textModel.js';
-import { PLAINTEXT_LANGUAGE_IDENTIFIER } from '../modes/modesRegistry.js';
-import { ITextResourcePropertiesService } from './resourceConfiguration.js';
-import { overviewRulerError, overviewRulerInfo, overviewRulerWarning } from '../view/editorColorRegistry.js';
+import * as platform from '../../../base/common/platform.js';
 import { IConfigurationService } from '../../../platform/configuration/common/configuration.js';
-import { IMarkerService, MarkerSeverity } from '../../../platform/markers/common/markers.js';
+import { EDITOR_MODEL_DEFAULTS } from '../config/editorOptions.js';
+import { PLAINTEXT_LANGUAGE_IDENTIFIER } from '../modes/modesRegistry.js';
 import { themeColorFromId } from '../../../platform/theme/common/themeService.js';
+import { overviewRulerWarning, overviewRulerError, overviewRulerInfo } from '../view/editorColorRegistry.js';
+import { TrackedRangeStickiness, OverviewRulerLane, DefaultEndOfLine } from '../model.js';
+import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
+import { basename } from '../../../base/common/paths.js';
 function MODEL_ID(resource) {
     return resource.toString();
 }
 var ModelData = /** @class */ (function () {
     function ModelData(model, onWillDispose, onDidChangeLanguage) {
         this.model = model;
-        this._languageSelection = null;
-        this._languageSelectionListener = null;
         this._markerDecorations = [];
         this._modelEventListeners = [];
         this._modelEventListeners.push(model.onWillDispose(function () { return onWillDispose(model); }));
         this._modelEventListeners.push(model.onDidChangeLanguage(function (e) { return onDidChangeLanguage(model, e); }));
     }
-    ModelData.prototype._disposeLanguageSelection = function () {
-        if (this._languageSelectionListener) {
-            this._languageSelectionListener.dispose();
-            this._languageSelectionListener = null;
-        }
-        if (this._languageSelection) {
-            this._languageSelection.dispose();
-            this._languageSelection = null;
-        }
-    };
     ModelData.prototype.dispose = function () {
         this._markerDecorations = this.model.deltaDecorations(this._markerDecorations, []);
         this._modelEventListeners = dispose(this._modelEventListeners);
-        this._disposeLanguageSelection();
+        this.model = null;
     };
     ModelData.prototype.acceptMarkerDecorations = function (newDecorations) {
         this._markerDecorations = this.model.deltaDecorations(this._markerDecorations, newDecorations);
-    };
-    ModelData.prototype.setLanguage = function (languageSelection) {
-        var _this = this;
-        this._disposeLanguageSelection();
-        this._languageSelection = languageSelection;
-        this._languageSelectionListener = this._languageSelection.onDidChange(function () { return _this.model.setMode(languageSelection.languageIdentifier); });
-        this.model.setMode(languageSelection.languageIdentifier);
     };
     return ModelData;
 }());
@@ -86,24 +55,22 @@ var ModelMarkerHandler = /** @class */ (function () {
     function ModelMarkerHandler() {
     }
     ModelMarkerHandler.setMarkers = function (modelData, markerService) {
+        var _this = this;
         // Limit to the first 500 errors/warnings
         var markers = markerService.read({ resource: modelData.model.uri, take: 500 });
         var newModelDecorations = markers.map(function (marker) {
             return {
-                range: ModelMarkerHandler._createDecorationRange(modelData.model, marker),
-                options: ModelMarkerHandler._createDecorationOption(marker)
+                range: _this._createDecorationRange(modelData.model, marker),
+                options: _this._createDecorationOption(marker)
             };
         });
         modelData.acceptMarkerDecorations(newModelDecorations);
     };
     ModelMarkerHandler._createDecorationRange = function (model, rawMarker) {
         var ret = Range.lift(rawMarker);
-        if (rawMarker.severity === MarkerSeverity.Hint) {
-            if (!rawMarker.tags || rawMarker.tags.indexOf(1 /* Unnecessary */) === -1) {
-                // * never render hints on multiple lines
-                // * make enough space for three dots
-                ret = ret.setEndPosition(ret.startLineNumber, ret.startColumn + 2);
-            }
+        if (rawMarker.severity === MarkerSeverity.Hint && Range.spansMultipleLines(ret)) {
+            // never render hints on multiple lines
+            ret = ret.setEndPosition(ret.startLineNumber, ret.startColumn);
         }
         ret = model.validateRange(ret);
         if (ret.isEmpty()) {
@@ -139,12 +106,13 @@ var ModelMarkerHandler = /** @class */ (function () {
     };
     ModelMarkerHandler._createDecorationOption = function (marker) {
         var className;
-        var color = undefined;
+        var color;
+        var darkColor;
         var zIndex;
-        var inlineClassName = undefined;
+        var inlineClassName;
         switch (marker.severity) {
             case MarkerSeverity.Hint:
-                if (marker.tags && marker.tags.indexOf(1 /* Unnecessary */) >= 0) {
+                if (marker.tags && marker.tags.indexOf(MarkerTag.Unnecessary) >= 0) {
                     className = "squiggly-unnecessary" /* EditorUnnecessaryDecoration */;
                 }
                 else {
@@ -155,52 +123,45 @@ var ModelMarkerHandler = /** @class */ (function () {
             case MarkerSeverity.Warning:
                 className = "squiggly-warning" /* EditorWarningDecoration */;
                 color = themeColorFromId(overviewRulerWarning);
+                darkColor = themeColorFromId(overviewRulerWarning);
                 zIndex = 20;
                 break;
             case MarkerSeverity.Info:
                 className = "squiggly-info" /* EditorInfoDecoration */;
                 color = themeColorFromId(overviewRulerInfo);
+                darkColor = themeColorFromId(overviewRulerInfo);
                 zIndex = 10;
                 break;
             case MarkerSeverity.Error:
             default:
                 className = "squiggly-error" /* EditorErrorDecoration */;
                 color = themeColorFromId(overviewRulerError);
+                darkColor = themeColorFromId(overviewRulerError);
                 zIndex = 30;
                 break;
         }
         if (marker.tags) {
-            if (marker.tags.indexOf(1 /* Unnecessary */) !== -1) {
+            if (marker.tags.indexOf(MarkerTag.Unnecessary) !== -1) {
                 inlineClassName = "squiggly-inline-unnecessary" /* EditorUnnecessaryInlineDecoration */;
             }
         }
         var hoverMessage = null;
-        var message = marker.message, source = marker.source, relatedInformation = marker.relatedInformation, code = marker.code;
+        var message = marker.message, source = marker.source, relatedInformation = marker.relatedInformation;
         if (typeof message === 'string') {
             message = message.trim();
             if (source) {
                 if (/\n/g.test(message)) {
-                    if (code) {
-                        message = nls.localize('diagAndSourceAndCodeMultiline', "[{0}]\n{1} [{2}]", source, message, code);
-                    }
-                    else {
-                        message = nls.localize('diagAndSourceMultiline', "[{0}]\n{1}", source, message);
-                    }
+                    message = nls.localize('diagAndSourceMultiline', "[{0}]\n{1}", source, message);
                 }
                 else {
-                    if (code) {
-                        message = nls.localize('diagAndSourceAndCode', "[{0}] {1} [{2}]", source, message, code);
-                    }
-                    else {
-                        message = nls.localize('diagAndSource', "[{0}] {1}", source, message);
-                    }
+                    message = nls.localize('diagAndSource', "[{0}] {1}", source, message);
                 }
             }
             hoverMessage = new MarkdownString().appendCodeblock('_', message);
             if (!isFalsyOrEmpty(relatedInformation)) {
                 hoverMessage.appendMarkdown('\n');
-                for (var _i = 0, _a = relatedInformation; _i < _a.length; _i++) {
-                    var _b = _a[_i], message_1 = _b.message, resource = _b.resource, startLineNumber = _b.startLineNumber, startColumn = _b.startColumn;
+                for (var _i = 0, relatedInformation_1 = relatedInformation; _i < relatedInformation_1.length; _i++) {
+                    var _a = relatedInformation_1[_i], message_1 = _a.message, resource = _a.resource, startLineNumber = _a.startLineNumber, startColumn = _a.startColumn;
                     hoverMessage.appendMarkdown("* [" + basename(resource.path) + "(" + startLineNumber + ", " + startColumn + ")](" + resource.toString(false) + "#" + startLineNumber + "," + startColumn + "): ");
                     hoverMessage.appendText("" + message_1);
                     hoverMessage.appendMarkdown('\n');
@@ -209,12 +170,13 @@ var ModelMarkerHandler = /** @class */ (function () {
             }
         }
         return {
-            stickiness: 1 /* NeverGrowsWhenTypingAtEdges */,
+            stickiness: TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges,
             className: className,
             hoverMessage: hoverMessage,
             showIfCollapsed: true,
             overviewRuler: {
                 color: color,
+                darkColor: darkColor,
                 position: OverviewRulerLane.Right
             },
             zIndex: zIndex,
@@ -223,28 +185,22 @@ var ModelMarkerHandler = /** @class */ (function () {
     };
     return ModelMarkerHandler;
 }());
-var DEFAULT_EOL = (platform.isLinux || platform.isMacintosh) ? 1 /* LF */ : 2 /* CRLF */;
-var ModelServiceImpl = /** @class */ (function (_super) {
-    __extends(ModelServiceImpl, _super);
-    function ModelServiceImpl(markerService, configurationService, resourcePropertiesService) {
-        var _this = _super.call(this) || this;
-        _this._onModelAdded = _this._register(new Emitter());
-        _this.onModelAdded = _this._onModelAdded.event;
-        _this._onModelRemoved = _this._register(new Emitter());
-        _this.onModelRemoved = _this._onModelRemoved.event;
-        _this._onModelModeChanged = _this._register(new Emitter());
-        _this.onModelModeChanged = _this._onModelModeChanged.event;
-        _this._markerService = markerService;
-        _this._configurationService = configurationService;
-        _this._resourcePropertiesService = resourcePropertiesService;
-        _this._models = {};
-        _this._modelCreationOptionsByLanguageAndResource = Object.create(null);
-        if (_this._markerService) {
-            _this._markerServiceSubscription = _this._markerService.onMarkerChanged(_this._handleMarkerChange, _this);
+var DEFAULT_EOL = (platform.isLinux || platform.isMacintosh) ? DefaultEndOfLine.LF : DefaultEndOfLine.CRLF;
+var ModelServiceImpl = /** @class */ (function () {
+    function ModelServiceImpl(markerService, configurationService) {
+        var _this = this;
+        this._markerService = markerService;
+        this._configurationService = configurationService;
+        this._models = {};
+        this._modelCreationOptionsByLanguageAndResource = Object.create(null);
+        this._onModelAdded = new Emitter();
+        this._onModelRemoved = new Emitter();
+        this._onModelModeChanged = new Emitter();
+        if (this._markerService) {
+            this._markerServiceSubscription = this._markerService.onMarkerChanged(this._handleMarkerChange, this);
         }
-        _this._configurationServiceSubscription = _this._configurationService.onDidChangeConfiguration(function (e) { return _this._updateModelOptions(); });
-        _this._updateModelOptions();
-        return _this;
+        this._configurationServiceSubscription = this._configurationService.onDidChangeConfiguration(function (e) { return _this._updateModelOptions(); });
+        this._updateModelOptions();
     }
     ModelServiceImpl._readModelOptions = function (config, isForSimpleWidget) {
         var tabSize = EDITOR_MODEL_DEFAULTS.tabSize;
@@ -262,12 +218,12 @@ var ModelServiceImpl = /** @class */ (function (_super) {
             insertSpaces = (config.editor.insertSpaces === 'false' ? false : Boolean(config.editor.insertSpaces));
         }
         var newDefaultEOL = DEFAULT_EOL;
-        var eol = config.eol;
+        var eol = config.files && config.files.eol;
         if (eol === '\r\n') {
-            newDefaultEOL = 2 /* CRLF */;
+            newDefaultEOL = DefaultEndOfLine.CRLF;
         }
         else if (eol === '\n') {
-            newDefaultEOL = 1 /* LF */;
+            newDefaultEOL = DefaultEndOfLine.LF;
         }
         var trimAutoWhitespace = EDITOR_MODEL_DEFAULTS.trimAutoWhitespace;
         if (config.editor && typeof config.editor.trimAutoWhitespace !== 'undefined') {
@@ -294,9 +250,7 @@ var ModelServiceImpl = /** @class */ (function (_super) {
     ModelServiceImpl.prototype.getCreationOptions = function (language, resource, isForSimpleWidget) {
         var creationOptions = this._modelCreationOptionsByLanguageAndResource[language + resource];
         if (!creationOptions) {
-            var editor = this._configurationService.getValue('editor', { overrideIdentifier: language, resource: resource });
-            var eol = this._resourcePropertiesService.getEOL(resource, language);
-            creationOptions = ModelServiceImpl._readModelOptions({ editor: editor, eol: eol }, isForSimpleWidget);
+            creationOptions = ModelServiceImpl._readModelOptions(this._configurationService.getValue({ overrideIdentifier: language, resource: resource }), isForSimpleWidget);
             this._modelCreationOptionsByLanguageAndResource[language + resource] = creationOptions;
         }
         return creationOptions;
@@ -344,7 +298,6 @@ var ModelServiceImpl = /** @class */ (function (_super) {
             this._markerServiceSubscription.dispose();
         }
         this._configurationServiceSubscription.dispose();
-        _super.prototype.dispose.call(this);
     };
     ModelServiceImpl.prototype._handleMarkerChange = function (changedResources) {
         var _this = this;
@@ -385,15 +338,15 @@ var ModelServiceImpl = /** @class */ (function (_super) {
         this._models[modelId] = modelData;
         return modelData;
     };
-    ModelServiceImpl.prototype.createModel = function (value, languageSelection, resource, isForSimpleWidget) {
+    ModelServiceImpl.prototype.createModel = function (value, modeOrPromise, resource, isForSimpleWidget) {
         if (isForSimpleWidget === void 0) { isForSimpleWidget = false; }
         var modelData;
-        if (languageSelection) {
-            modelData = this._createModelData(value, languageSelection.languageIdentifier, resource, isForSimpleWidget);
-            this.setMode(modelData.model, languageSelection);
+        if (!modeOrPromise || TPromise.is(modeOrPromise)) {
+            modelData = this._createModelData(value, PLAINTEXT_LANGUAGE_IDENTIFIER, resource, isForSimpleWidget);
+            this.setMode(modelData.model, modeOrPromise);
         }
         else {
-            modelData = this._createModelData(value, PLAINTEXT_LANGUAGE_IDENTIFIER, resource, isForSimpleWidget);
+            modelData = this._createModelData(value, modeOrPromise.getLanguageIdentifier(), resource, isForSimpleWidget);
         }
         // handle markers (marker service => model)
         if (this._markerService) {
@@ -402,15 +355,20 @@ var ModelServiceImpl = /** @class */ (function (_super) {
         this._onModelAdded.fire(modelData.model);
         return modelData.model;
     };
-    ModelServiceImpl.prototype.setMode = function (model, languageSelection) {
-        if (!languageSelection) {
+    ModelServiceImpl.prototype.setMode = function (model, modeOrPromise) {
+        if (!modeOrPromise) {
             return;
         }
-        var modelData = this._models[MODEL_ID(model.uri)];
-        if (!modelData) {
-            return;
+        if (TPromise.is(modeOrPromise)) {
+            modeOrPromise.then(function (mode) {
+                if (!model.isDisposed()) {
+                    model.setMode(mode.getLanguageIdentifier());
+                }
+            });
         }
-        modelData.setLanguage(languageSelection);
+        else {
+            model.setMode(modeOrPromise.getLanguageIdentifier());
+        }
     };
     ModelServiceImpl.prototype.getModels = function () {
         var ret = [];
@@ -429,6 +387,27 @@ var ModelServiceImpl = /** @class */ (function (_super) {
         }
         return modelData.model;
     };
+    Object.defineProperty(ModelServiceImpl.prototype, "onModelAdded", {
+        get: function () {
+            return this._onModelAdded ? this._onModelAdded.event : null;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ModelServiceImpl.prototype, "onModelRemoved", {
+        get: function () {
+            return this._onModelRemoved ? this._onModelRemoved.event : null;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ModelServiceImpl.prototype, "onModelModeChanged", {
+        get: function () {
+            return this._onModelModeChanged ? this._onModelModeChanged.event : null;
+        },
+        enumerable: true,
+        configurable: true
+    });
     // --- end IModelService
     ModelServiceImpl.prototype._onWillDispose = function (model) {
         var modelId = MODEL_ID(model.uri);
@@ -448,9 +427,8 @@ var ModelServiceImpl = /** @class */ (function (_super) {
     };
     ModelServiceImpl = __decorate([
         __param(0, IMarkerService),
-        __param(1, IConfigurationService),
-        __param(2, ITextResourcePropertiesService)
+        __param(1, IConfigurationService)
     ], ModelServiceImpl);
     return ModelServiceImpl;
-}(Disposable));
+}());
 export { ModelServiceImpl };

@@ -2,7 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { CursorColumns, SingleCursorState } from './cursorCommon.js';
+'use strict';
+import { SingleCursorState, CursorColumns } from './cursorCommon.js';
 import { Position } from '../core/position.js';
 import { Range } from '../core/range.js';
 var CursorPosition = /** @class */ (function () {

@@ -2,27 +2,25 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as browser from '../../../base/browser/browser.js';
 import { Emitter } from '../../../base/common/event.js';
 import { Disposable } from '../../../base/common/lifecycle.js';
 import * as platform from '../../../base/common/platform.js';
-import { CharWidthRequest, readCharWidths } from './charWidthReader.js';
-import { ElementSizeObserver } from './elementSizeObserver.js';
+import * as browser from '../../../base/browser/browser.js';
 import { CommonEditorConfiguration } from '../../common/config/commonEditorConfig.js';
 import { FontInfo } from '../../common/config/fontInfo.js';
+import { ElementSizeObserver } from './elementSizeObserver.js';
+import { CharWidthRequest, readCharWidths } from './charWidthReader.js';
 var CSSBasedConfigurationCache = /** @class */ (function () {
     function CSSBasedConfigurationCache() {
         this._keys = Object.create(null);
@@ -109,7 +107,6 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
                     isMonospace: readConfig.isMonospace,
                     typicalHalfwidthCharacterWidth: Math.max(readConfig.typicalHalfwidthCharacterWidth, 5),
                     typicalFullwidthCharacterWidth: Math.max(readConfig.typicalFullwidthCharacterWidth, 5),
-                    canUseHalfwidthRightwardsArrow: readConfig.canUseHalfwidthRightwardsArrow,
                     spaceWidth: Math.max(readConfig.spaceWidth, 5),
                     maxDigitWidth: Math.max(readConfig.maxDigitWidth, 5),
                 }, false);
@@ -143,8 +140,7 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
         var digit8 = this.createRequest('8', 0 /* Regular */, all, monospace);
         var digit9 = this.createRequest('9', 0 /* Regular */, all, monospace);
         // monospace test: used for whitespace rendering
-        var rightwardsArrow = this.createRequest('→', 0 /* Regular */, all, monospace);
-        var halfwidthRightwardsArrow = this.createRequest('￫', 0 /* Regular */, all, null);
+        this.createRequest('→', 0 /* Regular */, all, monospace);
         this.createRequest('·', 0 /* Regular */, all, monospace);
         // monospace test: some characters
         this.createRequest('|', 0 /* Regular */, all, monospace);
@@ -179,15 +175,6 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
                 break;
             }
         }
-        var canUseHalfwidthRightwardsArrow = true;
-        if (isMonospace && halfwidthRightwardsArrow.width !== referenceWidth) {
-            // using a halfwidth rightwards arrow would break monospace...
-            canUseHalfwidthRightwardsArrow = false;
-        }
-        if (halfwidthRightwardsArrow.width > rightwardsArrow.width) {
-            // using a halfwidth rightwards arrow would paint a larger arrow than a regular rightwards arrow
-            canUseHalfwidthRightwardsArrow = false;
-        }
         // let's trust the zoom level only 2s after it was changed.
         var canTrustBrowserZoomLevel = (browser.getTimeSinceLastZoomLevelChanged() > 2000);
         return new FontInfo({
@@ -200,7 +187,6 @@ var CSSBasedConfiguration = /** @class */ (function (_super) {
             isMonospace: isMonospace,
             typicalHalfwidthCharacterWidth: typicalHalfwidthCharacter.width,
             typicalFullwidthCharacterWidth: typicalFullwidthCharacter.width,
-            canUseHalfwidthRightwardsArrow: canUseHalfwidthRightwardsArrow,
             spaceWidth: space.width,
             maxDigitWidth: maxDigitWidth
         }, canTrustBrowserZoomLevel);
@@ -223,15 +209,26 @@ var Configuration = /** @class */ (function (_super) {
         _this._recomputeOptions();
         return _this;
     }
+    Configuration._massageFontFamily = function (fontFamily) {
+        if (/[,"']/.test(fontFamily)) {
+            // Looks like the font family might be already escaped
+            return fontFamily;
+        }
+        if (/[+ ]/.test(fontFamily)) {
+            // Wrap a font family using + or <space> with quotes
+            return "\"" + fontFamily + "\"";
+        }
+        return fontFamily;
+    };
     Configuration.applyFontInfoSlow = function (domNode, fontInfo) {
-        domNode.style.fontFamily = fontInfo.getMassagedFontFamily();
+        domNode.style.fontFamily = Configuration._massageFontFamily(fontInfo.fontFamily);
         domNode.style.fontWeight = fontInfo.fontWeight;
         domNode.style.fontSize = fontInfo.fontSize + 'px';
         domNode.style.lineHeight = fontInfo.lineHeight + 'px';
         domNode.style.letterSpacing = fontInfo.letterSpacing + 'px';
     };
     Configuration.applyFontInfo = function (domNode, fontInfo) {
-        domNode.setFontFamily(fontInfo.getMassagedFontFamily());
+        domNode.setFontFamily(Configuration._massageFontFamily(fontInfo.fontFamily));
         domNode.setFontWeight(fontInfo.fontWeight);
         domNode.setFontSize(fontInfo.fontSize);
         domNode.setLineHeight(fontInfo.lineHeight);

@@ -5,7 +5,6 @@
 import './list.css';
 import { range } from '../../../common/arrays.js';
 import { List } from './listWidget.js';
-import { CancellationTokenSource } from '../../../common/cancellation.js';
 var PagedRenderer = /** @class */ (function () {
     function PagedRenderer(renderer, modelProvider) {
         this.renderer = renderer;
@@ -27,11 +26,10 @@ var PagedRenderer = /** @class */ (function () {
         if (model.isResolved(index)) {
             return this.renderer.renderElement(model.get(index), index, data.data);
         }
-        var cts = new CancellationTokenSource();
-        var promise = model.resolve(index, cts.token);
-        data.disposable = { dispose: function () { return cts.cancel(); } };
+        var promise = model.resolve(index);
+        data.disposable = { dispose: function () { return promise.cancel(); } };
         this.renderer.renderPlaceholder(index, data.data);
-        promise.then(function (entry) { return _this.renderer.renderElement(entry, index, data.data); });
+        promise.done(function (entry) { return _this.renderer.renderElement(entry, index, data.data); });
     };
     PagedRenderer.prototype.disposeElement = function () {
         // noop
@@ -53,6 +51,9 @@ var PagedList = /** @class */ (function () {
     }
     PagedList.prototype.getHTMLElement = function () {
         return this.list.getHTMLElement();
+    };
+    PagedList.prototype.isDOMFocused = function () {
+        return this.list.getHTMLElement() === document.activeElement;
     };
     Object.defineProperty(PagedList.prototype, "onDidFocus", {
         get: function () {

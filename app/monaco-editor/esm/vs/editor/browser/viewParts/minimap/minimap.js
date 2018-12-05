@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,19 +14,19 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import './minimap.css';
+import { ViewPart, PartFingerprints } from '../../view/viewPart.js';
+import * as strings from '../../../../base/common/strings.js';
+import { getOrCreateMinimapCharRenderer } from '../../../common/view/runtimeMinimapCharRenderer.js';
 import * as dom from '../../../../base/browser/dom.js';
+import { MinimapTokensColorTracker } from '../../../common/view/minimapCharRenderer.js';
 import { createFastDomNode } from '../../../../base/browser/fastDomNode.js';
+import { RenderedLinesCollection } from '../../view/viewLayer.js';
+import { Range } from '../../../common/core/range.js';
+import * as viewEvents from '../../../common/view/viewEvents.js';
 import { GlobalMouseMoveMonitor, standardMouseMoveMerger } from '../../../../base/browser/globalMouseMoveMonitor.js';
 import * as platform from '../../../../base/common/platform.js';
-import * as strings from '../../../../base/common/strings.js';
-import { RenderedLinesCollection } from '../../view/viewLayer.js';
-import { PartFingerprints, ViewPart } from '../../view/viewPart.js';
-import { Range } from '../../../common/core/range.js';
-import { MinimapTokensColorTracker } from '../../../common/view/minimapCharRenderer.js';
-import { getOrCreateMinimapCharRenderer } from '../../../common/view/runtimeMinimapCharRenderer.js';
-import * as viewEvents from '../../../common/view/viewEvents.js';
-import { scrollbarShadow, scrollbarSliderActiveBackground, scrollbarSliderBackground, scrollbarSliderHoverBackground } from '../../../../platform/theme/common/colorRegistry.js';
 import { registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
+import { scrollbarSliderBackground, scrollbarSliderHoverBackground, scrollbarSliderActiveBackground, scrollbarShadow } from '../../../../platform/theme/common/colorRegistry.js';
 function getMinimapLineHeight(renderMinimap) {
     if (renderMinimap === 2 /* Large */) {
         return 4 /* x2_CHAR_HEIGHT */;

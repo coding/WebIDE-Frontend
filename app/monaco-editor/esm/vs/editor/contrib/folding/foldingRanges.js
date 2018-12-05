@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 export var MAX_FOLDING_REGIONS = 0xFFFF;
 export var MAX_LINE_NUMBER = 0xFFFFFF;
 var MASK_INDENT = 0xFF000000;

@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -26,21 +24,23 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 import './inspectTokens.css';
 import * as nls from '../../../../nls.js';
-import { Color } from '../../../../base/common/color.js';
 import { Disposable } from '../../../../base/common/lifecycle.js';
 import { escape } from '../../../../base/common/strings.js';
-import { EditorAction, registerEditorAction, registerEditorContribution } from '../../../browser/editorExtensions.js';
-import { TokenMetadata, TokenizationRegistry } from '../../../common/modes.js';
-import { NULL_STATE, nullTokenize, nullTokenize2 } from '../../../common/modes/nullMode.js';
+import { registerEditorAction, registerEditorContribution, EditorAction } from '../../../browser/editorExtensions.js';
+import { ContentWidgetPositionPreference } from '../../../browser/editorBrowser.js';
 import { IModeService } from '../../../common/services/modeService.js';
+import { TokenizationRegistry, TokenMetadata } from '../../../common/modes.js';
 import { IStandaloneThemeService } from '../../common/standaloneThemeService.js';
+import { NULL_STATE, nullTokenize, nullTokenize2 } from '../../../common/modes/nullMode.js';
+import { Color } from '../../../../base/common/color.js';
+import { registerThemingParticipant, HIGH_CONTRAST } from '../../../../platform/theme/common/themeService.js';
 import { editorHoverBackground, editorHoverBorder } from '../../../../platform/theme/common/colorRegistry.js';
-import { HIGH_CONTRAST, registerThemingParticipant } from '../../../../platform/theme/common/themeService.js';
 var InspectTokensController = /** @class */ (function (_super) {
     __extends(InspectTokensController, _super);
     function InspectTokensController(editor, standaloneColorService, modeService) {
         var _this = _super.call(this) || this;
         _this._editor = editor;
+        _this._standaloneThemeService = standaloneColorService;
         _this._modeService = modeService;
         _this._widget = null;
         _this._register(_this._editor.onDidChangeModel(function (e) { return _this.stop(); }));
@@ -62,10 +62,10 @@ var InspectTokensController = /** @class */ (function (_super) {
         if (this._widget) {
             return;
         }
-        if (!this._editor.hasModel()) {
+        if (!this._editor.getModel()) {
             return;
         }
-        this._widget = new InspectTokensWidget(this._editor, this._modeService);
+        this._widget = new InspectTokensWidget(this._editor, this._standaloneThemeService, this._modeService);
     };
     InspectTokensController.prototype.stop = function () {
         if (this._widget) {
@@ -137,7 +137,7 @@ function getSafeTokenizationSupport(languageIdentifier) {
 }
 var InspectTokensWidget = /** @class */ (function (_super) {
     __extends(InspectTokensWidget, _super);
-    function InspectTokensWidget(editor, modeService) {
+    function InspectTokensWidget(editor, standaloneThemeService, modeService) {
         var _this = _super.call(this) || this;
         // Editor.IContentWidget.allowEditorOverflow
         _this.allowEditorOverflow = true;
@@ -266,7 +266,7 @@ var InspectTokensWidget = /** @class */ (function (_super) {
     InspectTokensWidget.prototype.getPosition = function () {
         return {
             position: this._editor.getPosition(),
-            preference: [2 /* BELOW */, 1 /* ABOVE */]
+            preference: [ContentWidgetPositionPreference.BELOW, ContentWidgetPositionPreference.ABOVE]
         };
     };
     InspectTokensWidget._ID = 'editor.contrib.inspectTokensWidget';

@@ -8,6 +8,7 @@ import { CancellationTokenSource } from '../../../base/common/cancellation.js';
 import { Emitter } from '../../../base/common/event.js';
 import { dispose } from '../../../base/common/lifecycle.js';
 import './lightBulbWidget.css';
+import { ContentWidgetPositionPreference } from '../../browser/editorBrowser.js';
 import { TextModel } from '../../common/model/textModel.js';
 import { CodeActionKind } from './codeActionTrigger.js';
 var LightBulbWidget = /** @class */ (function () {
@@ -25,8 +26,7 @@ var LightBulbWidget = /** @class */ (function () {
         this._disposables.push(this._editor.onDidChangeModelLanguage(function (_) { return _this._futureFixes.cancel(); }));
         this._disposables.push(this._editor.onDidChangeModelContent(function (_) {
             // cancel when the line in question has been removed
-            var editorModel = _this._editor.getModel();
-            if (!_this.model || !_this.model.position || !editorModel || _this.model.position.lineNumber >= editorModel.getLineCount()) {
+            if (_this._model && _this.model.position.lineNumber >= _this._editor.getModel().getLineCount()) {
                 _this._futureFixes.cancel();
             }
         }));
@@ -38,7 +38,7 @@ var LightBulbWidget = /** @class */ (function () {
             var _a = dom.getDomNodePagePosition(_this._domNode), top = _a.top, height = _a.height;
             var lineHeight = _this._editor.getConfiguration().lineHeight;
             var pad = Math.floor(lineHeight / 3);
-            if (_this._position && _this._model && _this._model.position && _this._position.position !== null && _this._position.position.lineNumber < _this._model.position.lineNumber) {
+            if (_this._position && _this._position.position.lineNumber < _this._model.position.lineNumber) {
                 pad += lineHeight;
             }
             _this._onClick.fire({
@@ -85,7 +85,7 @@ var LightBulbWidget = /** @class */ (function () {
         },
         set: function (value) {
             var _this = this;
-            if (!value || this._position && (!value.position || this._position.position && this._position.position.lineNumber !== value.position.lineNumber)) {
+            if (this._position && (!value.position || this._position.position.lineNumber !== value.position.lineNumber)) {
                 // hide when getting a 'hide'-request or when currently
                 // showing on another line
                 this.hide();
@@ -97,13 +97,10 @@ var LightBulbWidget = /** @class */ (function () {
             this._futureFixes = new CancellationTokenSource();
             var token = this._futureFixes.token;
             this._model = value;
-            if (!this._model || !this._model.actions) {
-                return;
-            }
             var selection = this._model.rangeOrSelection;
             this._model.actions.then(function (fixes) {
                 if (!token.isCancellationRequested && fixes && fixes.length > 0) {
-                    if (!selection || selection.isEmpty() && fixes.every(function (fix) { return !!(fix.kind && CodeActionKind.Refactor.contains(fix.kind)); })) {
+                    if (selection.isEmpty() && fixes.every(function (fix) { return fix.kind && CodeActionKind.Refactor.contains(fix.kind); })) {
                         _this.hide();
                     }
                     else {
@@ -113,7 +110,7 @@ var LightBulbWidget = /** @class */ (function () {
                 else {
                     _this.hide();
                 }
-            }).catch(function () {
+            }).catch(function (err) {
                 _this.hide();
             });
         },
@@ -131,15 +128,11 @@ var LightBulbWidget = /** @class */ (function () {
         configurable: true
     });
     LightBulbWidget.prototype._show = function () {
-        var _this = this;
         var config = this._editor.getConfiguration();
         if (!config.contribInfo.lightbulbEnabled) {
             return;
         }
-        if (!this._model || !this._model.position) {
-            return;
-        }
-        var _a = this._model.position, lineNumber = _a.lineNumber, column = _a.column;
+        var lineNumber = this._model.position.lineNumber;
         var model = this._editor.getModel();
         if (!model) {
             return;
@@ -148,22 +141,13 @@ var LightBulbWidget = /** @class */ (function () {
         var lineContent = model.getLineContent(lineNumber);
         var indent = TextModel.computeIndentLevel(lineContent, tabSize);
         var lineHasSpace = config.fontInfo.spaceWidth * indent > 22;
-        var isFolded = function (lineNumber) {
-            return lineNumber > 2 && _this._editor.getTopForLineNumber(lineNumber) === _this._editor.getTopForLineNumber(lineNumber - 1);
-        };
         var effectiveLineNumber = lineNumber;
         if (!lineHasSpace) {
-            if (lineNumber > 1 && !isFolded(lineNumber - 1)) {
+            if (lineNumber > 1) {
                 effectiveLineNumber -= 1;
             }
-            else if (!isFolded(lineNumber + 1)) {
+            else {
                 effectiveLineNumber += 1;
-            }
-            else if (column * config.fontInfo.spaceWidth < 22) {
-                // cannot show lightbulb above/below and showing
-                // it inline would overlay the cursor...
-                this.hide();
-                return;
             }
         }
         this._position = {
@@ -178,7 +162,7 @@ var LightBulbWidget = /** @class */ (function () {
         this._futureFixes.cancel();
         this._editor.layoutContentWidget(this);
     };
-    LightBulbWidget._posPref = [0 /* EXACT */];
+    LightBulbWidget._posPref = [ContentWidgetPositionPreference.EXACT];
     return LightBulbWidget;
 }());
 export { LightBulbWidget };

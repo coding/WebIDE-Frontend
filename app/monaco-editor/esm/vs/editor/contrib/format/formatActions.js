@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -28,6 +26,7 @@ import * as nls from '../../../nls.js';
 import { isFalsyOrEmpty } from '../../../base/common/arrays.js';
 import { KeyChord } from '../../../base/common/keyCodes.js';
 import { dispose } from '../../../base/common/lifecycle.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { ContextKeyExpr } from '../../../platform/contextkey/common/contextkey.js';
 import { registerEditorAction, EditorAction, registerEditorContribution } from '../../browser/editorExtensions.js';
 import { OnTypeFormattingEditProviderRegistry, DocumentRangeFormattingEditProviderRegistry } from '../../common/modes.js';
@@ -42,7 +41,6 @@ import { alert } from '../../../base/browser/ui/aria/aria.js';
 import { EditorState } from '../../browser/core/editorState.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
 import { INotificationService } from '../../../platform/notification/common/notification.js';
-import { CancellationToken } from '../../../base/common/cancellation.js';
 function alertFormattingEdits(edits) {
     edits = edits.filter(function (edit) { return edit.range; });
     if (!edits.length) {
@@ -215,7 +213,7 @@ var FormatOnPaste = /** @class */ (function () {
         var model = this.editor.getModel();
         var _a = model.getOptions(), tabSize = _a.tabSize, insertSpaces = _a.insertSpaces;
         var state = new EditorState(this.editor, 1 /* Value */ | 4 /* Position */);
-        getDocumentRangeFormattingEdits(model, range, { tabSize: tabSize, insertSpaces: insertSpaces }, CancellationToken.None).then(function (edits) {
+        getDocumentRangeFormattingEdits(model, range, { tabSize: tabSize, insertSpaces: insertSpaces }).then(function (edits) {
             return _this.workerService.computeMoreMinimalEdits(model.uri, edits);
         }).then(function (edits) {
             if (!state.validate(_this.editor) || isFalsyOrEmpty(edits)) {
@@ -247,9 +245,9 @@ var AbstractFormatAction = /** @class */ (function (_super) {
         var _this = this;
         var workerService = accessor.get(IEditorWorkerService);
         var notificationService = accessor.get(INotificationService);
-        var formattingPromise = this._getFormattingEdits(editor, CancellationToken.None);
+        var formattingPromise = this._getFormattingEdits(editor);
         if (!formattingPromise) {
-            return Promise.resolve(void 0);
+            return TPromise.as(void 0);
         }
         // Capture the state of the editor
         var state = new EditorState(editor, 1 /* Value */ | 4 /* Position */);
@@ -261,7 +259,6 @@ var AbstractFormatAction = /** @class */ (function (_super) {
             FormattingEdit.execute(editor, edits);
             alertFormattingEdits(edits);
             editor.focus();
-            editor.revealPositionInCenterIfOutsideViewport(editor.getPosition(), 1 /* Immediate */);
         }, function (err) {
             if (err instanceof Error && err.name === NoProviderError.Name) {
                 _this._notifyNoProviderError(notificationService, editor.getModel().getLanguageIdentifier().language);
@@ -299,10 +296,10 @@ var FormatDocumentAction = /** @class */ (function (_super) {
             }
         }) || this;
     }
-    FormatDocumentAction.prototype._getFormattingEdits = function (editor, token) {
+    FormatDocumentAction.prototype._getFormattingEdits = function (editor) {
         var model = editor.getModel();
         var _a = model.getOptions(), tabSize = _a.tabSize, insertSpaces = _a.insertSpaces;
-        return getDocumentFormattingEdits(model, { tabSize: tabSize, insertSpaces: insertSpaces }, token);
+        return getDocumentFormattingEdits(model, { tabSize: tabSize, insertSpaces: insertSpaces });
     };
     FormatDocumentAction.prototype._notifyNoProviderError = function (notificationService, language) {
         notificationService.info(nls.localize('no.documentprovider', "There is no document formatter for '{0}'-files installed.", language));
@@ -317,7 +314,7 @@ var FormatSelectionAction = /** @class */ (function (_super) {
             id: 'editor.action.formatSelection',
             label: nls.localize('formatSelection.label', "Format Selection"),
             alias: 'Format Code',
-            precondition: ContextKeyExpr.and(EditorContextKeys.writable),
+            precondition: ContextKeyExpr.and(EditorContextKeys.writable, EditorContextKeys.hasNonEmptySelection),
             kbOpts: {
                 kbExpr: EditorContextKeys.editorTextFocus,
                 primary: KeyChord(2048 /* CtrlCmd */ | 41 /* KEY_K */, 2048 /* CtrlCmd */ | 36 /* KEY_F */),
@@ -330,16 +327,10 @@ var FormatSelectionAction = /** @class */ (function (_super) {
             }
         }) || this;
     }
-    FormatSelectionAction.prototype._getFormattingEdits = function (editor, token) {
+    FormatSelectionAction.prototype._getFormattingEdits = function (editor) {
         var model = editor.getModel();
-        var selection = editor.getSelection();
-        if (selection.isEmpty()) {
-            var maxColumn = model.getLineMaxColumn(selection.startLineNumber);
-            selection = selection.setStartPosition(selection.startLineNumber, 1);
-            selection = selection.setEndPosition(selection.endLineNumber, maxColumn);
-        }
         var _a = model.getOptions(), tabSize = _a.tabSize, insertSpaces = _a.insertSpaces;
-        return getDocumentRangeFormattingEdits(model, selection, { tabSize: tabSize, insertSpaces: insertSpaces }, token);
+        return getDocumentRangeFormattingEdits(model, editor.getSelection(), { tabSize: tabSize, insertSpaces: insertSpaces });
     };
     FormatSelectionAction.prototype._notifyNoProviderError = function (notificationService, language) {
         notificationService.info(nls.localize('no.selectionprovider', "There is no selection formatter for '{0}'-files installed.", language));
@@ -361,13 +352,13 @@ CommandsRegistry.registerCommand('editor.action.format', function (accessor) {
             function class_1() {
                 return _super.call(this, {}) || this;
             }
-            class_1.prototype._getFormattingEdits = function (editor, token) {
+            class_1.prototype._getFormattingEdits = function (editor) {
                 var model = editor.getModel();
                 var editorSelection = editor.getSelection();
                 var _a = model.getOptions(), tabSize = _a.tabSize, insertSpaces = _a.insertSpaces;
                 return editorSelection.isEmpty()
-                    ? getDocumentFormattingEdits(model, { tabSize: tabSize, insertSpaces: insertSpaces }, token)
-                    : getDocumentRangeFormattingEdits(model, editorSelection, { tabSize: tabSize, insertSpaces: insertSpaces }, token);
+                    ? getDocumentFormattingEdits(model, { tabSize: tabSize, insertSpaces: insertSpaces })
+                    : getDocumentRangeFormattingEdits(model, editorSelection, { tabSize: tabSize, insertSpaces: insertSpaces });
             };
             return class_1;
         }(AbstractFormatAction))().run(accessor, editor);

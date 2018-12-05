@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { ContextKeyAndExpr } from '../../contextkey/common/contextkey.js';
 var KeybindingResolver = /** @class */ (function () {
     function KeybindingResolver(defaultKeybindings, overrides) {
@@ -5,9 +10,7 @@ var KeybindingResolver = /** @class */ (function () {
         this._defaultBoundCommands = new Map();
         for (var i = 0, len = defaultKeybindings.length; i < len; i++) {
             var command = defaultKeybindings[i].command;
-            if (command) {
-                this._defaultBoundCommands.set(command, true);
-            }
+            this._defaultBoundCommands.set(command, true);
         }
         this._map = new Map();
         this._lookupMap = new Map();
@@ -107,9 +110,6 @@ var KeybindingResolver = /** @class */ (function () {
         }
     };
     KeybindingResolver.prototype._removeFromLookupMap = function (item) {
-        if (!item.command) {
-            return;
-        }
         var arr = this._lookupMap.get(item.command);
         if (typeof arr === 'undefined') {
             return;

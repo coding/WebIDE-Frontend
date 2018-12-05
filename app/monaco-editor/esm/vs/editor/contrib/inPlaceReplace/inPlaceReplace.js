@@ -2,13 +2,11 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -25,6 +23,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 import * as nls from '../../../nls.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { Range } from '../../common/core/range.js';
 import { Selection } from '../../common/core/selection.js';
 import { EditorContextKeys } from '../../common/editorContextKeys.js';
@@ -139,7 +138,7 @@ var InPlaceReplaceUp = /** @class */ (function (_super) {
         if (!controller) {
             return undefined;
         }
-        return controller.run(this.id, true);
+        return TPromise.wrap(controller.run(this.id, true));
     };
     return InPlaceReplaceUp;
 }(EditorAction));
@@ -163,7 +162,7 @@ var InPlaceReplaceDown = /** @class */ (function (_super) {
         if (!controller) {
             return undefined;
         }
-        return controller.run(this.id, false);
+        return TPromise.wrap(controller.run(this.id, false));
     };
     return InPlaceReplaceDown;
 }(EditorAction));

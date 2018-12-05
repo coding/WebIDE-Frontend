@@ -2,7 +2,10 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { onUnexpectedExternalError } from '../../../base/common/errors.js';
+import { toThenable } from '../../../base/common/async.js';
+import { TPromise } from '../../../base/common/winjs.base.js';
 import { MAX_LINE_NUMBER, FoldingRegions } from './foldingRanges.js';
 var MAX_FOLDING_REGIONS = 5000;
 var foldingContext = {};
@@ -33,7 +36,7 @@ export { SyntaxRangeProvider };
 function collectSyntaxRanges(providers, model, cancellationToken) {
     var rangeData = null;
     var promises = providers.map(function (provider, i) {
-        return Promise.resolve(provider.provideFoldingRanges(model, foldingContext, cancellationToken)).then(function (ranges) {
+        return toThenable(provider.provideFoldingRanges(model, foldingContext, cancellationToken)).then(function (ranges) {
             if (cancellationToken.isCancellationRequested) {
                 return;
             }
@@ -51,7 +54,7 @@ function collectSyntaxRanges(providers, model, cancellationToken) {
             }
         }, onUnexpectedExternalError);
     });
-    return Promise.all(promises).then(function (_) {
+    return TPromise.join(promises).then(function (_) {
         return rangeData;
     });
 }
@@ -129,7 +132,7 @@ export function sanitizeRanges(rangeData, limit) {
         return diff;
     });
     var collector = new RangesCollector(limit);
-    var top = void 0;
+    var top = null;
     var previous = [];
     for (var _i = 0, sorted_1 = sorted; _i < sorted_1.length; _i++) {
         var entry = sorted_1[_i];

@@ -2,29 +2,24 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    }
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -36,19 +31,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 var _a;
-import { createStyleSheet } from '../../../base/browser/dom.js';
-import { combinedDisposable, dispose, toDisposable } from '../../../base/common/lifecycle.js';
-import { isUndefinedOrNull } from '../../../base/common/types.js';
-import { DefaultController, DefaultTreestyler } from '../../../base/parts/tree/browser/treeDefaults.js';
-import { Tree } from '../../../base/parts/tree/browser/treeImpl.js';
-import { localize } from '../../../nls.js';
-import { IConfigurationService } from '../../configuration/common/configuration.js';
-import { Extensions as ConfigurationExtensions } from '../../configuration/common/configurationRegistry.js';
-import { IContextKeyService, RawContextKey } from '../../contextkey/common/contextkey.js';
 import { createDecorator, IInstantiationService } from '../../instantiation/common/instantiation.js';
-import { Registry } from '../../registry/common/platform.js';
-import { attachListStyler, computeStyles, defaultListStyles } from '../../theme/common/styler.js';
+import { toDisposable, combinedDisposable, dispose } from '../../../base/common/lifecycle.js';
+import { IContextKeyService, RawContextKey } from '../../contextkey/common/contextkey.js';
+import { Tree } from '../../../base/parts/tree/browser/treeImpl.js';
+import { attachListStyler, defaultListStyles, computeStyles } from '../../theme/common/styler.js';
 import { IThemeService } from '../../theme/common/themeService.js';
+import { IConfigurationService } from '../../configuration/common/configuration.js';
+import { localize } from '../../../nls.js';
+import { Registry } from '../../registry/common/platform.js';
+import { Extensions as ConfigurationExtensions } from '../../configuration/common/configurationRegistry.js';
+import { DefaultController, OpenMode, ClickBehavior, DefaultTreestyler } from '../../../base/parts/tree/browser/treeDefaults.js';
+import { isUndefinedOrNull } from '../../../base/common/types.js';
+import { createStyleSheet } from '../../../base/browser/dom.js';
+import { ScrollbarVisibility } from '../../../base/common/scrollable.js';
 export var IListService = createDecorator('listService');
 var ListService = /** @class */ (function () {
     function ListService(contextKeyService) {
@@ -71,7 +67,7 @@ var ListService = /** @class */ (function () {
         var registeredList = { widget: widget, extraContextKeys: extraContextKeys };
         this.lists.push(registeredList);
         // Check for currently being focused
-        if (widget.getHTMLElement() === document.activeElement) {
+        if (widget.isDOMFocused()) {
             this._lastFocusedWidget = widget;
         }
         var result = combinedDisposable([
@@ -132,7 +128,7 @@ var WorkbenchTree = /** @class */ (function (_super) {
     function WorkbenchTree(container, configuration, options, contextKeyService, listService, themeService, instantiationService, configurationService) {
         var _this = this;
         var config = handleTreeController(configuration, instantiationService);
-        var horizontalScrollMode = configurationService.getValue(horizontalScrollingKey) ? 1 /* Auto */ : 2 /* Hidden */;
+        var horizontalScrollMode = configurationService.getValue(horizontalScrollingKey) ? ScrollbarVisibility.Auto : ScrollbarVisibility.Hidden;
         var opts = __assign({ horizontalScrollMode: horizontalScrollMode, keyboardSupport: false }, computeStyles(themeService.getTheme(), defaultListStyles), options);
         _this = _super.call(this, container, config, opts) || this;
         _this.disposables = [];
@@ -185,7 +181,7 @@ function massageControllerOptions(options) {
         options.keyboardSupport = false;
     }
     if (typeof options.clickBehavior !== 'number') {
-        options.clickBehavior = 0 /* ON_MOUSE_DOWN */;
+        options.clickBehavior = ClickBehavior.ON_MOUSE_DOWN;
     }
     return options;
 }
@@ -211,7 +207,7 @@ var WorkbenchTreeController = /** @class */ (function (_super) {
         }));
     };
     WorkbenchTreeController.prototype.getOpenModeSetting = function () {
-        return useSingleClickToOpen(this.configurationService) ? 0 /* SINGLE_CLICK */ : 1 /* DOUBLE_CLICK */;
+        return useSingleClickToOpen(this.configurationService) ? OpenMode.SINGLE_CLICK : OpenMode.DOUBLE_CLICK;
     };
     WorkbenchTreeController.prototype.dispose = function () {
         this.disposables = dispose(this.disposables);

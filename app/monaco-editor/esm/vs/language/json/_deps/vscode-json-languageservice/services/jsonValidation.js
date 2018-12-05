@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { Diagnostic, DiagnosticSeverity, Range } from './../../vscode-languageserver-types/main.js';
+import { Diagnostic, DiagnosticSeverity, Range } from '../../vscode-languageserver-types/main.js';
 import { ErrorCode } from '../jsonLanguageTypes.js';
-import * as nls from './../../../fillers/vscode-nls.js';
+import * as nls from '../../../fillers/vscode-nls.js';
 var localize = nls.loadMessageBundle();
 var JSONValidation = /** @class */ (function () {
     function JSONValidation(jsonSchemaService, promiseConstructor) {

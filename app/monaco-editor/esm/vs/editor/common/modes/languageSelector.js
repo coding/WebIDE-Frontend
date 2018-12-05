@@ -2,7 +2,8 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { match as matchGlobPattern } from '../../../base/common/glob.js';
+'use strict';
+import { match as matchGlobPattern } from '../../../base/common/glob.js'; // TODO@Alex
 export function score(selector, candidateUri, candidateLanguage, candidateIsSynchronized) {
     if (Array.isArray(selector)) {
         // array -> take max individual value

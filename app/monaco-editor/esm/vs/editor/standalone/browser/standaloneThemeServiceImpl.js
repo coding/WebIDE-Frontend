@@ -2,15 +2,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as dom from '../../../base/browser/dom.js';
-import { Color } from '../../../base/common/color.js';
-import { Emitter } from '../../../base/common/event.js';
-import { TokenizationRegistry } from '../../common/modes.js';
+'use strict';
 import { TokenTheme, generateTokensCSSForColorMap } from '../../common/modes/supports/tokenization.js';
-import { hc_black, vs, vs_dark } from '../common/themes.js';
-import { Registry } from '../../../platform/registry/common/platform.js';
+import { vs, vs_dark, hc_black } from '../common/themes.js';
+import * as dom from '../../../base/browser/dom.js';
+import { TokenizationRegistry } from '../../common/modes.js';
+import { Color } from '../../../base/common/color.js';
 import { Extensions } from '../../../platform/theme/common/colorRegistry.js';
 import { Extensions as ThemingExtensions } from '../../../platform/theme/common/themeService.js';
+import { Registry } from '../../../platform/registry/common/platform.js';
+import { Emitter } from '../../../base/common/event.js';
 var VS_THEME_NAME = 'vs';
 var VS_DARK_THEME_NAME = 'vs-dark';
 var HC_BLACK_THEME_NAME = 'hc-black';
@@ -144,7 +145,6 @@ var StandaloneThemeServiceImpl = /** @class */ (function () {
     function StandaloneThemeServiceImpl() {
         this.environment = Object.create(null);
         this._onThemeChange = new Emitter();
-        this._onIconThemeChange = new Emitter();
         this._knownThemes = new Map();
         this._knownThemes.set(VS_THEME_NAME, newBuiltInTheme(VS_THEME_NAME));
         this._knownThemes.set(VS_DARK_THEME_NAME, newBuiltInTheme(VS_DARK_THEME_NAME));
@@ -192,10 +192,6 @@ var StandaloneThemeServiceImpl = /** @class */ (function () {
         else {
             theme = this._knownThemes.get(VS_THEME_NAME);
         }
-        if (this._theme === theme) {
-            // Nothing to do
-            return theme.id;
-        }
         this._theme = theme;
         var cssRules = [];
         var hasRule = {};
@@ -215,13 +211,6 @@ var StandaloneThemeServiceImpl = /** @class */ (function () {
         TokenizationRegistry.setColorMap(colorMap);
         this._onThemeChange.fire(theme);
         return theme.id;
-    };
-    StandaloneThemeServiceImpl.prototype.getIconTheme = function () {
-        return {
-            hasFileIcons: false,
-            hasFolderIcons: false,
-            hidesExplorerArrows: false
-        };
     };
     return StandaloneThemeServiceImpl;
 }());

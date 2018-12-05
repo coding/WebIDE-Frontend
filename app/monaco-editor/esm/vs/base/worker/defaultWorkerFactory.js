@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 import { globals } from '../common/platform.js';
 import { logOnceWebWorkerWarning } from '../common/worker/simpleWorker.js';
 function getWorker(workerId, label) {
@@ -46,9 +47,7 @@ var WebWorker = /** @class */ (function () {
         }
     };
     WebWorker.prototype.dispose = function () {
-        if (this.worker) {
-            this.worker.terminate();
-        }
+        this.worker.terminate();
         this.worker = null;
     };
     return WebWorker;
