@@ -55,14 +55,9 @@ function createAPI() {
 monaco.languages.json = createAPI();
 // --- Registration to monaco editor ---
 function getMode() {
-    return monaco.Promise.wrap(import('./jsonMode.js'));
+    return monaco.Promise.wrap(require('./jsonMode.js'));
 }
-monaco.languages.register({
-    id: 'json',
-    extensions: ['.json', '.bowerrc', '.jshintrc', '.jscsrc', '.eslintrc', '.babelrc'],
-    aliases: ['JSON', 'json'],
-    mimetypes: ['application/json'],
-});
+
 monaco.languages.onLanguage('json', function () {
     getMode().then(function (mode) { return mode.setupMode(jsonDefaults); });
 });

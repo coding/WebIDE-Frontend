@@ -5,7 +5,6 @@
 'use strict';
 import { WorkerManager } from './workerManager.js';
 import * as languageFeatures from './languageFeatures.js';
-import { createTokenizationSupport } from './tokenization.js';
 export function setupMode(defaults) {
     var disposables = [];
     var client = new WorkerManager(defaults);
@@ -24,8 +23,6 @@ export function setupMode(defaults) {
     disposables.push(monaco.languages.registerDocumentFormattingEditProvider(languageId, new languageFeatures.DocumentFormattingEditProvider(worker)));
     disposables.push(monaco.languages.registerDocumentRangeFormattingEditProvider(languageId, new languageFeatures.DocumentRangeFormattingEditProvider(worker)));
     disposables.push(new languageFeatures.DiagnosticsAdapter(languageId, worker, defaults));
-    disposables.push(monaco.languages.setTokensProvider(languageId, createTokenizationSupport(true)));
-    disposables.push(monaco.languages.setLanguageConfiguration(languageId, richEditConfiguration));
     disposables.push(monaco.languages.registerColorProvider(languageId, new languageFeatures.DocumentColorAdapter(worker)));
     disposables.push(monaco.languages.registerFoldingRangeProvider(languageId, new languageFeatures.FoldingRangeAdapter(worker)));
 }
