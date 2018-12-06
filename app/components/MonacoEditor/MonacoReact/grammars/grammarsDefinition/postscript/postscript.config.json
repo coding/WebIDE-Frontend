@@ -1,0 +1,7 @@
+{
+  "id": "postscript",
+  "aliases": ["Postscript", "postscript"],
+  "extensions": [".ps", ".eps"],
+  "scopeName": "source.postscript",
+  "mimeType": ["application/postscript"]
+}

@@ -741,9 +741,9 @@
 		},
 		{
 			"begin": "(?=(?><<[-~](\"?)((?:[_\\w]+_|)CPP)\\b\\1))",
-			"comment": "Heredoc with embedded c++",
+			"comment": "Heredoc with embedded cpp",
 			"end": "(?!\\G)",
-			"name": "meta.embedded.block.c++",
+			"name": "meta.embedded.block.cpp",
 			"patterns": [
 				{
 					"begin": "(?><<[-~](\"?)((?:[_\\w]+_|)CPP)\\b\\1)",
@@ -752,7 +752,7 @@
 							"name": "punctuation.definition.string.begin.ruby"
 						}
 					},
-					"contentName": "source.c++",
+					"contentName": "source.cpp",
 					"end": "\\s*\\2$\\n?",
 					"endCaptures": {
 						"0": {
@@ -768,7 +768,7 @@
 							"include": "#interpolated_ruby"
 						},
 						{
-							"include": "source.c++"
+							"include": "source.cpp"
 						},
 						{
 							"include": "#escaped_char"
@@ -853,44 +853,7 @@
 				}
 			]
 		},
-		{
-			"begin": "(?=(?><<[-~](\"?)((?:[_\\w]+_|)JQUERY)\\b\\1))",
-			"comment": "Heredoc with embedded jQuery javascript",
-			"end": "(?!\\G)",
-			"name": "meta.embedded.block.js.jquery",
-			"patterns": [
-				{
-					"begin": "(?><<[-~](\"?)((?:[_\\w]+_|)JQUERY)\\b\\1)",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.begin.ruby"
-						}
-					},
-					"contentName": "source.js.jquery",
-					"end": "\\s*\\2$\\n?",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.end.ruby"
-						}
-					},
-					"name": "string.unquoted.heredoc.ruby",
-					"patterns": [
-						{
-							"include": "#heredoc"
-						},
-						{
-							"include": "#interpolated_ruby"
-						},
-						{
-							"include": "source.js.jquery"
-						},
-						{
-							"include": "#escaped_char"
-						}
-					]
-				}
-			]
-		},
+
 		{
 			"begin": "(?=(?><<[-~](\"?)((?:[_\\w]+_|)(?:SH|SHELL))\\b\\1))",
 			"comment": "Heredoc with embedded shell",

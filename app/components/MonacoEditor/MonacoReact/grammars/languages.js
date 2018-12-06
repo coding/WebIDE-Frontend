@@ -168,10 +168,10 @@ export default [
   },
   {
     id: 'log',
-    scopeName: 'source.livescript',
+    scopeName: 'text.log',
     extensions: ['.txt', '.text', '.conf', '.def', '.list', '.log'],
     mimeType: ['text/plain'],
-    aliases: ['Plain Text']
+    aliases: ['Text Log']
   },
   {
     id: 'lua',
@@ -264,6 +264,40 @@ export default [
     aliases: ['Sass', 'sass', 'scss'],
     scopeName: 'source.scss',
     mimeType: ['text/x-scss', 'text/scss']
+  },
+  {
+    id: 'markdown',
+    extensions: ['.md', '.markdown', '.mdown', '.mkdn', '.mkd', '.mdwn', '.mdtxt', '.mdtext'],
+    aliases: ['Markdown', 'markdown'],
+    scopeName: 'text.html.markdown',
+    mimeType: ['text/x-markdown']
+  },
+  {
+    id: 'postscript',
+    aliases: ['Postscript', 'postscript'],
+    extensions: ['.ps', '.eps'],
+    scopeName: 'source.postscript'
+  },
+  {
+    id: 'scala',
+    extensions: ['.scala'],
+    aliases: ['Scala'],
+    scopeName: 'source.scala',
+    mimeType: ['text/x-scala']
+  },
+  {
+    id: 'textile',
+    aliases: ['Textile', 'textile'],
+    extensions: ['.textile'],
+    scopeName: 'text.html.textile',
+    mimeType: ['text/textile']
+  },
+  {
+    id: 'applescript',
+    extensions: ['.scpt'],
+    aliases: ['AppleScript', 'applescript'],
+    mimeType: ['application/applescript'],
+    scopeName: 'source.applescript'
   },
   {
     id: 'shellscript',

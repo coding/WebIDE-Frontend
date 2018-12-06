@@ -1,9 +1,7 @@
-const customLanguages = [
-  'markdown'
-]
+const customLanguages = []
 
 const languageConfigs = [
-  'azcli', 'bat', 'c', 'cpp', 'clojure', 'coffeescript', 'csharp', 'css', 'dockerfile', 'fsharp', 'go', 'handlebars', 'html', 'ini', 'java', 'javascript', 'json', 'lua', 'mysql', 'objective-c', 'perl', 'php', 'powershell', 'pug', 'python', 'r', 'razor', 'ruby', 'rust', 'scss', 'shellscript', 'sql', 'swift', 'typescript', 'typescriptreact', 'vb', 'vue', 'xml', 'yaml'
+  'azcli', 'bat', 'c', 'cpp', 'clojure', 'coffeescript', 'csharp', 'css', 'dockerfile', 'fsharp', 'go', 'handlebars', 'html', 'ini', 'java', 'javascript', 'json', 'lua', 'mysql', 'objective-c', 'perl', 'php', 'powershell', 'pug', 'python', 'r', 'razor', 'ruby', 'rust', 'scss', 'shellscript', 'sql', 'swift', 'typescript', 'typescriptreact', 'vb', 'vue', 'xml', 'yaml', 'markdown', 'applescript', 'textile', 'scala', 'postscript'
 ]
 
 function registerCustomLanguages () {

@@ -1,0 +1,7 @@
+{
+  "id": "applescript",
+  "extensions": [".scpt"],
+  "aliases": ["AppleScript", "applescript"],
+  "mimeType": ["application/applescript"],
+  "scopeName": "source.applescript"
+}

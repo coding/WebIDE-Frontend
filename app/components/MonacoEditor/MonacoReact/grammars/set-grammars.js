@@ -1,6 +1,5 @@
 import languagesConfig from './languages'
-
-const monacoTextmate1 = require('monaco-textmate')
+import { INITIAL } from './monaco-textmate'
 
 class TokenizerState {
   constructor (_ruleStack) {
@@ -42,7 +41,7 @@ export function wireTmGrammars (monaco, registry, languages) {
         try {
           const grammar = await registry.loadGrammar(languages.get(languageId))
           monaco.languages.setTokensProvider(languageId, {
-            getInitialState: () => new TokenizerState(monacoTextmate1.INITIAL),
+            getInitialState: () => new TokenizerState(INITIAL),
             tokenize: (line, state) => {
               const res = grammar.tokenizeLine(line, state.ruleStack)
               return {
