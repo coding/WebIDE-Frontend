@@ -1,0 +1,7 @@
+{
+  "id": "stylus",
+  "extensions": [".styl"],
+  "aliases": ["Stylus", "Stylus"],
+  "scopeName": "source.stylus",
+  "mimeType": ["text/x-styl"]
+}

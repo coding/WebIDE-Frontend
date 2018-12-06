@@ -1,0 +1,7 @@
+{
+  "id": "vb",
+  "extensions": [".vb"],
+  "scopeName": "source.asp.vb.net",
+  "aliases": ["Visual Basic", "vb"],
+  "mimeType": ["text/x-vb"]
+}

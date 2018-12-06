@@ -1,18 +1,32 @@
-const applicationTypes = ['application/xml', 'application/x-sh', 'application/xhtml+xml'];
-const imageTypes = ['image/jpeg', 'image/png', 'image/bmp', 'image/gif', 'image/webp', 'image/x-icon', 'image/tiff', 'image/x-tga', 'image/vnd.fpx', 'image/vnd.dxf'];
+const applicationTypes = ['application/xml', 'application/x-sh', 'application/xhtml+xml']
+const imageTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/bmp',
+  'image/gif',
+  'image/webp',
+  'image/x-icon',
+  'image/tiff',
+  'image/x-tga',
+  'image/vnd.fpx',
+  'image/vnd.dxf'
+]
 
 export default function getTabType (type = '') {
   if (!type) {
-    return 'TEXT';
+    return 'TEXT'
   } else if (type === 'text/x-web-markdown') {
-    return 'MARKDOWN';
+    return 'MARKDOWN'
   } else if (type === 'text/html') {
-    return 'HTML';
-  } else if (type.indexOf('text') !== -1 || applicationTypes.includes(type)) {
-    return 'TEXT';
+    return 'HTML'
+  } else if (
+    type.indexOf('text') !== -1 ||
+    applicationTypes.includes(type) ||
+    type.indexOf('application') !== -1
+  ) {
+    return 'TEXT'
   } else if (imageTypes.includes(type)) {
-    return 'IMAGE';
-  } else {
-    return 'UNKNOWN';
+    return 'IMAGE'
   }
+  return 'UNKNOWN'
 }

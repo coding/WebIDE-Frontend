@@ -13,8 +13,29 @@ import { findLangueByExt } from '../utils/findLanguage'
 import { EditorInfo } from '../state'
 import initialOptions from '../monacoDefaultOptions'
 import registerCustomLanguages from '../languages'
+import { liftOff } from './grammars/configure-tokenizer'
+import { getTheme, getBase } from '../../../extensions/Editor.ext'
+
+import themes from '../themes'
+
+themes.forEach((themeConfig) => {
+  const { name, theme } = themeConfig
+  const transformedTheme = getTheme(theme)
+  const { colors, rules, type } = transformedTheme
+  monaco.editor.defineTheme(name, {
+    base: getBase(type),
+    inherit: true,
+    colors,
+    rules
+  })
+})
+
+// import 'monaco.languages.css'
+// import '../languageServices/css/monaco.contribution'
 
 registerCustomLanguages()
+
+liftOff(monaco)
 
 function noop () {}
 

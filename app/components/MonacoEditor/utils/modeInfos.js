@@ -58,6 +58,18 @@ const modeInfos = [{
   "filenames": ["Dockerfile"],
   "aliases": ["Dockerfile"]
 }, {
+  "id": "scala",
+  "aliases": [
+      "Scala",
+      "scala"
+  ],
+  "extensions": [
+      ".scala",
+      ".sbt"
+  ],
+  scopeName: 'source.scala',
+  "mimeType": ["text/x-scala"]
+},{
   "id": "fsharp",
   "extensions": [".fs", ".fsi", ".ml", ".mli", ".fsx", ".fsscript"],
   "aliases": ["F#", "FSharp", "fsharp"]

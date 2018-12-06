@@ -40,17 +40,17 @@ if (config.isLib) {
 }
 export const UIThemeOptions = uiOptions
 export const SyntaxThemeOptions = ['default', 'neo', 'eclipse', 'monokai', 'material']
-export const monacoThemeOptions = ['vs-dark', 'vs-light']
+export const monacoThemeOptions = ['default-dark', 'default-light']
 export const fileIconOptions = ['default']
 
 const changeUITheme = (nextThemeId) => {
   if (!config.switchOldEditor) {
     if (nextThemeId === 'light') {
-      settings.appearance.syntax_theme.value = 'vs-light'
-      monacoConfig.theme = 'vs-light'
+      settings.appearance.syntax_theme.value = 'default-light'
+      monacoConfig.theme = 'default-light'
     } else {
-      settings.appearance.syntax_theme.value = 'vs-dark'
-      monacoConfig.theme = 'vs-dark'
+      settings.appearance.syntax_theme.value = 'default-dark'
+      monacoConfig.theme = 'default-dark'
     }
   }
   if (!window.themes) window.themes = {}
@@ -212,7 +212,7 @@ const settings = observable({
     },
     syntax_theme: {
       name: 'settings.appearance.syntaxTheme',
-      value: 'vs-dark',
+      value: 'default-dark',
       options: monacoThemeOptions,
       reaction: changeSyntaxTheme
     },
@@ -404,37 +404,23 @@ const settings = observable({
     requireConfirm: true,
     confirmCallBack ([lang, path]) {
       const prevLang = config.mainLanguage
-      config.mainLanguage = lang
-      if (path !== '/') {
-        config._WORKSPACE_SUB_FOLDER_ = path
-        config._ROOT_URI_ = `/data/coding-ide-home/workspace/${config.spaceKey}/working-dir${path}`
-      }
-      if (lang === prevLang) {
-        const client = LanguageState.clients.get(prevLang)
-        if (client) {
-          client.destory().then(() => createLanguageClient(lang))
-        } else {
-          createLanguageClient(lang)
-        }
-      } else {
-        setLanguageServerOne({ type: lang, srcPath: path }).then((res) => {
-          if (res.code === 0) {
-            config.mainLanguage = lang
-            if (path !== '/') {
-              config._WORKSPACE_SUB_FOLDER_ = path
-              config._ROOT_URI_ = `/data/coding-ide-home/workspace/${
-                config.spaceKey
-              }/working-dir${path}`
-            }
-            const client = LanguageState.clients.get(prevLang)
-            if (client) {
-              client.destory().then(() => createLanguageClient(lang))
-            } else {
-              createLanguageClient(lang)
-            }
+      setLanguageServerOne({ type: lang, srcPath: path }).then((res) => {
+        if (res.code === 0) {
+          config.mainLanguage = lang
+          if (path !== '/') {
+            config._WORKSPACE_SUB_FOLDER_ = path
+            config._ROOT_URI_ = `/data/coding-ide-home/workspace/${
+              config.spaceKey
+            }/working-dir${path}`
           }
-        })
-      }
+          const client = LanguageState.clients.get(prevLang)
+          if (lang === prevLang || client) {
+            client.destory().then(() => createLanguageClient(lang))
+          } else {
+            createLanguageClient(lang)
+          }
+        }
+      })
     },
     projectType: {
       name: 'modal.projectType',

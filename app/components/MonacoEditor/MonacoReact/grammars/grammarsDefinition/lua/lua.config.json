@@ -1,0 +1,7 @@
+{
+  "id": "lua",
+  "extensions": [".lua"],
+  "aliases": ["Lua", "lua"],
+  "scopeName": "source.lua",
+  "mimeType": ["text/x-lua"]
+}

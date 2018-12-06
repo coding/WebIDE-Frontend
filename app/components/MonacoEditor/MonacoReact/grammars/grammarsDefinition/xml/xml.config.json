@@ -1,0 +1,27 @@
+{
+  "id": "xml",
+  "extensions": [
+    ".xml",
+    ".dtd",
+    ".ascx",
+    ".csproj",
+    ".config",
+    ".wxi",
+    ".wxl",
+    ".wxs",
+    ".xaml",
+    ".svg",
+    ".svgz",
+    ".classpath",
+    ".project"
+  ],
+  "firstLine": "(\\<\\?xml.*)|(\\<svg)|(\\<\\!doctype\\s+svg)",
+  "aliases": ["XML", "xml"],
+  "mimeType": [
+    "text/xml",
+    "application/xml",
+    "application/xaml+xml",
+    "application/xml-dtd"
+  ],
+  "scopeName": "text.xml"
+}

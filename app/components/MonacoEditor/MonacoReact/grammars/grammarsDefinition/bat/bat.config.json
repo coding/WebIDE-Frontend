@@ -1,0 +1,7 @@
+{
+  "id": "bat",
+  "extensions": [".bat", ".cmd"],
+  "aliases": ["Batch", "bat"],
+  "mimeType": ["application/bat"],
+  "scopeName": "source.batchfile"
+}

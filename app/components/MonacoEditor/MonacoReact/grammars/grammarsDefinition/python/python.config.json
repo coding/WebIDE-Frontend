@@ -1,0 +1,8 @@
+{
+  "id": "python",
+  "extensions": [".py", ".rpy", ".pyw", ".cpy", ".gyp", ".gypi"],
+  "aliases": ["Python", "py"],
+  "scopeName": "source.python",
+  "mimeType": ["text/x-python"],
+  "firstLine": "^#!/.*\\bpython[0-9.-]*\\b"
+}

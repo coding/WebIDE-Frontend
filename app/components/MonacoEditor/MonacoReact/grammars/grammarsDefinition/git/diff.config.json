@@ -1,0 +1,7 @@
+{
+  "id": "diff",
+  "extensions": [".diff", ".patch"],
+  "aliases": ["Diff"],
+  "mimeType": ["text/x-diff"],
+  "scopeName": "source.diff"
+}

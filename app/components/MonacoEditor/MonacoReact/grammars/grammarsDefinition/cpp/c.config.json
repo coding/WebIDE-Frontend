@@ -1,0 +1,7 @@
+{
+  "id": "c",
+  "extensions": [".c", ".h"],
+  "aliases": ["C", "c"],
+  "mimeType": ["text/x-c", "text/plain", "text/x-csrc"],
+  "scopeName": "source.c"
+}
