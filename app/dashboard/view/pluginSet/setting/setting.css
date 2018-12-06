@@ -1,0 +1,9 @@
+.dash-pluginset .checkbox {
+    user-select: none;
+}
+.dash-pluginset .checkbox i {
+    margin-right: 6px;
+}
+.dash-pluginset .checkbox i.fa-check-square {
+    color: #337ab7;
+}
