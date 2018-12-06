@@ -1,10 +1,8 @@
+import React from 'react';
 
-import React from 'react'
-import i18n from 'utils/createI18n'
-import { dismissModal } from '../actions'
+const year = new Date().getFullYear();
 
-const Alert = (props) => {
-  const { meta, content } = props
+const Alert = () => {
   return (
     <div className='modal-content about'>
       <div className='title'>
@@ -31,12 +29,12 @@ const Alert = (props) => {
       </div>
       <div className='links'>
         <a href='/intro' className='link-item' target='_blank' rel='noopener noreferrer'>产品介绍</a>
-        <a href='https://coding.net/help/doc/cloud-studio' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
+        <a href='https://dev.tencent.com/help/doc/cloud-studio' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
         <a href='https://feedback.coding.net' className='link-item' target='_blank' rel='noopener noreferrer'>意见反馈</a>
       </div>
-      Copyright @ 2015-2018. All Rights Reserved. 扣钉网络 版权所有
+      <div>Copyright @ 2015-{year}. All Rights Reserved. 扣钉网络 版权所有</div>
     </div>
   )
 }
 
-export default Alert
+export default Alert;

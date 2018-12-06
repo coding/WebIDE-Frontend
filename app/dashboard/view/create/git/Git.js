@@ -103,9 +103,6 @@ class Git extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
-        }).catch(err => {
-            hideLoading();
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

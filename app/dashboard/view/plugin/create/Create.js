@@ -13,7 +13,6 @@ import config from '../../../utils/config';
 
 class Create extends Component {
     state = {
-        created: false,
         types: [],
         PluginName: '',
         repoName: '',
@@ -135,13 +134,10 @@ class Create extends Component {
         }).then(res => {
             hideLoading();
             if (res.code === 0) {
-                this.setState({ created: true });
+                this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            hideLoading();
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

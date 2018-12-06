@@ -71,6 +71,7 @@
     background-color: #18f;
     outline: none;
     cursor: pointer;
+    transition: border-color .2s ease, background-color .2s ease;
 }
 .com-button.default {
     border: 1px solid #444;
