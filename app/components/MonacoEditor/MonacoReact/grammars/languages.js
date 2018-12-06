@@ -114,6 +114,7 @@ export default [
     extensions: ['.ini', '.properties', '.gitconfig', '.editorconfig'],
     filenames: ['config', '.gitattributes', '.gitconfig', '.editorconfig'],
     aliases: ['Ini', 'ini'],
+    scopeName: 'source.ini',
     mimeType: ['text/x-properties']
   },
   {

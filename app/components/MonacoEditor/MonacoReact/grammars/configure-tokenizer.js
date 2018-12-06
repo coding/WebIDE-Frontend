@@ -2,7 +2,13 @@ import { loadWASM } from 'onigasm' // peer dependency of 'monaco-textmate'
 import LanguageRegistry from './monaco-textmate-languages'
 import { wireTmGrammars } from './set-grammars'
 
-import grammars from './grammars'
+import languages from './languages'
+
+const grammars = new Map()
+
+languages.forEach((language) => {
+  grammars.set(language.id.toString(), language.scopeName.toString())
+})
 
 let wasmLoaded = false
 
