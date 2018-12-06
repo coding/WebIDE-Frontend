@@ -204,7 +204,7 @@ class Workspace extends Component {
                     const item = res[i];
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
-                    ws.ownerGlobalKey = item.ownerGlobalKey;
+                    ws.ownerGlobalKey = item.owner.globalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
                     ws.repoUrl = item.projectHtmlUrl;

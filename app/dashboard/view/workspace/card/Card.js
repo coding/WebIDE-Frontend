@@ -80,14 +80,12 @@ class Card extends Component {
                 {
                     workingStatus !== 'Invalid' ? (
                         <div className="control">
-                            {
-                                workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
-                                    <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
-                                        <i className="fa fa-stop-circle-o"></i>
-                                        <span>{i18n('global.stop')}</span>
-                                    </div>
-                                )
-                            }
+                            {workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
+                                <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
+                                    <i className="fa fa-stop-circle-o"></i>
+                                    <span>{i18n('global.stop')}</span>
+                                </div>
+                            )}
                             {
                                 globalKey === ownerGlobalKey ? (
                                     <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
