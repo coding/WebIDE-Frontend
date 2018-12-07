@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const MonacoWebpackPlugin = require('./monaco-editor-webpack-plugin')
 const initMonacoPluginConfig = require('./monaco-plugin-config/initialOptions')
 const HappyPack = require('happypack')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -74,7 +74,8 @@ module.exports = function(options = {}) {
       modules: ['node_modules', path.join(PROJECT_ROOT, 'app')],
       alias: {
         static: path.join(PROJECT_ROOT, 'static'),
-        'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility')
+        'vscode': require.resolve('monaco-languageclient/lib/vscode-compatibility'),
+        // 'monaco-editor':  path.join(PROJECT_ROOT, 'app/standalone-packages/monaco-editor'),
       }
     },
     resolveLoader: {
@@ -132,6 +133,10 @@ module.exports = function(options = {}) {
         {
           from: path.join(PROJECT_ROOT, 'node_modules/marked'),
           to: 'marked'
+        },
+        {
+          from: path.join(PROJECT_ROOT, 'node_modules/onigasm/lib/onigasm.wasm'),
+          to: 'onigasm/2.2.1/onigasm.wasm'
         }
       ]),
       new MonacoWebpackPlugin(initMonacoPluginConfig),
@@ -148,7 +153,12 @@ module.exports = function(options = {}) {
     module: {
       rules: [
         { test: /\.jsx?$/, exclude: /node_modules/, loader: 'happypack/loader?id=babel' },
-        { test: /\.md$/, use: ['raw-loader'] }
+        { test: /\.md$/, use: ['raw-loader'] },
+        {
+          test: /\.wasm$/,
+          use: ['file-loader'],
+          type: "javascript/auto",
+        }
       ]
     }
   }

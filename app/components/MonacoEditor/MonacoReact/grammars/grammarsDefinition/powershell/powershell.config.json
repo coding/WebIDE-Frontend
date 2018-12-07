@@ -1,0 +1,7 @@
+{
+  "id": "powershell",
+  "extensions": [".ps1", ".psm1", ".psd1"],
+  "scopeName": "source.powershell",
+  "aliases": ["PowerShell", "powershell", "ps", "ps1"],
+  "mimeType": ["application/x-powershell"]
+}

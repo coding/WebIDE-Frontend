@@ -1,0 +1,7 @@
+{
+  "id": "scss",
+  "extensions": [".scss"],
+  "aliases": ["Sass", "sass", "scss"],
+  "scopeName": "source.scss",
+  "mimeType": ["text/x-scss", "text/scss"]
+}

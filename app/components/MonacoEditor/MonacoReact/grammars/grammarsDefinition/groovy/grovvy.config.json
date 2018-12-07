@@ -1,0 +1,7 @@
+{
+  "id": "grovvy",
+  "extensions": [".groovy"],
+  "aliases": ["Groovy"],
+  "mimtTypes": ["text/x-groovy"],
+  "scopeName": "source.groovy"
+}

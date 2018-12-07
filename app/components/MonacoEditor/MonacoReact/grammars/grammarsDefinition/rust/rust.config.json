@@ -1,0 +1,7 @@
+{
+  "id": "rust",
+  "extensions": [".rs", ".rlib"],
+  "scopeName": "source.rust",
+  "aliases": ["Rust", "rust"],
+  "mimeType": ["text/x-rustsrc"]
+}

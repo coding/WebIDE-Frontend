@@ -6,7 +6,7 @@ import { FsSocketClient } from 'backendAPI/websocketClients'
 import api from 'backendAPI'
 import cx from 'classnames'
 import icons from 'file-icons-js'
-import * as monaco from 'monaco-editor'
+ 
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import { openFile } from 'commands/commandBindings/file'
 import { createTab, activateTab } from 'components/Tab/actions'

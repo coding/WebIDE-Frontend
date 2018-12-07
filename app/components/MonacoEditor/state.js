@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId'
 import React from 'react'
 import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
-import * as monaco from 'monaco-editor'
+ 
 import mime from 'mime-types'
 import { Services } from 'monaco-languageclient'
 

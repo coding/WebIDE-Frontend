@@ -1,0 +1,7 @@
+{
+  "id": "less",
+  "extensions": [".less"],
+  "aliases": ["Less", "less"],
+  "mimeType": ["text/x-less", "text/less"],
+  "scopeName": "source.less"
+}

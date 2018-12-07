@@ -1,0 +1,7 @@
+{
+	"id": "javascript",
+	"scopeName": "source.js",
+	"extensions": [".js", ".jsx", ".es6", ".mjs"],
+	"mimeType": ["application/javascript"],
+	"aliases": ["JavaScript"]
+}

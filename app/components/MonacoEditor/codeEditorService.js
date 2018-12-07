@@ -1,9 +1,19 @@
 import { toDefinition } from './actions'
 
+export function createStyleSheet (container = document.getElementsByTagName('head')[0]) {
+	const style = document.createElement('style')
+	style.type = 'text/css'
+	style.media = 'screen'
+	container.appendChild(style)
+	return style
+}
+
 class CodeEditorService {
   constructor () {
     this._codeEditors = Object.create(null)
     this._diffEditors = Object.create(null)
+    this._decorationOptionProviders = Object.create(null)
+    this._styleSheet = createStyleSheet()
   }
 
   addCodeEditor (editor) {
@@ -48,6 +58,25 @@ class CodeEditorService {
     }
 
     return editorWithWidgetFocus
+  }
+
+  registerDecorationType (key, options, parentTypeKey) {
+    let provider = this._decorationOptionProviders[key]
+    if (!provider) {
+      const providerArags = {
+        styleSheet: this._styleSheet,
+        key,
+        parentTypeKey,
+        options: options || Object.create(null)
+      }
+      if (!parentTypeKey) {
+      } else {
+      }
+    }
+  }
+
+  resolveDecorationOptions (key, is) {
+    return {}
   }
 
   doOpenEditor (editor, input) {

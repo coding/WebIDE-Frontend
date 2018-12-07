@@ -1,0 +1,7 @@
+{
+  "id": "ruby",
+  "extensions": [".rb", ".rbx", ".rjs", ".gemspec", ".pp"],
+  "filenames": ["rakefile"],
+  "aliases": ["Ruby", "rb"],
+  "scopeName": "source.ruby"
+}
