@@ -117,7 +117,6 @@ class TtySocketClient {
     } else {
       this.socket = io.connect(config.baseURL, { resource: 'coding-ide-tty1' })
     }
-
     this.backoff = getBackoff({
       delayMin: 1500,
       delayMax: 10000,
@@ -160,7 +159,6 @@ class TtySocketClient {
   }
 
   reconnect () {
-    log(`[TTY Socket] Try reconnect ttySocket ${this.backoff.attempts}`)
     if (this.backoff.attempts <= this.maxAttempts && !this.socket.connected) {
       const timer = setTimeout(() => {
         this.connect()

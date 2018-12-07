@@ -92,7 +92,7 @@ class TerminalClient extends TtySocketClient {
     })
 
     this.socket.on('disconnect', (type) => {
-      console.log('terminal disconnect...')
+      console.log('[TTY Socket] Terminal disconnect...')
       if (config.ttySocketConnected) runInAction(() => config.ttySocketConnected = false)
       if (type !== 'manual') {
         this.reconnect()
@@ -166,7 +166,7 @@ class TerminalClient extends TtySocketClient {
       // this.socket.disconnect()
       this.close()
       if (this.unbindSocketEvent) this.unbindSocketEvent()
-      this.socket = null
+      // this.socket = null ??
       SideBar.hideSidePanelView('SIDEBAR.BOTTOM.terminal')
     }
   }
