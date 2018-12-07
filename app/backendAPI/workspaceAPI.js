@@ -1,9 +1,12 @@
 import config from '../config'
 import { request } from '../utils'
-import { FsSocketClient, TtySocketClient } from './websocketClients'
+import { FsSocketClient, TtySocketClient, SearchSocketClient } from './websocketClients'
 
 let connectedResolve
 export const fsSocketConnectedPromise = new Promise((rs, rj) => connectedResolve = rs)
+
+let searchConnectedResolve;
+export const searchSocketConnectedPromise = new Promise((rs, rj) => searchConnectedResolve = rs);
 
 export function isWorkspaceExist () {
   return request.get(`/workspaces/${config.spaceKey}`)
@@ -41,6 +44,18 @@ export function connectWebsocketClient () {
   })
 }
 
+export function connectSearchWebsocketClient() {
+  return new Promise((resolve) => {
+    const searchSocketClient = new SearchSocketClient();
+    searchSocketClient.successCallback = function(stompClient) {
+      searchConnectedResolve(stompClient);
+      resolve(true);
+    }
+    searchSocketClient.errorCallback = function(error) {}
+    searchSocketClient.connect();
+  })
+}
+
 export function closeWebsocketClient () {
   const fsSocketClient = new FsSocketClient()
   fsSocketClient.close()
@@ -49,6 +64,11 @@ export function closeWebsocketClient () {
 export function closeTtySocketClient () {
   const ttySocketClient = new TtySocketClient()
   ttySocketClient.close()
+}
+
+export function closeSearchWebsocketClient() {
+  const searchSocketClient = new SearchSocketClient();
+  searchSocketClient.close();
 }
 
 export function getSettings () {
