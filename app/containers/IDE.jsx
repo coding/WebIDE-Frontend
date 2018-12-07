@@ -11,21 +11,10 @@ import GlobalPrompt from './GlobalPrompt'
 import config from 'config';
 import { autorun } from 'mobx';
 
-const Bulletin = ({ close }) => {
-  return (
-    <div className="ide-bulletin">
-      <span>{i18n`global.eventStreamBulletin1`}</span>
-      <a href="https://mp.weixin.qq.com/s/IaOWxG0XLvn2znvvP1dmwA" target="_blank">{i18n`global.eventStreamBulletin2`}</a>
-      <span>{i18n`global.eventStreamBulletin3`}</span>
-      <i className="fa fa-remove" onClick={close}></i>
-    </div>
-  );
-}
-
 class IDE extends Component {
   constructor (props) {
     super(props)
-    this.state = { isReady: false, isBulletinOn: false }
+    this.state = { isReady: false }
   }
 
   componentWillMount () {  // initLifecycle_3: IDE specific init
@@ -41,27 +30,17 @@ class IDE extends Component {
         dismissAfter: 12000
       })
     }
-    autorun(() => {
-      if (config.__PLUGIN_DEV__) {
-        this.setState({ isBulletinOn: true });
-      }
-    });
   }
 
   render () {
     if (!this.state.isReady) return null
     return (
       <div className='ide-container'>
-        {this.state.isBulletinOn && <Bulletin close={this.closeBulletin} />}
         <GlobalPrompt />
         <PanelsContainer />
         <Utilities />
       </div>
     )
-  }
-
-  closeBulletin = () => {
-    this.setState({ isBulletinOn: false });
   }
 }
 
