@@ -1,0 +1,7 @@
+{
+  "id": "shellscript",
+  "extensions": [".sh", ".bash"],
+  "aliases": ["Shell Script", "sh"],
+  "scopeName": "source.shell",
+  "mimeType": ["text/x-sh"]
+}

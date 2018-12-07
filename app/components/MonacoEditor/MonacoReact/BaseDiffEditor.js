@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import * as monaco from 'monaco-editor'
+ 
 
 import initialOptions from '../monacoDefaultOptions'
 import { findLanguageByextensions } from '../utils/findLanguage'

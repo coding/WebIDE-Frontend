@@ -1,0 +1,7 @@
+{
+  "id": "sql",
+  "extensions": [".sql"],
+  "aliases": ["SQL"],
+  "mimeType": ["text/x-sql"],
+  "scopeName": "source.sql"
+}

@@ -44,16 +44,14 @@ class Workspace extends Component {
                             </div>
                         </div>
                         <div className="card-box">
-                            {
-                                workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
-                                    globalKey={globalKey}
-                                    hasWSOpend={hasWSOpend}
-                                    opendSpaceKey={opendSpaceKey}
-                                    showMask={showMask}
-                                    hideMask={hideMask}
-                                    handleFetch={this.handleFetch} />
-                                )
-                            }
+                            {workspaces.map(ws => <Card key={ws.spaceKey} {...ws}
+                                globalKey={globalKey}
+                                hasWSOpend={hasWSOpend}
+                                opendSpaceKey={opendSpaceKey}
+                                showMask={showMask}
+                                hideMask={hideMask}
+                                handleFetch={this.handleFetch}
+                            />)}
                         </div>
                     </div>
                 )}
@@ -64,16 +62,14 @@ class Workspace extends Component {
                             <div className="tip">{i18n('ws.collaborativeWorkspaceTip')}</div>
                         </div>
                         <div className="card-box">
-                            {
-                                workspacesCollaborative.map(ws => <Card key={ws.spaceKey} {...ws}
-                                    globalKey={globalKey}
-                                    hasWSOpend={hasWSOpend}
-                                    opendSpaceKey={opendSpaceKey}
-                                    showMask={showMask}
-                                    hideMask={hideMask}
-                                    handleFetch={this.handleFetch} />
-                                )
-                            }
+                            {workspacesCollaborative.map(ws => <Card key={ws.spaceKey} {...ws}
+                                globalKey={globalKey}
+                                hasWSOpend={hasWSOpend}
+                                opendSpaceKey={opendSpaceKey}
+                                showMask={showMask}
+                                hideMask={hideMask}
+                                handleFetch={this.handleFetch}
+                            />)}
                         </div>
                     </div>
                 )}
@@ -84,13 +80,11 @@ class Workspace extends Component {
                             <div className="tip">{i18n('ws.deletedWSTip')}</div>
                         </div>
                         <div className="card-box">
-                            {
-                                workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
-                                    showMask={showMask}
-                                    hideMask={hideMask}
-                                    handleFetch={this.handleFetch} />
-                                )
-                            }
+                            {workspacesInvalid.map(ws => <Card key={ws.spaceKey} {...ws}
+                                showMask={showMask}
+                                hideMask={hideMask}
+                                handleFetch={this.handleFetch}
+                            />)}
                         </div>
                     </div>
                 )}
@@ -164,8 +158,6 @@ class Workspace extends Component {
             // 保存 workspace 数量
             storeWorkspace({ wsCount: workspaces.length });
             this.setState({ workspaces, workspacesCollaborative });
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -212,7 +204,7 @@ class Workspace extends Component {
                     const item = res[i];
                     const ws = {};
                     ws.spaceKey = item.spaceKey;
-                    ws.ownerGlobalKey = item.ownerGlobalKey;
+                    ws.ownerGlobalKey = item.owner.globalKey;
                     // 无远端仓库有一个 workspaceName 字段
                     ws.projectName = item.workspaceName && item.workspaceName !== 'default' ? item.workspaceName : item.project.name;
                     ws.repoUrl = item.projectHtmlUrl;
@@ -224,8 +216,6 @@ class Workspace extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to fetch deleted workspaceList' });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 

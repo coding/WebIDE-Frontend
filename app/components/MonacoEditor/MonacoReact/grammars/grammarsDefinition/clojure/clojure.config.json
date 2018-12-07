@@ -1,0 +1,7 @@
+{
+  "id": "clojure",
+  "extensions": [".clj", ".clojure"],
+  "aliases": ["Clojure", "clojure"],
+  "mimeType": ["text/x-clojure"],
+  "scopeName": "source.clojure"
+}

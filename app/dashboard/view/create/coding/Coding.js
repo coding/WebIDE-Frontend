@@ -231,9 +231,6 @@ class Coding extends Component {
                     }
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message });
                 }
-            }).catch(err => {
-                hideLoading();
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
             });
         }
     }
@@ -247,9 +244,6 @@ class Coding extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || 'Failed to create workspace' });
             }
-        }).catch(err => {
-            hideLoading();
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

@@ -1,0 +1,7 @@
+{
+  "id": "smart",
+  "extensions": [".tpl"],
+  "aliases": ["Smart"],
+  "scopeName": "source.smarty",
+  "mimeType": ["text/x-smarty"]
+}

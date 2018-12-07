@@ -2,9 +2,14 @@ import { registerAction } from 'utils/actions'
 import { PluginRegistry } from 'utils/plugins'
 import { autorun, observable } from 'mobx'
 import config from 'config'
+import localforage from 'localforage'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import store from './store'
 import api from '../../backendAPI'
+
+const pluginScriptsStore = localforage.createInstance({
+  name: 'pluginScripts'
+})
 
 const io = require(__RUN_MODE__ ? 'socket.io-client/dist/socket.io.min.js' : 'socket.io-client-legacy/dist/socket.io.min.js')
 
@@ -32,8 +37,8 @@ export const updateLocalPackage = registerAction(PACKAGE_UPDATE_LOCAL, p => p)
 export const PACKAGE_TOGGLE = 'PACKAGE_TOGGLE'
 
 export const togglePackage = registerAction(PACKAGE_TOGGLE,
-({ pkgId, shouldEnable, info, type, data }, action) => {
-  const script = localStorage.getItem(pkgId) // toggle行为从本地读取
+async ({ pkgId, shouldEnable, info, type, data }, action) => {
+  const script = await pluginScriptsStore.getItem(pkgId) // toggle行为从本地读取
   if (!shouldEnable) {
     // plugin will unmount
     // 根据 package Id 把所有此插件组的插件拔掉
@@ -107,7 +112,7 @@ export const fetchPackageGroup = registerAction(FETCH_PACKAGE_GROUP,
   const scriptArguments = pkgs.map((pkg => ({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })))
   return api.fetchPackageScript(scriptArguments)
   .then((script) => {
-    localStorage.setItem(groupName, script)
+    pluginScriptsStore.setItem(groupName, script)
     codingPackageJsonp.groups[groupName] = pkgs.map(pkg => pkg.name)
     // Todo: refractor the toggle package model
     // return togglePackage({ pkgId: groupName, shouldEnable: !PluginRegistry.find(groupName), type, data })
@@ -120,7 +125,7 @@ export const fetchPackage = registerAction(FETCH_PACKAGE,
 (pkg, type, data) => ({ pkg, type, data }),
 ({ pkg, type, data }) => api.fetchPackageScript({ pkgName: pkg.name, pkgVersion: pkg.version, target: pkg.TARGET })
   .then((script) => {
-    localStorage.setItem(pkg.name, script)
+    pluginScriptsStore.setItem(pkg.name, script)
     return pkg.name
   })
   .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type, data })))
@@ -160,7 +165,7 @@ const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
 export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
   return api.fetchUserPackageScript(pkg.filePath)
     .then((script) => {
-      localStorage.setItem(pkg.name, script)
+      pluginScriptsStore.setItem(pkg.name, script)
       return pkg.name
     })
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
@@ -341,7 +346,7 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
           const getInfo = store.list.get(key || packageUniqueName) || {}
           PluginRegistry.set(key || packageUniqueName, { ...plugin, pkgId: packageUniqueName, info: getInfo, loadType: 'Required' })
           manager.pluginWillMount()
-          localStorage.setItem(packageUniqueName, script)
+          pluginScriptsStore.setItem(packageUniqueName, script)
           firstPending = false
         } catch (e) {
           console.error(e)
@@ -376,7 +381,8 @@ export const startRemoteHMRServer = registerAction('plugin:mount', () => {
           PluginRegistry.delete(plugin.key)
         })
       }
-      localStorage.setItem(packageUniqueName, script)
+      pluginScriptsStore.setItem(packageUniqueName, script)
+      // localStorage.setItem(packageUniqueName, script)
       togglePackage({ pkgId: packageUniqueName, shouldEnable: true, type: 'reload', data: null })
     })
   })

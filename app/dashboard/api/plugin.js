@@ -48,6 +48,6 @@ export const cancelPrePublish = (data) => {
     return axios.post('/user-plugin/pre/deploy/cancel', data);
 }
 
-export const recallAudit = (data) => {
-    return axios.put('/user-plugin/call/audit', data);
+export const deletePlugin = (pluginId) => {
+    return axios.delete(`/user-plugin/${pluginId}`);
 }

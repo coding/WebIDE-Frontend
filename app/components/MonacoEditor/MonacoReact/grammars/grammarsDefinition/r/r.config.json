@@ -1,0 +1,7 @@
+{
+  "id": "r",
+  "extensions": [".r", ".rhistory", ".rprofile", ".rt"],
+  "scopeName": "source.r",
+  "aliases": ["R", "r"],
+  "mimeType": ["text/x-rsrc"]
+}

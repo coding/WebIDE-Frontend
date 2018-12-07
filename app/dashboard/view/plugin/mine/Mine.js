@@ -35,8 +35,6 @@ class Mine extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || res.message });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

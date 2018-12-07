@@ -65,8 +65,6 @@ class Create extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -80,8 +78,6 @@ class Create extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -95,8 +91,6 @@ class Create extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 

@@ -1,0 +1,7 @@
+{
+  "id": "scala",
+  "extensions": [".scala"],
+  "aliases": ["Scala"],
+  "scopeName": "source.scala",
+  "mimeType": ["text/x-scala"]
+}

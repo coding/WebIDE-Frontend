@@ -80,14 +80,12 @@ class Card extends Component {
                 {
                     workingStatus !== 'Invalid' ? (
                         <div className="control">
-                            {
-                                workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
-                                    <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
-                                        <i className="fa fa-stop-circle-o"></i>
-                                        <span>{i18n('global.stop')}</span>
-                                    </div>
-                                )
-                            }
+                            {workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
+                                <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
+                                    <i className="fa fa-stop-circle-o"></i>
+                                    <span>{i18n('global.stop')}</span>
+                                </div>
+                            )}
                             {
                                 globalKey === ownerGlobalKey ? (
                                     <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
@@ -119,7 +117,7 @@ class Card extends Component {
         event.preventDefault();
         event.stopPropagation();
         const { ownerGlobalKey, repoUrl } = this.props;
-        const repoHref = `${config.devOrigin}/u/}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        const repoHref = `${config.devOrigin}/u/${ownerGlobalKey}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
         window.open(repoHref);
     }
 
@@ -144,8 +142,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -158,8 +154,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -172,8 +166,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

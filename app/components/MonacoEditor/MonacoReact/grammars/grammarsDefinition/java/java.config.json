@@ -1,0 +1,7 @@
+{
+  "id": "java",
+  "extensions": [".java", ".jav", ".class"],
+  "aliases": ["Java", "java"],
+  "mimeType": ["text/x-java-source", "text/x-java"],
+  "scopeName": "source.java"
+}

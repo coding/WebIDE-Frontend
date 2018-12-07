@@ -26,7 +26,9 @@ export const documentSelectors = [
   {
     lang: 'JavaScript',
     selectors: [
-      { scheme: 'file', language: 'javascript' }
+      { scheme: 'file', language: 'javascript' },
+      { scheme: 'file', language: 'typescript' },
+      { scheme: 'file', language: 'typescriptreact' }
     ]
   },
   {
@@ -35,7 +37,11 @@ export const documentSelectors = [
   },
   {
     lang: 'TypeScript',
-    selectors: ['typescript']
+    selectors: [
+      { scheme: 'file', language: 'javascript' },
+      { scheme: 'file', language: 'typescript' },
+      { scheme: 'file', language: 'typescriptreact' }
+    ]
   },
   {
     lang: 'C#',

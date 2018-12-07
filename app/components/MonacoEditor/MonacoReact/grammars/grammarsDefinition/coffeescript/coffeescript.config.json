@@ -1,0 +1,7 @@
+{
+  "id": "coffeescript",
+  "extensions": [".coffee"],
+  "aliases": ["CoffeeScript", "coffeescript", "coffee"],
+  "mimeType": ["text/x-coffeescript", "text/coffeescript"],
+  "scopeName": "source.coffee"
+}

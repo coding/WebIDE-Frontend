@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import cx from 'classnames'
 import { observer } from 'mobx-react'
 import { dnd } from 'utils'
 import { defaultProps } from 'utils/decorators'

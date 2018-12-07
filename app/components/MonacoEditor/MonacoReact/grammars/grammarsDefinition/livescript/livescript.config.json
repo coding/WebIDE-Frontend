@@ -1,0 +1,7 @@
+{
+	"id": "livescript",
+	"scopeName": "source.livescript",
+	"extensions": [".ls"],
+	"mimeType": ["text/x-livescript"],
+	"aliases": ["LiveScript"]
+}

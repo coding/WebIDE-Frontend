@@ -1,0 +1,7 @@
+{
+  "id": "perl",
+  "extensions": [".pl", ".pm"],
+  "aliases": ["Perl"],
+  "scopeName": "source.perl",
+  "mimeType": ["text/x-perl"]
+}

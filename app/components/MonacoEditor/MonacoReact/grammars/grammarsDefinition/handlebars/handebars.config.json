@@ -1,0 +1,7 @@
+{
+  "id": "handlebars",
+  "extensions": [".handlebars", ".hbs"],
+  "aliases": ["Handlebars", "handlebars"],
+  "mimeType": ["text/x-handlebars-template"],
+  "scopeName": "text.html.handlebars"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "dockerfile",
+  "extensions": [".dockerfile"],
+  "filenames": ["Dockerfile"],
+  "aliases": ["Dockerfile"],
+  "mimeType": ["text/x-dockerfile"],
+  "scopeName": "source.dockerfile"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "cpp",
+  "extensions": [".cpp", ".cc", ".cxx", ".hpp", ".hh", ".hxx"],
+  "aliases": ["C++", "Cpp", "cpp"],
+  "mimeType": ["text/x-c", "text/plain", "text/x-c++src"],
+  "scopeName": "source.cpp"
+}
