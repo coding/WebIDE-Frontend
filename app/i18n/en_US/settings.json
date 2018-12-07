@@ -44,7 +44,8 @@
     "exit_zenmode": "Exit Zen Mode",
     "sysKeymap": "System Keybindings",
     "pluginKeymap": "Plugins Keybindings",
-    "pluginSource": "Keybindings Source"
+    "pluginSource": "Keybindings Source",
+    "search": "Search All Files"
    },
    "appearance": {
       "main": "Appearance Setting",
