@@ -1,0 +1,7 @@
+{
+  "id": "fsharp",
+  "extensions": [".fs", ".fsi", ".ml", ".mli", ".fsx", ".fsscript"],
+  "aliases": ["F#", "FSharp", "fsharp"],
+  "mimeType": ["application/fsharp", "application/fsharp-script", "text/x-fsharp"],
+  "scopeName": "source.fsharp"
+}

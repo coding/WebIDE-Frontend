@@ -105,7 +105,7 @@ export function inputPath (inputPath) {
 }
 */
 
-export const addTerminal = registerAction('terminal:add', (props) => {
+export const addTerminal = registerAction('terminal:add', (props = {}) => {
   const group = state.tabGroups.get('terminalGroup')
   if (!group.tabs.find(tab => tab.id === props.id)) {
     group.addTab(new Tab(props))

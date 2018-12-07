@@ -5,10 +5,6 @@
    "general": {
       "main": "General Setting",
       "language": "Language",
-      "languageOption": {
-         "english": "English",
-         "chinese": "Chinese"
-      },
       "switchOldEditor": "Switching old Editor",
       "hideFiles": "Hide Files"
    },
@@ -48,7 +44,8 @@
     "exit_zenmode": "Exit Zen Mode",
     "sysKeymap": "System Keybindings",
     "pluginKeymap": "Plugins Keybindings",
-    "pluginSource": "Keybindings Source"
+    "pluginSource": "Keybindings Source",
+    "search": "Search All Files"
    },
    "appearance": {
       "main": "Appearance Setting",

@@ -10,8 +10,8 @@ import { dismissModal } from 'components/Modal/actions'
 class ProjectTypeSelector extends PureComponent {
   handleClick = (data) => {
     const { type, srcPath } = data
-    config.mainLanguage = capitalize(type)
-    settings.languageserver.projectType.value = capitalize(type)
+    config.mainLanguage = type
+    settings.languageserver.projectType.value = type
     settings.languageserver.sourcePath.value = srcPath
     setLanguageServerOne(data)
     dismissModal()

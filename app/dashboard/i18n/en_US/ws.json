@@ -31,7 +31,6 @@
     "noProject": "This is empty, please click the 'Sync' button in the upper right corner to sync the CODING project list, or click 'Create Project by template' above to create a new project.",
     "collaborativeWorkspace": "Collaborative workspaces",
     "collaborativeWorkspaceTip": "Workspaces that are collaborative are not subject to restrictions.",
-    "modifyGlobalkey": "Please go to the Tencent Cloud Dev Platform to improve your account information.",
     "colStat1": "Collaboration Requesting",
     "colStat2": "Collaborating",
     "colStat3": "Collaboration Rejected"

@@ -7,7 +7,9 @@
    "left": {
       "project": "文件树",
       "working": "工作文件",
-      "find": "搜索"
+      "find": "搜索",
+      "placeholder": "输入关键词",
+      "searching": "搜索中..."
    },
    "right": {
      "plugin": "插件开发"
@@ -18,6 +20,7 @@
       "pattern": "正则匹配"
    },
    "result": {
-      "blank": "查询结果为 0 条"
+      "blank": "查询结果为 0 条",
+      "tip": "搜索到 {number} 个结果，包含于 {files} 个文件中"
    }
 }

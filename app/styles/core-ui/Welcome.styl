@@ -147,6 +147,36 @@
     }
   }
 }
+.welcome-page .video-btn {
+  width: 80px;
+  margin: 0 auto 20px;
+  color: #439be6;
+  cursor: pointer;
+}
+.welcome-page .video-btn i.fa {
+  margin-right: 4px;
+}
+.welcome-page .video-pop {
+  display: none;
+  background-color: rgba(0, 0, 0, .9);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+}
+.welcome-page .video-pop.on {
+  display: block;
+}
+.welcome-page .video-pop video {
+  width: 100%;
+  max-width: 1200px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
 
 .changelog-page {
   color: $text-color;

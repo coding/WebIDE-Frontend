@@ -13,7 +13,6 @@ import config from '../../../utils/config';
 
 class Create extends Component {
     state = {
-        created: false,
         types: [],
         PluginName: '',
         repoName: '',
@@ -23,10 +22,8 @@ class Create extends Component {
 
     render() {
         const { types, pluginName, repoName, typeId, remark } = this.state;
-        const { globalKey = '', canCreate, wsLimit } = this.props;
-        // dtid_ 开头的 globalkey 需要去主站修改，否则会出问题
-        const shouldModifyGlobalkey = globalKey.startsWith('dtid_');
-        const disabled = !canCreate || !pluginName || (pluginName.length > 255) || !repoName || !typeId || !remark || (remark.length > 255) || shouldModifyGlobalkey;
+        const { canCreate, wsLimit } = this.props;
+        const disabled = !canCreate || !pluginName || (pluginName.length > 255) || !repoName || !typeId || !remark || (remark.length > 255);
         return (
             <div className="dash-create-plugin">
                 <div className="title">{i18n('plugin.createPlugin')}</div>
@@ -59,12 +56,6 @@ class Create extends Component {
                 <div className="com-board">
                     <div className="board-label none"></div>
                     <div className="board-content">
-                        {shouldModifyGlobalkey && (
-                            <div className="should-modify-globalkey">
-                                <i className="fa fa-exclamation-circle"></i>
-                                {i18n('ws.modifyGlobalkey')}
-                            </div>
-                        )}
                         {!canCreate && (
                             <div className="can-not-create-ws-tip">
                                 <i className="fa fa-exclamation-circle"></i>
@@ -143,13 +134,10 @@ class Create extends Component {
         }).then(res => {
             hideLoading();
             if (res.code === 0) {
-                this.setState({ created: true });
+                this.props.history.push({ pathname: '/dashboard/workspace' });
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            hideLoading();
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }

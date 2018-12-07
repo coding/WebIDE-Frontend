@@ -1,0 +1,7 @@
+{
+  "id": "php",
+  "extensions": [".php", ".php4", ".php5", ".phtml", ".ctp"],
+  "aliases": ["PHP", "php"],
+  "scopeName": "source.php",
+  "mimeType": ["application/x-php"]
+}

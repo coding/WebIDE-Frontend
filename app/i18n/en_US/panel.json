@@ -7,7 +7,9 @@
    "left": {
       "project": "Project",
       "working": "Working",
-      "find": "Find"
+      "find": "Search",
+      "placeholder": "Enter keyword",
+      "searching": "Searching..."
    },
    "right": {
     "plugin": "Plugin Development"
@@ -18,6 +20,7 @@
       "pattern": "Pattern Match"
    },
    "result": {
-      "blank": "Search Result Is 0"
+      "blank": "Search Result is 0",
+      "tip": "Searched for {number} results, included in {files} files"
    }
 }

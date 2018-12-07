@@ -56,7 +56,7 @@ export class SearchResultItem extends Component {
                     let {start, end, length, innerStart, innerEnd, line, lineNum} = result;
                     return (
                         <div key={`${fileName}-${resultSize}-${lineNum}-${start}`} className='search-item-line' onClick={() => this.handleItemClick(path, innerStart, innerEnd, lineNum)}>
-                            <span className='search-item-content'>{line.substring(0, innerStart)}<b>{line.substring(innerStart, innerEnd)}</b>{line.substring(innerEnd)}</span>
+                            {line && <span className='search-item-content'>{line.substring(0, innerStart)}<b>{line.substring(innerStart, innerEnd)}</b>{line.substring(innerEnd)}</span>}
                         </div>
                     )})
                 }
@@ -103,14 +103,18 @@ class SearchPanel extends Component {
         if (state.ws.first) {
             content = ''
         } else if (!state.searched.end) {
-            content = 'Searching...'
+            content = i18n`panel.left.searching`
         } else if(state.searched.message !== '') {
             content = state.searched.message;
         } else if (state.searched.results.length != 0) {
             const pattern = state.searching.pattern;
-            let count = 0;
+            const files = state.searched.results.length
+            let number = 0
+            let count = 0
+
             content = state.searched.results.map((searchChunk) => {
                 count++
+                number += searchChunk.results.length
                 return (<SearchResultItem
                     key={`${pattern}-${count}`}
                     fileName={searchChunk.fileName}
@@ -121,6 +125,7 @@ class SearchPanel extends Component {
                 })
             return (
                 <div className='search-result-list'>
+                    <div>{i18n`panel.result.tip${{ files, number }}`}</div>
                     {content}
                 </div>
             )
@@ -136,6 +141,11 @@ class SearchPanel extends Component {
     }
 
     render () {
+        const searching = state.searching
+        const caseSensitive = searching.get('caseSensitive')
+        const word = searching.get('word')
+        const isPattern = searching.get('isPattern')
+
         return (
             <div className='search-panel'>
                 <div className='search-panel-title'>
@@ -148,46 +158,44 @@ class SearchPanel extends Component {
                             value={state.keyword}
                             onChange={this.handleKeywordChange}
                             onKeyDown={this.onKeyDown}
-                            placeholder={i18n.get('panel.left.find')}
+                            placeholder={i18n.get(`panel.left.placeholder`)}
                         />
                     </div>
-                    {/* <div className='search-checkbox'>
-                        <input 
-                            title={i18n.get('panel.checkbox.case')}
-                            label={i18n.get('panel.checkbox.case')}
-                            className='search-control-case-sensitive'
-                            onChange={this.caseSensitive}
-                            type='checkbox'/>
-                        <input title={i18n.get('panel.checkbox.word')}
-                            label={i18n.get('panel.checkbox.word')}
-                            className='search-control-word'
-                            onChange={this.word}
-                            type='checkbox'
-                            disabled={state.searching.isPattern}/>
-                        <input title={i18n.get('panel.checkbox.pattern')}
-                            label={i18n.get('panel.checkbox.pattern')}
-                            className='search-control-pattern'
-                            onChange={this.pattern}
-                            type='checkbox'/>
-                    </div> */}
+                    <div className='search-checkbox'>
+                        <span title={i18n.get('panel.checkbox.case')}
+                          onClick={() => this.caseSensitive(caseSensitive)}
+                          className={caseSensitive ? 'active' : ''}>{'Aa'}</span>
+                        <span title={i18n.get('panel.checkbox.word')}
+                          onClick={() => this.word(word)}
+                          className={word ? 'active' : ''}>{'Al'}</span>
+                        <span title={i18n.get('panel.checkbox.pattern')}
+                          onClick={() => this.pattern(isPattern)}
+                          className={isPattern ? 'active' : ''}>{'.*'}</span>
+                    </div>
                 </div>
                 {this.renderResult()}
             </div>
         )
     }
 
-    caseSensitive = e => {
-        state.searching.caseSensitive = e.target.checked;
+    caseSensitive = caseSensitive => {
+        state.searching.set('caseSensitive', !caseSensitive)
     }
 
-    word = e => {
-        state.searching.word = e.target.checked;
+    word = word => {
+        state.searching.set('word', !word)
+        if (!word) {
+            state.searching.set('isPattern', false)
+        }
     }
 
-    pattern = e => {
-        state.searching.isPattern = e.target.checked;
+    pattern = isPattern => {
+        state.searching.set('isPattern', !isPattern)
+        if (!isPattern) {
+            state.searching.set('word', false)
+        }
     }
 
 }
 
-export default SearchPanel;
+export default SearchPanel

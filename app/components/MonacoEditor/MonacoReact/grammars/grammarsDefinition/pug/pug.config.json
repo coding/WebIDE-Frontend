@@ -1,0 +1,7 @@
+{
+  "id": "pug",
+  "extensions": [".jade", ".pug"],
+  "scopeName": "text.pug",
+  "aliases": ["Pug", "Jade", "jade"],
+  "mimeType": ["text/x-pug"]
+}

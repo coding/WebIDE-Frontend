@@ -142,5 +142,8 @@ export default {
         }
       }
     }
+  },
+  'C#': {
+    workspaceFolders: [],
   }
 }

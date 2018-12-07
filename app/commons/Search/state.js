@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { observable, map } from 'mobx'
 
 export const ws = observable({
   name: '',
@@ -6,13 +6,13 @@ export const ws = observable({
   first: true
 })
 
-export const searching = observable({
+export const searching = map({
   pattern: '',
   path: '',
   caseSensitive: false,
   word: false,
   isPattern: false,
-  singleFork: false
+  singleFork: false,
 })
 
 export const searched = observable({

@@ -7,20 +7,42 @@
     margin-bottom: 14px;  
   }
   .search-panel-input {
-    margin-bottom: 14px;
-    background-color: #1e1e1e
-    border: 1px solid #333
+    margin-bottom: 10px;
     // display: flex
     .search-controls {
       border: none
     }
     .search-checkbox {
       margin-right: inherit;
-      position inherit;
+      position: inherit;
+      top: 43px;
+      display: inline-block;
+      position: absolute;
+      right: 15px;
+      
+      .active {
+        color: #337ab7;
+        font-weight: bold;
+      }
+        
+      span {
+        width: 22px;
+        height: 22px;
+        padding: 3px;
+        display: inline-block;
+        cursor: default;
+
+        
+        &:hover {
+          color: #337ab7;
+          font-weight: bold;
+        }
+      }
     }
   }
   .search-item {
     cursor: pointer;
+    margin-top: 10px;
     white-space: nowrap;
     .search-item-path {
       line-height: 20px;
@@ -37,7 +59,8 @@
         width: 18px;
         text-align: center;
         display: inline-block;
-        transform: translateY(1px)
+        transform: translateY(1px);
+        margin-right: 4px;
       }
       .search-item-path-path {
         opacity: .6;
@@ -57,13 +80,20 @@
       }
     }
     .search-item-line {
-      padding-left: 12px;
+      padding-left: 20px;
       line-height: 20px;
+      margin-top: 10px;
       text-overflow: ellipsis;
       overflow: hidden;
       h {
         // font-weight: 700;
         background: #d2691e78;
+      }
+      
+      b {
+        background: #337ab7;
+        color: #fff;
+        font-weight: normal;
       }
     }
   }

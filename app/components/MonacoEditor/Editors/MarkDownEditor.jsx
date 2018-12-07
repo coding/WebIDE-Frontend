@@ -166,7 +166,7 @@ class MarkdownEditor extends Component {
   }, 500)
 
   render() {
-    const { editor, tab, active, editorInfo } = this.props
+    const { tab, active, editorInfo } = this.props
     const { leftGrow, rightGrow, showBigSize, showPreview } = tab
     const editorStyle = { flexGrow: leftGrow, display: !showBigSize || (showBigSize && !showPreview) ? 'block' : 'none' };
     const previewStyle = { flexGrow: rightGrow };
@@ -175,27 +175,21 @@ class MarkdownEditor extends Component {
     return (
       <div className="markdown-editor-container">
         <div className="preview-action">
-          {
-            showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>
-          }
+          {showPreview && <i className={expandIcon} onClick={() => actions.togglePreviewSize({ state: tab })}></i>}
           <i className={eyeIcon} onClick={() => actions.togglePreview({ state: tab })}></i>
         </div>
         <div className="wrap">
           <div id='editor_preview_markdown_editor' style={editorStyle}>
-            <CodeEditor editor={editor} editorInfo={editorInfo} tab={tab} />
+            <CodeEditor editorInfo={editorInfo} tab={tab} />
           </div>
-          {
-            (showPreview && !showBigSize) && (
-              <ResizeBar startResize={startResize} actions={actions} state={tab} />
-            )
-          }
-          {
-            showPreview && (
-              <div id='editor_preview_preview' style={previewStyle} ref={dom => this.previewDOM = dom}>
-                <PreviewEditor content={this.state.previewContent} editor={editor} />
-              </div>
-            )
-          }
+          {(showPreview && !showBigSize) && (
+            <ResizeBar startResize={startResize} actions={actions} state={tab} />
+          )}
+          {showPreview && (
+            <div id='editor_preview_preview' style={previewStyle} ref={dom => this.previewDOM = dom}>
+              <PreviewEditor content={this.state.previewContent} />
+            </div>
+          )}
         </div>
       </div>
     )

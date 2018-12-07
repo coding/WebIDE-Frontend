@@ -81,10 +81,11 @@ class Editor {
     // })
 
     autorun(() => {
-      if (this.tab && this.tab.isActive && this.tab.editor && this.tab.editor.cm) {
+      const tab = this.tab;
+      if (tab && tab.isActive && tab.editor && tab.editor.cm) {
         setTimeout(() => {
-          this.tab.editor.cm.refresh();
-          this.tab.editor.cm.focus();
+          tab.editor.cm.refresh();
+          tab.editor.cm.focus();
         }, 0);
       }
     })

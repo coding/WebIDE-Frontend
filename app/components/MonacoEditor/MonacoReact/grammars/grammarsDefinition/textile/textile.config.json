@@ -1,0 +1,7 @@
+{
+  "id": "textile",
+  "aliases": ["Textile", "textile"],
+  "extensions": [".textile"],
+  "scopeName": "text.html.textile",
+  "mimeType": ["text/textile"]
+}

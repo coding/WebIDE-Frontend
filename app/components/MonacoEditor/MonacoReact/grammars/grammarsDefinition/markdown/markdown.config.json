@@ -1,0 +1,16 @@
+{
+  "id": "markdown",
+  "extensions": [
+    ".md",
+    ".markdown",
+    ".mdown",
+    ".mkdn",
+    ".mkd",
+    ".mdwn",
+    ".mdtxt",
+    ".mdtext"
+  ],
+  "aliases": ["Markdown", "markdown"],
+  "scopeName": "text.html.markdown",
+  "mimeType": ["text/x-markdown"]
+}

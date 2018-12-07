@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    width: calc(50% - 20px);
+    width: calc(33.33% - 20px);
     height: 100px;
     padding: 20px;
     margin: 0 10px 20px;
@@ -25,9 +25,9 @@
     color: #b1b1b1;
 }
 
-@media screen and (min-width: 1800px) {
+@media screen and (max-width: 1150px) {
     .dash-builtin .built-card {
-        width: calc(33.33% - 20px);
+        width: calc(50% - 20px);
     }
 }
 @media screen and (max-width: 860px) {

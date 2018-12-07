@@ -54,5 +54,8 @@
    "and": "。",
    "loading": "正在加载，请稍后",
    "offlineInfo": "Cloud Studio 的专用主机服务即将下线，请前往 ide.coding.net 使用我们的在线 IDE 服务。",
-   "gotoIDE": "前往 IDE"
+   "gotoIDE": "前往 IDE",
+   "eventStreamBulletin1": "尊敬的开发者，由于受 ",
+   "eventStreamBulletin2": "[ event-stream 包事件 ]",
+   "eventStreamBulletin3": " 影响，您的插件需要手动删除 `yarn.lock` 文件并重新安装依赖，再推送代码发布新版本或预发布。"
 }

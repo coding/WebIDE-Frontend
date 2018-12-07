@@ -31,6 +31,7 @@ class PluginDev extends PureComponent {
   }
 
   render () {
+    const deleted = !pluginProjectInfomation.pluginId;
     return (
       <div className='plugin-dev-container'>
         <div className='panel-heading'>
@@ -39,30 +40,48 @@ class PluginDev extends PureComponent {
             {i18n`plugin.header`}
           </p>
           <p>
-            <span onClick={this.handleDeploy} style={{ cursor: 'pointer', marginRight: 10 }}>
-              <i className='fa fa-paper-plane' aria-hidden />
-              发布插件
-            </span>
+            {!deleted && (
+              <span onClick={this.handleDeploy} style={{ cursor: 'pointer', marginRight: 10 }}>
+                <i className='fa fa-paper-plane' aria-hidden />
+                <span>发布插件</span>
+              </span>
+            )}
             <span onClick={this.handleGoDoc} style={{ cursor: 'pointer' }}>
               <i className='fa fa-book' aria-hidden />
-              开发文档
+              <span>开发文档</span>
             </span>
           </p>
         </div>
+        <p className='plugin-detail-campaign'>
+          <span>插件开发大赛正在进行中，</span>
+          <a href="https://studio.qcloud.coding.net/campaign/favorite-plugins/" target="_blank" rel="noopener">了解更多</a>
+          <span>。</span>
+        </p>
         <div className='plugin-detail-panel'>
-          <p className='plugin-detail-campaign'>
-            插件开发大赛正在进行中，
-            <a onClick={() => window.open('/campaign/favorite-plugins/')}>了解更多</a>
-          </p>
-          <p className='plugin-name'>
+          {deleted && (
+            <p className="plugin-deleted-tip">
+              <i className="fa fa-exclamation-triangle"></i>
+              <span>该插件已被删除，无法发布</span>
+            </p>
+          )}
+          {!deleted && (
+            <p className='plugin-name'>
+              插件名：
             {pluginProjectInfomation.pluginName}
-          </p>
-          <p className='plugin-description'>
+            </p>
+          )}
+          {!deleted && (
+            <p className='plugin-description'>
+              插件描述：
             {pluginProjectInfomation.description}
-          </p>
-          <p className='plugin-description'>
-            {`当前版本：${pluginProjectInfomation.version || ''}`}
-          </p>
+            </p>
+          )}
+          {!deleted && (
+            <p className='plugin-description'>
+              当前版本：
+              {pluginProjectInfomation.version}
+            </p>
+          )}
           <div className='plugin-dev-server'>
             <p>请先确保已在终端内启动插件(yarn start)</p>
             <p>

@@ -77,8 +77,8 @@ module.exports = merge(
         // excludeChunks: ['workspaces', 'main', 'login', 'vendor', 'webpackRuntime'],
         filename: (staticDir ? '../' : '') + introEntryHtmlName,
         template: path.join(PROJECT_ROOT, 'app/intro.html'),
-        backendUrl: str(process.env.BACKEND_URL || '')
-        // favicon: ICO_PATH,
+        backendUrl: str(process.env.BACKEND_URL || ''),
+        staticUrl: path.join('/rs2/'),
       }),
       new HtmlWebpackPlugin({
         title: 'Cloud Studio',

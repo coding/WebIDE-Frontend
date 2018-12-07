@@ -5,10 +5,6 @@
    "general": {
       "main": "通用",
       "language": "语言",
-      "languageOption": {
-         "english": "英语",
-         "chinese": "中文"
-      },
       "switchOldEditor": "切回旧版编辑器",
       "hideFiles": "隐藏文件"
    },
@@ -47,7 +43,8 @@
     "exit_zenmode": "退出禅模式",
     "sysKeymap": "系统快捷键",
     "pluginKeymap": "插件快捷键",
-    "pluginSource": "来源插件"
+    "pluginSource": "来源插件",
+    "search": "全文搜索"
    },
    "appearance": {
       "main": "样式",

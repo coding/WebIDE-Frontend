@@ -1,0 +1,7 @@
+{
+  "id": "razor",
+  "extensions": [".cshtml"],
+  "aliases": ["Razor", "razor"],
+  "scopeName": "text.html.cshtml",
+  "mimeType": ["text/x-cshtml"]
+}

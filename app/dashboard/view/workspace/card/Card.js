@@ -12,7 +12,7 @@ import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
 class Card extends Component {
     render() {
         const { globalKey, hasWSOpend } = this.props;
-        const { spaceKey, ownerName, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, invitedStatus } = this.props;
+        const { spaceKey, ownerGlobalKey, projectName, repoUrl, createDate, deleteTime, lastModifiedDate, workingStatus, collaborative, invitedStatus } = this.props;
         const stopOption = {
             message: i18n('ws.stopNotice'),
             isWarn: true,
@@ -47,8 +47,8 @@ class Card extends Component {
         }
         const invalid = workingStatus === 'Invalid';
         const canotOpen = hasWSOpend && workingStatus !== 'Online';
-        const title = `${ownerName}/${projectName}`;
-        const attr = createDate ? `${ownerName}/${projectName}\n${getCreatedTime(createDate)}` : title;
+        const title = `${ownerGlobalKey}/${projectName}`;
+        const attr = createDate ? `${ownerGlobalKey}/${projectName}\n${getCreatedTime(createDate)}` : title;
         const hasRepo = (repoUrl && !repoUrl.includes('codingide')) ? true : false;
         return (
             <Href invalid={invalid} spaceKey={spaceKey} canotOpen={canotOpen} handleMask={this.handleMask} handleStop={this.handleStop}>
@@ -80,16 +80,14 @@ class Card extends Component {
                 {
                     workingStatus !== 'Invalid' ? (
                         <div className="control">
+                            {workingStatus === 'Online' && (globalKey === ownerGlobalKey) && (
+                                <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
+                                    <i className="fa fa-stop-circle-o"></i>
+                                    <span>{i18n('global.stop')}</span>
+                                </div>
+                            )}
                             {
-                                workingStatus === 'Online' && (globalKey === ownerName) && (
-                                    <div className="act" onClick={(event) => this.handleMask(stopOption, event)}>
-                                        <i className="fa fa-stop-circle-o"></i>
-                                        <span>{i18n('global.stop')}</span>
-                                    </div>
-                                )
-                            }
-                            {
-                                globalKey === ownerName ? (
+                                globalKey === ownerGlobalKey ? (
                                     <div className="act" onClick={(event) => this.handleMask(deleteOption, event)}>
                                         <i className="fa fa-trash-o"></i>
                                         <span>{i18n('global.delete')}</span>
@@ -118,8 +116,8 @@ class Card extends Component {
     handleRepoUrl = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        const { ownerName, repoUrl } = this.props;
-        const repoHref = `${config.devOrigin}/u/${ownerName}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
+        const { ownerGlobalKey, repoUrl } = this.props;
+        const repoHref = `${config.devOrigin}/u/${ownerGlobalKey}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
         window.open(repoHref);
     }
 
@@ -144,8 +142,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -158,8 +154,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 
@@ -172,8 +166,6 @@ class Card extends Component {
             } else {
                 notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
             }
-        }).catch(err => {
-            notify({ notifyType: NOTIFY_TYPE.ERROR, message: err });
         });
     }
 }
