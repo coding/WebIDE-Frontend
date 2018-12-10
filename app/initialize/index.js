@@ -84,15 +84,21 @@ async function initialize () {
     return true
   })
 
-  await step(`[${stepNum++}] Persist Store.`, () => {
-    persistTask()
+  await step(`[${stepNum++}] Persist Store.`, async () => {
+    await persistTask()
+
     return true
   })
 
-  await step(`[${stepNum++}] Mount required package.`, () => {
-    mountPackagesByType('Required')
+  await step(`[${stepNum++}] Mount required package.`, async () => {
+    await mountPackagesByType('Required')
     return true
   })
+
+  if (config.showEnvWelCome) {
+    dispatchCommand('global:show_env')
+    dispatchCommand('file:open_welcome')
+  }
 
   if (config.packageDev) {
     await step(`[${stepNum++}] Enable package server hotreload.`,

@@ -24,12 +24,12 @@ export const hydrate = registerAction(TAB_STORE_HYDRATE, (json) => {
     }, 50)
   }
 
-  if (tabs.length === 0) {
-    dispatchCommand('global:show_env')
-    setTimeout(() => {
-      dispatchCommand('file:open_welcome')
-    }, 10)
-  }
+  // if (tabs.length === 0) {
+  //   dispatchCommand('global:show_env')
+  //   setTimeout(() => {
+  //     dispatchCommand('file:open_welcome')
+  //   }, 10)
+  // }
 
   return initOpenFile(tabs, tabGroups)
 })

@@ -1,9 +1,5 @@
 import axios from './axios';
 
-export const getUserProfile = () => {
-    return axios.get('/user/current', { 'Accept': 'application/vnd.coding.v1+json' });
-}
-
 export const getWorkspace = () => {
     return axios.get('/ws/list?page=0&size=100', { 'Accept': 'application/vnd.coding.v1+json' });
 }

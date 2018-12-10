@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import i18n from '../../../utils/i18n';
 
-class NewPlugin extends Component {
+class NewPlugin extends PureComponent {
     render() {
         const { canCreate, wsLimit } = this.props;
-        return (
-            canCreate ? (
+        if (canCreate) {
+            return (
                 <Link className="ws-card new" to="/dashboard/plugin/create">
                     <div className="avatar"></div>
                     <div className="content">
@@ -16,7 +16,9 @@ class NewPlugin extends Component {
                         <div className="desc a" onClick={this.handleOpenDoc}>{i18n('plugin.howToCreatePlugin')}</div>
                     </div>
                 </Link>
-            ) : (
+            );
+        } else {
+            return (
                 <div className="ws-card new disabled">
                     <div className="avatar"></div>
                     <div className="content">
@@ -24,8 +26,8 @@ class NewPlugin extends Component {
                         <div className="desc">{i18n('ws.limitTip', { limit: wsLimit })}</div>
                     </div>
                 </div>
-            )
-        );
+            );
+        }
     }
 
     handleOpenDoc = (event) => {
