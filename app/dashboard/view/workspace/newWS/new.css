@@ -43,11 +43,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    width: calc(100% - 94px);
+    width: calc(100% - 84px);
 }
 .dash-workspace .new .title {
     width: 100%;
     font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .dash-workspace .new.disabled .title {
     color: #9d9d9d;
@@ -55,6 +58,9 @@
 .dash-workspace .new .desc {
     width: 100%;
     margin-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .dash-workspace .new .desc.a {
     color: #39f;
@@ -72,5 +78,8 @@
     .dash-workspace .new .avatar::after {
         height: 60px;
         left: 45px;
+    }
+    .dash-workspace .new .content {
+        width: calc(100% - 104px);
     }
 }
