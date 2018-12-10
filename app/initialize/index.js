@@ -84,8 +84,9 @@ async function initialize () {
     return true
   })
 
-  await step(`[${stepNum++}] Persist Store.`, () => {
-    persistTask()
+  await step(`[${stepNum++}] Persist Store.`, async () => {
+    await persistTask()
+
     return true
   })
 
