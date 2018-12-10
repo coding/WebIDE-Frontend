@@ -29,7 +29,6 @@ function persistStore (store, transform) {
         if (config.hasRehydrated) {
           mainStore.setItem(`${config.spaceKey}.${config.globalKey}`, transformedStore)
           mainStore.setItem(`${config.spaceKey}.${config.globalKey}.plugins`, transformedPluginStore)
-          resolve(true)
         } else {
           const tasks = [
             mainStore.getItem(`${config.spaceKey}.${config.globalKey}`),
@@ -40,8 +39,7 @@ function persistStore (store, transform) {
               if (store) {
                 autoRehydrate(store)
               } else {
-                dispatchCommand('global:show_env')
-                dispatchCommand('file:open_welcome')
+                config.showEnvWelCome = true
               }
               fileState.initData.set('_init', false)
 
