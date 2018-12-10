@@ -29,6 +29,7 @@ function persistStore (store, transform) {
         if (config.hasRehydrated) {
           mainStore.setItem(`${config.spaceKey}.${config.globalKey}`, transformedStore)
           mainStore.setItem(`${config.spaceKey}.${config.globalKey}.plugins`, transformedPluginStore)
+          resolve(true)
         } else {
           const tasks = [
             mainStore.getItem(`${config.spaceKey}.${config.globalKey}`),
