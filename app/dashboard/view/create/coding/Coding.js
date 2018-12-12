@@ -150,9 +150,6 @@ class Coding extends Component {
         api.syncProject().then(res => {
             this.setState({ isSync: false });
             this.props.fetchCodingProject();
-        }).catch(err => {
-            this.setState({ isSync: false });
-            this.props.fetchCodingProject();
         });
     }
 
@@ -218,17 +215,8 @@ class Coding extends Component {
                     this.handleCreateWorkspace(workspaceOption);
                 } else {
                     hideLoading();
-                    let message;
-                    if (res.msg) {
-                        const msg = res.msg;
-                        if (typeof msg === 'object') {
-                            message = msg[Object.keys(msg)[0]];
-                        } else {
-                            message = res.msg;
-                        }
-                    } else {
-                        message = 'Failed to create project';
-                    }
+                    const msg = res.msg || 'Failed to create project';
+                    const message = typeof msg === 'object' ? msg[Object.keys(msg)[0]] : res.msg;
                     notify({ notifyType: NOTIFY_TYPE.ERROR, message });
                 }
             });

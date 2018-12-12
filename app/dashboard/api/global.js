@@ -15,3 +15,7 @@ export const markReaded = (data) => {
 export const getMessage = () => {
     return axios.get('/workspaces/message?page=1&pageSize=10');
 }
+
+export const logout = () => {
+    return axios.get('/logout', { 'Accept': 'application/vnd.coding.v1+json' });
+}

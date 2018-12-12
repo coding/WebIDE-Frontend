@@ -30,7 +30,7 @@ axios.get = (url, overrideHeaders = {}) => {
     }).then(res => {
         return res.json();
     }).catch(err => {
-        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+        notify({ message: String(err), notifyType: NOTIFY_TYPE.ERROR });
     });
 }
 
@@ -41,9 +41,11 @@ axios.post = (url, data, overrideHeaders = {}) => {
         headers: { ...headers, ...overrideHeaders },
         body: parseFormdata(data),
     }).then(res => {
-        return res.json();
+        if (res.status !== 204) {
+            return res.json();
+        }
     }).catch(err => {
-        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+        notify({ message: String(err), notifyType: NOTIFY_TYPE.ERROR });
     });
 }
 
@@ -56,7 +58,7 @@ axios.put = (url, data, overrideHeaders = {}) => {
     }).then(res => {
         return res.json();
     }).catch(err => {
-        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+        notify({ message: String(err), notifyType: NOTIFY_TYPE.ERROR });
     });
 }
 
@@ -69,7 +71,7 @@ axios.delete = (url, data, overrideHeaders = {}) => {
     }).then(res => {
         return res.json();
     }).catch(err => {
-        notify({ message: err, notifyType: NOTIFY_TYPE.ERROR });
+        notify({ message: String(err), notifyType: NOTIFY_TYPE.ERROR });
     });
 }
 

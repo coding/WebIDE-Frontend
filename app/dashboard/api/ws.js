@@ -44,10 +44,6 @@ export const getSSHPublicKey = () => {
     return axios.get('/user/public_key', { 'Accept': 'application/vnd.coding.v1+json' });
 }
 
-export const logout = () => {
-    return axios.get('/logout', { 'Accept': 'application/vnd.coding.v1+json' });
-}
-
 export const getCodingProject = () => {
     return axios.get('/projects?page=1&pageSize=1000&type=all&source=Coding', { 'Accept': 'application/vnd.coding.v1+json' });
 }
