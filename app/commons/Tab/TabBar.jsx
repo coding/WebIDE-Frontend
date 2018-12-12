@@ -7,7 +7,10 @@ import TabLabel from './TabLabel'
 import Menu from 'components/Menu'
 import ContextMenu from 'components/ContextMenu'
 import i18n from 'utils/createI18n'
-
+import * as SideBar from 'components/Panel/SideBar/actions'
+import config from 'config'
+import * as Panel from 'components/Panel/actions'
+import panelState from 'components/Panel/state'
 
 @defaultProps(props => ({
   addTab: () => props.tabGroup.addTab(),
@@ -43,6 +46,7 @@ class TabBar extends Component {
     } = this.props
 
     const tabBarId = `tab_bar_${tabGroup.id}`
+    const size = panelState.panels.get('PANEL_BOTTOM').size
 
     return (
       <div id={tabBarId}
@@ -67,12 +71,28 @@ class TabBar extends Component {
           </svg>
         </div>
         <div onDoubleClick={addTab} className='tab-dbclick-area' />
-        <div className='tab-show-list'
-          onClick={(e) => { e.stopPropagation(); this.setState({ showDropdownMenu: true }) }}
+        {(!config.isPad || tabGroup.id !== 'terminalGroup')
+          && <div className='tab-show-list'
+          style={{ marginBottom: '-2px' }}
+          onClick={e => { 
+            e.stopPropagation()
+            this.setState({ showDropdownMenu: !this.state.showDropdownMenu }) 
+          }}
         >
-          <i className='fa fa-sort-desc' />
-          {this.renderDropdownMenu()}
-        </div>
+          <i className='fa fa-ellipsis-h' />
+          {this.renderDropdownMenu(size)}
+        </div>}
+        {tabGroup.id === 'terminalGroup' &&
+        <div className='tab-show-list'
+          style={{ marginBottom: size ? '4px' : '-6px' }}
+          onClick={e => { 
+            e.stopPropagation()
+            !size ? Panel.expandPanel('PANEL_BOTTOM') 
+                  : Panel.shrinkPanel('PANEL_BOTTOM')
+          }}
+        >
+          <i className={`fa fa-sort-${size ? 'desc' : 'asc'}`} />
+        </div>}
         <ContextMenu
           items={contextMenuItems}
           isActive={this.state.showContextMenu}
@@ -88,20 +108,26 @@ class TabBar extends Component {
     e.stopPropagation()
     e.preventDefault()
 
+    const rects = e.target.getBoundingClientRect()
+    const isPad = config.isPad
+
     this.setState({
       showContextMenu: true,
-      contextMenuPos: { x: e.clientX, y: e.clientY },
+      contextMenuPos: { 
+        x: isPad ? rects.x : e.clientX, 
+        y: isPad ? rects.y : e.clientY
+      },
       contextMenuContext: context,
     })
   }
 
-  renderDropdownMenu () {
+  renderDropdownMenu (size) {
     if (!this.state.showDropdownMenu) return null
     const dropdownMenuItems = this.makeDropdownMenuItems()
     if (!dropdownMenuItems.length) return null
-    return (<Menu className='top-down to-left'
+    return (<Menu className={`${size ? 'top-down' : 'bottom-top'} to-left`}
+      style={{ bottom: size ? 'initial' : '15px', right: '2px' }}
       items={dropdownMenuItems}
-      style={{ right: '2px' }}
       deactivate={e => this.setState({ showDropdownMenu: false })}
     />)
   }

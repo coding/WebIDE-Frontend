@@ -9,6 +9,7 @@ import i18n from 'utils/createI18n'
 import GlobalPrompt from './GlobalPrompt'
 import config from 'config';
 import { autorun } from 'mobx';
+import VirtualKey from '../components/VirtualKey'
 
 class IDE extends Component {
   constructor (props) {
@@ -38,6 +39,7 @@ class IDE extends Component {
         <GlobalPrompt />
         <PanelsContainer />
         <Utilities />
+        <VirtualKey />
       </div>
     )
   }

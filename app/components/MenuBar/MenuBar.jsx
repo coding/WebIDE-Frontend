@@ -114,6 +114,9 @@ class MenuBarItem extends Component {
           onClick={(e) => {
             e.stopPropagation()
             toggleActive(index, true)
+            if (config.isPad) {
+              config.menuBars.push(this.props)
+            }
           }}
           onMouseEnter={(e) => { if (shouldHoverToggleActive) toggleActive(index) }}
         >

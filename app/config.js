@@ -42,6 +42,7 @@ const config = observable({
   __PLUGIN_DEV__: false,
   fileicons: 'default',
   tencentOrigin: 'https://studio.dev.tencent.com',
+  menuBars: [],
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
       return config.staticServingURL.replace(
@@ -57,12 +58,20 @@ const config = observable({
   },
   get isPlatform () {
     return Boolean(__RUN_MODE__) || config.runMode === 'lib'
+  },
+
+  get isPad () {
+    return /iPad/.test(navigator.userAgent)
   }
 })
 
 autorun(() => {
   if (config.projectName && !config.isLib) {
     window.document.title = `${config.workspaceName && config.workspaceName !== 'default' ? config.workspaceName : config.projectName} | Cloud Studio 开启云端开发模式！ -  Coding.net`
+  }
+
+  if (config.isPad) {
+    document.body.style.cssText += "position:fixed;top:0;left:0;bottom:0;right:0"
   }
 })
 

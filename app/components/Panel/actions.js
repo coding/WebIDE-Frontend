@@ -39,3 +39,16 @@ export const primiaryPanelBlurControler = registerAction(PRIMIARY_PANEL_BLUR_CON
   state.primaryPanelAxis.blur = shouldShow
 })
 
+let initSize = 0
+export const PANEL_SHRINK = 'PANEL_SHRINK'
+export const shrinkPanel = registerAction(PANEL_SHRINK, (panelId) => {
+  const panel = state.panels.get(panelId)
+  initSize = panel.size
+  panel.size = 0
+})
+
+export const PANEL_EXPAND = 'PANEL_EXPAND'
+export const expandPanel = registerAction(PANEL_EXPAND, (panelId) => {
+  const panel = state.panels.get(panelId)
+  panel.size = initSize
+})
