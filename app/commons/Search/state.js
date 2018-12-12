@@ -6,7 +6,7 @@ export const ws = observable({
   first: true
 })
 
-export const searching = map({
+export const searching = observable({
   pattern: '',
   path: '',
   caseSensitive: false,
