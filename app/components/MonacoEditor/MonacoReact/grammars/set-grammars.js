@@ -1,3 +1,5 @@
+import config from 'config'
+import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import languagesConfig from './languages'
 import { INITIAL } from './monaco-textmate'
 
@@ -43,15 +45,39 @@ export function wireTmGrammars (monaco, registry, languages) {
           monaco.languages.setTokensProvider(languageId, {
             getInitialState: () => new TokenizerState(INITIAL),
             tokenize: (line, state) => {
+              if (line.length > 10000) {
+                if (!config.tokenizationWarningAlreadyShown) {
+                  console.warn('Too many characters! Tokenization is skipped for lines longer than 10k characters for performance reasons.')
+                  notify({ message: i18n`editor.tokenizationWarning`, notifyType: NOTIFY_TYPE.ERROR })
+                  config.tokenizationWarningAlreadyShown = true
+                }
+                const tokens = new Uint32Array(2)
+                tokens[0] = 0
+                tokens[1] = (
+                  (1 << 0)
+                  | (0 << 8)
+                  | (0 << 11)
+                  | (1 << 14)
+                  | (2 << 23)
+                ) >>> 0;
+                return {
+                  endState: new TokenizerState(state.ruleStack),
+                  tokens: [{
+                    startIndex: 0,
+                    scopes: '',
+                    endIndex: line.length,
+                  }],
+                }
+              }
               const res = grammar.tokenizeLine(line, state.ruleStack)
-              return {
+              const tokenize = {
                 endState: new TokenizerState(res.ruleStack),
                 tokens: res.tokens.map(token => ({
                   ...token,
-                  // TODO: At the moment, monaco-editor doesn't seem to accept array of scopes
                   scopes: token.scopes[token.scopes.length - 1]
                 }))
               }
+              return tokenize
             }
           })
         } catch (e) {

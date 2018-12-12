@@ -41,6 +41,7 @@ const config = observable({
   // 是否为插件开发工作空间
   __PLUGIN_DEV__: false,
   fileicons: 'default',
+  tokenizationWarningAlreadyShown: false,
   tencentOrigin: 'https://studio.dev.tencent.com',
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
