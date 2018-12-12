@@ -74,5 +74,8 @@ autorun(() => {
   }
 })
 
+config.baseURL = 'http://dev.coding.ide/backend'
+config.wsURL = 'http://dev.coding.ide/ide-ws'
+
 window.config = config
 export default config

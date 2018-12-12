@@ -16,7 +16,7 @@
    },
    "checkbox": {
       "case": "大小写",
-      "word": "单词匹配",
+      "word": "全词匹配",
       "pattern": "正则匹配"
    },
    "result": {
