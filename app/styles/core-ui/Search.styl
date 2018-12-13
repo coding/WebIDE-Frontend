@@ -8,6 +8,7 @@
   }
   .search-panel-input {
     margin-bottom: 10px;
+    position: relative;
     // display: flex
     .search-controls {
       border: none
@@ -15,28 +16,17 @@
     .search-checkbox {
       margin-right: inherit;
       position: inherit;
-      top: 43px;
+      top: 6px;
       display: inline-block;
       position: absolute;
-      right: 15px;
+      right: 8px;
       
-      .active {
-        color: #337ab7;
-        font-weight: bold;
-      }
-        
       span {
         width: 22px;
         height: 22px;
-        padding: 3px;
         display: inline-block;
         cursor: default;
-
-        
-        &:hover {
-          color: #337ab7;
-          font-weight: bold;
-        }
+        user-select: none;
       }
     }
   }
