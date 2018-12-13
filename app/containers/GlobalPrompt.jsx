@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import Prompt from 'components/Prompt/Prompt'
-import { browserDetect } from 'utils'
+//import { browserDetect } from 'utils'
 import config from 'config'
 import i18n from 'utils/createI18n'
 
@@ -15,7 +15,7 @@ class GlobalPrompt extends Component {
 
   componentDidMount () {
     let id = 0
-    const browserVersion = browserDetect()
+    //const browserVersion = browserDetect()
     const promptMessage = []
     const { prompts } = this.state
 
@@ -44,18 +44,18 @@ class GlobalPrompt extends Component {
     //   })
     // }
 
-    if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
-      promptMessage.push({
-        content: (
-          <p>
-            检测到您的浏览器为 {browserVersion}，为保障用户体验，推荐使用 Chrome 或 Safari
-            浏览器访问。
-          </p>
-        ),
-        id: `global-prompt-${id++}`,
-        type: 'compatibility'
-      })
-    }
+    // if (browserVersion !== 'Chrome' && browserVersion !== 'Safari') {
+    //   promptMessage.push({
+    //     content: (
+    //       <p>
+    //         检测到您的浏览器为 {browserVersion}，为保障用户体验，推荐使用 Chrome 或 Safari
+    //         浏览器访问。
+    //       </p>
+    //     ),
+    //     id: `global-prompt-${id++}`,
+    //     type: 'compatibility'
+    //   })
+    // }
     if (config.willExpire) {
       promptMessage.push({
         content: (
