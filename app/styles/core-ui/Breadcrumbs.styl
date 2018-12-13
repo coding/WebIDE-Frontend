@@ -15,11 +15,13 @@
 .breadcrumbs {
   noSelect();
   $breadcrumbs-height = 24px;
+  overflow: auto;
 
   display: flex;
   height: $breadcrumbs-height + 1px;
 
   .crumb-node-name {
+    white-space:nowrap;
     line-height: $breadcrumbs-height;
   }
 
