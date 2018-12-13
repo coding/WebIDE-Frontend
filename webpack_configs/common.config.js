@@ -17,7 +17,7 @@ const execSync = require('child_process').execSync
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 // const ICO_PATH = path.join(PROJECT_ROOT, 'static/favicon.ico')
-// const ICO_PATH = '//studio-res.coding.net/StudioWebResource/Images/favicon.ico'
+// const ICO_PATH = '//cs-res.codehub.cn/StudioWebResource/Images/favicon.ico'
 
 module.exports = function(options = {}) {
   const {

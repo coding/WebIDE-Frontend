@@ -8,7 +8,7 @@ import * as maskActions from 'components/Mask/actions'
 import { emitter, E } from 'utils'
 // import * as Modal from 'components/Modal/actions'
 
-const url = 'https://studio-res.coding.net/DemoVideo/CS-demo-6.21.mp4'
+const url = 'https://cs-res.codehub.cn/DemoVideo/CS-demo-6.21.mp4'
 
 @observer
 class Mask extends Component {

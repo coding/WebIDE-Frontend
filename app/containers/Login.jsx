@@ -240,7 +240,7 @@ class Login extends Component {
       <div className='login-page'>
         <div className='login-bg'>
           <VideoCover videoOptions={{
-            src: '//studio-res.coding.net/DemoVideo/ide-login.mp4',
+            src: '//cs-res.codehub.cn/DemoVideo/ide-login.mp4',
             autoPlay: true,
             loop: true,
             // ref: (videoRef) => {
