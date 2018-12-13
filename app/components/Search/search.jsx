@@ -1,173 +1,213 @@
-import React, { Component } from 'react'
+import { Component } from "react";
 import { observer } from 'mobx-react'
-import debounce from 'lodash/debounce'
-import { autorun } from 'mobx'
-import { FsSocketClient } from 'backendAPI/websocketClients'
-import api from 'backendAPI'
+import subscribeToSearch from 'commons/Search/subscribeToSearch'
+import state from 'commons/Search/state'
 import cx from 'classnames'
-import icons from 'file-icons-js'
- 
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import { openFile } from 'commands/commandBindings/file'
-import { createTab, activateTab } from 'components/Tab/actions'
-import FileTreeState from 'components/FileTree/state'
-import dispatchCommand from 'commands/dispatchCommand'
-import state from './state'
+import * as delegate from 'commons/Search/action'
+import icons from 'file-icons-js'
+import { Aa, Word, Reg } from './icons'
 
-class SearchResultItem extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      isFolded: false
+const hoverColor = '#337ab7'
+
+export class SearchResultItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isFolded: false
+        };
     }
-  }
-  handlePathClick = () => {
-    this.setState({
-      isFolded: !this.state.isFolded
-    })
-  }
-  handleItemClick = (path, line) => {
-    const selection = new monaco.Selection(
-      line.line,
-      line.indexes[0] + 1,
-      line.line,
-      line.indexes[0] + this.props.keyword.length + 1,
-    )
-    
-    openFile({ path, editor: { filePath: path, selection } })
-    // const fileTreeNode = FileTreeState.entities.get(path)
-    // if (fileTreeNode) {
-    //   dispatchCommand('file:open_file', {
-    //     path: fileTreeNode.path,
-    //     editor: { filePath: path, selection },
-    //   })
-    // } else {
-    //   openFile({ path, editor: { filePath: path, selection } })
-    // }
-  }
-  render () {
-    const { path, value } = this.props
-    const iconStr = 'file-icon ' + (icons.getClassWithColor(path) || 'fa fa-file-text-o')
-    const idx = path.lastIndexOf('/') + 1
-    const fileName = path.substring(idx)
-    const filePath = path.substring(1, idx)
-    const count = value.length
-    return (
-      <div className='search-item' key={path}>
-        <div className='search-item-path' onClick={this.handlePathClick}>
-          <i
-            className={cx({
-              'fa fa-caret-right': this.state.isFolded,
-              'fa fa-caret-down': !this.state.isFolded
-            })}
-          />
-          <i className={iconStr} />
-          {fileName}
-          <span className='search-item-path-path'>{filePath}</span>
-          <span className='search-item-count'>{count}</span>
-        </div>
 
-        {!this.state.isFolded && value.map(line => {
-          const contentStart = line.content.substring(0, line.indexes[0])
-          const contentMiddle = line.content.substring(line.indexes[0], line.indexes[0] + this.props.keyword.length)
-          const contentEnd = line.content.substring(line.indexes[0] + this.props.keyword.length)
-          return (
-            <div key={`${path}-${line.line}`} className='search-item-line' onClick={() => this.handleItemClick(path, line)}>
-              <span className='search-item-content'>{contentStart}<h>{contentMiddle}</h>{contentEnd}</span>
+    handlePathClick = () => {
+        this.setState({
+          isFolded: !this.state.isFolded
+        })
+    }
+    
+    handleItemClick = (path, start, end, lineNum) => {
+        const selection = new monaco.Selection(
+            lineNum,
+            start + 1,
+            lineNum,
+            end + 1,
+        )
+    
+        openFile({ path, editor: { filePath: path, selection } })
+    }
+
+    render() {
+        const {fileName, pattern, path, results} = this.props;
+        const resultSize = results.length;
+        const iconStr = 'file-icon ' + (icons.getClassWithColor(path) || 'fa fa-file-text-o');
+        return (
+            <div className='search-item' key={path}>
+                <div className='search-item-path' onClick={this.handlePathClick}>
+                <i
+                    className={cx({
+                    'fa fa-caret-right': this.state.isFolded,
+                    'fa fa-caret-down': !this.state.isFolded
+                    })}
+                />
+                <i className={iconStr} />
+                {fileName}
+                <span className='search-item-path-path'>{path}</span>
+                <span className='search-item-count'>{resultSize}</span>
+                </div>
+        
+                {
+                    !this.state.isFolded && results.map(result => {
+                    let {start, end, length, innerStart, innerEnd, line, lineNum} = result;
+                    return (
+                        <div key={`${fileName}-${resultSize}-${lineNum}-${start}`} className='search-item-line' onClick={() => this.handleItemClick(path, innerStart, innerEnd, lineNum)}>
+                            {line && <span className='search-item-content'>{line.substring(0, innerStart)}<b>{line.substring(innerStart, innerEnd)}</b>{line.substring(innerEnd)}</span>}
+                        </div>
+                    )})
+                }
             </div>
-          )
-        })}
-      </div>
-    )
-  }
+        )
+    }
+
 }
 
 @observer
 class SearchPanel extends Component {
-  componentDidMount () {
-    this.subscribeToFilesearch()
-  }
-  onKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      this.searchTxt()
-    }
-  }
-
-  handleKeywordChange = (e) => {
-    state.keyword = e.target.value
-    e.stopPropagation()
-    e.nativeEvent.stopImmediatePropagation()
-    // this.confirm()
-  }
-
-  confirm = debounce(() => {
-    this.searchTxt()
-  }, 1000)
-
-  searchTxt = () => {
-    state.searching = true
-    api.searchTxt(state.keyword).then((data) => {
-      state.taskId = data.taskId
-    }).catch((res) => {
-      notify({ message: `Search failed: ${res.msg}`, notifyType: NOTIFY_TYPE.ERROR })
-    })
-  }
-  subscribeToFilesearch = () => {
-    autorun(() => {
-      if (!config.fsSocketConnected) return
-      const client = FsSocketClient.$$singleton.stompClient
-      client.subscribe(`/topic/ws/${config.spaceKey}/txt/search`, (frame) => {
-        const data = JSON.parse(frame.body)
-        this.setDate(data)
-      })
-    })
-  }
-
-  setDate = debounce((data) => {
-    if (data.taskId === state.taskId) {
-      state.result = data
-      state.searching = false
-    }
-  }, 500)
-
-  renderResult () {
-    let content = ''
-    if (state.searching) {
-      content = 'Searching...'
-    } else if (state.result.results) {
-      const keyword = state.result.keyword
-      content = Object.entries(state.result.results).map(([key, value]) => {
-        if (key.startsWith('/.git/')) return null
-        return (<SearchResultItem keyword={keyword} path={key} key={key} value={value} />)
-      })
+    componentDidMount () {
+        subscribeToSearch()
     }
 
-    return (
-      <div className='search-result-list'>
-        {content}
-      </div>
-    )
-  }
+    onKeyDown = (e) => {
+        if (e.keyCode === 13) {
+          this.searchTxt()
+        }
+    }
+    
+    handleKeywordChange = (e) => {
+        state.searching.pattern = e.target.value
+        e.stopPropagation()
+        e.nativeEvent.stopImmediatePropagation()
+    }
+    
+    searchTxt = () => {
+        if(state.searching.pattern.length == 0 || state.searching.pattern.trim() == '') {
+            return ;
+        }
+        if(state.ws.first) {
+            state.ws.first = false
+        }
+        if(state.searching.isPattern) {
+            delegate.searchPattern(state.searching);
+        } else {
+            delegate.searchString(state.searching);
+        }
+    }
+    
+    renderResult () {
+        let content = '';
+        if (state.ws.first) {
+            content = ''
+        } else if (!state.searched.end) {
+            content = i18n`panel.left.searching`
+        } else if(state.searched.message !== '') {
+            content = state.searched.message;
+        } else if (state.searched.results.length != 0) {
+            const pattern = state.searching.pattern;
+            const files = state.searched.results.length
+            let number = 0
+            let count = 0
 
-  render () {
-    return (
-      <div className='search-panel'>
-        <div className='search-panel-title'>
-          {i18n`panel.left.find`}
-        </div>
-        <div className='search-panel-input'>
-          <input type='text'
-            className='form-control'
-            value={state.keyword}
-            onChange={this.handleKeywordChange}
-            onKeyDown={this.onKeyDown}
-            placeholder={i18n.get('panel.left.find')}
-          />
-        </div>
-        {this.renderResult()}
-      </div>
-    )
-  }
+            content = state.searched.results.map((searchChunk) => {
+                count++
+                number += searchChunk.results.length
+                return (<SearchResultItem
+                    key={`${pattern}-${count}`}
+                    fileName={searchChunk.fileName}
+                    results={searchChunk.results}
+                    pattern={pattern} 
+                    path={searchChunk.path}
+                    result={searchChunk.results}/>);
+                })
+
+            number = number > 100 ? '100+' : number
+            return (
+                <div className='search-result-list'>
+                    <div>{i18n`panel.result.tip${{ files, number }}`}</div>
+                    {content}
+                </div>
+            )
+        } else if(state.searched.taskId) {
+            content = `${i18n.get('panel.result.blank')}`;
+        }
+
+        return (
+            <div key={`search-result-list`} className='search-result-list'>
+                {content}
+            </div>
+        )
+    }
+
+    render () {
+        const { caseSensitive, word, isPattern } = state.searching
+        const currentTheme = themes['@current']
+        const { locals } = currentTheme.default ? currentTheme.default
+                     : currentTheme
+        const textColor = themeVariables.get('textColor') || locals.textColor
+
+        return (
+            <div className='search-panel'>
+                <div className='search-panel-title'>
+                    {i18n`panel.left.find`}
+                </div>
+                <div className='search-panel-input'>
+                    <div className='search-controls'>
+                        <input type='text'
+                            className='form-control'
+                            value={state.keyword}
+                            onChange={this.handleKeywordChange}
+                            onKeyDown={this.onKeyDown}
+                            placeholder={i18n.get(`panel.left.placeholder`)}
+                        />
+                    </div>
+                    <div className='search-checkbox'>
+                        <span title={i18n.get('panel.checkbox.case')}
+                          onClick={() => this.caseSensitive(caseSensitive)}
+                        >
+                          <Aa fill={ caseSensitive ? hoverColor : textColor} />
+                        </span>
+                        <span title={i18n.get('panel.checkbox.word')}
+                          onClick={() => this.word(word)}
+                        >
+                          <Word fill={ word ? hoverColor : textColor} />
+                        </span>
+                        <span title={i18n.get('panel.checkbox.pattern')}
+                          onClick={() => this.pattern(isPattern)}
+                        >
+                          <Reg fill={ isPattern ? hoverColor : textColor} />
+                        </span>
+                    </div>
+                </div>
+                {this.renderResult()}
+            </div>
+        )
+    }
+
+    caseSensitive = caseSensitive => {
+        state.searching.caseSensitive = !caseSensitive
+    }
+
+    word = word => {
+        state.searching.word = !word
+        if (!word) {
+            state.searching.isPattern = false
+        }
+    }
+
+    pattern = isPattern => {
+        state.searching.isPattern = !isPattern
+        if (!isPattern) {
+            state.searching.word = false
+        }
+    }
+
 }
 
 export default SearchPanel

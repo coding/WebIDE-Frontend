@@ -93,6 +93,12 @@ const keymapStore = observable({
       mac: 'cmd+f11',
       win: 'ctrl+f11',
       label: i18n`settings.keymap.into_zenmode`
+    },
+    {
+      command: 'global:show_search',
+      mac: 'cmd+shift+f',
+      win: 'ctrl+shift+f',
+      label: i18n`settings.keymap.search`
     }
   ],
   pluginsKeymaps: [],

@@ -3,6 +3,7 @@ import * as Panel from 'components/Panel/actions'
 import * as SideBar from 'components/Panel/SideBar/actions'
 import terminalState from 'components/Terminal/state'
 import * as Terminal from 'components/Terminal/actions'
+import * as searchState from 'commons/Search/state'
 
 const getComponentByName = name => window.refs[name].getWrappedInstance()
 export default {
@@ -22,6 +23,9 @@ export default {
   },
   'global:show_env': () => {
     SideBar.toggleSidePanelView('SIDEBAR.RIGHT.env')
+  },
+  'global:show_search': () => {
+    SideBar.toggleSidePanelView('SIDEBAR.LEFT.find')
   },
   'modal:dismiss': (c) => {
     Modal.dismissModal()
