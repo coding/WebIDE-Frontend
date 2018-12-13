@@ -8278,7 +8278,7 @@ relateurl@0.2.x:
 
 "remarkable@https://github.com/Coding/remarkable.git":
   version "1.7.0"
-  resolved "https://github.com/Coding/remarkable.git#2ea611fb7b68d5d284247450318b6398d8b2ad50"
+  resolved "https://github.com/Coding/remarkable.git#805443af72b846ed99f57da31813bd35e23d228d"
   dependencies:
     argparse "~0.1.15"
     autolinker "~0.28.0"
