@@ -33,6 +33,7 @@ const config = observable({
   ],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
+  hasPluginRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
   nodeEnv: __NODE_ENV__ || null,
   isDefault: false,
