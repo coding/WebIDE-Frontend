@@ -12,6 +12,7 @@ import { Line } from 'rc-progress'
 import Tip from './tip';
 import Utilities from '../Utilities';
 import * as Modal from 'components/Modal/actions';
+import { browserDetect } from 'utils';
 
 const WORKING_STATE = {
   Created: 'Created',
@@ -92,11 +93,20 @@ class Initialize extends Component {
       )
     }
     if (state.checkStep === 0) {
-      info = (
-        <div className='loading-info'>
-          {i18n`global.checkingUserinfo`}
-        </div>
-      )
+      const brower = browserDetect();
+      if (brower === 'Firefox') {
+        info = (
+          <div className='loading-info'>
+            检测到您目前在使用 Firefox，Cloud Studio 暂不兼容 Firefox，推荐使用 Chrome 或 Safari 浏览器体验。
+          </div>
+        )
+      } else {
+        info = (
+          <div className='loading-info'>
+            {i18n`global.checkingUserinfo`}
+          </div>
+        )
+      }
     } else if (state.checkStep === 1) {
       info = (
         <div className='loading-info'>

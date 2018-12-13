@@ -35,9 +35,9 @@ http.createServer((req, res) => {
   if (req.url === '/packages/' && getPluginsPorts) {
     const listsPromises = getPluginsPorts
     .map(port => axios.get(String(port).includes('http') ? port : `${localhost}:${port}/packages`)
-    .then(res => Object.assign(res.data[0], { TARGET: String(port).includes('http') ? port : `${localhost}:${port}` }))
-    .catch(e => console.log(e))
-  )
+      .then(res => Object.assign(res.data[0], { TARGET: String(port).includes('http') ? port : `${localhost}:${port}` }))
+      .catch(e => console.log(e))
+    )
 
     Promise.all(listsPromises)
     .then((values) => {
@@ -56,9 +56,9 @@ http.createServer((req, res) => {
     const pluginScripts = pluginsString.split(',')
     const listsPromises = getPluginsPorts
     .map((port, idx) => axios.get(String(port).includes('http') ? port : `${localhost}:${port}/packages/${pluginScripts[idx]}`)
-    .then((res) => res.data)
-    .catch(e => console.log(e))
-  )
+      .then((res) => res.data)
+      .catch(e => console.log(e))
+    )
     Promise.all(listsPromises)
     .then((values) => {
       const result = values.join('')

@@ -94,106 +94,106 @@ function TabScope () {
   class TabGroup {
     static Tab = Tab;
 
-  @observable activeTabId = null
+    @observable activeTabId = null
 
-  @computed get tabs () {
-    return state.tabs.values()
-      .filter(tab => tab.tabGroupId === this.id)
-      .sort((a, b) => a.index - b.index)
-  }
-
-  @computed get activeTab () {
-    const activeTab = state.tabs.get(this.activeTabId)
-    if (activeTab && activeTab.tabGroupId === this.id) {
-      return activeTab
-    } else if (this.tabs.length > 0) {
-      return this.tabs[0]
+    @computed get tabs () {
+      return state.tabs.values()
+        .filter(tab => tab.tabGroupId === this.id)
+        .sort((a, b) => a.index - b.index)
     }
-    return null
-  }
 
-  @computed get siblings () {
-    return state.tabGroups.values()
-  }
+    @computed get activeTab () {
+      const activeTab = state.tabs.get(this.activeTabId)
+      if (activeTab && activeTab.tabGroupId === this.id) {
+        return activeTab
+      } else if (this.tabs.length > 0) {
+        return this.tabs[0]
+      }
+      return null
+    }
 
-  @computed get isActive () {
-    return state.activeTabGroup === this
-  }
+    @computed get siblings () {
+      return state.tabGroups.values()
+    }
 
-  @mapEntity('tabs')
-  @action addTab (tab, insertIndex = this.tabs.length) {
-    if (!tab) tab = new this.constructor.Tab()
-    if (tab.tabGroupId === this.id) {
-      if (tab.index === undefined) {
-        tab.index = insertIndex
-      } else if (tab.index === insertIndex) {
-        return
+    @computed get isActive () {
+      return state.activeTabGroup === this
+    }
+
+    @mapEntity('tabs')
+    @action addTab (tab, insertIndex = this.tabs.length) {
+      if (!tab) tab = new this.constructor.Tab()
+      if (tab.tabGroupId === this.id) {
+        if (tab.index === undefined) {
+          tab.index = insertIndex
+        } else if (tab.index === insertIndex) {
+          return
+        } else {
+          this.tabs.map((tabItem) => {
+            if (tab.index > insertIndex) {
+              if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
+                tabItem.index ++
+              }
+            } else {
+              if (tabItem.index <= insertIndex && tabItem.index > tab.index) {
+                tabItem.index --
+              }
+            }
+          })
+          tab.index = insertIndex > 0 ? insertIndex : 0
+        }
       } else {
         this.tabs.map((tabItem) => {
-          if (tab.index > insertIndex) {
-            if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
-              tabItem.index ++
-            }
-          } else {
-            if (tabItem.index <= insertIndex && tabItem.index > tab.index) {
-              tabItem.index --
-            }
+          if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
+            tabItem.index ++
           }
         })
         tab.index = insertIndex > 0 ? insertIndex : 0
       }
-    } else {
-      this.tabs.map((tabItem) => {
-        if (tabItem.index >= insertIndex && tabItem.index < tab.index) {
-          tabItem.index ++
-        }
-      })
-      tab.index = insertIndex > 0 ? insertIndex : 0
-    }
 
-    tab.tabGroupId = this.id
-    tab.activate()
-    return tab
-  }
-
-  @action activate () {
-    state.activeTabGroupId = this.id
-  }
-
-  @mapEntity('tabs')
-  @action activateTab (tab) {
-    tab.activate()
-  }
-
-  @mapEntity('tabs')
-  @action removeTab (tab) {
-    if (tab.isActive) {
-      const adjacentTab = tab.getAdjacent()
-      if (adjacentTab) adjacentTab.activate()
-    }
-    tab.tabGroupId = null
-  }
-
-  @mapEntity('tabGroups')
-  @action merge (tabGroup) {
-    if (!tabGroup) return
-    const baseIndex = this.tabs.length
-    tabGroup.tabs.forEach((tab) => {
       tab.tabGroupId = this.id
-      tab.index += baseIndex
-    })
-    this.activate()
-  }
+      tab.activate()
+      return tab
+    }
 
-  @mapEntity('tabGroups')
-  @action mergeTo (tabGroup) {
-    tabGroup.merge(this)
-  }
+    @action activate () {
+      state.activeTabGroupId = this.id
+    }
 
-  @action destroy () {
-    state.tabGroups.delete(this.id)
+    @mapEntity('tabs')
+    @action activateTab (tab) {
+      tab.activate()
+    }
+
+    @mapEntity('tabs')
+    @action removeTab (tab) {
+      if (tab.isActive) {
+        const adjacentTab = tab.getAdjacent()
+        if (adjacentTab) adjacentTab.activate()
+      }
+      tab.tabGroupId = null
+    }
+
+    @mapEntity('tabGroups')
+    @action merge (tabGroup) {
+      if (!tabGroup) return
+      const baseIndex = this.tabs.length
+      tabGroup.tabs.forEach((tab) => {
+        tab.tabGroupId = this.id
+        tab.index += baseIndex
+      })
+      this.activate()
+    }
+
+    @mapEntity('tabGroups')
+    @action mergeTo (tabGroup) {
+      tabGroup.merge(this)
+    }
+
+    @action destroy () {
+      state.tabGroups.delete(this.id)
+    }
   }
-}
 
   return { Tab, TabGroup, state }
 }
