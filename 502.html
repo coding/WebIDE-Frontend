@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1"
+    />
+    <title>502 Page</title>
+    <meta
+      name="Keywords"
+      content="Coding.net,Coding,WebIDE,Web IDE,IDE,Git,代码托管,在线开发,在线调试,Terminal,开发环境分享,软件团队协作,Cloud Studio"
+    />
+    <meta
+      name="Description"
+      content="Cloud Studio 是Coding自主研发的在线集成开发环境。用户可以通过 Cloud Studio 创建项目的工作空间，进行在线开发，调试等操作。与此同时，Cloud Studio 还提供了可分享的开发环境功能，用户可以保存当前的 Terminal 环境，分享给团队的其他成员。"
+    />
+  </head>
+  <style>
+    body {
+      width: 100%;
+      min-width: 300px;
+      height: auto;
+      margin: 0;
+      background: rgb(242, 244, 246);
+      font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB",
+        "Segoe UI", "Microsoft YaHei", "微软雅黑", "sans-serif";
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      width: 816px;
+      height: 418px;
+      margin: auto;
+      margin-top: 196px;
+    }
+    .container .tips {
+      position: relative;
+      float: left;
+      min-width: 466px;
+      min-height: 418px;
+    }
+    .container .tips .title {
+      width: 466px;
+      height: 101px;
+      line-height: 101px;
+      font-size: 120px;
+      color: #4f565f;
+    }
+    .container .tips .introTips {
+      width: 466px;
+      height: 317px;
+      line-height: 24px;
+      font-size: 24px;
+      color: #76808e;
+    }
+    .monkey {
+      float: right;
+      min-width: 300px;
+      min-height: 300px;
+      background: url("https://cs-res.codehub.cn/error-page/502.png") no-repeat
+        center;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="tips">
+        <div class="title">502!</div>
+        <div class="introTips">
+          <p style="line-height: 80px;">后端，我连不上你啊，我连不上你~</p>
+          <p>请在 Cloud Studio 中检查：</p>
+          <p>1、应用有没有监听访问链接生成的端口号。</p>
+          <p>2、您生成的链接是否已经是否。</p>
+        </div>
+      </div>
+      <div class="monkey"></div>
+    </div>
+  </body>
+</html>

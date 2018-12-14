@@ -3,8 +3,9 @@ const path = require('path')
 const merge = require('webpack-merge')
 const str = JSON.stringify
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const commonConfig = require('./common.config.js')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const devServer = require('./devServer.config')
 const stylesheet = require('./stylesheet.config')
 
@@ -16,9 +17,9 @@ const TASK_YAML = path.resolve(__dirname, '../task.yaml')
 
 try {
   const data = fs.readFileSync(TASK_YAML, 'utf-8')
-  getPluginsPorts = YAML.parse(data).apps
-  .filter(task => task.name && task.name.split('-')[0] === 'plugin')
-  .map(task => task.env ? task.env.PORT || 4000 : 4000)
+  getPluginsPorts = YAML.parse(data)
+    .apps.filter(task => task.name && task.name.split('-')[0] === 'plugin')
+    .map(task => (task.env ? task.env.PORT || 4000 : 4000))
   console.log(`find ${getPluginsPorts.length} dev ports`, getPluginsPorts.join(','))
 } catch (e) {
   console.log('find task error', e && e.message)
@@ -27,7 +28,7 @@ try {
 const reactHotLoaderPrependEntries = [
   'react-hot-loader/patch',
   'webpack-dev-server/client?http://ide.test:8060',
-  'webpack/hot/only-dev-server',
+  'webpack/hot/only-dev-server'
 ]
 const PROJECT_ROOT = path.resolve(__dirname, '..')
 
@@ -45,14 +46,14 @@ const staticDir = ''
 const config = merge(
   {
     entry: {
-      main: reactHotLoaderPrependEntries,
+      main: reactHotLoaderPrependEntries
       // intro: reactHotLoaderPrependEntries,
     }
   },
   commonConfig({
     staticDir,
     filename: '[name].[hash].js',
-    chunkFilename: '[name].[hash].chunk.js',
+    chunkFilename: '[name].[hash].chunk.js'
   }),
   /*
    * See: https://webpack.js.org/configuration/devtool/#devtool
@@ -72,89 +73,100 @@ const config = merge(
    * + means faster, - slower and o about the same time
    */
   { devtool: 'cheap-module-eval-source-map' },
-  { plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Cloud Studio',
-      multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'login','dashboard'],
-      filename: (staticDir ? '../' : '') + mainEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/index.html'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      multihtmlCatch: true,
-      chunks: ['vendor', 'dashboard'],
-      filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/dashboard.html'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main','dashboard'],
-      filename: (staticDir ? '../' : '') + accountEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/account.html'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      multihtmlCatch: true,
-      excludeChunks: ['workspaces', 'main','dashboard'],
-      filename: (staticDir ? '../' : '') + loginEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/login.html'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      inject: false,
-      filename: (staticDir ? '../' : '') + introEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/intro.html'),
-      backendUrl: str(process.env.BACKEND_URL || ''),
-      staticUrl: path.join('/static/'),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      inject: false,
-      filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
-      template: path.join(PROJECT_ROOT, 'app/changelog.html'),
-      backendUrl: str(process.env.BACKEND_URL || ''),
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      inject: false,
-      filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
-      iframeUrl: str('ide.test:8060/intro'),
-      template: path.join(PROJECT_ROOT, 'app/iframe-test.html'),
+  {
+    plugins: [
+      // https://github.com/kevlened/copy-webpack-plugin
+      new CopyWebpackPlugin([
+        {
+          from: path.join(PROJECT_ROOT, '404.html')
+        },
+        {
+          from: path.join(PROJECT_ROOT, '500.html')
+        },
+        {
+          from: path.join(PROJECT_ROOT, '502.html')
+        }
+      ]),
+      new HtmlWebpackPlugin({
+        title: 'Cloud Studio',
+        multihtmlCatch: true,
+        excludeChunks: ['workspaces', 'login', 'dashboard'],
+        filename: (staticDir ? '../' : '') + mainEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/index.html')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        multihtmlCatch: true,
+        chunks: ['vendor', 'dashboard'],
+        filename: (staticDir ? '../' : '') + dashboardEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/dashboard.html')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        multihtmlCatch: true,
+        excludeChunks: ['workspaces', 'main', 'dashboard'],
+        filename: (staticDir ? '../' : '') + accountEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/account.html')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        multihtmlCatch: true,
+        excludeChunks: ['workspaces', 'main', 'dashboard'],
+        filename: (staticDir ? '../' : '') + loginEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/login.html')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        filename: (staticDir ? '../' : '') + introEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/intro.html'),
+        backendUrl: str(process.env.BACKEND_URL || ''),
+        staticUrl: path.join('/static/')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+        template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+        backendUrl: str(process.env.BACKEND_URL || '')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        filename: (staticDir ? '../' : '') + iframeEntryHtmlName,
+        iframeUrl: str('ide.test:8060/intro'),
+        template: path.join(PROJECT_ROOT, 'app/iframe-test.html')
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Coding WebIDE',
+        inject: false,
+        filename: (staticDir ? '../' : '') + exportEntryHtmlName,
+        iframeUrl: str('ide.test:8060/intro'),
+        template: path.join(PROJECT_ROOT, 'app/export.html')
+      }),
 
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Coding WebIDE',
-      inject: false,
-      filename: (staticDir ? '../' : '') + exportEntryHtmlName,
-      iframeUrl: str('ide.test:8060/intro'),
-      template: path.join(PROJECT_ROOT, 'app/export.html'),
-
-    }),
-
-    // new HtmlWebpackPlugin({
-    //   title: 'Cloud Studio',
-    //   inject: false,
-    //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
-    //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
-    //   backendUrl: str(process.env.BACKEND_URL || '')
-    //   // favicon: ICO_PATH,
-    // }),
-    new webpack.DefinePlugin({
-      __DEV__: true,
-      __RUN_MODE__: str(process.env.RUN_MODE || ''),
-      __BACKEND_URL__: str(process.env.BACKEND_URL || ''),
-      __WS_URL__: str(process.env.WS_URL || ''),
-      __STATIC_SERVING_URL__: str(process.env.STATIC_SERVING_URL || ''),
-      __PACKAGE_DEV__: process.env.PACKAGE_DEV,
-      __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || process.env.HTML_BASE_URL || ''),
-      __PACKAGE_PORTS__: str(getPluginsPorts),
-      __NODE_ENV__: str(process.env.NODE_ENV || ''),
-      __CHANGELOG_PATH__: str('/changelog/')
-    }),
-    new HardSourceWebpackPlugin()
-  ]
+      // new HtmlWebpackPlugin({
+      //   title: 'Cloud Studio',
+      //   inject: false,
+      //   filename: (staticDir ? '../' : '') + changelogEntryHtmlName,
+      //   template: path.join(PROJECT_ROOT, 'app/changelog.html'),
+      //   backendUrl: str(process.env.BACKEND_URL || '')
+      //   // favicon: ICO_PATH,
+      // }),
+      new webpack.DefinePlugin({
+        __DEV__: true,
+        __RUN_MODE__: str(process.env.RUN_MODE || ''),
+        __BACKEND_URL__: str(process.env.BACKEND_URL || ''),
+        __WS_URL__: str(process.env.WS_URL || ''),
+        __STATIC_SERVING_URL__: str(process.env.STATIC_SERVING_URL || ''),
+        __PACKAGE_DEV__: process.env.PACKAGE_DEV,
+        __PACKAGE_SERVER__: str(process.env.PACKAGE_SERVER || process.env.HTML_BASE_URL || ''),
+        __PACKAGE_PORTS__: str(getPluginsPorts),
+        __NODE_ENV__: str(process.env.NODE_ENV || ''),
+        __CHANGELOG_PATH__: str('/changelog/')
+      }),
+      new HardSourceWebpackPlugin()
+    ]
   },
   devServer({ port: 8060 }),
   stylesheet()
