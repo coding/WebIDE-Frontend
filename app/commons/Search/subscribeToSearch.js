@@ -1,4 +1,3 @@
-
 import { SearchSocketClient } from 'backendAPI/websocketClients'
 import { autorun } from 'mobx'
 import state from './state'
