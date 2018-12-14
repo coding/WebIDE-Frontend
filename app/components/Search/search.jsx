@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import subscribeToSearch from 'commons/Search/subscribeToSearch'
 import state from 'commons/Search/state'
@@ -76,12 +76,6 @@ export class SearchResultItem extends Component {
 class SearchPanel extends Component {
     componentDidMount () {
       subscribeToSearch()
-    }
-
-    componentWillUnmount() {
-      if (config.searchSocketConnected) {
-        api.searchWorkspaceDown()
-      }
     }
 
     onKeyDown = (e) => {
