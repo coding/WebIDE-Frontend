@@ -55,6 +55,7 @@
       "syntaxTheme": "代码着色",
       "fontSize": "编辑器字号",
       "termFontSize": "终端字号",
+      "termFontFamily": "终端字体",
       "file_icon_theme": "文件图标"
    },
    "extension": {

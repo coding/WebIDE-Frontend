@@ -49,6 +49,7 @@ class Term extends Component {
 
     const terminal = this.terminal = new Terminal({
       fontSize: SettingState.settings.appearance.terminal_font_size.value || 12,
+      fontFamily: SettingState.settings.appearance.terminal_font_family.value || 'Source Code Pro',
       // theme: themeName,
       cols: 80,
       rows: 24,
@@ -105,6 +106,9 @@ class Term extends Component {
     emitter.on(E.TERM_FONTSIZE_CHANGED, val => {
       if (val < 12) val = 12
       terminal.setOption('fontSize', val)
+    })
+    emitter.on(E.TERM_FONTFAMILY_CHANGED, val => {
+      terminal.setOption('fontFamily', val)
     })
 
     terminal.on('data', (data) => {

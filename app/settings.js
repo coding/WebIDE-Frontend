@@ -203,7 +203,7 @@ const settings = observable({
     return this._keys.map(key => this[key])
   },
   appearance: new DomainSetting({
-    _keys: ['ui_theme', 'syntax_theme', 'file_icon_theme', 'font_size', 'terminal_font_size'],
+    _keys: ['ui_theme', 'syntax_theme', 'file_icon_theme', 'font_size', 'terminal_font_size', 'terminal_font_family'],
     ui_theme: {
       name: 'settings.appearance.uiTheme',
       value: 'dark',
@@ -250,7 +250,14 @@ const settings = observable({
       reaction (value) {
         emitter.emit(TERM_FONTSIZE_CHANGED, value)
       }
-    }
+    },
+    terminal_font_family: {
+      name: 'settings.appearance.termFontFamily',
+      value: 'Source Code Pro',
+      reaction (value) {
+        emitter.emit(TERM_FONTSIZE_CHANGED, value)
+      }
+    },
   }),
 
   general: new DomainSetting({
