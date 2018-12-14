@@ -5,7 +5,6 @@ import emitter, * as E from 'utils/emitter'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
-import * as searchAPI from 'backendAPI/searchAPI'
 
 const log = console.log || (x => x)
 const warn = console.warn || (x => x)
@@ -263,7 +262,6 @@ class SearchSocketClient {
   close () {
     const self = this
     if (config.searchSocketConnected) {
-      searchAPI.searchWorkspaceDown();
       self.shouldClose = true;
       self.socket.close();
       // must emit ???

@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { observer } from 'mobx-react'
 import subscribeToSearch from 'commons/Search/subscribeToSearch'
 import state from 'commons/Search/state'
@@ -7,6 +7,8 @@ import { openFile } from 'commands/commandBindings/file'
 import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
 import { Aa, Word, Reg } from './icons'
+import * as api from 'backendAPI/searchAPI'
+import config from 'config'
 
 const hoverColor = '#337ab7'
 
@@ -23,6 +25,7 @@ export class SearchResultItem extends Component {
           isFolded: !this.state.isFolded
         })
     }
+
     
     handleItemClick = (path, start, end, lineNum) => {
         const selection = new monaco.Selection(
@@ -72,7 +75,7 @@ export class SearchResultItem extends Component {
 @observer
 class SearchPanel extends Component {
     componentDidMount () {
-        subscribeToSearch()
+      subscribeToSearch()
     }
 
     onKeyDown = (e) => {
