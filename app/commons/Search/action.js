@@ -33,9 +33,9 @@ function searchPattern() {
 }
 
 function commonSearch() {
-  if(!state.searched.end && !state.ws.first) {
-    api.searchInterrupt(state.searched.taskId);
-  }
+  // if(!state.searched.end && !state.ws.first) {
+  //   // api.searchInterrupt(state.searched.taskId);
+  // }
   if(state.searched.taskId != null) {
     state.searched.former.taskId = state.searched.taskId
     state.searched.former.results = state.searched.results.splice(0, state.searched.results.length);

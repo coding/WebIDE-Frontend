@@ -6,6 +6,9 @@ import cx from 'classnames'
 import { openFile } from 'commands/commandBindings/file'
 import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
+import { Aa, Word, Reg } from './icons'
+
+const hoverColor = '#337ab7'
 
 export class SearchResultItem extends Component {
     constructor(props) {
@@ -123,6 +126,8 @@ class SearchPanel extends Component {
                     path={searchChunk.path}
                     result={searchChunk.results}/>);
                 })
+
+            number = number > 100 ? '100+' : number
             return (
                 <div className='search-result-list'>
                     <div>{i18n`panel.result.tip${{ files, number }}`}</div>
@@ -142,6 +147,10 @@ class SearchPanel extends Component {
 
     render () {
         const { caseSensitive, word, isPattern } = state.searching
+        const currentTheme = themes['@current']
+        const { locals } = currentTheme.default ? currentTheme.default
+                     : currentTheme
+        const textColor = themeVariables.get('textColor') || locals.textColor
 
         return (
             <div className='search-panel'>
@@ -161,13 +170,19 @@ class SearchPanel extends Component {
                     <div className='search-checkbox'>
                         <span title={i18n.get('panel.checkbox.case')}
                           onClick={() => this.caseSensitive(caseSensitive)}
-                          className={caseSensitive ? 'active' : ''}>{'Aa'}</span>
+                        >
+                          <Aa fill={ caseSensitive ? hoverColor : textColor} />
+                        </span>
                         <span title={i18n.get('panel.checkbox.word')}
                           onClick={() => this.word(word)}
-                          className={word ? 'active' : ''}>{'Al'}</span>
+                        >
+                          <Word fill={ word ? hoverColor : textColor} />
+                        </span>
                         <span title={i18n.get('panel.checkbox.pattern')}
                           onClick={() => this.pattern(isPattern)}
-                          className={isPattern ? 'active' : ''}>{'.*'}</span>
+                        >
+                          <Reg fill={ isPattern ? hoverColor : textColor} />
+                        </span>
                     </div>
                 </div>
                 {this.renderResult()}
