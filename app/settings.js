@@ -204,6 +204,7 @@ const settings = observable({
   },
   appearance: new DomainSetting({
     _keys: ['ui_theme', 'syntax_theme', 'file_icon_theme', 'font_size', 'terminal_font_size', 'terminal_font_family'],
+    requireConfirm: true,
     ui_theme: {
       name: 'settings.appearance.uiTheme',
       value: 'dark',
