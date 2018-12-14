@@ -8,6 +8,7 @@ import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
 import { Aa, Word, Reg } from './icons'
 import * as api from 'backendAPI/searchAPI'
+import config from 'config'
 
 const hoverColor = '#337ab7'
 
@@ -78,7 +79,9 @@ class SearchPanel extends Component {
     }
 
     componentWillUnmount() {
-      api.searchWorkspaceDown()
+      if (config.searchSocketConnected) {
+        api.searchWorkspaceDown()
+      }
     }
 
     onKeyDown = (e) => {
