@@ -1,9 +1,5 @@
 import axios from './axios';
 
-export const getUserProfile = () => {
-    return axios.get('/user/current', { 'Accept': 'application/vnd.coding.v1+json' });
-}
-
 export const getWorkspace = () => {
     return axios.get('/ws/list?page=0&size=100', { 'Accept': 'application/vnd.coding.v1+json' });
 }
@@ -46,10 +42,6 @@ export const restoreWorkspace = (spaceKey) => {
 
 export const getSSHPublicKey = () => {
     return axios.get('/user/public_key', { 'Accept': 'application/vnd.coding.v1+json' });
-}
-
-export const logout = () => {
-    return axios.get('/logout', { 'Accept': 'application/vnd.coding.v1+json' });
 }
 
 export const getCodingProject = () => {

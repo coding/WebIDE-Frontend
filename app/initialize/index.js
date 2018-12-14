@@ -9,6 +9,7 @@ import { loadPackagesByType, mountPackagesByType, loadPackagesByUser } from '../
 import CodingSDK from '../CodingSDK'
 import state from './state'
 import { persistTask } from '../mobxStore'
+import { persistPluginStore } from '../persist'
 // import pluginUrls from '../../.plugins.json'
 
 
@@ -39,7 +40,7 @@ async function initialize () {
     window.extension = f => null
     window.refs = {}
     window.config = config
-    return true
+    return true;
   })
 
   await step('[1] Load required package.', async() => {
@@ -48,7 +49,7 @@ async function initialize () {
     } catch (err) {
       throw new Error(err.message)
     }
-    return true
+    return true;
   })
 
   await step('[2] Load required user package.', async() => {
@@ -57,7 +58,7 @@ async function initialize () {
     } catch (err) {
       throw new Error(err.message)
     }
-    return true
+    return true;
   })
 
   await step('[START] Run steps in stepCache.', async() => {
@@ -81,18 +82,29 @@ async function initialize () {
       }
     }
     console.log('[END] End running stepCache.')
-    return true
+    return true;
   })
 
-  await step(`[${stepNum++}] Persist Store.`, () => {
-    persistTask()
-    return true
+  await step(`[${stepNum++}] Persist plugin settings.`, async () => {
+    await persistPluginStore()
+    return true;
   })
 
-  await step(`[${stepNum++}] Mount required package.`, () => {
-    mountPackagesByType('Required')
-    return true
+  await step(`[${stepNum++}] Mount required package.`, async () => {
+    await mountPackagesByType('Required')
+    return true;
   })
+
+  await step(`[${stepNum++}] Persist Store.`, async () => {
+    await persistTask()
+
+    return true;
+  })
+
+  if (config.showEnvWelCome) {
+    dispatchCommand('global:show_env')
+    dispatchCommand('file:open_welcome')
+  }
 
   if (config.packageDev) {
     await step(`[${stepNum++}] Enable package server hotreload.`,

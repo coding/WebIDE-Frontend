@@ -1,4 +1,3 @@
-import { Component } from 'react'
 import MonacoEditor from '../MonacoReact/BaseEditor'
 import TabStore from 'components/Tab/store'
 class MonacoTablessEditor extends MonacoEditor {

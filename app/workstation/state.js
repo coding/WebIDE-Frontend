@@ -202,8 +202,13 @@ const stepCache = observable.map({
   },
   connectSocket: {
     desc: 'Connect websocket',
-    func: () =>
+    func: () => 
       api.connectWebsocketClient()
+  },
+  connectSearchSocket: {
+    desc: 'Connect Search WebSocket',
+    func: () => 
+      api.connectSearchWebsocketClient()
   },
   getProjectType: {
     desc: 'Estimate project type -- platform',

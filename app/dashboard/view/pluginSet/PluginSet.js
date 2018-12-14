@@ -23,7 +23,6 @@ class PluginSet extends Component {
         pluginType: '',
         avgScore: 0,
         countScoreUser: 0,
-        spaceKey: '',
         repoName: '',
         repoUrl: '',
         historyVersions: [],
@@ -41,8 +40,9 @@ class PluginSet extends Component {
     timer = null
 
     render() {
-        const { pluginId, pluginName, remark, historyVersions, status, version, spaceKey, hasPrePublish, preStatus, preLog, tab } = this.state;
+        const { pluginId, pluginName, remark, historyVersions, status, version, createdBy, repoName, hasPrePublish, preStatus, preLog, tab } = this.state;
         const prePublishProps = { hasPrePublish, preStatus, preLog };
+        const settingProps = { pluginId, pluginName, remark, createdBy, repoName };
         return (
             <div className="dash-pluginset">
                 <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
@@ -58,7 +58,7 @@ class PluginSet extends Component {
                     </div>
                 )}
                 {tab === 2 && pluginName && <History historyVersions={historyVersions} />}
-                {tab === 3 && pluginName && <Setting pluginId={pluginId} pluginName={pluginName} spaceKey={spaceKey} remark={remark} refresh={this.fetchPlugin} />}
+                {tab === 3 && pluginName && <Setting {...settingProps} refresh={this.fetchPlugin} />}
             </div>
         );
     }
@@ -74,7 +74,7 @@ class PluginSet extends Component {
         const { pluginId } = this.state;
         api.getPluginInfo(pluginId).then(res => {
             if (res.code === 0) {
-                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, spaceKey, repoName, repoUrl } = res.data;
+                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl } = res.data;
                 const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
                 this.setState({
                     createdBy,
@@ -83,7 +83,6 @@ class PluginSet extends Component {
                     avgScore,
                     countScoreUser,
                     pluginType: pluginTypes[0].typeName,
-                    spaceKey,
                     repoName,
                     repoUrl,
                     historyVersions,

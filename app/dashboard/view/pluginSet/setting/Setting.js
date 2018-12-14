@@ -105,7 +105,7 @@ class Setting extends Component {
         api.deletePlugin(pluginId).then(res => {
             if (res.code === 0) {
                 if (this.state.deleteWs) {
-                    this.handleDeleteWordspace();
+                    this.handleFindProject();
                 } else {
                     hideMask();
                     this.props.history.push({ pathname: '/dashboard/plugin/mine' });
@@ -117,8 +117,21 @@ class Setting extends Component {
         });
     }
 
-    handleDeleteWordspace = () => {
-        const { spaceKey, hideMask } = this.props;
+    handleFindProject = () => {
+        const { createdBy, repoName, hideMask } = this.props;
+        api.findProject({ ownerName: createdBy, projectName: repoName }).then(res => {
+            const data = res.data;
+            if (data && typeof data === 'string') {
+                this.handleDeleteWorkspace(data);
+            } else {
+                hideMask();
+                this.props.history.push({ pathname: '/dashboard/plugin/mine' });
+            }
+        });
+    }
+
+    handleDeleteWorkspace = (spaceKey) => {
+        const { hideMask } = this.props;
         api.deleteWorkspace(spaceKey).then(res => {
             hideMask();
             this.props.history.push({ pathname: '/dashboard/plugin/mine' });

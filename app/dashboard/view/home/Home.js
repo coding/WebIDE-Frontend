@@ -40,10 +40,7 @@ class Home extends Component {
         return (
             <div id="dash-container" onClick={this.turnOffPanel}>
                 <div className="dash-mbar">
-                    <div className="logo">
-                        <Link to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="logo" /></Link>
-                        <span className="beta">beta</span>
-                    </div>
+                    <Link className="logo" to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="" /></Link>
                     <Stripe />
                 </div>
                 <div className={`dash-mnav${isMbarOn ? ' on' : ''}`}>
@@ -56,10 +53,7 @@ class Home extends Component {
                     <a className="nav-item" href="https://feedback.coding.net/" target="_blank" rel="noopener noreferrer" onClick={hideMbar}>{i18n('global.feedback')}</a>
                 </div>
                 <div className="dash-sidebar">
-                    <div className="logo">
-                        <Link to="/dashboard/workspace"><img src={cloudstudio} alt="logo" /></Link>
-                        <span className="beta">beta</span>
-                    </div>
+                    <Link className="logo" to="/dashboard/workspace"><img src={cloudstudio} alt="" /></Link>
                     <div className="nav">
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/workspace">{i18n('global.workspace')} ({wsCount})</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin">{i18n('global.plugin')}</NavLink>

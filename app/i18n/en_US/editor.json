@@ -1,0 +1,3 @@
+{
+  "tokenizationWarning": "Tokenization is skipped for lines longer than 10k characters for performance reasons."
+}

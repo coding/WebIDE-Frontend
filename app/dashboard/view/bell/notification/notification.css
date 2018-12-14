@@ -18,6 +18,7 @@
 .dash-bell .view-notification .content {
     width: 250px;
     max-height: 20px;
+    white-space: nowrap;
     overflow: hidden;
     position: relative;
 }
@@ -35,4 +36,5 @@
 }
 .dash-bell .view-notification .content.spread {
     max-height: none;
+    white-space: normal;
 }

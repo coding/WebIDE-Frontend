@@ -25,6 +25,7 @@ const config = observable({
   // isPlatform: Boolean(__RUN_MODE__),
   fsSocketConnected: false,
   ttySocketConnected: false,
+  searchSocketConnected: false,
   fileExcludePatterns: ['/.git', '/.coding-ide'],
   supportLangServer: [
     { lang: 'java', files: ['pom.xml', 'settings.gradle'], file: 'pom.xml' },
@@ -33,6 +34,7 @@ const config = observable({
   ],
   preventAccidentalClose: false,
   hasRehydrated: getCookie('skipRehydrate') || false,
+  hasPluginRehydrated: getCookie('skipRehydrate') || false,
   estimatedMap: observable.map({}),
   nodeEnv: __NODE_ENV__ || null,
   isDefault: false,
@@ -41,6 +43,7 @@ const config = observable({
   // 是否为插件开发工作空间
   __PLUGIN_DEV__: false,
   fileicons: 'default',
+  tokenizationWarningAlreadyShown: false,
   tencentOrigin: 'https://studio.dev.tencent.com',
   get previewURL () {
     if (config.staticServingToken && config.spaceKey && config.staticServingURL) {
