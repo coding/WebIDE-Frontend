@@ -18,6 +18,7 @@ import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
 import config from 'config'
+import { state as virtualKeyState } from '../VirtualKey'
 
 reaction(() => initialOptions.theme, (theme) => {
   monaco.editor.setTheme(theme)
@@ -95,6 +96,7 @@ class EditorInfo {
     state.editors.set(this.uri, monacoEditor)
 
     monacoEditor.onDidFocusEditorText(() => {
+      virtualKeyState.show = true
       state.activeMonacoEditor = monacoEditor
       if (state.activeEditorListeners && state.activeEditorListeners.length > 0) {
         for (const activeEditorListener of state.activeEditorListeners) {

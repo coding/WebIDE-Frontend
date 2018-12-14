@@ -39,7 +39,7 @@ class IDE extends Component {
         <GlobalPrompt />
         <PanelsContainer />
         <Utilities />
-        <VirtualKey />
+        {config.isPad && <VirtualKey />}
       </div>
     )
   }
