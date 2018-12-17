@@ -75,7 +75,6 @@ class Notification extends Component {
   render () {
     const notifications = this.props.notifications.map((v) => {
       v.action = <i className='fa fa-close' aria-hidden='true' />
-      v.dismissAfter = false
       v.message = notificationMessageFactory(v.notifyType, v.message)
       return v
     })
