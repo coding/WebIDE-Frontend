@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import * as GitActions from './actions'
 import Menu from '../Menu'
 import i18n from 'utils/createI18n'
-
+import config from 'config'
 
 // add withRef to deliver ref to the wrapperedcomponent
 @connect(state => state.GitState.branches,
@@ -28,7 +28,7 @@ export default class GitBranchWidget extends Component {
     const { current: currentBranch, local: localBranches, remote: remoteBranches } = this.props
     return (
       <div className='status-bar-menu-item'
-        onClick={e => { this.toggleActive(true, true) }}
+        onClick={e => { this.toggleActive(true, true); config.menuBars.push(this) }}
       >
         <span>
           <span className='fa fa-code-fork' style={{ fontWeight: 800, marginRight: '5px' }} />

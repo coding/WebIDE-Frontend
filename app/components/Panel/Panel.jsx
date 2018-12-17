@@ -4,7 +4,7 @@ import { observer } from 'mobx-react'
 import cx from 'classnames'
 import PanelAxis from './PanelAxis'
 import PanelContent from './PanelContent'
-import { confirmResize } from './actions'
+import { confirmResize, expandPanel, shrinkPanel } from './actions'
 import ResizeBar from '../ResizeBar'
 
 const Panel = observer((props) => {

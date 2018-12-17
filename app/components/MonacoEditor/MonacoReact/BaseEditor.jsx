@@ -194,6 +194,12 @@ class MonacoEditor extends React.PureComponent {
     this.containerElement = component
   }
 
+  removeMenus = () => {
+    // Hack tricks to remove active menu
+    const menuBars = config.menuBars
+    menuBars.map(menubar => menubar.toggleActive())
+  }
+
   render () {
     const { width, height } = this.props
     const fixedWidth = width.toString().indexOf('%') !== -1 ? width : `${width}px`
@@ -207,6 +213,7 @@ class MonacoEditor extends React.PureComponent {
       style={{ width: '100%', height: '100%' }}
       onWidthChange={this.handleResize}
       onHeightChange={this.handleResize}
+      onTouchStart={this.removeMenus}
     >
       <div className='react-monaco-editor-container' ref={this.assignRef} style={style} />
     </Div>)
