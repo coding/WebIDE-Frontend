@@ -183,7 +183,7 @@ export class RegExpSource {
     }
 }
 function createOnigScanner(sources) {
-    return new OnigScanner(sources);
+    return new OnigScanner(sources.filter(Boolean));
 }
 export function createOnigString(sources) {
     var r = new OnigString(sources);
