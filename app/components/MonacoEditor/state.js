@@ -21,7 +21,6 @@ import {
 import codeEditorService from './codeEditorService'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
-import config from 'config'
 import { state as virtualKeyState } from '../VirtualKey'
 
 reaction(
