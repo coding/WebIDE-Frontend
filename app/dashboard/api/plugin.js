@@ -1,7 +1,11 @@
 import axios from './axios';
 
-export const getEnablePlugin = () => {
-    return axios.get('/user-plugin/enable/list');
+export const getInstalledPlugin = () => {
+    return axios.get('/user-plugin/install/list');
+}
+
+export const getInstalledDisabledPlugin = () => {
+    return axios.get('/user-plugin/global_disable/list');
 }
 
 export const getBuiltinPlugin = () => {
@@ -32,12 +36,12 @@ export const uninstallPlugin = (data) => {
     return axios.put('/user-plugin/enable', data);
 }
 
-export const updatePluginVersion = (data) => {
-    return axios.post('/user-plugin/version', data);
+export const switchPluginEnable = ({ pluginId, status }) => {
+    return axios.put(`/user-plugin/enable_status?pluginId=${pluginId}&status=${status}`);
 }
 
-export const switchPluginEnable = (data) => {
-    return axios.put('/user-plugin/enable', data);
+export const updatePluginVersion = (data) => {
+    return axios.post('/user-plugin/version', data);
 }
 
 export const publishPlugin = (data) => {

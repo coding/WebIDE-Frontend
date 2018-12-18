@@ -24,7 +24,7 @@ class Home extends Component {
         super(props);
         this.state = {
             loaded: false,
-            isMaskOn: true,
+            isMaskOn: false,
             isBellOn: false,
             isProfileOn: false,
         };
@@ -34,7 +34,7 @@ class Home extends Component {
     render() {
         const { loaded, isMaskOn, isBellOn, isProfileOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
-        if (loaded && isMaskOn) {
+        if (isMaskOn) {
             return <Mask />;
         }
         return (
@@ -59,13 +59,13 @@ class Home extends Component {
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/plugin">{i18n('global.plugin')}</NavLink>
                         <NavLink className="nav-item" activeClassName="active" to="/dashboard/setting">{i18n('global.setting')}</NavLink>
                     </div>
-                    {!isMaskOn && <Bell on={isBellOn} togglePanel={this.toggleBellPanel} />}
-                    {!isMaskOn && <Profile on={isProfileOn} togglePanel={this.toggleProfilePanel} />}
+                    {loaded && !isMaskOn && <Bell on={isBellOn} togglePanel={this.toggleBellPanel} />}
+                    {loaded && !isMaskOn && <Profile on={isProfileOn} togglePanel={this.toggleProfilePanel} />}
                 </div>
                 <div className="dash-main">
                     <Banner />
                     <div className="dash-view">
-                        {!isMaskOn && (
+                        {loaded && !isMaskOn && (
                             <Switch>
                                 <Route exact path="/dashboard/workspace" component={Workspace}></Route>
                                 <Route exact path="/dashboard/workspace/create" component={Create}></Route>
@@ -117,9 +117,10 @@ class Home extends Component {
             if (res.code === 0) {
                 if (!/^dtid_[a-z0-9]+/i.test(res.data.global_key)) {
                     this.props.logIn(res.data);
-                    this.setState({ isMaskOn: false });
                     // 获取工作空间数量信息
                     this.fetchWorkspaceCount();
+                } else {
+                    this.setState({ isMaskOn: true });
                 }
             } else {
                 window.top.postMessage({ path: '/intro' }, '*');

@@ -8,7 +8,7 @@
     "changelog": "Changelog",
     "plugin": "Plugin Management",
     "thirdparty": "Third Party",
-    "builtin": "Builtin",
+    "builtin": "Built-in",
     "mine": "Developed By Me",
     "tencentCloudDevPlatform": "Tencent Cloud Dev Platform",
     "devPlatform": "Dev Platform",
@@ -74,7 +74,5 @@
     "period": ".",
     "globalTip": "You have not set a username yet. Please set a username first, which will be your unique identifier on this platform.",
     "submitting": "Submitting...",
-    "eventStreamBulletin1": "Dear developer, due to ",
-    "eventStreamBulletin2": "[ event-stream package event ]",
-    "eventStreamBulletin3": " Impact, your plugin needs to manually delete the `yarn.lock` file and reinstall the dependencies, then push the code to release a new version or pre-release."
+    "remove": "Remove"
 }

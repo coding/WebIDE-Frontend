@@ -28,7 +28,9 @@ axios.get = (url, overrideHeaders = {}) => {
         credentials: 'include',
         headers: { ...headers, ...overrideHeaders },
     }).then(res => {
-        return res.json();
+        if (res.status !== 204) {
+            return res.json();
+        }
     }).catch(err => {
         notify({ message: String(err), notifyType: NOTIFY_TYPE.ERROR });
     });

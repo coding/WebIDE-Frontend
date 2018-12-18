@@ -40,6 +40,7 @@
     "searchPlugin": "Search Plugins",
     "userCount": " person rating",
     "published": "Published",
+    "disabled": "Disabled",
     "newVersion": "New Version",
     "nowPrePublish": "You are currently using a Pre-Publish version. ",
     "status0": "Your plugin has not been published yet and is not visible to the outside world. You can publish the plugin by clicking「Publish」below.",
@@ -70,5 +71,8 @@
     "preStat3": "The last Pre-Publish build failed. ",
     "preStat3Click": "See details.",
     "preStat3Desc": "The last pre-publish build failed, you can modify the code and re-publish it. The build log is as follows:",
-    "preStat3Action": "Pre-Publish Again"
+    "preStat3Action": "Pre-Publish Again",
+    "pluginDisabled": "Disabled due to non-compliance",
+    "pluginDisabledStatus": "Your plugin has been disabled due to non-compliance.",
+    "pluginDisabledTip": "The plugin has been disabled and cannot be published."
 }

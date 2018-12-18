@@ -11,7 +11,7 @@ import config from '../../../utils/config';
 
 class Overview extends Component {
     render() {
-        const { pluginId, pluginName, remark, version, pluginType, avgScore, countScoreUser, createdBy, repoName, repoUrl } = this.props;
+        const { pluginId, pluginName, remark, version, pluginType, avgScore, countScoreUser, createdBy, repoName, repoUrl, globalStatus } = this.props;
         const { status, auditRemark, hasPrePublish, preStatus } = this.props;
         const { cancelRelease } = this.props;
         const repoHref = `${config.devOrigin}/u/${createdBy}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
@@ -20,7 +20,10 @@ class Overview extends Component {
         return (
             <div className="overview">
                 <div className="top">
-                    <div className="name">{pluginName}</div>
+                    <div className="name">
+                        <div>{pluginName}</div>
+                        <div className="tag">{i18n('plugin.disabled')}</div>
+                    </div>
                     <div>
                         <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
                         <a className="goto" href={wsHref} target="_blank" rel="noopener noreferrer">{i18n('global.workspace')}</a>
@@ -41,21 +44,28 @@ class Overview extends Component {
                         <span className="rate-user-count">({kilo(countScoreUser)} {i18n('plugin.userCount')})</span>
                     </div>
                 </div>
-                <div className="status">
-                    {i18n(`plugin.status${status}`, { version, reason: auditRemark })}
-                    {status === 5 && (
-                        <span>
-                            <a href={marketHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.status5Click')}</a>
-                            {i18n('plugin.status5After')}
-                        </span>
-                    )}
-                    {status === 4 && (
-                        <span>
-                            <span className="click" onClick={this.popForBuildingFail}>{i18n('plugin.status4Click')}</span>
-                            {i18n('global.period')}
-                        </span>
-                    )}
-                </div>
+                {globalStatus === 1 ? (
+                    <div className="status">
+                        {i18n(`plugin.status${status}`, { version, reason: auditRemark })}
+                        {status === 5 && (
+                            <span>
+                                <a href={marketHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.status5Click')}</a>
+                                {i18n('plugin.status5After')}
+                            </span>
+                        )}
+                        {status === 4 && (
+                            <span>
+                                <span className="click" onClick={this.popForBuildingFail}>{i18n('plugin.status4Click')}</span>
+                                {i18n('global.period')}
+                            </span>
+                        )}
+                    </div>
+                ) : (
+                    <div className="status disabled">
+                        <i className="fa fa-exclamation-triangle"></i>
+                        {i18n('plugin.pluginDisabledStatus')}
+                    </div>
+                )}
                 {hasPrePublish && preStatus === 2 && (
                     <div className="pre">
                         <i className="fa fa-exclamation-circle"></i>

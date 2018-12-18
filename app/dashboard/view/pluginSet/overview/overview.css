@@ -4,8 +4,18 @@
     align-items: center;
 }
 .dash-pluginset .overview .name {
+    display: flex;
+    align-items: center;
     font-size: 24px;
     color: #fff;
+}
+.dash-pluginset .overview .name .tag {
+    padding: 2px 6px;
+    margin-left: 5px;
+    border-radius: 2px;
+    font-size: 16px;
+    color: #333;
+    background-color: #ccc;
 }
 .dash-pluginset .overview .goto {
     padding: 5px 10px;
@@ -46,6 +56,12 @@
     border: 1px solid #555;
     border-radius: 4px;
     background-color: #3b3b3b;
+}
+.dash-pluginset .overview .status i.fa {
+    margin-right: 4px;
+}
+.dash-pluginset .overview .status.disabled {
+    color: #f09952;
 }
 .dash-pluginset .overview .pre {
     margin-top: 10px;
