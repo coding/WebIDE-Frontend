@@ -9,6 +9,7 @@ import * as Modal from '../../components/Modal/actions'
 import config from 'config'
 import dispatchCommand from 'commands/dispatchCommand'
 import { fileIconProviders } from 'components/FileTree/state'
+import { gtouchstart, gtouchend, gtouchmove } from 'utils/touch'
 
 const closeFileTab = async (e, tab, removeTab, activateTab) => {
   e.stopPropagation()
@@ -87,7 +88,7 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
       id={tabLabelId}
       data-droppable='TABLABEL'
       draggable='true'
-      onClick={e => activateTab(tab.id)}
+      onClick={e => { activateTab(tab.id) }}
       onMouseUp={e => { e.button === 1 && removeTab(tab.id) }}
       onDoubleClick={() => {
         if (!tab.isActive) {
@@ -99,7 +100,13 @@ let TabLabel = observer(({ tab, removeTab, activateTab, openContextMenu, dbClick
         // Chrome 下直接执行 dragStart 会导致立即又出发了 window.dragend, 添加 timeout 以避免无法拖动的情况
         setTimeout(() => dnd.dragStart({ type: 'TAB', id: tab.id }), 0)
       }}
-      onContextMenu={e => openContextMenu(e, tab)}
+      onContextMenu={e => config.isPad ? '' : openContextMenu(e, tab)}
+      onTouchStart={e => {
+        e.persist()
+        gtouchstart(() => { openContextMenu(e, tab) })
+      }}
+      onTouchEnd={gtouchend}
+      onTouchMove={gtouchmove}
     >
       {dnd.target.id === tabLabelId ? <div className='tab-label-insert-pos'></div> : null}
       {tab.icon && <TabIcon fileName={tab.title} defaultIconStr={tab.icon} />}

@@ -127,11 +127,17 @@ class Term extends Component {
     emitter.removeListener(E.THEME_CHANGED, this.onTheme)
     state.terminalManager.remove(this.terminal)
   }
+  
+  removeMenus = () => {
+    // Hack tricks to remove active menu
+    const menuBars = config.menuBars
+    menuBars.map(menubar => menubar.toggleActive())
+  }
 
   render () {
     const { tab } = this.props
     return (
-      <div className='ide-terminal'>
+      <div className='ide-terminal' onTouchStart={this.removeMenus}>
         <div className='terminal-container'>
           <div className='terminal-body' data-droppable='TERMINAL' ref={r => this.termDOM = r}></div>
         </div>

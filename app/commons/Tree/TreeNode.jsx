@@ -5,6 +5,7 @@ import { observer } from 'mobx-react'
 import config from 'config'
 import cx from 'classnames'
 import dnd from 'utils/dnd'
+import { gtouchstart, gtouchend, gtouchmove } from 'utils/touch'
 import icons from 'file-icons-js'
 import { fileIconProviders } from 'components/FileTree/state'
 
@@ -135,8 +136,19 @@ class TreeNode extends Component {
         })}
         data-droppable='FILE_TREE_NODE'
         onContextMenu={(e) => {
+          if (config.isPad) return
           selectNode(node)
           openContextMenu(e, node)
+        }}
+        onTouchMove={gtouchmove}
+        onTouchEnd={gtouchend}
+        onTouchStart={e => {
+          e.persist()
+          gtouchstart(() => {
+            selectNode(node)
+            openContextMenu(e, node)
+          })
+          e.stopPropagation()
         }}
         draggable='true'
         onDragStart={(e) => {
@@ -151,9 +163,11 @@ class TreeNode extends Component {
         <div
           className={cx('filetree-node', { focus: node.isFocused })}
           ref={r => (this.nodeDOM = r)}
-          onClick={e => selectNode(node)}
+          onClick={e => {
+            selectNode(node)
+            config.isPad ? openNode(node) : ''
+          }}
           onDoubleClick={e => openNode(node)}
-          onTouchStart={e => openNode(node)}
           style={{ paddingLeft: `${1 + node.depth}em` }}
         >
           {node.isLoading && <i className='fa fa-spinner fa-pulse fa-fw' />}
@@ -161,7 +175,7 @@ class TreeNode extends Component {
             <span
               className='filetree-node-arrow'
               onDoubleClick={e => e.stopPropagation()}
-              onClick={e => openNode(node, null, e.altKey)}
+              onClick={e => config.isPad ? '' : openNode(node, null, e.altKey)}
             >
               {node.isDir && (
                 <i
