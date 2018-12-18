@@ -1,0 +1,13 @@
+{
+  "id": "makefile",
+  "aliases": ["makefile", "Makefile"],
+  "extensions": [
+    ".make",
+    ".GNUmakefile",
+    ".makefile",
+    ".Makefile",
+    ".OCamlMakefile",
+    ".mak",
+    ".mk"
+  ]
+}

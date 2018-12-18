@@ -139,6 +139,13 @@ export default [
     aliases: ['JavaScript']
   },
   {
+    id: 'makefile',
+    aliases: ['makefile', 'Makefile'],
+    extensions: ['.make', '.GNUmakefile', '.makefile', '.Makefile', '.OCamlMakefile', '.mak', '.mk'],
+    filenames: ['Makefile', 'OCamlMakefile'],
+    scopeName: 'source.makefile'
+  },
+  {
     id: 'json',
     scopeName: 'source.json',
     extensions: [
