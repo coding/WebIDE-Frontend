@@ -59,10 +59,10 @@ export class SearchResultItem extends Component {
         
                 {
                     !this.state.isFolded && results.map(result => {
-                    let {start, end, length, innerStart, innerEnd, line, lineNum} = result;
+                    let {tmpStart, start, end, length, innerStart, innerEnd, line, lineNum} = result;
                     return (
                         <div key={`${fileName}-${resultSize}-${lineNum}-${start}`} className='search-item-line' onClick={() => this.handleItemClick(path, innerStart, innerEnd, lineNum)}>
-                            {line && <span className='search-item-content'>{line.substring(0, innerStart)}<b>{line.substring(innerStart, innerEnd)}</b>{line.substring(innerEnd)}</span>}
+                            {line && <span className='search-item-content'>{line.substring(0, tmpStart)}<b>{line.substring(tmpStart, tmpStart + length)}</b>{line.substring(tmpStart + length)}</span>}
                         </div>
                     )})
                 }
