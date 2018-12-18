@@ -18,6 +18,20 @@ function findLanguageByextensions (ext) {
   }
   return { id: 'plaintext' }
 }
+
+function findLanguageFileName (fileName) {
+  const monacoLanguages = monaco.languages.getLanguages()
+  for (let i = 0; i < monacoLanguages.length; i++) {
+    const info = monacoLanguages[i]
+    if (info.filenames) {
+      for (let j = 0; j < info.filenames.length; j++) {
+        if (info.filenames[j] === fileName) return info
+      }
+    }
+  }
+  return { id: 'plaintext' }
+}
+
 /**
  * 根据文件列表粗略判断当前项目语言，以启动相应的语言服务器
  * @param data 指定目录下文件列表
@@ -73,4 +87,5 @@ export {
   findLanguageByextensions,
   findModeByName,
   findLanguagesByFileList,
+  findLanguageFileName,
 }

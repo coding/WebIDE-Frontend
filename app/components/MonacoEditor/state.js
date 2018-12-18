@@ -2,27 +2,34 @@ import uniqueId from 'lodash/uniqueId'
 import React from 'react'
 import { render } from 'react-dom'
 import { observe, observable, computed, action, extendObservable, reaction } from 'mobx'
- 
 import mime from 'mime-types'
 import { Services } from 'monaco-languageclient'
 
-import codeEditorService from './codeEditorService'
 import assignProps from 'utils/assignProps'
 import getTabType from 'utils/getTabType'
 import is from 'utils/is'
+import config from 'config'
 import TabStore from 'components/Tab/store'
 import FileStore from 'commons/File/store'
 import EditorState from 'components/Editor/state'
 import { createMonacoServices } from 'components/MonacoEditor/Editors/createHelper'
-import { findLanguageByextensions, findModeByName } from './utils/findLanguage'
+import {
+  findLanguageByextensions,
+  findModeByName,
+  findLanguageFileName
+} from './utils/findLanguage'
+import codeEditorService from './codeEditorService'
 import ConditionWidget from './ConditionWidget'
 import initialOptions from './monacoDefaultOptions'
 import config from 'config'
 import { state as virtualKeyState } from '../VirtualKey'
 
-reaction(() => initialOptions.theme, (theme) => {
-  monaco.editor.setTheme(theme)
-})
+reaction(
+  () => initialOptions.theme,
+  (theme) => {
+    monaco.editor.setTheme(theme)
+  }
+)
 
 const state = observable({
   entities: observable.map({}),
@@ -31,7 +38,7 @@ const state = observable({
   activeMonacoEditor: null,
   editors: new Map(),
   activeEditorListeners: [],
-  installed: false,
+  installed: false
 })
 
 const typeDetect = (title, types) => {
@@ -47,10 +54,9 @@ class EditorInfo {
     EditorState.entities.set(this.id, this)
     this.update(props)
     this.uri = this.filePath
-      ? (this.filePath.startsWith('jdt://')
-      || this.filePath.startsWith('omnisharp-metadata://')
-      ? this.filePath
-      : `file://${config._ROOT_URI_}${this.filePath}`)
+      ? this.filePath.startsWith('jdt://') || this.filePath.startsWith('omnisharp-metadata://')
+        ? this.filePath
+        : `file://${config._ROOT_URI_}${this.filePath}`
       : `inmemory://model/${this.id}`
 
     if (!props.filePath || this.isMonaco) {
@@ -65,11 +71,14 @@ class EditorInfo {
     this.monacoElement.style.height = '100%'
 
     if (this.filePath) {
-      this.languageMode = findLanguageByextensions(this.filePath.split('.').pop()).id
+      const fileName = this.filePath.split('/').pop()
+      this.languageMode = fileName.includes('.')
+        ? findLanguageByextensions(fileName.split('.').pop()).id
+        : findLanguageFileName(fileName).id
     }
     const model =
-    monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
-    monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
+      monaco.editor.getModel(monaco.Uri.parse(this.uri).toString()) ||
+      monaco.editor.createModel(this.content || '', this.languageMode, monaco.Uri.parse(this.uri))
     this.uri = model.uri._formatted
 
     this.model = model
@@ -88,7 +97,9 @@ class EditorInfo {
 
     if (!state.installed) {
       // install Monaco language client services
-      const services = createMonacoServices(monacoEditor, { rootUri: `file://${config._ROOT_URI_}` })
+      const services = createMonacoServices(monacoEditor, {
+        rootUri: `file://${config._ROOT_URI_}`
+      })
       Services.install(services)
       state.installed = true
     }
@@ -110,13 +121,15 @@ class EditorInfo {
       }
     }
 
-    this.disposers.push(observe(this, 'content', (change) => {
-      const content = change.newValue || ''
-      if (content !== monacoEditor.getValue()) {
-        this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
-        monacoEditor.setValue(content)
-      }
-    }))
+    this.disposers.push(
+      observe(this, 'content', (change) => {
+        const content = change.newValue || ''
+        if (content !== monacoEditor.getValue()) {
+          this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
+          monacoEditor.setValue(content)
+        }
+      })
+    )
 
     if (this.content && this.content.length > 0) {
       this.startsWithUTF8BOM = this.content.charCodeAt(0) === 65279
@@ -139,10 +152,10 @@ class EditorInfo {
     monacoEditor.addAction({
       id: 'custom-comment',
       label: 'comment',
-      keybindings: [
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_SLASH
-      ],
-      run: () => { /* no */ }
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_SLASH],
+      run: () => {
+        /* no */
+      }
     })
 
     monacoEditor.onDidChangeCursorPosition((event) => {
@@ -159,7 +172,7 @@ class EditorInfo {
     if (props.selection) {
       const pos = {
         lineNumber: props.selection.startLineNumber,
-        column: props.selection.startColumn,
+        column: props.selection.startColumn
       }
       setTimeout(() => {
         monacoEditor.setSelection(props.selection)
@@ -188,7 +201,7 @@ class EditorInfo {
     const [lineNumber, column] = position.split(':')
     const pos = {
       lineNumber: Number(lineNumber),
-      column: Number(column),
+      column: Number(column)
     }
     this.monacoEditor.setPosition(pos)
     this.monacoEditor.revealPositionInCenter(pos, 1)
@@ -235,45 +248,43 @@ class EditorInfo {
     }
   }
 
-  setViewZoneForBreakPoint = (breakpoint) => {
-    return new Promise((resolve, reject) => {
-      const { path, line } = breakpoint
+  setViewZoneForBreakPoint = breakpoint => new Promise((resolve, reject) => {
+    const { path, line } = breakpoint
 
-      this.monacoEditor.changeViewZones((changeAccessor) => {
-        const domNode = document.createElement('div')
-        const viewZoneId = changeAccessor.addZone({
-          afterLineNumber: line,
-          heightInLines: 2,
-          afterColumn: 0,
-          domNode,
-        })
-        const handleCancel = () => {
-          this.monacoEditor.changeViewZones((_changeAccessor) => {
-            _changeAccessor.removeZone(viewZoneId)
-          })
-        }
-        render(<ConditionWidget onChange={resolve} onCancel={handleCancel} breakpoint={breakpoint} />, domNode)
+    this.monacoEditor.changeViewZones((changeAccessor) => {
+      const domNode = document.createElement('div')
+      const viewZoneId = changeAccessor.addZone({
+        afterLineNumber: line,
+        heightInLines: 2,
+        afterColumn: 0,
+        domNode
       })
+      const handleCancel = () => {
+        this.monacoEditor.changeViewZones((_changeAccessor) => {
+          _changeAccessor.removeZone(viewZoneId)
+        })
+      }
+      render(
+        <ConditionWidget onChange={resolve} onCancel={handleCancel} breakpoint={breakpoint} />,
+          domNode
+        )
     })
-  }
+  })
 
   setDebuggerBreakPoint = (params) => {
     const { line, verified } = params
     const debuggerBreakPoint = this.debugBreakPoints.get(line)
-    const newBreakPoint = this.monacoEditor.deltaDecorations(
-      debuggerBreakPoint || [],
-      [
-        {
-          range: new monaco.Range(line, 1, line, 1),
-          options: {
-            isWholeLine: false,
-            glyphMarginClassName: verified
-              ? 'monaco-glyphMargin-breakpoint'
-              : 'monaco-glyphMargin-breakpoint-unverified'
-          }
+    const newBreakPoint = this.monacoEditor.deltaDecorations(debuggerBreakPoint || [], [
+      {
+        range: new monaco.Range(line, 1, line, 1),
+        options: {
+          isWholeLine: false,
+          glyphMarginClassName: verified
+            ? 'monaco-glyphMargin-breakpoint'
+            : 'monaco-glyphMargin-breakpoint-unverified'
         }
-      ]
-    )
+      }
+    ])
     this.debugBreakPoints.set(line, newBreakPoint)
   }
 
