@@ -10,6 +10,10 @@
     border-radius: 4px;
     background-color: #3b3b3b;
 }
+.plugin-list .plugin-card.disabled {
+    border-color: #3f3f3f;
+    background-color: #363636;
+}
 .plugin-list .plugin-card .top {
     display: flex;
     justify-content: space-between;
@@ -22,6 +26,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.plugin-list .plugin-card.disabled .name {
+    color: #3c536c;
 }
 .plugin-list .plugin-card .right {
     display: flex;
@@ -46,12 +53,21 @@
     border-radius: 50%;
     margin-right: 6px;
 }
+.plugin-list .plugin-card.disabled .right img {
+    opacity: .4;
+}
+.plugin-list .plugin-card.disabled .right .author {
+    color: #434343;
+}
 .plugin-list .plugin-card .desc {
     width: 100%;
     height: 60px;
     color: #b1b1b1;
     overflow: hidden;
     position: relative;
+}
+.plugin-list .plugin-card.disabled .desc {
+    color: #636363;
 }
 .plugin-list .plugin-card .desc::after {
     content: '';
@@ -63,9 +79,18 @@
     bottom: 0;
     right: 0;
 }
+.plugin-list .plugin-card.disabled .desc::after {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), #363636);
+    background: -webkit-linear-gradient(0deg, rgba(255, 255, 255, 0),#363636);
+}
 .plugin-list .plugin-card .control {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
+}
+.plugin-list .plugin-card .button-wrap {
+    display: flex;
 }
 .plugin-list .plugin-card .button {
     padding: 3px 15px;

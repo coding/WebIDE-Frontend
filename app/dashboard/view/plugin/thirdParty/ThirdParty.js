@@ -27,7 +27,7 @@ class ThirdParty extends Component {
                 </div>
                 {
                     plugins.length ? (
-                        plugins.map(plugin => <TCard key={plugin.id} {...plugin} refresh={this.fetchThirdParty} />)
+                        plugins.map(plugin => <TCard key={plugin.id} {...plugin} refresh={this.fetchPlugins} />)
                     ) : <NoData />
                 }
             </div>
@@ -35,20 +35,33 @@ class ThirdParty extends Component {
     }
 
     componentDidMount() {
-        this.fetchThirdParty();
+        this.fetchPlugins();
     }
 
-    fetchThirdParty = () => {
-        api.getEnablePlugin().then(res => {
-            if (res.code === 0) {
-                const data = res.data;
-                this.setState({
-                    originPlugins: data,
-                    plugins: data,
-                });
+    fetchPlugins = () => {
+        Promise.all([api.getInstalledPlugin(), api.getInstalledDisabledPlugin()]).then(values => {
+            const [one, two] = values;
+            let originPlugins = [];
+            let plugins = [];
+            if (one.code === 0) {
+                const data = one.data;
+                originPlugins = originPlugins.concat(data);
+                plugins = plugins.concat(data);
             } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg || res.message });
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: one.msg || one.message });
             }
+            if (two.code === 0) {
+                const data = two.data;
+                data.map(item => {
+                    item.globalDisabled = true;
+                    return item;
+                });
+                originPlugins = originPlugins.concat(data);
+                plugins = plugins.concat(data);
+            } else {
+                notify({ notifyType: NOTIFY_TYPE.ERROR, message: two.msg || two.message });
+            }
+            this.setState({ originPlugins, plugins });
         });
     }
 

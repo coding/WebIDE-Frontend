@@ -19,44 +19,65 @@ class Setting extends Component {
 
     render() {
         const { pluginName, remark, deleteWs } = this.state;
+        const { globalStatus } = this.props;
         const disabled = !pluginName || !remark || remark.length > 255;
-        return (
-            <div className="panel">
-                <div className="panel-sub-title">{i18n('plugin.basicSet')}</div>
-                <div className="com-board">
-                    <div className="board-label">{i18n('plugin.pluginName')}*</div>
-                    <div className="board-content">
-                        <Inbox holder="plugin.inputPluginName" value={pluginName} onChange={this.handlePluginName} />
+        if (globalStatus === 1) {
+            return (
+                <div className="panel">
+                    <div className="panel-sub-title">{i18n('plugin.basicSet')}</div>
+                    <div className="com-board">
+                        <div className="board-label">{i18n('plugin.pluginName')}*</div>
+                        <div className="board-content">
+                            <Inbox holder="plugin.inputPluginName" value={pluginName} onChange={this.handlePluginName} />
+                        </div>
+                    </div>
+                    <div className="com-board">
+                        <div className="board-label">{i18n('global.desc')}*</div>
+                        <div className="board-content">
+                            <Inbox type="textarea" holder="plugin.inputPluginDesc" value={remark} onChange={this.handleRemark} />
+                        </div>
+                    </div>
+                    <div className="com-board">
+                        <div className="board-label none"></div>
+                        <div className="board-content">
+                            <button className="com-button primary" disabled={disabled} onClick={this.handleModify}>{i18n('global.save')}</button>
+                        </div>
+                    </div>
+                    <div className="panel-sub-title">{i18n('plugin.otherSet')}</div>
+                    <div className="com-board">
+                        <div className="board-label">{i18n('plugin.deletePlugin')}</div>
+                        <div className="board-content checkbox">
+                            <i className={`fa ${deleteWs ? 'fa-check-square' : 'fa-square'}`} onClick={this.handleCheckbox}></i>
+                            {i18n('plugin.alsoDeleteWorkspace')}
+                        </div>
+                    </div>
+                    <div className="com-board">
+                        <div className="board-label none"></div>
+                        <div className="board-content">
+                            <button className="com-button warn" onClick={this.handleMask}>{i18n('global.delete')}</button>
+                        </div>
                     </div>
                 </div>
-                <div className="com-board">
-                    <div className="board-label">{i18n('global.desc')}*</div>
-                    <div className="board-content">
-                        <Inbox type="textarea" holder="plugin.inputPluginDesc" value={remark} onChange={this.handleRemark} />
+            );
+        } else {
+            return (
+                <div className="panel">
+                    <div className="com-board">
+                        <div className="board-label">{i18n('plugin.deletePlugin')}</div>
+                        <div className="board-content checkbox">
+                            <i className={`fa ${deleteWs ? 'fa-check-square' : 'fa-square'}`} onClick={this.handleCheckbox}></i>
+                            {i18n('plugin.alsoDeleteWorkspace')}
+                        </div>
+                    </div>
+                    <div className="com-board">
+                        <div className="board-label none"></div>
+                        <div className="board-content">
+                            <button className="com-button warn" onClick={this.handleMask}>{i18n('global.delete')}</button>
+                        </div>
                     </div>
                 </div>
-                <div className="com-board">
-                    <div className="board-label none"></div>
-                    <div className="board-content">
-                        <button className="com-button primary" disabled={disabled} onClick={this.handleModify}>{i18n('global.save')}</button>
-                    </div>
-                </div>
-                <div className="panel-sub-title">{i18n('plugin.otherSet')}</div>
-                <div className="com-board">
-                    <div className="board-label">{i18n('plugin.deletePlugin')}</div>
-                    <div className="board-content checkbox">
-                        <i className={`fa ${deleteWs ? 'fa-check-square' : 'fa-square'}`} onClick={this.handleCheckbox}></i>
-                        {i18n('plugin.alsoDeleteWorkspace')}
-                    </div>
-                </div>
-                <div className="com-board">
-                    <div className="board-label none"></div>
-                    <div className="board-content">
-                        <button className="com-button warn" onClick={this.handleMask}>{i18n('global.delete')}</button>
-                    </div>
-                </div>
-            </div>
-        );
+            );
+        }
     }
 
     handlePluginName = (event) => {

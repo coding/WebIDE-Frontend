@@ -18,8 +18,8 @@
     "creatingPlugin": "正在创建插件...",
     "hasPrePublish": "该插件已经预发布，您可以在自己的所有工作空间预览该插件。",
     "cancelPrePublish": "关闭预发布",
-    "cannotPublishForAuditing": "上次发布正在审核中，暂时无法发布",
-    "cannotPublishForBuilding": "上次发布正在构建中，暂时无法发布",
+    "cannotPublishForAuditing": "上次发布正在审核中，暂时无法发布。",
+    "cannotPublishForBuilding": "上次发布正在构建中，暂时无法发布。",
     "publishing": "正在发布...",
     "pluginSet": "插件设置",
     "basicSet": "基本设置",
@@ -40,6 +40,7 @@
     "searchPlugin": "搜索插件",
     "userCount": "人评分",
     "published": "已发布",
+    "disabled": "已被禁用",
     "newVersion": "新版本",
     "nowPrePublish": "您目前使用的是预发布版本。",
     "status0": "您的插件尚未发布版本，处于对外不可见状态，您可以点击下方「发布」来发布插件。",
@@ -70,5 +71,8 @@
     "preStat3": "上次预发布构建失败。",
     "preStat3Click": "查看详情",
     "preStat3Desc": "上次预发布构建失败，您可以修改代码后重新预发布。构建日志如下：",
-    "preStat3Action": "重新预发布"
+    "preStat3Action": "重新预发布",
+    "pluginDisabled": "该插件因不符合规范已被禁用",
+    "pluginDisabledStatus": "您的插件因不符合规范已被禁用。",
+    "pluginDisabledTip": "插件已被禁用，无法发布。"
 }
