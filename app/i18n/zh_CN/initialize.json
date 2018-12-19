@@ -1,0 +1,10 @@
+{
+  "prepareData": "正在准备初始化...",
+  "loadSysPlugin": "正在加载系统插件...",
+  "loadUserPlugin": "正在加载第三方插件...",
+  "loadUserPluginSetting": "正在读取第三方插件缓存配置...",
+  "pluginloadfail": "加载 {name} 失败，错误码: {reason}",
+  "launchExtensions": "运行插件...",
+  "loadSysCache": "加载系统缓存...",
+  "enableHMR": "启用热模块替换..."
+}

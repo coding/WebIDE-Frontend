@@ -6,6 +6,7 @@ import localforage from 'localforage'
 import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
 import store from './store'
 import api from '../../backendAPI'
+import ExtensionError from './ExtensionError'
 
 const pluginScriptsStore = localforage.createInstance({
   name: 'pluginScripts'
@@ -163,14 +164,17 @@ export const loadPackagesByType = registerAction(PRELOAD_REQUIRED_EXTENSION,
 const FETCH_USER_PACKAGE = 'FETCH_USER_PACKAGE'
 
 export const fetchUserPackage = registerAction(FETCH_USER_PACKAGE, (pkg) => {
-  return api.fetchUserPackageScript(pkg.filePath)
+  return api.fetchUserPackageScript('http://www.djaksjdklasjdkjflejklrjgdflkgdf.com/index.js')
     .then((script) => {
       pluginScriptsStore.setItem(pkg.name, script)
       return pkg.name
     })
     .then(pkgId => togglePackage({ pkgId, shouldEnable: true, type: 'Required' }))
     .catch(err => {
-      throw new Error(`[Plugin] ${pkg.name} load failed. ${err.message}`)
+      const error = new ExtensionError('Load plugin failed.')
+      error.name = pkg.name
+      error.reason = err.message
+      throw error
     })
 })
 
@@ -226,7 +230,7 @@ export const loadPackagesByUser = registerAction(PRELOAD_USER_EXTENSION, () => {
       try {
         await loadUserPackages([...enableUserPackages, ...preDeployPlugins])
       } catch (err) {
-        console.error(err.message)
+        throw err
       }
     })
 })

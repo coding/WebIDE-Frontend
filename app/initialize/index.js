@@ -5,20 +5,24 @@ import config from '../config'
 import api from '../backendAPI'
 import { stepFactory } from '../utils'
 import i18n from 'utils/createI18n'
-import { loadPackagesByType, mountPackagesByType, loadPackagesByUser } from '../components/Plugins/actions'
+import {
+  loadPackagesByType,
+  mountPackagesByType,
+  loadPackagesByUser
+} from '../components/Plugins/actions'
 import CodingSDK from '../CodingSDK'
 import state from './state'
 import { persistTask } from '../mobxStore'
 import { persistPluginStore } from '../persist'
+import { updateInfomationState, updateWarningInfo } from 'containers/Initialize/actions'
+import ExtensionError from 'components/Plugins/ExtensionError'
 // import pluginUrls from '../../.plugins.json'
-
 
 function closestTo (arr, key, isPrev) {
   const offsetIndex = isPrev ? -1 : 1
   const current = arr.indexOf(key)
   return arr[current + offsetIndex]
 }
-
 
 function checkEnable (enable) {
   if (enable === undefined) {
@@ -34,35 +38,41 @@ async function initialize () {
   const step = stepFactory()
   let stepNum = 3
   await step('[0] prepare data', async () => {
+    updateInfomationState(i18n`initialize.prepareData`)
     window.CodingSDK = CodingSDK
     window.React = React
     window.i18n = i18n
     window.extension = f => null
     window.refs = {}
     window.config = config
-    return true;
+    return true
   })
 
-  await step('[1] Load required package.', async() => {
+  await step('[1] Load required package.', async () => {
     try {
+      updateInfomationState(i18n`initialize.loadSysPlugin`)
       await loadPackagesByType('Required', state, true)
     } catch (err) {
       throw new Error(err.message)
     }
-    return true;
+    return true
   })
 
-  await step('[2] Load required user package.', async() => {
+  await step('[2] Load required user package.', async () => {
     try {
+      updateInfomationState(i18n`initialize.loadUserPlugin`)
       await loadPackagesByUser()
     } catch (err) {
-      throw new Error(err.message)
+      if (err instanceof ExtensionError) {
+        updateWarningInfo(i18n`initialize.pluginloadfail${{ name: err.name, reason: err.reason }}`)
+        // throw new Error(err.message)
+      }
     }
-    return true;
+    return true
   })
 
-  await step('[START] Run steps in stepCache.', async() => {
-    /*async function goto (key, hasNext = true) {
+  await step('[START] Run steps in stepCache.', async () => {
+    /* async function goto (key, hasNext = true) {
       if (!hasNext) {
         return true
       }
@@ -82,23 +92,26 @@ async function initialize () {
       }
     }
     console.log('[END] End running stepCache.')
-    return true;
+    return true
   })
 
   await step(`[${stepNum++}] Persist plugin settings.`, async () => {
+    updateInfomationState(i18n`initialize.loadUserPluginSetting`)
     await persistPluginStore()
-    return true;
+    return true
   })
 
   await step(`[${stepNum++}] Mount required package.`, async () => {
+    updateInfomationState(i18n`initialize.launchExtensions`)
     await mountPackagesByType('Required')
-    return true;
+    return true
   })
 
   await step(`[${stepNum++}] Persist Store.`, async () => {
+    updateInfomationState(i18n`initialize.loadSysCache`)
     await persistTask()
 
-    return true;
+    return true
   })
 
   if (config.showEnvWelCome) {
@@ -107,8 +120,8 @@ async function initialize () {
   }
 
   if (config.packageDev) {
-    await step(`[${stepNum++}] Enable package server hotreload.`,
-    () => {
+    await step(`[${stepNum++}] Enable package server hotreload.`, () => {
+      updateInfomationState(i18n`initialize.enableHMR`)
       const ports = __PACKAGE_PORTS__
       if (ports && ports.length) {
         ports.forEach((port) => {

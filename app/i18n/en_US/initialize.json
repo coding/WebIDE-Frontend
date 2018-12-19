@@ -1,0 +1,10 @@
+{
+  "prepareData": "Initialize...",
+  "loadSysPlugin": "Load system extensions...",
+  "loadUserPlugin": "Load third party extensions...",
+  "loadUserPluginSetting": "Load third-party extension cache settings...",
+  "pluginloadfail": "Load {name} failed，Error message: {reason}",
+  "launchExtensions": "Launch extensions...",
+  "loadSysCache": "Load system cache...",
+  "enableHMR": "Enable hot module replace..."
+}

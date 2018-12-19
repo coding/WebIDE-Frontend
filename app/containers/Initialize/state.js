@@ -9,5 +9,7 @@ const state = observable({
   progress: 0,
   userChecked: false,
   checkStep: 0, // 0 用户信息，current 1 腾讯云绑定 2 小主机信息 3 完成
+  stepMessage: null,
+  requestMessage: null
 })
 export default state

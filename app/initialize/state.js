@@ -1,4 +1,5 @@
 import { extendObservable, observable } from 'mobx'
+import { updateInfomationState, updateRequestInfo } from 'containers/Initialize/actions'
 import config from '../config'
 import api from '../backendAPI'
 import { qs } from '../utils'
@@ -25,7 +26,7 @@ const stepCache = observable.map({
     // case 2: spaceKey in querystring
       spaceKey = qsParsed.spaceKey
       if (spaceKey) return config.spaceKey = spaceKey
-
+      updateRequestInfo('获取 spaceKey')
       return true // MISSING OF SPACEKEY SHOULD NOT BLOCK
     }
   },

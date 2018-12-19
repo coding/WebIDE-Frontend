@@ -408,9 +408,12 @@ class Initialize extends Component {
         <div className='initialize-container'>
           {icon}
           {/* <div className='monkey splash-logo'></div> */}
-          {info}
-          {errorInfo}
-          {requestInfo}
+          {state.stepMessage && <div className="loading-info">
+            {state.stepMessage}
+          </div>}
+          {state.requestMessage && <div className="loading-info">{state.requestMessage}</div>}
+          {state.warningMessage && <div className="loading-info warning">{state.warningMessage}</div>}
+          {/* requestInfo*/}
         </div>
         {hintInfo}
         <Header handleSignout={e => {

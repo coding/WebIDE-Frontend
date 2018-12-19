@@ -9,7 +9,8 @@ const app = {
   config: require('./config'),
   settings: require('./settings'),
   settingFormState: require('components/Setting/state'),
-  settingActions: require('components/Setting/actions')
+  settingActions: require('components/Setting/actions'),
+  initializeActions: require('containers/Initialize/actions')
 }
 
 const lib = {
