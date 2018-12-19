@@ -25,7 +25,7 @@ class PluginSet extends Component {
         countScoreUser: 0,
         repoName: '',
         repoUrl: '',
-        globalStatus: 1,
+        allowRelease: true,
         historyVersions: [],
         status: 0,
         version: '0.0.0',
@@ -41,9 +41,9 @@ class PluginSet extends Component {
     timer = null
 
     render() {
-        const { pluginId, pluginName, remark, historyVersions, status, version, createdBy, repoName, globalStatus, hasPrePublish, preStatus, preLog, tab } = this.state;
+        const { pluginId, pluginName, remark, historyVersions, status, version, createdBy, repoName, allowRelease, hasPrePublish, preStatus, preLog, tab } = this.state;
         const prePublishProps = { hasPrePublish, preStatus, preLog };
-        const settingProps = { pluginId, pluginName, remark, createdBy, repoName, globalStatus };
+        const settingProps = { pluginId, pluginName, remark, createdBy, repoName, allowRelease };
         return (
             <div className="dash-pluginset">
                 <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
@@ -53,7 +53,7 @@ class PluginSet extends Component {
                     <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.pluginSet')}</div>
                 </div>
                 {tab === 1 && pluginName && (
-                    globalStatus === 1 ? (
+                    allowRelease ? (
                         <div className="panel">
                             <PrePublish {...prePublishProps} release={this.handleRelease} cancelRelease={this.cancelPrePublish} />
                             <Publish version={version} status={status} release={this.handleRelease} />
@@ -77,7 +77,7 @@ class PluginSet extends Component {
         const { pluginId } = this.state;
         api.getPluginInfo(pluginId).then(res => {
             if (res.code === 0) {
-                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl, globalStatus } = res.data;
+                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl, allowRelease } = res.data;
                 const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
                 this.setState({
                     createdBy,
@@ -88,7 +88,7 @@ class PluginSet extends Component {
                     pluginType: pluginTypes[0].typeName,
                     repoName,
                     repoUrl,
-                    globalStatus,
+                    allowRelease,
                     historyVersions,
                     status,
                     version,

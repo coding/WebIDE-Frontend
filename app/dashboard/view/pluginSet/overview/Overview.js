@@ -11,7 +11,7 @@ import config from '../../../utils/config';
 
 class Overview extends Component {
     render() {
-        const { pluginId, pluginName, remark, version, pluginType, avgScore, countScoreUser, createdBy, repoName, repoUrl, globalStatus } = this.props;
+        const { pluginId, pluginName, remark, version, pluginType, avgScore, countScoreUser, createdBy, repoName, repoUrl, allowRelease } = this.props;
         const { status, auditRemark, hasPrePublish, preStatus } = this.props;
         const { cancelRelease } = this.props;
         const repoHref = `${config.devOrigin}/u/${createdBy}/p/${repoUrl.split('/').pop().split('.').join('/')}`;
@@ -22,7 +22,7 @@ class Overview extends Component {
                 <div className="top">
                     <div className="name">
                         <div>{pluginName}</div>
-                        <div className="tag">{i18n('plugin.disabled')}</div>
+                        {!allowRelease && <div className="tag">{i18n('plugin.disabled')}</div>}
                     </div>
                     <div>
                         <a className="goto" href={repoHref} target="_blank" rel="noopener noreferrer">{i18n('plugin.codeRepo')}</a>
@@ -44,7 +44,7 @@ class Overview extends Component {
                         <span className="rate-user-count">({kilo(countScoreUser)} {i18n('plugin.userCount')})</span>
                     </div>
                 </div>
-                {globalStatus === 1 ? (
+                {allowRelease ? (
                     <div className="status">
                         {i18n(`plugin.status${status}`, { version, reason: auditRemark })}
                         {status === 5 && (

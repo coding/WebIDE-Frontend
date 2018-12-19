@@ -86,7 +86,7 @@ class Home extends Component {
         const pathname = location.pathname;
         // 跳转
         if (pathname === '/dashboard') {
-            history.push({ pathname: '/dashboard/workspace' });
+            history.replace({ pathname: '/dashboard/workspace' });
         }
         // 给顶层 window 发送消息
         history.listen(route => {
