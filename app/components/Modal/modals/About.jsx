@@ -27,7 +27,7 @@ const Alert = () => {
         </div>
       </div>
       <div className='links'>
-        <a href='/intro' className='link-item' target='_blank' rel='noopener noreferrer'>产品介绍</a>
+        <a href='https://studio.dev.tencent.com/intro' className='link-item' target='_blank' rel='noopener noreferrer'>产品介绍</a>
         <a href='https://dev.tencent.com/help/doc/cloud-studio' className='link-item' target='_blank' rel='noopener noreferrer' >帮助文档</a>
         <a href='https://feedback.coding.net' className='link-item' target='_blank' rel='noopener noreferrer'>意见反馈</a>
       </div>

@@ -13,7 +13,7 @@ function buildFilterIndex (items=[]) {
   })
 }
 
-const MenuItemDivider = () => (<li><hr /></li>)
+const MenuItemDivider = (props) =>(<li style={{display: props.display}}><hr /></li>)
 
 class Menu extends Component {
   constructor (props, context) {
@@ -136,12 +136,16 @@ class Menu extends Component {
 
   renderMenuItems (items) {
     return items.map((item, i) => {
+      const hideCondition = isFunction(item.getIsHidden)
+            && item.getIsHidden(this.context.menuContext)
+
       const key = `menu-item-${item.name}-${i}`
       if (item.isDivider) {
-        return <MenuItemDivider key={key} />
+        const display = hideCondition ? 'none' : 'initial'
+        return <MenuItemDivider key={key} display={display} />
       }
 
-      if (isFunction(item.getIsHidden) && item.getIsHidden(this.context.menuContext)) {
+      if (hideCondition) {
         return null
       }
 

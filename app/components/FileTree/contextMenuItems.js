@@ -16,16 +16,21 @@ const items = [
     command: 'file:new_folder',
 
   },
-  divider,
+  {
+    isDivider: true,
+    getIsHidden: ctx => !ctx.id
+  },
   {
     name: i18n`fileTree.contextMenu.delete`,
     icon: 'fa fa-trash-o',
     command: 'file:delete',
     id: 'filetree_menu_delete',
+    getIsHidden: ctx => !ctx.id
   }, {
     name: i18n`fileTree.contextMenu.rename`,
     icon: 'fa',
     command: 'file:rename',
+    getIsHidden: ctx => !ctx.id
   },
   divider,
   {
