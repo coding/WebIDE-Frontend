@@ -6,6 +6,7 @@ import './home.css';
 import cloudstudio from '../../static/cloudstudio.svg';
 
 import Mask from './mask';
+import Bulletin from './bulletin';
 import Stripe from '../../share/stripe';
 import Bell from '../bell';
 import Profile from './profile';
@@ -24,7 +25,8 @@ class Home extends Component {
         super(props);
         this.state = {
             loaded: false,
-            isMaskOn: true,
+            isMaskOn: false,
+            isBulletinOn: true,
             isBellOn: false,
             isProfileOn: false,
         };
@@ -32,13 +34,14 @@ class Home extends Component {
     }
 
     render() {
-        const { loaded, isMaskOn, isBellOn, isProfileOn } = this.state;
+        const { loaded, isMaskOn, isBulletinOn, isBellOn, isProfileOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
         if (loaded && isMaskOn) {
             return <Mask />;
         }
         return (
             <div id="dash-container" onClick={this.turnOffPanel}>
+                {isBulletinOn && <Bulletin close={this.closeBulletin} />}
                 <div className="dash-mbar">
                     <Link className="logo" to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="" /></Link>
                     <Stripe />
@@ -175,6 +178,10 @@ class Home extends Component {
                 isProfileOn: false,
             });
         }
+    }
+
+    closeBulletin = () => {
+        this.setState({ isBulletinOn: false });
     }
 }
 
