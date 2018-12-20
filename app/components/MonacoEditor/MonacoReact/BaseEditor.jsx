@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { debounce, lowerCase } from 'lodash'
+import { debounce } from 'lodash'
 import { measure } from '@pinyin/measure'
-import { when, autorun, reaction } from 'mobx'
+import { autorun, reaction } from 'mobx'
 import { observer } from 'mobx-react'
 import * as monaco from 'monaco-editor'
 
@@ -98,61 +98,6 @@ class MonacoEditor extends React.PureComponent {
         })
       }
     })
-
-    // autorun(() => {
-    //   const languageClient = languageState.clients.get(this.language)
-    //   if (languageClient) {
-    //     let path, content
-    //     if (this.editor.file) {
-    //       path = this.editor.file.path
-    //       content = this.editor.file.content
-    //     } else {
-    //       path = this.editor.uri
-    //       content = this.editor.content
-    //     }
-    //     /**
-    //      * client 状态
-    //      * enum ClientState {
-    //      *  Initial,      // 0
-    //      *  Starting,     // 1
-    //      *  StartFailed,  // 2
-    //      *  Running,      // 3
-    //      *  Stopping,     // 4
-    //      *  Stopped,      // 5
-    //      * }
-    //      */
-    //     const uri = path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`
-    //     let model = monaco.editor.getModel(uri)
-    //     if (!model) {
-    //       model = monaco.editor.createModel(
-    //         content,
-    //         this.language.toLowerCase(),
-    //         monaco.Uri.parse(path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`)
-    //       )
-    //       this.uri = path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`
-    //       const tmpModel = monaco.editor.getModel(`inmemory://model/${this.editor.id}`)
-    //       if (tmpModel) {
-    //         tmpModel.dispose()
-    //       }
-    //     }
-    //     this.editor.model = model
-    //     monacoEditor.setModel(model)
-    //     const { client, openeduri } = languageClient
-    //     if (client && client.state === 3 && this.props.active && this.didmount) {
-    //       // if (!openeduri.get(path)) {
-    //       //   languageClient.openTextDocument({
-    //       //     textDocument: {
-    //       //       uri: path.startsWith('jdt://') || path.startsWith('omnisharp-metadata') ? path : `file://${languageClient._ROOT_URI_}${path}`,
-    //       //       languageId: this.language.toLowerCase(),
-    //       //       text: content,
-    //       //       version: 1,
-    //       //     }
-    //       //   })
-    //       //   openeduri.set(path, content)
-    //       // }
-    //     }
-    //   }
-    // })
   }
 
   componentWillReceiveProps (nextProps) {
