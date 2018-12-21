@@ -26,7 +26,6 @@ class Home extends Component {
         this.state = {
             loaded: false,
             isMaskOn: false,
-            isBulletinOn: true,
             isBellOn: false,
             isProfileOn: false,
         };
@@ -34,14 +33,13 @@ class Home extends Component {
     }
 
     render() {
-        const { loaded, isMaskOn, isBulletinOn, isBellOn, isProfileOn } = this.state;
+        const { loaded, isMaskOn, isBellOn, isProfileOn } = this.state;
         const { isMbarOn, wsCount, hideMbar } = this.props;
         if (isMaskOn) {
             return <Mask />;
         }
         return (
             <div id="dash-container" onClick={this.turnOffPanel}>
-                {isBulletinOn && <Bulletin close={this.closeBulletin} />}
                 <div className="dash-mbar">
                     <Link className="logo" to="/dashboard/workspace" onClick={hideMbar}><img src={cloudstudio} alt="" /></Link>
                     <Stripe />
@@ -179,10 +177,6 @@ class Home extends Component {
                 isProfileOn: false,
             });
         }
-    }
-
-    closeBulletin = () => {
-        this.setState({ isBulletinOn: false });
     }
 }
 
