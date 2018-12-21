@@ -79,11 +79,6 @@ const stepCache = observable.map({
     func: () => 
       api.connectWebsocketClient()
   },
-  connectSearchSocket: {
-    desc: 'Connect Search Websocket',
-    func: () => 
-      api.connectSearchWebsocketClient()
-  },
   preventAccidentalClose: {
     desc: 'Prevent accidental close',
     func: () => {

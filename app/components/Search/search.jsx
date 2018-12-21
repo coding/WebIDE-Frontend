@@ -7,7 +7,7 @@ import { openFile } from 'commands/commandBindings/file'
 import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
 import { Aa, Word, Reg } from './icons'
-import * as api from 'backendAPI/searchAPI'
+import api from 'backendAPI/'
 import config from 'config'
 
 const hoverColor = '#337ab7'
@@ -74,6 +74,10 @@ export class SearchResultItem extends Component {
 
 @observer
 class SearchPanel extends Component {
+    componentWillMount() {
+      api.connectSearchWebsocketClient()
+    }
+
     componentDidMount () {
       subscribeToSearch()
     }
