@@ -7,7 +7,7 @@ import { openFile } from 'commands/commandBindings/file'
 import * as delegate from 'commons/Search/action'
 import icons from 'file-icons-js'
 import { Aa, Word, Reg } from './icons'
-import * as api from 'backendAPI/searchAPI'
+import api from 'backendAPI/'
 import config from 'config'
 
 const hoverColor = '#337ab7'
@@ -74,6 +74,14 @@ export class SearchResultItem extends Component {
 
 @observer
 class SearchPanel extends Component {
+    constructor (props) {
+      super(props)
+      this.state = { refresh : false }
+
+      this.refresh = this.refresh.bind(this)
+      api.connectSearchWebsocketClient()
+    }
+
     componentDidMount () {
       subscribeToSearch()
     }
@@ -105,7 +113,7 @@ class SearchPanel extends Component {
     }
     
     renderResult () {
-        let content = '';
+        let content = ''
         if (state.ws.first) {
             content = ''
         } else if (!state.searched.end) {
@@ -132,10 +140,11 @@ class SearchPanel extends Component {
 
             number = number > 100 ? '100+' : number
             return (
-                <div className='search-result-list'>
-                    <div>{i18n`panel.result.tip${{ files, number }}`}</div>
-                    {content}
-                </div>
+              <div className='search-result-list'>
+                {state.searching.tip ? state.searching.tip
+                  : <div><div>{i18n`panel.result.tip${{ files, number }}`}</div>
+                {content}</div>}
+              </div>
             )
         } else if(state.searched.taskId) {
             content = `${i18n.get('panel.result.blank')}`;
@@ -143,9 +152,17 @@ class SearchPanel extends Component {
 
         return (
             <div key={`search-result-list`} className='search-result-list'>
-                {content}
+                {state.searching.tip || content}
             </div>
         )
+    }
+
+    refresh () {
+      this.setState({ refresh: true })
+      setTimeout(() => {
+        this.setState({ refresh: false })
+      }, 400)
+      api.connectSearchWebsocketClient()
     }
 
     render () {
@@ -159,6 +176,9 @@ class SearchPanel extends Component {
             <div className='search-panel'>
                 <div className='search-panel-title'>
                     {i18n`panel.left.find`}
+                    <i className={`fa fa-refresh ${this.state.refresh ? 'active' : ''}`} onClick={this.refresh} title={i18n`panel.result.refresh`}
+                      style={{ display: state.searching.tip ? 'initial' : 'none' }}
+                    />
                 </div>
                 <div className='search-panel-input'>
                     <div className='search-controls'>
