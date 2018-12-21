@@ -6,7 +6,6 @@ import './home.css';
 import cloudstudio from '../../static/cloudstudio.svg';
 
 import Mask from './mask';
-import Bulletin from './bulletin';
 import Stripe from '../../share/stripe';
 import Bell from '../bell';
 import Profile from './profile';
