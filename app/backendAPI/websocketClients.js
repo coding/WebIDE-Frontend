@@ -5,6 +5,7 @@ import emitter, * as E from 'utils/emitter'
 import config from 'config'
 import { autorun, runInAction } from 'mobx'
 import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
+import state from '../commons/Search/state'
 
 const log = console.log || (x => x)
 const warn = console.warn || (x => x)
@@ -215,6 +216,7 @@ class SearchSocketClient {
       runInAction(() => config.searchSocketConnected = true)
       this.backoff.reset()
       this.successCallback(this.stompClient)
+      state.searching.tip = ''
     }
     const error = (frame) => {
       if (this.shouldClose) {
@@ -222,6 +224,9 @@ class SearchSocketClient {
         return;
       }
       log('[SEARCH Socket] SearchSocket error', this.socket)
+
+      state.searching.tip = i18n`panel.result.err`
+
       switch (this.socket.readyState) {
         case SockJS.CLOSING:
         case SockJS.CLOSED:
