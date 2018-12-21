@@ -6,12 +6,13 @@ import config from 'config'
 import i18n from 'utils/createI18n'
 import { pluginSettingsItem } from 'components/Plugins/store'
 
-const getSettingValueHelper = store => Object.keys(store)
-  .filter(e => e !== '_keys' && e !== 'confirmCallBack')
-  .reduce((p, v) => {
-    p[v] = isPlainObject(store[v]) ? store[v].value : store[v]
-    return p
-  }, {})
+const getSettingValueHelper = store =>
+  Object.keys(store)
+    .filter(e => e !== '_keys' && e !== 'confirmCallBack')
+    .reduce((p, v) => {
+      p[v] = isPlainObject(store[v]) ? store[v].value : store[v]
+      return p
+    }, {})
 
 export const SETTING_STORE_HYDRATE = 'SETTING_STORE_HYDRATE'
 
@@ -43,10 +44,10 @@ const state = observable({
     return {
       editor: getSettingValueHelper(settings.editor),
       general: getSettingValueHelper(settings.general),
-      appearance: getSettingValueHelper(settings.appearance),
+      appearance: getSettingValueHelper(settings.appearance)
       // languageserver: getSettingValueHelper(settings.languageserver),
     }
-  },
+  }
 })
 
 const projectState = observable({
@@ -76,7 +77,7 @@ const projectState = observable({
   },
   classpath: [],
   libs: [],
-  sources: [],
+  sources: []
 })
 
 export const hydrate = registerAction(SETTING_STORE_HYDRATE, (json) => {

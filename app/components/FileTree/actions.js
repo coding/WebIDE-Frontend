@@ -11,7 +11,7 @@ import dispatchCommand from 'commands/dispatchCommand'
 import i18n from 'utils/createI18n'
 import is from 'utils/is'
 import statusBarState from '../StatusBar/state'
-import { notify, NOTIFY_TYPE } from '../Notification/actions'
+import notification from '../Notification'
 
 const MAX_FILE_SIZE_MB = 10
 const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024
@@ -22,7 +22,8 @@ export const initializeFileTree = registerAction('filetree:init', () => {
   bindToFile(state, FileState, FileTreeNode)
 })
 
-export const selectNode = registerAction('filetree:select_node',
+export const selectNode = registerAction(
+  'filetree:select_node',
   (node, multiSelect) => ({ node, multiSelect }),
   ({ node, multiSelect }) => {
     const offset = node
@@ -45,15 +46,18 @@ export const selectNode = registerAction('filetree:select_node',
   }
 )
 
-export const highlightDirNode = registerAction('filetree:highlight_dir_node',
+export const highlightDirNode = registerAction(
+  'filetree:highlight_dir_node',
   node => node.isDir && node.highlight()
 )
 
-export const unhighlightDirNode = registerAction('filetree:unhighlight_dir_node',
+export const unhighlightDirNode = registerAction(
+  'filetree:unhighlight_dir_node',
   node => node.isDir && node.unhighlight()
 )
 
-export const toggleNodeFold = registerAction('filetree:toggle_node_fold',
+export const toggleNodeFold = registerAction(
+  'filetree:toggle_node_fold',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
     if (!node.isDir) return
@@ -82,7 +86,11 @@ export const syncDirectory = registerAction('filetree:sync_file', (node, deep = 
       .then((data) => {
         if (deep) {
           data.forEach((d) => {
-            if (d.isDir && !isFileExcluded(d.path) && (d.filesCount > 0 || d.directoriesCount > 0)) {
+            if (
+              d.isDir &&
+              !isFileExcluded(d.path) &&
+              (d.filesCount > 0 || d.directoriesCount > 0)
+            ) {
               const fileNode = state.entities.get(d.path)
               fileNode && fileNode.isLoaded && syncDirectory(fileNode, true)
             }
@@ -90,21 +98,20 @@ export const syncDirectory = registerAction('filetree:sync_file', (node, deep = 
         }
         FileStore.loadNodeData(data)
       })
-      .then(res => {
+      .then((res) => {
         node.isLoading = false
         node.isLoaded = true
       })
   }
 })
 
-
 export const syncAllDirectoryByPath = registerAction('filetree:sync_all_dir', (rootPath) => {
   if (!is.string(rootPath)) {
-    return false;
+    return false
   }
-  const rootNode = state.entities.get(rootPath);
+  const rootNode = state.entities.get(rootPath)
   if (rootNode.isDir) {
-    syncDirectory(rootNode, true);
+    syncDirectory(rootNode, true)
   }
 })
 
@@ -127,7 +134,8 @@ const openNodeCommonLogic = function (node, editor, shouldBeFolded = null, deep 
   }
 }
 
-export const openNode = registerAction('filetree:open_node',
+export const openNode = registerAction(
+  'filetree:open_node',
   (node, shouldBeFolded, deep) => ({ node, shouldBeFolded, deep }),
   ({ node, shouldBeFolded = null, deep = false }) => {
     openNodeCommonLogic(node, {}, shouldBeFolded, deep)
@@ -143,32 +151,33 @@ export const gitBlameNode = registerAction('filetree:git_blame', (node) => {
 export const uploadFilesToPath = (files, path) => {
   if (!files.length) return
   const node = state.entities.get(path)
-  const targetDirPath = node.isDir ? node.path : (node.parent.path || '/')
+  const targetDirPath = node.isDir ? node.path : node.parent.path || '/'
   _(files).forEach((file) => {
     if (file.size > MAX_FILE_SIZE) {
-      notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: i18n`file.fileToLarge${{ filesize: MAX_FILE_SIZE_MB }}`
+      notification.error({
+        description: i18n`file.fileToLarge${{ filesize: MAX_FILE_SIZE_MB }}`
       })
       return
     }
     api.uploadFile(targetDirPath, file, {
       onUploadProgress: (progressEvent) => {
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        statusBarState.setFileUploadInfo({ path: file.name, info: { percentCompleted, size: file.size } })
+        statusBarState.setFileUploadInfo({
+          path: file.name,
+          info: { percentCompleted, size: file.size }
+        })
       },
       onUploadFailed: () => {
         statusBarState.removeFileUploadInfo({ path: file.name })
-        notify({
-          notifyType: NOTIFY_TYPE.ERROR,
-          message: i18n.get('file.uploadFailed') + `: ${file.name}`,
+        notification.error({
+          description: `${i18n.get('file.uploadFailed')}: ${file.name}`
         })
       }
     })
   })
 }
 
-export const mv = (from, to, force=false) => {
+export const mv = (from, to, force = false) => {
   const name = from.split('/').pop()
   const newPath = `${to}/${name}`
   if (from === newPath) return
@@ -187,7 +196,7 @@ export const mv = (from, to, force=false) => {
     } else if (/directory.*exist/.test(res.msg)) {
       await Modal.showModal('Alert', {
         header: i18n`file.moveFolderFailed`,
-        message: i18n`file.folderExist`,
+        message: i18n`file.folderExist`
       })
       Modal.dismissModal()
     }

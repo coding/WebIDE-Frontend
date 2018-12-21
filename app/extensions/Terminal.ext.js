@@ -6,7 +6,7 @@ class Terminal {
     this.name = xterm.id
     this.sendText = (text) => {
       xterm.emit('data', 'clear\r')
-      xterm.emit('data', text + '\r')
+      xterm.emit('data', `${text}\r`)
     }
 
     this.active = () => {
@@ -23,18 +23,21 @@ class Terminal {
 }
 export function registerTerminalOpenHandler (fn) {
   function warpperListener (xterm) {
+    debugger
     const terminal = new Terminal(xterm)
     fn(terminal)
   }
   terminalState.didOpenListeners.push(warpperListener)
   return () => {
-    terminalState.didOpenListeners = terminalState.didOpenListeners.filter(f => f !== warpperListener)
+    terminalState.didOpenListeners = terminalState.didOpenListeners.filter(
+      f => f !== warpperListener
+    )
   }
 }
 
 export function createTerminal (id, shellPath) {
   addTerminal({ id, cwd: shellPath })
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       const term = state.tabs.get(id).terminal
       resolve(new Terminal(term))

@@ -1,5 +1,5 @@
-import { registerAction } from 'utils/actions'
 import state from './state'
+import notification from 'components/Notification'
 
 export const NOTIFY_TYPE = {
   ERROR: 'error',
@@ -8,39 +8,16 @@ export const NOTIFY_TYPE = {
   WARNING: 'warning'
 }
 
-export const NOTIFICATION_REMOVE = 'NOTIFICATION_REMOVE'
-export const removeNotification = registerAction.normal(NOTIFICATION_REMOVE, (notifKey) => {
-  const notifToRemove = state.notifications.find(notif => notif.key === notifKey)
-  state.notifications.remove(notifToRemove)
-})
+const DEAFAULT_NOTIFY_TYPE = NOTIFY_TYPE.INFO // 默认为info消息类型
 
-const NOTIFICATION_ADD = 'NOTIFICATION_ADD'
-export const addNotification = registerAction.normal(
-  NOTIFICATION_ADD,
-  (notification) => {
-    const notifKey = Date.now()
-    let defaultNotification = {
-      message: '',
-      action: '',
-      notifyType: NOTIFY_TYPE.SUCCESS, // 默认弹出success弹窗
-      key: notifKey,
-      dismissAfter: 6000,
-      onClick: () => removeNotification(notifKey)
-    }
-
-    if (notification.notifyType === NOTIFY_TYPE.ERROR) {
-      defaultNotification = {
-        ...defaultNotification,
-        barStyle: { backgroundColor: 'red' },
-        actionStyle: { color: 'white' }
-      }
-    }
-
-    return { ...defaultNotification, ...notification }
-  },
-  (notification) => {
-    state.notifications.push(notification)
+export const notify = (config) => {
+  if (config.notifyType) {
+    notification[config.notifyType]({
+      description: config.message
+    })
+  } else {
+    notification[DEAFAULT_NOTIFY_TYPE]({
+      description: config.message
+    })
   }
-)
-
-export const notify = addNotification
+}

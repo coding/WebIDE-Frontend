@@ -1,0 +1,215 @@
+/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
+/* stylelint-disable declaration-bang-space-before */
+/* stylelint-disable declaration-bang-space-before */
+.coding-notification {
+  position: fixed;
+  z-index: 1010;
+  width: 335px;
+  margin-right: 24px;
+}
+.coding-notification-topLeft,
+.coding-notification-bottomLeft {
+  margin-left: 24px;
+  margin-right: 0;
+}
+.coding-notification-topLeft
+  .coding-notification-fade-enter.coding-notification-fade-enter-active,
+.coding-notification-bottomLeft
+  .coding-notification-fade-enter.coding-notification-fade-enter-active,
+.coding-notification-topLeft
+  .coding-notification-fade-appear.coding-notification-fade-appear-active,
+.coding-notification-bottomLeft
+  .coding-notification-fade-appear.coding-notification-fade-appear-active {
+  -webkit-animation-name: NotificationLeftFadeIn;
+  animation-name: NotificationLeftFadeIn;
+}
+.coding-notification-notice {
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  background: rgba(68, 68, 68, 1);
+  line-height: 1.5;
+  color: #cccccc;
+  position: relative;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.coding-notification-notice-message {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 4px;
+  line-height: 20px;
+  display: inline-block;
+}
+.coding-notification-notice-message-single-line-auto-margin {
+  width: calc(335px - 16px * 2 - 24px - 48px - 100%);
+  background-color: transparent;
+  pointer-events: none;
+  display: block;
+  max-width: 4px;
+}
+.coding-notification-notice-message-single-line-auto-margin:before {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+.coding-notification-notice-description {
+  font-size: 12px;
+  max-width: 252px;
+  line-height: 20px;
+}
+.coding-notification-notice-closable .coding-notification-notice-message {
+  padding-right: 24px;
+}
+.coding-notification-notice-with-icon .coding-notification-notice-message {
+  font-size: 14px;
+  margin-left: 28px;
+  margin-bottom: 4px;
+}
+.coding-notification-notice-with-icon .coding-notification-notice-description {
+  margin-left: 22px;
+  font-size: 12px;
+}
+.coding-notification-notice-icon {
+  position: absolute;
+  font-size: 14px;
+  line-height: 20px;
+}
+.coding-notification-notice-close-x:after {
+  font-size: 12px;
+  content: url("../../../static/closeIcon.svg");
+  cursor: pointer;
+}
+.coding-notification-notice-close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  color: rgba(0, 0, 0, 0.43);
+  outline: none;
+  text-decoration: none;
+}
+.coding-notification-notice-close:hover {
+  color: #404040;
+}
+.coding-notification-notice-btn {
+  float: right;
+  margin-top: 16px;
+}
+.coding-notification .notification-fade-effect {
+  -webkit-animation-duration: 0.24s;
+  animation-duration: 0.24s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.coding-notification-fade-enter,
+.coding-notification-fade-appear {
+  opacity: 0;
+  -webkit-animation-duration: 0.24s;
+  animation-duration: 0.24s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+.coding-notification-fade-leave {
+  -webkit-animation-duration: 0.24s;
+  animation-duration: 0.24s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  -webkit-animation-duration: 0.2s;
+  animation-duration: 0.2s;
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+.coding-notification-fade-enter.coding-notification-fade-enter-active,
+.coding-notification-fade-appear.coding-notification-fade-appear-active {
+  -webkit-animation-name: NotificationFadeIn;
+  animation-name: NotificationFadeIn;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+.coding-notification-fade-leave.coding-notification-fade-leave-active {
+  -webkit-animation-name: NotificationFadeOut;
+  animation-name: NotificationFadeOut;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
+}
+@-webkit-keyframes NotificationFadeIn {
+  0% {
+    opacity: 0;
+    left: 335px;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@keyframes NotificationFadeIn {
+  0% {
+    opacity: 0;
+    left: 335px;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes NotificationLeftFadeIn {
+  0% {
+    opacity: 0;
+    right: 335px;
+  }
+  100% {
+    right: 0;
+    opacity: 1;
+  }
+}
+@keyframes NotificationLeftFadeIn {
+  0% {
+    opacity: 0;
+    right: 335px;
+  }
+  100% {
+    right: 0;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes NotificationFadeOut {
+  0% {
+    opacity: 1;
+    margin-bottom: 10px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    max-height: 150px;
+  }
+  100% {
+    opacity: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 0;
+  }
+}
+@keyframes NotificationFadeOut {
+  0% {
+    opacity: 1;
+    margin-bottom: 10px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    max-height: 150px;
+  }
+  100% {
+    opacity: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 0;
+  }
+}

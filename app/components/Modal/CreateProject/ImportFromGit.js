@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Clipboard from 'clipboard'
-
 import { showPublicSshKey } from 'backendAPI/projectAPI'
-import { notify } from 'components/Notification/actions'
+import notification from 'components/Notification'
 import { dismissModal } from 'components/Modal/actions'
 
 class ImportFromGit extends PureComponent {
@@ -11,7 +10,7 @@ class ImportFromGit extends PureComponent {
     submit: PropTypes.func,
     url: PropTypes.string,
     showWarn: PropTypes.bool,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func
   }
 
   state = {
@@ -28,13 +27,17 @@ class ImportFromGit extends PureComponent {
       }
     })
     const clipboard = new Clipboard('.clipboard', {
-      text: trigger => trigger.parentElement.innerText,
+      text: trigger => trigger.parentElement.innerText
     })
     clipboard.on('success', () => {
-      notify({ message: i18n.get('import.copyKeySuccess') })
+      notification.success({
+        description: i18n.get('import.copyKeySuccess')
+      })
     })
     clipboard.on('error', () => {
-      notify({ message: i18n.get('import.copyKeyFailed') })
+      notification.error({
+        description: i18n.get('import.copyKeyFailed')
+      })
     })
   }
 

@@ -3,7 +3,7 @@ import FileSaver from 'file-saver'
 import './promise.prototype.finalCatch'
 import qs from './qs'
 import config from '../config'
-import { notify, NOTIFY_TYPE } from '../components/Notification/actions'
+import notification from '../components/Notification'
 
 const _request = axios.create({
   baseURL: config.baseURL,
@@ -17,16 +17,18 @@ const _request = axios.create({
   mode: 'cors',
   withCredentials: true,
   // only applicable for request methods 'PUT', 'POST', and 'PATCH'
-  transformRequest: [function (data, headers) {
-    switch (headers['Content-Type']) {
-      case 'application/json':
-        return JSON.stringify(data)
-      case 'application/x-www-form-urlencoded':
-        return qs.stringify(data)
-      default:
-        return data
+  transformRequest: [
+    function (data, headers) {
+      switch (headers['Content-Type']) {
+        case 'application/json':
+          return JSON.stringify(data)
+        case 'application/x-www-form-urlencoded':
+          return qs.stringify(data)
+        default:
+          return data
+      }
     }
-  }]
+  ]
 })
 
 const request = function (options) {
@@ -39,10 +41,10 @@ Object.assign(request, _request)
 
 const promiseInterceptor = (promise) => {
   promise.finalCatch((err) => {
+    debugger
     if (err.msg) {
-      notify({
-        notifyType: NOTIFY_TYPE.ERROR,
-        message: err.response.data.msg,
+      notification.error({
+        description: err.response.data.msg
       })
     } else {
       throw err
@@ -66,21 +68,24 @@ const responseRedirect = function (response) {
   }
 }
 
-const responseInterceptor = request.interceptors.response.use((response) => {
-  responseRedirect(response)
-  return response.data
-}, (error) => {
-  responseRedirect(error.response)
-  if (error.response && error.response.data) Object.assign(error, error.response.data)
-  return Promise.reject(error)
-})
+const responseInterceptor = request.interceptors.response.use(
+  (response) => {
+    responseRedirect(response)
+    return response.data
+  },
+  (error) => {
+    responseRedirect(error.response)
+    if (error.response && error.response.data) Object.assign(error, error.response.data)
+    return Promise.reject(error)
+  }
+)
 
 request.get = function (url, params, options = {}) {
   return request({
     method: 'get',
     url,
     params,
-    ...options,
+    ...options
   })
 }
 
@@ -90,7 +95,7 @@ request.upload = function (url, data, options) {
     transformRequest: d => d,
     url,
     data,
-    ...options,
+    ...options
   })
 }
 
@@ -99,7 +104,7 @@ request.delete = function (url, params, options = {}) {
     method: 'delete',
     url,
     params,
-    ...options,
+    ...options
   })
 }
 
@@ -113,7 +118,7 @@ request.diff = function (url, params, options = {}) {
         Accept: 'application/vnd.coding.v2.diff+json'
       })
     },
-    ...options,
+    ...options
   })
 }
 
@@ -127,7 +132,7 @@ request.diffFilesList = function (url, params, options = {}) {
         Accept: 'application/vnd.coding.v2.diff-files-list+json'
       })
     },
-    ...options,
+    ...options
   })
 }
 
@@ -146,7 +151,7 @@ request.postJSON = function (url, data, options = {}) {
         Accept: 'application/vnd.coding.v2+json'
       })
     },
-    ...options,
+    ...options
   })
 }
 
@@ -156,7 +161,7 @@ request.download = function (url, filename, params, options = {}) {
     responseType: 'blob',
     url,
     params,
-    ...options,
+    ...options
   }).then((response) => {
     FileSaver.saveAs(response, filename)
   })
