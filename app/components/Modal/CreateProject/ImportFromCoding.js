@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { syncProject, fetchProjects } from 'backendAPI/projectAPI'
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
+import notification from 'components/Notification'
 
 class ImportFromCoding extends PureComponent {
   static propTypes = {
     setActiveRepo: PropTypes.func,
-    activeRepo: PropTypes.object,
+    activeRepo: PropTypes.object
   }
   state = {
     allRepos: [],
@@ -44,7 +44,9 @@ class ImportFromCoding extends PureComponent {
         }
       })
       .catch((res) => {
-        notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg })
+        notification.error({
+          description: res.msg
+        })
       })
       .finally(() => {
         this.setState({ isLoading: false })

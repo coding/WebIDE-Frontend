@@ -1,5 +1,5 @@
 import config from 'config'
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
+import notification from 'components/Notification'
 import languagesConfig from './languages'
 import { INITIAL } from './monaco-textmate'
 
@@ -15,7 +15,7 @@ class TokenizerState {
   }
   equals (other) {
     if (
-      !other || 
+      !other ||
       !(other instanceof TokenizerState) ||
       other !== this ||
       other._ruleStack !== this._ruleStack
@@ -36,7 +36,7 @@ class TokenizerState {
 export function wireTmGrammars (monaco, registry, languages) {
   return Promise.all(
     Array.from(languages.keys()).map(async (languageId) => {
-      const languageContrubution = languagesConfig.find((lang) => lang.id === languageId)
+      const languageContrubution = languagesConfig.find(lang => lang.id === languageId)
       if (languageContrubution) {
         const { scopeName, ...contribution } = languageContrubution
         monaco.languages.register({ ...contribution })
@@ -47,26 +47,26 @@ export function wireTmGrammars (monaco, registry, languages) {
             tokenize: (line, state) => {
               if (line.length > 10000) {
                 if (!config.tokenizationWarningAlreadyShown) {
-                  console.warn('Too many characters! Tokenization is skipped for lines longer than 10k characters for performance reasons.')
-                  notify({ message: i18n`editor.tokenizationWarning`, notifyType: NOTIFY_TYPE.ERROR })
+                  console.warn(
+                    'Too many characters! Tokenization is skipped for lines longer than 10k characters for performance reasons.'
+                  )
+                  notification.error({
+                    description: i18n`editor.tokenizationWarning`
+                  })
                   config.tokenizationWarningAlreadyShown = true
                 }
                 const tokens = new Uint32Array(2)
                 tokens[0] = 0
-                tokens[1] = (
-                  (1 << 0)
-                  | (0 << 8)
-                  | (0 << 11)
-                  | (1 << 14)
-                  | (2 << 23)
-                ) >>> 0;
+                tokens[1] = ((1 << 0) | (0 << 8) | (0 << 11) | (1 << 14) | (2 << 23)) >>> 0
                 return {
                   endState: new TokenizerState(state.ruleStack),
-                  tokens: [{
-                    startIndex: 0,
-                    scopes: '',
-                    endIndex: line.length,
-                  }],
+                  tokens: [
+                    {
+                      startIndex: 0,
+                      scopes: '',
+                      endIndex: line.length
+                    }
+                  ]
                 }
               }
               const res = grammar.tokenizeLine(line, state.ruleStack)

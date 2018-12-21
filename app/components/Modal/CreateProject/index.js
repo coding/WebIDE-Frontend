@@ -6,7 +6,7 @@ import { createProject, findCodingProject } from 'backendAPI/projectAPI'
 import { createWorkspace } from 'backendAPI/workspaceAPI'
 import { gitClone } from 'backendAPI/gitAPI'
 import { showMask, hideMask } from 'components/Mask/actions'
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions'
+import notification from 'components/Notification'
 import { dismissModal } from 'components/Modal/actions'
 import CreateEmptyWs from './CreateEmptyWs'
 import ImportFromGit from './ImportFromGit'
@@ -131,7 +131,9 @@ class CreateProject extends PureComponent {
 
   makeRadioGroup = () => {
     const { step, types } = this.state
-    if ((step === 2 && types[1] === 'Git') || (step === 1 && types[0] === 'CreateEmptyWs')) return null
+    if ((step === 2 && types[1] === 'Git') || (step === 1 && types[0] === 'CreateEmptyWs')) {
+      return null
+    }
     return radioGroup[step].items.map(item => (
       <p key={item.type}>
         <input
@@ -192,9 +194,9 @@ class CreateProject extends PureComponent {
 
   makePrimaryBtnText = () => {
     const { types, step } = this.state
-    return (step === 1 && types[0] === 'CreateEmptyWs')
-      || step === 3
-      || (step === 2 && types[1] === 'Git')
+    return (step === 1 && types[0] === 'CreateEmptyWs') ||
+      step === 3 ||
+      (step === 2 && types[1] === 'Git')
       ? i18n`modal.okButton`
       : i18n`modal.nextButton`
   }
@@ -240,13 +242,12 @@ class CreateProject extends PureComponent {
   }
 
   _notifyWsResponse = (response) => {
-    notify({
-      message: !response.msg
+    notification.error({
+      description: !response.msg
         ? `code: ${response.code}`
         : typeof response.msg === 'object'
-          ? Object.values(response.msg)[0]
-          : response.msg,
-      notifyType: NOTIFY_TYPE.ERROR
+        ? Object.values(response.msg)[0]
+        : response.msg
     })
   }
 
@@ -257,7 +258,9 @@ class CreateProject extends PureComponent {
       .then((res) => {
         if (res.data) {
           hideMask()
-          notify({ message: i18n`import.projectExist`, notifyType: NOTIFY_TYPE.INFO })
+          notification.info({
+            description: i18n`import.projectExist`
+          })
           return Promise.resolve(false)
         }
         return createWorkspace({
@@ -276,13 +279,17 @@ class CreateProject extends PureComponent {
         } else {
           hideMask()
           const message = result.msg || `code: ${result.code}`
-          notify({ message, otifyType: NOTIFY_TYPE.ERROR })
+          notification.error({
+            description: message
+          })
         }
       })
       .catch((e) => {
         hideMask()
         const message = e.response ? e.response.data.msg : e.message
-        notify({ message: message || `code: ${e.code}`, notifyType: NOTIFY_TYPE.ERROR })
+        notification.error({
+          description: message || `code: ${e.code}`
+        })
       })
   }
 
@@ -306,11 +313,15 @@ class CreateProject extends PureComponent {
         if (res.data) {
           window.open(`/ws/${res.data.spaceKey}`, '_self')
         } else {
-          notify({ message: `Import failed: ${res.msg}` })
+          notification.error({
+            description: `Import failed: ${res.msg}`
+          })
         }
       })
       .catch((res) => {
-        notify({ message: `Import failed: ${res.msg}` })
+        notification.error({
+          description: `Import failed: ${res.msg}`
+        })
       })
   }
 
@@ -380,9 +391,10 @@ class CreateProject extends PureComponent {
           <button
             className='btn btn-primary'
             onClick={() => {
-              if ((step === 1 && types[0] === 'CreateEmptyWs')
-              || step === 3
-              || (step === 2 && types[1] === 'Git')
+              if (
+                (step === 1 && types[0] === 'CreateEmptyWs') ||
+                step === 3 ||
+                (step === 2 && types[1] === 'Git')
               ) {
                 this.submit()
               } else {

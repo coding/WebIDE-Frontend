@@ -1,153 +1,210 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import './pluginSet.css';
+import './pluginSet.css'
 
-import Overview from './overview';
-import Setting from './setting';
-import PrePublish from './prePublish';
-import Publish from './publish';
-import History from './history';
+import Overview from './overview'
+import Setting from './setting'
+import PrePublish from './prePublish'
+import Publish from './publish'
+import History from './history'
 
-import api from '../../api';
-import i18n from '../../utils/i18n';
-import { notify, NOTIFY_TYPE } from 'components/Notification/actions';
-import parseStatus from './status';
+import api from '../../api'
+import i18n from '../../utils/i18n'
+import notification from 'components/Notification'
+import parseStatus from './status'
 
 class PluginSet extends Component {
-    state = {
-        createdBy: '',
-        pluginId: this.props.match.params.id,
-        pluginName: '',
-        remark: '',
-        pluginType: '',
-        avgScore: 0,
-        countScoreUser: 0,
-        repoName: '',
-        repoUrl: '',
-        allowRelease: true,
-        historyVersions: [],
-        status: 0,
-        version: '0.0.0',
-        versionId: '',
-        log: '',
-        auditRemark: '',
-        hasPrePublish: false,
-        preStatus: 0,
-        preVersionId: '',
-        preLog: '',
-        tab: 1,
-    }
-    timer = null
+  state = {
+    createdBy: '',
+    pluginId: this.props.match.params.id,
+    pluginName: '',
+    remark: '',
+    pluginType: '',
+    avgScore: 0,
+    countScoreUser: 0,
+    repoName: '',
+    repoUrl: '',
+    allowRelease: true,
+    historyVersions: [],
+    status: 0,
+    version: '0.0.0',
+    versionId: '',
+    log: '',
+    auditRemark: '',
+    hasPrePublish: false,
+    preStatus: 0,
+    preVersionId: '',
+    preLog: '',
+    tab: 1
+  }
+  timer = null
 
-    render() {
-        const { pluginId, pluginName, remark, historyVersions, status, version, createdBy, repoName, allowRelease, hasPrePublish, preStatus, preLog, tab } = this.state;
-        const prePublishProps = { hasPrePublish, preStatus, preLog };
-        const settingProps = { pluginId, pluginName, remark, createdBy, repoName, allowRelease };
-        return (
-            <div className="dash-pluginset">
-                <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
-                <div className="tab">
-                    <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>{i18n('global.publish')}</div>
-                    <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>{i18n('plugin.versionHistory')}</div>
-                    <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>{i18n('plugin.pluginSet')}</div>
-                </div>
-                {tab === 1 && pluginName && (
-                    allowRelease ? (
-                        <div className="panel">
-                            <PrePublish {...prePublishProps} release={this.handleRelease} cancelRelease={this.cancelPrePublish} />
-                            <Publish version={version} status={status} release={this.handleRelease} />
-                        </div>
-                    ) : <div className="panel"><div className="disabled-tip">{i18n('plugin.pluginDisabledTip')}</div></div>
-                )}
-                {tab === 2 && pluginName && <History historyVersions={historyVersions} />}
-                {tab === 3 && pluginName && <Setting {...settingProps} refresh={this.fetchPlugin} />}
+  render () {
+    const {
+      pluginId,
+      pluginName,
+      remark,
+      historyVersions,
+      status,
+      version,
+      createdBy,
+      repoName,
+      allowRelease,
+      hasPrePublish,
+      preStatus,
+      preLog,
+      tab
+    } = this.state
+    const prePublishProps = { hasPrePublish, preStatus, preLog }
+    const settingProps = { pluginId, pluginName, remark, createdBy, repoName, allowRelease }
+    return (
+      <div className='dash-pluginset'>
+        <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
+        <div className='tab'>
+          <div className={`tab-item${tab === 1 ? ' on' : ''}`} onClick={() => this.handleTab(1)}>
+            {i18n('global.publish')}
+          </div>
+          <div className={`tab-item${tab === 2 ? ' on' : ''}`} onClick={() => this.handleTab(2)}>
+            {i18n('plugin.versionHistory')}
+          </div>
+          <div className={`tab-item${tab === 3 ? ' on' : ''}`} onClick={() => this.handleTab(3)}>
+            {i18n('plugin.pluginSet')}
+          </div>
+        </div>
+        {tab === 1 &&
+          pluginName &&
+          (allowRelease ? (
+            <div className='panel'>
+              <PrePublish
+                {...prePublishProps}
+                release={this.handleRelease}
+                cancelRelease={this.cancelPrePublish}
+              />
+              <Publish version={version} status={status} release={this.handleRelease} />
             </div>
-        );
-    }
+          ) : (
+            <div className='panel'>
+              <div className='disabled-tip'>{i18n('plugin.pluginDisabledTip')}</div>
+            </div>
+          ))}
+        {tab === 2 && pluginName && <History historyVersions={historyVersions} />}
+        {tab === 3 && pluginName && <Setting {...settingProps} refresh={this.fetchPlugin} />}
+      </div>
+    )
+  }
 
-    componentDidMount() {
-        this.fetchPlugin();
-        this.timer = setInterval(() => {
-            this.fetchPlugin();
-        }, 10000);
-    }
+  componentDidMount () {
+    this.fetchPlugin()
+    this.timer = setInterval(() => {
+      this.fetchPlugin()
+    }, 10000)
+  }
 
-    fetchPlugin = () => {
-        const { pluginId } = this.state;
-        api.getPluginInfo(pluginId).then(res => {
-            if (res.code === 0) {
-                const { createdBy, pluginName, remark, avgScore, countScoreUser, pluginTypes, pluginVersions, repoName, repoUrl, allowRelease } = res.data;
-                const { historyVersions, status, version, versionId, log, auditRemark, hasPrePublish, preStatus, preVersionId, preLog } = parseStatus(pluginVersions);
-                this.setState({
-                    createdBy,
-                    pluginName,
-                    remark,
-                    avgScore,
-                    countScoreUser,
-                    pluginType: pluginTypes[0].typeName,
-                    repoName,
-                    repoUrl,
-                    allowRelease,
-                    historyVersions,
-                    status,
-                    version,
-                    versionId,
-                    log,
-                    auditRemark,
-                    hasPrePublish,
-                    preStatus,
-                    preVersionId,
-                    preLog,
-                });
-            } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-            }
-        });
-    }
+  fetchPlugin = () => {
+    const { pluginId } = this.state
+    api.getPluginInfo(pluginId).then((res) => {
+      if (res.code === 0) {
+        const {
+          createdBy,
+          pluginName,
+          remark,
+          avgScore,
+          countScoreUser,
+          pluginTypes,
+          pluginVersions,
+          repoName,
+          repoUrl,
+          globalStatus
+        } = res.data
+        const {
+          historyVersions,
+          status,
+          version,
+          versionId,
+          log,
+          auditRemark,
+          hasPrePublish,
+          preStatus,
+          preVersionId,
+          preLog
+        } = parseStatus(pluginVersions)
+        this.setState({
+          createdBy,
+          pluginName,
+          remark,
+          avgScore,
+          countScoreUser,
+          pluginType: pluginTypes[0].typeName,
+          repoName,
+          repoUrl,
+          globalStatus,
+          historyVersions,
+          status,
+          version,
+          versionId,
+          log,
+          auditRemark,
+          hasPrePublish,
+          preStatus,
+          preVersionId,
+          preLog
+        })
+      } else {
+        notification.error({
+          description: res.msg
+        })
+      }
+    })
+  }
 
-    handleTab = (tab) => {
-        this.setState({ tab });
-    }
+  handleTab = (tab) => {
+    this.setState({ tab })
+  }
 
-    handleRelease = (option) => {
-        const { pluginId } = this.state;
-        const { showLoading, hideLoading } = this.props;
-        showLoading({ message: i18n('plugin.publishing') });
-        api.publishPlugin({ ...option, pluginId }).then(res => {
-            hideLoading();
-            if (res.code === 0) {
-                this.fetchPlugin();
-            } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-            }
-        });
-    }
+  handleRelease = (option) => {
+    const { pluginId } = this.state
+    const { showLoading, hideLoading } = this.props
+    showLoading({ message: i18n('plugin.publishing') })
+    api.publishPlugin({ ...option, pluginId }).then((res) => {
+      hideLoading()
+      if (res.code === 0) {
+        this.fetchPlugin()
+      } else {
+        notification.error({
+          description: res.msg
+        })
+      }
+    })
+  }
 
-    cancelPrePublish = () => {
-        const { preVersionId } = this.state;
-        const { hideVersionPop } = this.props;
-        api.cancelPrePublish({ versionId: preVersionId }).then(res => {
-            if (res.code === 0) {
-                this.fetchPlugin();
-            } else {
-                notify({ notifyType: NOTIFY_TYPE.ERROR, message: res.msg });
-            }
-        });
-        hideVersionPop();
-    }
+  cancelPrePublish = () => {
+    const { preVersionId } = this.state
+    const { hideVersionPop } = this.props
+    api.cancelPrePublish({ versionId: preVersionId }).then((res) => {
+      if (res.code === 0) {
+        this.fetchPlugin()
+      } else {
+        notification.error({
+          description: res.msg
+        })
+      }
+    })
+    hideVersionPop()
+  }
 
-    componentWillUnmount() {
-        clearTimeout(this.timer);
-    }
+  componentWillUnmount () {
+    clearTimeout(this.timer)
+  }
 }
 
-const mapDispatch = (dispatch) => {
-    return {
-        hideVersionPop: () => dispatch({ type: 'HIDE_VERSION_POP' }),
-        showLoading: (payload) => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
-        hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' }),
-    }
-}
+const mapDispatch = dispatch => ({
+  hideVersionPop: () => dispatch({ type: 'HIDE_VERSION_POP' }),
+  showLoading: payload => dispatch({ type: 'SWITCH_LOADING_TO_ON', payload }),
+  hideLoading: () => dispatch({ type: 'SWITCH_LOADING_TO_OFF' })
+})
 
-export default connect(null, mapDispatch)(PluginSet);
+export default connect(
+  null,
+  mapDispatch
+)(PluginSet)

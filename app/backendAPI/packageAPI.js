@@ -6,7 +6,6 @@ import config from '../config'
 
 const { packageServer, packageDev } = config
 
-
 const io = require('socket.io-client/dist/socket.io.min.js')
 
 export const fetchPackageList = (type) => {
@@ -21,27 +20,37 @@ export const fetchPackageList = (type) => {
 }
 
 export const fetchPackageInfo = (pkgName, pkgVersion, target) =>
-  axios.get(`${target || packageServer}/packages/${pkgName}/${pkgVersion}/manifest.json`).then(res => res.data)
+  axios
+    .get(`${target || packageServer}/packages/${pkgName}/${pkgVersion}/manifest.json`)
+    .then(res => res.data)
 
 export const fetchPackageScript = (props) => {
   if (Array.isArray(props)) {
-    const concatedUrl = props.reduce((p, v, i) => `${p}${v.pkgName}/${v.pkgVersion}/index.js${i !== props.length - 1 ? ',' : ''}`, '??')
+    const concatedUrl = props.reduce(
+      (p, v, i) => `${p}${v.pkgName}/${v.pkgVersion}/index.js${i !== props.length - 1 ? ',' : ''}`,
+      '??'
+    )
     if (!config.packageDev && config.isPlatform) {
       return axios.get(`${window.location.origin}/packages/${concatedUrl}`).then(res => res.data)
     }
     return axios.get(`${packageServer}/packages/${concatedUrl}`).then(res => res.data)
   }
-  return axios.get(`${props.target || packageServer}/packages/${props.pkgName}/${props.pkgVersion}/index.js`).then(res => res.data)
+  return axios
+    .get(`${props.target || packageServer}/packages/${props.pkgName}/${props.pkgVersion}/index.js`)
+    .then(res => res.data)
 }
 
 export const enablePackageHotReload = (target) => {
-  const socket = io.connect(target || packageServer, {
-    reconnection: true,
-    reconnectionDelay: 1500,
-    reconnectionDelayMax: 10000,
-    reconnectionAttempts: 5,
-    transports: ['websocket']
-  })
+  const socket = io.connect(
+    target || packageServer,
+    {
+      reconnection: true,
+      reconnectionDelay: 1500,
+      reconnectionDelayMax: 10000,
+      reconnectionAttempts: 5,
+      transports: ['websocket']
+    }
+  )
   socket.on('change', (data) => {
     if (!data) return
     if (target) {
@@ -52,22 +61,12 @@ export const enablePackageHotReload = (target) => {
   })
 }
 
-export const fetchUserPackagelist = () => {
-  return request.get('/user-plugin/enable/list')
-}
+export const fetchUserPackagelist = () => request.get('/user-plugin/enable/list')
 
-export const fetchUserPackageScript = (url) => {
-  return axios.get(url).then(res => res.data)
-}
+export const fetchUserPackageScript = url => axios.get(url).then(res => res.data)
 
-export const fethUserPreDeployPlugins = () => {
-  return request.get('/user-plugin/pre/deploy/list')
-}
+export const fethUserPreDeployPlugins = () => request.get('/user-plugin/pre/deploy/list')
 
-export const fetchPackageInfomation = () => {
-  return request.get(`/user-plugin/info/${config.spaceKey}`)
-}
+export const fetchPackageInfomation = () => request.get(`/user-plugin/info/${config.spaceKey}`)
 
-export const getMyPlugin = () => {
-  return request.get('/user-plugin/dev/list?page=0&size=100')
-}
+export const getMyPlugin = () => request.get('/user-plugin/dev/list?page=0&size=100')
