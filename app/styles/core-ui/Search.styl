@@ -4,7 +4,19 @@
   scrollBar();
   padding: 10px;
   .search-panel-title {
-    margin-bottom: 14px;  
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    
+    i {
+      margin-right: 2px;
+      cursor: pointer;
+    }
+    
+    .active {
+      transform: rotate(180deg);
+      transition: transform .3s;
+    }
   }
   .search-panel-input {
     margin-bottom: 10px;

@@ -13,6 +13,7 @@ export const searching = observable({
   word: false,
   isPattern: false,
   singleFork: false,
+  tip: ''
 })
 
 export const searched = observable({

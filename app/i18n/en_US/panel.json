@@ -21,6 +21,8 @@
    },
    "result": {
       "blank": "Search Result is 0",
-      "tip": "Searched for {number} results, included in {files} files"
+      "tip": "Searched for {number} results, included in {files} files",
+      "err": "Search service is not available, click on the top right corner to refresh the connection",
+      "refresh": "Refresh Connection"
    }
 }
