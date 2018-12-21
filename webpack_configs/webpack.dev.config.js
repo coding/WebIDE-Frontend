@@ -78,13 +78,20 @@ const config = merge(
       // https://github.com/kevlened/copy-webpack-plugin
       new CopyWebpackPlugin([
         {
-          from: path.join(PROJECT_ROOT, '404.html')
+          from: path.join(PROJECT_ROOT, '404.html'),
+          to: (staticDir ? '../' : '') + '404.html'
         },
         {
-          from: path.join(PROJECT_ROOT, '500.html')
+          from: path.join(PROJECT_ROOT, '500.html'),
+          to: (staticDir ? '../' : '') + '500.html'
         },
         {
-          from: path.join(PROJECT_ROOT, '502.html')
+          from: path.join(PROJECT_ROOT, '502.html'),
+          to: (staticDir ? '../' : '') + '502.html'
+        },
+        {
+          from: path.join(PROJECT_ROOT, 'static/favicon.ico'),
+          to: (staticDir ? '../' : '') + 'favicon.ico'
         }
       ]),
       new HtmlWebpackPlugin({
