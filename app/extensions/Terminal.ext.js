@@ -23,7 +23,6 @@ class Terminal {
 }
 export function registerTerminalOpenHandler (fn) {
   function warpperListener (xterm) {
-    debugger
     const terminal = new Terminal(xterm)
     fn(terminal)
   }
