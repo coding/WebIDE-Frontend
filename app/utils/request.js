@@ -41,7 +41,6 @@ Object.assign(request, _request)
 
 const promiseInterceptor = (promise) => {
   promise.finalCatch((err) => {
-    debugger
     if (err.msg) {
       notification.error({
         description: err.response.data.msg
