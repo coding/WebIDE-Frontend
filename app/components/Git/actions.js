@@ -176,9 +176,15 @@ export function push () {
           description: 'Git push success.' 
         })
       } else {
-        notification.error({
-          description: `Git push fail: ${res.updates[0].status}`
-        })
+        if(JSON.stringify(res.updates).indexOf('status:"UP_TO_DATE"')){
+          notification.success({
+            description: 'Git push success.'
+          })
+        }else{
+          notification.error({
+            description: `Git push fail: ${res.updates[0].status}`
+          })
+        }
       }
     }).catch((res) => {
       statusBarState.displayBar = false
