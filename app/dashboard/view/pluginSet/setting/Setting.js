@@ -16,12 +16,11 @@ class Setting extends Component {
     remark: this.props.remark,
     deleteWs: true
   }
-
   render () {
     const { pluginName, remark, deleteWs } = this.state
-    const { globalStatus } = this.props
+    const { allowRelease } = this.props
     const disabled = !pluginName || !remark || remark.length > 255
-    if (globalStatus === 1) {
+    if (allowRelease) {
       return (
         <div className='panel'>
           <div className='panel-sub-title'>{i18n('plugin.basicSet')}</div>

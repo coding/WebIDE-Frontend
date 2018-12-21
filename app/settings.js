@@ -1,5 +1,5 @@
 import isObject from 'lodash//isPlainObject'
-import { observable, reaction, extendObservable, computed, action, autorun } from 'mobx'
+import { observable, reaction, extendObservable, computed, action } from 'mobx'
 import editorConfig from 'utils/editorConfig'
 import config from 'config'
 import emitter, { THEME_CHANGED, TERM_FONTSIZE_CHANGED } from 'utils/emitter'

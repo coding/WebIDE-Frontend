@@ -25,7 +25,7 @@ class PluginSet extends Component {
     countScoreUser: 0,
     repoName: '',
     repoUrl: '',
-    globalStatus: 1,
+    allowRelease: true,
     historyVersions: [],
     status: 0,
     version: '0.0.0',
@@ -50,14 +50,14 @@ class PluginSet extends Component {
       version,
       createdBy,
       repoName,
-      globalStatus,
+      allowRelease,
       hasPrePublish,
       preStatus,
       preLog,
       tab
     } = this.state
     const prePublishProps = { hasPrePublish, preStatus, preLog }
-    const settingProps = { pluginId, pluginName, remark, createdBy, repoName, globalStatus }
+    const settingProps = { pluginId, pluginName, remark, createdBy, repoName, allowRelease }
     return (
       <div className='dash-pluginset'>
         <Overview {...this.state} cancelRelease={this.cancelPrePublish} />
@@ -74,7 +74,7 @@ class PluginSet extends Component {
         </div>
         {tab === 1 &&
           pluginName &&
-          (globalStatus === 1 ? (
+          (allowRelease ? (
             <div className='panel'>
               <PrePublish
                 {...prePublishProps}

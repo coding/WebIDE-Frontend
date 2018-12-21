@@ -184,7 +184,9 @@ class EditorInfo {
     this.monacoEditor = monacoEditor
 
     if (props.debug) {
-      this.setDebugDeltaDecorations()
+      setTimeout(() => {
+        this.setDebugDeltaDecorations()
+      }, 0)
     }
   }
 

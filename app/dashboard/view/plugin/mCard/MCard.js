@@ -9,7 +9,7 @@ import parseStatus from '../../pluginSet/status';
 
 class MCard extends Component {
     render() {
-        const { id, pluginName, remark, createdBy, repoName, pluginVersions, globalStatus } = this.props;
+        const { id, pluginName, remark, createdBy, repoName, pluginVersions, allowRelease } = this.props;
         const { version, status, hasPrePublish, preStatus } = parseStatus(pluginVersions);
         const marketHref = window === window.top ? `${window.location.origin}/plugins/detail/${id}` : `${config.studioOrigin}/plugins/detail/${id}`;
         const wsHref = `${window === window.top ? window.location.origin : config.studioOrigin}/ws/?ownerName=${createdBy}&projectName=${repoName}`;
@@ -17,11 +17,11 @@ class MCard extends Component {
             <div className = "plugin-card">
                 <div className="top">
                     {
-                        (status === 5 && globalStatus === 1) ? (
+                        (status === 5 && allowRelease) ? (
                             <a className="name" href={marketHref} target="_blank" rel="noopener noreferrer">{pluginName}</a>
                         ) : <span className="name">{pluginName}</span>
                     }
-                    {globalStatus === 1 ? (
+                    {allowRelease ? (
                         <div className="right">
                             {status === 5 && <div className="version">v{version}</div>}
                             {
