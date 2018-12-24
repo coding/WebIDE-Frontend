@@ -37,10 +37,8 @@
 }
 .coding-notification-notice-message {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.85);
   margin-bottom: 4px;
   line-height: 20px;
-  display: inline-block;
 }
 .coding-notification-notice-message-single-line-auto-margin {
   width: calc(335px - 16px * 2 - 24px - 48px - 100%);

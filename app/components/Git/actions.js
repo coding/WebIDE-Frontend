@@ -176,13 +176,39 @@ export function push () {
           description: 'Git push success.' 
         })
       } else {
-        if(JSON.stringify(res.updates).indexOf('status:"UP_TO_DATE"')){
-          notification.success({
-            description: 'Git push success.'
-          })
+        if(res.updates.length===1){
+          switch(res.updates[0].status) {
+            case 'UP_TO_DATE':
+              notification.info({
+                message:'Git push: UP_TO_DATE.',
+                description: `${localRefName} -> ${remoteRefName}`
+              })
+              break
+            case 'OK':
+              notification.success({
+                message:'Git push: SUCCESS.',
+                description: `${localRefName} -> ${remoteRefName}`
+              })
+              break
+            default:
+              notification.error({
+                message:'Git push: FAIL.',
+                description: `${localRefName} -> ${remoteRefName}`
+              })
+              break
+          }
         }else{
-          notification.error({
-            description: `Git push fail: ${res.updates[0].status}`
+          let failNum=0,successNum=0
+          res.updates.map(v=>{
+            if(v.status==="OK"||v.status==="UP_TO_DATE"){
+              successNum += 1
+            }else{
+              failNum += 1
+            }
+          })
+          notification.info({
+            message:'Git push: ',
+            description: ` ${failNum} failed, ${successNum} succeeded.`,
           })
         }
       }
